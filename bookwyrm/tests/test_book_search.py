@@ -10,7 +10,8 @@ from bookwyrm.connectors.abstract_connector import AbstractMinimalConnector
 class BookSearch(TestCase):
     """look for some books"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
         self.work = models.Work.objects.create(title="Example Work")
 
@@ -26,10 +27,10 @@ class BookSearch(TestCase):
             parent_work=self.work,
             isbn_10="1111111111",
             openlibrary_key="hello",
+            pages=150,
         )
-
         self.third_edition = models.Edition.objects.create(
-            title="Edition with annoying ISBN",
+            title="Another Edition with annoying ISBN",
             parent_work=self.work,
             isbn_10="022222222X",
         )
@@ -76,16 +77,21 @@ class BookSearch(TestCase):
 
     def test_search_title_author(self):
         """search by unique identifiers"""
-        results = book_search.search_title_author("Another", min_confidence=0)
+        results = book_search.search_title_author("annoying", min_confidence=0)
         self.assertEqual(len(results), 1)
-        self.assertEqual(results[0], self.second_edition)
+        self.assertEqual(results[0], self.third_edition)
 
     def test_search_title_author_return_first(self):
-        """search by unique identifiers"""
-        results = book_search.search_title_author(
+        """sorts by edition rank"""
+        result = book_search.search_title_author(
             "Another", min_confidence=0, return_first=True
         )
-        self.assertEqual(results, self.second_edition)
+        self.assertEqual(result, self.second_edition)  # highest edition rank
+
+    def test_search_title_author_one_edition_per_work(self):
+        """at most one edition per work"""
+        results = book_search.search_title_author("Edition", 0)
+        self.assertEqual(results, [self.first_edition])  # highest edition rank
 
     def test_format_search_result(self):
         """format a search result"""

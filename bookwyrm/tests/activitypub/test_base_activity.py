@@ -28,8 +28,8 @@ from bookwyrm import models
 class BaseActivity(TestCase):
     """the super class for model-linked activitypub dataclasses"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we're probably going to re-use this so why copy/paste"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -40,6 +40,7 @@ class BaseActivity(TestCase):
         self.user.remote_id = "http://example.com/a/b"
         self.user.save(broadcast=False, update_fields=["remote_id"])
 
+    def setUp(self):
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
         self.userdata = json.loads(datafile.read_bytes())
         # don't try to load the user icon

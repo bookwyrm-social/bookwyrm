@@ -15,12 +15,22 @@ from bookwyrm import models, views
 class Inbox(TestCase):
     """readthrough tests"""
 
-    # pylint: disable=invalid-name
     def setUp(self):
-        """basic user and book data"""
+        """individual test setup"""
         self.client = Client()
         self.factory = RequestFactory()
+        self.create_json = {
+            "id": "hi",
+            "type": "Create",
+            "actor": "hi",
+            "to": ["https://www.w3.org/ns/activitystreams#public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            "object": {},
+        }
 
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+        """basic user and book data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -43,14 +53,6 @@ class Inbox(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        self.create_json = {
-            "id": "hi",
-            "type": "Create",
-            "actor": "hi",
-            "to": ["https://www.w3.org/ns/activitystreams#public"],
-            "cc": ["https://example.com/user/mouse/followers"],
-            "object": {},
-        }
         models.SiteSettings.objects.create()
 
     def test_inbox_invalid_get(self):

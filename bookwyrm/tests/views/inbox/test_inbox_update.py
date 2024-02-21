@@ -12,7 +12,8 @@ from bookwyrm import models, views
 class InboxUpdate(TestCase):
     """inbox tests"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """basic user and book data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -37,6 +38,10 @@ class InboxUpdate(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
+        models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
         self.update_json = {
             "id": "hi",
             "type": "Update",
@@ -45,8 +50,6 @@ class InboxUpdate(TestCase):
             "cc": ["https://example.com/user/mouse/followers"],
             "object": {},
         }
-
-        models.SiteSettings.objects.create()
 
     def test_update_list(self):
         """a new list"""

@@ -9,7 +9,8 @@
 {% block title %}{{ book|book_title }}{% endblock %}
 
 {% block opengraph %}
-    {% include 'snippets/opengraph.html' with title=book.title description=book|book_description image=book.preview_image %}
+    {% firstof book.preview_image book.cover as book_image %}
+    {% include 'snippets/opengraph.html' with title=book.title description=book|book_description image=book_image %}
 {% endblock %}
 
 {% block content %}

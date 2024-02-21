@@ -14,9 +14,9 @@ from bookwyrm.tests.validate_html import validate_html
 class LandingViews(TestCase):
     """pages you land on without really trying"""
 
-    def setUp(self):  # pylint: disable=invalid-name
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -27,9 +27,13 @@ class LandingViews(TestCase):
                 local=True,
                 localname="mouse",
             )
+        models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
-        models.SiteSettings.objects.create()
 
     @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
     def test_home_page(self, _):

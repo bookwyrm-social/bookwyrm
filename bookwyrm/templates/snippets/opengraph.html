@@ -1,24 +1,25 @@
 {% load static %}
 
-{% if preview_images_enabled is True %}
+{% firstof image site.preview_image as page_image %}
+{% if page_image %}
     <meta name="twitter:card" content="summary_large_image">
-    {% if image %}
-        <meta name="twitter:image" content="{{ media_full_url }}{{ image }}">
-        <meta name="og:image" content="{{ media_full_url }}{{ image }}">
-    {% else %}
-        <meta name="twitter:image" content="{{ media_full_url }}{{ site.preview_image }}">
-        <meta name="og:image" content="{{ media_full_url }}{{ site.preview_image }}">
-    {% endif %}
+    <meta name="twitter:image" content="{{ media_full_url }}{{ page_image }}">
+    <meta name="og:image" content="{{ media_full_url }}{{ page_image }}">
+{% elif site.logo %}
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:image" content="{{ media_full_url }}{{ site.logo }}">
+    <meta name="twitter:image:alt" content="{{ site.name }} Logo">
+    <meta name="og:image" content="{{ media_full_url }}{{ site.logo }}">
 {% else %}
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:image" content="{% if site.logo %}{{ media_full_url }}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
-    <meta name="og:image" content="{% if site.logo %}{{ media_full_url }}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
+    <meta name="twitter:image" content="{% static "images/logo.png" %}">
+    <meta name="twitter:image:alt" content="BookWyrm Logo">
+    <meta name="og:image" content="{% static "images/logo.png" %}">
 {% endif %}
-
-<meta name="twitter:image:alt" content="BookWyrm Logo">
 
 <meta name="twitter:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
 <meta name="og:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
 
-<meta name="twitter:description" content="{% if description %}{{ description }}{% else %}{{ site.instance_tagline }}{% endif %}">
-<meta name="og:description" content="{% if description %}{{ description }}{% else %}{{ site.instance_tagline }}{% endif %}">
+{% firstof description site.instance_tagline as description %}
+<meta name="twitter:description" content="{{ description }}">
+<meta name="og:description" content="{{ description }}">

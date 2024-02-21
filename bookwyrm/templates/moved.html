@@ -23,7 +23,7 @@
 
           <div class="notification is-warning">
             <p>
-                {% id_to_username request.user.moved_to  as username %}
+                {% id_to_username request.user.moved_to as username %}
                 {% blocktrans trimmed with moved_to=user.moved_to %}
                     <strong>You have moved your account</strong> to <a href="{{ moved_to }}">{{ username }}</a>
                 {% endblocktrans %}

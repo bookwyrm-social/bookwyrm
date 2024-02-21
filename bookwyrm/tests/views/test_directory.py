@@ -13,9 +13,9 @@ from bookwyrm.tests.validate_html import validate_html
 class DirectoryViews(TestCase):
     """tag views"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -27,8 +27,11 @@ class DirectoryViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
 
