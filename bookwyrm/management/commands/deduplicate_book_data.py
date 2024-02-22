@@ -1,9 +1,9 @@
 """ PROCEED WITH CAUTION: uses deduplication fields to permanently
 merge book data objects """
+
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 from bookwyrm import models
-from bookwyrm.management.merge import merge_objects
 
 
 def dedupe_model(model):
@@ -16,7 +16,8 @@ def dedupe_model(model):
         dupes = (
             model.objects.values(field.name)
             .annotate(Count(field.name))
-            .filter(**{"%s__count__gt" % field.name: 1})
+            .filter(merged_into__isnull=True, **{"%s__count__gt" % field.name: 1})
+            .exclude(**{field.name: "", "%s__isnull" % field.name: True})
         )
 
         for dupe in dupes:
@@ -30,13 +31,14 @@ def dedupe_model(model):
             print("keeping", canonical.remote_id)
             for obj in objs[1:]:
                 print(obj.remote_id)
-                merge_objects(canonical, obj)
+                obj.merge_into(canonical)
 
 
 class Command(BaseCommand):
     """deduplicate allllll the book data models"""
 
     help = "merges duplicate book data"
+
     # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """run deduplications"""

@@ -3,12 +3,13 @@
 from itertools import chain
 import re
 from typing import Any
+from typing_extensions import Self
 
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.cache import cache
 from django.db import models, transaction
-from django.db.models import Prefetch
+from django.db.models import Prefetch, ManyToManyField
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
@@ -111,6 +112,58 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     def broadcast(self, activity, sender, software="bookwyrm", **kwargs):
         """only send book data updates to other bookwyrm instances"""
         super().broadcast(activity, sender, software=software, **kwargs)
+
+    def merge_into(self, canonical: Self) -> None:
+        """merge this entity into another entity"""
+        if canonical.id == self.id:
+            raise ValueError(f"Cannot merge {self} into itself")
+        if canonical.merged_into:
+            raise ValueError(
+                f"Cannot merge {self} into {canonical} because "
+                f"{canonical} has itself been merged into {canonical.merged_into}"
+            )
+        canonical.adopt_data_from(self)
+        canonical.save()
+
+        # move related models to canonical
+        related_models = [
+            (r.remote_field.name, r.related_model) for r in self._meta.related_objects
+        ]
+        # pylint: disable=protected-access
+        for related_field, related_model in related_models:
+            # Skip the ManyToMany fields that aren’t auto-created. These
+            # should have a corresponding OneToMany field in the model for
+            # the linking table anyway. If we update it through that model
+            # instead then we won’t lose the extra fields in the linking
+            # table.
+            # pylint: disable=protected-access
+            related_field_obj = related_model._meta.get_field(related_field)
+            if isinstance(related_field_obj, ManyToManyField):
+                through = related_field_obj.remote_field.through
+                if not through._meta.auto_created:
+                    continue
+            related_objs = related_model.objects.filter(**{related_field: self})
+            for related_obj in related_objs:
+                try:
+                    setattr(related_obj, related_field, canonical)
+                    related_obj.save()
+                except TypeError:
+                    getattr(related_obj, related_field).add(canonical)
+                    getattr(related_obj, related_field).remove(self)
+
+        self.merged_into = canonical
+        self.save()
+
+    def adopt_data_from(self, other: Self) -> None:
+        """fill empty fields with values from another entity"""
+        for data_field in self._meta.get_fields():
+            if not hasattr(data_field, "activitypub_field"):
+                continue
+            data_value = getattr(other, data_field.name)
+            if not data_value:
+                continue
+            if not getattr(self, data_field.name):
+                setattr(self, data_field.name, data_value)
 
 
 class Book(BookDataModel):
