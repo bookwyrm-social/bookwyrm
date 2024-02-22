@@ -3,12 +3,13 @@
 from itertools import chain
 import re
 from typing import Any
+from typing_extensions import Self
 
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.cache import cache
 from django.db import models, transaction
-from django.db.models import Prefetch
+from django.db.models import Prefetch, ManyToManyField
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
@@ -109,9 +110,88 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         """only send book data updates to other bookwyrm instances"""
         super().broadcast(activity, sender, software=software, **kwargs)
 
+    def merge_into(self, canonical: Self) -> None:
+        """merge this entity into another entity"""
+        if canonical.id == self.id:
+            raise ValueError(f"Cannot merge {self} into itself")
+
+        canonical.absorb_data_from(self)
+        canonical.save()
+
+        self.merged_model.objects.create(deleted_id=self.id, merged_into=canonical)
+
+        # move related models to canonical
+        related_models = [
+            (r.remote_field.name, r.related_model) for r in self._meta.related_objects
+        ]
+        # pylint: disable=protected-access
+        for related_field, related_model in related_models:
+            # Skip the ManyToMany fields that aren’t auto-created. These
+            # should have a corresponding OneToMany field in the model for
+            # the linking table anyway. If we update it through that model
+            # instead then we won’t lose the extra fields in the linking
+            # table.
+            # pylint: disable=protected-access
+            related_field_obj = related_model._meta.get_field(related_field)
+            if isinstance(related_field_obj, ManyToManyField):
+                through = related_field_obj.remote_field.through
+                if not through._meta.auto_created:
+                    continue
+            related_objs = related_model.objects.filter(**{related_field: self})
+            for related_obj in related_objs:
+                try:
+                    setattr(related_obj, related_field, canonical)
+                    related_obj.save()
+                except TypeError:
+                    getattr(related_obj, related_field).add(canonical)
+                    getattr(related_obj, related_field).remove(self)
+
+        self.delete()
+
+    def absorb_data_from(self, other: Self) -> None:
+        """fill empty fields with values from another entity"""
+        for data_field in self._meta.get_fields():
+            if not hasattr(data_field, "activitypub_field"):
+                continue
+            data_value = getattr(other, data_field.name)
+            if not data_value:
+                continue
+            if not getattr(self, data_field.name):
+                setattr(self, data_field.name, data_value)
+
+
+class MergedBookDataModel(models.Model):
+    """a BookDataModel instance that has been merged into another instance. kept
+    to be able to redirect old URLs"""
+
+    deleted_id = models.IntegerField(primary_key=True)
+
+    class Meta:
+        """abstract just like BookDataModel"""
+
+        abstract = True
+
+
+class MergedBook(MergedBookDataModel):
+    """an Book that has been merged into another one"""
+
+    merged_into = models.ForeignKey(
+        "Book", on_delete=models.PROTECT, related_name="absorbed"
+    )
+
+
+class MergedAuthor(MergedBookDataModel):
+    """an Author that has been merged into another one"""
+
+    merged_into = models.ForeignKey(
+        "Author", on_delete=models.PROTECT, related_name="absorbed"
+    )
+
 
 class Book(BookDataModel):
     """a generic book, which can mean either an edition or a work"""
+
+    merged_model = MergedBook
 
     connector = models.ForeignKey("Connector", on_delete=models.PROTECT, null=True)
 
@@ -454,34 +534,6 @@ class Edition(Book):
             ),
         )
         return queryset
-
-
-class MergedBookDataModel(models.Model):
-    """a BookDataModel instance that has been merged into another instance. kept
-    to be able to redirect old URLs"""
-
-    deleted_id = models.IntegerField(primary_key=True)
-
-    class Meta:
-        """abstract just like BookDataModel"""
-
-        abstract = True
-
-
-class MergedAuthor(MergedBookDataModel):
-    """an Author that has been merged into another one"""
-
-    merged_into = models.ForeignKey(
-        "Author", on_delete=models.PROTECT, related_name="absorbed"
-    )
-
-
-class MergedBook(MergedBookDataModel):
-    """an Book that has been merged into another one"""
-
-    merged_into = models.ForeignKey(
-        "Book", on_delete=models.PROTECT, related_name="absorbed"
-    )
 
 
 def isbn_10_to_13(isbn_10):

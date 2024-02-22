@@ -1,4 +1,3 @@
-from bookwyrm.management.merge import merge_objects
 from django.core.management.base import BaseCommand
 
 
@@ -26,4 +25,4 @@ class MergeCommand(BaseCommand):
             print("other book doesn’t exist!")
             return
 
-        merge_objects(canonical, other)
+        other.merge_into(canonical)

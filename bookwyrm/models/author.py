@@ -1,4 +1,5 @@
 """ database schema for info about authors """
+
 import re
 from typing import Tuple, Any
 
@@ -9,12 +10,14 @@ from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
 from bookwyrm.utils.db import format_trigger
 
-from .book import BookDataModel
+from .book import BookDataModel, MergedAuthor
 from . import fields
 
 
 class Author(BookDataModel):
     """basic biographic info"""
+
+    merged_model = MergedAuthor
 
     wikipedia_link = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
