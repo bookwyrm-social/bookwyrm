@@ -22,6 +22,7 @@ class BookData(ActivityObject):
     aasin: Optional[str] = None
     isfdb: Optional[str] = None
     lastEditedBy: Optional[str] = None
+    mergedInto: Optional[str] = None
 
 
 # pylint: disable=invalid-name

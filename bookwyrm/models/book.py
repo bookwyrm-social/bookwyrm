@@ -1,4 +1,5 @@
 """ database schema for books and shelves """
+
 from itertools import chain
 import re
 from typing import Any
@@ -68,6 +69,11 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
 
     last_edited_by = fields.ForeignKey(
         "User",
+        on_delete=models.PROTECT,
+        null=True,
+    )
+    merged_into = fields.ForeignKey(
+        "self",
         on_delete=models.PROTECT,
         null=True,
     )
@@ -190,9 +196,13 @@ class Book(BookDataModel):
         """properties of this edition, as a string"""
         items = [
             self.physical_format if hasattr(self, "physical_format") else None,
-            f"{self.languages[0]} language"
-            if self.languages and self.languages[0] and self.languages[0] != "English"
-            else None,
+            (
+                f"{self.languages[0]} language"
+                if self.languages
+                and self.languages[0]
+                and self.languages[0] != "English"
+                else None
+            ),
             str(self.published_date.year) if self.published_date else None,
             ", ".join(self.publishers) if hasattr(self, "publishers") else None,
         ]
@@ -251,6 +261,11 @@ class Work(OrderedCollectionPageMixin, Book):
         for edition in self.editions.all():
             edition.save()
         return super().save(*args, **kwargs)
+
+    @property
+    def editions(self):
+        """exclude editions that have been merged"""
+        return self.editions.filter(merged_into__isnull=True)
 
     @property
     def default_edition(self):
