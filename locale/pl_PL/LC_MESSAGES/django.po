@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 03:27+0000\n"
-"PO-Revision-Date: 2024-02-26 16:50\n"
+"PO-Revision-Date: 2024-02-26 18:18\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -337,11 +337,11 @@ msgstr "Wysłano do zgłoszonego użytkownika"
 
 #: bookwyrm/models/report.py:89
 msgid "Suspended user"
-msgstr ""
+msgstr "Użytkownik zawieszony"
 
 #: bookwyrm/models/report.py:90
 msgid "Un-suspended user"
-msgstr ""
+msgstr "Anulowano zawieszenie"
 
 #: bookwyrm/models/report.py:91
 msgid "Changed user permission level"
@@ -353,11 +353,11 @@ msgstr "Usunięto konto użytkownika"
 
 #: bookwyrm/models/report.py:93
 msgid "Blocked domain"
-msgstr ""
+msgstr "Domena zablokowana"
 
 #: bookwyrm/models/report.py:94
 msgid "Approved domain"
-msgstr ""
+msgstr "Zatwierdzona domena"
 
 #: bookwyrm/models/report.py:95
 msgid "Deleted item"
@@ -421,7 +421,7 @@ msgstr "Español (Hiszpański)"
 
 #: bookwyrm/settings.py:318
 msgid "Euskara (Basque)"
-msgstr ""
+msgstr "Euskara (Baskijski)"
 
 #: bookwyrm/settings.py:319
 msgid "Galego (Galician)"
@@ -453,7 +453,7 @@ msgstr "Norsk (Norweski)"
 
 #: bookwyrm/settings.py:326
 msgid "Polski (Polish)"
-msgstr "Polski"
+msgstr "polski"
 
 #: bookwyrm/settings.py:327
 msgid "Português do Brasil (Brazilian Portuguese)"
@@ -550,7 +550,7 @@ msgstr "Witaj na %(site_name)s!"
 #: bookwyrm/templates/about/about.html:25
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm network</a>, this community is unique."
-msgstr "%(site_name)s jest częścią <em>BookWyrm</em>, sieci niezależnych, samostanowiących społeczności czytelników. Możesz beproblemowo wchodzić w interakcje z użytkownikami gdziekolwiek w <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\"> sieci BookWyrm</a>, ta społeczność jest wyjątkowa."
+msgstr "%(site_name)s jest częścią <em>BookWyrm</em>, sieci niezależnych, samostanowiących społeczności czytelników. Możesz bezproblemowo wchodzić w interakcje z użytkownikami gdziekolwiek w <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\"> sieci BookWyrm</a>."
 
 #: bookwyrm/templates/about/about.html:45
 #, python-format
@@ -569,7 +569,7 @@ msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> ma najbardziej podzielo
 
 #: bookwyrm/templates/about/about.html:94
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
-msgstr "Śledź swój postęp czytelniczy, rozmawiaj o książkach, pisz opinie i odkrywaj co czytać następne. Na zawsze bez reklam, antykorporacyjne i skierowane w stronę społeczności, BookWyrm jest programem dla ludzi, stworzonym, by pozostać małym i personalnym. Jeśli masz pomysł, zauważył_ś błąd, albo masz wielkie marzenie, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\"> złoś się </a> i pozwól się wysłuchać."
+msgstr "Śledź swój postęp czytania, rozmawiaj o książkach, pisz recenzje i odkryj swoją następną książkę. Na zawsze bez reklam, antykorporacyjne i skierowane w stronę społeczności, BookWyrm jest oprogramowaniem dla ludzi, stworzonym, by pozostać małym i personalnym. Jeśli masz pomysł, chcesz zgłosić błąd lub masz wielką wizję, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">daj znać</a> i pozwól się wysłuchać."
 
 #: bookwyrm/templates/about/about.html:105
 msgid "Meet your admins"
@@ -939,7 +939,7 @@ msgstr "Klucz Goodreads:"
 
 #: bookwyrm/templates/author/edit_author.html:109
 msgid "ISFDB:"
-msgstr ""
+msgstr "ISFDB:"
 
 #: bookwyrm/templates/author/edit_author.html:116
 msgid "ISNI:"
@@ -1153,12 +1153,12 @@ msgstr "ASIN:"
 #: bookwyrm/templates/book/book_identifiers.html:37
 #: bookwyrm/templates/book/edit/edit_book_form.html:370
 msgid "Audible ASIN:"
-msgstr ""
+msgstr "Dźwiękowy ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:44
 #: bookwyrm/templates/book/edit/edit_book_form.html:379
 msgid "ISFDB ID:"
-msgstr ""
+msgstr "ID ISFDB:"
 
 #: bookwyrm/templates/book/book_identifiers.html:51
 msgid "Goodreads:"
@@ -1176,7 +1176,7 @@ msgstr "Prześlij okładkę:"
 #: bookwyrm/templates/book/cover_add_modal.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:250
 msgid "Load cover from URL:"
-msgstr ""
+msgstr "Wczytaj okładkę z adresu URL:"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
 msgid "Book cover preview"
@@ -1613,16 +1613,16 @@ msgstr "ocenia to"
 
 #: bookwyrm/templates/book/series.html:11
 msgid "Series by"
-msgstr ""
+msgstr "Seria autorstwa"
 
 #: bookwyrm/templates/book/series.html:28
 #, python-format
 msgid "Book %(series_number)s"
-msgstr "Książka%(series_number)s"
+msgstr "Książka %(series_number)s"
 
 #: bookwyrm/templates/book/series.html:28
 msgid "Unsorted Book"
-msgstr ""
+msgstr "Niesortowana książka"
 
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
@@ -2340,7 +2340,7 @@ msgstr "Menedżer"
 
 #: bookwyrm/templates/groups/user_groups.html:35
 msgid "No groups found."
-msgstr ""
+msgstr "Nie znaleziono grup."
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
@@ -2460,7 +2460,7 @@ msgstr "Zamieść komentarz"
 
 #: bookwyrm/templates/guided_tour/book.html:175
 msgid "Just read some perfect prose? Let the world know by sharing a quote!"
-msgstr ""
+msgstr "Olśniła Cię epicka proza? Daj światu znać, dzieląc się cytatem!"
 
 #: bookwyrm/templates/guided_tour/book.html:176
 msgid "Share a quote"
@@ -2532,11 +2532,11 @@ msgstr "Członkowie grupy"
 
 #: bookwyrm/templates/guided_tour/group.html:77
 msgid "As well as creating lists from the Lists page, you can create a group-curated list here on the group's homepage. Any member of the group can create a list curated by group members."
-msgstr ""
+msgstr "Oprócz tworzenia list z dedykowanej strony możesz tworzyć listy edytowalne przez grupy na ich stronie głównej. Każdy użytkownik grupy może utworzyć listę edytowalną przez członków grupy."
 
 #: bookwyrm/templates/guided_tour/group.html:78
 msgid "Group lists"
-msgstr ""
+msgstr "Listy grupowe"
 
 #: bookwyrm/templates/guided_tour/group.html:100
 msgid "Congratulations, you've finished the tour! Now you know the basics, but there is lots more to explore on your own. Happy reading!"
@@ -2587,7 +2587,7 @@ msgstr "Czytnik kodów kreskowych"
 
 #: bookwyrm/templates/guided_tour/home.html:102
 msgid "Use the <strong>Lists</strong>, <strong>Discover</strong>, and <strong>Your Books</strong> links to discover reading suggestions and the latest happenings on this server, or to see your catalogued books!"
-msgstr ""
+msgstr "Użyj odnośników <strong>Listy</strong>, <strong>Odkrywaj</strong> oraz <strong>Twoje książki</strong>, aby odkrywać sugestie czytania i najnowsze wydarzenia na tym serwerze lub zobaczyć swoje skatalogowane książki!"
 
 #: bookwyrm/templates/guided_tour/home.html:103
 msgid "Navigation Bar"
@@ -2599,15 +2599,15 @@ msgstr "Książki na Twoich półkach statusu czytania zostaną pokazane tutaj."
 
 #: bookwyrm/templates/guided_tour/home.html:151
 msgid "Updates from people you are following will appear in your <strong>Home</strong> timeline.<br><br>The <strong>Books</strong> tab shows activity from anyone, related to your books."
-msgstr ""
+msgstr "Aktualizacje od obserwowanych osób zostaną pokazane na osi <strong>Głowna</strong>.<br><br>W karcie <strong>Książki</strong> pokazywana jest aktywność każdej osoby związana z Twoimi książkami."
 
 #: bookwyrm/templates/guided_tour/home.html:152
 msgid "Timelines"
-msgstr ""
+msgstr "Osie czasu"
 
 #: bookwyrm/templates/guided_tour/home.html:176
 msgid "The bell will light up when you have a new notification. When it does, click on it to find out what exciting thing has happened!"
-msgstr "Dzwonek podświetli się, gdy dostaniesz nowe powiadomienie. Gdy tak się stanie, naciśnij na niego, aby zobaczyć co ciekawego się wydarzyło!"
+msgstr "Dzwonek zostanie podświetlony, gdy dostaniesz nowe powiadomienie. Gdy tak się stanie, naciśnij na niego, aby zobaczyć, co ciekawego się wydarzyło!"
 
 #: bookwyrm/templates/guided_tour/home.html:177
 #: bookwyrm/templates/layout.html:77 bookwyrm/templates/layout.html:107
@@ -2619,11 +2619,11 @@ msgstr "Powiadomienia"
 
 #: bookwyrm/templates/guided_tour/home.html:200
 msgid "Your profile, user directory, direct messages, and settings can be accessed by clicking on your name in the menu here."
-msgstr ""
+msgstr "Dostęp do swojego profilu, katalogu użytkownika, wiadomości bezpośrednich oraz ustawień możesz uzyskać, naciskając na swoją nazwę w tym menu."
 
 #: bookwyrm/templates/guided_tour/home.html:200
 msgid "Try selecting <strong>Profile</strong> from the drop down menu to continue the tour."
-msgstr "Wybierz <strong>Profil</strong> z listy rozwijanej menu, aby kontynuować."
+msgstr "Wybierz <strong>Profil</strong> z rozwijanego menu, aby kontynuować."
 
 #: bookwyrm/templates/guided_tour/home.html:201
 msgid "Profile and settings menu"
@@ -2664,11 +2664,11 @@ msgstr "Prywatność listy"
 
 #: bookwyrm/templates/guided_tour/lists.html:105
 msgid "You can also decide how your list is to be curated - only by you, by anyone, or by a group."
-msgstr ""
+msgstr "Możesz zdecydować, przez kogo może być edytowana Twoja lista — tylko przez Ciebie, przez kogokolwiek lub przez grupę."
 
 #: bookwyrm/templates/guided_tour/lists.html:106
 msgid "List curation"
-msgstr ""
+msgstr "Edytowanie listy"
 
 #: bookwyrm/templates/guided_tour/lists.html:128
 msgid "Next in our tour we will explore Groups!"
@@ -2729,7 +2729,7 @@ msgstr "Kontynuuj"
 
 #: bookwyrm/templates/guided_tour/user_books.html:10
 msgid "This is the page where your books are listed, organised into shelves."
-msgstr ""
+msgstr "Na tej stronie Twoje książki są uporządkowane na półkach."
 
 #: bookwyrm/templates/guided_tour/user_books.html:11
 #: bookwyrm/templates/user/books_header.html:4
