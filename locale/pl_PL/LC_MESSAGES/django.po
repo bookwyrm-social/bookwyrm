@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 03:27+0000\n"
-"PO-Revision-Date: 2024-02-26 18:18\n"
+"PO-Revision-Date: 2024-02-26 20:08\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -2738,11 +2738,11 @@ msgstr "Twoje książki"
 
 #: bookwyrm/templates/guided_tour/user_books.html:31
 msgid "<strong>To Read</strong>, <strong>Currently Reading</strong>, <strong>Read</strong>, and <strong>Stopped Reading</strong> are default shelves. When you change the reading status of a book it will automatically be moved to the matching shelf. A book can only be on one default shelf at a time."
-msgstr ""
+msgstr "<strong>Do przeczytania</strong>, <strong>Obecnie czytane</strong>, <strong>Przeczytane</strong> oraz <strong>Wstrzymane</strong> to domyślne półki. Po zmianie statusu czytania książki zostanie ona automatycznie przeniesiona na odpowiednią półkę. Książka może być umieszczona jednocześnie tylko na jednej z domyślnych półek."
 
 #: bookwyrm/templates/guided_tour/user_books.html:32
 msgid "Reading status shelves"
-msgstr ""
+msgstr "Półki statusu czytania"
 
 #: bookwyrm/templates/guided_tour/user_books.html:55
 msgid "You can create additional custom shelves to organise your books. A book on a custom shelf can be on any number of other shelves simultaneously, including one of the default reading status shelves"
@@ -2859,17 +2859,17 @@ msgstr "Znajdź książkę"
 #: bookwyrm/templates/hashtag.html:12
 #, python-format
 msgid "See tagged statuses in the local %(site_name)s community"
-msgstr ""
+msgstr "Zobacz oznaczone statusy w lokalnej społeczności %(site_name)s"
 
 #: bookwyrm/templates/hashtag.html:25
 msgid "No activities for this hashtag yet!"
-msgstr "Brak aktywności dla tej etykiety!"
+msgstr "Brak aktywności dla tego znacznika!"
 
 #: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:6
 #: bookwyrm/templates/preferences/layout.html:43
 msgid "Import Book List"
-msgstr ""
+msgstr "Importuj listę książek"
 
 #: bookwyrm/templates/import/import.html:12
 msgid "Not a valid CSV file"
@@ -2879,15 +2879,15 @@ msgstr "To nie jest prawidłowy plik CSV"
 #, python-format
 msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
 msgid_plural "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s days."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Obecnie możesz importować %(display_size)s książek co %(import_limit_reset)s dzień."
+msgstr[1] "Obecnie możesz importować %(display_size)s książek co %(import_limit_reset)s dni."
+msgstr[2] "Obecnie możesz importować %(display_size)s książek co %(import_limit_reset)s dni."
+msgstr[3] "Obecnie możesz importować %(display_size)s książek co %(import_limit_reset)s dni."
 
 #: bookwyrm/templates/import/import.html:26
 #, python-format
 msgid "You have %(display_left)s left."
-msgstr ""
+msgstr "Pozostało %(display_left)s."
 
 #: bookwyrm/templates/import/import.html:33
 #, python-format
@@ -2925,7 +2925,7 @@ msgstr "Calibre (CSV)"
 
 #: bookwyrm/templates/import/import.html:76
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
-msgstr ""
+msgstr "Możesz pobrać swoje dane Goodreads ze strony <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Importuj/Eksportuj</a> na swoim koncie Goodreads."
 
 #: bookwyrm/templates/import/import.html:85
 #: bookwyrm/templates/import/import_user.html:49
@@ -2978,7 +2978,7 @@ msgstr "Najnowsza aktualizacja"
 #: bookwyrm/templates/import/import.html:135
 #: bookwyrm/templates/settings/imports/imports.html:162
 msgid "Items"
-msgstr ""
+msgstr "Elementy"
 
 #: bookwyrm/templates/import/import.html:144
 #: bookwyrm/templates/import/import_user.html:183
@@ -2995,7 +2995,7 @@ msgstr "Status importu"
 #: bookwyrm/templates/import/import_status.html:13
 #: bookwyrm/templates/import/import_status.html:27
 msgid "Retry Status"
-msgstr ""
+msgstr "Ponów status"
 
 #: bookwyrm/templates/import/import_status.html:22
 #: bookwyrm/templates/settings/celery.html:45
@@ -3035,7 +3035,7 @@ msgstr[3] "%(display_counter)s elementów wymaga ręcznego zatwierdzenia."
 #: bookwyrm/templates/import/import_status.html:83
 #: bookwyrm/templates/import/manual_review.html:8
 msgid "Review items"
-msgstr ""
+msgstr "Przejrzyj elementy"
 
 #: bookwyrm/templates/import/import_status.html:89
 #, python-format
@@ -3115,7 +3115,7 @@ msgstr "Ponów"
 
 #: bookwyrm/templates/import/import_status.html:237
 msgid "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format."
-msgstr ""
+msgstr "Ten import jest zapisany w starym formacie, który nie jest już obsługiwany. Jeśli chcesz rozwiązać problemy z brakującymi elementami z tego importu, naciśnij na poniższy przycisk, aby zaktualizować format importu."
 
 #: bookwyrm/templates/import/import_status.html:239
 msgid "Update import"
@@ -3125,20 +3125,20 @@ msgstr "Zaktualizuj import"
 #: bookwyrm/templates/import/import_user.html:6
 #: bookwyrm/templates/preferences/layout.html:51
 msgid "Import BookWyrm Account"
-msgstr ""
+msgstr "Importuj konto BookWyrm"
 
 #: bookwyrm/templates/import/import_user.html:13
 msgid "Not a valid import file"
-msgstr ""
+msgstr "To nie jest prawidłowy plik importu"
 
 #: bookwyrm/templates/import/import_user.html:18
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set this account as an <strong>alias</strong> of the one you are migrating from, or <strong>move</strong> that account to this one, before you import your user data."
-msgstr ""
+msgstr "Jeśli chcesz przenieść jakiekolwiek statusy (komentarze, recenzje lub cytaty), należy ustawić to konto jako <strong>alias</strong> konta, z którego chcesz coś przenieść lub <strong>przenieś</strong> to konto do tego przed importowaniem swoich danych użytkownika."
 
 #: bookwyrm/templates/import/import_user.html:32
 #, python-format
 msgid "Currently you are allowed to import one user every %(user_import_hours)s hours."
-msgstr ""
+msgstr "Obecnie możesz importować jednego użytkownika co %(user_import_hours)s godzin."
 
 #: bookwyrm/templates/import/import_user.html:33
 #, python-format
@@ -3147,19 +3147,19 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:41
 msgid "Step 1:"
-msgstr ""
+msgstr "Krok 1:"
 
 #: bookwyrm/templates/import/import_user.html:43
 msgid "Select an export file generated from another BookWyrm account. The file format should be <code>.tar.gz</code>."
-msgstr ""
+msgstr "Wybierz plik eksportu wygenerowany z innego konta BookWyrm. Plik powinien być w formacie <code>.tar.gz</code>."
 
 #: bookwyrm/templates/import/import_user.html:58
 msgid "Step 2:"
-msgstr ""
+msgstr "Krok 2:"
 
 #: bookwyrm/templates/import/import_user.html:60
 msgid "Deselect any checkboxes for data you do not wish to include in your import."
-msgstr ""
+msgstr "Odznacz wszelkie pola wyboru danych, których nie chcesz zawrzeć w swoim imporcie."
 
 #: bookwyrm/templates/import/import_user.html:71
 #: bookwyrm/templates/shelf/shelf.html:26
@@ -3170,15 +3170,15 @@ msgstr "Profil użytkownika"
 
 #: bookwyrm/templates/import/import_user.html:74
 msgid "Overwrites display name, summary, and avatar"
-msgstr ""
+msgstr "Nadpisuje nazwę wyświetlaną, podsumowanie oraz awatar"
 
 #: bookwyrm/templates/import/import_user.html:80
 msgid "User settings"
-msgstr ""
+msgstr "Ustawienia użytkownika"
 
 #: bookwyrm/templates/import/import_user.html:83
 msgid "Overwrites:"
-msgstr ""
+msgstr "Nadpisuje:"
 
 #: bookwyrm/templates/import/import_user.html:86
 msgid "Whether manual approval is required for other users to follow your account"
