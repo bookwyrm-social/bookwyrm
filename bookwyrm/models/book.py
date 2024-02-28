@@ -1,4 +1,5 @@
 """ database schema for books and shelves """
+
 from itertools import chain
 import re
 from typing import Any
@@ -192,9 +193,13 @@ class Book(BookDataModel):
         """properties of this edition, as a string"""
         items = [
             self.physical_format if hasattr(self, "physical_format") else None,
-            f"{self.languages[0]} language"
-            if self.languages and self.languages[0] and self.languages[0] != "English"
-            else None,
+            (
+                f"{self.languages[0]} language"
+                if self.languages
+                and self.languages[0]
+                and self.languages[0] != "English"
+                else None
+            ),
             str(self.published_date.year) if self.published_date else None,
             ", ".join(self.publishers) if hasattr(self, "publishers") else None,
         ]
@@ -449,6 +454,34 @@ class Edition(Book):
             ),
         )
         return queryset
+
+
+class MergedBookDataModel(models.Model):
+    """a BookDataModel instance that has been merged into another instance. kept
+    to be able to redirect old URLs"""
+
+    deleted_id = models.IntegerField(primary_key=True)
+
+    class Meta:
+        """abstract just like BookDataModel"""
+
+        abstract = True
+
+
+class MergedAuthor(MergedBookDataModel):
+    """an Author that has been merged into another one"""
+
+    merged_into = models.ForeignKey(
+        "Author", on_delete=models.PROTECT, related_name="absorbed"
+    )
+
+
+class MergedBook(MergedBookDataModel):
+    """an Book that has been merged into another one"""
+
+    merged_into = models.ForeignKey(
+        "Book", on_delete=models.PROTECT, related_name="absorbed"
+    )
 
 
 def isbn_10_to_13(isbn_10):
