@@ -36,7 +36,7 @@
                 <div class="field has-addons">
                     <div class="control">
                         {% if request.user.is_authenticated %}
-                            {% trans "Search for a book, user, or list" as search_placeholder %}
+                            {% trans "Search for a book, author, user, or list" as search_placeholder %}
                         {% else %}
                             {% trans "Search for a book" as search_placeholder %}
                         {% endif %}
