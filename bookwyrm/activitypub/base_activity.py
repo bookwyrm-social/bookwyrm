@@ -423,6 +423,7 @@ def get_activitypub_data(url):
                 "Date": now,
                 "Signature": make_signature("get", sender, url, now),
             },
+            timeout=15,
         )
     except requests.RequestException:
         raise ConnectorException()
