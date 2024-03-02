@@ -2,7 +2,7 @@
 
 from itertools import chain
 import re
-from typing import Any
+from typing import Any, Dict
 from typing_extensions import Self
 
 from django.contrib.postgres.search import SearchVectorField
@@ -110,12 +110,12 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         """only send book data updates to other bookwyrm instances"""
         super().broadcast(activity, sender, software=software, **kwargs)
 
-    def merge_into(self, canonical: Self) -> None:
+    def merge_into(self, canonical: Self) -> Dict[str, Any]:
         """merge this entity into another entity"""
         if canonical.id == self.id:
             raise ValueError(f"Cannot merge {self} into itself")
 
-        canonical.absorb_data_from(self)
+        absorbed_fields = canonical.absorb_data_from(self)
         canonical.save()
 
         self.merged_model.objects.create(deleted_id=self.id, merged_into=canonical)
@@ -147,9 +147,11 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
                     getattr(related_obj, related_field).remove(self)
 
         self.delete()
+        return absorbed_fields
 
-    def absorb_data_from(self, other: Self) -> None:
+    def absorb_data_from(self, other: Self) -> Dict[str, Any]:
         """fill empty fields with values from another entity"""
+        absorbed_fields = {}
         for data_field in self._meta.get_fields():
             if not hasattr(data_field, "activitypub_field"):
                 continue
@@ -158,6 +160,8 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
                 continue
             if not getattr(self, data_field.name):
                 setattr(self, data_field.name, data_value)
+                absorbed_fields[data_field.name] = data_value
+        return absorbed_fields
 
 
 class MergedBookDataModel(models.Model):

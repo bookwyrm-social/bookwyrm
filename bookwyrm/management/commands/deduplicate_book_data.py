@@ -30,7 +30,8 @@ def dedupe_model(model):
             print(f"merging into {canonical.remote_id} based on {field.name} {value}:")
             for obj in objs[1:]:
                 print(f"- {obj.remote_id}")
-                obj.merge_into(canonical)
+                absorbed_fields = obj.merge_into(canonical)
+                print(f"  absorbed fields: {absorbed_fields}")
 
 
 class Command(BaseCommand):

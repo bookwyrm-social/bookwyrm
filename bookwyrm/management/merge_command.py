@@ -25,4 +25,6 @@ class MergeCommand(BaseCommand):
             print("other book doesn’t exist!")
             return
 
-        other.merge_into(canonical)
+        absorbed_fields = other.merge_into(canonical)
+        print(f"{other.remote_id} has been merged into {canonical.remote_id}")
+        print(f"absorbed fields: {absorbed_fields}")
