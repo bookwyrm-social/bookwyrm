@@ -93,6 +93,7 @@ def switch_edition(request):
                 user=shelfbook.user,
                 shelf=shelfbook.shelf,
                 book=new_edition,
+                shelved_date=shelfbook.shelved_date,
             )
             shelfbook.delete()
 
