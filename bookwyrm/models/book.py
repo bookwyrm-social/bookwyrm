@@ -110,12 +110,16 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         """only send book data updates to other bookwyrm instances"""
         super().broadcast(activity, sender, software=software, **kwargs)
 
-    def merge_into(self, canonical: Self) -> Dict[str, Any]:
+    def merge_into(self, canonical: Self, dry_run=False) -> Dict[str, Any]:
         """merge this entity into another entity"""
         if canonical.id == self.id:
             raise ValueError(f"Cannot merge {self} into itself")
 
-        absorbed_fields = canonical.absorb_data_from(self)
+        absorbed_fields = canonical.absorb_data_from(self, dry_run=dry_run)
+
+        if dry_run:
+            return absorbed_fields
+
         canonical.save()
 
         self.merged_model.objects.create(deleted_id=self.id, merged_into=canonical)
@@ -149,7 +153,7 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         self.delete()
         return absorbed_fields
 
-    def absorb_data_from(self, other: Self) -> Dict[str, Any]:
+    def absorb_data_from(self, other: Self, dry_run=False) -> Dict[str, Any]:
         """fill empty fields with values from another entity"""
         absorbed_fields = {}
         for data_field in self._meta.get_fields():
@@ -162,7 +166,8 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
             if isinstance(data_field, fields.ArrayField):
                 if new_values := list(set(other_value) - set(canonical_value)):
                     # append at the end (in no particular order)
-                    setattr(self, data_field.name, canonical_value + new_values)
+                    if not dry_run:
+                        setattr(self, data_field.name, canonical_value + new_values)
                     absorbed_fields[data_field.name] = new_values
             elif isinstance(data_field, fields.PartialDateField):
                 if (
@@ -170,11 +175,13 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
                     or (other_value.has_day and not canonical_value.has_day)
                     or (other_value.has_month and not canonical_value.has_month)
                 ):
-                    setattr(self, data_field.name, other_value)
+                    if not dry_run:
+                        setattr(self, data_field.name, other_value)
                     absorbed_fields[data_field.name] = other_value
             else:
                 if not canonical_value:
-                    setattr(self, data_field.name, other_value)
+                    if not dry_run:
+                        setattr(self, data_field.name, other_value)
                     absorbed_fields[data_field.name] = other_value
         return absorbed_fields
 
