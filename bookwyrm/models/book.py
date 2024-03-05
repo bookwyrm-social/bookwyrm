@@ -155,12 +155,27 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         for data_field in self._meta.get_fields():
             if not hasattr(data_field, "activitypub_field"):
                 continue
-            data_value = getattr(other, data_field.name)
-            if not data_value:
+            canonical_value = getattr(self, data_field.name)
+            other_value = getattr(other, data_field.name)
+            if not other_value:
                 continue
-            if not getattr(self, data_field.name):
-                setattr(self, data_field.name, data_value)
-                absorbed_fields[data_field.name] = data_value
+            if isinstance(data_field, fields.ArrayField):
+                if new_values := list(set(other_value) - set(canonical_value)):
+                    # append at the end (in no particular order)
+                    setattr(self, data_field.name, canonical_value + new_values)
+                    absorbed_fields[data_field.name] = new_values
+            elif isinstance(data_field, fields.PartialDateField):
+                if (
+                    (not canonical_value)
+                    or (other_value.has_day and not canonical_value.has_day)
+                    or (other_value.has_month and not canonical_value.has_month)
+                ):
+                    setattr(self, data_field.name, other_value)
+                    absorbed_fields[data_field.name] = other_value
+            else:
+                if not canonical_value:
+                    setattr(self, data_field.name, other_value)
+                    absorbed_fields[data_field.name] = other_value
         return absorbed_fields
 
 
