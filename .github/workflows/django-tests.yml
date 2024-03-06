@@ -1,9 +1,10 @@
+---
 name: Run Python Tests
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -53,9 +54,8 @@ jobs:
         POSTGRES_USER: postgres
         POSTGRES_DB: github_actions
         POSTGRES_HOST: 127.0.0.1
-        CELERY_BROKER: ""
-        REDIS_BROKER_PORT: 6379
-        REDIS_BROKER_PASSWORD: beep
+        CELERY_BROKER_URL: memory://
+        CELERY_RESULT_BACKEND: cache+memory://
         USE_DUMMY_CACHE: true
         FLOWER_PORT: 8888
         EMAIL_HOST: "smtp.mailgun.org"
