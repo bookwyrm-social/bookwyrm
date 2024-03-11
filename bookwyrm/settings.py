@@ -1,4 +1,5 @@
 """ bookwyrm settings and configuration """
+
 import os
 from typing import AnyStr
 
@@ -13,7 +14,6 @@ from django.core.exceptions import ImproperlyConfigured
 # pylint: disable=line-too-long
 
 env = Env()
-env.read_env()
 DOMAIN = env("DOMAIN")
 
 with open("VERSION", encoding="utf-8") as f:

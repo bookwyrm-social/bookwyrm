@@ -8,10 +8,7 @@ https://docs.djangoproject.com/en/2.0/howto/deployment/wsgi/
 """
 
 import os
-from environs import Env
 from django.core.wsgi import get_wsgi_application
-
-Env.read_env()
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bookwyrm.settings")
 
