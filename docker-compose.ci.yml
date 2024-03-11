@@ -1,0 +1,38 @@
+version: '3'
+
+# Pass the variables defined in .env.example and .env.ci to the containers
+# instead of .env (which is ignored).
+
+services:
+  db:
+    env_file:
+      - .env.example
+      - .env.ci
+  web:
+    env_file:
+      - .env.example
+      - .env.ci
+  redis_activity:
+    env_file:
+      - .env.example
+      - .env.ci
+  redis_broker:
+    env_file:
+      - .env.example
+      - .env.ci
+  celery_worker:
+    env_file:
+      - .env.example
+      - .env.ci
+  celery_beat:
+    env_file:
+      - .env.example
+      - .env.ci
+  flower:
+    env_file:
+      - .env.example
+      - .env.ci
+  dev-tools:
+    env_file:
+      - .env.example
+      - .env.ci

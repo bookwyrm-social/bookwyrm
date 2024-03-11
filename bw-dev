@@ -28,6 +28,7 @@ if docker compose &> /dev/null ; then
 else
 	DOCKER_COMPOSE="docker-compose"
 fi
+DOCKER_COMPOSE_CI="$DOCKER_COMPOSE --env-file .env.example --env-file .env.ci -f docker-compose.yml -f docker-compose.ci.yml"
 
 function clean {
     $DOCKER_COMPOSE stop
@@ -36,6 +37,10 @@ function clean {
 
 function runweb {
     $DOCKER_COMPOSE run --rm web "$@"
+}
+
+function runwebci {
+    $DOCKER_COMPOSE_CI run --rm web "$@"
 }
 
 function execdb {
@@ -126,11 +131,11 @@ case "$CMD" in
         ;;
     pytest)
         prod_error
-        runweb pytest --no-cov-on-fail "$@"
+        runwebci pytest --no-cov-on-fail "$@"
         ;;
     pytest_coverage_report)
         prod_error
-        runweb pytest -n 3 --cov-report term-missing "$@"
+        runwebci pytest -n 3 --cov-report term-missing "$@"
         ;;
     compile_themes)
         runweb python manage.py compile_themes

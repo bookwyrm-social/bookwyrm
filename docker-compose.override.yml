@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  db:
+    env_file:
+      - .env
+  web:
+    env_file:
+      - .env
+  redis_activity:
+    env_file:
+      - .env
+  redis_broker:
+    env_file:
+      - .env
+  celery_worker:
+    env_file:
+      - .env
+  celery_beat:
+    env_file:
+      - .env
+  flower:
+    env_file:
+      - .env
+  dev-tools:
+    env_file:
+      - .env

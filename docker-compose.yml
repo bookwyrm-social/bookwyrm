@@ -1,5 +1,8 @@
 version: '3'
 
+# This file is merged with docker-compose.ci.yml for CI, and with
+# docker-compose.override.yml for all other purposes.
+
 services:
   nginx:
     image: nginx:1.25.2
@@ -16,14 +19,12 @@ services:
       - media_volume:/app/images
   db:
     image: postgres:13
-    env_file: .env
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
       - main
   web:
     build: .
-    env_file: .env
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
@@ -43,7 +44,6 @@ services:
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_activity_data:/data
-    env_file: .env
     networks:
       - main
     restart: on-failure
@@ -53,12 +53,10 @@ services:
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_broker_data:/data
-    env_file: .env
     networks:
       - main
     restart: on-failure
   celery_worker:
-    env_file: .env
     build: .
     networks:
       - main
@@ -73,7 +71,6 @@ services:
       - redis_broker
     restart: on-failure
   celery_beat:
-    env_file: .env
     build: .
     networks:
       - main
@@ -88,7 +85,6 @@ services:
   flower:
     build: .
     command: celery -A celerywyrm flower --basic_auth=${FLOWER_USER}:${FLOWER_PASSWORD} --url_prefix=flower
-    env_file: .env
     volumes:
       - .:/app
     networks:
@@ -99,7 +95,6 @@ services:
     restart: on-failure
   dev-tools:
     build: dev-tools
-    env_file: .env
     volumes:
       - /app/dev-tools/
       - .:/app
