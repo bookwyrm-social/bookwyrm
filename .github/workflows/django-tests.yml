@@ -20,4 +20,4 @@ jobs:
     - name: Check if migrations are up-to-date
       run: docker-compose run web python manage.py makemigrations --check
     - name: Run pytest
-      run: docker-compose run web pytest -n 3
+      run: docker-compose run -e GITHUB_ACTIONS=true web pytest -n 3
