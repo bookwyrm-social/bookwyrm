@@ -24,7 +24,6 @@ class FileLinkForm(CustomForm):
         """make sure the domain isn't blocked or pending"""
         cleaned_data = super().clean()
         url = cleaned_data.get("url")
-        filetype = cleaned_data.get("filetype")
         book = cleaned_data.get("book")
         domain = urlparse(url).netloc
         if models.LinkDomain.objects.filter(domain=domain).exists():
@@ -38,7 +37,7 @@ class FileLinkForm(CustomForm):
                     ),
                 )
         if (
-            models.FileLink.objects.filter(url=url, book=book, filetype=filetype)
+            models.FileLink.objects.filter(url=url, book=book)
             .exclude(pk=self.instance)
             .exists()
         ):
@@ -46,6 +45,6 @@ class FileLinkForm(CustomForm):
             self.add_error(
                 "url",
                 _(
-                    "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
+                    "This link has already been added for this book. If it is not visible, the domain is still pending."
                 ),
             )
