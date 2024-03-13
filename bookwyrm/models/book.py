@@ -1,4 +1,5 @@
 """ database schema for books and shelves """
+
 from itertools import chain
 import re
 from typing import Any
@@ -120,8 +121,11 @@ class Book(BookDataModel):
     languages = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
-    series = fields.TextField(max_length=255, blank=True, null=True)
-    series_number = fields.CharField(max_length=255, blank=True, null=True)
+    series = models.ManyToManyField(
+        "Series",
+        through="SeriesBook",
+        through_fields=("book", "series"),
+    )
     subjects = fields.ArrayField(
         models.CharField(max_length=255), blank=True, null=True, default=list
     )
@@ -190,9 +194,13 @@ class Book(BookDataModel):
         """properties of this edition, as a string"""
         items = [
             self.physical_format if hasattr(self, "physical_format") else None,
-            f"{self.languages[0]} language"
-            if self.languages and self.languages[0] and self.languages[0] != "English"
-            else None,
+            (
+                f"{self.languages[0]} language"
+                if self.languages
+                and self.languages[0]
+                and self.languages[0] != "English"
+                else None
+            ),
             str(self.published_date.year) if self.published_date else None,
             ", ".join(self.publishers) if hasattr(self, "publishers") else None,
         ]
