@@ -573,7 +573,7 @@ urlpatterns = [
         name="shelf",
     ),
     re_path(
-        rf"^{USER_PATH}/(shelf|books)/(?P<shelf_identifier>[\w-]+)(/rss)?/?$",
+        rf"^{USER_PATH}/(shelf|books)/(?P<shelf_identifier>[\w-]+)/rss/?$",
         views.rss_feed.RssShelfFeed(),
         name="shelf-rss",
     ),
