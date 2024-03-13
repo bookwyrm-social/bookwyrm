@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  nginx:
+    ports:
+      - "1333:80"
+  certbot:
+    command: 'echo "Certbot disabled in dev"'
+  web:
+    ports:
+      - "8000"
+  flower:
+    ports:
+      - "${FLOWER_PORT}:${FLOWER_PORT}"

@@ -1,11 +1,19 @@
 version: '3'
 
+# Note: Ports are not specified in this file, since they are
+# environment-specific. They should be specified along with
+# any other overrides in docker-compose.override.yml
+#
+# There are two example override files for reference:
+#  - docker-compose.prod.yml
+#  - docker-compose.dev.yml
+# To map ports, copy or symlink the appropriate file to
+# docker-compose.override.yml
+
 services:
   nginx:
     image: nginx:1.25.2
     restart: unless-stopped
-    ports:
-      - "1333:80"
     depends_on:
       - web
     networks:
@@ -35,28 +43,26 @@ services:
       - redis_activity
     networks:
       - main
-    ports:
-      - "8000"
   redis_activity:
     image: redis:7.2.1
     command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD} --appendonly yes --port ${REDIS_ACTIVITY_PORT}
+    env_file: .env
+    networks:
+      - main
+    restart: on-failure
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_activity_data:/data
-    env_file: .env
-    networks:
-      - main
-    restart: on-failure
   redis_broker:
     image: redis:7.2.1
     command: redis-server --requirepass ${REDIS_BROKER_PASSWORD} --appendonly yes --port ${REDIS_BROKER_PORT}
-    volumes:
-      - ./redis.conf:/etc/redis/redis.conf
-      - redis_broker_data:/data
     env_file: .env
     networks:
       - main
     restart: on-failure
+    volumes:
+      - ./redis.conf:/etc/redis/redis.conf
+      - redis_broker_data:/data
   celery_worker:
     env_file: .env
     build: .
