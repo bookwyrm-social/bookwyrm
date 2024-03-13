@@ -200,10 +200,12 @@ class RssShelfFeed(Feed):
         """the shelf that gets serialized"""
         user = get_user_from_username(request.user, username)
         # always get privacy, don't support rss over anything private
-        # Shelf.privacy_filter(request.user).filter(user=user).all()
-
-        # TODO: get the SHELF of the object
-        shelf = get_object_or_404(user.shelf_set, identifier=shelf_identifier)
+        # get the SHELF of the object
+        shelf = get_object_or_404(
+            user.shelf_set,
+            identifier=shelf_identifier,
+            privacy__in=["public", "unlisted"],
+        )
         shelf.raise_visible_to_user(request.user)
         return shelf
 
