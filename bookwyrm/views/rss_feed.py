@@ -217,7 +217,7 @@ class RssShelfFeed(Feed):
 
     def items(self, obj):
         """the user's activity feed"""
-        return obj.books.order_by("-published_date")[:10]
+        return obj.books.order_by("-shelfbook__shelved_date")[:10]
 
     def item_link(self, item):
         """link to the status"""
