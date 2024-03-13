@@ -234,10 +234,3 @@ class RssShelfFeed(Feed):
         if obj.description:
             desc = f"  {obj.description}"
         return f"Books added to the '{obj.name}' shelf for {obj.user.name}.{desc}"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # TODO: gotta check that this is the SHELF user!
-        context["user"] = kwargs["request"].user
-        context["shelf"] = kwargs["obj"]
-        return context
