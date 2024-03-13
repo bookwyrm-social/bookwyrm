@@ -197,7 +197,7 @@ class RssShelfFeed(Feed):
     def get_object(
         self, request, shelf_identifier, username
     ):  # pylint: disable=arguments-differ
-        """the user who's posts get serialized"""
+        """the shelf that gets serialized"""
         user = get_user_from_username(request.user, username)
         # always get privacy, don't support rss over anything private
         # Shelf.privacy_filter(request.user).filter(user=user).all()
