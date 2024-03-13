@@ -583,7 +583,7 @@ urlpatterns = [
         name="shelf",
     ),
     re_path(
-        rf"^{LOCAL_USER_PATH}/(books|shelf)/(?P<shelf_identifier>[\w-]+)(/rss)?/?$",
+        rf"^{LOCAL_USER_PATH}/(books|shelf)/(?P<shelf_identifier>[\w-]+)/rss/?$",
         views.rss_feed.RssShelfFeed(),
         name="shelf-rss",
     ),
