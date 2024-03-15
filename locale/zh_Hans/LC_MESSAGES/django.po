@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 03:27+0000\n"
-"PO-Revision-Date: 2024-03-15 14:23\n"
+"PO-Revision-Date: 2024-03-15 15:59\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh\n"
@@ -321,11 +321,11 @@ msgstr "评论"
 
 #: bookwyrm/models/report.py:85
 msgid "Resolved report"
-msgstr ""
+msgstr "已解决的报告"
 
 #: bookwyrm/models/report.py:86
 msgid "Re-opened report"
-msgstr ""
+msgstr "重新打开报告"
 
 #: bookwyrm/models/report.py:87
 msgid "Messaged reporter"
@@ -337,11 +337,11 @@ msgstr ""
 
 #: bookwyrm/models/report.py:89
 msgid "Suspended user"
-msgstr ""
+msgstr "停用用户"
 
 #: bookwyrm/models/report.py:90
 msgid "Un-suspended user"
-msgstr ""
+msgstr "取消停用用户"
 
 #: bookwyrm/models/report.py:91
 msgid "Changed user permission level"
@@ -349,7 +349,7 @@ msgstr "更改用户权限级别"
 
 #: bookwyrm/models/report.py:92
 msgid "Deleted user account"
-msgstr ""
+msgstr "已删除用户账户"
 
 #: bookwyrm/models/report.py:93
 msgid "Blocked domain"
@@ -413,7 +413,7 @@ msgstr "Deutsch（德语）"
 
 #: bookwyrm/settings.py:316
 msgid "Esperanto (Esperanto)"
-msgstr ""
+msgstr "Esperanto (世界语)"
 
 #: bookwyrm/settings.py:317
 msgid "Español (Spanish)"
@@ -421,7 +421,7 @@ msgstr "Español（西班牙语）"
 
 #: bookwyrm/settings.py:318
 msgid "Euskara (Basque)"
-msgstr ""
+msgstr "Euskara (巴斯克语)"
 
 #: bookwyrm/settings.py:319
 msgid "Galego (Galician)"
@@ -445,7 +445,7 @@ msgstr "Lietuvių（立陶宛语）"
 
 #: bookwyrm/settings.py:324
 msgid "Nederlands (Dutch)"
-msgstr ""
+msgstr "Nederlands (荷兰语)"
 
 #: bookwyrm/settings.py:325
 msgid "Norsk (Norwegian)"
@@ -473,7 +473,7 @@ msgstr "Svenska（瑞典语）"
 
 #: bookwyrm/settings.py:331
 msgid "Українська (Ukrainian)"
-msgstr ""
+msgstr "Українська (乌克兰语)"
 
 #: bookwyrm/settings.py:332
 msgid "简体中文 (Simplified Chinese)"
@@ -520,7 +520,8 @@ msgstr "您要上传的文件太大。"
 msgid "\n"
 "        You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting.\n"
 "        "
-msgstr ""
+msgstr "\n"
+"您可以尝试使用更小的文件，或询问 BookWyrm 服务器管理员增加 <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> 的值。        "
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -2689,7 +2690,7 @@ msgstr "手动添加记录"
 
 #: bookwyrm/templates/guided_tour/search.html:147
 msgid "Import, manually add, or view an existing book to continue the tour."
-msgstr ""
+msgstr "导入，手动添加或查看现有书本以继续游览。"
 
 #: bookwyrm/templates/guided_tour/search.html:148
 msgid "Continue the tour"
@@ -2831,7 +2832,7 @@ msgstr ""
 
 #: bookwyrm/templates/hashtag.html:25
 msgid "No activities for this hashtag yet!"
-msgstr ""
+msgstr "此标签尚无活动！"
 
 #: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:6
@@ -2841,7 +2842,7 @@ msgstr "导入书单"
 
 #: bookwyrm/templates/import/import.html:12
 msgid "Not a valid CSV file"
-msgstr ""
+msgstr "无效的 CSV 文件"
 
 #: bookwyrm/templates/import/import.html:20
 #, python-format
@@ -3088,7 +3089,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:13
 msgid "Not a valid import file"
-msgstr ""
+msgstr "无效的导入文件"
 
 #: bookwyrm/templates/import/import_user.html:18
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set this account as an <strong>alias</strong> of the one you are migrating from, or <strong>move</strong> that account to this one, before you import your user data."
@@ -3161,11 +3162,11 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:101
 msgid "Your timezone"
-msgstr ""
+msgstr "您的时区"
 
 #: bookwyrm/templates/import/import_user.html:104
 msgid "Your default post privacy setting"
-msgstr ""
+msgstr "默认帖文隐私设定"
 
 #: bookwyrm/templates/import/import_user.html:112
 msgid "Followers and following"
@@ -3189,11 +3190,11 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:133
 msgid "Reading history"
-msgstr ""
+msgstr "阅读记录"
 
 #: bookwyrm/templates/import/import_user.html:136
 msgid "Book reviews"
-msgstr ""
+msgstr "书评"
 
 #: bookwyrm/templates/import/import_user.html:142
 msgid "Comments about books"
@@ -4176,11 +4177,11 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/2fa.html:40
 msgid "Generate backup codes"
-msgstr ""
+msgstr "生成备份代码"
 
 #: bookwyrm/templates/preferences/2fa.html:45
 msgid "Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up."
-msgstr ""
+msgstr "使用身份验证应用扫描二维码，然后输入代码以确保您已设置。"
 
 #: bookwyrm/templates/preferences/2fa.html:52
 msgid "Use setup key"
@@ -5372,7 +5373,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:37
 msgid "Disable imports"
-msgstr ""
+msgstr "禁用导入功能"
 
 #: bookwyrm/templates/settings/imports/imports.html:51
 msgid "Users are currently unable to start new imports"
@@ -5380,7 +5381,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:56
 msgid "Enable imports"
-msgstr ""
+msgstr "启用导入功能"
 
 #: bookwyrm/templates/settings/imports/imports.html:64
 msgid "Limit the amount of imports"
@@ -6148,7 +6149,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:35
 msgid "Activate user"
-msgstr ""
+msgstr "激活用户"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:41
 msgid "Suspend user"
@@ -6771,7 +6772,7 @@ msgstr "更多书架"
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:31
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:48
 msgid "Stop reading"
-msgstr ""
+msgstr "停止阅读"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:40
 msgid "Finish reading"
