@@ -80,10 +80,7 @@ def json_export(
     exported_user = user.to_activity()
     # I don't love this but it prevents a JSON encoding error
     # when there is no user image
-    if isinstance(
-        exported_user["icon"],
-        dataclasses._MISSING_TYPE,  # pylint: disable=protected-access
-    ):
+    if exported_user.get("icon") in (None, dataclasses.MISSING):
         exported_user["icon"] = {}
     else:
         # change the URL to be relative to the JSON file
