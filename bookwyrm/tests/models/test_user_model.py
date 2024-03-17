@@ -19,13 +19,13 @@ class User(TestCase):
     protocol = "https://" if USE_HTTPS else "http://"
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
             patch("bookwyrm.activitystreams.populate_stream_task.delay"),
             patch("bookwyrm.lists_stream.populate_lists_task.delay"),
         ):
-            self.user = models.User.objects.create_user(
+            cls.user = models.User.objects.create_user(
                 f"mouse@{DOMAIN}",
                 "mouse@mouse.mouse",
                 "mouseword",
@@ -35,7 +35,7 @@ class User(TestCase):
                 summary="a summary",
                 bookwyrm_user=False,
             )
-            self.another_user = models.User.objects.create_user(
+            cls.another_user = models.User.objects.create_user(
                 f"nutria@{DOMAIN}",
                 "nutria@nutria.nutria",
                 "nutriaword",

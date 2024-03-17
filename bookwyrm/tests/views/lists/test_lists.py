@@ -16,14 +16,14 @@ class ListViews(TestCase):
     """lists of lists"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
             patch("bookwyrm.activitystreams.populate_stream_task.delay"),
             patch("bookwyrm.lists_stream.populate_lists_task.delay"),
         ):
-            self.local_user = models.User.objects.create_user(
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -31,7 +31,7 @@ class ListViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-            self.another_user = models.User.objects.create_user(
+            cls.another_user = models.User.objects.create_user(
                 "rat@local.com", "rat@rat.com", "ratword", local=True, localname="rat"
             )
 

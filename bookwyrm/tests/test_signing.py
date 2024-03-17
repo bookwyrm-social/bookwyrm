@@ -36,24 +36,24 @@ class Signature(TestCase):
     """signature test"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """create users and test data"""
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
             patch("bookwyrm.activitystreams.populate_stream_task.delay"),
             patch("bookwyrm.lists_stream.populate_lists_task.delay"),
         ):
-            self.mouse = models.User.objects.create_user(
+            cls.mouse = models.User.objects.create_user(
                 f"mouse@{DOMAIN}",
                 "mouse@example.com",
                 "",
                 local=True,
                 localname="mouse",
             )
-            self.rat = models.User.objects.create_user(
+            cls.rat = models.User.objects.create_user(
                 f"rat@{DOMAIN}", "rat@example.com", "", local=True, localname="rat"
             )
-            self.cat = models.User.objects.create_user(
+            cls.cat = models.User.objects.create_user(
                 f"cat@{DOMAIN}", "cat@example.com", "", local=True, localname="cat"
             )
         models.SiteSettings.objects.create()

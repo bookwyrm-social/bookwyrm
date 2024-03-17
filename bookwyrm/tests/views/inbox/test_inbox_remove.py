@@ -11,24 +11,24 @@ class InboxRemove(TestCase):
     """inbox tests"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """basic user and book data"""
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
             patch("bookwyrm.activitystreams.populate_stream_task.delay"),
             patch("bookwyrm.lists_stream.populate_lists_task.delay"),
         ):
-            self.local_user = models.User.objects.create_user(
+            cls.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
                 "mouseword",
                 local=True,
                 localname="mouse",
             )
-        self.local_user.remote_id = "https://example.com/user/mouse"
-        self.local_user.save(broadcast=False, update_fields=["remote_id"])
+        cls.local_user.remote_id = "https://example.com/user/mouse"
+        cls.local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -38,11 +38,11 @@ class InboxRemove(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
-        self.work = models.Work.objects.create(title="work title")
-        self.book = models.Edition.objects.create(
+        cls.work = models.Work.objects.create(title="work title")
+        cls.book = models.Edition.objects.create(
             title="Test",
             remote_id="https://bookwyrm.social/book/37292",
-            parent_work=self.work,
+            parent_work=cls.work,
         )
 
         models.SiteSettings.objects.create()

@@ -19,7 +19,7 @@ class ViewsHelpers(TestCase):  # pylint: disable=too-many-public-methods
     """viewing and creating statuses"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
@@ -27,7 +27,7 @@ class ViewsHelpers(TestCase):  # pylint: disable=too-many-public-methods
             patch("bookwyrm.lists_stream.populate_lists_task.delay"),
             patch("bookwyrm.suggested_users.rerank_user_task.delay"),
         ):
-            self.local_user = models.User.objects.create_user(
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -40,7 +40,7 @@ class ViewsHelpers(TestCase):  # pylint: disable=too-many-public-methods
             patch("bookwyrm.models.user.set_remote_server.delay"),
             patch("bookwyrm.suggested_users.rerank_user_task.delay"),
         ):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -50,15 +50,15 @@ class ViewsHelpers(TestCase):  # pylint: disable=too-many-public-methods
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.work = models.Work.objects.create(title="Test Work")
+        cls.book = models.Edition.objects.create(
             title="Test Book",
             remote_id="https://example.com/book/1",
-            parent_work=self.work,
+            parent_work=cls.work,
         )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            self.shelf = models.Shelf.objects.create(
-                name="Test Shelf", identifier="test-shelf", user=self.local_user
+            cls.shelf = models.Shelf.objects.create(
+                name="Test Shelf", identifier="test-shelf", user=cls.local_user
             )
 
     def setUp(self):

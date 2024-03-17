@@ -15,13 +15,13 @@ class HashtagView(TestCase):
     """hashtag view"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
             patch("bookwyrm.activitystreams.populate_stream_task.delay"),
             patch("bookwyrm.lists_stream.populate_lists_task.delay"),
         ):
-            self.local_user = models.User.objects.create_user(
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -29,7 +29,7 @@ class HashtagView(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-            self.follower_user = models.User.objects.create_user(
+            cls.follower_user = models.User.objects.create_user(
                 "follower@local.com",
                 "follower@email.com",
                 "followerword",
@@ -37,8 +37,8 @@ class HashtagView(TestCase):
                 localname="follower",
                 remote_id="https://example.com/users/follower",
             )
-            self.local_user.followers.add(self.follower_user)
-            self.other_user = models.User.objects.create_user(
+            cls.local_user.followers.add(cls.follower_user)
+            cls.other_user = models.User.objects.create_user(
                 "other@local.com",
                 "other@email.com",
                 "otherword",
@@ -47,25 +47,25 @@ class HashtagView(TestCase):
                 remote_id="https://example.com/users/other",
             )
 
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.work = models.Work.objects.create(title="Test Work")
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
-            parent_work=self.work,
+            parent_work=cls.work,
         )
 
-        self.hashtag_bookclub = models.Hashtag.objects.create(name="#BookClub")
+        cls.hashtag_bookclub = models.Hashtag.objects.create(name="#BookClub")
         with (
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
             patch("bookwyrm.activitystreams.add_status_task.delay"),
         ):
-            self.statuses_bookclub = [
+            cls.statuses_bookclub = [
                 models.Comment.objects.create(
-                    book=self.book, user=self.local_user, content="#BookClub"
+                    book=cls.book, user=cls.local_user, content="#BookClub"
                 ),
             ]
-        for status in self.statuses_bookclub:
-            status.mention_hashtags.add(self.hashtag_bookclub)
+        for status in cls.statuses_bookclub:
+            status.mention_hashtags.add(cls.hashtag_bookclub)
 
         models.SiteSettings.objects.create()
 

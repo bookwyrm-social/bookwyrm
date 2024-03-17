@@ -15,7 +15,7 @@ class Inventaire(TestCase):
     """test loading data from inventaire.io"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """creates the connector in the database"""
         models.Connector.objects.create(
             identifier="inventaire.io",
