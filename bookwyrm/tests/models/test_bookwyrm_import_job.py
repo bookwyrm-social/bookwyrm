@@ -18,10 +18,11 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
 
     def setUp(self):
         """setting stuff up"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"), patch(
-            "bookwyrm.suggested_users.rerank_user_task.delay"
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+            patch("bookwyrm.suggested_users.rerank_user_task.delay"),
         ):
 
             self.local_user = models.User.objects.create_user(
@@ -78,9 +79,11 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
     def test_update_user_profile(self):
         """Test update the user's profile from import data"""
 
-        with patch("bookwyrm.suggested_users.remove_user_task.delay"), patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.suggested_users.rerank_user_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.remove_user_task.delay"),
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.suggested_users.rerank_user_task.delay"),
+        ):
 
             with open(self.archive_file, "rb") as fileobj:
                 with BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj) as tarfile:
@@ -103,9 +106,11 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
     def test_update_user_settings(self):
         """Test updating the user's settings from import data"""
 
-        with patch("bookwyrm.suggested_users.remove_user_task.delay"), patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.suggested_users.rerank_user_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.remove_user_task.delay"),
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.suggested_users.rerank_user_task.delay"),
+        ):
 
             models.bookwyrm_import_job.update_user_settings(
                 self.local_user, self.json_data
@@ -145,8 +150,9 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
     def test_upsert_saved_lists_existing(self):
         """Test upserting an existing saved list"""
 
-        with patch("bookwyrm.lists_stream.remove_list_task.delay"), patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        with (
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
         ):
             book_list = models.List.objects.create(
                 name="My cool list",
@@ -172,8 +178,9 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
     def test_upsert_saved_lists_not_existing(self):
         """Test upserting a new saved list"""
 
-        with patch("bookwyrm.lists_stream.remove_list_task.delay"), patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        with (
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
         ):
             book_list = models.List.objects.create(
                 name="My cool list",
@@ -199,9 +206,11 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
 
         self.assertFalse(before_follow)
 
-        with patch("bookwyrm.activitystreams.add_user_statuses_task.delay"), patch(
-            "bookwyrm.lists_stream.add_user_lists_task.delay"
-        ), patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with (
+            patch("bookwyrm.activitystreams.add_user_statuses_task.delay"),
+            patch("bookwyrm.lists_stream.add_user_lists_task.delay"),
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+        ):
             models.bookwyrm_import_job.upsert_follows(
                 self.local_user, self.json_data.get("follows")
             )
@@ -222,10 +231,11 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         ).exists()
         self.assertFalse(blocked_before)
 
-        with patch("bookwyrm.suggested_users.remove_suggestion_task.delay"), patch(
-            "bookwyrm.activitystreams.remove_user_statuses_task.delay"
-        ), patch("bookwyrm.lists_stream.remove_user_lists_task.delay"), patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        with (
+            patch("bookwyrm.suggested_users.remove_suggestion_task.delay"),
+            patch("bookwyrm.activitystreams.remove_user_statuses_task.delay"),
+            patch("bookwyrm.lists_stream.remove_user_lists_task.delay"),
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
         ):
             models.bookwyrm_import_job.upsert_user_blocks(
                 self.local_user, self.json_data.get("blocks")
@@ -312,9 +322,10 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
 
         self.assertEqual(models.Review.objects.filter(user=self.local_user).count(), 0)
         reviews = self.json_data["books"][0]["reviews"]
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True),
+        ):
 
             bookwyrm_import_job.upsert_statuses(
                 self.local_user, models.Review, reviews, self.book.remote_id
@@ -349,9 +360,10 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         self.assertEqual(models.Comment.objects.filter(user=self.local_user).count(), 0)
         comments = self.json_data["books"][1]["comments"]
 
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True),
+        ):
 
             bookwyrm_import_job.upsert_statuses(
                 self.local_user, models.Comment, comments, self.book.remote_id
@@ -378,9 +390,10 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             models.Quotation.objects.filter(user=self.local_user).count(), 0
         )
         quotes = self.json_data["books"][1]["quotations"]
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True),
+        ):
 
             bookwyrm_import_job.upsert_statuses(
                 self.local_user, models.Quotation, quotes, self.book.remote_id
@@ -411,9 +424,10 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             models.Quotation.objects.filter(user=self.local_user).count(), 0
         )
         quotes = self.json_data["books"][1]["quotations"]
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=False):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=False),
+        ):
 
             bookwyrm_import_job.upsert_statuses(
                 self.local_user, models.Quotation, quotes, self.book.remote_id
@@ -432,8 +446,9 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             title="Another Book", remote_id="https://example.com/book/9876"
         )
 
-        with patch("bookwyrm.lists_stream.remove_list_task.delay"), patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        with (
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
         ):
             book_list = models.List.objects.create(
                 name="my list of books", user=self.local_user
@@ -452,8 +467,9 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             1,
         )
 
-        with patch("bookwyrm.lists_stream.remove_list_task.delay"), patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        with (
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
         ):
             bookwyrm_import_job.upsert_lists(
                 self.local_user,
@@ -479,8 +495,9 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         self.assertEqual(models.List.objects.filter(user=self.local_user).count(), 0)
         self.assertFalse(models.ListItem.objects.filter(book=self.book.id).exists())
 
-        with patch("bookwyrm.lists_stream.remove_list_task.delay"), patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        with (
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
         ):
             bookwyrm_import_job.upsert_lists(
                 self.local_user,
@@ -503,16 +520,18 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
 
         shelf = models.Shelf.objects.get(name="Read", user=self.local_user)
 
-        with patch("bookwyrm.activitystreams.add_book_statuses_task.delay"), patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        with (
+            patch("bookwyrm.activitystreams.add_book_statuses_task.delay"),
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
         ):
             models.ShelfBook.objects.create(
                 book=self.book, shelf=shelf, user=self.local_user
             )
 
         book_data = self.json_data["books"][0]
-        with patch("bookwyrm.activitystreams.add_book_statuses_task.delay"), patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        with (
+            patch("bookwyrm.activitystreams.add_book_statuses_task.delay"),
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
         ):
             bookwyrm_import_job.upsert_shelves(self.book, self.local_user, book_data)
 
@@ -530,8 +549,9 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
 
         book_data = self.json_data["books"][0]
 
-        with patch("bookwyrm.activitystreams.add_book_statuses_task.delay"), patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        with (
+            patch("bookwyrm.activitystreams.add_book_statuses_task.delay"),
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
         ):
             bookwyrm_import_job.upsert_shelves(self.book, self.local_user, book_data)
 

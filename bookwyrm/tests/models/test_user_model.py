@@ -20,9 +20,11 @@ class User(TestCase):
 
     @classmethod
     def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             self.user = models.User.objects.create_user(
                 f"mouse@{DOMAIN}",
                 "mouse@mouse.mouse",
@@ -122,9 +124,11 @@ class User(TestCase):
 
         site.default_user_auth_group = Group.objects.get(name="editor")
         site.save()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             user = models.User.objects.create_user(
                 f"test2{DOMAIN}",
                 "test2@bookwyrm.test",
@@ -135,9 +139,11 @@ class User(TestCase):
 
         site.default_user_auth_group = None
         site.save()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             user = models.User.objects.create_user(
                 f"test1{DOMAIN}",
                 "test1@bookwyrm.test",
@@ -228,11 +234,14 @@ class User(TestCase):
         self.assertEqual(self.user.name, "hi")
         self.assertEqual(self.user.summary, "a summary")
         self.assertEqual(self.user.email, "mouse@mouse.mouse")
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ) as broadcast_mock, patch(
-            "bookwyrm.models.user.User.erase_user_statuses"
-        ) as erase_statuses_mock:
+        with (
+            patch(
+                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            ) as broadcast_mock,
+            patch(
+                "bookwyrm.models.user.User.erase_user_statuses"
+            ) as erase_statuses_mock,
+        ):
             self.user.delete()
 
         self.assertEqual(erase_statuses_mock.call_count, 1)

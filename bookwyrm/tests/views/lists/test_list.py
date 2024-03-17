@@ -21,9 +21,11 @@ class ListViews(TestCase):
     @classmethod
     def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -65,9 +67,10 @@ class ListViews(TestCase):
             parent_work=work_four,
         )
 
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+        ):
             self.list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )
@@ -248,9 +251,12 @@ class ListViews(TestCase):
         )
         request.user = self.local_user
 
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ) as mock, patch("bookwyrm.lists_stream.remove_list_task.delay"):
+        with (
+            patch(
+                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            ) as mock,
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+        ):
             result = view(request, self.list.id)
 
         self.assertEqual(mock.call_count, 1)
@@ -286,9 +292,12 @@ class ListViews(TestCase):
             )
         request = self.factory.post("")
         request.user = self.local_user
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ) as mock, patch("bookwyrm.lists_stream.remove_list_task.delay") as redis_mock:
+        with (
+            patch(
+                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            ) as mock,
+            patch("bookwyrm.lists_stream.remove_list_task.delay") as redis_mock,
+        ):
             views.delete_list(request, self.list.id)
         self.assertTrue(redis_mock.called)
         activity = json.loads(mock.call_args[1]["args"][1])

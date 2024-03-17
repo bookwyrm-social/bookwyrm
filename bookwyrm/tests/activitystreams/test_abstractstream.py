@@ -18,9 +18,11 @@ class Activitystreams(TestCase):
     @classmethod
     def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """use a test csv"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
             )
@@ -105,9 +107,11 @@ class Activitystreams(TestCase):
             privacy="direct",
             book=self.book,
         )
-        with patch("bookwyrm.activitystreams.r.set"), patch(
-            "bookwyrm.activitystreams.r.delete"
-        ), patch("bookwyrm.activitystreams.ActivityStream.get_store") as redis_mock:
+        with (
+            patch("bookwyrm.activitystreams.r.set"),
+            patch("bookwyrm.activitystreams.r.delete"),
+            patch("bookwyrm.activitystreams.ActivityStream.get_store") as redis_mock,
+        ):
             redis_mock.return_value = [status.id, status2.id]
             result = self.test_stream.get_activity_stream(self.local_user)
         self.assertEqual(result.count(), 2)

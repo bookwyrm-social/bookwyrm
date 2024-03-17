@@ -22,8 +22,9 @@ class ExportViews(TestCase):
         self,
     ):  # pylint: disable=bad-classmethod-argument, disable=invalid-name
         """we need basic test data and mocks"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
         ):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",

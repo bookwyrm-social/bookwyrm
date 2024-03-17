@@ -16,9 +16,11 @@ class HashtagView(TestCase):
 
     @classmethod
     def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -53,9 +55,10 @@ class HashtagView(TestCase):
         )
 
         self.hashtag_bookclub = models.Hashtag.objects.create(name="#BookClub")
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.activitystreams.add_status_task.delay"):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.activitystreams.add_status_task.delay"),
+        ):
             self.statuses_bookclub = [
                 models.Comment.objects.create(
                     book=self.book, user=self.local_user, content="#BookClub"
@@ -91,9 +94,10 @@ class HashtagView(TestCase):
         request = self.factory.get("")
 
         hashtag = models.Hashtag.objects.create(name="#test")
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.activitystreams.add_status_task.delay"):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.activitystreams.add_status_task.delay"),
+        ):
             status = models.Comment.objects.create(
                 user=self.local_user, book=self.book, content="#test", privacy="direct"
             )
@@ -115,9 +119,10 @@ class HashtagView(TestCase):
         request = self.factory.get("")
 
         hashtag = models.Hashtag.objects.create(name="#test")
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.activitystreams.add_status_task.delay"):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.activitystreams.add_status_task.delay"),
+        ):
             status = models.Comment.objects.create(
                 user=self.local_user,
                 book=self.book,
@@ -143,9 +148,10 @@ class HashtagView(TestCase):
         request = self.factory.get("")
 
         hashtag = models.Hashtag.objects.create(name="#test")
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.activitystreams.add_status_task.delay"):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.activitystreams.add_status_task.delay"),
+        ):
             status = models.Comment.objects.create(
                 user=self.local_user,
                 book=self.book,

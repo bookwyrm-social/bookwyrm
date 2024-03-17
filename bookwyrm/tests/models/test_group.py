@@ -13,9 +13,11 @@ class Group(TestCase):
     def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """Set up for tests"""
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             self.owner_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
@@ -81,9 +83,10 @@ class Group(TestCase):
         """follower-only group booklists should not be excluded from group booklist
         listing for group members who do not follower list owner"""
 
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+        ):
             followers_list = models.List.objects.create(
                 name="Followers List",
                 curation="group",
@@ -104,9 +107,10 @@ class Group(TestCase):
         """private group booklists should not be excluded from group booklist listing
         for group members"""
 
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+        ):
             private_list = models.List.objects.create(
                 name="Private List",
                 privacy="direct",
