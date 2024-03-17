@@ -194,14 +194,16 @@ class ImportJob(TestCase):
             status=200,
         )
 
-        with patch("bookwyrm.connectors.abstract_connector.load_more_data.delay"):
-            with patch(
+        with (
+            patch("bookwyrm.connectors.abstract_connector.load_more_data.delay"),
+            patch(
                 "bookwyrm.connectors.connector_manager.first_search_result"
-            ) as search:
-                search.return_value = result
-                with patch(
-                    "bookwyrm.connectors.openlibrary.Connector.get_authors_from_data"
-                ):
-                    book = item.get_book_from_identifier()
+            ) as search,
+        ):
+            search.return_value = result
+            with patch(
+                "bookwyrm.connectors.openlibrary.Connector.get_authors_from_data"
+            ):
+                book = item.get_book_from_identifier()
 
         self.assertEqual(book.title, "Sabriel")

@@ -268,9 +268,11 @@ class GenericImporter(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            with patch("bookwyrm.models.Status.broadcast") as broadcast_mock:
-                handle_imported_book(import_item)
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.models.Status.broadcast") as broadcast_mock,
+        ):
+            handle_imported_book(import_item)
         kwargs = broadcast_mock.call_args.kwargs
         self.assertEqual(kwargs["software"], "bookwyrm")
         review = models.Review.objects.get(book=self.book, user=self.local_user)

@@ -39,13 +39,15 @@ class InboxActivities(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            with patch("bookwyrm.activitystreams.add_status_task.delay"):
-                self.status = models.Status.objects.create(
-                    user=self.local_user,
-                    content="Test status",
-                    remote_id="https://example.com/status/1",
-                )
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.activitystreams.add_status_task.delay"),
+        ):
+            self.status = models.Status.objects.create(
+                user=self.local_user,
+                content="Test status",
+                remote_id="https://example.com/status/1",
+            )
 
         models.SiteSettings.objects.create()
 

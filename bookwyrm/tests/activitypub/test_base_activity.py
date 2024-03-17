@@ -234,10 +234,12 @@ class BaseActivity(TestCase):
         )
 
         # sets the celery task call to the function call
-        with patch("bookwyrm.activitypub.base_activity.set_related_field.delay"):
-            with patch("bookwyrm.models.status.Status.ignore_activity") as discarder:
-                discarder.return_value = False
-                update_data.to_model(model=models.Status, instance=status)
+        with (
+            patch("bookwyrm.activitypub.base_activity.set_related_field.delay"),
+            patch("bookwyrm.models.status.Status.ignore_activity") as discarder,
+        ):
+            discarder.return_value = False
+            update_data.to_model(model=models.Status, instance=status)
         self.assertIsNone(status.attachments.first())
 
     @responses.activate

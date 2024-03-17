@@ -24,7 +24,6 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             patch("bookwyrm.lists_stream.populate_lists_task.delay"),
             patch("bookwyrm.suggested_users.rerank_user_task.delay"),
         ):
-
             self.local_user = models.User.objects.create_user(
                 "mouse",
                 "mouse@mouse.mouse",
@@ -84,13 +83,13 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
             patch("bookwyrm.suggested_users.rerank_user_task.delay"),
         ):
-
-            with open(self.archive_file, "rb") as fileobj:
-                with BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj) as tarfile:
-
-                    models.bookwyrm_import_job.update_user_profile(
-                        self.local_user, tarfile, self.json_data
-                    )
+            with (
+                open(self.archive_file, "rb") as fileobj,
+                BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj) as tarfile,
+            ):
+                models.bookwyrm_import_job.update_user_profile(
+                    self.local_user, tarfile, self.json_data
+                )
 
             self.local_user.refresh_from_db()
 
@@ -111,7 +110,6 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
             patch("bookwyrm.suggested_users.rerank_user_task.delay"),
         ):
-
             models.bookwyrm_import_job.update_user_settings(
                 self.local_user, self.json_data
             )
@@ -256,14 +254,15 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
 
         self.assertEqual(models.Edition.objects.count(), 1)
 
-        with open(self.archive_file, "rb") as fileobj:
-            with BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj) as tarfile:
+        with (
+            open(self.archive_file, "rb") as fileobj,
+            BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj) as tarfile,
+        ):
+            bookwyrm_import_job.get_or_create_edition(
+                self.json_data["books"][1], tarfile
+            )  # Sand Talk
 
-                bookwyrm_import_job.get_or_create_edition(
-                    self.json_data["books"][1], tarfile
-                )  # Sand Talk
-
-                self.assertEqual(models.Edition.objects.count(), 1)
+            self.assertEqual(models.Edition.objects.count(), 1)
 
     def test_get_or_create_edition_not_existing(self):
         """Test take a JSON string of books and editions,
@@ -272,12 +271,13 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
 
         self.assertEqual(models.Edition.objects.count(), 1)
 
-        with open(self.archive_file, "rb") as fileobj:
-            with BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj) as tarfile:
-
-                bookwyrm_import_job.get_or_create_edition(
-                    self.json_data["books"][0], tarfile
-                )  # Seeing like a state
+        with (
+            open(self.archive_file, "rb") as fileobj,
+            BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj) as tarfile,
+        ):
+            bookwyrm_import_job.get_or_create_edition(
+                self.json_data["books"][0], tarfile
+            )  # Seeing like a state
 
         self.assertTrue(models.Edition.objects.filter(isbn_13="9780300070163").exists())
         self.assertEqual(models.Edition.objects.count(), 2)
@@ -326,7 +326,6 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
             patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True),
         ):
-
             bookwyrm_import_job.upsert_statuses(
                 self.local_user, models.Review, reviews, self.book.remote_id
             )
@@ -364,7 +363,6 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
             patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True),
         ):
-
             bookwyrm_import_job.upsert_statuses(
                 self.local_user, models.Comment, comments, self.book.remote_id
             )
