@@ -6,16 +6,18 @@ from dateutil.parser import parse
 from packaging import version
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.db import transaction
 from django.db.models import Q
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 from csp.decorators import csp_update
 
-from bookwyrm import models, settings
-from bookwyrm.connectors.abstract_connector import get_data
+from bookwyrm import forms, models, settings
 from bookwyrm.utils import regex
 
 
@@ -59,20 +61,35 @@ class Dashboard(View):
             == site._meta.get_field("privacy_policy").get_default()
         )
 
-        # check version
+        if site.available_version and version.parse(
+            site.available_version
+        ) > version.parse(settings.VERSION):
+            data["current_version"] = settings.VERSION
+            data["available_version"] = site.available_version
 
-        try:
-            release = get_data(settings.RELEASE_API, timeout=3)
-            available_version = release.get("tag_name", None)
-            if available_version and version.parse(available_version) > version.parse(
-                settings.VERSION
-            ):
-                data["current_version"] = settings.VERSION
-                data["available_version"] = available_version
-        except:  # pylint: disable= bare-except
-            pass
+        if not PeriodicTask.objects.filter(name="check-for-updates").exists():
+            data["schedule_form"] = forms.IntervalScheduleForm(
+                {"every": 1, "period": "days"}
+            )
 
         return TemplateResponse(request, "settings/dashboard/dashboard.html", data)
+
+    def post(self, request):
+        """Create a schedule task to check for updates"""
+        schedule_form = forms.IntervalScheduleForm(request.POST)
+        if not schedule_form.is_valid():
+            raise schedule_form.ValidationError(schedule_form.errors)
+
+        with transaction.atomic():
+            schedule, _ = IntervalSchedule.objects.get_or_create(
+                **schedule_form.cleaned_data
+            )
+            PeriodicTask.objects.get_or_create(
+                interval=schedule,
+                name="check-for-updates",
+                task="bookwyrm.models.site.check_for_updates_task",
+            )
+        return redirect("settings-dashboard")
 
 
 def get_charts_and_stats(request):

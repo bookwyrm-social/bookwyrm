@@ -14,8 +14,8 @@ from bookwyrm.tests.validate_html import validate_html
 class HashtagView(TestCase):
     """hashtag view"""
 
-    def setUp(self):
-        self.factory = RequestFactory()
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -64,9 +64,13 @@ class HashtagView(TestCase):
         for status in self.statuses_bookclub:
             status.mention_hashtags.add(self.hashtag_bookclub)
 
+        models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
-        models.SiteSettings.objects.create()
 
     def test_hashtag_page(self):
         """just make sure it loads"""

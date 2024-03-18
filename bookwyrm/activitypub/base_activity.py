@@ -20,6 +20,7 @@ from bookwyrm.tasks import app, MISC
 
 logger = logging.getLogger(__name__)
 
+# pylint: disable=invalid-name
 TBookWyrmModel = TypeVar("TBookWyrmModel", bound=base_model.BookWyrmModel)
 
 
@@ -236,7 +237,7 @@ class ActivityObject:
         omit = kwargs.get("omit", ())
         data = self.__dict__.copy()
         # recursively serialize
-        for (k, v) in data.items():
+        for k, v in data.items():
             try:
                 if issubclass(type(v), ActivityObject):
                     data[k] = v.serialize()
@@ -397,18 +398,14 @@ def resolve_remote_id(
 def get_representative():
     """Get or create an actor representing the instance
     to sign outgoing HTTP GET requests"""
-    username = f"{INSTANCE_ACTOR_USERNAME}@{DOMAIN}"
-    email = "bookwyrm@localhost"
-    try:
-        user = models.User.objects.get(username=username)
-    except models.User.DoesNotExist:
-        user = models.User.objects.create_user(
-            username=username,
-            email=email,
+    return models.User.objects.get_or_create(
+        username=f"{INSTANCE_ACTOR_USERNAME}@{DOMAIN}",
+        defaults=dict(
+            email="bookwyrm@localhost",
             local=True,
             localname=INSTANCE_ACTOR_USERNAME,
-        )
-    return user
+        ),
+    )[0]
 
 
 def get_activitypub_data(url):
@@ -427,6 +424,7 @@ def get_activitypub_data(url):
                 "Date": now,
                 "Signature": make_signature("get", sender, url, now),
             },
+            timeout=15,
         )
     except requests.RequestException:
         raise ConnectorException()

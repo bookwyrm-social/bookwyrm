@@ -1,4 +1,5 @@
 """ search views"""
+
 import re
 
 from django.contrib.postgres.search import TrigramSimilarity
@@ -39,6 +40,7 @@ class Search(View):
 
         endpoints = {
             "book": book_search,
+            "author": author_search,
             "user": user_search,
             "list": list_search,
         }
@@ -51,7 +53,7 @@ class Search(View):
 def api_book_search(request):
     """Return books via API response"""
     query = request.GET.get("q")
-    query = isbn_check(query)
+    query = isbn_check_and_format(query)
     min_confidence = request.GET.get("min_confidence", 0)
     # only return local book results via json so we don't cascade
     book_results = search(query, min_confidence=min_confidence)
@@ -64,7 +66,7 @@ def book_search(request):
     """the real business is elsewhere"""
     query = request.GET.get("q")
     # check if query is isbn
-    query = isbn_check(query)
+    query = isbn_check_and_format(query)
     min_confidence = request.GET.get("min_confidence", 0)
     search_remote = request.GET.get("remote", False) and request.user.is_authenticated
 
@@ -88,6 +90,31 @@ def book_search(request):
         )
         data["remote"] = True
     return TemplateResponse(request, "search/book.html", data)
+
+
+def author_search(request):
+    """search for an author"""
+    query = request.GET.get("q")
+    query = query.strip()
+    data = {"type": "author", "query": query}
+
+    results = (
+        models.Author.objects.annotate(
+            similarity=TrigramSimilarity("name", query),
+        )
+        .filter(
+            similarity__gt=0.1,
+        )
+        .order_by("-similarity")
+    )
+
+    paginated = Paginator(results, PAGE_LENGTH)
+    page = paginated.get_page(request.GET.get("page"))
+    data["results"] = page
+    data["page_range"] = paginated.get_elided_page_range(
+        page.number, on_each_side=2, on_ends=1
+    )
+    return TemplateResponse(request, "search/author.html", data)
 
 
 def user_search(request):
@@ -159,7 +186,7 @@ def list_search(request):
     return TemplateResponse(request, "search/list.html", data)
 
 
-def isbn_check(query):
+def isbn_check_and_format(query):
     """isbn10 or isbn13 check, if so remove separators"""
     if query:
         su_num = re.sub(r"(?<=\d)\D(?=\d|[xX])", "", query)

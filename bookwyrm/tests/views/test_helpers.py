@@ -15,13 +15,12 @@ from bookwyrm.settings import USER_AGENT, DOMAIN
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.suggested_users.rerank_user_task.delay")
-class ViewsHelpers(TestCase):
+class ViewsHelpers(TestCase):  # pylint: disable=too-many-public-methods
     """viewing and creating statuses"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -53,13 +52,17 @@ class ViewsHelpers(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=self.work,
         )
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
-        self.userdata = json.loads(datafile.read_bytes())
-        del self.userdata["icon"]
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             self.shelf = models.Shelf.objects.create(
                 name="Test Shelf", identifier="test-shelf", user=self.local_user
             )
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
+        self.userdata = json.loads(datafile.read_bytes())
+        del self.userdata["icon"]
 
     def test_get_edition(self, *_):
         """given an edition or a work, returns an edition"""

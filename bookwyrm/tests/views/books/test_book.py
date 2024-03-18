@@ -23,9 +23,9 @@ from bookwyrm.tests.validate_html import validate_html
 class BookViews(TestCase):
     """books books books"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -53,6 +53,10 @@ class BookViews(TestCase):
         )
 
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_book_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -268,8 +272,8 @@ class BookViews(TestCase):
             book=self.book,
             content="hi",
             quote="wow",
-            position=12,
-            endposition=13,
+            position="12",
+            endposition="13",
         )
 
         request = self.factory.get("")
@@ -282,7 +286,9 @@ class BookViews(TestCase):
         validate_html(result.render())
         print(result.render())
         self.assertEqual(result.status_code, 200)
-        self.assertEqual(result.context_data["statuses"].object_list[0].endposition, 13)
+        self.assertEqual(
+            result.context_data["statuses"].object_list[0].endposition, "13"
+        )
 
 
 def _setup_cover_url():

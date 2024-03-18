@@ -156,6 +156,7 @@ case "$CMD" in
         git checkout l10n_main locale/fi_FI
         git checkout l10n_main locale/fr_FR
         git checkout l10n_main locale/gl_ES
+        git checkout l10n_main locale/ko_KR
         git checkout l10n_main locale/it_IT
         git checkout l10n_main locale/lt_LT
         git checkout l10n_main locale/nl_NL
@@ -165,6 +166,7 @@ case "$CMD" in
         git checkout l10n_main locale/pt_BR
         git checkout l10n_main locale/ro_RO
         git checkout l10n_main locale/sv_SE
+        git checkout l10n_main locale/uk_UA
         git checkout l10n_main locale/zh_Hans
         git checkout l10n_main locale/zh_Hant
         runweb django-admin makemessages --no-wrap --ignore=venv -l en_US $@
@@ -245,6 +247,9 @@ case "$CMD" in
     remove_remote_user_preview_images)
         runweb python manage.py remove_remote_user_preview_images
         ;;
+    erase_deleted_user_data)
+        runweb python manage.py erase_deleted_user_data "$@"
+        ;;
     copy_media_to_s3)
         awscommand "bookwyrm_media_volume:/images"\
             "s3 cp /images s3://${AWS_STORAGE_BUCKET_NAME}/images\
@@ -296,7 +301,7 @@ case "$CMD" in
         echo "Unrecognised command. Try:"
         echo "    setup"
         echo "    up [container]"
-        echo "    down"        
+        echo "    down"
         echo "    service_ports_web"
         echo "    initdb"
         echo "    resetdb"
