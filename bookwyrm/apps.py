@@ -1,4 +1,5 @@
 """Do further startup configuration and initialization"""
+
 import os
 import urllib
 import logging
@@ -14,7 +15,7 @@ def download_file(url, destination):
     """Downloads a file to the given path"""
     try:
         # Ensure our destination directory exists
-        os.makedirs(os.path.dirname(destination))
+        os.makedirs(os.path.dirname(destination), exist_ok=True)
         with urllib.request.urlopen(url) as stream:
             with open(destination, "b+w") as outfile:
                 outfile.write(stream.read())
