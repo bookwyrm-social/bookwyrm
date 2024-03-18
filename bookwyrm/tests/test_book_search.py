@@ -184,10 +184,66 @@ class SearchVectorTest(TestCase):
         book = self._create_book("Hear We Come", "John")
         self.assertEqual(book.search_vector, "'come':3A 'hear':1A 'john':4C")
 
+        book = self._create_book("there there", "the")
+        self.assertEqual(book.search_vector, "'the':3C 'there':1A,2A")
+
     def test_search_vector_no_author(self):
         """book with no authors gets processed normally"""
         book = self._create_book("Book", None, series="Bunch")
         self.assertEqual(book.search_vector, "'book':1A 'bunch':2")
+
+        book = self._create_book("there there", None)
+        self.assertEqual(book.search_vector, "'there':1A,2A")
+
+    # n.b.: the following originally from test_posgres.py
+
+    def test_search_vector_on_update(self):
+        """make sure that search_vector is being set correctly on edit"""
+        book = self._create_book("The Long Goodbye", None)
+        self.assertEqual(book.search_vector, "'goodby':3A 'long':2A")
+
+        book.title = "The Even Longer Goodbye"
+        book.save(broadcast=False)
+        book.refresh_from_db()
+        self.assertEqual(book.search_vector, "'even':2A 'goodby':4A 'longer':3A")
+
+    def test_search_vector_on_author_update(self):
+        """update search when an author name changes"""
+        book = self._create_book("The Long Goodbye", "The Rays")
+        self.assertEqual(book.search_vector, "'goodby':3A 'long':2A 'rays':5C 'the':4C")
+
+        author = models.Author.objects.get(name="The Rays")
+        author.name = "Jeremy"
+        author.save(broadcast=False)
+        book.refresh_from_db()
+        self.assertEqual(book.search_vector, "'goodby':3A 'jeremy':4C 'long':2A")
+
+    def test_search_vector_on_author_delete(self):
+        """update search when an author is deleted"""
+        book = self._create_book("The Long Goodbye", "The Rays")
+        self.assertEqual(book.search_vector, "'goodby':3A 'long':2A 'rays':5C 'the':4C")
+
+        author = models.Author.objects.get(name="The Rays")
+        book.authors.remove(author)
+        book.refresh_from_db()
+        self.assertEqual(book.search_vector, "'goodby':3A 'long':2A")
+
+    def test_search_vector_fields(self):
+        """language field irrelevant for search_vector"""
+        author = models.Author.objects.create(name="The Rays")
+        book = models.Edition.objects.create(
+            title="The Long Goodbye",
+            subtitle="wow cool",
+            series="series name",
+            languages=["irrelevant"],
+        )
+        book.authors.add(author)
+        book.refresh_from_db()
+        self.assertEqual(
+            book.search_vector,
+            # pylint: disable-next=line-too-long
+            "'cool':5B 'goodby':3A 'long':2A 'name':9 'rays':7C 'seri':8 'the':6C 'wow':4B",
+        )
 
     @staticmethod
     def _create_book(
@@ -212,8 +268,8 @@ class SearchVectorTest(TestCase):
         return edition
 
 
-class SearchVectorTriggers(TestCase):
-    """look for books as they change"""
+class SearchVectorUpdates(TestCase):
+    """look for books as they change"""  # functional tests of the above
 
     def setUp(self):
         """we need basic test data and mocks"""
