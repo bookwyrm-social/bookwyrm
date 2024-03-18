@@ -102,6 +102,8 @@ services:
     volumes:
       - /app/dev-tools/
       - .:/app:rw
+    profiles:
+      - tools
 volumes:
   pgdata:
   static_volume:
