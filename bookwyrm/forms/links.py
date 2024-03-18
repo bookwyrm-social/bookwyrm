@@ -1,4 +1,5 @@
 """ using django model forms """
+
 from urllib.parse import urlparse
 
 from django.utils.translation import gettext_lazy as _
@@ -37,10 +38,9 @@ class FileLinkForm(CustomForm):
                     ),
                 )
         if (
-            not self.instance
-            and models.FileLink.objects.filter(
-                url=url, book=book, filetype=filetype
-            ).exists()
+            models.FileLink.objects.filter(url=url, book=book, filetype=filetype)
+            .exclude(pk=self.instance)
+            .exists()
         ):
             # pylint: disable=line-too-long
             self.add_error(

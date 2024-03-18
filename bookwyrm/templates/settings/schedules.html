@@ -1,0 +1,127 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% load humanize %}
+{% load utilities %}
+
+{% block title %}
+{% trans "Scheduled tasks" %}
+{% endblock %}
+
+{% block header %}
+{% trans "Scheduled tasks" %}
+{% endblock %}
+
+{% block panel %}
+
+<div class="block content">
+    <h3>{% trans "Tasks" %}</h3>
+    <div class="table-container">
+        <table class="table is-striped is-fullwidth">
+            <tr>
+                <th>
+                    {% trans "Name" %}
+                </th>
+                <th>
+                    {% trans "Celery task" %}
+                </th>
+                <th>
+                    {% trans "Date changed" %}
+                </th>
+                <th>
+                    {% trans "Last run at" %}
+                </th>
+                <th>
+                    {% trans "Schedule" %}
+                </th>
+                <th>
+                    {% trans "Schedule ID" %}
+                </th>
+                <th>
+                    {% trans "Enabled" %}
+                </th>
+            </tr>
+            {% for task in tasks %}
+            <tr>
+                <td>
+                    {{ task.name }}
+                </td>
+                <td class="overflow-wrap-anywhere">
+                    {{ task.task }}
+                </td>
+                <td>
+                    {{ task.date_changed }}
+                </td>
+                <td>
+                    {{ task.last_run_at }}
+                </td>
+                <td>
+                    {% firstof task.interval task.crontab "None" %}
+                </td>
+                <td>
+                    {{ task.interval.id }}
+                </td>
+                <td>
+                    <span class="tag">
+                        {% if task.enabled %}
+                        <span class="icon icon-check" aria-hidden="true"></span>
+                        {% endif %}
+                    {{ task.enabled|yesno }}
+                    </span>
+                    {% if task.name != "celery.backend_cleanup" %}
+                    <form name="unschedule-{{ task.id }}" method="POST" action="{% url 'settings-schedules' task.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="button is-danger is-small">{% trans "Un-schedule" %}</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">
+                    {% trans "No scheduled tasks" %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<div class="block content">
+    <h3>{% trans "Schedules" %}</h3>
+    <div class="table-container">
+        <table class="table is-striped is-fullwidth">
+            <tr>
+                <th>
+                    {% trans "ID" %}
+                </th>
+                <th>
+                    {% trans "Schedule" %}
+                </th>
+                <th>
+                    {% trans "Tasks" %}
+                </th>
+            </tr>
+            {% for schedule in schedules %}
+            <tr>
+                <td>
+                    {{ schedule.id }}
+                </td>
+                <td class="overflow-wrap-anywhere">
+                    {{ schedule }}
+                </td>
+                <td>
+                    {{ schedule.periodictask_set.count }}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">
+                    {% trans "No schedules found" %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+{% endblock %}

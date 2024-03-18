@@ -2,13 +2,11 @@
 {% load feed_page_tags %}
 {% load i18n %}
 
+{% block title %}{{ title }}{% endblock %}
+
+
 {% block opengraph %}
-    {% firstof status.book status.mention_books.first as book %}
-    {% if book %}
-        {% include 'snippets/opengraph.html' with image=preview %}
-    {% else %}
-        {% include 'snippets/opengraph.html' %}
-    {% endif %}
+    {% include 'snippets/opengraph.html' with image=page_image %}
 {% endblock %}
 
 
