@@ -3,9 +3,9 @@
   ‘{{ book_title }}’ by {{ book_author }}
 {% endblocktrans %}
 {{obj.description|default:""}}
-{% if obj.description %}{% trans "ISBN13:" %} {{item.isbn_13|default: ""}}{% endif %}
-{% if obj.description %}{% trans "OCLC Number:" %} {{item.oclc_number|default: ""}}{% endif %}
-{% if obj.description %}{% trans "ASIN:" %} {{item.asin|default: ""}}{% endif %}
-{% if obj.description %}{% trans "Audible ASIN:" %} {{item.aasin|default: ""}}{% endif %}
-{% if obj.description %}{% trans "ISFDB ID:" %} {{item.isfdb|default: ""}}{% endif %}
-{% if obj.description %}{% trans "Goodreads:" %} {{item.goodreads_key|default: ""}}{% endif %}
+{% if obj.isbn_13 %}{% trans "ISBN 13:" %} {{ obj.isbn_13 }}{% endif %}
+{% if obj.oclc_number %}{% trans "OCLC Number:" %} {{ obj.oclc_number }}{% endif %}
+{% if obj.asin %}{% trans "ASIN:" %} {{ obj.asin }}{% endif %}
+{% if obj.aasin %}{% trans "Audible ASIN:" %} {{ obj.aasin }}{% endif %}
+{% if obj.isfdb %}{% trans "ISFDB ID:" %} {{ obj.isfdb }}{% endif %}
+{% if obj.goodreads_key %}{% trans "Goodreads:" %} {{ obj.goodreads_key }}{% endif %}
