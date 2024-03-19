@@ -1,4 +1,4 @@
-{{obj.title}} by {{obj.author_text}}
+{% blocktrans %}{{{obj.title}} by {{obj.author_text}}{% endblocktrans %}
 {{obj.description|default:""}}
 {% if obj.description %}ISBN: {{item.isbn_10|default:""}}{% endif %}
 {% if obj.description %}ISBN13: {{item.isbn_13}}{% endif %}
