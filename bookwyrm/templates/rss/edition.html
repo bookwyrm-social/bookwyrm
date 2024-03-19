@@ -1,4 +1,7 @@
-{% blocktrans %}{{{obj.title}} by {{obj.author_text}}{% endblocktrans %}
+{% load i18n %}
+{% blocktrans trimmed with book_title=obj.title book_author=obj.author_text %}
+  ‘{{ book_title }}’ by {{ book_author }}
+{% endblocktrans %}
 {{obj.description|default:""}}
 {% if obj.description %}{% trans "ISBN13:" %} {{item.isbn_13|default: ""}}{% endif %}
 {% if obj.description %}{% trans "OCLC Number:" %} {{item.oclc_number|default: ""}}{% endif %}

@@ -233,5 +233,5 @@ class RssShelfFeed(Feed):
         """description of the shelf including the shelf name and user."""
         # if there's a description, lets add it. Not everyone puts a description in.
         if desc := obj.description:
-            return _(f"{obj.user.name}’s {obj.name} shelf: {desc}"
-        return _(f"Books added to {obj.user.name}’s {obj.name} shelf"
+            return _(f"{obj.user.name}’s {obj.name} shelf: {desc}")
+        return _(f"Books added to {obj.user.name}’s {obj.name} shelf")
