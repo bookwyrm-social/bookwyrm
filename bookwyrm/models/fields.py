@@ -482,7 +482,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         if not url:
             return None
 
-        return activitypub.Document(url=url, name=alt)
+        return activitypub.Image(url=url, name=alt)
 
     def field_from_activity(self, value, allow_external_connections=True):
         image_slug = value

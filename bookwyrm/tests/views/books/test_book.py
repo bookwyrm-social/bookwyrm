@@ -272,8 +272,8 @@ class BookViews(TestCase):
             book=self.book,
             content="hi",
             quote="wow",
-            position=12,
-            endposition=13,
+            position="12",
+            endposition="13",
         )
 
         request = self.factory.get("")
@@ -286,7 +286,9 @@ class BookViews(TestCase):
         validate_html(result.render())
         print(result.render())
         self.assertEqual(result.status_code, 200)
-        self.assertEqual(result.context_data["statuses"].object_list[0].endposition, 13)
+        self.assertEqual(
+            result.context_data["statuses"].object_list[0].endposition, "13"
+        )
 
 
 def _setup_cover_url():
