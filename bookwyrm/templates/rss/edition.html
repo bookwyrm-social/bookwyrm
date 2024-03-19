@@ -1,4 +1,8 @@
 {% blocktrans %}{{{obj.title}} by {{obj.author_text}}{% endblocktrans %}
 {{obj.description|default:""}}
-{% if obj.description %}ISBN: {{item.isbn_10|default:""}}{% endif %}
-{% if obj.description %}ISBN13: {{item.isbn_13}}{% endif %}
+{% if obj.description %}{% trans "ISBN13:" %} {{item.isbn_13|default: ""}}{% endif %}
+{% if obj.description %}{% trans "OCLC Number:" %} {{item.oclc_number|default: ""}}{% endif %}
+{% if obj.description %}{% trans "ASIN:" %} {{item.asin|default: ""}}{% endif %}
+{% if obj.description %}{% trans "Audible ASIN:" %} {{item.aasin|default: ""}}{% endif %}
+{% if obj.description %}{% trans "ISFDB ID:" %} {{item.isfdb|default: ""}}{% endif %}
+{% if obj.description %}{% trans "Goodreads:" %} {{item.goodreads_key|default: ""}}{% endif %}
