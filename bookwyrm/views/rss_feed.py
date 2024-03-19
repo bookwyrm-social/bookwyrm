@@ -215,7 +215,7 @@ class RssShelfFeed(Feed):
 
     def title(self, obj):
         """title of the rss feed entry"""
-        return _(f"Books added to {obj.name}")
+        return _(f"{obj.user.name}’s {obj.name} shelf")
 
     def items(self, obj):
         """the user's activity feed"""
