@@ -67,4 +67,10 @@ class Migration(migrations.Migration):
             """,
             reverse_sql=author_search_vector_trigger.sql,
         ),
+        migrations.RunSQL(
+            # Recalculate book search vector for any missed author name changes
+            # due to bug in JOIN in the old trigger.
+            sql="UPDATE bookwyrm_book SET search_vector = NULL;",
+            reverse_sql=migrations.RunSQL.noop,
+        ),
     ]
