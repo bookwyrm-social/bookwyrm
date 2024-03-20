@@ -92,9 +92,9 @@ class Author(BookDataModel):
                 ),
             ),
             pgtrigger.Trigger(
-                name="reset_search_vector_on_author_edit",
+                name="reset_book_search_vector_on_author_edit",
                 when=pgtrigger.After,
-                operation=pgtrigger.UpdateOf("name"),
+                operation=pgtrigger.UpdateOf("name", "aliases"),
                 func=format_trigger(
                     """WITH updated_books AS (
                          SELECT book_id
