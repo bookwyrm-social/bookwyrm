@@ -339,6 +339,16 @@ urlpatterns = [
         name="settings-imports-disable",
     ),
     re_path(
+        r"^settings/user-exports/enable/?$",
+        views.enable_user_exports,
+        name="settings-user-exports-enable",
+    ),
+    re_path(
+        r"^settings/user-exports/disable/?$",
+        views.disable_user_exports,
+        name="settings-user-exports-disable",
+    ),
+    re_path(
         r"^settings/imports/enable/?$",
         views.enable_imports,
         name="settings-imports-enable",
@@ -358,6 +368,11 @@ urlpatterns = [
     ),
     re_path(
         r"^settings/celery/ping/?$", views.celery_ping, name="settings-celery-ping"
+    ),
+    re_path(
+        r"^settings/schedules/(?P<task_id>\d+)?$",
+        views.ScheduledTasks.as_view(),
+        name="settings-schedules",
     ),
     re_path(
         r"^settings/email-config/?$",

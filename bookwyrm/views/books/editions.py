@@ -94,6 +94,7 @@ def switch_edition(request):
                 user=shelfbook.user,
                 shelf=shelfbook.shelf,
                 book=new_edition,
+                shelved_date=shelfbook.shelved_date,
             )
             shelfbook.delete()
 
@@ -110,4 +111,14 @@ def switch_edition(request):
             for book_id in new_edition.parent_work.editions.values_list("id", flat=True)
         ]
     )
+
+    reviews = models.Review.objects.filter(
+        book__parent_work=new_edition.parent_work, user=request.user
+    )
+    for review in reviews.all():
+        # because ratings are a subclass of reviews,
+        # this will pick up both ratings and reviews
+        review.book = new_edition
+        review.save()
+
     return redirect(f"/book/{new_edition.id}")
