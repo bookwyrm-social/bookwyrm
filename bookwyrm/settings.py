@@ -108,6 +108,7 @@ INSTALLED_APPS = [
     "celery",
     "django_celery_beat",
     "imagekit",
+    "pgtrigger",
     "storages",
 ]
 

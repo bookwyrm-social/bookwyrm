@@ -109,7 +109,7 @@
 <p class="block">
     {% if request.user.is_authenticated %}
         {% if not remote %}
-        <a href="{{ request.path }}?q={{ query }}&type=book&remote=true" id="tour-load-from-other-catalogues">
+        <a href="{{ request.path }}?q={{ query|urlencode }}&type=book&remote=true" id="tour-load-from-other-catalogues">
             {% trans "Load results from other catalogues" %}
         </a>
         {% else %}
