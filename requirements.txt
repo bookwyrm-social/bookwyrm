@@ -4,12 +4,13 @@ boto3==1.26.57
 bw-file-resubmit==0.6.0rc2
 celery==5.3.1
 colorthief==0.2.1
-Django==3.2.24
+Django==3.2.25
 django-celery-beat==2.5.0
 django-compressor==4.4
 django-csp==3.7
 django-imagekit==4.1.0
 django-model-utils==4.3.1
+django-pgtrigger==4.11.0
 django-redis==5.2.0
 django-sass-processor==1.2.2
 django-storages==1.13.2
@@ -25,7 +26,7 @@ opentelemetry-instrumentation-celery==0.37b0
 opentelemetry-instrumentation-django==0.37b0
 opentelemetry-instrumentation-psycopg2==0.37b0
 opentelemetry-sdk==1.16.0
-Pillow==10.0.1
+Pillow==10.2.0
 protobuf==3.20.*
 psycopg2==2.9.5
 pycryptodome==3.19.1
@@ -40,6 +41,7 @@ setuptools>=65.5.1 # Not a direct dependency, pinned to get a security fix
 tornado==6.3.3 # Not a direct dependency, pinned to get a security fix
 
 # Dev
+black==22.*
 celery-types==0.18.0
 django-stubs[compatible-mypy]==4.2.4
 mypy==1.5.1
@@ -53,7 +55,7 @@ pytidylib==0.3.2
 types-bleach==6.0.0.4
 types-dataclasses==0.6.6
 types-Markdown==3.4.2.10
-types-Pillow==10.0.0.3
+types-Pillow==10.2.0.20240311
 types-psycopg2==2.9.21.11
 types-python-dateutil==2.8.19.14
 types-requests==2.31.0.2

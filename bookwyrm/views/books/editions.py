@@ -3,6 +3,7 @@ from functools import reduce
 import operator
 
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache as django_cache
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Q
@@ -103,6 +104,13 @@ def switch_edition(request):
     for readthrough in readthroughs.all():
         readthrough.book = new_edition
         readthrough.save()
+
+    django_cache.delete_many(
+        [
+            f"active_shelf-{request.user.id}-{book_id}"
+            for book_id in new_edition.parent_work.editions.values_list("id", flat=True)
+        ]
+    )
 
     reviews = models.Review.objects.filter(
         book__parent_work=new_edition.parent_work, user=request.user
