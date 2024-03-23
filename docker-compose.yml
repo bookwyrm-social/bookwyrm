@@ -90,6 +90,7 @@ services:
     env_file: .env
     volumes:
       - .:/app:ro
+      - static_volume:/app/static
     networks:
       - main
     depends_on:

@@ -94,6 +94,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
-    - uses: psf/black@22.12.0
+    - uses: psf/black@stable
       with:
-        version: 22.12.0
+        version: "22.*"
