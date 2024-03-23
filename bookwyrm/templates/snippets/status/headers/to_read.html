@@ -20,8 +20,6 @@ wants to read <a href="{{ book_path }}">{{ book }}</a>
 
 {% endif %}
 
-{% if book.series %}
-({{book.series}}{%if book.series_number %}, #{{book.series_number}}{% endif %})
-{% endif %}
+{% include 'snippets/book_series.html' with book=book %}
 
 {% endspaceless %}
