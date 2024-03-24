@@ -6,16 +6,17 @@ import io
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseServerError, Http404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views import View
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 from django.shortcuts import redirect
 
 from storages.backends.s3boto3 import S3Boto3Storage
 
-from bookwyrm import models
+from bookwyrm import models, storage_backends
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
 from bookwyrm import settings
 
@@ -187,7 +188,11 @@ class ExportUser(View):
 
             else:
                 # for local storage export_data is the tar file
-                export["size"] = job.export_data.size if job.export_data else 0
+                try:
+                    export["size"] = job.export_data.size if job.export_data else 0
+                except FileNotFoundError:
+                    # file no longer exists
+                    export["size"] = 0
 
             exports.append(export)
 
@@ -230,10 +235,15 @@ class ExportArchive(View):
     def get(self, request, archive_id):
         """download user export file"""
         export = BookwyrmExportJob.objects.get(task_id=archive_id, user=request.user)
-        return HttpResponse(
-            export.export_data,
-            content_type="application/gzip",
-            headers={
-                "Content-Disposition": 'attachment; filename="bookwyrm-account-export.tar.gz"'  # pylint: disable=line-too-long
-            },
-        )
+        if isinstance(export.export_data.storage, storage_backends.ExportsFileStorage):
+            try:
+                return HttpResponse(
+                    export.export_data,
+                    content_type="application/gzip",
+                    headers={
+                        "Content-Disposition": 'attachment; filename="bookwyrm-account-export.tar.gz"'  # pylint: disable=line-too-long
+                    },
+                )
+            except FileNotFoundError:
+                raise Http404()
+        return HttpResponseServerError()
