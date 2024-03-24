@@ -146,7 +146,12 @@ class Export(View):
 # pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class ExportUser(View):
-    """Let users export user data to import into another Bookwyrm instance"""
+    """
+    Let users export user data to import into another Bookwyrm instance
+    This view creates signed URLs to pre-processed export files in
+    s3 storage on load (if they exist) and allows the user to create
+    a new file.
+    """
 
     def get(self, request):
         """Request tar file"""
@@ -166,8 +171,10 @@ class ExportUser(View):
 
                 # for s3 we download directly from s3, so we need a signed url
                 export["url"] = S3Boto3Storage.url(
-                    storage, f"/exports/{job.task_id}.tar.gz", expire=900
-                )  # temporarily downloadable file, expires after 5 minutes
+                    storage,
+                    f"/exports/{job.task_id}.tar.gz",
+                    expire=settings.S3_SIGNED_URL_EXPIRY,
+                )
 
                 # for s3 we create a new tar file in s3,
                 # so we need to check the size of _that_ file
@@ -207,7 +214,7 @@ class ExportUser(View):
         return TemplateResponse(request, "preferences/export-user.html", data)
 
     def post(self, request):
-        """Download the json file of a user's data"""
+        """Trigger processing of a new user export file"""
 
         job = BookwyrmExportJob.objects.create(user=request.user)
         job.start_job()
