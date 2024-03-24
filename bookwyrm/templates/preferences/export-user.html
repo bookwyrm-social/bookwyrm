@@ -126,27 +126,15 @@
                     <span>{{ export.size|get_file_size }}</span>
                 </td>
                 <td>
-                    {% if export.job.complete and not export.job.status == "stopped" and not export.job.status == "failed" %}
-                        {% if export.url%}
-                        <p>
-                            <a href="{{ export.url }}">
-                                <span class="icon icon-download" aria-hidden="true"></span>
-                                <span class="is-hidden-mobile">
-                                    {% trans "Download your export" %}
-                                </span>
-                            </a>
-                        </p>
-                        {% else %}
-                        <p>
-                            <a download="" href="/preferences/user-export/{{ export.job.task_id }}">
-                                <span class="icon icon-download" aria-hidden="true"></span>
-                                <span class="is-hidden-mobile">
-                                    {% trans "Download your export" %}
-                                </span>
-                            </a>
-                        </p>
-                        {% endif %}
-
+                    {% if export.url %}
+                    <a href="{{ export.url }}">
+                        <span class="icon icon-download" aria-hidden="true"></span>
+                        <span class="is-hidden-mobile">
+                            {% trans "Download your export" %}
+                        </span>
+                    </a>
+                    {% elif export.job.complete and not export.job.status == "stopped" and not export.job.status == "failed" %}
+                    {% trans "Archive is no longer available" %}
                     {% endif %}
                 </td>
             </tr>

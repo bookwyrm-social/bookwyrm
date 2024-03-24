@@ -10,6 +10,7 @@ from django.http import HttpResponse, HttpResponseServerError, Http404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views import View
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import redirect
@@ -166,16 +167,7 @@ class ExportUser(View):
             export = {"job": job}
 
             if settings.USE_S3:
-                # make custom_domain None so we can sign the url
-                # see https://github.com/jschneier/django-storages/issues/944
                 storage = S3Boto3Storage(querystring_auth=True, custom_domain=None)
-
-                # for s3 we download directly from s3, so we need a signed url
-                export["url"] = S3Boto3Storage.url(
-                    storage,
-                    f"/exports/{job.task_id}.tar.gz",
-                    expire=settings.S3_SIGNED_URL_EXPIRY,
-                )
 
                 # for s3 we create a new tar file in s3,
                 # so we need to check the size of _that_ file
@@ -193,6 +185,9 @@ class ExportUser(View):
                 except FileNotFoundError:
                     # file no longer exists
                     export["size"] = 0
+
+            if export["size"] > 0:
+                export["url"] = reverse("prefs-export-file", args=[job.task_id])
 
             exports.append(export)
 
@@ -235,6 +230,21 @@ class ExportArchive(View):
     def get(self, request, archive_id):
         """download user export file"""
         export = BookwyrmExportJob.objects.get(task_id=archive_id, user=request.user)
+
+        if isinstance(export.export_data.storage, storage_backends.ExportsS3Storage):
+            # make custom_domain None so we can sign the url
+            # see https://github.com/jschneier/django-storages/issues/944
+            storage = S3Boto3Storage(querystring_auth=True, custom_domain=None)
+            try:
+                url = S3Boto3Storage.url(
+                    storage,
+                    f"/exports/{export.task_id}.tar.gz",
+                    expire=settings.S3_SIGNED_URL_EXPIRY,
+                )
+            except Exception:
+                raise Http404()
+            return redirect(url)
+
         if isinstance(export.export_data.storage, storage_backends.ExportsFileStorage):
             try:
                 return HttpResponse(
@@ -246,4 +256,5 @@ class ExportArchive(View):
                 )
             except FileNotFoundError:
                 raise Http404()
+
         return HttpResponseServerError()
