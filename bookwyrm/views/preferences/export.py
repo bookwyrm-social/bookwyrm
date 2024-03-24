@@ -12,7 +12,6 @@ from django.utils import timezone
 from django.views import View
 from django.urls import reverse
 from django.utils.decorators import method_decorator
-from django.utils.translation import gettext_lazy as _
 from django.shortcuts import redirect
 
 from storages.backends.s3boto3 import S3Boto3Storage
