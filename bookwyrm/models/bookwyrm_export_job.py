@@ -37,14 +37,29 @@ class BookwyrmAwsSession(BotoSession):
 class BookwyrmExportJob(ParentJob):
     """entry for a specific request to export a bookwyrm user"""
 
-    if settings.USE_S3:
-        storage = storage_backends.ExportsS3Storage
-    else:
-        storage = storage_backends.ExportsFileStorage
+    # Only one of these fields is used, dependent on the configuration.
+    export_data_file = FileField(null=True, storage=storage_backends.ExportsFileStorage)
+    export_data_s3 = FileField(null=True, storage=storage_backends.ExportsS3Storage)
 
-    export_data = FileField(null=True, storage=storage)
     export_json = JSONField(null=True, encoder=DjangoJSONEncoder)
     json_completed = BooleanField(default=False)
+
+    @property
+    def export_data(self):
+        """returns the file field of the configured storage backend"""
+        # TODO: We could check whether a field for a different backend is
+        # filled, to support migrating to a different backend.
+        if settings.USE_S3:
+            return self.export_data_s3
+        return self.export_data_file
+
+    @export_data.setter
+    def export_data(self, value):
+        """sets the file field of the configured storage backend"""
+        if settings.USE_S3:
+            self.export_data_s3 = value
+        else:
+            self.export_data_file = value
 
     def start_job(self):
         """Start the job"""
@@ -284,7 +299,7 @@ def start_export_task(**kwargs):
         # prepare the initial file and base json
         job.export_data = ContentFile(b"", str(uuid4()))
         job.export_json = job.user.to_activity()
-        job.save(update_fields=["export_data", "export_json"])
+        job.save(update_fields=["export_data_file", "export_data_s3", "export_json"])
 
         # let's go
         json_export.delay(job_id=job.id, job_user=job.user.id, no_children=False)
