@@ -89,7 +89,6 @@ services:
     networks:
       - main
     command: celery -A celerywyrm worker -l info -Q high_priority,medium_priority,low_priority,streams,images,suggested_users,email,connectors,lists,inbox,imports,import_triggered,broadcast,misc
-
     logging: *default-logging
     volumes:
       - .:/app
@@ -120,6 +119,7 @@ services:
     env_file: .env
     volumes:
       - .:/app
+      - static_volume:/app/static
     networks:
       - main
     depends_on:
@@ -132,6 +132,8 @@ services:
     volumes:
       - /app/dev-tools/
       - .:/app
+    profiles:
+      - tools
 volumes:
   pgdata:
   backups:

@@ -152,8 +152,9 @@ class ActivitypubMixin:
         # find anyone who's tagged in a status, for example
         mentions = self.recipients if hasattr(self, "recipients") else []
 
-        # we always send activities to explicitly mentioned users' inboxes
-        recipients = [u.inbox for u in mentions or [] if not u.local]
+        # we always send activities to explicitly mentioned users (using shared inboxes
+        # where available to avoid duplicate submissions to a given instance)
+        recipients = {u.shared_inbox or u.inbox for u in mentions if not u.local}
 
         # unless it's a dm, all the followers should receive the activity
         if privacy != "direct":
@@ -173,18 +174,18 @@ class ActivitypubMixin:
             if user:
                 queryset = queryset.filter(following=user)
 
-            # ideally, we will send to shared inboxes for efficiency
-            shared_inboxes = (
-                queryset.filter(shared_inbox__isnull=False)
-                .values_list("shared_inbox", flat=True)
-                .distinct()
+            # as above, we prefer shared inboxes if available
+            recipients.update(
+                queryset.filter(shared_inbox__isnull=False).values_list(
+                    "shared_inbox", flat=True
+                )
             )
-            # but not everyone has a shared inbox
-            inboxes = queryset.filter(shared_inbox__isnull=True).values_list(
-                "inbox", flat=True
+            recipients.update(
+                queryset.filter(shared_inbox__isnull=True).values_list(
+                    "inbox", flat=True
+                )
             )
-            recipients += list(shared_inboxes) + list(inboxes)
-        return list(set(recipients))
+        return list(recipients)
 
     def to_activity_dataclass(self):
         """convert from a model to an activity"""

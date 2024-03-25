@@ -10,8 +10,11 @@ from django.dispatch import receiver
 from django.utils import timezone
 from model_utils import FieldTracker
 
+from bookwyrm.connectors.abstract_connector import get_data
 from bookwyrm.preview_images import generate_site_preview_image_task
 from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, STATIC_FULL_URL
+from bookwyrm.settings import RELEASE_API
+from bookwyrm.tasks import app, MISC
 from .base_model import BookWyrmModel, new_access_code
 from .user import User
 from .fields import get_absolute_url
@@ -45,7 +48,7 @@ class SiteSettings(SiteModel):
     default_theme = models.ForeignKey(
         "Theme", null=True, blank=True, on_delete=models.SET_NULL
     )
-    version = models.CharField(null=True, blank=True, max_length=10)
+    available_version = models.CharField(null=True, blank=True, max_length=10)
 
     # admin setup options
     install_mode = models.BooleanField(default=False)
@@ -245,3 +248,14 @@ def preview_image(instance, *args, **kwargs):
 
     if len(changed_fields) > 0:
         generate_site_preview_image_task.delay()
+
+
+@app.task(queue=MISC)
+def check_for_updates_task():
+    """See if git remote knows about a new version"""
+    site = SiteSettings.objects.get()
+    release = get_data(RELEASE_API, timeout=3)
+    available_version = release.get("tag_name", None)
+    if available_version:
+        site.available_version = available_version
+        site.save(update_fields=["available_version"])

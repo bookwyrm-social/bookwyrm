@@ -1,5 +1,5 @@
 """ actor serializer """
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict
 
 from .base_activity import ActivityObject
@@ -35,7 +35,7 @@ class Person(ActivityObject):
     endpoints: Dict = None
     name: str = None
     summary: str = None
-    icon: Image = field(default_factory=lambda: {})
+    icon: Image = None
     bookwyrmUser: bool = False
     manuallyApprovesFollowers: str = False
     discoverable: str = False

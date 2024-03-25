@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.11-bookworm
 WORKDIR /app/dev-tools
 
 ENV PATH="/app/dev-tools/node_modules/.bin:$PATH"

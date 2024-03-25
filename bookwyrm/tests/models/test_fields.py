@@ -438,7 +438,7 @@ class ModelFields(TestCase):
             )
         )
         self.assertEqual(output.name, "")
-        self.assertEqual(output.type, "Document")
+        self.assertEqual(output.type, "Image")
 
     @responses.activate
     def test_image_field_from_activity(self, *_):
