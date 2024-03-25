@@ -2,6 +2,7 @@
 
 import logging
 from uuid import uuid4
+from urllib.parse import urlparse, unquote
 
 from boto3.session import Session as BotoSession
 from s3_tar import S3Tar
@@ -97,6 +98,12 @@ class BookwyrmExportJob(ParentJob):
                 self.complete_job()
 
 
+def url2relativepath(url: str) -> str:
+    """turn an absolute URL into a relative filesystem path"""
+    parsed = urlparse(url)
+    return unquote(parsed.path[1:])
+
+
 class AddBookToUserExportJob(ChildJob):
     """append book metadata for each book in an export"""
 
@@ -112,9 +119,9 @@ class AddBookToUserExportJob(ChildJob):
             book["edition"] = self.edition.to_activity()
 
             if book["edition"].get("cover"):
-                # change the URL to be relative to the JSON file
-                filename = book["edition"]["cover"]["url"].rsplit("/", maxsplit=1)[-1]
-                book["edition"]["cover"]["url"] = f"covers/{filename}"
+                book["edition"]["cover"]["url"] = url2relativepath(
+                    book["edition"]["cover"]["url"]
+                )
 
             # authors
             book["authors"] = []
