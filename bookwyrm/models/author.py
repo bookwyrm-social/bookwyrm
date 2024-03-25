@@ -3,6 +3,7 @@ import re
 from typing import Tuple, Any
 
 from django.db import models
+from django.contrib.postgres.indexes import GinIndex
 import pgtrigger
 
 from bookwyrm import activitypub
@@ -71,11 +72,29 @@ class Author(BookDataModel):
     class Meta:
         """sets up indexes and triggers"""
 
+        # pylint: disable=line-too-long
+
+        indexes = (GinIndex(fields=["search_vector"]),)
         triggers = [
             pgtrigger.Trigger(
-                name="reset_search_vector_on_author_edit",
+                name="update_search_vector_on_author_edit",
+                when=pgtrigger.Before,
+                operation=pgtrigger.Insert
+                | pgtrigger.UpdateOf("name", "aliases", "search_vector"),
+                func=format_trigger(
+                    """new.search_vector :=
+                    -- author name, with priority A
+                    setweight(to_tsvector('simple', new.name), 'A') ||
+                    -- author aliases, with priority B
+                    setweight(to_tsvector('simple', coalesce(array_to_string(new.aliases, ' '), '')), 'B');
+                    RETURN new;
+                """
+                ),
+            ),
+            pgtrigger.Trigger(
+                name="reset_book_search_vector_on_author_edit",
                 when=pgtrigger.After,
-                operation=pgtrigger.UpdateOf("name"),
+                operation=pgtrigger.UpdateOf("name", "aliases"),
                 func=format_trigger(
                     """WITH updated_books AS (
                          SELECT book_id
@@ -89,7 +108,7 @@ class Author(BookDataModel):
                     RETURN new;
                 """
                 ),
-            )
+            ),
         ]
 
     activity_serializer = activitypub.Author
