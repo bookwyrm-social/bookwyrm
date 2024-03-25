@@ -236,7 +236,7 @@ class AddFileToTar(ChildJob):
 
             if settings.USE_S3:
                 # Connection for writing temporary files
-                s3 = S3Boto3Storage()
+                storage = S3Boto3Storage()
 
                 # Handle for creating the final archive
                 s3_archive_path = f"exports/{export_task_id}.tar.gz"
@@ -249,7 +249,7 @@ class AddFileToTar(ChildJob):
                 # Save JSON file to a temporary location
                 export_json_tmp_file = f"exports/{export_task_id}/archive.json"
                 S3Boto3Storage.save(
-                    s3,
+                    storage,
                     export_json_tmp_file,
                     ContentFile(export_json_bytes),
                 )
@@ -269,12 +269,12 @@ class AddFileToTar(ChildJob):
                 export_job.save()
 
                 # Delete temporary files
-                S3Boto3Storage.delete(s3, export_json_tmp_file)
+                S3Boto3Storage.delete(storage, export_json_tmp_file)
 
             else:
                 export_job.export_data_file = f"{export_task_id}.tar.gz"
-                with export_job.export_data_file.open("wb") as f:
-                    with BookwyrmTarFile.open(mode="w:gz", fileobj=f) as tar:
+                with export_job.export_data_file.open("wb") as tar_file:
+                    with BookwyrmTarFile.open(mode="w:gz", fileobj=tar_file) as tar:
                         # save json file
                         tar.write_bytes(export_json_bytes)
 
