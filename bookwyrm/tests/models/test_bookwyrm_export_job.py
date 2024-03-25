@@ -1,7 +1,13 @@
 """test bookwyrm user export functions"""
 import datetime
+from io import BytesIO
+import pathlib
+
 from unittest.mock import patch
 
+from PIL import Image
+
+from django.core.files.base import ContentFile
 from django.utils import timezone
 from django.test import TestCase
 
@@ -86,6 +92,15 @@ class BookwyrmExportJob(TestCase):
                 title="Example Edition", parent_work=self.work
             )
 
+            # edition cover
+            image_file = pathlib.Path(__file__).parent.joinpath(
+                "../../static/images/default_avi.jpg"
+            )
+            image = Image.open(image_file)
+            output = BytesIO()
+            image.save(output, format=image.format)
+            self.edition.cover.save("tèst.jpg", ContentFile(output.getvalue()))
+
             self.edition.authors.add(self.author)
 
             # readthrough
@@ -160,6 +175,7 @@ class BookwyrmExportJob(TestCase):
         self.assertIsNotNone(self.job.export_json["books"])
         self.assertEqual(len(self.job.export_json["books"]), 1)
         book = self.job.export_json["books"][0]
+
         self.assertEqual(book["work"]["id"], self.work.remote_id)
         self.assertEqual(len(book["authors"]), 1)
         self.assertEqual(len(book["shelves"]), 1)
@@ -168,6 +184,11 @@ class BookwyrmExportJob(TestCase):
         self.assertEqual(len(book["reviews"]), 1)
         self.assertEqual(len(book["quotations"]), 1)
         self.assertEqual(len(book["readthroughs"]), 1)
+
+        self.assertEqual(book["edition"]["id"], self.edition.remote_id)
+        self.assertEqual(
+            book["edition"]["cover"]["url"], f"images/{self.edition.cover.name}"
+        )
 
     def test_start_export_task(self):
         """test saved list task saves initial json and data"""
