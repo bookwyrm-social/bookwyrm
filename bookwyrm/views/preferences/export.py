@@ -165,28 +165,16 @@ class ExportUser(View):
         for job in jobs:
             export = {"job": job}
 
-            if settings.USE_S3:
-                storage = S3Boto3Storage(querystring_auth=True, custom_domain=None)
-
-                # for s3 we create a new tar file in s3,
-                # so we need to check the size of _that_ file
+            if job.export_data:
                 try:
-                    export["size"] = S3Boto3Storage.size(
-                        storage, f"exports/{job.task_id}.tar.gz"
-                    )
-                except Exception:  # pylint: disable=broad-except
-                    export["size"] = 0
-
-            else:
-                # for local storage export_data is the tar file
-                try:
-                    export["size"] = job.export_data.size if job.export_data else 0
+                    export["size"] = job.export_data.size
+                    export["url"] = reverse("prefs-export-file", args=[job.task_id])
                 except FileNotFoundError:
-                    # file no longer exists
-                    export["size"] = 0
-
-            if export["size"] > 0:
-                export["url"] = reverse("prefs-export-file", args=[job.task_id])
+                    # file no longer exists locally
+                    export["unavailable"] = True
+                except Exception:  # pylint: disable=broad-except
+                    # file no longer exists on storage backend
+                    export["unavailable"] = True
 
             exports.append(export)
 

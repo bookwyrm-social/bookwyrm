@@ -123,7 +123,9 @@
                     </span>
                 </td>
                 <td>
+                    {% if export.size %}
                     <span>{{ export.size|get_file_size }}</span>
+                    {% endif %}
                 </td>
                 <td>
                     {% if export.url %}
@@ -133,7 +135,7 @@
                             {% trans "Download your export" %}
                         </span>
                     </a>
-                    {% elif export.job.complete and not export.job.status == "stopped" and not export.job.status == "failed" %}
+                    {% elif export.unavailable %}
                     {% trans "Archive is no longer available" %}
                     {% endif %}
                 </td>
