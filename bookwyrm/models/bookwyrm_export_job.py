@@ -1,7 +1,6 @@
 """Export user account to tar.gz file for import into another Bookwyrm instance"""
 
 import logging
-from uuid import uuid4
 from urllib.parse import urlparse, unquote
 
 from boto3.session import Session as BotoSession
@@ -225,64 +224,68 @@ class AddFileToTar(ChildJob):
         # Using a series of jobs in a loop would be better
 
         try:
-            export_data = self.parent_export_job.export_data
-            export_json = self.parent_export_job.export_json
-            json_data = DjangoJSONEncoder().encode(export_json)
-            user = self.parent_export_job.user
+            export_job = self.parent_export_job
+            export_task_id = str(export_job.task_id)
+
+            export_json_bytes = (
+                DjangoJSONEncoder().encode(export_job.export_json).encode("utf-8")
+            )
+
+            user = export_job.user
             editions = get_books_for_user(user)
 
-            # filenames for later
-            export_data_original = str(export_data)
-            filename = str(self.parent_export_job.task_id)
-
             if settings.USE_S3:
-                s3_job = S3Tar(
+                # Connection for writing temporary files
+                s3 = S3Boto3Storage()
+
+                # Handle for creating the final archive
+                s3_archive_path = f"exports/{export_task_id}.tar.gz"
+                s3_tar = S3Tar(
                     settings.AWS_STORAGE_BUCKET_NAME,
-                    f"exports/{filename}.tar.gz",
+                    s3_archive_path,
                     session=BookwyrmAwsSession(),
                 )
 
-                # save json file
-                export_data.save(
-                    f"archive_{filename}.json", ContentFile(json_data.encode("utf-8"))
+                # Save JSON file to a temporary location
+                export_json_tmp_file = f"exports/{export_task_id}/archive.json"
+                S3Boto3Storage.save(
+                    s3,
+                    export_json_tmp_file,
+                    ContentFile(export_json_bytes),
                 )
-                s3_job.add_file(f"exports/{export_data.name}")
+                s3_tar.add_file(export_json_tmp_file)
 
-                # save image file
-                file_type = user.avatar.name.rsplit(".", maxsplit=1)[-1]
-                export_data.save(f"avatar_{filename}.{file_type}", user.avatar)
-                s3_job.add_file(f"exports/{export_data.name}")
+                # Add avatar image if present
+                if user.avatar:
+                    s3_tar.add_file(f"images/{user.avatar.name}")
 
-                for book in editions:
-                    if getattr(book, "cover", False):
-                        cover_name = f"images/{book.cover.name}"
-                        s3_job.add_file(cover_name, folder="covers")
+                for edition in editions:
+                    if edition.cover:
+                        s3_tar.add_file(f"images/{edition.cover.name}")
 
-                s3_job.tar()
+                # Create archive and store file name
+                s3_tar.tar()
+                export_job.export_data_s3 = s3_archive_path
+                export_job.save()
 
-                # delete child files - we don't need them any more
-                s3_storage = S3Boto3Storage(querystring_auth=True, custom_domain=None)
-                S3Boto3Storage.delete(s3_storage, f"exports/{export_data_original}")
-                S3Boto3Storage.delete(s3_storage, f"exports/archive_{filename}.json")
-                S3Boto3Storage.delete(
-                    s3_storage, f"exports/avatar_{filename}.{file_type}"
-                )
+                # Delete temporary files
+                S3Boto3Storage.delete(s3, export_json_tmp_file)
 
             else:
-                export_data.open("wb")
-                with BookwyrmTarFile.open(mode="w:gz", fileobj=export_data) as tar:
+                export_job.export_data_file = f"{export_task_id}.tar.gz"
+                with export_job.export_data_file.open("wb") as f:
+                    with BookwyrmTarFile.open(mode="w:gz", fileobj=f) as tar:
+                        # save json file
+                        tar.write_bytes(export_json_bytes)
 
-                    tar.write_bytes(json_data.encode("utf-8"))
+                        # Add avatar image if present
+                        if user.avatar:
+                            tar.add_image(user.avatar, directory="images/")
 
-                    # Add avatar image if present
-                    if getattr(user, "avatar", False):
-                        tar.add_image(user.avatar, filename="avatar")
-
-                    for book in editions:
-                        if getattr(book, "cover", False):
-                            tar.add_image(book.cover)
-
-                export_data.close()
+                        for edition in editions:
+                            if edition.cover:
+                                tar.add_image(edition.cover, directory="images/")
+                export_job.save()
 
             self.complete_job()
 
@@ -304,9 +307,8 @@ def start_export_task(**kwargs):
     try:
 
         # prepare the initial file and base json
-        job.export_data = ContentFile(b"", str(uuid4()))
         job.export_json = job.user.to_activity()
-        job.save(update_fields=["export_data_file", "export_data_s3", "export_json"])
+        job.save(update_fields=["export_json"])
 
         # let's go
         json_export.delay(job_id=job.id, job_user=job.user.id, no_children=False)
@@ -374,10 +376,9 @@ def json_export(**kwargs):
         if not job.export_json.get("icon"):
             job.export_json["icon"] = {}
         else:
-            # change the URL to be relative to the JSON file
-            file_type = job.export_json["icon"]["url"].rsplit(".", maxsplit=1)[-1]
-            filename = f"avatar.{file_type}"
-            job.export_json["icon"]["url"] = filename
+            job.export_json["icon"]["url"] = url2relativepath(
+                job.export_json["icon"]["url"]
+            )
 
         # Additional settings - can't be serialized as AP
         vals = [
