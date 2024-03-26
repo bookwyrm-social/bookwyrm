@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-03-26 00:30\n"
+"PO-Revision-Date: 2024-03-26 06:41\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -366,29 +366,29 @@ msgstr "Elemento eliminado"
 #: bookwyrm/models/status.py:186
 #, python-format
 msgid "%(display_name)s's status"
-msgstr ""
+msgstr "Publicación de %(display_name)s"
 
 #: bookwyrm/models/status.py:361
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
-msgstr ""
+msgstr "Comentario de %(display_name)s en %(book_title)s"
 
 #: bookwyrm/models/status.py:412
 #, python-format
 msgid "%(display_name)s's quote from %(book_title)s"
-msgstr ""
+msgstr "Cita de %(display_name)s en %(book_title)s"
 
 #: bookwyrm/models/status.py:448
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
-msgstr ""
+msgstr "Recensión de %(display_name)s en %(book_title)s"
 
 #: bookwyrm/models/status.py:479
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%(display_name)s valorou %(book_title)s: %(display_rating). 1f estrelas"
 
 #: bookwyrm/models/user.py:33 bookwyrm/templates/book/book.html:312
 msgid "Reviews"
@@ -460,7 +460,7 @@ msgstr "Italiano (Italiano)"
 
 #: bookwyrm/settings.py:325
 msgid "한국어 (Korean)"
-msgstr ""
+msgstr "한국어 (Coreano)"
 
 #: bookwyrm/settings.py:326
 msgid "Suomi (Finnish)"
@@ -549,7 +549,7 @@ msgstr "O ficheiro que estás a subir é demasiado grande."
 
 #: bookwyrm/templates/413.html:11
 msgid "You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting."
-msgstr ""
+msgstr "Podes intentalo usando un ficheiro máis pequeno, ou pedir á administración do teu BookWyrm que aumente o axuste <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code>."
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -924,7 +924,7 @@ msgstr "Ligazón a Wikipedia:"
 
 #: bookwyrm/templates/author/edit_author.html:58
 msgid "Wikidata:"
-msgstr ""
+msgstr "Wikidata:"
 
 #: bookwyrm/templates/author/edit_author.html:62
 msgid "Website:"
@@ -3433,7 +3433,7 @@ msgstr "Busca en %(site_name)s"
 
 #: bookwyrm/templates/layout.html:39
 msgid "Search for a book, author, user, or list"
-msgstr ""
+msgstr "Buscar por título, autoría, usuarias ou listas"
 
 #: bookwyrm/templates/layout.html:54 bookwyrm/templates/layout.html:55
 msgid "Scan Barcode"
@@ -4461,11 +4461,11 @@ msgstr "Podes crear aquí o ficheiro de exportación. Con este ficheiro podes mi
 
 #: bookwyrm/templates/preferences/export-user.html:18
 msgid "Your file will include:"
-msgstr ""
+msgstr "O teu ficheiro vai incluír:"
 
 #: bookwyrm/templates/preferences/export-user.html:21
 msgid "Most user settings"
-msgstr ""
+msgstr "A maioría dos axustes de usuaria"
 
 #: bookwyrm/templates/preferences/export-user.html:26
 #: bookwyrm/templates/settings/dashboard/dashboard.html:27
@@ -4474,27 +4474,27 @@ msgstr "Estados"
 
 #: bookwyrm/templates/preferences/export-user.html:27
 msgid "Your own lists and saved lists"
-msgstr ""
+msgstr "As túas listas e as listas gardadas"
 
 #: bookwyrm/templates/preferences/export-user.html:28
 msgid "Which users you follow and block"
-msgstr ""
+msgstr "As usuarias que segues e bloqueas"
 
 #: bookwyrm/templates/preferences/export-user.html:32
 msgid "Your file will not include:"
-msgstr ""
+msgstr "O ficheiro non incluirá:"
 
 #: bookwyrm/templates/preferences/export-user.html:34
 msgid "Direct messages"
-msgstr ""
+msgstr "As mensaxes directas"
 
 #: bookwyrm/templates/preferences/export-user.html:35
 msgid "Replies to your statuses"
-msgstr ""
+msgstr "As respostas ás túas publicacións"
 
 #: bookwyrm/templates/preferences/export-user.html:37
 msgid "Favorites"
-msgstr ""
+msgstr "Favoritas"
 
 #: bookwyrm/templates/preferences/export-user.html:41
 msgid "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported."
@@ -4506,12 +4506,12 @@ msgstr "Se desexas migrar todos os estados (comentarios, recensións ou citas) t
 
 #: bookwyrm/templates/preferences/export-user.html:49
 msgid "New user exports are currently disabled."
-msgstr ""
+msgstr "Actualmente están desactivadas as exportacións."
 
 #: bookwyrm/templates/preferences/export-user.html:53
 #, python-format
 msgid "User exports settings can be changed from <a href=\"%(url)s\">the Imports page</a> in the Admin dashboard."
-msgstr ""
+msgstr "Os axustes de exportación de usuarias poden cambiarse na <a href=\"%(url)s\">páxina de Importacións</a> no taboleiro de Administración."
 
 #: bookwyrm/templates/preferences/export-user.html:60
 #, python-format
@@ -5170,11 +5170,11 @@ msgstr "Total"
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:12
 msgid "Would you like to automatically check for new BookWyrm releases? (recommended)"
-msgstr ""
+msgstr "Queres comprobar automáticamente se hai novas versións de BookWyrm? (recomendado)"
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:20
 msgid "Schedule checks"
-msgstr ""
+msgstr "Programar comprobación"
 
 #: bookwyrm/templates/settings/dashboard/warnings/domain_review.html:9
 #, python-format
@@ -5527,19 +5527,19 @@ msgstr "Establecer"
 
 #: bookwyrm/templates/settings/imports/imports.html:98
 msgid "Disable starting new user exports"
-msgstr ""
+msgstr "Desactivar realizar novas exportacións de usuarias"
 
 #: bookwyrm/templates/settings/imports/imports.html:109
 msgid "This is only intended to be used when things have gone very wrong with exports and you need to pause the feature while addressing issues."
-msgstr ""
+msgstr "Isto pretende ser útil cando algo funciona realmente mal coas exportacións e precisas deter esta ferramenta para intentar resolver o problema."
 
 #: bookwyrm/templates/settings/imports/imports.html:110
 msgid "While exports are disabled, users will not be allowed to start new user exports, but existing exports will not be affected."
-msgstr ""
+msgstr "Cando están desactivadas as exportacións as usuarias non poderán realizar novas exportacións, pero as existentes non se verán afectadas."
 
 #: bookwyrm/templates/settings/imports/imports.html:115
 msgid "Disable user exports"
-msgstr ""
+msgstr "Desactivar exportacións"
 
 #: bookwyrm/templates/settings/imports/imports.html:123
 msgid "Limit how often users can import and export"
@@ -5551,7 +5551,7 @@ msgstr "Algunhas usuarias poderían intentar importar ou exportar usuarias con m
 
 #: bookwyrm/templates/settings/imports/imports.html:138
 msgid "Limit how often users can import and export user data"
-msgstr ""
+msgstr "Limitar a frecuencia coa que as usuarias poden importar ou exportar datos de usuaria"
 
 #: bookwyrm/templates/settings/imports/imports.html:140
 msgid "hours"
@@ -5563,15 +5563,15 @@ msgstr "Cambiar límite"
 
 #: bookwyrm/templates/settings/imports/imports.html:159
 msgid "Users are currently unable to start new user exports. This is the default setting."
-msgstr ""
+msgstr "Actualmente as usuarias non pode iniciar novas exportacións. Este é o valor por defecto."
 
 #: bookwyrm/templates/settings/imports/imports.html:161
 msgid "It is not currently possible to provide user exports when using s3 storage. The BookWyrm development team are working on a fix for this."
-msgstr ""
+msgstr "Actualmente non é posible proporcionar exportacións de usuarias ao usar almacenaxe s3. O equipo de desenvolvemento de BookWyrm está intentando arranxar isto."
 
 #: bookwyrm/templates/settings/imports/imports.html:167
 msgid "Enable user exports"
-msgstr ""
+msgstr "Activar exportacións das usuarias"
 
 #: bookwyrm/templates/settings/imports/imports.html:174
 msgid "Book Imports"
@@ -5790,7 +5790,7 @@ msgstr "Estado Celery"
 #: bookwyrm/templates/settings/schedules.html:7
 #: bookwyrm/templates/settings/schedules.html:11
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Programar tarefas"
 
 #: bookwyrm/templates/settings/layout.html:99
 msgid "Instance Settings"
@@ -6020,52 +6020,52 @@ msgstr "Non hai denuncias."
 #: bookwyrm/templates/settings/schedules.html:17
 #: bookwyrm/templates/settings/schedules.html:101
 msgid "Tasks"
-msgstr ""
+msgstr "Tarefas"
 
 #: bookwyrm/templates/settings/schedules.html:22
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #: bookwyrm/templates/settings/schedules.html:25
 msgid "Celery task"
-msgstr ""
+msgstr "Tarefa Celery"
 
 #: bookwyrm/templates/settings/schedules.html:28
 msgid "Date changed"
-msgstr ""
+msgstr "Data cambiada"
 
 #: bookwyrm/templates/settings/schedules.html:31
 msgid "Last run at"
-msgstr ""
+msgstr "Última execución"
 
 #: bookwyrm/templates/settings/schedules.html:34
 #: bookwyrm/templates/settings/schedules.html:98
 msgid "Schedule"
-msgstr ""
+msgstr "Programar"
 
 #: bookwyrm/templates/settings/schedules.html:37
 msgid "Schedule ID"
-msgstr ""
+msgstr "ID da promación"
 
 #: bookwyrm/templates/settings/schedules.html:40
 msgid "Enabled"
-msgstr ""
+msgstr "Activada"
 
 #: bookwyrm/templates/settings/schedules.html:73
 msgid "Un-schedule"
-msgstr ""
+msgstr "Desbotar"
 
 #: bookwyrm/templates/settings/schedules.html:81
 msgid "No scheduled tasks"
-msgstr ""
+msgstr "Sen tarefas programadas"
 
 #: bookwyrm/templates/settings/schedules.html:90
 msgid "Schedules"
-msgstr ""
+msgstr "Programacións"
 
 #: bookwyrm/templates/settings/schedules.html:119
 msgid "No schedules found"
-msgstr ""
+msgstr "Non hai programacións"
 
 #: bookwyrm/templates/settings/site.html:10
 #: bookwyrm/templates/settings/site.html:43
@@ -6529,7 +6529,7 @@ msgstr "Ata"
 #: bookwyrm/templates/shelf/shelf.html:216
 #, python-format
 msgid "We couldn't find any books that matched %(shelves_filter_query)s"
-msgstr ""
+msgstr "Non atopamos ningún libro que concorde con %(shelves_filter_query)s"
 
 #: bookwyrm/templates/shelf/shelf.html:220
 msgid "This shelf is empty."
@@ -6537,11 +6537,11 @@ msgstr "Este estante esta baleiro."
 
 #: bookwyrm/templates/shelf/shelves_filter_field.html:6
 msgid "Filter by keyword"
-msgstr ""
+msgstr "Filtrar por palabra"
 
 #: bookwyrm/templates/shelf/shelves_filter_field.html:7
 msgid "Enter text here"
-msgstr ""
+msgstr "Escribe aquí o texto"
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:16
 msgid "Invite"
@@ -7372,7 +7372,7 @@ msgstr "%(title)s: %(subtitle)s"
 
 #: bookwyrm/templatetags/utilities.py:129
 msgid "a new user account"
-msgstr ""
+msgstr "unha nova conta de usuaria"
 
 #: bookwyrm/views/rss_feed.py:35
 #, python-brace-format
