@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-03-26 00:29\n"
+"PO-Revision-Date: 2024-03-26 11:34\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -366,12 +366,12 @@ msgstr "Item verwijderd"
 #: bookwyrm/models/status.py:186
 #, python-format
 msgid "%(display_name)s's status"
-msgstr ""
+msgstr "Status van %(display_name)s"
 
 #: bookwyrm/models/status.py:361
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
-msgstr ""
+msgstr "%(display_name)s's reactie op %(book_title)s"
 
 #: bookwyrm/models/status.py:412
 #, python-format
@@ -924,7 +924,7 @@ msgstr "Wikipedia koppeling:"
 
 #: bookwyrm/templates/author/edit_author.html:58
 msgid "Wikidata:"
-msgstr ""
+msgstr "Wikidata:"
 
 #: bookwyrm/templates/author/edit_author.html:62
 msgid "Website:"
@@ -3433,7 +3433,7 @@ msgstr "%(site_name)s zoeken"
 
 #: bookwyrm/templates/layout.html:39
 msgid "Search for a book, author, user, or list"
-msgstr ""
+msgstr "Zoeken naar een boek, auteur, gebruiker of lijst"
 
 #: bookwyrm/templates/layout.html:54 bookwyrm/templates/layout.html:55
 msgid "Scan Barcode"
@@ -4465,7 +4465,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export-user.html:21
 msgid "Most user settings"
-msgstr ""
+msgstr "Meeste gebruikersinstellingen"
 
 #: bookwyrm/templates/preferences/export-user.html:26
 #: bookwyrm/templates/settings/dashboard/dashboard.html:27
@@ -4474,7 +4474,7 @@ msgstr "Statussen"
 
 #: bookwyrm/templates/preferences/export-user.html:27
 msgid "Your own lists and saved lists"
-msgstr ""
+msgstr "Uw eigen lijsten en opgeslagen lijsten"
 
 #: bookwyrm/templates/preferences/export-user.html:28
 msgid "Which users you follow and block"
@@ -4482,19 +4482,19 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export-user.html:32
 msgid "Your file will not include:"
-msgstr ""
+msgstr "Uw bestand bevat niet:"
 
 #: bookwyrm/templates/preferences/export-user.html:34
 msgid "Direct messages"
-msgstr ""
+msgstr "Privéberichten"
 
 #: bookwyrm/templates/preferences/export-user.html:35
 msgid "Replies to your statuses"
-msgstr ""
+msgstr "Antwoorden op uw statussen"
 
 #: bookwyrm/templates/preferences/export-user.html:37
 msgid "Favorites"
-msgstr ""
+msgstr "Favorieten"
 
 #: bookwyrm/templates/preferences/export-user.html:41
 msgid "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported."
@@ -5790,7 +5790,7 @@ msgstr "Celery status"
 #: bookwyrm/templates/settings/schedules.html:7
 #: bookwyrm/templates/settings/schedules.html:11
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Geplande taken"
 
 #: bookwyrm/templates/settings/layout.html:99
 msgid "Instance Settings"
@@ -6020,11 +6020,11 @@ msgstr "Geen meldingen gevonden."
 #: bookwyrm/templates/settings/schedules.html:17
 #: bookwyrm/templates/settings/schedules.html:101
 msgid "Tasks"
-msgstr ""
+msgstr "Taken"
 
 #: bookwyrm/templates/settings/schedules.html:22
 msgid "Name"
-msgstr ""
+msgstr "Naam"
 
 #: bookwyrm/templates/settings/schedules.html:25
 msgid "Celery task"
@@ -6032,16 +6032,16 @@ msgstr ""
 
 #: bookwyrm/templates/settings/schedules.html:28
 msgid "Date changed"
-msgstr ""
+msgstr "Datum gewijzigd"
 
 #: bookwyrm/templates/settings/schedules.html:31
 msgid "Last run at"
-msgstr ""
+msgstr "Laatst uitgevoerd op"
 
 #: bookwyrm/templates/settings/schedules.html:34
 #: bookwyrm/templates/settings/schedules.html:98
 msgid "Schedule"
-msgstr ""
+msgstr "Schema"
 
 #: bookwyrm/templates/settings/schedules.html:37
 msgid "Schedule ID"
@@ -6049,23 +6049,23 @@ msgstr ""
 
 #: bookwyrm/templates/settings/schedules.html:40
 msgid "Enabled"
-msgstr ""
+msgstr "Ingeschakeld"
 
 #: bookwyrm/templates/settings/schedules.html:73
 msgid "Un-schedule"
-msgstr ""
+msgstr "Annuleren"
 
 #: bookwyrm/templates/settings/schedules.html:81
 msgid "No scheduled tasks"
-msgstr ""
+msgstr "Geen ingeplande taken"
 
 #: bookwyrm/templates/settings/schedules.html:90
 msgid "Schedules"
-msgstr ""
+msgstr "Schema's"
 
 #: bookwyrm/templates/settings/schedules.html:119
 msgid "No schedules found"
-msgstr ""
+msgstr "Geen schema's gevonden"
 
 #: bookwyrm/templates/settings/site.html:10
 #: bookwyrm/templates/settings/site.html:43
@@ -6529,7 +6529,7 @@ msgstr "Tot"
 #: bookwyrm/templates/shelf/shelf.html:216
 #, python-format
 msgid "We couldn't find any books that matched %(shelves_filter_query)s"
-msgstr ""
+msgstr "We konden geen boeken vinden die overeenkomen met %(shelves_filter_query)s"
 
 #: bookwyrm/templates/shelf/shelf.html:220
 msgid "This shelf is empty."
@@ -6537,11 +6537,11 @@ msgstr "Deze boekenplank is leeg."
 
 #: bookwyrm/templates/shelf/shelves_filter_field.html:6
 msgid "Filter by keyword"
-msgstr ""
+msgstr "Filteren op trefwoord"
 
 #: bookwyrm/templates/shelf/shelves_filter_field.html:7
 msgid "Enter text here"
-msgstr ""
+msgstr "Voer hier de tekst in"
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:16
 msgid "Invite"
@@ -7372,7 +7372,7 @@ msgstr "%(title)s: %(subtitle)s"
 
 #: bookwyrm/templatetags/utilities.py:129
 msgid "a new user account"
-msgstr ""
+msgstr "een nieuwe gebruikersaccount"
 
 #: bookwyrm/views/rss_feed.py:35
 #, python-brace-format
