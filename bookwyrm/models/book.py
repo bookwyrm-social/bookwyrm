@@ -246,24 +246,34 @@ class Book(BookDataModel):
                 operation=pgtrigger.Insert
                 | pgtrigger.UpdateOf("title", "subtitle", "series", "search_vector"),
                 func=format_trigger(
-                    """new.search_vector :=
-                         -- title, with priority A (parse in English, default to simple if empty)
-                         setweight(COALESCE(nullif(
-                                       to_tsvector('english', new.title), ''),
-                                       to_tsvector('simple', new.title)), 'A') ||
-                         -- subtitle, with priority B (always in English?)
-                         setweight(to_tsvector('english', COALESCE(new.subtitle, '')), 'B') ||
-                         -- list of authors, with priority C (TODO: add aliases?, bookwyrm-social#3063)
-                         (SELECT setweight(to_tsvector('simple', COALESCE(array_to_string(ARRAY_AGG(bookwyrm_author.name), ' '), '')), 'C')
-                           FROM bookwyrm_author
-                           LEFT JOIN bookwyrm_book_authors
-                               ON bookwyrm_author.id = bookwyrm_book_authors.author_id
-                           WHERE bookwyrm_book_authors.book_id = new.id
-                         ) ||
-                         --- last: series name, with lowest priority
-                         setweight(to_tsvector('english', COALESCE(new.series, '')), 'D');
-                       RETURN new;
-                """
+                    """
+                    WITH author_names AS (
+                        SELECT array_to_string(bookwyrm_author.name || bookwyrm_author.aliases, ' ') AS name_and_aliases
+                            FROM bookwyrm_author
+                        LEFT JOIN bookwyrm_book_authors
+                            ON bookwyrm_author.id = bookwyrm_book_authors.author_id
+                        WHERE bookwyrm_book_authors.book_id = new.id
+                    )
+                    SELECT
+                        -- title, with priority A (parse in English, default to simple if empty)
+                        setweight(COALESCE(nullif(
+                            to_tsvector('english', new.title), ''),
+                            to_tsvector('simple', new.title)), 'A') ||
+
+                        -- subtitle, with priority B (always in English?)
+                        setweight(to_tsvector('english', COALESCE(new.subtitle, '')), 'B') ||
+
+                        -- list of authors names and aliases (with priority C)
+                        (SELECT setweight(to_tsvector('simple', COALESCE(array_to_string(ARRAY_AGG(name_and_aliases), ' '), '')), 'C')
+                            FROM author_names
+                        ) ||
+
+                        --- last: series name, with lowest priority
+                        setweight(to_tsvector('english', COALESCE(new.series, '')), 'D')
+
+                        INTO new.search_vector;
+                    RETURN new;
+                    """
                 ),
             )
         ]
