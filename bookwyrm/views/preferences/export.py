@@ -148,21 +148,35 @@ class Export(View):
 @method_decorator(login_required, name="dispatch")
 class ExportUser(View):
     """
-    Let users export user data to import into another Bookwyrm instance
-    This view creates signed URLs to pre-processed export files in
-    s3 storage on load (if they exist) and allows the user to create
-    a new file.
+    Let users request and download an archive of user data to import into
+    another Bookwyrm instance.
     """
+
+    user_jobs = None
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+
+        self.user_jobs = BookwyrmExportJob.objects.filter(user=request.user).order_by(
+            "-created_date"
+        )
+
+    def new_export_blocked_until(self):
+        """whether the user is allowed to request a new export"""
+        last_job = self.user_jobs.first()
+        if not last_job:
+            return None
+        site = models.SiteSettings.objects.get()
+        blocked_until = last_job.created_date + timedelta(
+            hours=site.user_import_time_limit
+        )
+        return blocked_until if blocked_until > timezone.now() else None
 
     def get(self, request):
         """Request tar file"""
 
-        jobs = BookwyrmExportJob.objects.filter(user=request.user).order_by(
-            "-created_date"
-        )
-
         exports = []
-        for job in jobs:
+        for job in self.user_jobs:
             export = {"job": job}
 
             if job.export_data:
@@ -178,16 +192,7 @@ class ExportUser(View):
 
             exports.append(export)
 
-        site = models.SiteSettings.objects.get()
-        hours = site.user_import_time_limit
-        allowed = (
-            jobs.first().created_date < timezone.now() - timedelta(hours=hours)
-            if jobs.first()
-            else True
-        )
-        next_available = (
-            jobs.first().created_date + timedelta(hours=hours) if not allowed else False
-        )
+        next_available = self.new_export_blocked_until()
         paginated = Paginator(exports, settings.PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
         data = {
@@ -202,6 +207,8 @@ class ExportUser(View):
 
     def post(self, request):
         """Trigger processing of a new user export file"""
+        if self.new_export_blocked_until() is not None:
+            return HttpResponse(status=429)  # Too Many Requests
 
         job = BookwyrmExportJob.objects.create(user=request.user)
         job.start_job()
