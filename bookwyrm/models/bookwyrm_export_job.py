@@ -12,8 +12,9 @@ from django.db.models import Q
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
 from django.utils import timezone
+from django.utils.module_loading import import_string
 
-from bookwyrm import settings, storage_backends
+from bookwyrm import settings
 
 from bookwyrm.models import AnnualGoal, ReadThrough, ShelfBook, List, ListItem
 from bookwyrm.models import Review, Comment, Quotation
@@ -34,32 +35,18 @@ class BookwyrmAwsSession(BotoSession):
         return super().client("s3", *args, **kwargs)
 
 
+def select_exports_storage():
+    """callable to allow for dependency on runtime configuration"""
+    cls = import_string(settings.EXPORTS_STORAGE)
+    return cls()
+
+
 class BookwyrmExportJob(ParentJob):
     """entry for a specific request to export a bookwyrm user"""
 
-    # Only one of these fields is used, dependent on the configuration.
-    export_data_file = FileField(null=True, storage=storage_backends.ExportsFileStorage)
-    export_data_s3 = FileField(null=True, storage=storage_backends.ExportsS3Storage)
-
+    export_data = FileField(null=True, storage=select_exports_storage)
     export_json = JSONField(null=True, encoder=DjangoJSONEncoder)
     json_completed = BooleanField(default=False)
-
-    @property
-    def export_data(self):
-        """returns the file field of the configured storage backend"""
-        # TODO: We could check whether a field for a different backend is
-        # filled, to support migrating to a different backend.
-        if settings.USE_S3:
-            return self.export_data_s3
-        return self.export_data_file
-
-    @export_data.setter
-    def export_data(self, value):
-        """sets the file field of the configured storage backend"""
-        if settings.USE_S3:
-            self.export_data_s3 = value
-        else:
-            self.export_data_file = value
 
     def start_job(self):
         """Start the job"""
@@ -265,15 +252,15 @@ class AddFileToTar(ChildJob):
 
                 # Create archive and store file name
                 s3_tar.tar()
-                export_job.export_data_s3 = s3_archive_path
-                export_job.save()
+                export_job.export_data = s3_archive_path
+                export_job.save(update_fields=["export_data"])
 
                 # Delete temporary files
                 S3Boto3Storage.delete(storage, export_json_tmp_file)
 
             else:
-                export_job.export_data_file = f"{export_task_id}.tar.gz"
-                with export_job.export_data_file.open("wb") as tar_file:
+                export_job.export_data = f"{export_task_id}.tar.gz"
+                with export_job.export_data.open("wb") as tar_file:
                     with BookwyrmTarFile.open(mode="w:gz", fileobj=tar_file) as tar:
                         # save json file
                         tar.write_bytes(export_json_bytes)
@@ -285,7 +272,7 @@ class AddFileToTar(ChildJob):
                         for edition in editions:
                             if edition.cover:
                                 tar.add_image(edition.cover, directory="images/")
-                export_job.save()
+                export_job.save(update_fields=["export_data"])
 
             self.complete_job()
 
