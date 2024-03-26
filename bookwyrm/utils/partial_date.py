@@ -67,6 +67,14 @@ class PartialDate(datetime):
         # current_timezone and default_timezone.
         return cls.from_datetime(datetime(year, month, day, tzinfo=_westmost_tz))
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, PartialDate):
+            return NotImplemented
+        return self.partial_isoformat() == other.partial_isoformat()
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__} object: {self.partial_isoformat()}>"
+
 
 class MonthParts(PartialDate):
     """a date bound into month precision"""

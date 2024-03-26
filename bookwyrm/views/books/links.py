@@ -1,4 +1,5 @@
 """ the good stuff! the books! """
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
@@ -8,6 +9,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
+from bookwyrm.views.helpers import get_mergeable_object_or_404
 
 
 # pylint: disable=no-self-use
@@ -20,7 +22,7 @@ class BookFileLinks(View):
 
     def get(self, request, book_id):
         """view links"""
-        book = get_object_or_404(models.Edition, id=book_id)
+        book = get_mergeable_object_or_404(models.Edition, id=book_id)
         annotated_links = get_annotated_links(book)
 
         data = {"book": book, "links": annotated_links}
@@ -36,7 +38,7 @@ class BookFileLinks(View):
 
         # this form shouldn't ever really get here, since it's just a dropdown
         # get the data again rather than redirecting
-        book = get_object_or_404(models.Edition, id=book_id)
+        book = get_mergeable_object_or_404(models.Edition, id=book_id)
         annotated_links = get_annotated_links(book, form=form)
 
         data = {"book": book, "links": annotated_links}
@@ -75,7 +77,7 @@ class AddFileLink(View):
 
     def get(self, request, book_id):
         """Create link form"""
-        book = get_object_or_404(models.Edition, id=book_id)
+        book = get_mergeable_object_or_404(models.Edition, id=book_id)
         data = {
             "file_link_form": forms.FileLinkForm(),
             "book": book,
@@ -85,7 +87,9 @@ class AddFileLink(View):
     @transaction.atomic
     def post(self, request, book_id, link_id=None):
         """Add a link to a copy of the book you can read"""
-        book = get_object_or_404(models.Book.objects.select_subclasses(), id=book_id)
+        book = get_mergeable_object_or_404(
+            models.Book.objects.select_subclasses(), id=book_id
+        )
         link = get_object_or_404(models.FileLink, id=link_id) if link_id else None
         form = forms.FileLinkForm(request.POST, instance=link)
         if not form.is_valid():

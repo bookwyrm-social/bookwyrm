@@ -1,4 +1,5 @@
 """ the good people stuff! the authors! """
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect
@@ -11,7 +12,11 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request, maybe_redirect_local_path
+from bookwyrm.views.helpers import (
+    is_api_request,
+    get_mergeable_object_or_404,
+    maybe_redirect_local_path,
+)
 
 
 # pylint: disable= no-self-use
@@ -21,7 +26,7 @@ class Author(View):
     # pylint: disable=unused-argument
     def get(self, request, author_id, slug=None):
         """landing page for an author"""
-        author = get_object_or_404(models.Author, id=author_id)
+        author = get_mergeable_object_or_404(models.Author, id=author_id)
 
         if is_api_request(request):
             return ActivitypubResponse(author.to_activity())
@@ -56,13 +61,13 @@ class EditAuthor(View):
 
     def get(self, request, author_id):
         """info about a book"""
-        author = get_object_or_404(models.Author, id=author_id)
+        author = get_mergeable_object_or_404(models.Author, id=author_id)
         data = {"author": author, "form": forms.AuthorForm(instance=author)}
         return TemplateResponse(request, "author/edit_author.html", data)
 
     def post(self, request, author_id):
         """edit a author cool"""
-        author = get_object_or_404(models.Author, id=author_id)
+        author = get_mergeable_object_or_404(models.Author, id=author_id)
 
         form = forms.AuthorForm(request.POST, request.FILES, instance=author)
         if not form.is_valid():
@@ -82,7 +87,7 @@ def update_author_from_remote(request, author_id, connector_identifier):
     connector = connector_manager.load_connector(
         get_object_or_404(models.Connector, identifier=connector_identifier)
     )
-    author = get_object_or_404(models.Author, id=author_id)
+    author = get_mergeable_object_or_404(models.Author, id=author_id)
 
     connector.update_author_from_remote(author)
 

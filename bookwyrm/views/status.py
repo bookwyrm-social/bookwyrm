@@ -1,4 +1,5 @@
 """ what are we here for if not for posting """
+
 import re
 import logging
 
@@ -19,6 +20,7 @@ from markdown import markdown
 from bookwyrm import forms, models
 from bookwyrm.models.report import DELETE_ITEM
 from bookwyrm.utils import regex, sanitizer
+from bookwyrm.views.helpers import get_mergeable_object_or_404
 from .helpers import handle_remote_webfinger, is_api_request
 from .helpers import load_date_in_user_tz_as_utc, redirect_to_referer
 
@@ -52,7 +54,7 @@ class CreateStatus(View):
 
     def get(self, request, status_type):  # pylint: disable=unused-argument
         """compose view (...not used?)"""
-        book = get_object_or_404(models.Edition, id=request.GET.get("book"))
+        book = get_mergeable_object_or_404(models.Edition, id=request.GET.get("book"))
         data = {"book": book}
         return TemplateResponse(request, "compose.html", data)
 
@@ -98,7 +100,7 @@ class CreateStatus(View):
         # inspect the text for user tags
         content = status.content
         mentions = find_mentions(request.user, content)
-        for (_, mention_user) in mentions.items():
+        for _, mention_user in mentions.items():
             # add them to status mentions fk
             status.mention_users.add(mention_user)
         content = format_mentions(content, mentions)
@@ -109,7 +111,7 @@ class CreateStatus(View):
 
         # inspect the text for hashtags
         hashtags = find_or_create_hashtags(content)
-        for (_, mention_hashtag) in hashtags.items():
+        for _, mention_hashtag in hashtags.items():
             # add them to status mentions fk
             status.mention_hashtags.add(mention_hashtag)
         content = format_hashtags(content, hashtags)
@@ -140,7 +142,7 @@ class CreateStatus(View):
 
 def format_mentions(content, mentions):
     """Detect @mentions and make them links"""
-    for (mention_text, mention_user) in mentions.items():
+    for mention_text, mention_user in mentions.items():
         # turn the mention into a link
         content = re.sub(
             rf"(?<!/)\B{mention_text}\b(?!@)",
@@ -152,7 +154,7 @@ def format_mentions(content, mentions):
 
 def format_hashtags(content, hashtags):
     """Detect #hashtags and make them links"""
-    for (mention_text, mention_hashtag) in hashtags.items():
+    for mention_text, mention_hashtag in hashtags.items():
         # turn the mention into a link
         content = re.sub(
             rf"(?<!/)\B{mention_text}\b(?!@)",

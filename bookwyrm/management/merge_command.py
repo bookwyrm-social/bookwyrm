@@ -1,4 +1,3 @@
-from bookwyrm.management.merge import merge_objects
 from django.core.management.base import BaseCommand
 
 
@@ -9,6 +8,11 @@ class MergeCommand(BaseCommand):
         """add the arguments for this command"""
         parser.add_argument("--canonical", type=int, required=True)
         parser.add_argument("--other", type=int, required=True)
+        parser.add_argument(
+            "--dry_run",
+            action="store_true",
+            help="don't actually merge, only print what would happen",
+        )
 
     # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
@@ -26,4 +30,8 @@ class MergeCommand(BaseCommand):
             print("other book doesn’t exist!")
             return
 
-        merge_objects(canonical, other)
+        absorbed_fields = other.merge_into(canonical, dry_run=options["dry_run"])
+
+        action = "would be" if options["dry_run"] else "has been"
+        print(f"{other.remote_id} {action} merged into {canonical.remote_id}")
+        print(f"absorbed fields: {absorbed_fields}")
