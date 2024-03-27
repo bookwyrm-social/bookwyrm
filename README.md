@@ -10,7 +10,6 @@ BookWyrm is a social network for tracking your reading, talking about books, wri
 ## Links
 
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/000146121?domain=https%3A%2F%2Ftech.lgbt&style=social)](https://tech.lgbt/@bookwyrm)
-[![Twitter Follow](https://img.shields.io/twitter/follow/BookWyrmSocial?style=social)](https://twitter.com/BookWyrmSocial)
 
  - [Project homepage](https://joinbookwyrm.com/)
  - [Support](https://patreon.com/bookwyrm)
