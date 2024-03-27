@@ -12,43 +12,43 @@ class BookSearch(TestCase):
     """look for some books"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.first_author = models.Author.objects.create(
+        cls.first_author = models.Author.objects.create(
             name="Author One", aliases=["The First"]
         )
-        self.second_author = models.Author.objects.create(
+        cls.second_author = models.Author.objects.create(
             name="Author Two", aliases=["The Second"]
         )
 
-        self.work = models.Work.objects.create(title="Example Work")
+        cls.work = models.Work.objects.create(title="Example Work")
 
-        self.first_edition = models.Edition.objects.create(
+        cls.first_edition = models.Edition.objects.create(
             title="Example Edition",
-            parent_work=self.work,
+            parent_work=cls.work,
             isbn_10="0000000000",
             physical_format="Paperback",
             published_date=datetime.datetime(2019, 4, 9, 0, 0, tzinfo=timezone.utc),
         )
-        self.first_edition.authors.add(self.first_author)
+        cls.first_edition.authors.add(cls.first_author)
 
-        self.second_edition = models.Edition.objects.create(
+        cls.second_edition = models.Edition.objects.create(
             title="Another Edition",
-            parent_work=self.work,
+            parent_work=cls.work,
             isbn_10="1111111111",
             openlibrary_key="hello",
             pages=150,
         )
-        self.second_edition.authors.add(self.first_author)
-        self.second_edition.authors.add(self.second_author)
+        cls.second_edition.authors.add(cls.first_author)
+        cls.second_edition.authors.add(cls.second_author)
 
-        self.third_edition = models.Edition.objects.create(
+        cls.third_edition = models.Edition.objects.create(
             title="Another Edition with annoying ISBN",
-            parent_work=self.work,
+            parent_work=cls.work,
             isbn_10="022222222X",
         )
-        self.third_edition.authors.add(self.first_author)
-        self.third_edition.authors.add(self.second_author)
+        cls.third_edition.authors.add(cls.first_author)
+        cls.third_edition.authors.add(cls.second_author)
 
     def test_search(self):
         """search for a book in the db"""

@@ -19,7 +19,7 @@ class Openlibrary(TestCase):
     """test loading data from openlibrary.org"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """creates the connector in the database"""
         models.Connector.objects.create(
             identifier="openlibrary.org",

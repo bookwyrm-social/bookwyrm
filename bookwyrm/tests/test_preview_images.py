@@ -31,9 +31,11 @@ class PreviewImages(TestCase):
         avatar_file = pathlib.Path(__file__).parent.joinpath(
             "../static/images/no_cover.jpg"
         )
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             self.local_user = models.User.objects.create_user(
                 "possum@local.com",
                 "possum@possum.possum",
@@ -47,9 +49,11 @@ class PreviewImages(TestCase):
                 ),
             )
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             self.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
@@ -60,9 +64,11 @@ class PreviewImages(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             self.remote_user_with_preview = models.User.objects.create_user(
                 "badger@your.domain.here",
                 "badger@badger.com",

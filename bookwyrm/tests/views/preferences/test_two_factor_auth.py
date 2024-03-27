@@ -18,12 +18,14 @@ class TwoFactorViews(TestCase):
     """Two Factor Authentication management"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@your.domain.here",
                 "mouse@mouse.com",
                 "password",
@@ -130,8 +132,9 @@ class TwoFactorViews(TestCase):
         request.session["2fa_user"] = self.local_user.username
         request.session.save()
 
-        with patch("bookwyrm.views.preferences.two_factor_auth.LoginWith2FA"), patch(
-            "bookwyrm.views.preferences.two_factor_auth.login"
+        with (
+            patch("bookwyrm.views.preferences.two_factor_auth.LoginWith2FA"),
+            patch("bookwyrm.views.preferences.two_factor_auth.login"),
         ):
             result = view(request)
         self.assertEqual(result.url, "/")

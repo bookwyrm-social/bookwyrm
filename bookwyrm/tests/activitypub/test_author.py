@@ -7,13 +7,13 @@ class Author(TestCase):
     """serialize author tests"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """initial data"""
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
         )
-        self.author = models.Author.objects.create(
+        cls.author = models.Author.objects.create(
             name="Author fullname",
             aliases=["One", "Two"],
             bio="bio bio bio",

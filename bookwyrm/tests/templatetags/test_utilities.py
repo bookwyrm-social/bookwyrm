@@ -15,12 +15,14 @@ class UtilitiesTags(TestCase):
     """lotta different things here"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """create some filler objects"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.mouse",
                 "mouseword",
@@ -28,15 +30,15 @@ class UtilitiesTags(TestCase):
                 localname="mouse",
             )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.rat",
                 "ratword",
                 remote_id="http://example.com/rat",
                 local=False,
             )
-        self.author = models.Author.objects.create(name="Jessica", isni="4")
-        self.book = models.Edition.objects.create(title="Test Book")
+        cls.author = models.Author.objects.create(name="Jessica", isni="4")
+        cls.book = models.Edition.objects.create(title="Test Book")
 
     def test_get_uuid(self, *_):
         """uuid functionality"""

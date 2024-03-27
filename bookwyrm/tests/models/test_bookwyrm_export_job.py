@@ -16,16 +16,14 @@ class BookwyrmExport(TestCase):
 
     def setUp(self):
         """lots of stuff to set up for a user export"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"), patch(
-            "bookwyrm.suggested_users.rerank_user_task.delay"
-        ), patch(
-            "bookwyrm.lists_stream.remove_list_task.delay"
-        ), patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch(
-            "bookwyrm.activitystreams.add_book_statuses_task"
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+            patch("bookwyrm.suggested_users.rerank_user_task.delay"),
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.activitystreams.add_book_statuses_task"),
         ):
 
             self.local_user = models.User.objects.create_user(

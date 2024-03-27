@@ -16,15 +16,17 @@ class Activitystreams(TestCase):
     """using redis to build activity streams"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """use a test csv"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
             )
-            self.another_user = models.User.objects.create_user(
+            cls.another_user = models.User.objects.create_user(
                 "nutria",
                 "nutria@nutria.nutria",
                 "password",
@@ -32,7 +34,7 @@ class Activitystreams(TestCase):
                 localname="nutria",
             )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -42,7 +44,7 @@ class Activitystreams(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
         work = models.Work.objects.create(title="test work")
-        self.book = models.Edition.objects.create(title="test book", parent_work=work)
+        cls.book = models.Edition.objects.create(title="test book", parent_work=work)
 
     def setUp(self):
         """per-test setUp"""
@@ -105,9 +107,11 @@ class Activitystreams(TestCase):
             privacy="direct",
             book=self.book,
         )
-        with patch("bookwyrm.activitystreams.r.set"), patch(
-            "bookwyrm.activitystreams.r.delete"
-        ), patch("bookwyrm.activitystreams.ActivityStream.get_store") as redis_mock:
+        with (
+            patch("bookwyrm.activitystreams.r.set"),
+            patch("bookwyrm.activitystreams.r.delete"),
+            patch("bookwyrm.activitystreams.ActivityStream.get_store") as redis_mock,
+        ):
             redis_mock.return_value = [status.id, status2.id]
             result = self.test_stream.get_activity_stream(self.local_user)
         self.assertEqual(result.count(), 2)

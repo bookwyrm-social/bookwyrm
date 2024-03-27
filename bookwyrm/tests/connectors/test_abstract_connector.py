@@ -13,7 +13,7 @@ class AbstractConnector(TestCase):
     """generic code for connecting to outside data sources"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need an example connector in the database"""
         models.Connector.objects.create(
             identifier="example.com",
@@ -23,7 +23,7 @@ class AbstractConnector(TestCase):
             covers_url="https://example.com/covers",
             search_url="https://example.com/search?q=",
         )
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Test Book",
             remote_id="https://example.com/book/1234",
             openlibrary_key="OL1234M",

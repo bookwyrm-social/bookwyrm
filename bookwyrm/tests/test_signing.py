@@ -36,22 +36,24 @@ class Signature(TestCase):
     """signature test"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """create users and test data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.mouse = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.mouse = models.User.objects.create_user(
                 f"mouse@{DOMAIN}",
                 "mouse@example.com",
                 "",
                 local=True,
                 localname="mouse",
             )
-            self.rat = models.User.objects.create_user(
+            cls.rat = models.User.objects.create_user(
                 f"rat@{DOMAIN}", "rat@example.com", "", local=True, localname="rat"
             )
-            self.cat = models.User.objects.create_user(
+            cls.cat = models.User.objects.create_user(
                 f"cat@{DOMAIN}", "cat@example.com", "", local=True, localname="cat"
             )
         models.SiteSettings.objects.create()
@@ -89,9 +91,11 @@ class Signature(TestCase):
         signature = make_signature(
             "post", signer or sender, self.rat.inbox, now, digest=digest
         )
-        with patch("bookwyrm.views.inbox.activity_task.apply_async"):
-            with patch("bookwyrm.models.user.set_remote_server.delay"):
-                return self.send(signature, now, send_data or data, digest)
+        with (
+            patch("bookwyrm.views.inbox.activity_task.apply_async"),
+            patch("bookwyrm.models.user.set_remote_server.delay"),
+        ):
+            return self.send(signature, now, send_data or data, digest)
 
     def test_correct_signature(self):
         """this one should just work"""

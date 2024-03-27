@@ -16,18 +16,20 @@ class ReadThrough(TestCase):
     """readthrough tests"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """basic user and book data"""
-        self.work = models.Work.objects.create(title="Example Work")
+        cls.work = models.Work.objects.create(title="Example Work")
 
-        self.edition = models.Edition.objects.create(
-            title="Example Edition", parent_work=self.work
+        cls.edition = models.Edition.objects.create(
+            title="Example Edition", parent_work=cls.work
         )
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.user = models.User.objects.create_user(
                 "cinco", "cinco@example.com", "seissiete", local=True, localname="cinco"
             )
 

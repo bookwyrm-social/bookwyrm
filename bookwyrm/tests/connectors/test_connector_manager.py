@@ -11,18 +11,18 @@ class ConnectorManager(TestCase):
     """interface between the app and various connectors"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we'll need some books and a connector info entry"""
-        self.work = models.Work.objects.create(title="Example Work")
+        cls.work = models.Work.objects.create(title="Example Work")
 
         models.Edition.objects.create(
-            title="Example Edition", parent_work=self.work, isbn_10="0000000000"
+            title="Example Edition", parent_work=cls.work, isbn_10="0000000000"
         )
-        self.edition = models.Edition.objects.create(
-            title="Another Edition", parent_work=self.work, isbn_10="1111111111"
+        cls.edition = models.Edition.objects.create(
+            title="Another Edition", parent_work=cls.work, isbn_10="1111111111"
         )
 
-        self.remote_connector = models.Connector.objects.create(
+        cls.remote_connector = models.Connector.objects.create(
             identifier="test_connector_remote",
             priority=1,
             connector_file="bookwyrm_connector",
