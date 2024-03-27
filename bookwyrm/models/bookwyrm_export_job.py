@@ -99,6 +99,7 @@ def create_archive_task(job_id):
 
     try:
         export_task_id = job.task_id
+        archive_filename = f"{export_task_id}.tar.gz"
         export_json_bytes = DjangoJSONEncoder().encode(job.export_json).encode("utf-8")
 
         user = job.user
@@ -109,10 +110,9 @@ def create_archive_task(job_id):
             storage = S3Boto3Storage()
 
             # Handle for creating the final archive
-            s3_archive_path = f"exports/{export_task_id}.tar.gz"
             s3_tar = S3Tar(
                 settings.AWS_STORAGE_BUCKET_NAME,
-                s3_archive_path,
+                f"exports/{archive_filename}",
                 session=BookwyrmAwsSession(),
             )
 
@@ -135,14 +135,14 @@ def create_archive_task(job_id):
 
             # Create archive and store file name
             s3_tar.tar()
-            job.export_data = s3_archive_path
+            job.export_data = archive_filename
             job.save(update_fields=["export_data"])
 
             # Delete temporary files
             S3Boto3Storage.delete(storage, export_json_tmp_file)
 
         else:
-            job.export_data = f"{export_task_id}.tar.gz"
+            job.export_data = archive_filename
             with job.export_data.open("wb") as tar_file:
                 with BookwyrmTarFile.open(mode="w:gz", fileobj=tar_file) as tar:
                     # save json file
