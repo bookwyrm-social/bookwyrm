@@ -6,22 +6,22 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0199_merge_20240326_1217'),
+        ("bookwyrm", "0199_merge_20240326_1217"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='addfiletotar',
-            name='childjob_ptr',
+            model_name="addfiletotar",
+            name="childjob_ptr",
         ),
         migrations.RemoveField(
-            model_name='addfiletotar',
-            name='parent_export_job',
+            model_name="addfiletotar",
+            name="parent_export_job",
         ),
         migrations.DeleteModel(
-            name='AddBookToUserExportJob',
+            name="AddBookToUserExportJob",
         ),
         migrations.DeleteModel(
-            name='AddFileToTar',
+            name="AddFileToTar",
         ),
     ]
