@@ -153,25 +153,15 @@ class BookwyrmExportJob(TestCase):
                 book=self.edition,
             )
 
-            self.job = models.BookwyrmExportJob.objects.create(
-                user=self.local_user, export_json={}
-            )
+            self.job = models.BookwyrmExportJob.objects.create(user=self.local_user)
+
+            # run the first stage of the export
+            with patch("bookwyrm.models.bookwyrm_export_job.create_archive_task.delay"):
+                models.bookwyrm_export_job.create_export_json_task(job_id=self.job.id)
+            self.job.refresh_from_db()
 
     def test_add_book_to_user_export_job(self):
         """does AddBookToUserExportJob ...add the book to the export?"""
-
-        self.job.export_json["books"] = []
-        self.job.save()
-
-        with patch("bookwyrm.models.bookwyrm_export_job.AddFileToTar.start_job"):
-            model = models.bookwyrm_export_job
-            edition_job = model.AddBookToUserExportJob.objects.create(
-                edition=self.edition, parent_job=self.job
-            )
-
-            edition_job.start_job()
-
-        self.job.refresh_from_db()
         self.assertIsNotNone(self.job.export_json["books"])
         self.assertEqual(len(self.job.export_json["books"]), 1)
         book = self.job.export_json["books"][0]
@@ -192,27 +182,12 @@ class BookwyrmExportJob(TestCase):
 
     def test_start_export_task(self):
         """test saved list task saves initial json and data"""
-
-        with patch("bookwyrm.models.bookwyrm_export_job.json_export.delay"):
-            models.bookwyrm_export_job.start_export_task(
-                job_id=self.job.id, no_children=False
-            )
-
-        self.job.refresh_from_db()
-
         self.assertIsNotNone(self.job.export_data)
         self.assertIsNotNone(self.job.export_json)
         self.assertEqual(self.job.export_json["name"], self.local_user.name)
 
     def test_export_saved_lists_task(self):
         """test export_saved_lists_task adds the saved lists"""
-
-        models.bookwyrm_export_job.export_saved_lists_task(
-            job_id=self.job.id, no_children=False
-        )
-
-        self.job.refresh_from_db()
-
         self.assertIsNotNone(self.job.export_json["saved_lists"])
         self.assertEqual(
             self.job.export_json["saved_lists"][0], self.saved_list.remote_id
@@ -220,60 +195,21 @@ class BookwyrmExportJob(TestCase):
 
     def test_export_follows_task(self):
         """test export_follows_task adds the follows"""
-
-        models.bookwyrm_export_job.export_follows_task(
-            job_id=self.job.id, no_children=False
-        )
-
-        self.job.refresh_from_db()
-
         self.assertIsNotNone(self.job.export_json["follows"])
         self.assertEqual(self.job.export_json["follows"][0], self.rat_user.remote_id)
 
     def test_export_blocks_task(self):
-
         """test export_blocks_task adds the blocks"""
-
-        models.bookwyrm_export_job.export_blocks_task(
-            job_id=self.job.id, no_children=False
-        )
-
-        self.job.refresh_from_db()
-
         self.assertIsNotNone(self.job.export_json["blocks"])
         self.assertEqual(self.job.export_json["blocks"][0], self.badger_user.remote_id)
 
     def test_export_reading_goals_task(self):
         """test export_reading_goals_task adds the goals"""
-
-        models.bookwyrm_export_job.export_reading_goals_task(
-            job_id=self.job.id, no_children=False
-        )
-
-        self.job.refresh_from_db()
-
         self.assertIsNotNone(self.job.export_json["goals"])
         self.assertEqual(self.job.export_json["goals"][0]["goal"], 128937123)
 
     def test_json_export(self):
         """test json_export job adds settings"""
-
-        with patch(
-            "bookwyrm.models.bookwyrm_export_job.export_saved_lists_task.delay"
-        ), patch(
-            "bookwyrm.models.bookwyrm_export_job.export_follows_task.delay"
-        ), patch(
-            "bookwyrm.models.bookwyrm_export_job.export_blocks_task.delay"
-        ), patch(
-            "bookwyrm.models.bookwyrm_export_job.trigger_books_jobs.delay"
-        ):
-
-            models.bookwyrm_export_job.json_export(
-                job_id=self.job.id, no_children=False
-            )
-
-        self.job.refresh_from_db()
-
         self.assertIsNotNone(self.job.export_json["settings"])
         self.assertFalse(self.job.export_json["settings"]["show_goal"])
         self.assertEqual(

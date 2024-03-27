@@ -179,9 +179,10 @@ def export_json(user: User):
 def export_user(user: User):
     """export user data"""
     data = user.to_activity()
-    data["icon"]["url"] = (
-        url2relativepath(data["icon"]["url"]) if data.get("icon", False) else {}
-    )
+    if data.get("icon", False):
+        data["icon"]["url"] = url2relativepath(data["icon"]["url"])
+    else:
+        data["icon"] = {}
     return data
 
 
@@ -236,7 +237,7 @@ def export_book(user: User, edition: Edition):
     data["work"] = edition.parent_work.to_activity()
     data["edition"] = edition.to_activity()
 
-    if data["edition"].get("cover"):
+    if data["edition"].get("cover", False):
         data["edition"]["cover"]["url"] = url2relativepath(
             data["edition"]["cover"]["url"]
         )
