@@ -55,6 +55,8 @@
 
             <p class="field"><label class="label" for="id_wikipedia_link">{% trans "Wikipedia link:" %}</label> {{ form.wikipedia_link }}</p>
 
+            <p class="field"><label class="label" for="id_wikidata">{% trans "Wikidata:" %}</label> {{ form.wikidata }}</p>
+
             {% include 'snippets/form_errors.html' with errors_list=form.wikipedia_link.errors id="desc_wikipedia_link" %}
 
             <p class="field"><label class="label" for="id_website">{% trans "Website:" %}</label> {{ form.website }}</p>
