@@ -1,8 +1,10 @@
 """ search views"""
+
 import re
 
-from django.contrib.postgres.search import TrigramSimilarity
+from django.contrib.postgres.search import TrigramSimilarity, SearchRank, SearchQuery
 from django.core.paginator import Paginator
+from django.db.models import F
 from django.db.models.functions import Greatest
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
@@ -39,6 +41,7 @@ class Search(View):
 
         endpoints = {
             "book": book_search,
+            "author": author_search,
             "user": user_search,
             "list": list_search,
         }
@@ -88,6 +91,33 @@ def book_search(request):
         )
         data["remote"] = True
     return TemplateResponse(request, "search/book.html", data)
+
+
+def author_search(request):
+    """search for an author"""
+    query = request.GET.get("q").strip()
+    search_query = SearchQuery(query, config="simple")
+    min_confidence = 0
+
+    results = (
+        models.Author.objects.filter(search_vector=search_query)
+        .annotate(rank=SearchRank(F("search_vector"), search_query))
+        .filter(rank__gt=min_confidence)
+        .order_by("-rank")
+    )
+
+    paginated = Paginator(results, PAGE_LENGTH)
+    page = paginated.get_page(request.GET.get("page"))
+
+    data = {
+        "type": "author",
+        "query": query,
+        "results": page,
+        "page_range": paginated.get_elided_page_range(
+            page.number, on_each_side=2, on_ends=1
+        ),
+    }
+    return TemplateResponse(request, "search/author.html", data)
 
 
 def user_search(request):

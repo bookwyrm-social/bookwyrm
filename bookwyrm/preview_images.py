@@ -1,4 +1,5 @@
 """ Generate social media preview images for twitter/mastodon/etc """
+
 import math
 import os
 import textwrap
@@ -42,8 +43,8 @@ def get_imagefont(name, size):
         return ImageFont.truetype(path, size)
     except KeyError:
         logger.error("Font %s not found in config", name)
-    except OSError:
-        logger.error("Could not load font %s from file", name)
+    except OSError as err:
+        logger.error("Could not load font %s from file: %s", name, err)
 
     return ImageFont.load_default()
 
@@ -59,7 +60,7 @@ def get_font(weight, size=28):
             font.set_variation_by_name("Bold")
         if weight == "regular":
             font.set_variation_by_name("Regular")
-    except AttributeError:
+    except OSError:
         pass
 
     return font

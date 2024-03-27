@@ -56,8 +56,7 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
                 <input
                     aria-label="{% if draft.position_mode == 'PG' %}Page{% else %}Percent{% endif %}"
                     class="input"
-                    type="number"
-                    min="0"
+                    type="text"
                     name="position"
                     size="3"
                     value="{% firstof draft.position '' %}"
@@ -72,8 +71,7 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
                 <input
                     aria-label="{% if draft.position_mode == 'PG' %}Page{% else %}Percent{% endif %}"
                     class="input"
-                    type="number"
-                    min="0"
+                    type="text"
                     name="endposition"
                     size="3"
                     value="{% firstof draft.endposition '' %}"

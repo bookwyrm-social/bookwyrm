@@ -20,6 +20,7 @@
             <div class="select" aria-label="{% trans 'Search type' %}">
                 <select name="type">
                     <option value="book" {% if type == "book" %}selected{% endif %}>{% trans "Books" %}</option>
+                    <option value="author" {% if type == "author" %}selected{% endif %}>{% trans "Authors" %}</option>
                     {% if request.user.is_authenticated %}
                     <option value="user" {% if type == "user" %}selected{% endif %}>{% trans "Users" %}</option>
                     {% endif %}
@@ -40,15 +41,18 @@
 <nav class="tabs">
     <ul>
         <li{% if type == "book" %} class="is-active"{% endif %}>
-            <a href="{% url 'search' %}?q={{ query }}&type=book">{% trans "Books" %}</a>
+            <a href="{% url 'search' %}?q={{ query|urlencode }}&type=book">{% trans "Books" %}</a>
+        </li>
+        <li{% if type == "author" %} class="is-active"{% endif %}>
+            <a href="{% url 'search' %}?q={{ query|urlencode }}&type=author">{% trans "Authors" %}</a>
         </li>
         {% if request.user.is_authenticated %}
         <li{% if type == "user" %} class="is-active"{% endif %}>
-            <a href="{% url 'search' %}?q={{ query }}&type=user">{% trans "Users" %}</a>
+            <a href="{% url 'search' %}?q={{ query|urlencode }}&type=user">{% trans "Users" %}</a>
         </li>
         {% endif %}
         <li{% if type == "list" %} class="is-active"{% endif %}>
-            <a href="{% url 'search' %}?q={{ query }}&type=list">{% trans "Lists" %}</a>
+            <a href="{% url 'search' %}?q={{ query|urlencode }}&type=list">{% trans "Lists" %}</a>
         </li>
     </ul>
 </nav>

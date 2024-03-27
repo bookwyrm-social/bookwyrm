@@ -1,0 +1,17 @@
+{% extends 'search/layout.html' %}
+
+{% block panel %}
+
+{% if results %}
+<ul class="block">
+{% for author in results %}
+    <li class="">
+        <a href="{{ author.local_path }}" class="author" itemprop="author" itemscope itemtype="https://schema.org/Thing">
+            <span itemprop="name">{{ author.name }}</span>
+        </a>
+    </li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}
