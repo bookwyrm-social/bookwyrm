@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-03-27 18:30\n"
+"PO-Revision-Date: 2024-03-28 10:50\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -366,29 +366,29 @@ msgstr "Item supprimé"
 #: bookwyrm/models/status.py:186
 #, python-format
 msgid "%(display_name)s's status"
-msgstr ""
+msgstr "Statuts de %(display_name)s"
 
 #: bookwyrm/models/status.py:361
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
-msgstr ""
+msgstr "Commentaire de %(display_name)s pour %(book_title)s"
 
 #: bookwyrm/models/status.py:412
 #, python-format
 msgid "%(display_name)s's quote from %(book_title)s"
-msgstr ""
+msgstr "Citation de %(display_name)s pour %(book_title)s"
 
 #: bookwyrm/models/status.py:448
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
-msgstr ""
+msgstr "Critique de %(display_name)s pour %(book_title)s"
 
 #: bookwyrm/models/status.py:479
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_name)s a noté %(book_title)s: %(display_rating).1f étoile"
+msgstr[1] "%(display_name)s a noté %(book_title)s: %(display_rating).1f étoiles"
 
 #: bookwyrm/models/user.py:33 bookwyrm/templates/book/book.html:312
 msgid "Reviews"
@@ -460,7 +460,7 @@ msgstr "Italiano (Italien)"
 
 #: bookwyrm/settings.py:325
 msgid "한국어 (Korean)"
-msgstr ""
+msgstr "한국어 (Coréen)"
 
 #: bookwyrm/settings.py:326
 msgid "Suomi (Finnish)"
@@ -549,7 +549,7 @@ msgstr "Le fichier que vous téléchargez est trop volumineux."
 
 #: bookwyrm/templates/413.html:11
 msgid "You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting."
-msgstr ""
+msgstr "Vous pouvez essayer d'utiliser un fichier plus petit, ou demander à l'administrateur de l'instance BookWyrm d'augmenter le paramètre <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code>."
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -924,7 +924,7 @@ msgstr "Wikipedia :"
 
 #: bookwyrm/templates/author/edit_author.html:58
 msgid "Wikidata:"
-msgstr ""
+msgstr "Wikidata:"
 
 #: bookwyrm/templates/author/edit_author.html:62
 msgid "Website:"
@@ -4465,7 +4465,7 @@ msgstr "Votre fichier comprendra :"
 
 #: bookwyrm/templates/preferences/export-user.html:21
 msgid "Most user settings"
-msgstr ""
+msgstr "La plupart des paramètres de l'utilisateur"
 
 #: bookwyrm/templates/preferences/export-user.html:26
 #: bookwyrm/templates/settings/dashboard/dashboard.html:27
@@ -4474,15 +4474,15 @@ msgstr "Statuts"
 
 #: bookwyrm/templates/preferences/export-user.html:27
 msgid "Your own lists and saved lists"
-msgstr ""
+msgstr "Vos propres listes et vos listes sauvegardées"
 
 #: bookwyrm/templates/preferences/export-user.html:28
 msgid "Which users you follow and block"
-msgstr ""
+msgstr "Les utilisateurs que vous suivez et bloquez"
 
 #: bookwyrm/templates/preferences/export-user.html:32
 msgid "Your file will not include:"
-msgstr ""
+msgstr "Votre fichier ne comprendra pas :"
 
 #: bookwyrm/templates/preferences/export-user.html:34
 msgid "Direct messages"
@@ -4506,12 +4506,12 @@ msgstr "Si vous souhaitez migrer des statuts (commentaires, avis ou citations), 
 
 #: bookwyrm/templates/preferences/export-user.html:49
 msgid "New user exports are currently disabled."
-msgstr ""
+msgstr "Les exportations d'utilisateurs sont désactivées."
 
 #: bookwyrm/templates/preferences/export-user.html:53
 #, python-format
 msgid "User exports settings can be changed from <a href=\"%(url)s\">the Imports page</a> in the Admin dashboard."
-msgstr ""
+msgstr "Les paramètres d'exportation des utilisateurs peuvent être modifiés depuis <a href=\"%(url)s\">la page Imports</a> dans le tableau de bord de l'administration."
 
 #: bookwyrm/templates/preferences/export-user.html:60
 #, python-format
@@ -5169,11 +5169,11 @@ msgstr "Total"
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:12
 msgid "Would you like to automatically check for new BookWyrm releases? (recommended)"
-msgstr ""
+msgstr "Voulez-vous vérifier automatiquement les nouvelles versions de BookWyrm? (recommandé)"
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:20
 msgid "Schedule checks"
-msgstr ""
+msgstr "Contrôles de la planification"
 
 #: bookwyrm/templates/settings/dashboard/warnings/domain_review.html:9
 #, python-format
@@ -5526,19 +5526,19 @@ msgstr "Définir la limite"
 
 #: bookwyrm/templates/settings/imports/imports.html:98
 msgid "Disable starting new user exports"
-msgstr ""
+msgstr "Désactiver les exports d'utilisateurs"
 
 #: bookwyrm/templates/settings/imports/imports.html:109
 msgid "This is only intended to be used when things have gone very wrong with exports and you need to pause the feature while addressing issues."
-msgstr ""
+msgstr "Cette fonction ne doit être utilisée que lorsque les choses ont très mal tourné avec les exportations et qu'il est nécessaire de mettre la fonction en pause pendant que l'on s'occupe des problèmes."
 
 #: bookwyrm/templates/settings/imports/imports.html:110
 msgid "While exports are disabled, users will not be allowed to start new user exports, but existing exports will not be affected."
-msgstr ""
+msgstr "Tant que les importations seront désactivées, les utilisateurs ne pourront pas en commencer de nouvelles, mais celles existantes ne seront pas affectées."
 
 #: bookwyrm/templates/settings/imports/imports.html:115
 msgid "Disable user exports"
-msgstr ""
+msgstr "Désactiver les exportations des utilisateurs"
 
 #: bookwyrm/templates/settings/imports/imports.html:123
 msgid "Limit how often users can import and export"
@@ -5550,7 +5550,7 @@ msgstr "Certains utilisateurs peuvent essayer d'exécuter des importations ou de
 
 #: bookwyrm/templates/settings/imports/imports.html:138
 msgid "Limit how often users can import and export user data"
-msgstr ""
+msgstr "Limiter la fréquence à laquelle les utilisateurs peuvent importer et exporter"
 
 #: bookwyrm/templates/settings/imports/imports.html:140
 msgid "hours"
@@ -5562,15 +5562,15 @@ msgstr "Modifier la limite"
 
 #: bookwyrm/templates/settings/imports/imports.html:159
 msgid "Users are currently unable to start new user exports. This is the default setting."
-msgstr ""
+msgstr "Les utilisateurs ne peuvent actuellement pas démarrer les exportations d'utilisateurs. C'est le paramètre par défaut."
 
 #: bookwyrm/templates/settings/imports/imports.html:161
 msgid "It is not currently possible to provide user exports when using s3 storage. The BookWyrm development team are working on a fix for this."
-msgstr ""
+msgstr "Il n'est actuellement pas possible de fournir des exportations utilisateur lors de l'utilisation du stockage s3. L'équipe de développement de BookWyrm travaille sur une correction pour cela."
 
 #: bookwyrm/templates/settings/imports/imports.html:167
 msgid "Enable user exports"
-msgstr ""
+msgstr "Activer les exportations de l'utilisateur"
 
 #: bookwyrm/templates/settings/imports/imports.html:174
 msgid "Book Imports"
@@ -5789,7 +5789,7 @@ msgstr "Statut de Celery"
 #: bookwyrm/templates/settings/schedules.html:7
 #: bookwyrm/templates/settings/schedules.html:11
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Tâches planifiées"
 
 #: bookwyrm/templates/settings/layout.html:99
 msgid "Instance Settings"
