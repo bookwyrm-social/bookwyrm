@@ -42,20 +42,23 @@ def start_import_task(**kwargs):
     try:
         archive_file.open("rb")
         with BookwyrmTarFile.open(mode="r:gz", fileobj=archive_file) as tar:
-            job.import_data = json.loads(tar.read("archive.json").decode("utf-8"))
+            json_filename = next(
+                filter(lambda n: n.startswith("archive"), tar.getnames())
+            )
+            job.import_data = json.loads(tar.read(json_filename).decode("utf-8"))
 
             if "include_user_profile" in job.required:
                 update_user_profile(job.user, tar, job.import_data)
             if "include_user_settings" in job.required:
                 update_user_settings(job.user, job.import_data)
             if "include_goals" in job.required:
-                update_goals(job.user, job.import_data.get("goals"))
+                update_goals(job.user, job.import_data.get("goals", []))
             if "include_saved_lists" in job.required:
-                upsert_saved_lists(job.user, job.import_data.get("saved_lists"))
+                upsert_saved_lists(job.user, job.import_data.get("saved_lists", []))
             if "include_follows" in job.required:
-                upsert_follows(job.user, job.import_data.get("follows"))
+                upsert_follows(job.user, job.import_data.get("follows", []))
             if "include_blocks" in job.required:
-                upsert_user_blocks(job.user, job.import_data.get("blocks"))
+                upsert_user_blocks(job.user, job.import_data.get("blocks", []))
 
             process_books(job, tar)
 
@@ -212,7 +215,7 @@ def upsert_statuses(user, cls, data, book_remote_id):
                 instance.save()  # save and broadcast
 
         else:
-            logger.info("User does not have permission to import statuses")
+            logger.warning("User does not have permission to import statuses")
 
 
 def upsert_lists(user, lists, book_id):

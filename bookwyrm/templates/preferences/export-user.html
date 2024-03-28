@@ -97,25 +97,25 @@
                 </td>
             </tr>
             {% endif %}
-            {% for job in jobs %}
+            {% for export in jobs %}
             <tr>
-                <td>{{ job.updated_date }}</td>
+                <td>{{ export.job.updated_date }}</td>
                 <td>
                     <span
-                        {% if job.status == "stopped" or job.status == "failed" %}
+                        {% if export.job.status == "stopped" or export.job.status == "failed" %}
                         class="tag is-danger"
-                        {% elif job.status == "pending" %}
+                        {% elif export.job.status == "pending" %}
                         class="tag is-warning"
-                        {% elif job.complete %}
+                        {% elif export.job.complete %}
                         class="tag"
                         {% else %}
                         class="tag is-success"
                         {% endif %}
                     >
-                        {% if job.status %}
-                        {{ job.status }}
-                            {{ job.status_display }}
-                        {% elif job.complete %}
+                        {% if export.job.status %}
+                        {{ export.job.status }}
+                            {{ export.job.status_display }}
+                        {% elif export.job.complete %}
                             {% trans "Complete" %}
                         {% else %}
                             {% trans "Active" %}
@@ -123,18 +123,20 @@
                     </span>
                 </td>
                 <td>
-                    <span>{{ job.export_data|get_file_size }}</span>
+                    {% if export.size %}
+                    <span>{{ export.size|get_file_size }}</span>
+                    {% endif %}
                 </td>
                 <td>
-                    {% if job.complete and not job.status == "stopped" and not job.status == "failed" %}
-                    <p>
-                        <a download="" href="/preferences/user-export/{{ job.task_id }}">
-                            <span class="icon icon-download" aria-hidden="true"></span>
-                            <span class="is-hidden-mobile">
-                                {% trans "Download your export" %}
-                            </span>
-                        </a>
-                    </p>
+                    {% if export.url %}
+                    <a href="{{ export.url }}">
+                        <span class="icon icon-download" aria-hidden="true"></span>
+                        <span class="is-hidden-mobile">
+                            {% trans "Download your export" %}
+                        </span>
+                    </a>
+                    {% elif export.unavailable %}
+                    {% trans "Archive is no longer available" %}
                     {% endif %}
                 </td>
             </tr>
