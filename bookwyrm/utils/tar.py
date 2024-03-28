@@ -18,7 +18,7 @@ class BookwyrmTarFile(tarfile.TarFile):
         self.addfile(info, fileobj=buffer)
 
     def add_image(
-        self, image: Any, filename: Optional[str] = None, directory: Any = ""
+        self, image: Any, filename: Optional[str] = None, directory: str = ""
     ) -> None:
         """
         Add an image to the tar archive
@@ -26,12 +26,12 @@ class BookwyrmTarFile(tarfile.TarFile):
         :param str directory: the directory in the archive to put the image
         """
         if filename is None:
-            filename = image.name
+            dst_filename = image.name
         else:
-            filename += os.path.splitext(image.name)[1]
-        path = os.path.join(directory, filename)
+            dst_filename = filename + os.path.splitext(image.name)[1]
+        dst_path = os.path.join(directory, dst_filename)
 
-        info = tarfile.TarInfo(name=path)
+        info = tarfile.TarInfo(name=dst_path)
         info.size = image.size
 
         self.addfile(info, fileobj=image)
