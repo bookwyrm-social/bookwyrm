@@ -1,17 +1,15 @@
 """test bookwyrm user export functions"""
 import datetime
-from io import BytesIO
+import json
 import pathlib
 
 from unittest.mock import patch
 
-from PIL import Image
-
-from django.core.files.base import ContentFile
 from django.utils import timezone
 from django.test import TestCase
 
 from bookwyrm import models
+from bookwyrm.utils.tar import BookwyrmTarFile
 
 
 class BookwyrmExportJob(TestCase):
@@ -47,6 +45,11 @@ class BookwyrmExportJob(TestCase):
                 preferred_timezone="America/Los Angeles",
                 default_post_privacy="followers",
             )
+            avatar_path = pathlib.Path(__file__).parent.joinpath(
+                "../../static/images/default_avi.jpg"
+            )
+            with open(avatar_path, "rb") as avatar_file:
+                self.local_user.avatar.save("mouse-avatar.jpg", avatar_file)
 
             self.rat_user = models.User.objects.create_user(
                 "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
@@ -93,13 +96,11 @@ class BookwyrmExportJob(TestCase):
             )
 
             # edition cover
-            image_file = pathlib.Path(__file__).parent.joinpath(
+            cover_path = pathlib.Path(__file__).parent.joinpath(
                 "../../static/images/default_avi.jpg"
             )
-            image = Image.open(image_file)
-            output = BytesIO()
-            image.save(output, format=image.format)
-            self.edition.cover.save("tèst.jpg", ContentFile(output.getvalue()))
+            with open(cover_path, "rb") as cover_file:
+                self.edition.cover.save("tèst.jpg", cover_file)
 
             self.edition.authors.add(self.author)
 
@@ -228,3 +229,28 @@ class BookwyrmExportJob(TestCase):
 
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0].title, "Example Edition")
+
+    def test_archive(self):
+        """actually create the TAR file"""
+        models.bookwyrm_export_job.create_archive_task(job_id=self.job.id)
+        self.job.refresh_from_db()
+
+        with self.job.export_data.open("rb") as tar_file:
+            with BookwyrmTarFile.open(mode="r", fileobj=tar_file) as tar:
+                archive_json_file = tar.extractfile("archive.json")
+                data = json.load(archive_json_file)
+
+                # JSON from the archive should be what we want it to be
+                self.assertEqual(data, self.job.export_json)
+
+                # User avatar should be present in archive
+                with self.local_user.avatar.open() as expected_avatar:
+                    archive_avatar = tar.extractfile(data["icon"]["url"])
+                    self.assertEqual(expected_avatar.read(), archive_avatar.read())
+
+                # Edition cover should be present in archive
+                with self.edition.cover.open() as expected_cover:
+                    archive_cover = tar.extractfile(
+                        data["books"][0]["edition"]["cover"]["url"]
+                    )
+                    self.assertEqual(expected_cover.read(), archive_cover.read())
