@@ -1,11 +1,10 @@
 """Export user account to tar.gz file for import into another Bookwyrm instance"""
 
 import logging
-from urllib.parse import urlparse, unquote
+import os
 
 from boto3.session import Session as BotoSession
 from s3_tar import S3Tar
-from storages.backends.s3boto3 import S3Boto3Storage
 
 from django.db.models import BooleanField, FileField, JSONField
 from django.db.models import Q
@@ -13,7 +12,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
 from django.utils.module_loading import import_string
 
-from bookwyrm import settings
+from bookwyrm import settings, storage_backends
 
 from bookwyrm.models import AnnualGoal, ReadThrough, ShelfBook, ListItem
 from bookwyrm.models import Review, Comment, Quotation
@@ -55,12 +54,6 @@ class BookwyrmExportJob(ParentJob):
         self.save(update_fields=["task_id"])
 
 
-def url2relativepath(url: str) -> str:
-    """turn an absolute URL into a relative filesystem path"""
-    parsed = urlparse(url)
-    return unquote(parsed.path[1:])
-
-
 @app.task(queue=IMPORTS)
 def create_export_json_task(job_id):
     """create the JSON data for the export"""
@@ -87,6 +80,22 @@ def create_export_json_task(job_id):
         job.set_status("failed")
 
 
+def archive_file_location(file, directory="") -> str:
+    """get the relative location of a file inside the archive"""
+    return os.path.join(directory, file.name)
+
+
+def add_file_to_s3_tar(s3_tar: S3Tar, storage, file, directory=""):
+    """
+    add file to S3Tar inside directory, keeping any directories under its
+    storage location
+    """
+    s3_tar.add_file(
+        os.path.join(storage.location, file.name),
+        folder=os.path.dirname(archive_file_location(file, directory=directory)),
+    )
+
+
 @app.task(queue=IMPORTS)
 def create_archive_task(job_id):
     """create the archive containing the JSON file and additional files"""
@@ -98,7 +107,7 @@ def create_archive_task(job_id):
         return
 
     try:
-        export_task_id = job.task_id
+        export_task_id = str(job.task_id)
         archive_filename = f"{export_task_id}.tar.gz"
         export_json_bytes = DjangoJSONEncoder().encode(job.export_json).encode("utf-8")
 
@@ -106,32 +115,39 @@ def create_archive_task(job_id):
         editions = get_books_for_user(user)
 
         if settings.USE_S3:
-            # Connection for writing temporary files
-            storage = S3Boto3Storage()
+            # Storage for writing temporary files
+            exports_storage = storage_backends.ExportsS3Storage()
 
             # Handle for creating the final archive
             s3_tar = S3Tar(
-                settings.AWS_STORAGE_BUCKET_NAME,
-                f"exports/{archive_filename}",
+                exports_storage.bucket_name,
+                os.path.join(exports_storage.location, archive_filename),
                 session=BookwyrmAwsSession(),
             )
 
             # Save JSON file to a temporary location
-            export_json_tmp_file = f"exports/{export_task_id}/archive.json"
-            S3Boto3Storage.save(
-                storage,
+            export_json_tmp_file = os.path.join(export_task_id, "archive.json")
+            exports_storage.save(
                 export_json_tmp_file,
                 ContentFile(export_json_bytes),
             )
-            s3_tar.add_file(export_json_tmp_file)
+            s3_tar.add_file(
+                os.path.join(exports_storage.location, export_json_tmp_file)
+            )
 
-            # Add avatar image if present
+            # Add images to TAR
+            images_storage = storage_backends.ImagesStorage()
+
             if user.avatar:
-                s3_tar.add_file(f"images/{user.avatar.name}")
+                add_file_to_s3_tar(
+                    s3_tar, images_storage, user.avatar, directory="images"
+                )
 
             for edition in editions:
                 if edition.cover:
-                    s3_tar.add_file(f"images/{edition.cover.name}")
+                    add_file_to_s3_tar(
+                        s3_tar, images_storage, edition.cover, directory="images"
+                    )
 
             # Create archive and store file name
             s3_tar.tar()
@@ -139,7 +155,7 @@ def create_archive_task(job_id):
             job.save(update_fields=["export_data"])
 
             # Delete temporary files
-            S3Boto3Storage.delete(storage, export_json_tmp_file)
+            exports_storage.delete(export_json_tmp_file)
 
         else:
             job.export_data = archive_filename
@@ -150,11 +166,11 @@ def create_archive_task(job_id):
 
                     # Add avatar image if present
                     if user.avatar:
-                        tar.add_image(user.avatar, directory="images/")
+                        tar.add_image(user.avatar, directory="images")
 
                     for edition in editions:
                         if edition.cover:
-                            tar.add_image(edition.cover, directory="images/")
+                            tar.add_image(edition.cover, directory="images")
             job.save(update_fields=["export_data"])
 
         job.set_status("completed")
@@ -179,8 +195,8 @@ def export_json(user: User):
 def export_user(user: User):
     """export user data"""
     data = user.to_activity()
-    if data.get("icon", False):
-        data["icon"]["url"] = url2relativepath(data["icon"]["url"])
+    if user.avatar:
+        data["icon"]["url"] = archive_file_location(user.avatar, directory="images")
     else:
         data["icon"] = {}
     return data
@@ -237,9 +253,9 @@ def export_book(user: User, edition: Edition):
     data["work"] = edition.parent_work.to_activity()
     data["edition"] = edition.to_activity()
 
-    if data["edition"].get("cover", False):
-        data["edition"]["cover"]["url"] = url2relativepath(
-            data["edition"]["cover"]["url"]
+    if edition.cover:
+        data["edition"]["cover"]["url"] = archive_file_location(
+            edition.cover, directory="images"
         )
 
     # authors

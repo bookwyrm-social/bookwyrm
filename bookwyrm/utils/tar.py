@@ -1,5 +1,6 @@
 """manage tar files for user exports"""
 import io
+import os
 import tarfile
 from typing import Any, Optional
 from uuid import uuid4
@@ -24,13 +25,13 @@ class BookwyrmTarFile(tarfile.TarFile):
         :param str filename: overrides the file name set by image
         :param str directory: the directory in the archive to put the image
         """
-        if filename is not None:
-            file_type = image.name.rsplit(".", maxsplit=1)[-1]
-            filename = f"{directory}{filename}.{file_type}"
+        if filename is None:
+            filename = image.name
         else:
-            filename = f"{directory}{image.name}"
+            filename += os.path.splitext(image.name)[1]
+        path = os.path.join(directory, filename)
 
-        info = tarfile.TarInfo(name=filename)
+        info = tarfile.TarInfo(name=path)
         info.size = image.size
 
         self.addfile(info, fileobj=image)
@@ -43,7 +44,7 @@ class BookwyrmTarFile(tarfile.TarFile):
 
     def write_image_to_file(self, filename: str, file_field: Any) -> None:
         """add an image to the tar"""
-        extension = filename.rsplit(".")[-1]
+        extension = os.path.splitext(filename)[1]
         if buf := self.extractfile(filename):
-            filename = f"{str(uuid4())}.{extension}"
+            filename = str(uuid4()) + extension
             file_field.save(filename, File(buf))
