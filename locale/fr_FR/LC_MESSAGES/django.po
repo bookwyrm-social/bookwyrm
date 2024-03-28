@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-03-28 10:50\n"
+"PO-Revision-Date: 2024-03-28 11:21\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -371,24 +371,24 @@ msgstr "Statuts de %(display_name)s"
 #: bookwyrm/models/status.py:361
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
-msgstr "Commentaire de %(display_name)s pour %(book_title)s"
+msgstr "Commentaire de %(display_name)s pour « %(book_title)s »"
 
 #: bookwyrm/models/status.py:412
 #, python-format
 msgid "%(display_name)s's quote from %(book_title)s"
-msgstr "Citation de %(display_name)s pour %(book_title)s"
+msgstr "Citation de %(display_name)s pour « %(book_title)s »"
 
 #: bookwyrm/models/status.py:448
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
-msgstr "Critique de %(display_name)s pour %(book_title)s"
+msgstr "Critique de %(display_name)s pour « %(book_title)s »"
 
 #: bookwyrm/models/status.py:479
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
-msgstr[0] "%(display_name)s a noté %(book_title)s: %(display_rating).1f étoile"
-msgstr[1] "%(display_name)s a noté %(book_title)s: %(display_rating).1f étoiles"
+msgstr[0] "%(display_name)s a noté « %(book_title)s » : %(display_rating).1f étoile"
+msgstr[1] "%(display_name)s a noté « %(book_title)s » : %(display_rating).1f étoiles"
 
 #: bookwyrm/models/user.py:33 bookwyrm/templates/book/book.html:312
 msgid "Reviews"
@@ -3219,7 +3219,7 @@ msgstr "Paramètres par défaut de confidentialité des messages"
 
 #: bookwyrm/templates/import/import_user.html:112
 msgid "Followers and following"
-msgstr "Comptes qui vous suivent et comptes que vous suivez."
+msgstr "Comptes qui vous suivent et comptes suivis"
 
 #: bookwyrm/templates/import/import_user.html:116
 msgid "User blocks"
@@ -7371,7 +7371,7 @@ msgstr "%(title)s (%(subtitle)s)"
 
 #: bookwyrm/templatetags/utilities.py:129
 msgid "a new user account"
-msgstr "nouveau compte utilisateur"
+msgstr "un nouveau compte utilisateur"
 
 #: bookwyrm/views/rss_feed.py:35
 #, python-brace-format
