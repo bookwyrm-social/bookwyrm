@@ -16,7 +16,6 @@ def make_date(*args):
     return datetime.datetime(*args, tzinfo=pytz.UTC)
 
 
-# pylint: disable=consider-using-with
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
@@ -27,7 +26,12 @@ class StorygraphImport(TestCase):
         """use a test csv"""
         self.importer = StorygraphImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/storygraph.csv")
+        # pylint: disable-next=consider-using-with
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
+
+    def tearDown(self):
+        """close test csv"""
+        self.csv.close()
 
     @classmethod
     def setUpTestData(cls):
