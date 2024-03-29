@@ -1,5 +1,5 @@
 """ testing activitystreams """
-from datetime import datetime, timedelta
+import datetime
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -71,8 +71,8 @@ class ActivitystreamsSignals(TestCase):
             user=self.remote_user,
             content="hi",
             privacy="public",
-            created_date=datetime(2022, 5, 16, tzinfo=timezone.utc),
-            published_date=datetime(2022, 5, 14, tzinfo=timezone.utc),
+            created_date=datetime.datetime(2022, 5, 16, tzinfo=datetime.timezone.utc),
+            published_date=datetime.datetime(2022, 5, 14, tzinfo=datetime.timezone.utc),
         )
         with patch("bookwyrm.activitystreams.add_status_task.apply_async") as mock:
             activitystreams.add_status_on_create_command(models.Status, status, False)
@@ -87,7 +87,7 @@ class ActivitystreamsSignals(TestCase):
             user=self.remote_user,
             content="hi",
             privacy="public",
-            published_date=timezone.now() - timedelta(days=1),
+            published_date=timezone.now() - datetime.timedelta(days=1),
         )
         with patch("bookwyrm.activitystreams.add_status_task.apply_async") as mock:
             activitystreams.add_status_on_create_command(models.Status, status, False)

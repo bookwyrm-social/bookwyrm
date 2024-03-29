@@ -1,5 +1,5 @@
 """testing the annual summary page"""
-from datetime import datetime
+import datetime
 from unittest.mock import patch
 import pytz
 
@@ -15,7 +15,7 @@ from bookwyrm.tests.validate_html import validate_html
 
 def make_date(*args):
     """helper function to easily generate a date obj"""
-    return datetime(*args, tzinfo=pytz.UTC)
+    return datetime.datetime(*args, tzinfo=pytz.UTC)
 
 
 class AnnualSummary(TestCase):

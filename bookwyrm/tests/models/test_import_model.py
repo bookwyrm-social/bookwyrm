@@ -1,10 +1,10 @@
 """ testing models """
 import datetime
+from datetime import timezone
 import json
 import pathlib
 from unittest.mock import patch
 
-from django.utils import timezone
 from django.test import TestCase
 import responses
 
