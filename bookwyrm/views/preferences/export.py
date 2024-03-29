@@ -14,9 +14,9 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.shortcuts import redirect
 
-from storages.backends.s3boto3 import S3Boto3Storage
+from storages.backends.s3 import S3Storage
 
-from bookwyrm import models, storage_backends
+from bookwyrm import models
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
 from bookwyrm import settings
 
@@ -220,17 +220,16 @@ class ExportUser(View):
 class ExportArchive(View):
     """Serve the archive file"""
 
-    # TODO: how do we serve s3 files?
     def get(self, request, archive_id):
         """download user export file"""
         export = BookwyrmExportJob.objects.get(task_id=archive_id, user=request.user)
 
-        if isinstance(export.export_data.storage, storage_backends.ExportsS3Storage):
+        if settings.USE_S3:
             # make custom_domain None so we can sign the url
             # see https://github.com/jschneier/django-storages/issues/944
-            storage = S3Boto3Storage(querystring_auth=True, custom_domain=None)
+            storage = S3Storage(querystring_auth=True, custom_domain=None)
             try:
-                url = S3Boto3Storage.url(
+                url = S3Storage.url(
                     storage,
                     f"/exports/{export.task_id}.tar.gz",
                     expire=settings.S3_SIGNED_URL_EXPIRY,
@@ -239,16 +238,17 @@ class ExportArchive(View):
                 raise Http404()
             return redirect(url)
 
-        if isinstance(export.export_data.storage, storage_backends.ExportsFileStorage):
-            try:
-                return HttpResponse(
-                    export.export_data,
-                    content_type="application/gzip",
-                    headers={
-                        "Content-Disposition": 'attachment; filename="bookwyrm-account-export.tar.gz"'  # pylint: disable=line-too-long
-                    },
-                )
-            except FileNotFoundError:
-                raise Http404()
+        if settings.USE_AZURE:
+            # not implemented
+            return HttpResponseServerError()
 
-        return HttpResponseServerError()
+        try:
+            return HttpResponse(
+                export.export_data,
+                content_type="application/gzip",
+                headers={
+                    "Content-Disposition": 'attachment; filename="bookwyrm-account-export.tar.gz"'  # pylint: disable=line-too-long
+                },
+            )
+        except FileNotFoundError:
+            raise Http404()
