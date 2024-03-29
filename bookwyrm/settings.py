@@ -392,13 +392,27 @@ if USE_S3:
     # Storages
     STORAGES = {
         "default": {
-            "BACKEND": "bookwyrm.storage_backends.ImagesStorage",
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "location": "images",
+                "default_acl": "public-read",
+                "file_overwrite": False,
+            },
         },
         "staticfiles": {
-            "BACKEND": "bookwyrm.storage_backends.StaticStorage",
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "location": "static",
+                "default_acl": "public-read",
+            },
         },
         "exports": {
-            "BACKEND": "bookwyrm.storage_backends.ExportsS3Storage",
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "location": "images",
+                "default_acl": None,
+                "file_overwrite": False,
+            },
         },
     }
     # S3 Static settings
@@ -431,10 +445,17 @@ elif USE_AZURE:
     # Storages
     STORAGES = {
         "default": {
-            "BACKEND": "bookwyrm.storage_backends.AzureImagesStorage",
+            "BACKEND": "storages.backends.azure_storage.AzureStorage",
+            "OPTIONS": {
+                "location": "images",
+                "overwrite_files": False,
+            },
         },
         "staticfiles": {
-            "BACKEND": "bookwyrm.storage_backends.AzureStaticStorage",
+            "BACKEND": "storages.backends.azure_storage.AzureStorage",
+            "OPTIONS": {
+                "location": "static",
+            },
         },
         "exports": {
             "BACKEND": None,  # not implemented yet
@@ -465,7 +486,10 @@ else:
             "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
         },
         "exports": {
-            "BACKEND": "bookwyrm.storage_backends.ExportsFileStorage",
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+            "OPTIONS": {
+                "location": "exports",
+            },
         },
     }
     # Static settings

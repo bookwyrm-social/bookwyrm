@@ -10,9 +10,9 @@ from django.db.models import BooleanField, FileField, JSONField
 from django.db.models import Q
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
-from django.utils.module_loading import import_string
+from django.core.files.storage import storages
 
-from bookwyrm import settings, storage_backends
+from bookwyrm import settings
 
 from bookwyrm.models import AnnualGoal, ReadThrough, ShelfBook, ListItem
 from bookwyrm.models import Review, Comment, Quotation
@@ -35,8 +35,7 @@ class BookwyrmAwsSession(BotoSession):
 
 def select_exports_storage():
     """callable to allow for dependency on runtime configuration"""
-    cls = import_string(settings.EXPORTS_STORAGE)
-    return cls()
+    return storages["exports"]
 
 
 class BookwyrmExportJob(ParentJob):
@@ -116,7 +115,7 @@ def create_archive_task(job_id):
 
         if settings.USE_S3:
             # Storage for writing temporary files
-            exports_storage = storage_backends.ExportsS3Storage()
+            exports_storage = storages["exports"]
 
             # Handle for creating the final archive
             s3_tar = S3Tar(
@@ -136,7 +135,7 @@ def create_archive_task(job_id):
             )
 
             # Add images to TAR
-            images_storage = storage_backends.ImagesStorage()
+            images_storage = storages["default"]
 
             if user.avatar:
                 add_file_to_s3_tar(s3_tar, images_storage, user.avatar)
