@@ -139,13 +139,15 @@ class SiteSettings(SiteModel):
     def save(self, *args, **kwargs):
         """if require_confirm_email is disabled, make sure no users are pending,
         if enabled, make sure invite_question_text is not empty"""
+        if not self.invite_question_text:
+            self.invite_question_text = "What is your favourite book?"
+
+        super().save(*args, **kwargs)
+
         if not self.require_confirm_email:
             User.objects.filter(is_active=False, deactivation_reason="pending").update(
                 is_active=True, deactivation_reason=None
             )
-        if not self.invite_question_text:
-            self.invite_question_text = "What is your favourite book?"
-        super().save(*args, **kwargs)
 
 
 class Theme(SiteModel):

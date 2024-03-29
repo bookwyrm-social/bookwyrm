@@ -44,6 +44,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         """set the identifier"""
         super().save(*args, priority=priority, **kwargs)
         if not self.identifier:
+            # this needs the auto increment ID from the save() above
             self.identifier = self.get_identifier()
             super().save(*args, **kwargs, broadcast=False)
 
@@ -103,7 +104,11 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
     def save(self, *args, priority=BROADCAST, **kwargs):
         if not self.user:
             self.user = self.shelf.user
-        if self.id and self.user.local:
+
+        is_update = self.id is not None
+        super().save(*args, priority=priority, **kwargs)
+
+        if is_update and self.user.local:
             # remove all caches related to all editions of this book
             cache.delete_many(
                 [
@@ -111,7 +116,6 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
                     for book in self.book.parent_work.editions.all()
                 ]
             )
-        super().save(*args, priority=priority, **kwargs)
 
     def delete(self, *args, **kwargs):
         if self.id and self.user.local:

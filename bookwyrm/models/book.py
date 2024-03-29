@@ -103,7 +103,7 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         else:
             self.origin_id = self.remote_id
             self.remote_id = None
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     # pylint: disable=arguments-differ
     def broadcast(self, activity, sender, software="bookwyrm", **kwargs):
@@ -323,7 +323,7 @@ class Book(BookDataModel):
         if not isinstance(self, (Edition, Work)):
             raise ValueError("Books should be added as Editions or Works")
 
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
@@ -400,10 +400,11 @@ class Work(OrderedCollectionPageMixin, Book):
 
     def save(self, *args, **kwargs):
         """set some fields on the edition object"""
+        super().save(*args, **kwargs)
+
         # set rank
         for edition in self.editions.all():
             edition.save()
-        return super().save(*args, **kwargs)
 
     @property
     def default_edition(self):
@@ -526,16 +527,16 @@ class Edition(Book):
         # set rank
         self.edition_rank = self.get_rank()
 
-        # clear author cache
-        if self.id:
-            for author_id in self.authors.values_list("id", flat=True):
-                cache.delete(f"author-books-{author_id}")
-
         # Create sort title by removing articles from title
         if self.sort_title in [None, ""]:
             self.sort_title = self.guess_sort_title()
 
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
+
+        # clear author cache
+        if self.id:
+            for author_id in self.authors.values_list("id", flat=True):
+                cache.delete(f"author-books-{author_id}")
 
     @transaction.atomic
     def repair(self):

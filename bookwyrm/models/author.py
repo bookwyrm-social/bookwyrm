@@ -50,7 +50,7 @@ class Author(BookDataModel):
         if self.isni:
             self.isni = re.sub(r"\s", "", self.isni)
 
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     @property
     def isni_link(self):
