@@ -389,18 +389,26 @@ if USE_S3:
     AWS_DEFAULT_ACL = "public-read"
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
     AWS_S3_URL_PROTOCOL = env("AWS_S3_URL_PROTOCOL", f"{PROTOCOL}:")
+    # Storages
+    STORAGES = {
+        "default": {
+            "BACKEND": "bookwyrm.storage_backends.ImagesStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "bookwyrm.storage_backends.StaticStorage",
+        },
+        "exports": {
+            "BACKEND": "bookwyrm.storage_backends.ExportsS3Storage",
+        },
+    }
     # S3 Static settings
     STATIC_LOCATION = "static"
     STATIC_URL = f"{AWS_S3_URL_PROTOCOL}//{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
     STATIC_FULL_URL = STATIC_URL
-    STATICFILES_STORAGE = "bookwyrm.storage_backends.StaticStorage"
     # S3 Media settings
     MEDIA_LOCATION = "images"
     MEDIA_URL = f"{AWS_S3_URL_PROTOCOL}//{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/"
     MEDIA_FULL_URL = MEDIA_URL
-    DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.ImagesStorage"
-    # S3 Exports settings
-    EXPORTS_STORAGE = "bookwyrm.storage_backends.ExportsS3Storage"
     # Content Security Policy
     CSP_DEFAULT_SRC = [
         "'self'",
@@ -420,36 +428,52 @@ elif USE_AZURE:
     AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
     AZURE_CONTAINER = env("AZURE_CONTAINER")
     AZURE_CUSTOM_DOMAIN = env("AZURE_CUSTOM_DOMAIN")
+    # Storages
+    STORAGES = {
+        "default": {
+            "BACKEND": "bookwyrm.storage_backends.AzureImagesStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "bookwyrm.storage_backends.AzureStaticStorage",
+        },
+        "exports": {
+            "BACKEND": None,  # not implemented yet
+        },
+    }
     # Azure Static settings
     STATIC_LOCATION = "static"
     STATIC_URL = (
         f"{PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/{STATIC_LOCATION}/"
     )
     STATIC_FULL_URL = STATIC_URL
-    STATICFILES_STORAGE = "bookwyrm.storage_backends.AzureStaticStorage"
     # Azure Media settings
     MEDIA_LOCATION = "images"
     MEDIA_URL = (
         f"{PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/{MEDIA_LOCATION}/"
     )
     MEDIA_FULL_URL = MEDIA_URL
-    DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.AzureImagesStorage"
-    # Azure Exports settings
-    EXPORTS_STORAGE = None  # not implemented yet
     # Content Security Policy
     CSP_DEFAULT_SRC = ["'self'", AZURE_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
     CSP_SCRIPT_SRC = ["'self'", AZURE_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
 else:
+    # Storages
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+        "exports": {
+            "BACKEND": "bookwyrm.storage_backends.ExportsFileStorage",
+        },
+    }
     # Static settings
     STATIC_URL = "/static/"
     STATIC_FULL_URL = BASE_URL + STATIC_URL
-    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
     # Media settings
     MEDIA_URL = "/images/"
     MEDIA_FULL_URL = BASE_URL + MEDIA_URL
-    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-    # Exports settings
-    EXPORTS_STORAGE = "bookwyrm.storage_backends.ExportsFileStorage"
     # Content Security Policy
     CSP_DEFAULT_SRC = ["'self'"] + CSP_ADDITIONAL_HOSTS
     CSP_SCRIPT_SRC = ["'self'"] + CSP_ADDITIONAL_HOSTS
