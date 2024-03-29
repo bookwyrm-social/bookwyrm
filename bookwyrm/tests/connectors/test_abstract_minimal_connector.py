@@ -10,9 +10,9 @@ class AbstractConnector(TestCase):
     """generic code for connecting to outside data sources"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need an example connector in the database"""
-        self.connector_info = models.Connector.objects.create(
+        cls.connector_info = models.Connector.objects.create(
             identifier="example.com",
             connector_file="openlibrary",
             base_url="https://example.com",
