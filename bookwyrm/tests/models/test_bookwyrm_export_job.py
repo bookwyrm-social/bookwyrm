@@ -233,22 +233,24 @@ class BookwyrmExportJob(TestCase):
         models.bookwyrm_export_job.create_archive_task(job_id=self.job.id)
         self.job.refresh_from_db()
 
-        with self.job.export_data.open("rb") as tar_file:
-            with BookwyrmTarFile.open(mode="r", fileobj=tar_file) as tar:
-                archive_json_file = tar.extractfile("archive.json")
-                data = json.load(archive_json_file)
+        with (
+            self.job.export_data.open("rb") as tar_file,
+            BookwyrmTarFile.open(mode="r", fileobj=tar_file) as tar,
+        ):
+            archive_json_file = tar.extractfile("archive.json")
+            data = json.load(archive_json_file)
 
-                # JSON from the archive should be what we want it to be
-                self.assertEqual(data, self.job.export_json)
+            # JSON from the archive should be what we want it to be
+            self.assertEqual(data, self.job.export_json)
 
-                # User avatar should be present in archive
-                with self.local_user.avatar.open() as expected_avatar:
-                    archive_avatar = tar.extractfile(data["icon"]["url"])
-                    self.assertEqual(expected_avatar.read(), archive_avatar.read())
+            # User avatar should be present in archive
+            with self.local_user.avatar.open() as expected_avatar:
+                archive_avatar = tar.extractfile(data["icon"]["url"])
+                self.assertEqual(expected_avatar.read(), archive_avatar.read())
 
-                # Edition cover should be present in archive
-                with self.edition.cover.open() as expected_cover:
-                    archive_cover = tar.extractfile(
-                        data["books"][0]["edition"]["cover"]["url"]
-                    )
-                    self.assertEqual(expected_cover.read(), archive_cover.read())
+            # Edition cover should be present in archive
+            with self.edition.cover.open() as expected_cover:
+                archive_cover = tar.extractfile(
+                    data["books"][0]["edition"]["cover"]["url"]
+                )
+                self.assertEqual(expected_cover.read(), archive_cover.read())
