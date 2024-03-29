@@ -19,17 +19,17 @@ class Book(TestCase):
     """not too much going on in the books model but here we are"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we'll need some books"""
-        self.work = models.Work.objects.create(
+        cls.work = models.Work.objects.create(
             title="Example Work", remote_id="https://example.com/book/1"
         )
-        self.first_edition = models.Edition.objects.create(
-            title="Example Edition", parent_work=self.work
+        cls.first_edition = models.Edition.objects.create(
+            title="Example Edition", parent_work=cls.work
         )
-        self.second_edition = models.Edition.objects.create(
+        cls.second_edition = models.Edition.objects.create(
             title="Another Example Edition",
-            parent_work=self.work,
+            parent_work=cls.work,
         )
 
     def test_remote_id(self):

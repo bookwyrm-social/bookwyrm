@@ -14,9 +14,9 @@ class SetupViews(TestCase):
     """activity feed, statuses, dms"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.site = models.SiteSettings.objects.create(install_mode=True)
+        cls.site = models.SiteSettings.objects.create(install_mode=True)
 
     def setUp(self):
         """individual test setup"""

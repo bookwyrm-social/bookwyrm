@@ -13,19 +13,21 @@ class FeedPageTags(TestCase):
     """lotta different things here"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """create some filler objects"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.mouse",
                 "mouseword",
                 local=True,
                 localname="mouse",
             )
-        self.book = models.Edition.objects.create(title="Test Book")
+        cls.book = models.Edition.objects.create(title="Test Book")
 
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_load_subclass(self, *_):
