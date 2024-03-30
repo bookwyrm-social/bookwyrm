@@ -145,7 +145,9 @@ def load_more_data(connector_id: str, book_id: str) -> None:
     """background the work of getting all 10,000 editions of LoTR"""
     connector_info = models.Connector.objects.get(id=connector_id)
     connector = load_connector(connector_info)
-    book = models.Book.objects.select_subclasses().get(id=book_id)
+    book = models.Book.objects.select_subclasses().get(  # type: ignore[no-untyped-call]
+        id=book_id
+    )
     connector.expand_book_data(book)
 
 
@@ -156,7 +158,9 @@ def create_edition_task(
     """separate task for each of the 10,000 editions of LoTR"""
     connector_info = models.Connector.objects.get(id=connector_id)
     connector = load_connector(connector_info)
-    work = models.Work.objects.select_subclasses().get(id=work_id)
+    work = models.Work.objects.select_subclasses().get(  # type: ignore[no-untyped-call]
+        id=work_id
+    )
     connector.create_edition_from_data(work, data)
 
 
