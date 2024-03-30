@@ -78,7 +78,7 @@ class DeleteUserViews(TestCase):
         form.data["password"] = "password"
         request = self.factory.post("", form.data)
         request.user = self.local_user
-        middleware = SessionMiddleware()
+        middleware = SessionMiddleware(request)
         middleware.process_request(request)
         request.session.save()
 
@@ -105,7 +105,7 @@ class DeleteUserViews(TestCase):
         view = views.DeactivateUser.as_view()
         request = self.factory.post("")
         request.user = self.local_user
-        middleware = SessionMiddleware()
+        middleware = SessionMiddleware(request)
         middleware.process_request(request)
         request.session.save()
 
@@ -137,7 +137,7 @@ class DeleteUserViews(TestCase):
         form.data["password"] = "password"
         request = self.factory.post("", form.data)
         request.user = self.local_user
-        middleware = SessionMiddleware()
+        middleware = SessionMiddleware(request)
         middleware.process_request(request)
         request.session.save()
 
@@ -159,7 +159,7 @@ class DeleteUserViews(TestCase):
         form.data["password"] = "password"
         request = self.factory.post("", form.data)
         request.user = self.local_user
-        middleware = SessionMiddleware()
+        middleware = SessionMiddleware(request)
         middleware.process_request(request)
         request.session.save()
 
