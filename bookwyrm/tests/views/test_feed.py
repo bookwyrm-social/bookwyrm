@@ -24,32 +24,38 @@ from bookwyrm.tests.validate_html import validate_html
 class FeedViews(TestCase):
     """activity feed, statuses, dms"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
                 "password",
                 local=True,
                 localname="mouse",
             )
-            self.another_user = models.User.objects.create_user(
+            cls.another_user = models.User.objects.create_user(
                 "nutria@local.com",
                 "nutria@nutria.nutria",
                 "password",
                 local=True,
                 localname="nutria",
             )
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             parent_work=models.Work.objects.create(title="hi"),
             title="Example Edition",
             remote_id="https://example.com/book/1",
         )
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
     def test_feed(self, *_):

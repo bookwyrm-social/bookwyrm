@@ -1,0 +1,16 @@
+{% extends 'notifications/items/layout.html' %}
+{% load i18n %}
+
+{% block primary_link %}{% spaceless %}
+{% url 'user-import' %}
+{% endspaceless %}{% endblock %}
+
+{% block icon %}
+<span class="icon icon-list"></span>
+{% endblock %}
+
+{% block description %}
+{% url 'user-import' as import_url %}
+{% blocktrans %}Your <a href="{{ import_url }}">user import</a> is complete.{% endblocktrans %}
+
+{% endblock %}

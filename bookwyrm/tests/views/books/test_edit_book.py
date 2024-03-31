@@ -19,13 +19,15 @@ from bookwyrm.tests.views.books.test_book import _setup_cover_url
 class EditBookViews(TestCase):
     """books books books"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -33,24 +35,27 @@ class EditBookViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-        self.group = Group.objects.create(name="editor")
-        self.group.permissions.add(
+        cls.group = Group.objects.create(name="editor")
+        cls.group.permissions.add(
             Permission.objects.create(
                 name="edit_book",
                 codename="edit_book",
                 content_type=ContentType.objects.get_for_model(models.User),
             ).id
         )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.work = models.Work.objects.create(title="Test Work")
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
-            parent_work=self.work,
+            parent_work=cls.work,
         )
+        models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
         # pylint: disable=line-too-long
         self.authors_body = "<?xml version='1.0' encoding='UTF-8' ?><?xml-stylesheet type='text/xsl' href='http://isni.oclc.org/sru/DB=1.2/?xsl=searchRetrieveResponse' ?><srw:searchRetrieveResponse xmlns:srw='http://www.loc.gov/zing/srw/' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:diag='http://www.loc.gov/zing/srw/diagnostic/' xmlns:xcql='http://www.loc.gov/zing/cql/xcql/'><srw:version>1.1</srw:version><srw:records><srw:record><isniUnformatted>0000000084510024</isniUnformatted></srw:record></srw:records></srw:searchRetrieveResponse>"
-
-        # pylint: disable=line-too-long
         self.author_body = "<?xml version='1.0' encoding='UTF-8' ?><?xml-stylesheet type='text/xsl' href='http://isni.oclc.org/sru/DB=1.2/?xsl=searchRetrieveResponse' ?><srw:searchRetrieveResponse xmlns:srw='http://www.loc.gov/zing/srw/' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:diag='http://www.loc.gov/zing/srw/diagnostic/' xmlns:xcql='http://www.loc.gov/zing/cql/xcql/'><srw:records><srw:record><srw:recordData><responseRecord><ISNIAssigned><isniUnformatted>0000000084510024</isniUnformatted><isniURI>https://isni.org/isni/0000000084510024</isniURI><dataConfidence>60</dataConfidence><ISNIMetadata><identity><personOrFiction><personalName><surname>Catherine Amy Dawson Scott</surname><nameTitle>poet and novelist</nameTitle><nameUse>public</nameUse><source>VIAF</source><source>WKP</source><subsourceIdentifier>Q544961</subsourceIdentifier></personalName><personalName><forename>C. A.</forename><surname>Dawson Scott</surname><marcDate>1865-1934</marcDate><nameUse>public</nameUse><source>VIAF</source><source>NLP</source><subsourceIdentifier>a28927850</subsourceIdentifier></personalName><sources><codeOfSource>VIAF</codeOfSource><sourceIdentifier>45886165</sourceIdentifier><reference><class>ALL</class><role>CRE</role><URI>http://viaf.org/viaf/45886165</URI></reference></sources><externalInformation><information>Wikipedia</information><URI>https://en.wikipedia.org/wiki/Catherine_Amy_Dawson_Scott</URI></externalInformation></ISNIMetadata></ISNIAssigned></responseRecord></srw:recordData></srw:record></srw:records></srw:searchRetrieveResponse>"
 
         responses.get(
@@ -85,8 +90,6 @@ class EditBookViews(TestCase):
             ],
             body=self.author_body,
         )
-
-        models.SiteSettings.objects.create()
 
     def test_edit_book_get(self):
         """there are so many views, this just makes sure it LOADS"""

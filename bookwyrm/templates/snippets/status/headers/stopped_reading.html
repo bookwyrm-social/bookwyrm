@@ -19,5 +19,8 @@ stopped reading <a href="{{ book_path }}">{{ book }}</a>
 {% endblocktrans %}
 
 {% endif %}
+
+{% include 'snippets/book_series.html' with book=book %}
+
 {% endspaceless %}
 

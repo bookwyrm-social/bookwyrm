@@ -1,0 +1,99 @@
+name: Python
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# overrides for .env.example
+env:
+  POSTGRES_HOST: 127.0.0.1
+  PGPORT: 5432
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: hunter2
+  POSTGRES_DB: github_actions
+  SECRET_KEY: beepbeep
+  EMAIL_HOST_USER: ""
+  EMAIL_HOST_PASSWORD: ""
+
+jobs:
+  pytest:
+    name: Tests (pytest)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+        env: # does not inherit from jobs.build.env
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: hunter2
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.11
+        cache: pip
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest-github-actions-annotate-failures
+    - name: Set up .env
+      run: cp .env.example .env
+    - name: Check migrations up-to-date
+      run: python ./manage.py makemigrations --check
+    - name: Run Tests
+      run: pytest -n 3
+
+  pylint:
+    name: Linting (pylint)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.11
+        cache: pip
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Analyse code with pylint
+      run: pylint bookwyrm/
+
+  mypy:
+    name: Typing (mypy)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.11
+        cache: pip
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Set up .env
+      run: cp .env.example .env
+    - name: Analyse code with mypy
+      run: mypy bookwyrm celerywyrm
+
+  black:
+    name: Formatting (black; run ./bw-dev black to fix)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+    - uses: psf/black@stable
+      with:
+        version: "22.*"

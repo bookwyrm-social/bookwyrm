@@ -15,13 +15,15 @@ from bookwyrm.tests.validate_html import validate_html
 class ListViews(TestCase):
     """list view"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -30,22 +32,25 @@ class ListViews(TestCase):
                 remote_id="https://example.com/users/mouse",
             )
         work = models.Work.objects.create(title="Work")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,
         )
 
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
-            self.list = models.List.objects.create(
-                name="Test List", user=self.local_user
-            )
-        self.anonymous_user = AnonymousUser
-        self.anonymous_user.is_authenticated = False
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+        ):
+            cls.list = models.List.objects.create(name="Test List", user=cls.local_user)
 
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
+        self.anonymous_user = AnonymousUser
+        self.anonymous_user.is_authenticated = False
 
     def test_embed_call_without_key(self):
         """there are so many views, this just makes sure it DOESN’T load"""

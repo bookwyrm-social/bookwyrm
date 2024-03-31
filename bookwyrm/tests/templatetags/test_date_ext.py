@@ -2,9 +2,15 @@
 from dateutil.parser import isoparse
 
 from django.test import TestCase, override_settings
+from django.utils import timezone
 
 from bookwyrm.templatetags import date_ext
-from bookwyrm.utils.partial_date import MonthParts, YearParts, from_partial_isoformat
+from bookwyrm.utils.partial_date import (
+    MonthParts,
+    PartialDate,
+    YearParts,
+    from_partial_isoformat,
+)
 
 
 @override_settings(LANGUAGE_CODE="en-AU")
@@ -60,3 +66,20 @@ class PartialDateTags(TestCase):
         self.assertEqual(
             "December.31", date_ext.naturalday_partial(self._partial_year, "F.j")
         )
+
+    def test_natural_format(self):
+        """today and yesterday are handled correctly"""
+        today = timezone.now()
+        today_date = today.date()
+        today_exact = PartialDate.from_datetime(today)
+
+        # exact dates can be naturalized
+        self.assertEqual("today", date_ext.naturalday_partial(today))
+        self.assertEqual("today", date_ext.naturalday_partial(today_date))
+        self.assertEqual("today", date_ext.naturalday_partial(today_exact))
+
+        # dates with missing parts can't
+        today_year = YearParts.from_datetime(today)
+        today_month = MonthParts.from_datetime(today)
+        self.assertEqual(str(today.year), date_ext.naturalday_partial(today_year))
+        self.assertEqual(str(today.year), date_ext.naturalday_partial(today_month, "Y"))

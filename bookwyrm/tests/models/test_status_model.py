@@ -24,17 +24,19 @@ from bookwyrm import activitypub, models, settings
 class Status(TestCase):
     """lotta types of statuses"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """useful things for creating a status"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -43,8 +45,12 @@ class Status(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        self.book = models.Edition.objects.create(title="Test Edition")
+        cls.book = models.Edition.objects.create(title="Test Edition")
 
+    def setUp(self):
+        """individual test setup"""
+        self.anonymous_user = AnonymousUser
+        self.anonymous_user.is_authenticated = False
         image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
         )
@@ -53,9 +59,6 @@ class Status(TestCase):
         with patch("bookwyrm.models.Status.broadcast"):
             image.save(output, format=image.format)
             self.book.cover.save("test.jpg", ContentFile(output.getvalue()))
-
-        self.anonymous_user = AnonymousUser
-        self.anonymous_user.is_authenticated = False
 
     def test_status_generated_fields(self, *_):
         """setting remote id"""

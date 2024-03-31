@@ -1,17 +1,24 @@
 """ Let users export their book data """
+from datetime import timedelta
 import csv
 import io
 
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.views import View
 from django.utils.decorators import method_decorator
+from django.shortcuts import redirect
 
 from bookwyrm import models
+from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
+from bookwyrm.settings import PAGE_LENGTH
 
-# pylint: disable=no-self-use
+
+# pylint: disable=no-self-use,too-many-locals
 @method_decorator(login_required, name="dispatch")
 class Export(View):
     """Let users export data"""
@@ -48,7 +55,19 @@ class Export(View):
         fields = (
             ["title", "author_text"]
             + deduplication_fields
-            + ["rating", "review_name", "review_cw", "review_content"]
+            + [
+                "start_date",
+                "finish_date",
+                "stopped_date",
+                "rating",
+                "review_name",
+                "review_cw",
+                "review_content",
+                "review_published",
+                "shelf",
+                "shelf_name",
+                "shelf_date",
+            ]
         )
         writer.writerow(fields)
 
@@ -64,6 +83,24 @@ class Export(View):
 
             book.rating = review_rating.rating if review_rating else None
 
+            readthrough = (
+                models.ReadThrough.objects.filter(user=request.user, book=book)
+                .order_by("-start_date", "-finish_date")
+                .first()
+            )
+            if readthrough:
+                book.start_date = (
+                    readthrough.start_date.date() if readthrough.start_date else None
+                )
+                book.finish_date = (
+                    readthrough.finish_date.date() if readthrough.finish_date else None
+                )
+                book.stopped_date = (
+                    readthrough.stopped_date.date()
+                    if readthrough.stopped_date
+                    else None
+                )
+
             review = (
                 models.Review.objects.filter(
                     user=request.user, book=book, content__isnull=False
@@ -72,9 +109,27 @@ class Export(View):
                 .first()
             )
             if review:
+                book.review_published = (
+                    review.published_date.date() if review.published_date else None
+                )
                 book.review_name = review.name
                 book.review_cw = review.content_warning
-                book.review_content = review.raw_content
+                book.review_content = (
+                    review.raw_content if review.raw_content else review.content
+                )  # GoodReads imported reviews do not have raw_content, but content.
+
+            shelfbook = (
+                models.ShelfBook.objects.filter(user=request.user, book=book)
+                .order_by("-shelved_date", "-created_date", "-updated_date")
+                .last()
+            )
+            if shelfbook:
+                book.shelf = shelfbook.shelf.identifier
+                book.shelf_name = shelfbook.shelf.name
+                book.shelf_date = (
+                    shelfbook.shelved_date.date() if shelfbook.shelved_date else None
+                )
+
             writer.writerow([getattr(book, field, "") or "" for field in fields])
 
         return HttpResponse(
@@ -82,5 +137,63 @@ class Export(View):
             content_type="text/csv",
             headers={
                 "Content-Disposition": 'attachment; filename="bookwyrm-export.csv"'
+            },
+        )
+
+
+# pylint: disable=no-self-use
+@method_decorator(login_required, name="dispatch")
+class ExportUser(View):
+    """Let users export user data to import into another Bookwyrm instance"""
+
+    def get(self, request):
+        """Request tar file"""
+
+        jobs = BookwyrmExportJob.objects.filter(user=request.user).order_by(
+            "-created_date"
+        )
+        site = models.SiteSettings.objects.get()
+        hours = site.user_import_time_limit
+        allowed = (
+            jobs.first().created_date < timezone.now() - timedelta(hours=hours)
+            if jobs.first()
+            else True
+        )
+        next_available = (
+            jobs.first().created_date + timedelta(hours=hours) if not allowed else False
+        )
+        paginated = Paginator(jobs, PAGE_LENGTH)
+        page = paginated.get_page(request.GET.get("page"))
+        data = {
+            "jobs": page,
+            "next_available": next_available,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
+        }
+
+        return TemplateResponse(request, "preferences/export-user.html", data)
+
+    def post(self, request):
+        """Download the json file of a user's data"""
+
+        job = BookwyrmExportJob.objects.create(user=request.user)
+        job.start_job()
+
+        return redirect("prefs-user-export")
+
+
+@method_decorator(login_required, name="dispatch")
+class ExportArchive(View):
+    """Serve the archive file"""
+
+    def get(self, request, archive_id):
+        """download user export file"""
+        export = BookwyrmExportJob.objects.get(task_id=archive_id, user=request.user)
+        return HttpResponse(
+            export.export_data,
+            content_type="application/gzip",
+            headers={
+                "Content-Disposition": 'attachment; filename="bookwyrm-account-export.tar.gz"'  # pylint: disable=line-too-long
             },
         )

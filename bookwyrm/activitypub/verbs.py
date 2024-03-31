@@ -171,9 +171,19 @@ class Reject(Verb):
     type: str = "Reject"
 
     def action(self, allow_external_connections=True):
-        """reject a follow request"""
-        obj = self.object.to_model(save=False, allow_create=False)
-        obj.reject()
+        """reject a follow or follow request"""
+
+        for model_name in ["UserFollowRequest", "UserFollows", None]:
+            model = apps.get_model(f"bookwyrm.{model_name}") if model_name else None
+            if obj := self.object.to_model(
+                model=model,
+                save=False,
+                allow_create=False,
+                allow_external_connections=allow_external_connections,
+            ):
+                # Reject the first model that can be built.
+                obj.reject()
+                break
 
 
 @dataclass(init=False)

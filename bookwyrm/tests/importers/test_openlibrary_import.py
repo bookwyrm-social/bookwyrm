@@ -23,21 +23,26 @@ def make_date(*args):
 class OpenLibraryImport(TestCase):
     """importing from openlibrary csv"""
 
-    # pylint: disable=invalid-name
     def setUp(self):
         """use a test csv"""
         self.importer = OpenLibraryImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/openlibrary.csv")
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+
+    @classmethod
+    def setUpTestData(cls):
+        """populate database"""
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
         models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,

@@ -15,23 +15,27 @@ from bookwyrm import models
 class ReadThrough(TestCase):
     """readthrough tests"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """basic user and book data"""
-        self.client = Client()
+        cls.work = models.Work.objects.create(title="Example Work")
 
-        self.work = models.Work.objects.create(title="Example Work")
-
-        self.edition = models.Edition.objects.create(
-            title="Example Edition", parent_work=self.work
+        cls.edition = models.Edition.objects.create(
+            title="Example Edition", parent_work=cls.work
         )
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.user = models.User.objects.create_user(
                 "cinco", "cinco@example.com", "seissiete", local=True, localname="cinco"
             )
 
+    def setUp(self):
+        """individual test setup"""
+        self.client = Client()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             self.client.force_login(self.user)
 

@@ -26,22 +26,26 @@ def make_date(*args):
 class GenericImporter(TestCase):
     """importing from csv"""
 
-    # pylint: disable=invalid-name
     def setUp(self):
         """use a test csv"""
-
         self.importer = Importer()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/generic.csv")
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+
+    @classmethod
+    def setUpTestData(cls):
+        """populate database"""
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
         models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,
@@ -264,9 +268,11 @@ class GenericImporter(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            with patch("bookwyrm.models.Status.broadcast") as broadcast_mock:
-                handle_imported_book(import_item)
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.models.Status.broadcast") as broadcast_mock,
+        ):
+            handle_imported_book(import_item)
         kwargs = broadcast_mock.call_args.kwargs
         self.assertEqual(kwargs["software"], "bookwyrm")
         review = models.Review.objects.get(book=self.book, user=self.local_user)
