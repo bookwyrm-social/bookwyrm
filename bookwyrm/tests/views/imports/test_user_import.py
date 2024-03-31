@@ -47,16 +47,16 @@ class ImportUserViews(TestCase):
 
         view = views.UserImport.as_view()
         form = forms.ImportUserForm()
-        archive_file = pathlib.Path(__file__).parent.joinpath(
+        archive_path = pathlib.Path(__file__).parent.joinpath(
             "../../data/bookwyrm_account_export.tar.gz"
         )
 
-        form.data["archive_file"] = SimpleUploadedFile(
-            # pylint: disable=consider-using-with
-            archive_file,
-            open(archive_file, "rb").read(),
-            content_type="application/gzip",
-        )
+        with open(archive_path, "rb") as archive_file:
+            form.data["archive_file"] = SimpleUploadedFile(
+                archive_path,
+                archive_file.read(),
+                content_type="application/gzip",
+            )
 
         form.data["include_user_settings"] = ""
         form.data["include_goals"] = "on"

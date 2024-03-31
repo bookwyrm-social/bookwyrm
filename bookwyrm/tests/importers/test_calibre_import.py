@@ -9,7 +9,6 @@ from bookwyrm.importers import CalibreImporter
 from bookwyrm.models.import_job import handle_imported_book
 
 
-# pylint: disable=consider-using-with
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
@@ -20,7 +19,12 @@ class CalibreImport(TestCase):
         """use a test csv"""
         self.importer = CalibreImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/calibre.csv")
+        # pylint: disable-next=consider-using-with
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
+
+    def tearDown(self):
+        """close test csv"""
+        self.csv.close()
 
     @classmethod
     def setUpTestData(cls):
