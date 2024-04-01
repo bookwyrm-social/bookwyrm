@@ -7,7 +7,7 @@ from uuid import uuid4
 
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser
-from django.contrib.postgres.fields import ArrayField, CICharField
+from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.dispatch import receiver
 from django.db import models, transaction, IntegrityError
@@ -76,11 +76,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     summary = fields.HtmlField(null=True, blank=True)
     local = models.BooleanField(default=False)
     bookwyrm_user = fields.BooleanField(default=True)
-    localname = CICharField(
+    localname = models.CharField(
         max_length=255,
         null=True,
         unique=True,
         validators=[fields.validate_localname],
+        db_collation="case_insensitive",
     )
     # name is your display name, which you can change at will
     name = fields.CharField(max_length=100, null=True, blank=True)
@@ -157,7 +158,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     show_guided_tour = models.BooleanField(default=True)
 
     # feed options
-    feed_status_types = ArrayField(
+    feed_status_types = DjangoArrayField(
         models.CharField(max_length=10, blank=False, choices=FeedFilterChoices),
         size=8,
         default=get_feed_filter_choices,
