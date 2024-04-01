@@ -257,11 +257,8 @@ if env.bool("USE_DUMMY_CACHE", False):
 else:
     CACHES = {
         "default": {
-            "BACKEND": "django_redis.cache.RedisCache",
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
             "LOCATION": REDIS_ACTIVITY_URL,
-            "OPTIONS": {
-                "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            },
         },
         "file_resubmit": {
             "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
