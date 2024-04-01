@@ -231,7 +231,7 @@ def maybe_redirect_local_path(request, model):
 def redirect_to_referer(request, *args, **kwargs):
     """Redirect to the referrer, if it's in our domain, with get params"""
     # make sure the refer is part of this instance
-    validated = validate_url_domain(request.META.get("HTTP_REFERER"))
+    validated = validate_url_domain(request.headers.get("referer", ""))
 
     if validated:
         return redirect(validated)

@@ -72,12 +72,12 @@ class Signature(TestCase):
             urlsplit(self.rat.inbox).path,
             data=data,
             content_type="application/json",
-            **{
-                "HTTP_DATE": now,
-                "HTTP_SIGNATURE": signature,
-                "HTTP_DIGEST": digest,
-                "HTTP_CONTENT_TYPE": "application/activity+json; charset=utf-8",
-                "HTTP_HOST": NETLOC,
+            headers={
+                "date": now,
+                "signature": signature,
+                "digest": digest,
+                "content-type": "application/activity+json; charset=utf-8",
+                "host": NETLOC,
             },
         )
 
