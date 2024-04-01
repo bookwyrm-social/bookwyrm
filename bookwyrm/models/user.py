@@ -1,5 +1,7 @@
 """ database schema for user data """
+import datetime
 import re
+import zoneinfo
 from urllib.parse import urlparse
 from uuid import uuid4
 
@@ -12,7 +14,6 @@ from django.db import models, transaction, IntegrityError
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
-import pytz
 
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_data, ConnectorException
@@ -165,8 +166,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     summary_keys = models.JSONField(null=True)
 
     preferred_timezone = models.CharField(
-        choices=[(str(tz), str(tz)) for tz in pytz.all_timezones],
-        default=str(pytz.utc),
+        choices=[(str(tz), str(tz)) for tz in sorted(zoneinfo.available_timezones())],
+        default=str(datetime.timezone.utc),
         max_length=255,
     )
     preferred_language = models.CharField(

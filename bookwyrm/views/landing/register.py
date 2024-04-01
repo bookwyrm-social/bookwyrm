@@ -1,5 +1,5 @@
 """ class views for login/register views """
-import pytz
+import zoneinfo
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
@@ -57,9 +57,11 @@ class Register(View):
         email = form.data["email"]
         password = form.data["password"]
         try:
-            preferred_timezone = pytz.timezone(form.data.get("preferred_timezone"))
-        except pytz.exceptions.UnknownTimeZoneError:
-            preferred_timezone = pytz.utc
+            preferred_timezone = zoneinfo.ZoneInfo(
+                form.data.get("preferred_timezone", "")
+            )
+        except (ValueError, zoneinfo.ZoneInfoNotFoundError):
+            preferred_timezone = zoneinfo.ZoneInfo("UTC")
 
         # make sure the email isn't blocked as spam
         email_domain = email.split("@")[-1]
