@@ -18,7 +18,6 @@ django-storages==1.14.2
 django-storages[azure]
 environs==11.0.0
 flower==2.0.1
-grpcio==1.57.0 # Not a direct dependency, pinned to get a security fix
 libsass==0.23.0
 Markdown==3.6
 opentelemetry-api==1.24.0
@@ -39,8 +38,11 @@ redis==5.0.3
 requests==2.31.0
 responses==0.22.0
 s3-tar==0.1.13
-setuptools>=65.5.1 # Not a direct dependency, pinned to get a security fix
-tornado==6.3.3 # Not a direct dependency, pinned to get a security fix
+
+# Indirect dependencies with version constraints for security fixes
+grpcio>=1.57.0
+setuptools>=65.5.1
+tornado>=6.3.3
 
 # Dev
 black==22.*
