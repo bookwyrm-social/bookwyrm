@@ -80,6 +80,9 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """default sorting"""
 
         ordering = ("-published_date",)
+        indexes = [
+            models.Index(fields=["remote_id"]),
+        ]
 
     def save(self, *args, **kwargs):
         """save and notify"""
