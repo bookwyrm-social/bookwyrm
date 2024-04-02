@@ -14,12 +14,14 @@ class BlockViews(TestCase):
     """view user and edit profile"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
                 "password",
@@ -27,7 +29,7 @@ class BlockViews(TestCase):
                 localname="mouse",
             )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -65,8 +67,9 @@ class BlockViews(TestCase):
 
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.activitystreams.remove_user_statuses_task.delay"), patch(
-            "bookwyrm.lists_stream.remove_user_lists_task.delay"
+        with (
+            patch("bookwyrm.activitystreams.remove_user_statuses_task.delay"),
+            patch("bookwyrm.lists_stream.remove_user_lists_task.delay"),
         ):
             view(request, self.remote_user.id)
         block = models.UserBlocks.objects.get()
@@ -82,8 +85,9 @@ class BlockViews(TestCase):
         request = self.factory.post("")
         request.user = self.local_user
 
-        with patch("bookwyrm.activitystreams.add_user_statuses_task.delay"), patch(
-            "bookwyrm.lists_stream.add_user_lists_task.delay"
+        with (
+            patch("bookwyrm.activitystreams.add_user_statuses_task.delay"),
+            patch("bookwyrm.lists_stream.add_user_lists_task.delay"),
         ):
             views.unblock(request, self.remote_user.id)
 

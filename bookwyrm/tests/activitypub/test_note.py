@@ -11,18 +11,20 @@ class Note(TestCase):
     """the model-linked ActivityPub dataclass for Note-based types"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """create a shared user"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
-        self.user.remote_id = "https://test-instance.org/user/critic"
-        self.user.save(broadcast=False, update_fields=["remote_id"])
+        cls.user.remote_id = "https://test-instance.org/user/critic"
+        cls.user.save(broadcast=False, update_fields=["remote_id"])
 
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Test Edition", remote_id="http://book.com/book"
         )
 
