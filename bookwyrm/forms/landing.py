@@ -8,6 +8,7 @@ import pyotp
 
 from bookwyrm import models
 from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import TWO_FACTOR_LOGIN_VALIDITY_WINDOW
 from .custom_form import CustomForm
 
 
@@ -108,7 +109,7 @@ class Confirm2FAForm(CustomForm):
         otp = self.data.get("otp")
         totp = pyotp.TOTP(self.instance.otp_secret)
 
-        if not totp.verify(otp):
+        if not totp.verify(otp, valid_window=TWO_FACTOR_LOGIN_VALIDITY_WINDOW):
 
             if self.instance.hotp_secret:
                 # maybe it's a backup code?

@@ -14,19 +14,19 @@ from bookwyrm import activitystreams, models
 class ActivitystreamsSignals(TestCase):
     """using redis to build activity streams"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """use a test csv"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
             )
-            self.another_user = models.User.objects.create_user(
-                "fish", "fish@fish.fish", "password", local=True, localname="fish"
-            )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -35,8 +35,6 @@ class ActivitystreamsSignals(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        work = models.Work.objects.create(title="test work")
-        self.book = models.Edition.objects.create(title="test book", parent_work=work)
 
     def test_add_status_on_create_ignore(self, *_):
         """a new statuses has entered"""
@@ -64,7 +62,7 @@ class ActivitystreamsSignals(TestCase):
         self.assertEqual(mock.call_count, 1)
         args = mock.call_args[1]
         self.assertEqual(args["args"][0], status.id)
-        self.assertEqual(args["queue"], "high_priority")
+        self.assertEqual(args["queue"], "streams")
 
     def test_add_status_on_create_created_low_priority(self, *_):
         """a new statuses has entered"""
@@ -82,7 +80,7 @@ class ActivitystreamsSignals(TestCase):
         self.assertEqual(mock.call_count, 1)
         args = mock.call_args[1]
         self.assertEqual(args["args"][0], status.id)
-        self.assertEqual(args["queue"], "low_priority")
+        self.assertEqual(args["queue"], "import_triggered")
 
         # published later than yesterday
         status = models.Status.objects.create(
@@ -97,7 +95,7 @@ class ActivitystreamsSignals(TestCase):
         self.assertEqual(mock.call_count, 1)
         args = mock.call_args[1]
         self.assertEqual(args["args"][0], status.id)
-        self.assertEqual(args["queue"], "low_priority")
+        self.assertEqual(args["queue"], "import_triggered")
 
     def test_populate_streams_on_account_create_command(self, *_):
         """create streams for a user"""

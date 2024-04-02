@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
+from bookwyrm.views.helpers import redirect_to_referer
 
 
 @login_required
@@ -64,13 +65,14 @@ def shelve(request):
             .first()
         )
         if current_read_status_shelfbook is not None:
+            # If it is not already on the shelf
             if (
                 current_read_status_shelfbook.shelf.identifier
                 != desired_shelf.identifier
             ):
                 current_read_status_shelfbook.delete()
-            else:  # It is already on the shelf
-                return redirect("/")
+            else:
+                return redirect_to_referer(request)
 
         # create the new shelf-book entry
         models.ShelfBook.objects.create(
@@ -86,7 +88,8 @@ def shelve(request):
         # Might be good to alert, or reject the action?
         except IntegrityError:
             pass
-    return redirect("/")
+
+    return redirect_to_referer(request)
 
 
 @login_required
@@ -100,4 +103,4 @@ def unshelve(request, book_id=False):
     )
     shelf_book.raise_not_deletable(request.user)
     shelf_book.delete()
-    return redirect("/")
+    return redirect_to_referer(request)

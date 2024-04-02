@@ -8,7 +8,7 @@ from .base_model import BookWyrmModel
 
 
 class ProgressMode(models.TextChoices):
-    """types of prgress available"""
+    """types of progress available"""
 
     PAGE = "PG", "page"
     PERCENT = "PCT", "percent"
@@ -32,7 +32,7 @@ class ReadThrough(BookWyrmModel):
 
     def save(self, *args, **kwargs):
         """update user active time"""
-        cache.delete(f"latest_read_through-{self.user.id}-{self.book.id}")
+        cache.delete(f"latest_read_through-{self.user_id}-{self.book_id}")
         self.user.update_active_date()
         # an active readthrough must have an unset finish date
         if self.finish_date or self.stopped_date:

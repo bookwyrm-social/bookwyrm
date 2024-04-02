@@ -2,6 +2,7 @@
 import os
 from tempfile import SpooledTemporaryFile
 from storages.backends.s3boto3 import S3Boto3Storage
+from storages.backends.azure_storage import AzureStorage
 
 
 class StaticStorage(S3Boto3Storage):  # pylint: disable=abstract-method
@@ -47,3 +48,16 @@ class ImagesStorage(S3Boto3Storage):  # pylint: disable=abstract-method
             # Upload the object which will auto close the
             # content_autoclose instance
             return super()._save(name, content_autoclose)
+
+
+class AzureStaticStorage(AzureStorage):  # pylint: disable=abstract-method
+    """Storage class for Static contents"""
+
+    location = "static"
+
+
+class AzureImagesStorage(AzureStorage):  # pylint: disable=abstract-method
+    """Storage class for Image files"""
+
+    location = "images"
+    overwrite_files = False

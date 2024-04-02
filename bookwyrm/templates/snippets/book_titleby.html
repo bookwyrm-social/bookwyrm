@@ -4,17 +4,20 @@
 {% spaceless %}
 
 {% get_current_language as LANGUAGE_CODE %}
-{# 6 month cache #}
-{% cache 15552000 titleby LANGUAGE_CODE book.id %}
+{# 10 second cache #}
+{% cache 10 titleby LANGUAGE_CODE book.id %}
 
 {% if book.authors.exists %}
 {% blocktrans trimmed with path=book.local_path title=book|book_title %}
-<a href="{{ path }}">{{ title }}</a> by
+<a href="{{ path }}">{{ title }}</a> 
+by
 {% endblocktrans %}&nbsp;{% include 'snippets/authors.html' with book=book limit=3 %}
 
 {% else %}
 <a href="{{ book.local_path }}">{{ book|book_title }}</a>
 {% endif %}
+
+{% include 'snippets/book_series.html' with book=book %}
 
 {% endcache %}
 {% endspaceless %}

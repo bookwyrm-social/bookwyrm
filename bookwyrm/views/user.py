@@ -1,6 +1,7 @@
 """ The user profile """
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -10,7 +11,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.settings import PAGE_LENGTH, INSTANCE_ACTOR_USERNAME
 from .helpers import get_user_from_username, is_api_request
 
 
@@ -22,10 +23,17 @@ class User(View):
         """profile page for a user"""
         user = get_user_from_username(request.user, username)
 
+        if not user.local and not request.user.is_authenticated:
+            return redirect(user.remote_id)
+
         if is_api_request(request):
             # we have a json request
             return ActivitypubResponse(user.to_activity())
         # otherwise we're at a UI view
+
+        # if it's not an API request, never show the instance actor profile page
+        if user.localname == INSTANCE_ACTOR_USERNAME:
+            raise Http404()
 
         shelf_preview = []
 
@@ -98,6 +106,49 @@ class User(View):
         }
 
         return TemplateResponse(request, "user/user.html", data)
+
+
+class UserReviewsComments(View):
+    """user's activity filtered by reviews and comments"""
+
+    def get(self, request, username):
+        """user's activity filtered by reviews and comments"""
+        user = get_user_from_username(request.user, username)
+        is_self = request.user.id == user.id
+
+        activities = (
+            models.Status.privacy_filter(
+                request.user,
+            )
+            .filter(
+                Q(review__isnull=False) | Q(comment__isnull=False),
+                user=user,
+            )
+            .exclude(
+                privacy="direct",
+            )
+            .select_related(
+                "user",
+                "reply_parent",
+                "review__book",
+                "comment__book",
+                "quotation__book",
+            )
+            .prefetch_related(
+                "mention_books",
+                "mention_users",
+                "attachments",
+            )
+        )
+
+        paginated = Paginator(activities, PAGE_LENGTH)
+
+        data = {
+            "user": user,
+            "is_self": is_self,
+            "activities": paginated.get_page(request.GET.get("page", 1)),
+        }
+        return TemplateResponse(request, "user/reviews_comments.html", data)
 
 
 @require_POST

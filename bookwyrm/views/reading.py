@@ -14,7 +14,7 @@ from bookwyrm import forms, models
 from bookwyrm.views.shelf.shelf_actions import unshelve
 from .status import CreateStatus
 from .helpers import get_edition, handle_reading_status, is_api_request
-from .helpers import load_date_in_user_tz_as_utc
+from .helpers import load_date_in_user_tz_as_utc, redirect_to_referer
 
 logger = logging.getLogger(__name__)
 
@@ -83,7 +83,7 @@ class ReadingStatus(View):
             if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
                 current_status_shelfbook.delete()
             else:  # It already was on the shelf
-                return redirect("/")
+                return redirect_to_referer(request)
 
         models.ShelfBook.objects.create(
             book=book, shelf=desired_shelf, user=request.user
@@ -121,7 +121,7 @@ class ReadingStatus(View):
         if is_api_request(request):
             return HttpResponse()
 
-        return redirect("/")
+        return redirect_to_referer(request)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -186,7 +186,7 @@ def update_readthrough_on_shelve(
         active_readthrough = models.ReadThrough.objects.create(
             user=user, book=annotated_book
         )
-    # santiize and set dates
+    # sanitize and set dates
     active_readthrough.start_date = load_date_in_user_tz_as_utc(start_date, user)
     # if the stop or finish date is set, the readthrough will be set as inactive
     active_readthrough.finish_date = load_date_in_user_tz_as_utc(finish_date, user)
@@ -203,7 +203,7 @@ def delete_readthrough(request):
     readthrough.raise_not_deletable(request.user)
 
     readthrough.delete()
-    return redirect("/")
+    return redirect_to_referer(request)
 
 
 @login_required
@@ -214,4 +214,4 @@ def delete_progressupdate(request):
     update.raise_not_deletable(request.user)
 
     update.delete()
-    return redirect("/")
+    return redirect_to_referer(request)

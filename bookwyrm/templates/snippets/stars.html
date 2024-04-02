@@ -2,26 +2,25 @@
 {% load i18n %}
 
 <span class="stars">
-    <span class="is-sr-only">
-        {% if rating %}
+    {% if rating %}
+        <span class="is-sr-only">
             {% blocktranslate trimmed with rating=rating|floatformat:0 count counter=rating|floatformat:0|add:0 %}
                 {{ rating }} star
             {% plural %}
                 {{ rating }} stars
             {% endblocktranslate %}
-        {% else %}
-            {% trans "No rating" %}
-        {% endif %}
-    </span>
-
-    {% for i in '12345'|make_list %}
-        <span
-            class="
-                icon is-small mr-1
-                icon-star-{% if rating >= forloop.counter %}full{% elif rating|floatformat:0 >= forloop.counter|floatformat:0 %}half{% else %}empty{% endif %}
-            "
-            aria-hidden="true"
-        ></span>
-    {% endfor %}
+        </span>
+        {% for i in '12345'|make_list %}
+            <span
+                class="
+                    icon is-small mr-1
+                    icon-star-{% if rating >= forloop.counter %}full{% elif rating|floatformat:0 >= forloop.counter|floatformat:0 %}half{% else %}empty{% endif %}
+                "
+                aria-hidden="true"
+            ></span>
+        {% endfor %}
+    {% else %}
+        <span class="no-rating">{% trans "No rating" %}</span>
+    {% endif %}
 </span>
 {% endspaceless %}

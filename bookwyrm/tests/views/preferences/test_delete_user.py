@@ -16,21 +16,22 @@ from bookwyrm.tests.validate_html import validate_html
 class DeleteUserViews(TestCase):
     """view user and edit profile"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@your.domain.here",
                 "mouse@mouse.mouse",
                 "password",
                 local=True,
                 localname="mouse",
             )
-            self.rat = models.User.objects.create_user(
+            cls.rat = models.User.objects.create_user(
                 "rat@your.domain.here",
                 "rat@rat.rat",
                 "password",
@@ -38,21 +39,26 @@ class DeleteUserViews(TestCase):
                 localname="rat",
             )
 
-            self.book = models.Edition.objects.create(
+            cls.book = models.Edition.objects.create(
                 title="test", parent_work=models.Work.objects.create(title="test work")
             )
-            with patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-            ), patch("bookwyrm.activitystreams.add_book_statuses_task.delay"):
+            with (
+                patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+                patch("bookwyrm.activitystreams.add_book_statuses_task.delay"),
+            ):
                 models.ShelfBook.objects.create(
-                    book=self.book,
-                    user=self.local_user,
-                    shelf=self.local_user.shelf_set.first(),
+                    book=cls.book,
+                    user=cls.local_user,
+                    shelf=cls.local_user.shelf_set.first(),
                 )
 
+        models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
-        models.SiteSettings.objects.create()
 
     def test_delete_user_page(self, _):
         """there are so many views, this just makes sure it LOADS"""
@@ -141,3 +147,24 @@ class DeleteUserViews(TestCase):
         self.local_user.refresh_from_db()
         self.assertTrue(self.local_user.is_active)
         self.assertIsNone(self.local_user.deactivation_reason)
+
+    def test_reactivate_user_post_disallowed(self, _):
+        """Reactivate action under the wrong circumstances"""
+        self.local_user.is_active = False
+        self.local_user.save(broadcast=False)
+
+        view = views.ReactivateUser.as_view()
+        form = forms.LoginForm()
+        form.data["localname"] = "mouse"
+        form.data["password"] = "password"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+        middleware = SessionMiddleware()
+        middleware.process_request(request)
+        request.session.save()
+
+        with patch("bookwyrm.views.preferences.delete_user.login"):
+            view(request)
+
+        self.local_user.refresh_from_db()
+        self.assertFalse(self.local_user.is_active)

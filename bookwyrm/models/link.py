@@ -31,7 +31,7 @@ class Link(ActivitypubMixin, BookWyrmModel):
 
     @property
     def name(self):
-        """link name via the assocaited domain"""
+        """link name via the associated domain"""
         return self.domain.name
 
     def save(self, *args, **kwargs):

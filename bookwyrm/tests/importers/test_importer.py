@@ -19,29 +19,37 @@ def make_date(*args):
     return datetime.datetime(*args, tzinfo=pytz.UTC)
 
 
-# pylint: disable=consider-using-with
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 class GenericImporter(TestCase):
     """importing from csv"""
 
-    # pylint: disable=invalid-name
     def setUp(self):
         """use a test csv"""
-
         self.importer = Importer()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/generic.csv")
+        # pylint: disable-next=consider-using-with
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+
+    def tearDown(self):
+        """close test csv"""
+        self.csv.close()
+
+    @classmethod
+    def setUpTestData(cls):
+        """populate database"""
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
-
+        models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,
@@ -145,7 +153,7 @@ class GenericImporter(TestCase):
             ) as mock:
                 import_item_task(import_item.id)
                 kwargs = mock.call_args.kwargs
-        self.assertEqual(kwargs["queue"], "low_priority")
+        self.assertEqual(kwargs["queue"], "import_triggered")
         import_item.refresh_from_db()
 
     def test_complete_job(self, *_):
@@ -264,9 +272,11 @@ class GenericImporter(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            with patch("bookwyrm.models.Status.broadcast") as broadcast_mock:
-                handle_imported_book(import_item)
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.models.Status.broadcast") as broadcast_mock,
+        ):
+            handle_imported_book(import_item)
         kwargs = broadcast_mock.call_args.kwargs
         self.assertEqual(kwargs["software"], "bookwyrm")
         review = models.Review.objects.get(book=self.book, user=self.local_user)
@@ -360,3 +370,16 @@ class GenericImporter(TestCase):
         self.assertFalse(
             models.Review.objects.filter(book=self.book, user=self.local_user).exists()
         )
+
+    def test_import_limit(self, *_):
+        """checks if import limit works"""
+        site_settings = models.SiteSettings.objects.get()
+        site_settings.import_size_limit = 2
+        site_settings.import_limit_reset = 2
+        site_settings.save()
+
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "public"
+        )
+        import_items = models.ImportItem.objects.filter(job=import_job).all()
+        self.assertEqual(len(import_items), 2)

@@ -10,7 +10,6 @@ BookWyrm is a social network for tracking your reading, talking about books, wri
 ## Links
 
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/000146121?domain=https%3A%2F%2Ftech.lgbt&style=social)](https://tech.lgbt/@bookwyrm)
-[![Twitter Follow](https://img.shields.io/twitter/follow/BookWyrmSocial?style=social)](https://twitter.com/BookWyrmSocial)
 
  - [Project homepage](https://joinbookwyrm.com/)
  - [Support](https://patreon.com/bookwyrm)
@@ -37,7 +36,7 @@ Keep track of what books you've read, and what books you'd like to read in the f
 Federation allows you to interact with users on other instances and services, and also shares metadata about books and authors, which collaboratively builds a decentralized database of books.
 
 ### Privacy and moderation
-Users and administrators can control who can see thier posts and what other instances to federate with.
+Users and administrators can control who can see their posts and what other instances to federate with.
 
 ## Tech Stack
 Web backend

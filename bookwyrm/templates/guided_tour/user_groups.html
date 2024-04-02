@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<script>
+<script nonce="{{request.csp_nonce}}">
     const tour = new Shepherd.Tour({
         exitOnEsc: true,
     });

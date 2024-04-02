@@ -6,7 +6,7 @@ from bookwyrm.connectors.abstract_connector import infer_physical_format
 
 
 def infer_format(app_registry, schema_editor):
-    """set the new phsyical format field based on existing format data"""
+    """set the new physical format field based on existing format data"""
     db_alias = schema_editor.connection.alias
 
     editions = (

@@ -4,12 +4,7 @@ import redis
 
 from bookwyrm import settings
 
-r = redis.Redis(
-    host=settings.REDIS_ACTIVITY_HOST,
-    port=settings.REDIS_ACTIVITY_PORT,
-    password=settings.REDIS_ACTIVITY_PASSWORD,
-    db=settings.REDIS_ACTIVITY_DB_INDEX,
-)
+r = redis.from_url(settings.REDIS_ACTIVITY_URL)
 
 
 class RedisStore(ABC):
@@ -21,12 +16,12 @@ class RedisStore(ABC):
         """the object and rank"""
         return {obj.id: self.get_rank(obj)}
 
-    def add_object_to_related_stores(self, obj, execute=True):
-        """add an object to all suitable stores"""
+    def add_object_to_stores(self, obj, stores, execute=True):
+        """add an object to a given set of stores"""
         value = self.get_value(obj)
         # we want to do this as a bulk operation, hence "pipeline"
         pipeline = r.pipeline()
-        for store in self.get_stores_for_object(obj):
+        for store in stores:
             # add the status to the feed
             pipeline.zadd(store, value)
             # trim the store
@@ -37,14 +32,14 @@ class RedisStore(ABC):
         # and go!
         return pipeline.execute()
 
-    def remove_object_from_related_stores(self, obj, stores=None):
+    # pylint: disable=no-self-use
+    def remove_object_from_stores(self, obj, stores):
         """remove an object from all stores"""
-        # if the stoers are provided, the object can just be an id
+        # if the stores are provided, the object can just be an id
         if stores and isinstance(obj, int):
             obj_id = obj
         else:
             obj_id = obj.id
-        stores = self.get_stores_for_object(obj) if stores is None else stores
         pipeline = r.pipeline()
         for store in stores:
             pipeline.zrem(store, -1, obj_id)
@@ -86,10 +81,6 @@ class RedisStore(ABC):
     @abstractmethod
     def get_objects_for_store(self, store):
         """a queryset of what should go in a store, used for populating it"""
-
-    @abstractmethod
-    def get_stores_for_object(self, obj):
-        """the stores that an object belongs in"""
 
     @abstractmethod
     def get_rank(self, obj):

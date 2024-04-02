@@ -12,16 +12,19 @@ from bookwyrm.settings import DOMAIN
 class BaseModel(TestCase):
     """functionality shared across models"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """shared data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
             )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -31,6 +34,7 @@ class BaseModel(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
+    def setUp(self):
         class BookWyrmTestModel(base_model.BookWyrmModel):
             """just making it not abstract"""
 
@@ -51,7 +55,7 @@ class BaseModel(TestCase):
 
     def test_set_remote_id(self):
         """this function sets remote ids after creation"""
-        # using Work because it BookWrymModel is abstract and this requires save
+        # using Work because it BookWyrmModel is abstract and this requires save
         # Work is a relatively not-fancy model.
         instance = models.Work.objects.create(title="work title")
         instance.remote_id = None

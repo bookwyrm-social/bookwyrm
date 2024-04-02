@@ -35,7 +35,7 @@
         <td>
             <a href="{% url 'settings-users' %}?email=@{{ domain.domain }}">
             {% with user_count=domain.users.count %}
-                {% blocktrans trimmed count conter=user_count with display_count=user_count|intcomma %}
+                {% blocktrans trimmed count counter=user_count with display_count=user_count|intcomma %}
                 {{ display_count }} user
                 {% plural %}
                 {{ display_count }} users
@@ -62,4 +62,3 @@
 
 
 {% endblock %}
-

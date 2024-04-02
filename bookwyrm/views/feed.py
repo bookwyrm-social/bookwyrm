@@ -1,4 +1,5 @@
 """ non-interactive pages """
+from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -52,6 +53,19 @@ class Feed(View):
 
         suggestions = suggested_users.get_suggestions(request.user)
 
+        cutoff = (
+            date(get_annual_summary_year(), 12, 31)
+            if get_annual_summary_year()
+            else None
+        )
+        readthroughs = (
+            models.ReadThrough.objects.filter(
+                user=request.user, finish_date__lte=cutoff
+            )
+            if get_annual_summary_year()
+            else []
+        )
+
         data = {
             **feed_page_data(request.user),
             **{
@@ -66,6 +80,7 @@ class Feed(View):
                 "path": f"/{tab['key']}",
                 "annual_summary_year": get_annual_summary_year(),
                 "has_tour": True,
+                "has_summary_read_throughs": len(readthroughs),
             },
         }
         return TemplateResponse(request, "feed/feed.html", data)
@@ -185,19 +200,15 @@ class Status(View):
             params=[status.id, visible_thread, visible_thread],
         )
 
-        preview = None
-        if hasattr(status, "book"):
-            preview = status.book.preview_image
-        elif status.mention_books.exists():
-            preview = status.mention_books.first().preview_image
-
         data = {
             **feed_page_data(request.user),
             **{
                 "status": status,
                 "children": children,
                 "ancestors": ancestors,
-                "preview": preview,
+                "title": status.page_title,
+                "description": status.page_description,
+                "page_image": status.page_image,
             },
         }
         return TemplateResponse(request, "feed/status.html", data)
@@ -237,16 +248,24 @@ def feed_page_data(user):
 def get_suggested_books(user, max_books=5):
     """helper to get a user's recent books"""
     book_count = 0
-    preset_shelves = [("reading", max_books), ("read", 2), ("to-read", max_books)]
+    preset_shelves = {"reading": max_books, "read": 2, "to-read": max_books}
     suggested_books = []
-    for (preset, shelf_max) in preset_shelves:
+
+    user_shelves = {
+        shelf.identifier: shelf
+        for shelf in user.shelf_set.filter(
+            identifier__in=preset_shelves.keys()
+        ).exclude(books__isnull=True)
+    }
+
+    for preset, shelf_max in preset_shelves.items():
         limit = (
             shelf_max
             if shelf_max < (max_books - book_count)
             else max_books - book_count
         )
-        shelf = user.shelf_set.get(identifier=preset)
-        if not shelf.books.exists():
+        shelf = user_shelves.get(preset, None)
+        if not shelf:
             continue
 
         shelf_preview = {

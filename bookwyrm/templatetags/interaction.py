@@ -42,7 +42,7 @@ def get_relationship(context, user_object):
     """caches the relationship between the logged in user and another user"""
     user = context["request"].user
     return get_or_set(
-        f"relationship-{user.id}-{user_object.id}",
+        f"cached-relationship-{user.id}-{user_object.id}",
         get_relationship_name,
         user,
         user_object,

@@ -1,24 +1,24 @@
 {% load layout %}
 {% load i18n %}
+{% load sass_tags %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="{% get_lang %}">
 <head>
     <title>{% block title %}BookWyrm{% endblock %} - {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{% static "css/vendor/bulma.min.css" %}">
-    <link rel="stylesheet" href="{% static "css/vendor/icons.css" %}">
-    <link rel="stylesheet" href="{% static "css/bookwyrm.css" %}">
+    <link href="{% sass_src site_theme %}" rel="stylesheet" type="text/css" />
 
     <base target="_blank">
 
     <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
+    <link rel="manifest" href="/manifest.json" />
 </head>
 <body>
 
 <header class="section py-3">
     <a href="/" class="is-flex is-align-items-center">
-        <img class="image logo is-flex-shrink-0" style="height: 32px" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}">
+        <img class="image logo is-flex-shrink-0" style="height: 32px" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}" loading="lazy" decoding="async">
         <span class="title is-5 ml-2">{{ site.name }}</span>
     </a>
 </header>

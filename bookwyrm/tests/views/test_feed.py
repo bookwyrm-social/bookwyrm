@@ -1,10 +1,7 @@
 """ test for app action functionality """
-from io import BytesIO
 from unittest.mock import patch
 import pathlib
 
-from PIL import Image
-from django.core.files.base import ContentFile
 from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -24,32 +21,38 @@ from bookwyrm.tests.validate_html import validate_html
 class FeedViews(TestCase):
     """activity feed, statuses, dms"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
                 "password",
                 local=True,
                 localname="mouse",
             )
-            self.another_user = models.User.objects.create_user(
+            cls.another_user = models.User.objects.create_user(
                 "nutria@local.com",
                 "nutria@nutria.nutria",
                 "password",
                 local=True,
                 localname="nutria",
             )
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             parent_work=models.Work.objects.create(title="hi"),
             title="Example Edition",
             remote_id="https://example.com/book/1",
         )
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
     def test_feed(self, *_):
@@ -136,12 +139,9 @@ class FeedViews(TestCase):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Status.as_view()
 
-        image_file = pathlib.Path(__file__).parent.joinpath(
+        image_path = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
         )
-        image = Image.open(image_file)
-        output = BytesIO()
-        image.save(output, format=image.format)
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             status = models.Review.objects.create(
                 content="hi",
@@ -151,7 +151,8 @@ class FeedViews(TestCase):
             attachment = models.Image.objects.create(
                 status=status, caption="alt text here"
             )
-            attachment.image.save("test.jpg", ContentFile(output.getvalue()))
+            with open(image_path, "rb") as image_file:
+                attachment.image.save("test.jpg", image_file)
 
         request = self.factory.get("")
         request.user = self.local_user

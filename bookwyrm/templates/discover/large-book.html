@@ -46,7 +46,7 @@
             </div>
 
             <div class="notification has-background-body p-2 mb-2 clip-text">
-                {% include "snippets/status/content_status.html" with hide_book=True trim_length=70 hide_more=True %}
+                {% include "snippets/status/content_status.html" with hide_book=True trim_length=70 hide_more=True expand=False %}
             </div>
             <a href="{{ status.remote_id }}">
                 <span>{% trans "View status" %}</span>

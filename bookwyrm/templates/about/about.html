@@ -10,8 +10,9 @@
 {% endblock %}
 
 {% block about_content %}
+{% get_current_language as LANGUAGE_CODE %}
 {# seven day cache #}
-{% cache 604800 about_page %}
+{% cache 604800 about_page_superlatives LANGUAGE_CODE %}
 
 {% get_book_superlatives as superlatives %}
 <section class=" pb-4">
@@ -30,10 +31,10 @@
         </p>
     </div>
 
-    <div class="columns">
+    <div class="columns is-multiline">
         {% if superlatives.top_rated %}
         {% with book=superlatives.top_rated.default_edition rating=superlatives.top_rated.rating %}
-        <div class="column is-one-third is-flex">
+        <div class="column is-half-tablet is-one-third-desktop is-flex-grow-1 is-flex">
             <div class="media notification is-clipped">
                 <div class="media-left">
                     <a href="{{ book.local_path }}">
@@ -52,7 +53,7 @@
 
         {% if superlatives.wanted %}
         {% with book=superlatives.wanted.default_edition %}
-        <div class="column is-one-third is-flex">
+        <div class="column is-half-tablet is-one-third-desktop is-flex-grow-1 is-flex">
             <div class="media notification is-clipped">
                 <div class="media-left">
                     <a href="{{ book.local_path }}">
@@ -71,7 +72,7 @@
 
         {% if superlatives.controversial %}
         {% with book=superlatives.controversial.default_edition %}
-        <div class="column is-one-third is-flex">
+        <div class="column is-half-tablet is-one-third-desktop is-flex-grow-1 is-flex">
             <div class="media notification is-clipped">
                 <div class="media-left">
                     <a href="{{ book.local_path }}">
@@ -97,6 +98,7 @@
     </p>
 
 </section>
+{% endcache %}
 
 <section class="block">
     <header class="content">
@@ -145,5 +147,4 @@
     </div>
 </section>
 
-{% endcache %}
 {% endblock %}

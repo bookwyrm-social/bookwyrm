@@ -28,7 +28,7 @@
     <meta itemprop="name" content="{{ author.name }}">
 
     {% firstof author.aliases author.born author.died as details %}
-    {% firstof author.wikipedia_link author.openlibrary_key author.inventaire_id author.isni as links %}
+    {% firstof author.wikipedia_link author.website author.openlibrary_key author.inventaire_id author.isni author.isfdb as links %}
     {% if details or links %}
     <div class="column is-3">
         {% if details %}
@@ -73,10 +73,26 @@
                 </div>
                 {% endif %}
 
+                {% if author.website %}
+                <div>
+                     <a itemprop="sameAs" href="{{ author.website }}" rel="nofollow noopener noreferrer" target="_blank">
+                         {% trans "Website" %}
+                     </a>
+                </div>
+                {% endif %}
+
                 {% if author.isni %}
                 <div class="mt-1">
                     <a itemprop="sameAs" href="{{ author.isni_link }}" rel="nofollow noopener noreferrer" target="_blank">
                         {% trans "View ISNI record" %}
+                    </a>
+                </div>
+                {% endif %}
+
+                {% if author.isfdb %}
+                <div class="mt-1">
+                    <a itemprop="sameAs" href="{{ author.isfdb_link }}" rel="nofollow noopener noreferrer" target="_blank">
+                        {% trans "View on ISFDB" %}
                     </a>
                 </div>
                 {% endif %}
@@ -144,7 +160,7 @@
         {% for book in books %}
         {% with book=book|author_edition:author %}
             <div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column">
-                <div class="is-flex-grow-1">
+                <div class="is-flex-grow-1 mb-3">
                     {% include 'landing/small-book.html' with book=book %}
                 </div>
                 {% include 'snippets/shelve_button/shelve_button.html' with book=book %}

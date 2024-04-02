@@ -5,7 +5,7 @@
     <div class="modal-background" data-modal-close></div><!-- modal background -->
     <div class="modal-card is-align-items-center" role="dialog" aria-modal="true" tabindex="-1" aria-label="{% trans 'Book cover preview' %}">
         <div class="cover-container">
-            <img class="book-cover" src="{% get_media_prefix %}{{ book.cover }}" itemprop="thumbnailUrl" alt="">
+            <img class="book-cover" src="{% get_media_prefix %}{{ book.cover }}" itemprop="thumbnailUrl" alt="" loading="lazy" decoding="async">
         </div>
     </div>
     <button type="button" data-modal-close class="modal-close is-large" aria-label="{% trans 'Close' %}"></button>

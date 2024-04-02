@@ -53,6 +53,7 @@ class QuotationForm(CustomForm):
             "sensitive",
             "privacy",
             "position",
+            "endposition",
             "position_mode",
         ]
 

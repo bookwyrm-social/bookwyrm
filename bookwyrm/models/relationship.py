@@ -33,7 +33,7 @@ class UserRelationship(BookWyrmModel):
 
     @property
     def recipients(self):
-        """the remote user needs to recieve direct broadcasts"""
+        """the remote user needs to receive direct broadcasts"""
         return [u for u in [self.user_subject, self.user_object] if not u.local]
 
     def save(self, *args, **kwargs):
@@ -64,6 +64,13 @@ class UserRelationship(BookWyrmModel):
         """use shelf identifier in remote_id"""
         base_path = self.user_subject.remote_id
         return f"{base_path}#follows/{self.id}"
+
+    def get_accept_reject_id(self, status):
+        """get id for sending an accept or reject of a local user"""
+
+        base_path = self.user_object.remote_id
+        status_id = self.id or 0
+        return f"{base_path}#{status}/{status_id}"
 
 
 class UserFollows(ActivityMixin, UserRelationship):
@@ -105,6 +112,20 @@ class UserFollows(ActivityMixin, UserRelationship):
         )
         return obj
 
+    def reject(self):
+        """generate a Reject for this follow. This would normally happen
+        when a user deletes a follow they previously accepted"""
+
+        if self.user_object.local:
+            activity = activitypub.Reject(
+                id=self.get_accept_reject_id(status="rejects"),
+                actor=self.user_object.remote_id,
+                object=self.to_activity(),
+            ).serialize()
+            self.broadcast(activity, self.user_object)
+
+        self.delete()
+
 
 class UserFollowRequest(ActivitypubMixin, UserRelationship):
     """following a user requires manual or automatic confirmation"""
@@ -139,6 +160,7 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
             )
         super().save(*args, **kwargs)
 
+        # a local user is following a remote user
         if broadcast and self.user_subject.local and not self.user_object.local:
             self.broadcast(self.to_activity(), self.user_subject)
 
@@ -147,16 +169,10 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
             if not manually_approves:
                 self.accept()
 
-    def get_accept_reject_id(self, status):
-        """get id for sending an accept or reject of a local user"""
-
-        base_path = self.user_object.remote_id
-        status_id = self.id or 0
-        return f"{base_path}#{status}/{status_id}"
-
     def accept(self, broadcast_only=False):
         """turn this request into the real deal"""
         user = self.user_object
+        # broadcast when accepting a remote request
         if not self.user_subject.local:
             activity = activitypub.Accept(
                 id=self.get_accept_reject_id(status="accepts"),
@@ -168,7 +184,11 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
             return
 
         with transaction.atomic():
-            UserFollows.from_request(self)
+            try:
+                UserFollows.from_request(self)
+            except IntegrityError:
+                # this just means we already saved this relationship
+                pass
             if self.id:
                 self.delete()
 

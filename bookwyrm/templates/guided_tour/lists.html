@@ -2,7 +2,7 @@
 {% load utilities %}
 {% load user_page_tags %}
 
-<script>
+<script nonce="{{request.csp_nonce}}">
 
     const tour = new Shepherd.Tour({
         exitOnEsc: true,

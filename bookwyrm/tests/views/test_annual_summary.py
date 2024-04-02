@@ -21,14 +21,15 @@ def make_date(*args):
 class AnnualSummary(TestCase):
     """views"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -37,19 +38,21 @@ class AnnualSummary(TestCase):
                 remote_id="https://example.com/users/mouse",
                 summary_keys={"2020": "0123456789"},
             )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.work = models.Work.objects.create(title="Test Work")
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
-            parent_work=self.work,
+            parent_work=cls.work,
             pages=300,
         )
+        models.SiteSettings.objects.create()
 
+    def setUp(self):
+        """individual test setup"""
+        self.year = "2020"
+        self.factory = RequestFactory()
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
-
-        self.year = "2020"
-        models.SiteSettings.objects.create()
 
     def test_annual_summary_not_authenticated(self, *_):
         """there are so many views, this just makes sure it DOESN’T LOAD"""

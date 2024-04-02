@@ -9,7 +9,11 @@
         {% endif %}>
 
         <span class="icon icon-arrow-left" aria-hidden="true"></span>
+        {% if mode == "chronological" %}
+        {% trans "Newer" %}
+        {% else %}
         {% trans "Previous" %}
+        {% endif %}
     </a>
 
     <a
@@ -20,7 +24,11 @@
         aria-hidden="true"
         {% endif %}>
 
+        {% if mode == "chronological" %}
+        {% trans "Older" %}
+        {% else %}
         {% trans "Next" %}
+        {% endif %}
         <span class="icon icon-arrow-right" aria-hidden="true"></span>
     </a>
 

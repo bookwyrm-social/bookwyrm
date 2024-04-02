@@ -13,13 +13,15 @@ from bookwyrm import models, views
 class WellknownViews(TestCase):
     """view user and edit profile"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
                 "password",
@@ -40,6 +42,10 @@ class WellknownViews(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
 
@@ -53,7 +59,7 @@ class WellknownViews(TestCase):
         data = json.loads(result.getvalue())
         self.assertEqual(data["subject"], "acct:mouse@local.com")
 
-    def test_webfinger_case_sensitivty(self):
+    def test_webfinger_case_sensitivity(self):
         """ensure that webfinger queries are not case sensitive"""
         request = self.factory.get("", {"resource": "acct:MoUsE@local.com"})
         request.user = self.anonymous_user

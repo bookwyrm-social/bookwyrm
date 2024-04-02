@@ -1,10 +1,11 @@
 """ database schema for books and shelves """
+from itertools import chain
 import re
+from typing import Any
 
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.cache import cache
-from django.core.cache.utils import make_template_fragment_key
 from django.db import models, transaction
 from django.db.models import Prefetch
 from django.dispatch import receiver
@@ -12,15 +13,19 @@ from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
 from imagekit.models import ImageSpecField
+import pgtrigger
 
 from bookwyrm import activitypub
+from bookwyrm.isbn.isbn import hyphenator_singleton as hyphenator
 from bookwyrm.preview_images import generate_edition_preview_image_task
 from bookwyrm.settings import (
     DOMAIN,
     DEFAULT_LANGUAGE,
+    LANGUAGE_ARTICLES,
     ENABLE_PREVIEW_IMAGES,
     ENABLE_THUMBNAIL_GENERATION,
 )
+from bookwyrm.utils.db import format_trigger
 
 from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
@@ -55,6 +60,12 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     asin = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    aasin = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
+    isfdb = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
     search_vector = SearchVectorField(null=True)
 
     last_edited_by = fields.ForeignKey(
@@ -73,12 +84,17 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         """generate the url from the inventaire id"""
         return f"https://inventaire.io/entity/{self.inventaire_id}"
 
+    @property
+    def isfdb_link(self):
+        """generate the url from the isfdb id"""
+        return f"https://www.isfdb.org/cgi-bin/title.cgi?{self.isfdb}"
+
     class Meta:
         """can't initialize this model, that wouldn't make sense"""
 
         abstract = True
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """ensure that the remote_id is within this instance"""
         if self.id:
             self.remote_id = self.get_remote_id()
@@ -121,8 +137,8 @@ class Book(BookDataModel):
     preview_image = models.ImageField(
         upload_to="previews/covers/", blank=True, null=True
     )
-    first_published_date = fields.DateTimeField(blank=True, null=True)
-    published_date = fields.DateTimeField(blank=True, null=True)
+    first_published_date = fields.PartialDateField(blank=True, null=True)
+    published_date = fields.PartialDateField(blank=True, null=True)
 
     objects = InheritanceManager()
     field_tracker = FieldTracker(fields=["authors", "title", "subtitle", "cover"])
@@ -187,25 +203,27 @@ class Book(BookDataModel):
     @property
     def alt_text(self):
         """image alt test"""
-        text = self.title
-        if self.edition_info:
-            text += f" ({self.edition_info})"
-        return text
+        author = f"{name}: " if (name := self.author_text) else ""
+        edition = f" ({info})" if (info := self.edition_info) else ""
+        return f"{author}{self.title}{edition}"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """can't be abstract for query reasons, but you shouldn't USE it"""
-        if not isinstance(self, Edition) and not isinstance(self, Work):
+        if not isinstance(self, (Edition, Work)):
             raise ValueError("Books should be added as Editions or Works")
-
-        # clear template caches
-        cache_key = make_template_fragment_key("titleby", [self.id])
-        cache.delete(cache_key)
 
         return super().save(*args, **kwargs)
 
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
         return f"https://{DOMAIN}/book/{self.id}"
+
+    def guess_sort_title(self):
+        """Get a best-guess sort title for the current book"""
+        articles = chain(
+            *(LANGUAGE_ARTICLES.get(language, ()) for language in tuple(self.languages))
+        )
+        return re.sub(f'^{" |^".join(articles)} ', "", str(self.title).lower())
 
     def __repr__(self):
         # pylint: disable=consider-using-f-string
@@ -216,9 +234,49 @@ class Book(BookDataModel):
         )
 
     class Meta:
-        """sets up postgres GIN index field"""
+        """set up indexes and triggers"""
+
+        # pylint: disable=line-too-long
 
         indexes = (GinIndex(fields=["search_vector"]),)
+        triggers = [
+            pgtrigger.Trigger(
+                name="update_search_vector_on_book_edit",
+                when=pgtrigger.Before,
+                operation=pgtrigger.Insert
+                | pgtrigger.UpdateOf("title", "subtitle", "series", "search_vector"),
+                func=format_trigger(
+                    """
+                    WITH author_names AS (
+                        SELECT array_to_string(bookwyrm_author.name || bookwyrm_author.aliases, ' ') AS name_and_aliases
+                            FROM bookwyrm_author
+                        LEFT JOIN bookwyrm_book_authors
+                            ON bookwyrm_author.id = bookwyrm_book_authors.author_id
+                        WHERE bookwyrm_book_authors.book_id = new.id
+                    )
+                    SELECT
+                        -- title, with priority A (parse in English, default to simple if empty)
+                        setweight(COALESCE(nullif(
+                            to_tsvector('english', new.title), ''),
+                            to_tsvector('simple', new.title)), 'A') ||
+
+                        -- subtitle, with priority B (always in English?)
+                        setweight(to_tsvector('english', COALESCE(new.subtitle, '')), 'B') ||
+
+                        -- list of authors names and aliases (with priority C)
+                        (SELECT setweight(to_tsvector('simple', COALESCE(array_to_string(ARRAY_AGG(name_and_aliases), ' '), '')), 'C')
+                            FROM author_names
+                        ) ||
+
+                        --- last: series name, with lowest priority
+                        setweight(to_tsvector('english', COALESCE(new.series, '')), 'D')
+
+                        INTO new.search_vector;
+                    RETURN new;
+                    """
+                ),
+            )
+        ]
 
 
 class Work(OrderedCollectionPageMixin, Book):
@@ -312,10 +370,15 @@ class Edition(Book):
     serialize_reverse_fields = [("file_links", "fileLinks", "-created_date")]
     deserialize_reverse_fields = [("file_links", "fileLinks")]
 
+    @property
+    def hyphenated_isbn13(self):
+        """generate the hyphenated version of the ISBN-13"""
+        return hyphenator.hyphenate(self.isbn_13)
+
     def get_rank(self):
         """calculate how complete the data is on this edition"""
         rank = 0
-        # big ups for havinga  cover
+        # big ups for having a cover
         rank += int(bool(self.cover)) * 3
         # is it in the instance's preferred language?
         rank += int(bool(DEFAULT_LANGUAGE in self.languages))
@@ -335,7 +398,7 @@ class Edition(Book):
         # max rank is 9
         return rank
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """set some fields on the edition object"""
         # calculate isbn 10/13
         if self.isbn_13 and self.isbn_13[:3] == "978" and not self.isbn_10:
@@ -345,9 +408,9 @@ class Edition(Book):
 
         # normalize isbn format
         if self.isbn_10:
-            self.isbn_10 = re.sub(r"[^0-9X]", "", self.isbn_10)
+            self.isbn_10 = normalize_isbn(self.isbn_10)
         if self.isbn_13:
-            self.isbn_13 = re.sub(r"[^0-9X]", "", self.isbn_13)
+            self.isbn_13 = normalize_isbn(self.isbn_13)
 
         # set rank
         self.edition_rank = self.get_rank()
@@ -357,7 +420,24 @@ class Edition(Book):
             for author_id in self.authors.values_list("id", flat=True):
                 cache.delete(f"author-books-{author_id}")
 
+        # Create sort title by removing articles from title
+        if self.sort_title in [None, ""]:
+            self.sort_title = self.guess_sort_title()
+
         return super().save(*args, **kwargs)
+
+    @transaction.atomic
+    def repair(self):
+        """If an edition is in a bad state (missing a work), let's fix that"""
+        # made sure it actually NEEDS reapir
+        if self.parent_work:
+            return
+
+        new_work = Work.objects.create(title=self.title)
+        new_work.authors.set(self.authors.all())
+
+        self.parent_work = new_work
+        self.save(update_fields=["parent_work"], broadcast=False)
 
     @classmethod
     def viewer_aware_objects(cls, viewer):
@@ -423,6 +503,11 @@ def isbn_13_to_10(isbn_13):
     if checkdigit == 10:
         checkdigit = "X"
     return converted + str(checkdigit)
+
+
+def normalize_isbn(isbn):
+    """Remove unexpected characters from ISBN 10 or 13"""
+    return re.sub(r"[^0-9X]", "", isbn)
 
 
 # pylint: disable=unused-argument

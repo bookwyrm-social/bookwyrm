@@ -20,26 +20,30 @@ from bookwyrm.tests.validate_html import validate_html
 class RegisterViews(TestCase):
     """login and password management"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@your.domain.here",
                 "mouse@mouse.com",
                 "password",
                 local=True,
                 localname="mouse",
             )
-        self.anonymous_user = AnonymousUser
-        self.anonymous_user.is_authenticated = False
-
-        self.settings = models.SiteSettings.objects.create(
+        cls.settings = models.SiteSettings.objects.create(
             id=1, require_confirm_email=False, allow_registration=True
         )
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
+        self.anonymous_user = AnonymousUser
+        self.anonymous_user.is_authenticated = False
 
     def test_get_redirect(self, *_):
         """there's no dedicated registration page"""
@@ -58,6 +62,7 @@ class RegisterViews(TestCase):
                 "localname": "nutria-user.user_nutria",
                 "password": "mouseword",
                 "email": "aa@bb.cccc",
+                "preferred_timezone": "Europe/Berlin",
             },
         )
         with patch("bookwyrm.views.landing.register.login"):
@@ -68,6 +73,7 @@ class RegisterViews(TestCase):
         self.assertEqual(nutria.username, f"nutria-user.user_nutria@{DOMAIN}")
         self.assertEqual(nutria.localname, "nutria-user.user_nutria")
         self.assertEqual(nutria.local, True)
+        self.assertEqual(nutria.preferred_timezone, "Europe/Berlin")
 
     @patch("bookwyrm.emailing.send_email.delay")
     def test_register_email_confirm(self, *_):
@@ -198,6 +204,58 @@ class RegisterViews(TestCase):
         self.assertEqual(models.User.objects.count(), 1)
         validate_html(response.render())
 
+    def test_register_default_preferred_timezone(self, *_):
+        """invalid preferred timezone strings should just default to UTC"""
+        view = views.Register.as_view()
+        self.assertEqual(models.User.objects.count(), 1)
+
+        request = self.factory.post(
+            "register/",
+            {
+                "localname": "nutria1",
+                "password": "mouseword",
+                "email": "aa1@bb.cccc",
+                "preferred_timezone": "invalid-tz",
+            },
+        )
+        with patch("bookwyrm.views.landing.register.login"):
+            response = view(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(models.User.objects.count(), 2)
+        nutria = models.User.objects.last()
+        self.assertEqual(nutria.preferred_timezone, "UTC")
+
+        request = self.factory.post(
+            "register/",
+            {
+                "localname": "nutria2",
+                "password": "mouseword",
+                "email": "aa2@bb.cccc",
+                "preferred_timezone": "",
+            },
+        )
+        with patch("bookwyrm.views.landing.register.login"):
+            response = view(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(models.User.objects.count(), 3)
+        nutria = models.User.objects.last()
+        self.assertEqual(nutria.preferred_timezone, "UTC")
+
+        request = self.factory.post(
+            "register/",
+            {
+                "localname": "nutria3",
+                "password": "mouseword",
+                "email": "aa3@bb.cccc",
+            },
+        )
+        with patch("bookwyrm.views.landing.register.login"):
+            response = view(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(models.User.objects.count(), 4)
+        nutria = models.User.objects.last()
+        self.assertEqual(nutria.preferred_timezone, "UTC")
+
     def test_register_closed_instance(self, *_):
         """you can't just register"""
         view = views.Register.as_view()
@@ -293,11 +351,17 @@ class RegisterViews(TestCase):
         self.settings.save()
 
         self.local_user.is_active = False
+        self.local_user.allow_reactivation = True
         self.local_user.deactivation_reason = "pending"
         self.local_user.confirmation_code = "12345"
         self.local_user.save(
             broadcast=False,
-            update_fields=["is_active", "deactivation_reason", "confirmation_code"],
+            update_fields=[
+                "is_active",
+                "allow_reactivation",
+                "deactivation_reason",
+                "confirmation_code",
+            ],
         )
         view = views.ConfirmEmailCode.as_view()
         request = self.factory.get("")

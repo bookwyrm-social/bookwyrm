@@ -1,0 +1,43 @@
+{% extends 'preferences/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Move Account" %}{% endblock %}
+
+{% block header %}
+{% trans "Move Account" %}
+{% endblock %}
+
+{% block panel %}
+<div class="block">
+    <h2 class="title is-4">{% trans "Migrate account to another server" %}</h2>
+    <div class="box">
+        <div class="notification is-danger is-light">
+            <p>
+                {% trans "Moving your account will notify all your followers and direct them to follow the new account." %}
+            </p>
+            <p>
+                {% blocktrans %}
+                <strong>{{ user }}</strong> will be marked as moved and will not be discoverable or usable unless you undo the move.
+                {% endblocktrans %}
+            </p>
+        </div>
+        <div class="notification is-info is-light">
+            <p>{% trans "Remember to add this user as an alias of the target account before you try to move." %}</p>
+        </div>
+        <form name="move-user" action="{% url 'prefs-move' %}" method="post">
+            {% csrf_token %}
+            <div class="field">
+                <label class="label" for="id_target">{% trans "Enter the username for the account you want to move to e.g. <em>user@example.com </em>:" %}</label>
+                <input class="input {% if form.target.errors %}is-danger{% endif %}" type="text" name="target" id="id_target" required aria-describedby="desc_target">
+                {% include 'snippets/form_errors.html' with errors_list=form.target.errors id="desc_target" %}
+            </div>
+            <div class="field">
+                <label class="label" for="id_password">{% trans "Confirm your password:" %}</label>
+                <input class="input {% if form.password.errors %}is-danger{% endif %}" type="password" name="password" id="id_password" required aria-describedby="desc_password">
+                {% include 'snippets/form_errors.html' with errors_list=form.password.errors id="desc_password" %}
+            </div>
+            <button type="submit" class="button is-danger">{% trans "Move Account" %}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

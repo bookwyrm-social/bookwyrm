@@ -15,7 +15,7 @@ from .custom_form import CustomForm, StyledForm
 # pylint: disable=missing-class-docstring
 class ExpiryWidget(widgets.Select):
     def value_from_datadict(self, data, files, name):
-        """human-readable exiration time buckets"""
+        """human-readable expiration time buckets"""
         selected_string = super().value_from_datadict(data, files, name)
 
         if selected_string == "day":
@@ -55,14 +55,66 @@ class CreateInviteForm(CustomForm):
 class SiteForm(CustomForm):
     class Meta:
         model = models.SiteSettings
-        exclude = ["admin_code", "install_mode"]
+        fields = [
+            "name",
+            "instance_tagline",
+            "instance_description",
+            "instance_short_description",
+            "default_theme",
+            "code_of_conduct",
+            "privacy_policy",
+            "impressum",
+            "show_impressum",
+            "logo",
+            "logo_small",
+            "favicon",
+            "support_link",
+            "support_title",
+            "admin_email",
+            "footer_item",
+        ]
         widgets = {
             "instance_short_description": forms.TextInput(
                 attrs={"aria-describedby": "desc_instance_short_description"}
             ),
+        }
+
+
+class RegistrationForm(CustomForm):
+    class Meta:
+        model = models.SiteSettings
+        fields = [
+            "allow_registration",
+            "allow_invite_requests",
+            "registration_closed_text",
+            "invite_request_text",
+            "invite_request_question",
+            "invite_question_text",
+            "require_confirm_email",
+            "default_user_auth_group",
+        ]
+
+        widgets = {
             "require_confirm_email": forms.CheckboxInput(
                 attrs={"aria-describedby": "desc_require_confirm_email"}
             ),
+            "invite_request_text": forms.Textarea(
+                attrs={"aria-describedby": "desc_invite_request_text"}
+            ),
+        }
+
+
+class RegistrationLimitedForm(CustomForm):
+    class Meta:
+        model = models.SiteSettings
+        fields = [
+            "registration_closed_text",
+            "invite_request_text",
+            "invite_request_question",
+            "invite_question_text",
+        ]
+
+        widgets = {
             "invite_request_text": forms.Textarea(
                 attrs={"aria-describedby": "desc_invite_request_text"}
             ),

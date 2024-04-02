@@ -1,90 +1,123 @@
-{% extends 'layout.html' %}
+{% extends 'preferences/layout.html' %}
 {% load i18n %}
 {% load humanize %}
 
-{% block title %}{% trans "Import Books" %}{% endblock %}
+{% block title %}{% trans "Import Book List" %}{% endblock %}
+{% block header %}{% trans "Import Book List" %}{% endblock %}
 
-{% block content %}
+{% block panel %}
 <div class="block">
-    <h1 class="title">{% trans "Import Books" %}</h1>
-
-    {% if recent_avg_hours or recent_avg_minutes %}
-    <div class="notification">
-        <p>
-        {% if recent_avg_hours %}
-            {% blocktrans trimmed with hours=recent_avg_hours|floatformat:0|intcomma %}
-                On average, recent imports have taken {{ hours }} hours.
-            {% endblocktrans %}
-        {% else %}
-            {% blocktrans trimmed with minutes=recent_avg_minutes|floatformat:0|intcomma %}
-                On average, recent imports have taken {{ minutes }} minutes.
-            {% endblocktrans %}
-        {% endif %}
-        </p>
+    {% if invalid %}
+    <div class="notification is-danger">
+        {% trans "Not a valid CSV file" %}
     </div>
     {% endif %}
 
-    <form class="box" name="import" action="/import" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+    {% if site.imports_enabled %}
+        {% if import_size_limit and import_limit_reset %}
+            <div class="notification">
+                <p>
+                    {% blocktrans trimmed count days=import_limit_reset with display_size=import_size_limit|intcomma %}
+                        Currently, you are allowed to import {{ display_size }} books every {{ import_limit_reset }} day.
+                    {% plural %}
+                        Currently, you are allowed to import {{ display_size }} books every {{ import_limit_reset }} days.
+                    {% endblocktrans %}
+                </p>
+                <p>{% blocktrans with display_left=allowed_imports|intcomma %}You have {{ display_left }} left.{% endblocktrans %}</p>
+            </div>
+        {% endif %}
+        {% if recent_avg_hours or recent_avg_minutes %}
+        <div class="notification">
+            <p>
+            {% if recent_avg_hours %}
+                {% blocktrans trimmed with hours=recent_avg_hours|floatformat:0|intcomma %}
+                    On average, recent imports have taken {{ hours }} hours.
+                {% endblocktrans %}
+            {% else %}
+                {% blocktrans trimmed with minutes=recent_avg_minutes|floatformat:0|intcomma %}
+                    On average, recent imports have taken {{ minutes }} minutes.
+                {% endblocktrans %}
+            {% endif %}
+            </p>
+        </div>
+        {% endif %}
 
-        <div class="columns">
-        <div class="column is-half">
-            <div class="field">
-                <label class="label" for="source">
-                    {% trans "Data source:" %}
-                </label>
+        <form class="box" name="import" action="/import" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
-                <div class="select">
-                    <select name="source" id="source" aria-describedby="desc_source">
-                        <option value="Goodreads" {% if current == 'Goodreads' %}selected{% endif %}>
-                            {% trans "Goodreads (CSV)" %}
-                        </option>
-                        <option value="Storygraph" {% if current == 'Storygraph' %}selected{% endif %}>
-                            {% trans "Storygraph (CSV)" %}
-                        </option>
-                        <option value="LibraryThing" {% if current == 'LibraryThing' %}selected{% endif %}>
-                        {% trans "LibraryThing (TSV)" %}
-                        </option>
-                        <option value="OpenLibrary" {% if current == 'OpenLibrary' %}selected{% endif %}>
-                            {% trans "OpenLibrary (CSV)" %}
-                        </option>
-                        <option value="Calibre" {% if current == 'Calibre' %}selected{% endif %}>
-                            {% trans "Calibre (CSV)" %}
-                        </option>
-                    </select>
+            <div class="columns">
+            <div class="column is-half">
+                <div class="field">
+                    <label class="label" for="source">
+                        {% trans "Data source:" %}
+                    </label>
+
+                    <div class="select">
+                        <select name="source" id="source" aria-describedby="desc_source">
+                            <option value="Goodreads" {% if current == 'Goodreads' %}selected{% endif %}>
+                                {% trans "Goodreads (CSV)" %}
+                            </option>
+                            <option value="Storygraph" {% if current == 'Storygraph' %}selected{% endif %}>
+                                {% trans "Storygraph (CSV)" %}
+                            </option>
+                            <option value="LibraryThing" {% if current == 'LibraryThing' %}selected{% endif %}>
+                            {% trans "LibraryThing (TSV)" %}
+                            </option>
+                            <option value="OpenLibrary" {% if current == 'OpenLibrary' %}selected{% endif %}>
+                                {% trans "OpenLibrary (CSV)" %}
+                            </option>
+                            <option value="Calibre" {% if current == 'Calibre' %}selected{% endif %}>
+                                {% trans "Calibre (CSV)" %}
+                            </option>
+                        </select>
+                    </div>
+
+                    <p class="help" id="desc_source">
+                    {% blocktrans trimmed %}
+                        You can download your Goodreads data from the
+                        <a href="https://www.goodreads.com/review/import" target="_blank" rel="nofollow noopener noreferrer">Import/Export page</a>
+                        of your Goodreads account.
+                    {% endblocktrans %}
+                    </p>
                 </div>
 
-                <p class="help" id="desc_source">
-                {% blocktrans trimmed %}
-                    You can download your Goodreads data from the
-                    <a href="https://www.goodreads.com/review/import" target="_blank" rel="nofollow noopener noreferrer">Import/Export page</a>
-                    of your Goodreads account.
-                {% endblocktrans %}
-                </p>
+                <div class="field">
+                    <label class="label" for="id_csv_file">{% trans "Data file:" %}</label>
+                    {{ import_form.csv_file }}
+                </div>
             </div>
 
-            <div class="field">
-                <label class="label" for="id_csv_file">{% trans "Data file:" %}</label>
-                {{ import_form.csv_file }}
+            <div class="column is-half">
+                <div class="field">
+                    <label class="label">
+                        <input type="checkbox" name="include_reviews" checked> {% trans "Include reviews" %}
+                    </label>
+                </div>
+                <div class="field">
+                    <label class="label" for="privacy_import">
+                        {% trans "Privacy setting for imported reviews:" %}
+                    </label>
+                    {% include 'snippets/privacy_select.html' with no_label=True privacy_uuid="import" %}
+                </div>
             </div>
-        </div>
-
-        <div class="column is-half">
-            <div class="field">
-                <label class="label">
-                    <input type="checkbox" name="include_reviews" checked> {% trans "Include reviews" %}
-                </label>
             </div>
-            <div class="field">
-                <label class="label" for="privacy_import">
-                    {% trans "Privacy setting for imported reviews:" %}
-                </label>
-                {% include 'snippets/privacy_select.html' with no_label=True privacy_uuid="import" %}
-            </div>
-        </div>
-        </div>
-        <button class="button is-primary" type="submit">{% trans "Import" %}</button>
-    </form>
+            {% if not import_limit_reset and not import_size_limit or allowed_imports > 0 %}
+                <button class="button is-primary" type="submit">{% trans "Import" %}</button>
+            {% else %}
+                <button class="button is-primary is-disabled" type="submit">{% trans "Import" %}</button>
+                <p>{% trans "You've reached the import limit." %}</p>
+            {% endif%}
+        </form>
+    {% else %}
+    <div class="box notification has-text-centered is-warning m-6 content">
+        <p class="mt-5">
+            <span class="icon icon-warning is-size-2" aria-hidden="true"></span>
+        </p>
+        <p class="mb-5">
+            {% trans "Imports are temporarily disabled; thank you for your patience." %}
+        </p>
+    </div>
+    {% endif %}
 </div>
 
 <div class="content block">

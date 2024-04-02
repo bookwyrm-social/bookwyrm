@@ -3,14 +3,18 @@ import datetime
 from urllib.parse import urljoin
 import uuid
 
+import django.contrib.auth.models as auth_models
 from django.core.exceptions import PermissionDenied
 from django.db import models, IntegrityError
 from django.dispatch import receiver
 from django.utils import timezone
 from model_utils import FieldTracker
 
+from bookwyrm.connectors.abstract_connector import get_data
 from bookwyrm.preview_images import generate_site_preview_image_task
 from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, STATIC_FULL_URL
+from bookwyrm.settings import RELEASE_API
+from bookwyrm.tasks import app, MISC
 from .base_model import BookWyrmModel, new_access_code
 from .user import User
 from .fields import get_absolute_url
@@ -44,7 +48,7 @@ class SiteSettings(SiteModel):
     default_theme = models.ForeignKey(
         "Theme", null=True, blank=True, on_delete=models.SET_NULL
     )
-    version = models.CharField(null=True, blank=True, max_length=10)
+    available_version = models.CharField(null=True, blank=True, max_length=10)
 
     # admin setup options
     install_mode = models.BooleanField(default=False)
@@ -62,12 +66,17 @@ class SiteSettings(SiteModel):
     )
     code_of_conduct = models.TextField(default="Add a code of conduct here.")
     privacy_policy = models.TextField(default="Add a privacy policy here.")
+    impressum = models.TextField(default="Add a impressum here.")
+    show_impressum = models.BooleanField(default=False)
 
     # registration
     allow_registration = models.BooleanField(default=False)
     allow_invite_requests = models.BooleanField(default=True)
     invite_request_question = models.BooleanField(default=False)
     require_confirm_email = models.BooleanField(default=True)
+    default_user_auth_group = models.ForeignKey(
+        auth_models.Group, null=True, blank=True, on_delete=models.RESTRICT
+    )
 
     invite_question_text = models.CharField(
         max_length=255, blank=True, default="What is your favourite book?"
@@ -85,6 +94,13 @@ class SiteSettings(SiteModel):
     support_title = models.CharField(max_length=100, null=True, blank=True)
     admin_email = models.EmailField(max_length=255, null=True, blank=True)
     footer_item = models.TextField(null=True, blank=True)
+
+    # controls
+    imports_enabled = models.BooleanField(default=True)
+    import_size_limit = models.IntegerField(default=0)
+    import_limit_reset = models.IntegerField(default=0)
+    user_exports_enabled = models.BooleanField(default=False)
+    user_import_time_limit = models.IntegerField(default=48)
 
     field_tracker = FieldTracker(fields=["name", "instance_tagline", "logo"])
 
@@ -138,6 +154,7 @@ class Theme(SiteModel):
     created_date = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=50, unique=True)
     path = models.CharField(max_length=50, unique=True)
+    loads = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
         # pylint: disable=invalid-str-returned
@@ -198,7 +215,7 @@ class InviteRequest(BookWyrmModel):
         super().save(*args, **kwargs)
 
 
-def get_passowrd_reset_expiry():
+def get_password_reset_expiry():
     """give people a limited time to use the link"""
     now = timezone.now()
     return now + datetime.timedelta(days=1)
@@ -208,7 +225,7 @@ class PasswordReset(models.Model):
     """gives someone access to create an account on the instance"""
 
     code = models.CharField(max_length=32, default=new_access_code)
-    expiry = models.DateTimeField(default=get_passowrd_reset_expiry)
+    expiry = models.DateTimeField(default=get_password_reset_expiry)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def valid(self):
@@ -231,3 +248,14 @@ def preview_image(instance, *args, **kwargs):
 
     if len(changed_fields) > 0:
         generate_site_preview_image_task.delay()
+
+
+@app.task(queue=MISC)
+def check_for_updates_task():
+    """See if git remote knows about a new version"""
+    site = SiteSettings.objects.get()
+    release = get_data(RELEASE_API, timeout=3)
+    available_version = release.get("tag_name", None)
+    if available_version:
+        site.available_version = available_version
+        site.save(update_fields=["available_version"])

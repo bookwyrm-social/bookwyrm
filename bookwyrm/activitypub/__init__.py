@@ -3,8 +3,12 @@ import inspect
 import sys
 
 from .base_activity import ActivityEncoder, Signature, naive_parse
-from .base_activity import Link, Mention
-from .base_activity import ActivitySerializerError, resolve_remote_id
+from .base_activity import Link, Mention, Hashtag
+from .base_activity import (
+    ActivitySerializerError,
+    resolve_remote_id,
+    get_representative,
+)
 from .image import Document, Image
 from .note import Note, GeneratedNote, Article, Comment, Quotation
 from .note import Review, Rating
@@ -19,6 +23,7 @@ from .verbs import Create, Delete, Undo, Update
 from .verbs import Follow, Accept, Reject, Block
 from .verbs import Add, Remove
 from .verbs import Announce, Like
+from .verbs import Move
 
 # this creates a list of all the Activity types that we can serialize,
 # so when an Activity comes in from outside, we can check if it's known

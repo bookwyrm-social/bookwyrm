@@ -1,5 +1,6 @@
 """ non-interactive pages """
 from dateutil.relativedelta import relativedelta
+from django.http import Http404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.http import require_GET
@@ -36,3 +37,12 @@ def conduct(request):
 def privacy(request):
     """more information about the instance"""
     return TemplateResponse(request, "about/privacy.html")
+
+
+@require_GET
+def impressum(request):
+    """more information about the instance"""
+    site = models.SiteSettings.objects.get()
+    if not site.show_impressum:
+        raise Http404()
+    return TemplateResponse(request, "about/impressum.html")

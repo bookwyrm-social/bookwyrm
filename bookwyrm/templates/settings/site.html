@@ -10,7 +10,6 @@
     <li><a href="#instance-info">{% trans "Instance Info" %}</a></li>
     <li><a href="#display">{% trans "Display" %}</a></li>
     <li><a href="#footer">{% trans "Footer Content" %}</a></li>
-    <li><a href="#registration">{% trans "Registration" %}</a></li>
 </ul>
 {% endblock %}
 
@@ -68,6 +67,19 @@
                 <label class="label" for="id_privacy_policy">{% trans "Privacy Policy:" %}</label>
                 {{ site_form.privacy_policy }}
             </div>
+
+            <div class="field">
+                <label class="label" for="id_impressum">{% trans "Impressum:" %}</label>
+                {{ site_form.impressum }}
+            </div>
+            <div class="field is-horizontal">
+                <div class="field mr-2">
+                    <label class="label" for="id_show_impressum">{% trans "Include impressum:" %}</label>
+                </div>
+                <div class="control">
+                {{ site_form.show_impressum }}
+                </div>
+            </div>
         </div>
     </section>
 
@@ -124,55 +136,6 @@
             <div class="field">
                 <label class="label" for="id_footer_item">{% trans "Additional info:" %}</label>
                 {{ site_form.footer_item }}
-            </div>
-        </div>
-    </section>
-
-    <hr aria-hidden="true">
-
-    <section class="block" id="registration">
-        <h2 class="title is-4">{% trans "Registration" %}</h2>
-        <div class="box">
-            <div class="field">
-                <label class="label" for="id_allow_registration">
-                    {{ site_form.allow_registration }}
-                    {% trans "Allow registration" %}
-                </label>
-            </div>
-            <div class="field">
-                <label class="label mb-0" for="id_require_confirm_email">
-                    {{ site_form.require_confirm_email }}
-                    {% trans "Require users to confirm email address" %}
-                </label>
-                <p class="help" id="desc_require_confirm_email">{% trans "(Recommended if registration is open)" %}</p>
-            </div>
-            <div class="field">
-                <label class="label" for="id_allow_invite_requests">
-                    {{ site_form.allow_invite_requests }}
-                    {% trans "Allow invite requests" %}
-                </label>
-            </div>
-            <div class="field">
-                <label class="label" for="id_invite_requests_question">
-                    {{ site_form.invite_request_question }}
-                    {% trans "Set a question for invite requests" %}
-                </label>
-            </div>
-                <div class="field">
-                    <label class="label" for="id_invite_question_text">
-                        {% trans "Question:" %}
-                        {{ site_form.invite_question_text }}
-                    </label>
-                </div>
-            <div class="field">
-                <label class="label" for="id_registration_closed_text">{% trans "Registration closed text:" %}</label>
-                {{ site_form.registration_closed_text }}
-            </div>
-            <div class="field">
-                <label class="label" for="id_invite_request_text">{% trans "Invite request text:" %}</label>
-                {{ site_form.invite_request_text }}
-
-                {% include 'snippets/form_errors.html' with errors_list=site_form.invite_request_text.errors id="desc_invite_request_text" %}
             </div>
         </div>
     </section>

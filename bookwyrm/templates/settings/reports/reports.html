@@ -21,10 +21,10 @@
 {% block panel %}
 <div class="tabs">
     <ul>
-        <li class="{% if not resolved %}is-active{% endif %}"{% if not resolved == 'open' %} aria-current="page"{% endif %}>
+        <li class="{% if not resolved %}is-active{% endif %}"{% if not resolved %} aria-current="page"{% endif %}>
             <a href="{% url 'settings-reports' %}?resolved=false">{% trans "Open" %}</a>
         </li>
-        <li class="{% if resolved %}is-active{% endif %}"{% if resolved %} aria-current="page"{% endif %}>
+        <li class="{% if resolved and resolved != "all" %}is-active{% endif %}"{% if resolved and resolved != "all" %} aria-current="page"{% endif %}>
             <a href="{% url 'settings-reports' %}?resolved=true">{% trans "Resolved" %}</a>
         </li>
     </ul>

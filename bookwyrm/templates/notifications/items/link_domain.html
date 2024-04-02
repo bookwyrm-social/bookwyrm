@@ -1,0 +1,20 @@
+{% extends 'notifications/items/layout.html' %}
+{% load humanize %}
+{% load i18n %}
+
+{% block primary_link %}{% spaceless %}
+{% url 'settings-link-domain' %}
+{% endspaceless %}{% endblock %}
+
+{% block icon %}
+<span class="icon icon-warning"></span>
+{% endblock %}
+
+{% block description %}
+    {% url 'settings-link-domain' as path %}
+    {% blocktrans trimmed count counter=notification.related_link_domains.count with display_count=notification.related_link_domains.count|intcomma %}
+    A new <a href="{{ path }}">link domain</a> needs review
+    {% plural %}
+    {{ display_count }} new <a href="{{ path }}">link domains</a> need moderation
+    {% endblocktrans %}
+{% endblock %}

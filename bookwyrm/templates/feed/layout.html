@@ -23,7 +23,7 @@
         {% block panel %}{% endblock %}
 
         {% if activities %}
-        {% include 'snippets/pagination.html' with page=activities path=path anchor="#feed" %}
+        {% include 'snippets/pagination.html' with page=activities path=path anchor="#feed" mode="chronological" %}
         {% endif %}
     </div>
 </div>

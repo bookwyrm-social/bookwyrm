@@ -8,8 +8,9 @@ from django.db import models, transaction
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
-from bookwyrm.tasks import app, LOW
+from bookwyrm.tasks import app, MISC
 from .base_model import BookWyrmModel
+from .notification import NotificationType
 from .user import User
 
 
@@ -65,7 +66,7 @@ class AutoMod(AdminModel):
     created_by = models.ForeignKey("User", on_delete=models.PROTECT)
 
 
-@app.task(queue=LOW)
+@app.task(queue=MISC)
 def automod_task():
     """Create reports"""
     if not AutoMod.objects.exists():
@@ -80,7 +81,7 @@ def automod_task():
     with transaction.atomic():
         for admin in admins:
             notification, _ = notification_model.objects.get_or_create(
-                user=admin, notification_type=notification_model.REPORT, read=False
+                user=admin, notification_type=NotificationType.REPORT, read=False
             )
             notification.related_reports.set(reports)
 

@@ -11,14 +11,15 @@ from bookwyrm import models, views
 class ImportManualReviewViews(TestCase):
     """goodreads import views"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
                 "password",
@@ -26,14 +27,18 @@ class ImportManualReviewViews(TestCase):
                 localname="mouse",
             )
         models.SiteSettings.objects.create()
-        self.job = models.ImportJob.objects.create(user=self.local_user, mappings={})
+        cls.job = models.ImportJob.objects.create(user=cls.local_user, mappings={})
 
         work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,
         )
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_import_troubleshoot_get(self):
         """there are so many views, this just makes sure it LOADS"""

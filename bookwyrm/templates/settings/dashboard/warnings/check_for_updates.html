@@ -1,0 +1,24 @@
+{% extends 'settings/dashboard/warnings/layout.html' %}
+{% load i18n %}
+
+{% block warning_link %}#{% endblock %}
+
+{% block warning_text %}
+
+<form name="check-version" method="POST" action="{% url 'settings-dashboard' %}" class="is-flex is-align-items-center">
+    {% csrf_token %}
+
+    <p class="pr-2">
+        {% blocktrans trimmed with current=current_version available=available_version %}
+            Would you like to automatically check for new BookWyrm releases? (recommended)
+        {% endblocktrans %}
+    </p>
+
+    {{ schedule_form.every.as_hidden }}
+    {{ schedule_form.period.as_hidden }}
+
+    <button class="button is-small" type="submit">{% trans "Schedule checks" %}</button>
+</form>
+
+{% endblock %}
+

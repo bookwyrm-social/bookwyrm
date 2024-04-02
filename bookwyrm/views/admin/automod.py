@@ -6,7 +6,7 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
-from django_celery_beat.models import PeriodicTask
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 from bookwyrm import forms, models
 
@@ -54,7 +54,7 @@ def schedule_automod_task(request):
         return TemplateResponse(request, "settings/automod/rules.html", data)
 
     with transaction.atomic():
-        schedule = form.save(request)
+        schedule, _ = IntervalSchedule.objects.get_or_create(**form.cleaned_data)
         PeriodicTask.objects.get_or_create(
             interval=schedule,
             name="automod-task",

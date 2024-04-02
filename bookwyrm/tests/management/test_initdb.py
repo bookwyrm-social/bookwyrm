@@ -12,7 +12,7 @@ class InitDB(TestCase):
     def test_init_groups(self):
         """Create groups"""
         initdb.init_groups()
-        self.assertEqual(Group.objects.count(), 3)
+        self.assertEqual(Group.objects.count(), 4)
         self.assertTrue(Group.objects.filter(name="admin").exists())
         self.assertTrue(Group.objects.filter(name="moderator").exists())
         self.assertTrue(Group.objects.filter(name="editor").exists())
@@ -63,9 +63,19 @@ class InitDB(TestCase):
 
     def test_init_settings(self):
         """Create the settings file"""
+        initdb.init_groups()
+        group_editor = Group.objects.get(name="editor")
+
         initdb.init_settings()
         settings = models.SiteSettings.objects.get()
         self.assertEqual(settings.name, "BookWyrm")
+        self.assertEqual(settings.default_user_auth_group, group_editor)
+
+    def test_init_settings_without_groups(self):
+        """Create the settings, but without groups existing already"""
+        initdb.init_settings()
+        settings = models.SiteSettings.objects.get()
+        self.assertIsNone(settings.default_user_auth_group)
 
     def test_init_link_domains(self):
         """Common trusted domains for links"""
@@ -87,7 +97,7 @@ class InitDB(TestCase):
         command.handle()
 
         # everything should have been called
-        self.assertEqual(Group.objects.count(), 3)
+        self.assertEqual(Group.objects.count(), 4)
         self.assertTrue(Permission.objects.exists())
         self.assertEqual(models.Connector.objects.count(), 3)
         self.assertEqual(models.SiteSettings.objects.count(), 1)
@@ -99,7 +109,7 @@ class InitDB(TestCase):
         command.handle(limit="group")
 
         # everything should have been called
-        self.assertEqual(Group.objects.count(), 3)
+        self.assertEqual(Group.objects.count(), 4)
         self.assertEqual(models.Connector.objects.count(), 0)
         self.assertEqual(models.SiteSettings.objects.count(), 0)
         self.assertEqual(models.LinkDomain.objects.count(), 0)

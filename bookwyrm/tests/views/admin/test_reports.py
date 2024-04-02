@@ -15,20 +15,22 @@ from bookwyrm.tests.validate_html import validate_html
 class ReportViews(TestCase):
     """every response to a get request, html or json"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
                 "password",
                 local=True,
                 localname="mouse",
             )
-            self.rat = models.User.objects.create_user(
+            cls.rat = models.User.objects.create_user(
                 "rat@local.com",
                 "rat@mouse.mouse",
                 "password",
@@ -38,8 +40,12 @@ class ReportViews(TestCase):
         initdb.init_groups()
         initdb.init_permissions()
         group = Group.objects.get(name="moderator")
-        self.local_user.groups.set([group])
+        cls.local_user.groups.set([group])
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_reports_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -77,8 +83,8 @@ class ReportViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_report_comment(self):
-        """comment on a report"""
+    def test_report_action(self):
+        """action on a report"""
         view = views.ReportAdmin.as_view()
         request = self.factory.post("", {"note": "hi"})
         request.user = self.local_user
@@ -86,15 +92,17 @@ class ReportViews(TestCase):
 
         view(request, report.id)
 
-        comment = models.ReportComment.objects.get()
-        self.assertEqual(comment.user, self.local_user)
-        self.assertEqual(comment.note, "hi")
-        self.assertEqual(comment.report, report)
+        action = models.ReportAction.objects.get()
+        self.assertEqual(action.user, self.local_user)
+        self.assertEqual(action.note, "hi")
+        self.assertEqual(action.report, report)
+        self.assertEqual(action.action_type, "comment")
 
     def test_resolve_report(self):
         """toggle report resolution status"""
         report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
         self.assertFalse(report.resolved)
+        self.assertFalse(models.ReportAction.objects.exists())
         request = self.factory.post("")
         request.user = self.local_user
 
@@ -103,10 +111,24 @@ class ReportViews(TestCase):
         report.refresh_from_db()
         self.assertTrue(report.resolved)
 
+        # check that the action was noted
+        self.assertTrue(
+            models.ReportAction.objects.filter(
+                report=report, action_type="resolve", user=self.local_user
+            ).exists()
+        )
+
         # un-resolve
         views.resolve_report(request, report.id)
         report.refresh_from_db()
         self.assertFalse(report.resolved)
+
+        # check that the action was noted
+        self.assertTrue(
+            models.ReportAction.objects.filter(
+                report=report, action_type="reopen", user=self.local_user
+            ).exists()
+        )
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
     @patch("bookwyrm.activitystreams.populate_stream_task.delay")
@@ -147,3 +169,16 @@ class ReportViews(TestCase):
         self.rat.refresh_from_db()
         self.assertFalse(self.rat.is_active)
         self.assertEqual(self.rat.deactivation_reason, "moderator_deletion")
+
+    def test_delete_user_error(self, *_):
+        """toggle whether a user is able to log in"""
+        self.assertTrue(self.rat.is_active)
+        request = self.factory.post("", {"password": "wrong password"})
+        request.user = self.local_user
+
+        result = views.moderator_delete_user(request, self.rat.id)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+
+        self.rat.refresh_from_db()
+        self.assertTrue(self.rat.is_active)

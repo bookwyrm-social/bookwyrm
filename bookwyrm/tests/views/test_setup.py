@@ -13,10 +13,14 @@ from bookwyrm.tests.validate_html import validate_html
 class SetupViews(TestCase):
     """activity feed, statuses, dms"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
+        cls.site = models.SiteSettings.objects.create(install_mode=True)
+
+    def setUp(self):
+        """individual test setup"""
         self.factory = RequestFactory()
-        self.site = models.SiteSettings.objects.create(install_mode=True)
 
     def test_instance_config_permission_denied(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -72,7 +76,7 @@ class SetupViews(TestCase):
         self.site.refresh_from_db()
         self.assertFalse(self.site.install_mode)
 
-        user = models.User.objects.get()
+        user = models.User.objects.first()
         self.assertTrue(user.is_active)
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)

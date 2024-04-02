@@ -24,7 +24,7 @@ class SortListForm(forms.Form):
     sort_by = ChoiceField(
         choices=(
             ("order", _("List Order")),
-            ("title", _("Book Title")),
+            ("sort_title", _("Book Title")),
             ("rating", _("Rating")),
         ),
         label=_("Sort By"),

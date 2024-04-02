@@ -4,17 +4,17 @@
 {% with user_path=status.user.local_path username=status.user.display_name book_path=book.local_path book_title=book|book_title %}
 
 {% if status.status_type == 'GeneratedNote' %}
-    {% if status.content == 'wants to read' %}
+    {% if status.content == 'wants to read' or status.content == '<p>wants to read</p>' %}
         {% blocktrans trimmed %}
         <a href="{{ user_path}}">{{ username }}</a> wants to read <a href="{{ book_path }}">{{ book_title }}</a>
         {% endblocktrans %}
     {% endif %}
-    {% if status.content == 'finished reading' %}
+    {% if status.content == 'finished reading' or status.content == '<p>finished reading</p>' %}
         {% blocktrans trimmed %}
         <a href="{{ user_path}}">{{ username }}</a> finished reading <a href="{{ book_path }}">{{ book_title }}</a>
         {% endblocktrans %}
     {% endif %}
-    {% if status.content == 'started reading' %}
+    {% if status.content == 'started reading' or status.content == '<p>started reading</p>' %}
         {% blocktrans trimmed %}
         <a href="{{ user_path}}">{{ username }}</a> started reading <a href="{{ book_path }}">{{ book_title }}</a>
         {% endblocktrans %}
@@ -38,3 +38,4 @@
 {% endif %}
 
 {% endwith %}
+

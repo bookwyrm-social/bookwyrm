@@ -1,3 +1,53 @@
+.summary-on-open {
+    display: none;
+}
+
+@media only screen and (max-width: 768px) {
+    .navbar-menu {
+        text-align: right;
+        padding-right: 1rem;
+
+        .tags {
+            justify-content: flex-end;
+        }
+
+        #navbar-dropdown {
+            &[open] {
+                .summary-on-open {
+                    display: initial;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3rem;
+                    z-index: 31;
+                    background-color: $dropdown-content-background-color;
+                    padding: 1rem 1.75rem;
+                    line-height: 1;
+                }
+            }
+
+            .dropdown-menu {
+                padding-top: 0;
+                top: 3rem;
+            }
+
+            .dropdown-content {
+                padding-top: 0;
+                box-shadow: none;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
+
+            .navbar-item {
+                /* see ../components/_details.scss :: Navbar details */
+                padding-right: 1.75rem;
+                font-size: 1rem;
+            }
+        }
+    }
+}
+
 .image {
     overflow: hidden;
 }
@@ -58,4 +108,10 @@
 .clip-text {
     max-height: 35em;
     overflow: hidden;
+}
+
+.dropdown-menu .button {
+    @include mobile {
+        font-size: $size-6;
+    }
 }

@@ -5,4 +5,6 @@
     src="{% if user.avatar %}{% get_media_prefix %}{{ user.avatar }}{% else %}{% static "images/default_avi.jpg" %}{% endif %}"
     {% if ariaHide %}aria-hidden="true"{% endif %}
     alt="{{ user.alt_text }}"
+    loading="lazy"
+    decoding="async"
 >
