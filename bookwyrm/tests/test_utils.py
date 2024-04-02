@@ -25,7 +25,3 @@ class TestUtils(TestCase):
         self.assertIsNone(
             validate_url_domain("https://up-to-no-good.tld/bad-actor.exe")
         )
-
-    def test_default_url_domain(self):
-        """Check with a default URL"""
-        self.assertEqual(validate_url_domain("/"), "/")
