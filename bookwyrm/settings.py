@@ -366,6 +366,7 @@ if (USE_HTTPS and PORT == 443) or (not USE_HTTPS and PORT == 80):
 else:
     NETLOC = f"{DOMAIN}:{PORT}"
 BASE_URL = f"{PROTOCOL}://{NETLOC}"
+CSRF_TRUSTED_ORIGINS = [BASE_URL]
 
 USER_AGENT = f"BookWyrm (BookWyrm/{VERSION}; +{BASE_URL})"
 
