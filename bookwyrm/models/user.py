@@ -509,6 +509,13 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
     activity_serializer = activitypub.PublicKey
     serialize_reverse_fields = [("owner", "owner", "id")]
 
+    class Meta:
+        """indexes"""
+
+        indexes = [
+            models.Index(fields=["remote_id"]),
+        ]
+
     def get_remote_id(self):
         # self.owner is set by the OneToOneField on User
         return f"{self.owner.remote_id}/#main-key"
