@@ -21,12 +21,14 @@ class ShelfViews(TestCase):
     """tag views"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -34,15 +36,15 @@ class ShelfViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.work = models.Work.objects.create(title="Test Work")
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
-            parent_work=self.work,
+            parent_work=cls.work,
         )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            self.shelf = models.Shelf.objects.create(
-                name="Test Shelf", identifier="test-shelf", user=self.local_user
+            cls.shelf = models.Shelf.objects.create(
+                name="Test Shelf", identifier="test-shelf", user=cls.local_user
             )
         models.SiteSettings.objects.create()
 
@@ -219,3 +221,48 @@ class ShelfViews(TestCase):
             view(request, request.user.username, shelf.identifier)
 
         self.assertEqual(shelf.name, "To Read")
+
+    def test_filter_shelf_found(self, *_):
+        """display books that match a filter keyword"""
+        models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.shelf,
+            user=self.local_user,
+        )
+        shelf_book = models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.local_user.shelf_set.first(),
+            user=self.local_user,
+        )
+        view = views.Shelf.as_view()
+        request = self.factory.get("", {"filter": shelf_book.book.title})
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.local_user.username)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(len(result.context_data["books"].object_list), 1)
+        self.assertEqual(
+            result.context_data["books"].object_list[0].title,
+            shelf_book.book.title,
+        )
+
+    def test_filter_shelf_none(self, *_):
+        """display a message when no books match a filter keyword"""
+        models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.shelf,
+            user=self.local_user,
+        )
+        view = views.Shelf.as_view()
+        request = self.factory.get("", {"filter": "NOPE"})
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.local_user.username)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(len(result.context_data["books"].object_list), 0)

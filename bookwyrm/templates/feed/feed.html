@@ -41,7 +41,7 @@
     </section>
     {% endif %}
 
-    {% if annual_summary_year and tab.key == 'home' %}
+    {% if annual_summary_year and tab.key == 'home' and has_summary_read_throughs %}
     <section class="block is-hidden" data-hide="hide_annual_summary_{{ annual_summary_year }}">
         {% include 'feed/summary_card.html' with year=annual_summary_year %}
         <hr>

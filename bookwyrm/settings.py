@@ -19,7 +19,6 @@ DOMAIN = env("DOMAIN")
 with open("VERSION", encoding="utf-8") as f:
     version = f.read()
     version = version.replace("\n", "")
-f.close()
 
 VERSION = version
 
@@ -30,6 +29,9 @@ RELEASE_API = env(
 
 PAGE_LENGTH = env.int("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
+# TODO: extend maximum age to 1 year once termination of active sessions
+# is implemented (see bookwyrm-social#2278, bookwyrm-social#3082).
+SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE", 3600 * 24 * 30)  # 1 month
 
 JS_CACHE = "8a89cad7"
 
@@ -105,6 +107,7 @@ INSTALLED_APPS = [
     "celery",
     "django_celery_beat",
     "imagekit",
+    "pgtrigger",
     "storages",
 ]
 
@@ -318,6 +321,7 @@ LANGUAGES = [
     ("eu-es", _("Euskara (Basque)")),
     ("gl-es", _("Galego (Galician)")),
     ("it-it", _("Italiano (Italian)")),
+    ("ko-kr", _("한국어 (Korean)")),
     ("fi-fi", _("Suomi (Finnish)")),
     ("fr-fr", _("Français (French)")),
     ("lt-lt", _("Lietuvių (Lithuanian)")),
@@ -347,8 +351,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-agent = requests.utils.default_user_agent()
-USER_AGENT = f"{agent} (BookWyrm/{VERSION}; +https://{DOMAIN}/)"
+USER_AGENT = f"BookWyrm (BookWyrm/{VERSION}; +https://{DOMAIN}/)"
 
 # Imagekit generated thumbnails
 ENABLE_THUMBNAIL_GENERATION = env.bool("ENABLE_THUMBNAIL_GENERATION", False)
@@ -442,3 +445,7 @@ if HTTP_X_FORWARDED_PROTO:
 # Do not change this setting unless you already have an existing
 # user with the same username - in which case you should change it!
 INSTANCE_ACTOR_USERNAME = "bookwyrm.instance.actor"
+
+# We only allow specifying DATA_UPLOAD_MAX_MEMORY_SIZE in MiB from .env
+# (note the difference in variable names).
+DATA_UPLOAD_MAX_MEMORY_SIZE = env.int("DATA_UPLOAD_MAX_MEMORY_MiB", 100) << 20

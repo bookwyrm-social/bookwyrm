@@ -43,6 +43,7 @@ def search(
     min_confidence: float = 0,
     filters: Optional[list[Any]] = None,
     return_first: bool = False,
+    books: Optional[QuerySet[models.Edition]] = None,
 ) -> Union[Optional[models.Edition], QuerySet[models.Edition]]:
     """search your local database"""
     filters = filters or []
@@ -54,13 +55,15 @@ def search(
     # first, try searching unique identifiers
     # unique identifiers never have spaces, title/author usually do
     if not " " in query:
-        results = search_identifiers(query, *filters, return_first=return_first)
+        results = search_identifiers(
+            query, *filters, return_first=return_first, books=books
+        )
 
     # if there were no identifier results...
     if not results:
         # then try searching title/author
         results = search_title_author(
-            query, min_confidence, *filters, return_first=return_first
+            query, min_confidence, *filters, return_first=return_first, books=books
         )
     return results
 
@@ -98,9 +101,17 @@ def format_search_result(search_result):
 
 
 def search_identifiers(
-    query, *filters, return_first=False
+    query,
+    *filters,
+    return_first=False,
+    books=None,
 ) -> Union[Optional[models.Edition], QuerySet[models.Edition]]:
-    """tries remote_id, isbn; defined as dedupe fields on the model"""
+    """search Editions by deduplication fields
+
+    Best for cases when we can assume someone is searching for an exact match on
+    commonly unique data identifiers like isbn or specific library ids.
+    """
+    books = books or models.Edition.objects
     if connectors.maybe_isbn(query):
         # Oh did you think the 'S' in ISBN stood for 'standard'?
         normalized_isbn = query.strip().upper().rjust(10, "0")
@@ -111,7 +122,7 @@ def search_identifiers(
         for f in models.Edition._meta.get_fields()
         if hasattr(f, "deduplication_field") and f.deduplication_field
     ]
-    results = models.Edition.objects.filter(
+    results = books.filter(
         *filters, reduce(operator.or_, (Q(**f) for f in or_filters))
     ).distinct()
 
@@ -121,12 +132,17 @@ def search_identifiers(
 
 
 def search_title_author(
-    query, min_confidence, *filters, return_first=False
+    query,
+    min_confidence,
+    *filters,
+    return_first=False,
+    books=None,
 ) -> QuerySet[models.Edition]:
     """searches for title and author"""
+    books = books or models.Edition.objects
     query = SearchQuery(query, config="simple") | SearchQuery(query, config="english")
     results = (
-        models.Edition.objects.filter(*filters, search_vector=query)
+        books.filter(*filters, search_vector=query)
         .annotate(rank=SearchRank(F("search_vector"), query))
         .filter(rank__gt=min_confidence)
         .order_by("-rank")

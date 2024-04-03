@@ -12,11 +12,13 @@ class InboxAdd(TestCase):
     """inbox tests"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """basic user and book data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -27,7 +29,7 @@ class InboxAdd(TestCase):
         local_user.remote_id = "https://example.com/user/mouse"
         local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -38,7 +40,7 @@ class InboxAdd(TestCase):
             )
 
         work = models.Work.objects.create(title="work title")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Test",
             remote_id="https://example.com/book/37292",
             parent_work=work,

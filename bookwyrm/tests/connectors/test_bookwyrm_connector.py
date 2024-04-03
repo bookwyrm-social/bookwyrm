@@ -12,7 +12,7 @@ class BookWyrmConnector(TestCase):
     """this connector doesn't do much, just search"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """create bookwrym_connector in the database"""
         models.Connector.objects.create(
             identifier="example.com",

@@ -19,7 +19,6 @@ def make_date(*args):
     return datetime.datetime(*args, tzinfo=pytz.UTC)
 
 
-# pylint: disable=consider-using-with
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
@@ -30,20 +29,27 @@ class GenericImporter(TestCase):
         """use a test csv"""
         self.importer = Importer()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/generic.csv")
+        # pylint: disable-next=consider-using-with
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
 
+    def tearDown(self):
+        """close test csv"""
+        self.csv.close()
+
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """populate database"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
         models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,
@@ -266,9 +272,11 @@ class GenericImporter(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            with patch("bookwyrm.models.Status.broadcast") as broadcast_mock:
-                handle_imported_book(import_item)
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.models.Status.broadcast") as broadcast_mock,
+        ):
+            handle_imported_book(import_item)
         kwargs = broadcast_mock.call_args.kwargs
         self.assertEqual(kwargs["software"], "bookwyrm")
         review = models.Review.objects.get(book=self.book, user=self.local_user)
