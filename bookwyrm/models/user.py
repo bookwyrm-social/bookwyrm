@@ -203,6 +203,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
         indexes = [
             models.Index(fields=["username"]),
+            models.Index(fields=["is_active", "local"]),
         ]
 
     @property
