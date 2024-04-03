@@ -278,3 +278,8 @@ class Flag(Verb):
     object: List[str] = None
     links: List[str] = None
     type: str = "Flag"
+    content: str = None
+
+    def action(self, allow_external_connections=False):
+        """usually we just want to update and save"""
+        self.to_model(allow_external_connections=allow_external_connections)
