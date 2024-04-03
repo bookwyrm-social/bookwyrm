@@ -198,6 +198,13 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     hotp_secret = models.CharField(max_length=32, default=None, blank=True, null=True)
     hotp_count = models.IntegerField(default=0, blank=True, null=True)
 
+    class Meta(AbstractUser.Meta):
+        """indexes"""
+
+        indexes = [
+            models.Index(fields=["username"]),
+        ]
+
     @property
     def active_follower_requests(self):
         """Follow requests from active users"""
