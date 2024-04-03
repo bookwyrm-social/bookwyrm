@@ -8,6 +8,7 @@ from bookwyrm import forms, models, views
 from bookwyrm.tests.validate_html import validate_html
 
 
+# pylint: disable=invalid-name
 class ReportViews(TestCase):
     """every response to a get request, html or json"""
 
@@ -51,12 +52,12 @@ class ReportViews(TestCase):
         """a user reports another user"""
         request = self.factory.get("")
         request.user = self.local_user
-        result = views.Report.as_view()(request, self.local_user.id)
+        result = views.Report.as_view()(request, user_id=self.local_user.id)
 
         validate_html(result.render())
 
     def test_report_modal_view_with_status(self):
-        """a user reports another user"""
+        """a user reports another user status"""
         request = self.factory.get("")
         request.user = self.local_user
         result = views.Report.as_view()(
@@ -66,7 +67,7 @@ class ReportViews(TestCase):
         validate_html(result.render())
 
     def test_report_modal_view_with_link_domain(self):
-        """a user reports another user"""
+        """a user reports a link"""
         link = models.Link.objects.create(
             url="http://example.com/hi",
             added_by=self.local_user,
@@ -78,7 +79,7 @@ class ReportViews(TestCase):
         validate_html(result.render())
 
     def test_make_report(self):
-        """a user reports another user"""
+        """a local user reports a remote user"""
         form = forms.ReportForm()
         form.data["user"] = self.local_user.id
         form.data["reported_user"] = self.rat.id
@@ -89,7 +90,7 @@ class ReportViews(TestCase):
 
         report = models.Report.objects.get()
         self.assertEqual(report.user, self.local_user)
-        self.assertEqual(report.user, self.rat)
+        self.assertEqual(report.reported_user, self.rat)
 
     def test_report_link(self):
         """a user reports a link as spam"""
