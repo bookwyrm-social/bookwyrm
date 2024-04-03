@@ -139,14 +139,14 @@ class ActivityStream(RedisStore):
                 | (
                     Q(following=status.user) & Q(following=status.reply_parent.user)
                 )  # if the user is following both authors
-            ).distinct()
+            )
 
         # only visible to the poster's followers and tagged users
         elif status.privacy == "followers":
             audience = audience.filter(
                 Q(following=status.user)  # if the user is following the author
             )
-        return audience.distinct()
+        return audience.distinct("id")
 
     @tracer.start_as_current_span("ActivityStream.get_audience")
     def get_audience(self, status):
