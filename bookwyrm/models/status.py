@@ -82,6 +82,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         ordering = ("-published_date",)
         indexes = [
             models.Index(fields=["remote_id"]),
+            models.Index(fields=["thread_id"]),
         ]
 
     def save(self, *args, **kwargs):
