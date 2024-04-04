@@ -156,7 +156,7 @@ class ActivityStream(RedisStore):
         status_author = models.User.objects.filter(
             is_active=True, local=True, id=status.user.id
         ).values_list("id", flat=True)
-        return list(set(list(audience) + list(status_author)))
+        return list(set(audience) | set(status_author))
 
     def get_stores_for_users(self, user_ids):
         """convert a list of user ids into redis store ids"""
@@ -191,7 +191,7 @@ class HomeStream(ActivityStream):
         status_author = models.User.objects.filter(
             is_active=True, local=True, id=status.user.id
         ).values_list("id", flat=True)
-        return list(set(list(audience) + list(status_author)))
+        return list(set(audience) | set(status_author))
 
     def get_statuses_for_user(self, user):
         return models.Status.privacy_filter(
