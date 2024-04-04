@@ -109,9 +109,9 @@ def automod_users(reporter):
     return report_model.objects.bulk_create(
         [
             report_model(
-                reporter=reporter,
+                user=reporter,
                 note=_("Automatically generated report"),
-                user=u,
+                reported_user=u,
             )
             for u in users
         ]
@@ -143,9 +143,9 @@ def automod_statuses(reporter):
     return report_model.objects.bulk_create(
         [
             report_model(
-                reporter=reporter,
+                user=reporter,
                 note=_("Automatically generated report"),
-                user=s.user,
+                reported_user=s.user,
                 status=s,
             )
             for s in statuses

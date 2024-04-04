@@ -268,3 +268,13 @@ class Move(Verb):
         else:
             # we might do something with this to move other objects at some point
             pass
+
+
+@dataclass(init=False)
+class Flag(Verb):
+    """Report a user to their home server"""
+
+    to: str
+    object: List[str] = None
+    links: List[str] = None
+    type: str = "Flag"
