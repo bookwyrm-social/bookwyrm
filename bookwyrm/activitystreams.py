@@ -183,8 +183,6 @@ class HomeStream(ActivityStream):
     def get_audience(self, status):
         trace.get_current_span().set_attribute("stream_id", self.key)
         audience = super()._get_audience(status)
-        if not audience:
-            return []
         # if the user is following the author
         audience = audience.filter(following=status.user).values_list("id", flat=True)
         # if the user is the post's author
@@ -239,9 +237,7 @@ class BooksStream(ActivityStream):
         )
 
         audience = super()._get_audience(status)
-        if not audience:
-            return models.User.objects.none()
-        return audience.filter(shelfbook__book__parent_work=work).distinct()
+        return audience.filter(shelfbook__book__parent_work=work)
 
     def get_audience(self, status):
         # only show public statuses on the books feed,
