@@ -122,16 +122,18 @@ def get_or_create_connector(remote_id: str) -> abstract_connector.AbstractConnec
     if not identifier:
         raise ValueError(f"Invalid remote id: {remote_id}")
 
+    base_url = f"{url.scheme}://{url.netloc}"
+
     try:
         connector_info = models.Connector.objects.get(identifier=identifier)
     except models.Connector.DoesNotExist:
         connector_info = models.Connector.objects.create(
             identifier=identifier,
             connector_file="bookwyrm_connector",
-            base_url=f"https://{identifier}",
-            books_url=f"https://{identifier}/book",
-            covers_url=f"https://{identifier}/images/covers",
-            search_url=f"https://{identifier}/search?q=",
+            base_url=base_url,
+            books_url=f"{base_url}/book",
+            covers_url=f"{base_url}/images/covers",
+            search_url=f"{base_url}/search?q=",
             priority=2,
         )
 
