@@ -19,7 +19,7 @@ from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status
 from bookwyrm.preview_images import generate_user_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES
+from bookwyrm.settings import BASE_URL, DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app, MISC
 from bookwyrm.utils import regex
@@ -214,8 +214,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     @property
     def confirmation_link(self):
         """helper for generating confirmation links"""
-        link = site_link()
-        return f"{link}/confirm-email/{self.confirmation_code}"
+        return f"{BASE_URL}/confirm-email/{self.confirmation_code}"
 
     @property
     def following_link(self):

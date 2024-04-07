@@ -227,11 +227,9 @@ class Status(TestCase):
         self.assertEqual(activity["sensitive"], False)
         self.assertIsInstance(activity["attachment"], list)
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test(_[A-z0-9]+)?.jpg",
-                activity["attachment"][0]["url"],
-            )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test(_[A-z0-9]+)?.jpg$",
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
@@ -263,12 +261,10 @@ class Status(TestCase):
             ),
         )
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        # self.assertTrue(
-        #    re.match(
-        #        r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-        #        activity["attachment"][0].url,
-        #    )
-        # )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test_[A-z0-9]+.jpg$",
+        )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
     def test_quotation_to_activity(self, *_):
@@ -306,11 +302,9 @@ class Status(TestCase):
             ),
         )
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test(_[A-z0-9]+)?.jpg",
-                activity["attachment"][0]["url"],
-            )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test(_[A-z0-9]+)?.jpg$",
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
@@ -400,11 +394,9 @@ class Status(TestCase):
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-                activity["attachment"][0]["url"],
-            )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test_[A-z0-9]+.jpg$",
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
@@ -425,11 +417,9 @@ class Status(TestCase):
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-                activity["attachment"][0]["url"],
-            )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test_[A-z0-9]+.jpg$",
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
@@ -448,11 +438,9 @@ class Status(TestCase):
             f'rated <em><a href="{self.book.remote_id}">{self.book.title}</a></em>: 3 stars',
         )
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-                activity["attachment"][0]["url"],
-            )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test_[A-z0-9]+.jpg$",
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 

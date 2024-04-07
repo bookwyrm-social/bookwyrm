@@ -1,7 +1,7 @@
 """Validations"""
 from typing import Optional
 
-from bookwyrm.settings import DOMAIN, USE_HTTPS
+from bookwyrm.settings import BASE_URL
 
 
 def validate_url_domain(url: Optional[str]) -> Optional[str]:
@@ -9,10 +9,7 @@ def validate_url_domain(url: Optional[str]) -> Optional[str]:
     if url is None:
         return None
 
-    protocol = "https://" if USE_HTTPS else "http://"
-    origin = f"{protocol}{DOMAIN}"
+    if not url.startswith(BASE_URL):
+        return None
 
-    if url.startswith(origin):
-        return url
-
-    return None
+    return url
