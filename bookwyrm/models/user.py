@@ -349,7 +349,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         if not self.local and not re.match(regex.FULL_USERNAME, self.username):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
-            self.username = f"{self.username}@{actor_parts.netloc}"
+            self.username = f"{self.username}@{actor_parts.hostname}"
 
         # this user already exists, no need to populate fields
         if not created:
@@ -558,7 +558,7 @@ def set_remote_server(user_id, allow_external_connections=False):
     user = User.objects.get(id=user_id)
     actor_parts = urlparse(user.remote_id)
     federated_server = get_or_create_remote_server(
-        actor_parts.netloc, allow_external_connections=allow_external_connections
+        actor_parts.hostname, allow_external_connections=allow_external_connections
     )
     # if we were unable to find the server, we need to create a new entry for it
     if not federated_server:

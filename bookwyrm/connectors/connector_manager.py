@@ -118,9 +118,9 @@ def get_connectors() -> Iterator[abstract_connector.AbstractConnector]:
 def get_or_create_connector(remote_id: str) -> abstract_connector.AbstractConnector:
     """get the connector related to the object's server"""
     url = urlparse(remote_id)
-    identifier = url.netloc
+    identifier = url.hostname
     if not identifier:
-        raise ValueError("Invalid remote id")
+        raise ValueError(f"Invalid remote id: {remote_id}")
 
     try:
         connector_info = models.Connector.objects.get(identifier=identifier)
@@ -188,8 +188,11 @@ def raise_not_valid_url(url: str) -> None:
     if not parsed.scheme in ["http", "https"]:
         raise ConnectorException("Invalid scheme: ", url)
 
+    if not parsed.hostname:
+        raise ConnectorException("Hostname missing: ", url)
+
     try:
-        ipaddress.ip_address(parsed.netloc)
+        ipaddress.ip_address(parsed.hostname)
         raise ConnectorException("Provided url is an IP address: ", url)
     except ValueError:
         # it's not an IP address, which is good

@@ -350,27 +350,30 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-USER_AGENT = f"BookWyrm (BookWyrm/{VERSION}; +https://{DOMAIN}/)"
-
 # Imagekit generated thumbnails
 ENABLE_THUMBNAIL_GENERATION = env.bool("ENABLE_THUMBNAIL_GENERATION", False)
 IMAGEKIT_CACHEFILE_DIR = "thumbnails"
 IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "bookwyrm.thumbnail_generation.Strategy"
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 CSP_ADDITIONAL_HOSTS = env.list("CSP_ADDITIONAL_HOSTS", [])
-
-# Storage
 
 PROTOCOL = "http"
 if USE_HTTPS:
     PROTOCOL = "https"
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+PORT = env.int("PORT", 443 if USE_HTTPS else 80)
+if (USE_HTTPS and PORT == 443) or (not USE_HTTPS and PORT == 80):
+    NETLOC = DOMAIN
+else:
+    NETLOC = f"{DOMAIN}:{PORT}"
+BASE_URL = f"{PROTOCOL}://{NETLOC}"
+
+USER_AGENT = f"BookWyrm (BookWyrm/{VERSION}; +{BASE_URL})"
+
+# Storage
 
 USE_S3 = env.bool("USE_S3", False)
 USE_AZURE = env.bool("USE_AZURE", False)
@@ -440,11 +443,11 @@ elif USE_AZURE:
 else:
     # Static settings
     STATIC_URL = "/static/"
-    STATIC_FULL_URL = f"{PROTOCOL}://{DOMAIN}{STATIC_URL}"
+    STATIC_FULL_URL = BASE_URL + STATIC_URL
     STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
     # Media settings
     MEDIA_URL = "/images/"
-    MEDIA_FULL_URL = f"{PROTOCOL}://{DOMAIN}{MEDIA_URL}"
+    MEDIA_FULL_URL = BASE_URL + MEDIA_URL
     DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
     # Exports settings
     EXPORTS_STORAGE = "bookwyrm.storage_backends.ExportsFileStorage"

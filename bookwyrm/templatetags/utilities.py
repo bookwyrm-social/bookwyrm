@@ -120,7 +120,7 @@ def id_to_username(user_id):
     """given an arbitrary remote id, return the username"""
     if user_id:
         url = urlparse(user_id)
-        domain = url.netloc
+        domain = url.hostname
         parts = url.path.split("/")
         name = parts[-1]
         value = f"{name}@{domain}"
