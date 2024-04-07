@@ -8,7 +8,7 @@ from django.contrib.postgres.indexes import GinIndex
 import pgtrigger
 
 from bookwyrm import activitypub
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 from bookwyrm.utils.db import format_trigger
 
 from .book import BookDataModel, MergedAuthor
@@ -70,7 +70,7 @@ class Author(BookDataModel):
 
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
-        return f"https://{DOMAIN}/author/{self.id}"
+        return f"{BASE_URL}/author/{self.id}"
 
     class Meta:
         """sets up indexes and triggers"""

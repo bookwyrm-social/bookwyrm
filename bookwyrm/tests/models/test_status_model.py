@@ -60,7 +60,7 @@ class Status(TestCase):
     def test_status_generated_fields(self, *_):
         """setting remote id"""
         status = models.Status.objects.create(content="bleh", user=self.local_user)
-        expected_id = f"https://{settings.DOMAIN}/user/mouse/status/{status.id}"
+        expected_id = f"{settings.BASE_URL}/user/mouse/status/{status.id}"
         self.assertEqual(status.remote_id, expected_id)
         self.assertEqual(status.privacy, "public")
 
@@ -151,7 +151,7 @@ class Status(TestCase):
         self.assertEqual(activity["tag"][0]["type"], "Hashtag")
         self.assertEqual(activity["tag"][0]["name"], "#content")
         self.assertEqual(
-            activity["tag"][0]["href"], f"https://{settings.DOMAIN}/hashtag/{tag.id}"
+            activity["tag"][0]["href"], f"{settings.BASE_URL}/hashtag/{tag.id}"
         )
 
     def test_status_with_mention_to_activity(self, *_):

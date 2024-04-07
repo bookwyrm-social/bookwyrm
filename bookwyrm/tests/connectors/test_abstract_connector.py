@@ -6,7 +6,7 @@ import responses
 from bookwyrm import models
 from bookwyrm.connectors import abstract_connector, ConnectorException
 from bookwyrm.connectors.abstract_connector import Mapping, get_data
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 
 
 class AbstractConnector(TestCase):
@@ -86,7 +86,7 @@ class AbstractConnector(TestCase):
     def test_get_or_create_book_existing(self):
         """find an existing book by remote/origin id"""
         self.assertEqual(models.Book.objects.count(), 1)
-        self.assertEqual(self.book.remote_id, f"https://{DOMAIN}/book/{self.book.id}")
+        self.assertEqual(self.book.remote_id, f"{BASE_URL}/book/{self.book.id}")
         self.assertEqual(self.book.origin_id, "https://example.com/book/1234")
 
         # dedupe by origin id
@@ -95,9 +95,7 @@ class AbstractConnector(TestCase):
         self.assertEqual(result, self.book)
 
         # dedupe by remote id
-        result = self.connector.get_or_create_book(
-            f"https://{DOMAIN}/book/{self.book.id}"
-        )
+        result = self.connector.get_or_create_book(f"{BASE_URL}/book/{self.book.id}")
 
         self.assertEqual(models.Book.objects.count(), 1)
         self.assertEqual(result, self.book)

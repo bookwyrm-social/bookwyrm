@@ -19,7 +19,7 @@ from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status
 from bookwyrm.preview_images import generate_user_preview_image_task
-from bookwyrm.settings import BASE_URL, DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES
+from bookwyrm.settings import BASE_URL, ENABLE_PREVIEW_IMAGES, LANGUAGES
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app, MISC
 from bookwyrm.utils import regex
@@ -40,12 +40,6 @@ FeedFilterChoices = [
 def get_feed_filter_choices():
     """return a list of filter choice keys"""
     return [f[0] for f in FeedFilterChoices]
-
-
-def site_link():
-    """helper for generating links to the site"""
-    protocol = "https" if USE_HTTPS else "http"
-    return f"{protocol}://{DOMAIN}"
 
 
 # pylint: disable=too-many-public-methods
@@ -368,11 +362,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
         with transaction.atomic():
             # populate fields for local users
-            link = site_link()
-            self.remote_id = f"{link}/user/{self.localname}"
+            self.remote_id = f"{BASE_URL}/user/{self.localname}"
             self.followers_url = f"{self.remote_id}/followers"
             self.inbox = f"{self.remote_id}/inbox"
-            self.shared_inbox = f"{link}/inbox"
+            self.shared_inbox = f"{BASE_URL}/inbox"
             self.outbox = f"{self.remote_id}/outbox"
 
             # an id needs to be set before we can proceed with related models

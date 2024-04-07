@@ -21,7 +21,7 @@ from bookwyrm import activitypub
 from bookwyrm.isbn.isbn import hyphenator_singleton as hyphenator
 from bookwyrm.preview_images import generate_edition_preview_image_task
 from bookwyrm.settings import (
-    DOMAIN,
+    BASE_URL,
     DEFAULT_LANGUAGE,
     LANGUAGE_ARTICLES,
     ENABLE_PREVIEW_IMAGES,
@@ -327,7 +327,7 @@ class Book(BookDataModel):
 
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
-        return f"https://{DOMAIN}/book/{self.id}"
+        return f"{BASE_URL}/book/{self.id}"
 
     def guess_sort_title(self):
         """Get a best-guess sort title for the current book"""

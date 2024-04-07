@@ -27,7 +27,6 @@ class ViewsHelpers(TestCase):
             patch("bookwyrm.lists_stream.populate_lists_task.delay"),
             patch("bookwyrm.suggested_users.rerank_user_task.delay"),
         ):
-
             cls.local_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
@@ -35,7 +34,6 @@ class ViewsHelpers(TestCase):
                 local=True,
                 discoverable=True,
                 localname="rat",
-                remote_id="https://your.domain.here/user/rat",
             )
 
         with (

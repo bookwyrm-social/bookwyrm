@@ -10,7 +10,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 from bookwyrm.book_search import SearchResult
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -57,7 +57,7 @@ class Views(TestCase):
         data = json.loads(response.content)
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["title"], "Test Book")
-        self.assertEqual(data[0]["key"], f"https://{DOMAIN}/book/{self.book.id}")
+        self.assertEqual(data[0]["key"], f"{BASE_URL}/book/{self.book.id}")
 
     def test_search_no_query(self):
         """just the search page"""
