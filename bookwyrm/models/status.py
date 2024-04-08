@@ -392,7 +392,7 @@ class Quotation(BookStatus):
     def _format_position(self) -> Optional[str]:
         """serialize page position"""
         beg = self.position
-        end = self.endposition or 0
+        end = self.endposition
         if self.position_mode != "PG" or not beg:
             return None
         return f"pp. {beg}-{end}" if end else f"p. {beg}"
