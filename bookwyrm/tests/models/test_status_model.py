@@ -1,5 +1,4 @@
 """ testing models """
-from unittest import expectedFailure
 from unittest.mock import patch
 import pathlib
 import re
@@ -338,7 +337,6 @@ class Status(TestCase):
             activity["attachment"][0]["name"], "Author Name: Test Edition (worm)"
         )
 
-    @expectedFailure
     def test_quotation_page_serialization(self, *_):
         """serialization of quotation page position"""
         tests = [

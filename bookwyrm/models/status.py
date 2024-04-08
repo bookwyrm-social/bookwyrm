@@ -395,7 +395,7 @@ class Quotation(BookStatus):
         end = self.endposition or 0
         if self.position_mode != "PG" or not beg:
             return None
-        return f"pp. {beg}-{end}" if end > beg else f"p. {beg}"
+        return f"pp. {beg}-{end}" if end else f"p. {beg}"
 
     @property
     def pure_content(self):
