@@ -359,7 +359,8 @@ class Status(TestCase):
                 )
                 activity = status.to_activity(pure=True)
                 if pages:
-                    expect_re = f'^<p>"my quote"</p> <p>— <a .+</a>, {pages}</p>$'
+                    pages_re = re.escape(pages)
+                    expect_re = f'^<p>"my quote"</p> <p>— <a .+</a>, {pages_re}</p>$'
                 else:
                     expect_re = '^<p>"my quote"</p> <p>— <a .+</a></p>$'
                 self.assertRegex(activity["content"], expect_re)
