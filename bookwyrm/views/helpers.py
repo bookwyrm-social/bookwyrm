@@ -1,4 +1,5 @@
 """ helper functions used in various views """
+
 import re
 from datetime import datetime, timedelta
 import dateutil.parser
@@ -8,7 +9,7 @@ from dateutil.parser import ParserError
 from requests import HTTPError
 from django.db.models import Q
 from django.conf import settings as django_settings
-from django.shortcuts import redirect
+from django.shortcuts import redirect, _get_queryset
 from django.http import Http404
 from django.utils import translation
 
@@ -232,3 +233,19 @@ def redirect_to_referer(request, *args, **kwargs):
 
     # if not, use the args passed you'd normally pass to redirect()
     return redirect(*args or "/", **kwargs)
+
+
+# pylint: disable=redefined-builtin,invalid-name
+def get_mergeable_object_or_404(klass, id):
+    """variant of get_object_or_404 that also redirects if id has been merged
+    into another object"""
+    queryset = _get_queryset(klass)
+    try:
+        return queryset.get(pk=id)
+    except queryset.model.DoesNotExist:
+        try:
+            return queryset.get(absorbed__deleted_id=id)
+        except queryset.model.DoesNotExist:
+            pass
+
+        raise Http404(f"No {queryset.model} with ID {id} exists")
