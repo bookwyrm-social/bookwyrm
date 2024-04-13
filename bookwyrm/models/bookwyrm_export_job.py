@@ -139,9 +139,7 @@ def create_archive_task(job_id):
             images_storage = storage_backends.ImagesStorage()
 
             if user.avatar:
-                add_file_to_s3_tar(
-                    s3_tar, images_storage, user.avatar, directory="images"
-                )
+                add_file_to_s3_tar(s3_tar, images_storage, user.avatar)
 
             for edition in editions:
                 if edition.cover:
@@ -166,7 +164,7 @@ def create_archive_task(job_id):
 
                     # Add avatar image if present
                     if user.avatar:
-                        tar.add_image(user.avatar, directory="images")
+                        tar.add_image(user.avatar)
 
                     for edition in editions:
                         if edition.cover:
@@ -196,7 +194,7 @@ def export_user(user: User):
     """export user data"""
     data = user.to_activity()
     if user.avatar:
-        data["icon"]["url"] = archive_file_location(user.avatar, directory="images")
+        data["icon"]["url"] = archive_file_location(user.avatar)
     else:
         data["icon"] = {}
     return data
