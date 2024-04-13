@@ -139,14 +139,14 @@ class ActivityStream(RedisStore):
                 | (
                     Q(following=status.user) & Q(following=status.reply_parent.user)
                 )  # if the user is following both authors
-            ).distinct()
+            )
 
         # only visible to the poster's followers and tagged users
         elif status.privacy == "followers":
             audience = audience.filter(
                 Q(following=status.user)  # if the user is following the author
             )
-        return audience.distinct()
+        return audience.distinct("id")
 
     @tracer.start_as_current_span("ActivityStream.get_audience")
     def get_audience(self, status):
@@ -156,7 +156,7 @@ class ActivityStream(RedisStore):
         status_author = models.User.objects.filter(
             is_active=True, local=True, id=status.user.id
         ).values_list("id", flat=True)
-        return list(set(list(audience) + list(status_author)))
+        return list(set(audience) | set(status_author))
 
     def get_stores_for_users(self, user_ids):
         """convert a list of user ids into redis store ids"""
@@ -183,15 +183,13 @@ class HomeStream(ActivityStream):
     def get_audience(self, status):
         trace.get_current_span().set_attribute("stream_id", self.key)
         audience = super()._get_audience(status)
-        if not audience:
-            return []
         # if the user is following the author
         audience = audience.filter(following=status.user).values_list("id", flat=True)
         # if the user is the post's author
         status_author = models.User.objects.filter(
             is_active=True, local=True, id=status.user.id
         ).values_list("id", flat=True)
-        return list(set(list(audience) + list(status_author)))
+        return list(set(audience) | set(status_author))
 
     def get_statuses_for_user(self, user):
         return models.Status.privacy_filter(
@@ -239,9 +237,7 @@ class BooksStream(ActivityStream):
         )
 
         audience = super()._get_audience(status)
-        if not audience:
-            return models.User.objects.none()
-        return audience.filter(shelfbook__book__parent_work=work).distinct()
+        return audience.filter(shelfbook__book__parent_work=work)
 
     def get_audience(self, status):
         # only show public statuses on the books feed,

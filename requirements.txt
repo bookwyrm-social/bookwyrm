@@ -16,7 +16,7 @@ django-sass-processor==1.2.2
 django-storages==1.13.2
 django-storages[azure]
 environs==9.5.0
-flower==2.0.0
+flower==2.0.1
 grpcio==1.57.0 # Not a direct dependency, pinned to get a security fix
 libsass==0.22.0
 Markdown==3.4.1
@@ -26,7 +26,8 @@ opentelemetry-instrumentation-celery==0.37b0
 opentelemetry-instrumentation-django==0.37b0
 opentelemetry-instrumentation-psycopg2==0.37b0
 opentelemetry-sdk==1.16.0
-Pillow==10.2.0
+Pillow==10.3.0
+pilkit>=3.0 # dependency of django-imagekit, 2.0 is incompatible with Pillow>=10
 protobuf==3.20.*
 psycopg2==2.9.5
 pycryptodome==3.19.1
