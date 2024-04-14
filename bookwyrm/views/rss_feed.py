@@ -187,8 +187,6 @@ class RssShelfFeed(Feed):
 
     def item_title(self, item):
         """render the item title"""
-        if hasattr(item, "pure_name") and item.pure_name:
-            return item.pure_name
         authors = item.authors
         authors.display_name = f"{item.author_text}:"
         template = get_template("rss/title.html")
