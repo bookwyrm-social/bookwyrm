@@ -1,6 +1,6 @@
 {% load i18n %}
 {% blocktrans trimmed with book_title=obj.title book_author=obj.author_text %}
-  ‘{{ book_title }}’ by {{ book_author }}
+‘{{ book_title }}’{% if book_author %} by {{ book_author }}{% endif %}
 {% endblocktrans %}
 {{obj.description|default:""}}
 {% if obj.isbn_13 %}{% trans "ISBN 13:" %} {{ obj.isbn_13 }}{% endif %}
