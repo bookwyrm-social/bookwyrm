@@ -10,7 +10,7 @@ from .notification import Notification, NotificationType
 
 
 class Move(ActivityMixin, BookWyrmModel):
-    """migrating an activitypub user account"""
+    """migrating an activitypub object"""
 
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor"
