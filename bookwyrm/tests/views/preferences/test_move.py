@@ -14,20 +14,21 @@ from bookwyrm import forms, models, views
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.suggested_users.rerank_user_task.delay")
-class ViewsHelpers(TestCase):  # pylint: disable=too-many-public-methods
+class ViewsHelpers(TestCase):
     """viewing and creating statuses"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"), patch(
-            "bookwyrm.suggested_users.rerank_user_task.delay"
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+            patch("bookwyrm.suggested_users.rerank_user_task.delay"),
         ):
 
-            self.local_user = models.User.objects.create_user(
+            cls.local_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -37,10 +38,11 @@ class ViewsHelpers(TestCase):  # pylint: disable=too-many-public-methods
                 remote_id="https://your.domain.here/user/rat",
             )
 
-        with patch("bookwyrm.models.user.set_remote_server.delay"), patch(
-            "bookwyrm.suggested_users.rerank_user_task.delay"
+        with (
+            patch("bookwyrm.models.user.set_remote_server.delay"),
+            patch("bookwyrm.suggested_users.rerank_user_task.delay"),
         ):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
                 "mouseword",
