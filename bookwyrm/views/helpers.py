@@ -61,7 +61,7 @@ def is_bookwyrm_request(request):
     return True
 
 
-def handle_remote_webfinger(query, unknown_only=False):
+def handle_remote_webfinger(query, unknown_only=False, refresh=False):
     """webfingerin' other servers"""
     user = None
 
@@ -76,6 +76,11 @@ def handle_remote_webfinger(query, unknown_only=False):
         return None
 
     try:
+
+        if refresh:
+            # Always fetch the remote info - don't even bother checking the DB
+            raise models.User.DoesNotExist("remote_only is set to True")
+
         user = models.User.objects.get(username__iexact=query)
 
         if unknown_only:
@@ -93,7 +98,7 @@ def handle_remote_webfinger(query, unknown_only=False):
             if link.get("rel") == "self":
                 try:
                     user = activitypub.resolve_remote_id(
-                        link["href"], model=models.User
+                        link["href"], model=models.User, refresh=refresh
                     )
                 except (KeyError, activitypub.ActivitySerializerError):
                     return None
