@@ -21,19 +21,21 @@ from bookwyrm.preview_images import (
 
 # pylint: disable=unused-argument
 # pylint: disable=missing-function-docstring
-# pylint: disable=consider-using-with
 class PreviewImages(TestCase):
     """every response to a get request, html or json"""
 
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        avatar_file = pathlib.Path(__file__).parent.joinpath(
+        avatar_path = pathlib.Path(__file__).parent.joinpath(
             "../static/images/no_cover.jpg"
         )
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+            open(avatar_path, "rb") as avatar_file,
+        ):
             self.local_user = models.User.objects.create_user(
                 "possum@local.com",
                 "possum@possum.possum",
@@ -41,15 +43,17 @@ class PreviewImages(TestCase):
                 local=True,
                 localname="possum",
                 avatar=SimpleUploadedFile(
-                    avatar_file,
-                    open(avatar_file, "rb").read(),
+                    avatar_path,
+                    avatar_file.read(),
                     content_type="image/jpeg",
                 ),
             )
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             self.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
@@ -60,9 +64,12 @@ class PreviewImages(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+            open(avatar_path, "rb") as avatar_file,
+        ):
             self.remote_user_with_preview = models.User.objects.create_user(
                 "badger@your.domain.here",
                 "badger@badger.com",
@@ -72,8 +79,8 @@ class PreviewImages(TestCase):
                 inbox="https://example.com/users/badger/inbox",
                 outbox="https://example.com/users/badger/outbox",
                 avatar=SimpleUploadedFile(
-                    avatar_file,
-                    open(avatar_file, "rb").read(),
+                    avatar_path,
+                    avatar_file.read(),
                     content_type="image/jpeg",
                 ),
             )
@@ -90,7 +97,7 @@ class PreviewImages(TestCase):
         settings.ENABLE_PREVIEW_IMAGES = True
 
     def test_generate_preview_image(self, *args, **kwargs):
-        image_file = pathlib.Path(__file__).parent.joinpath(
+        image_path = pathlib.Path(__file__).parent.joinpath(
             "../static/images/no_cover.jpg"
         )
 
@@ -99,7 +106,7 @@ class PreviewImages(TestCase):
             "text_three": "@possum@local.com",
         }
 
-        result = generate_preview_image(texts=texts, picture=image_file, rating=5)
+        result = generate_preview_image(texts=texts, picture=image_path, rating=5)
         self.assertIsInstance(result, Image.Image)
         self.assertEqual(
             result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT)

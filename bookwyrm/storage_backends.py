@@ -1,6 +1,7 @@
 """Handles backends for storages"""
 import os
 from tempfile import SpooledTemporaryFile
+from django.core.files.storage import FileSystemStorage
 from storages.backends.s3boto3 import S3Boto3Storage
 from storages.backends.azure_storage import AzureStorage
 
@@ -60,4 +61,19 @@ class AzureImagesStorage(AzureStorage):  # pylint: disable=abstract-method
     """Storage class for Image files"""
 
     location = "images"
+    overwrite_files = False
+
+
+class ExportsFileStorage(FileSystemStorage):  # pylint: disable=abstract-method
+    """Storage class for exports contents with local files"""
+
+    location = "exports"
+    overwrite_files = False
+
+
+class ExportsS3Storage(S3Boto3Storage):  # pylint: disable=abstract-method
+    """Storage class for exports contents with S3"""
+
+    location = "exports"
+    default_acl = None
     overwrite_files = False

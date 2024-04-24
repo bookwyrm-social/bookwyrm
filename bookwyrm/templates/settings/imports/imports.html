@@ -157,13 +157,13 @@
     >
         <div class="notification is-danger is-light">
             <p class="my-2">{% trans "Users are currently unable to start new user exports. This is the default setting." %}</p>
-            {% if use_s3 %}
-            <p>{% trans "It is not currently possible to provide user exports when using s3 storage. The BookWyrm development team are working on a fix for this." %}</p>
+            {% if use_azure %}
+            <p>{% trans "It is not currently possible to provide user exports when using Azure storage." %}</p>
             {% endif %}
         </div>
         {% csrf_token %}
         <div class="control">
-            <button type="submit" class="button is-success" {% if use_s3 %}disabled{% endif %}>
+            <button type="submit" class="button is-success" {% if use_azure %}disabled{% endif %}>
                 {% trans "Enable user exports" %}
             </button>
         </div>

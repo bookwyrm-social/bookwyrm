@@ -17,12 +17,14 @@ class ImportJob(TestCase):
     """this is a fancy one!!!"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """data is from a goodreads export of The Raven Tower"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
 
@@ -192,14 +194,16 @@ class ImportJob(TestCase):
             status=200,
         )
 
-        with patch("bookwyrm.connectors.abstract_connector.load_more_data.delay"):
-            with patch(
+        with (
+            patch("bookwyrm.connectors.abstract_connector.load_more_data.delay"),
+            patch(
                 "bookwyrm.connectors.connector_manager.first_search_result"
-            ) as search:
-                search.return_value = result
-                with patch(
-                    "bookwyrm.connectors.openlibrary.Connector.get_authors_from_data"
-                ):
-                    book = item.get_book_from_identifier()
+            ) as search,
+        ):
+            search.return_value = result
+            with patch(
+                "bookwyrm.connectors.openlibrary.Connector.get_authors_from_data"
+            ):
+                book = item.get_book_from_identifier()
 
         self.assertEqual(book.title, "Sabriel")

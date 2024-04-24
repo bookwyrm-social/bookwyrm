@@ -15,8 +15,9 @@ class ExportUserViews(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         models.SiteSettings.objects.create()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
         ):
             self.local_user = models.User.objects.create_user(
                 "hugh@example.com",
@@ -41,7 +42,7 @@ class ExportUserViews(TestCase):
 
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.models.bookwyrm_export_job.start_export_task.delay"):
+        with patch("bookwyrm.models.bookwyrm_export_job.BookwyrmExportJob.start_job"):
             export = views.ExportUser.as_view()(request)
         self.assertIsInstance(export, HttpResponse)
         self.assertEqual(export.status_code, 302)

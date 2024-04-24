@@ -18,14 +18,13 @@ class ExportViews(TestCase):
     """viewing and creating statuses"""
 
     @classmethod
-    def setUpTestData(
-        self,
-    ):  # pylint: disable=bad-classmethod-argument, disable=invalid-name
+    def setUpTestData(cls):  # pylint: disable=invalid-name
         """we need basic test data and mocks"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
         ):
-            self.local_user = models.User.objects.create_user(
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -33,11 +32,11 @@ class ExportViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.work = models.Work.objects.create(title="Test Work")
+        cls.book = models.Edition.objects.create(
             title="Test Book",
             remote_id="https://example.com/book/1",
-            parent_work=self.work,
+            parent_work=cls.work,
             isbn_13="9781234567890",
             bnf_id="beep",
         )

@@ -1,16 +1,13 @@
 """ testing models """
 from unittest.mock import patch
-from io import BytesIO
 import pathlib
 import re
 
 from django.http import Http404
-from django.core.files.base import ContentFile
 from django.db import IntegrityError
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django.utils import timezone
-from PIL import Image
 import responses
 
 from bookwyrm import activitypub, models, settings
@@ -25,16 +22,18 @@ class Status(TestCase):
     """lotta types of statuses"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """useful things for creating a status"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -43,20 +42,20 @@ class Status(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        self.book = models.Edition.objects.create(title="Test Edition")
+        cls.book = models.Edition.objects.create(title="Test Edition")
 
     def setUp(self):
         """individual test setup"""
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
-        image_file = pathlib.Path(__file__).parent.joinpath(
+        image_path = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
         )
-        image = Image.open(image_file)
-        output = BytesIO()
-        with patch("bookwyrm.models.Status.broadcast"):
-            image.save(output, format=image.format)
-            self.book.cover.save("test.jpg", ContentFile(output.getvalue()))
+        with (
+            patch("bookwyrm.models.Status.broadcast"),
+            open(image_path, "rb") as image_file,
+        ):
+            self.book.cover.save("test.jpg", image_file)
 
     def test_status_generated_fields(self, *_):
         """setting remote id"""
@@ -341,8 +340,11 @@ class Status(TestCase):
     def test_quotation_page_serialization(self, *_):
         """serialization of quotation page position"""
         tests = [
-            ("single pos", 7, None, "p. 7"),
-            ("page range", 7, 10, "pp. 7-10"),
+            ("single pos", "7", "", "p. 7"),
+            ("missing beg", "", "10", None),
+            ("page range", "7", "10", "pp. 7-10"),
+            ("page range roman", "xv", "xvi", "pp. xv-xvi"),
+            ("page range reverse", "14", "10", "pp. 14-10"),
         ]
         for desc, beg, end, pages in tests:
             with self.subTest(desc):
@@ -356,10 +358,12 @@ class Status(TestCase):
                     position_mode="PG",
                 )
                 activity = status.to_activity(pure=True)
-                self.assertRegex(
-                    activity["content"],
-                    f'^<p>"my quote"</p> <p>— <a .+</a>, {pages}</p>$',
-                )
+                if pages:
+                    pages_re = re.escape(pages)
+                    expect_re = f'^<p>"my quote"</p> <p>— <a .+</a>, {pages_re}</p>$'
+                else:
+                    expect_re = '^<p>"my quote"</p> <p>— <a .+</a></p>$'
+                self.assertRegex(activity["content"], expect_re)
 
     def test_review_to_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""

@@ -19,7 +19,6 @@ DOMAIN = env("DOMAIN")
 with open("VERSION", encoding="utf-8") as f:
     version = f.read()
     version = version.replace("\n", "")
-f.close()
 
 VERSION = version
 
@@ -30,6 +29,9 @@ RELEASE_API = env(
 
 PAGE_LENGTH = env.int("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
+# TODO: extend maximum age to 1 year once termination of active sessions
+# is implemented (see bookwyrm-social#2278, bookwyrm-social#3082).
+SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE", 3600 * 24 * 30)  # 1 month
 
 JS_CACHE = "8a89cad7"
 
@@ -105,6 +107,7 @@ INSTALLED_APPS = [
     "celery",
     "django_celery_beat",
     "imagekit",
+    "pgtrigger",
     "storages",
 ]
 
@@ -318,6 +321,7 @@ LANGUAGES = [
     ("eu-es", _("Euskara (Basque)")),
     ("gl-es", _("Galego (Galician)")),
     ("it-it", _("Italiano (Italian)")),
+    ("ko-kr", _("한국어 (Korean)")),
     ("fi-fi", _("Suomi (Finnish)")),
     ("fr-fr", _("Français (French)")),
     ("lt-lt", _("Lietuvių (Lithuanian)")),
@@ -347,8 +351,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-agent = requests.utils.default_user_agent()
-USER_AGENT = f"{agent} (BookWyrm/{VERSION}; +https://{DOMAIN}/)"
+USER_AGENT = f"BookWyrm (BookWyrm/{VERSION}; +https://{DOMAIN}/)"
 
 # Imagekit generated thumbnails
 ENABLE_THUMBNAIL_GENERATION = env.bool("ENABLE_THUMBNAIL_GENERATION", False)
@@ -371,6 +374,7 @@ if USE_HTTPS:
 
 USE_S3 = env.bool("USE_S3", False)
 USE_AZURE = env.bool("USE_AZURE", False)
+S3_SIGNED_URL_EXPIRY = env.int("S3_SIGNED_URL_EXPIRY", 900)
 
 if USE_S3:
     # AWS settings
@@ -382,19 +386,34 @@ if USE_S3:
     AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL", None)
     AWS_DEFAULT_ACL = "public-read"
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+    AWS_S3_URL_PROTOCOL = env("AWS_S3_URL_PROTOCOL", f"{PROTOCOL}:")
     # S3 Static settings
     STATIC_LOCATION = "static"
-    STATIC_URL = f"{PROTOCOL}://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
+    STATIC_URL = f"{AWS_S3_URL_PROTOCOL}//{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
+    STATIC_FULL_URL = STATIC_URL
     STATICFILES_STORAGE = "bookwyrm.storage_backends.StaticStorage"
     # S3 Media settings
     MEDIA_LOCATION = "images"
-    MEDIA_URL = f"{PROTOCOL}://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/"
+    MEDIA_URL = f"{AWS_S3_URL_PROTOCOL}//{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/"
     MEDIA_FULL_URL = MEDIA_URL
-    STATIC_FULL_URL = STATIC_URL
     DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.ImagesStorage"
-    CSP_DEFAULT_SRC = ["'self'", AWS_S3_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
-    CSP_SCRIPT_SRC = ["'self'", AWS_S3_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
+    # S3 Exports settings
+    EXPORTS_STORAGE = "bookwyrm.storage_backends.ExportsS3Storage"
+    # Content Security Policy
+    CSP_DEFAULT_SRC = [
+        "'self'",
+        f"{AWS_S3_URL_PROTOCOL}//{AWS_S3_CUSTOM_DOMAIN}"
+        if AWS_S3_CUSTOM_DOMAIN
+        else None,
+    ] + CSP_ADDITIONAL_HOSTS
+    CSP_SCRIPT_SRC = [
+        "'self'",
+        f"{AWS_S3_URL_PROTOCOL}//{AWS_S3_CUSTOM_DOMAIN}"
+        if AWS_S3_CUSTOM_DOMAIN
+        else None,
+    ] + CSP_ADDITIONAL_HOSTS
 elif USE_AZURE:
+    # Azure settings
     AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
     AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
     AZURE_CONTAINER = env("AZURE_CONTAINER")
@@ -404,6 +423,7 @@ elif USE_AZURE:
     STATIC_URL = (
         f"{PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/{STATIC_LOCATION}/"
     )
+    STATIC_FULL_URL = STATIC_URL
     STATICFILES_STORAGE = "bookwyrm.storage_backends.AzureStaticStorage"
     # Azure Media settings
     MEDIA_LOCATION = "images"
@@ -411,15 +431,24 @@ elif USE_AZURE:
         f"{PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/{MEDIA_LOCATION}/"
     )
     MEDIA_FULL_URL = MEDIA_URL
-    STATIC_FULL_URL = STATIC_URL
     DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.AzureImagesStorage"
+    # Azure Exports settings
+    EXPORTS_STORAGE = None  # not implemented yet
+    # Content Security Policy
     CSP_DEFAULT_SRC = ["'self'", AZURE_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
     CSP_SCRIPT_SRC = ["'self'", AZURE_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
 else:
+    # Static settings
     STATIC_URL = "/static/"
+    STATIC_FULL_URL = f"{PROTOCOL}://{DOMAIN}{STATIC_URL}"
+    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+    # Media settings
     MEDIA_URL = "/images/"
     MEDIA_FULL_URL = f"{PROTOCOL}://{DOMAIN}{MEDIA_URL}"
-    STATIC_FULL_URL = f"{PROTOCOL}://{DOMAIN}{STATIC_URL}"
+    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+    # Exports settings
+    EXPORTS_STORAGE = "bookwyrm.storage_backends.ExportsFileStorage"
+    # Content Security Policy
     CSP_DEFAULT_SRC = ["'self'"] + CSP_ADDITIONAL_HOSTS
     CSP_SCRIPT_SRC = ["'self'"] + CSP_ADDITIONAL_HOSTS
 
@@ -443,4 +472,6 @@ if HTTP_X_FORWARDED_PROTO:
 # user with the same username - in which case you should change it!
 INSTANCE_ACTOR_USERNAME = "bookwyrm.instance.actor"
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = env.int("DATA_UPLOAD_MAX_MEMORY_SIZE", (1024**2 * 100))
+# We only allow specifying DATA_UPLOAD_MAX_MEMORY_SIZE in MiB from .env
+# (note the difference in variable names).
+DATA_UPLOAD_MAX_MEMORY_SIZE = env.int("DATA_UPLOAD_MAX_MEMORY_MiB", 100) << 20
