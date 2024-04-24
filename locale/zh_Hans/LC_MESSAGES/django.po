@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-02 03:27+0000\n"
-"PO-Revision-Date: 2024-01-02 04:10\n"
+"POT-Creation-Date: 2024-03-25 23:12+0000\n"
+"PO-Revision-Date: 2024-03-31 01:43\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh\n"
@@ -86,7 +86,7 @@ msgstr "已经存在使用该邮箱的用户。"
 msgid "Incorrect code"
 msgstr "验证码错误"
 
-#: bookwyrm/forms/links.py:36
+#: bookwyrm/forms/links.py:37
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
 msgstr "此域名已被屏蔽。如果您认为这是一个错误，请联系您的管理员。"
 
@@ -102,8 +102,8 @@ msgstr "列表顺序"
 msgid "Book Title"
 msgstr "书名"
 
-#: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:158
-#: bookwyrm/templates/shelf/shelf.html:190
+#: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:159
+#: bookwyrm/templates/shelf/shelf.html:191
 #: bookwyrm/templates/snippets/create_status/review.html:32
 msgid "Rating"
 msgstr "评价"
@@ -172,23 +172,23 @@ msgstr "仲裁员删除"
 msgid "Domain block"
 msgstr "域名屏蔽"
 
-#: bookwyrm/models/book.py:282
+#: bookwyrm/models/book.py:324
 msgid "Audiobook"
 msgstr "有声书籍"
 
-#: bookwyrm/models/book.py:283
+#: bookwyrm/models/book.py:325
 msgid "eBook"
 msgstr "电子书"
 
-#: bookwyrm/models/book.py:284
+#: bookwyrm/models/book.py:326
 msgid "Graphic novel"
 msgstr "图像小说"
 
-#: bookwyrm/models/book.py:285
+#: bookwyrm/models/book.py:327
 msgid "Hardcover"
 msgstr "精装"
 
-#: bookwyrm/models/book.py:286
+#: bookwyrm/models/book.py:328
 msgid "Paperback"
 msgstr "平装"
 
@@ -262,9 +262,9 @@ msgstr "私密"
 #: bookwyrm/models/import_job.py:49 bookwyrm/models/job.py:19
 #: bookwyrm/templates/import/import.html:173
 #: bookwyrm/templates/import/import_user.html:211
-#: bookwyrm/templates/preferences/export-user.html:112
-#: bookwyrm/templates/settings/imports/imports.html:131
-#: bookwyrm/templates/settings/imports/imports.html:221
+#: bookwyrm/templates/preferences/export-user.html:121
+#: bookwyrm/templates/settings/imports/imports.html:180
+#: bookwyrm/templates/settings/imports/imports.html:270
 #: bookwyrm/templates/snippets/user_active_tag.html:8
 msgid "Active"
 msgstr "活跃"
@@ -272,7 +272,7 @@ msgstr "活跃"
 #: bookwyrm/models/import_job.py:50 bookwyrm/models/job.py:20
 #: bookwyrm/templates/import/import.html:171
 #: bookwyrm/templates/import/import_user.html:209
-#: bookwyrm/templates/preferences/export-user.html:110
+#: bookwyrm/templates/preferences/export-user.html:119
 msgid "Complete"
 msgstr "已完成"
 
@@ -321,11 +321,11 @@ msgstr "评论"
 
 #: bookwyrm/models/report.py:85
 msgid "Resolved report"
-msgstr ""
+msgstr "已解决的报告"
 
 #: bookwyrm/models/report.py:86
 msgid "Re-opened report"
-msgstr ""
+msgstr "重新打开报告"
 
 #: bookwyrm/models/report.py:87
 msgid "Messaged reporter"
@@ -337,33 +337,59 @@ msgstr ""
 
 #: bookwyrm/models/report.py:89
 msgid "Suspended user"
-msgstr ""
+msgstr "停用用户"
 
 #: bookwyrm/models/report.py:90
 msgid "Un-suspended user"
-msgstr ""
+msgstr "取消停用用户"
 
 #: bookwyrm/models/report.py:91
 msgid "Changed user permission level"
-msgstr ""
+msgstr "更改用户权限级别"
 
 #: bookwyrm/models/report.py:92
 msgid "Deleted user account"
-msgstr ""
+msgstr "已删除用户账户"
 
 #: bookwyrm/models/report.py:93
 msgid "Blocked domain"
-msgstr ""
+msgstr "已屏蔽的域名"
 
 #: bookwyrm/models/report.py:94
 msgid "Approved domain"
-msgstr ""
+msgstr "已批准的域名"
 
 #: bookwyrm/models/report.py:95
 msgid "Deleted item"
+msgstr "已删除的项目"
+
+#: bookwyrm/models/status.py:186
+#, python-format
+msgid "%(display_name)s's status"
 msgstr ""
 
-#: bookwyrm/models/user.py:33 bookwyrm/templates/book/book.html:307
+#: bookwyrm/models/status.py:361
+#, python-format
+msgid "%(display_name)s's comment on %(book_title)s"
+msgstr ""
+
+#: bookwyrm/models/status.py:412
+#, python-format
+msgid "%(display_name)s's quote from %(book_title)s"
+msgstr ""
+
+#: bookwyrm/models/status.py:448
+#, python-format
+msgid "%(display_name)s's review of %(book_title)s"
+msgstr ""
+
+#: bookwyrm/models/status.py:479
+#, python-format
+msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
+msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
+msgstr[0] ""
+
+#: bookwyrm/models/user.py:33 bookwyrm/templates/book/book.html:312
 msgid "Reviews"
 msgstr "书评"
 
@@ -379,113 +405,117 @@ msgstr "引用"
 msgid "Everything else"
 msgstr "所有其它内容"
 
-#: bookwyrm/settings.py:232
+#: bookwyrm/settings.py:236
 msgid "Home Timeline"
 msgstr "主页时间线"
 
-#: bookwyrm/settings.py:232
+#: bookwyrm/settings.py:236
 msgid "Home"
 msgstr "主页"
 
-#: bookwyrm/settings.py:233
+#: bookwyrm/settings.py:237
 msgid "Books Timeline"
 msgstr "书目时间线"
 
-#: bookwyrm/settings.py:233
+#: bookwyrm/settings.py:237
 #: bookwyrm/templates/guided_tour/user_profile.html:101
 #: bookwyrm/templates/search/layout.html:22
-#: bookwyrm/templates/search/layout.html:43
+#: bookwyrm/templates/search/layout.html:44
 #: bookwyrm/templates/user/layout.html:107
 msgid "Books"
 msgstr "书目"
 
-#: bookwyrm/settings.py:313
+#: bookwyrm/settings.py:317
 msgid "English"
 msgstr "English（英语）"
 
-#: bookwyrm/settings.py:314
+#: bookwyrm/settings.py:318
 msgid "Català (Catalan)"
 msgstr "Català (加泰罗尼亚语)"
 
-#: bookwyrm/settings.py:315
+#: bookwyrm/settings.py:319
 msgid "Deutsch (German)"
 msgstr "Deutsch（德语）"
 
-#: bookwyrm/settings.py:316
+#: bookwyrm/settings.py:320
 msgid "Esperanto (Esperanto)"
-msgstr ""
+msgstr "Esperanto (世界语)"
 
-#: bookwyrm/settings.py:317
+#: bookwyrm/settings.py:321
 msgid "Español (Spanish)"
 msgstr "Español（西班牙语）"
 
-#: bookwyrm/settings.py:318
+#: bookwyrm/settings.py:322
 msgid "Euskara (Basque)"
-msgstr ""
+msgstr "Euskara (巴斯克语)"
 
-#: bookwyrm/settings.py:319
+#: bookwyrm/settings.py:323
 msgid "Galego (Galician)"
 msgstr "Galego（加利西亚语）"
 
-#: bookwyrm/settings.py:320
+#: bookwyrm/settings.py:324
 msgid "Italiano (Italian)"
 msgstr "Italiano（意大利语）"
 
-#: bookwyrm/settings.py:321
+#: bookwyrm/settings.py:325
+msgid "한국어 (Korean)"
+msgstr "한국어 (韩语)"
+
+#: bookwyrm/settings.py:326
 msgid "Suomi (Finnish)"
 msgstr "Suomi （Finnish/芬兰语）"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:327
 msgid "Français (French)"
 msgstr "Français（法语）"
 
-#: bookwyrm/settings.py:323
+#: bookwyrm/settings.py:328
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių（立陶宛语）"
 
-#: bookwyrm/settings.py:324
+#: bookwyrm/settings.py:329
 msgid "Nederlands (Dutch)"
-msgstr ""
+msgstr "Nederlands (荷兰语)"
 
-#: bookwyrm/settings.py:325
+#: bookwyrm/settings.py:330
 msgid "Norsk (Norwegian)"
 msgstr "Norsk（挪威语）"
 
-#: bookwyrm/settings.py:326
+#: bookwyrm/settings.py:331
 msgid "Polski (Polish)"
 msgstr "Polski (波兰语)"
 
-#: bookwyrm/settings.py:327
+#: bookwyrm/settings.py:332
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil（巴西葡萄牙语）"
 
-#: bookwyrm/settings.py:328
+#: bookwyrm/settings.py:333
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu（欧洲葡萄牙语）"
 
-#: bookwyrm/settings.py:329
+#: bookwyrm/settings.py:334
 msgid "Română (Romanian)"
 msgstr "Română （罗马尼亚语）"
 
-#: bookwyrm/settings.py:330
+#: bookwyrm/settings.py:335
 msgid "Svenska (Swedish)"
 msgstr "Svenska（瑞典语）"
 
-#: bookwyrm/settings.py:331
+#: bookwyrm/settings.py:336
 msgid "Українська (Ukrainian)"
-msgstr ""
+msgstr "Українська (乌克兰语)"
 
-#: bookwyrm/settings.py:332
+#: bookwyrm/settings.py:337
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文"
 
-#: bookwyrm/settings.py:333
+#: bookwyrm/settings.py:338
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文（繁体中文）"
 
 #: bookwyrm/templates/403.html:5
 msgid "Oh no!"
-msgstr ""
+msgstr "哦不！"
 
 #: bookwyrm/templates/403.html:9 bookwyrm/templates/landing/invite.html:21
 msgid "Permission Denied"
@@ -494,11 +524,11 @@ msgstr "没有权限"
 #: bookwyrm/templates/403.html:11
 #, python-format
 msgid "You do not have permission to view this page or perform this action. Your user permission level is <code>%(level)s</code>."
-msgstr ""
+msgstr "您无权查看此页面或执行此操作。您的帐户权限级别是 <code>%(level)s</code>。"
 
 #: bookwyrm/templates/403.html:15
 msgid "If you think you should have access, please speak to your BookWyrm server administrator."
-msgstr ""
+msgstr "若您认为您应有权限，请联系您的 BookWyrm 服务器管理员。"
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
@@ -510,16 +540,14 @@ msgstr "你请求的页面似乎并不存在！"
 
 #: bookwyrm/templates/413.html:4 bookwyrm/templates/413.html:8
 msgid "File too large"
-msgstr ""
+msgstr "文件太大"
 
 #: bookwyrm/templates/413.html:9
 msgid "The file you are uploading is too large."
-msgstr ""
+msgstr "您要上传的文件太大。"
 
 #: bookwyrm/templates/413.html:11
-msgid "\n"
-"        You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting.\n"
-"        "
+msgid "You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting."
 msgstr ""
 
 #: bookwyrm/templates/500.html:4
@@ -724,7 +752,7 @@ msgstr "TA 今年阅读最短的…"
 #: bookwyrm/templates/annual_summary/layout.html:157
 #: bookwyrm/templates/annual_summary/layout.html:178
 #: bookwyrm/templates/annual_summary/layout.html:247
-#: bookwyrm/templates/book/book.html:65
+#: bookwyrm/templates/book/book.html:70
 #: bookwyrm/templates/discover/large-book.html:22
 #: bookwyrm/templates/landing/large-book.html:26
 #: bookwyrm/templates/landing/small-book.html:18
@@ -810,24 +838,24 @@ msgid "View ISNI record"
 msgstr "查看 ISNI 记录"
 
 #: bookwyrm/templates/author/author.html:95
-#: bookwyrm/templates/book/book.html:175
+#: bookwyrm/templates/book/book.html:180
 msgid "View on ISFDB"
 msgstr "在 ISFDB 查看"
 
 #: bookwyrm/templates/author/author.html:100
 #: bookwyrm/templates/author/sync_modal.html:5
-#: bookwyrm/templates/book/book.html:142
+#: bookwyrm/templates/book/book.html:147
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
 msgstr "加载数据"
 
 #: bookwyrm/templates/author/author.html:104
-#: bookwyrm/templates/book/book.html:146
+#: bookwyrm/templates/book/book.html:151
 msgid "View on OpenLibrary"
 msgstr "在 OpenLibrary 查看"
 
 #: bookwyrm/templates/author/author.html:119
-#: bookwyrm/templates/book/book.html:160
+#: bookwyrm/templates/book/book.html:165
 msgid "View on Inventaire"
 msgstr "在 Inventaire 查看"
 
@@ -889,50 +917,54 @@ msgstr "简介:"
 msgid "Wikipedia link:"
 msgstr "维基百科链接:"
 
-#: bookwyrm/templates/author/edit_author.html:60
+#: bookwyrm/templates/author/edit_author.html:58
+msgid "Wikidata:"
+msgstr ""
+
+#: bookwyrm/templates/author/edit_author.html:62
 msgid "Website:"
 msgstr "网站:"
 
-#: bookwyrm/templates/author/edit_author.html:65
+#: bookwyrm/templates/author/edit_author.html:67
 msgid "Birth date:"
 msgstr "出生日期:"
 
-#: bookwyrm/templates/author/edit_author.html:72
+#: bookwyrm/templates/author/edit_author.html:74
 msgid "Death date:"
 msgstr "死亡日期:"
 
-#: bookwyrm/templates/author/edit_author.html:79
+#: bookwyrm/templates/author/edit_author.html:81
 msgid "Author Identifiers"
 msgstr "作者标识号:"
 
-#: bookwyrm/templates/author/edit_author.html:81
+#: bookwyrm/templates/author/edit_author.html:83
 msgid "Openlibrary key:"
 msgstr "Openlibrary key:"
 
-#: bookwyrm/templates/author/edit_author.html:88
+#: bookwyrm/templates/author/edit_author.html:90
 #: bookwyrm/templates/book/edit/edit_book_form.html:334
 msgid "Inventaire ID:"
 msgstr "Inventaire ID:"
 
-#: bookwyrm/templates/author/edit_author.html:95
+#: bookwyrm/templates/author/edit_author.html:97
 msgid "Librarything key:"
 msgstr "Librarything key:"
 
-#: bookwyrm/templates/author/edit_author.html:102
+#: bookwyrm/templates/author/edit_author.html:104
 #: bookwyrm/templates/book/edit/edit_book_form.html:343
 msgid "Goodreads key:"
 msgstr "Goodreads key:"
 
-#: bookwyrm/templates/author/edit_author.html:109
+#: bookwyrm/templates/author/edit_author.html:111
 msgid "ISFDB:"
 msgstr "ISFDB:"
 
-#: bookwyrm/templates/author/edit_author.html:116
+#: bookwyrm/templates/author/edit_author.html:118
 msgid "ISNI:"
 msgstr "ISNI："
 
-#: bookwyrm/templates/author/edit_author.html:126
-#: bookwyrm/templates/book/book.html:220
+#: bookwyrm/templates/author/edit_author.html:128
+#: bookwyrm/templates/book/book.html:225
 #: bookwyrm/templates/book/edit/edit_book.html:150
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
@@ -954,9 +986,9 @@ msgstr "ISNI："
 msgid "Save"
 msgstr "保存"
 
-#: bookwyrm/templates/author/edit_author.html:127
+#: bookwyrm/templates/author/edit_author.html:129
 #: bookwyrm/templates/author/sync_modal.html:23
-#: bookwyrm/templates/book/book.html:221
+#: bookwyrm/templates/book/book.html:226
 #: bookwyrm/templates/book/cover_add_modal.html:33
 #: bookwyrm/templates/book/edit/edit_book.html:152
 #: bookwyrm/templates/book/edit/edit_book.html:155
@@ -995,91 +1027,91 @@ msgstr "加载数据会连接到 <strong>%(source_name)s</strong> 并检查这�
 msgid "Confirm"
 msgstr "确认"
 
-#: bookwyrm/templates/book/book.html:20
+#: bookwyrm/templates/book/book.html:21
 msgid "Unable to connect to remote source."
 msgstr "无法联系远程资源。"
 
-#: bookwyrm/templates/book/book.html:73 bookwyrm/templates/book/book.html:74
+#: bookwyrm/templates/book/book.html:78 bookwyrm/templates/book/book.html:79
 msgid "Edit Book"
 msgstr "编辑书目"
 
-#: bookwyrm/templates/book/book.html:99 bookwyrm/templates/book/book.html:102
+#: bookwyrm/templates/book/book.html:104 bookwyrm/templates/book/book.html:107
 msgid "Click to add cover"
 msgstr "点击添加封面"
 
-#: bookwyrm/templates/book/book.html:108
+#: bookwyrm/templates/book/book.html:113
 msgid "Failed to load cover"
 msgstr "加载封面失败"
 
-#: bookwyrm/templates/book/book.html:119
+#: bookwyrm/templates/book/book.html:124
 msgid "Click to enlarge"
 msgstr "点击放大"
 
-#: bookwyrm/templates/book/book.html:196
+#: bookwyrm/templates/book/book.html:201
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
 msgstr[0] "(%(review_count)s 则书评)"
 
-#: bookwyrm/templates/book/book.html:209
+#: bookwyrm/templates/book/book.html:214
 msgid "Add Description"
 msgstr "添加描述"
 
-#: bookwyrm/templates/book/book.html:216
+#: bookwyrm/templates/book/book.html:221
 #: bookwyrm/templates/book/edit/edit_book_form.html:53
 #: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
 msgid "Description:"
 msgstr "描述:"
 
-#: bookwyrm/templates/book/book.html:232
+#: bookwyrm/templates/book/book.html:237
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
 msgstr[0] "%(count)s 版次"
 
-#: bookwyrm/templates/book/book.html:246
+#: bookwyrm/templates/book/book.html:251
 msgid "You have shelved this edition in:"
 msgstr "此版本已在你的书架上："
 
-#: bookwyrm/templates/book/book.html:261
+#: bookwyrm/templates/book/book.html:266
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
 msgstr "本书的 <a href=\"%(book_path)s\">另一个版本</a> 在你的 <a href=\"%(shelf_path)s\">%(shelf_name)s</a> 书架上。"
 
-#: bookwyrm/templates/book/book.html:272
+#: bookwyrm/templates/book/book.html:277
 msgid "Your reading activity"
 msgstr "你的阅读活动"
 
-#: bookwyrm/templates/book/book.html:278
+#: bookwyrm/templates/book/book.html:283
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
 msgstr "添加阅读日期"
 
-#: bookwyrm/templates/book/book.html:286
+#: bookwyrm/templates/book/book.html:291
 msgid "You don't have any reading activity for this book."
 msgstr "你还没有任何这本书的阅读活动。"
 
-#: bookwyrm/templates/book/book.html:312
+#: bookwyrm/templates/book/book.html:317
 msgid "Your reviews"
 msgstr "你的书评"
 
-#: bookwyrm/templates/book/book.html:318
+#: bookwyrm/templates/book/book.html:323
 msgid "Your comments"
 msgstr "你的评论"
 
-#: bookwyrm/templates/book/book.html:324
+#: bookwyrm/templates/book/book.html:329
 msgid "Your quotes"
 msgstr "你的引用"
 
-#: bookwyrm/templates/book/book.html:360
+#: bookwyrm/templates/book/book.html:365
 msgid "Subjects"
 msgstr "主题"
 
-#: bookwyrm/templates/book/book.html:372
+#: bookwyrm/templates/book/book.html:377
 msgid "Places"
 msgstr "地点"
 
-#: bookwyrm/templates/book/book.html:383
+#: bookwyrm/templates/book/book.html:388
 #: bookwyrm/templates/groups/group.html:19
 #: bookwyrm/templates/guided_tour/lists.html:14
 #: bookwyrm/templates/guided_tour/user_books.html:102
@@ -1087,18 +1119,18 @@ msgstr "地点"
 #: bookwyrm/templates/layout.html:88 bookwyrm/templates/lists/curate.html:8
 #: bookwyrm/templates/lists/list.html:12 bookwyrm/templates/lists/lists.html:5
 #: bookwyrm/templates/lists/lists.html:12
-#: bookwyrm/templates/search/layout.html:26
-#: bookwyrm/templates/search/layout.html:51
+#: bookwyrm/templates/search/layout.html:27
+#: bookwyrm/templates/search/layout.html:55
 #: bookwyrm/templates/settings/celery.html:77
 #: bookwyrm/templates/user/layout.html:101 bookwyrm/templates/user/lists.html:6
 msgid "Lists"
 msgstr "列表"
 
-#: bookwyrm/templates/book/book.html:395
+#: bookwyrm/templates/book/book.html:400
 msgid "Add to list"
 msgstr "添加到列表"
 
-#: bookwyrm/templates/book/book.html:405
+#: bookwyrm/templates/book/book.html:410
 #: bookwyrm/templates/book/cover_add_modal.html:32
 #: bookwyrm/templates/lists/add_item_modal.html:39
 #: bookwyrm/templates/lists/list.html:255
@@ -1114,11 +1146,11 @@ msgstr "ISBN:"
 #: bookwyrm/templates/book/book_identifiers.html:12
 #: bookwyrm/templates/book/book_identifiers.html:13
 msgid "Copy ISBN"
-msgstr ""
+msgstr "复制 ISBN"
 
 #: bookwyrm/templates/book/book_identifiers.html:16
 msgid "Copied ISBN!"
-msgstr ""
+msgstr "已复制 ISBN！"
 
 #: bookwyrm/templates/book/book_identifiers.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:352
@@ -1156,7 +1188,7 @@ msgstr "上传封面:"
 #: bookwyrm/templates/book/cover_add_modal.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:250
 msgid "Load cover from URL:"
-msgstr ""
+msgstr "从 URL 加载封面："
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
 msgid "Book cover preview"
@@ -1185,7 +1217,7 @@ msgstr "添加书目"
 
 #: bookwyrm/templates/book/edit/edit_book.html:43
 msgid "Failed to save book, see errors below for more information."
-msgstr ""
+msgstr "书保存失败，请查看下面的错误以获取更多信息。"
 
 #: bookwyrm/templates/book/edit/edit_book.html:70
 msgid "Confirm Book Info"
@@ -1228,7 +1260,7 @@ msgid "This is a new work"
 msgstr "这是一个新的作品。"
 
 #: bookwyrm/templates/book/edit/edit_book.html:139
-#: bookwyrm/templates/feed/status.html:19
+#: bookwyrm/templates/feed/status.html:17
 #: bookwyrm/templates/guided_tour/book.html:44
 #: bookwyrm/templates/guided_tour/book.html:68
 #: bookwyrm/templates/guided_tour/book.html:91
@@ -1334,6 +1366,8 @@ msgid "Published date:"
 msgstr "出版时间:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:186
+#: bookwyrm/templates/search/layout.html:23
+#: bookwyrm/templates/search/layout.html:47
 msgid "Authors"
 msgstr "作者"
 
@@ -1366,7 +1400,7 @@ msgid "Add Another Author"
 msgstr "添加其他作者"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:231
-#: bookwyrm/templates/shelf/shelf.html:149
+#: bookwyrm/templates/shelf/shelf.html:150
 msgid "Cover"
 msgstr "封面"
 
@@ -1491,9 +1525,9 @@ msgstr "域名"
 #: bookwyrm/templates/import/import.html:138
 #: bookwyrm/templates/import/import_status.html:134
 #: bookwyrm/templates/import/import_user.html:177
-#: bookwyrm/templates/preferences/export-user.html:78
+#: bookwyrm/templates/preferences/export-user.html:87
 #: bookwyrm/templates/settings/announcements/announcements.html:37
-#: bookwyrm/templates/settings/imports/imports.html:255
+#: bookwyrm/templates/settings/imports/imports.html:304
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:48
 #: bookwyrm/templates/settings/invites/status_filter.html:5
 #: bookwyrm/templates/settings/themes.html:111
@@ -1505,8 +1539,8 @@ msgstr "状态"
 #: bookwyrm/templates/book/file_links/edit_links.html:37
 #: bookwyrm/templates/settings/announcements/announcements.html:41
 #: bookwyrm/templates/settings/federation/instance.html:112
-#: bookwyrm/templates/settings/imports/imports.html:174
-#: bookwyrm/templates/settings/imports/imports.html:253
+#: bookwyrm/templates/settings/imports/imports.html:223
+#: bookwyrm/templates/settings/imports/imports.html:302
 #: bookwyrm/templates/settings/reports/report_links_table.html:6
 #: bookwyrm/templates/settings/themes.html:108
 msgid "Actions"
@@ -1636,7 +1670,7 @@ msgstr "确认代码:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/layout.html:81
-#: bookwyrm/templates/settings/dashboard/dashboard.html:102
+#: bookwyrm/templates/settings/dashboard/dashboard.html:106
 #: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Submit"
 msgstr "提交"
@@ -2092,7 +2126,7 @@ msgstr "你可以在开始使用 %(site_name)s 后添加书目。"
 #: bookwyrm/templates/layout.html:48 bookwyrm/templates/lists/list.html:217
 #: bookwyrm/templates/search/layout.html:5
 #: bookwyrm/templates/search/layout.html:10
-#: bookwyrm/templates/search/layout.html:32
+#: bookwyrm/templates/search/layout.html:33
 msgid "Search"
 msgstr "搜索"
 
@@ -2102,7 +2136,7 @@ msgstr "推荐的书目"
 
 #: bookwyrm/templates/get_started/books.html:33
 msgid "Search results"
-msgstr ""
+msgstr "搜索结果"
 
 #: bookwyrm/templates/get_started/books.html:46
 #, python-format
@@ -2184,7 +2218,7 @@ msgstr "你的帐号会显示在目录中，并且可能会受其它 BookWyrm �
 
 #: bookwyrm/templates/get_started/users.html:8
 msgid "You can follow users on other BookWyrm instances and federated services like Mastodon."
-msgstr ""
+msgstr "您可以关注其他BookWyrm实例和联邦服务的用户，如Mastodon。"
 
 #: bookwyrm/templates/get_started/users.html:11
 msgid "Search for a user"
@@ -2308,7 +2342,7 @@ msgstr "管理员"
 
 #: bookwyrm/templates/groups/user_groups.html:35
 msgid "No groups found."
-msgstr ""
+msgstr "未找到任何群组。"
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
@@ -2547,7 +2581,7 @@ msgstr "搜索框"
 
 #: bookwyrm/templates/guided_tour/home.html:79
 msgid "Search book records by scanning an ISBN barcode using your device's camera - great when you're in the bookstore or library!"
-msgstr ""
+msgstr "使用您设备的相机扫描一个 ISBN 条形码来搜索书籍记录 —— 当您在书店或图书馆时会感觉很棒！"
 
 #: bookwyrm/templates/guided_tour/home.html:80
 msgid "Barcode reader"
@@ -2563,7 +2597,7 @@ msgstr "导航栏"
 
 #: bookwyrm/templates/guided_tour/home.html:126
 msgid "Books on your reading status shelves will be shown here."
-msgstr ""
+msgstr "您的阅读状态会显示在这里的书架上。"
 
 #: bookwyrm/templates/guided_tour/home.html:151
 msgid "Updates from people you are following will appear in your <strong>Home</strong> timeline.<br><br>The <strong>Books</strong> tab shows activity from anyone, related to your books."
@@ -2575,7 +2609,7 @@ msgstr "时间线"
 
 #: bookwyrm/templates/guided_tour/home.html:176
 msgid "The bell will light up when you have a new notification. When it does, click on it to find out what exciting thing has happened!"
-msgstr ""
+msgstr "当有新通知时，铃会亮起。当它发生时，点击它来找出发生了什么令人兴奋的事情！"
 
 #: bookwyrm/templates/guided_tour/home.html:177
 #: bookwyrm/templates/layout.html:77 bookwyrm/templates/layout.html:107
@@ -2689,7 +2723,7 @@ msgstr "手动添加记录"
 
 #: bookwyrm/templates/guided_tour/search.html:147
 msgid "Import, manually add, or view an existing book to continue the tour."
-msgstr ""
+msgstr "导入，手动添加或查看现有书本以继续游览。"
 
 #: bookwyrm/templates/guided_tour/search.html:148
 msgid "Continue the tour"
@@ -2714,19 +2748,19 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_books.html:55
 msgid "You can create additional custom shelves to organise your books. A book on a custom shelf can be on any number of other shelves simultaneously, including one of the default reading status shelves"
-msgstr ""
+msgstr "您可以创建额外的自定义书架来组织您的书籍。在自定义书架上的书可以同时放在其他任意书架上，包括其中一个默认状态的书架上。"
 
 #: bookwyrm/templates/guided_tour/user_books.html:56
 msgid "Adding custom shelves."
-msgstr ""
+msgstr "创建自定义书架"
 
 #: bookwyrm/templates/guided_tour/user_books.html:78
 msgid "If you have an export file from another service like Goodreads or LibraryThing, you can import it here."
-msgstr ""
+msgstr "如果您从其他服务导出存档文件，例如 Goodreads 或 LibraryThing，您可以在这里导入。"
 
 #: bookwyrm/templates/guided_tour/user_books.html:79
 msgid "Import from another service"
-msgstr ""
+msgstr "从其他服务导入"
 
 #: bookwyrm/templates/guided_tour/user_books.html:101
 msgid "Now that we've explored book shelves, let's take a look at a related concept: book lists!"
@@ -2742,6 +2776,7 @@ msgstr "您可以与其他用户创建或加入一个群组。 群组可以共�
 
 #: bookwyrm/templates/guided_tour/user_groups.html:11
 #: bookwyrm/templates/guided_tour/user_profile.html:55
+#: bookwyrm/templates/preferences/export-user.html:36
 #: bookwyrm/templates/user/groups.html:6 bookwyrm/templates/user/layout.html:95
 msgid "Groups"
 msgstr "群组"
@@ -2784,7 +2819,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_profile.html:10
 msgid "This is your user profile. All your latest activities will be listed here. Other Bookwyrm users can see parts of this page too - what they can see depends on your privacy settings."
-msgstr ""
+msgstr "这是您的用户资料。您的所有最新活动都会被列在这里。其他 Bookwyrm 实例用户也可以看到此页面的部分内容 —— 他们能看到什么取决于您的隐私设置。"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:11
 #: bookwyrm/templates/user/layout.html:20 bookwyrm/templates/user/user.html:14
@@ -2831,17 +2866,17 @@ msgstr ""
 
 #: bookwyrm/templates/hashtag.html:25
 msgid "No activities for this hashtag yet!"
-msgstr ""
+msgstr "此标签尚无活动！"
 
 #: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:6
 #: bookwyrm/templates/preferences/layout.html:43
 msgid "Import Book List"
-msgstr ""
+msgstr "导入书单"
 
 #: bookwyrm/templates/import/import.html:12
 msgid "Not a valid CSV file"
-msgstr ""
+msgstr "无效的 CSV 文件"
 
 #: bookwyrm/templates/import/import.html:20
 #, python-format
@@ -2870,27 +2905,27 @@ msgstr "数据来源:"
 
 #: bookwyrm/templates/import/import.html:58
 msgid "Goodreads (CSV)"
-msgstr ""
+msgstr "Goodreads (CSV)"
 
 #: bookwyrm/templates/import/import.html:61
 msgid "Storygraph (CSV)"
-msgstr ""
+msgstr "Storygraph (CSV)"
 
 #: bookwyrm/templates/import/import.html:64
 msgid "LibraryThing (TSV)"
-msgstr ""
+msgstr "LibraryThing (TSV)"
 
 #: bookwyrm/templates/import/import.html:67
 msgid "OpenLibrary (CSV)"
-msgstr ""
+msgstr "OpenLibrary (CSV)"
 
 #: bookwyrm/templates/import/import.html:70
 msgid "Calibre (CSV)"
-msgstr ""
+msgstr "Calibre (CSV)"
 
 #: bookwyrm/templates/import/import.html:76
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
-msgstr ""
+msgstr "您可以从您的Goodreads帐户的 <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">导入/导出页面</a> 下载您的Goodreads数据。"
 
 #: bookwyrm/templates/import/import.html:85
 #: bookwyrm/templates/import/import_user.html:49
@@ -2916,7 +2951,7 @@ msgstr "导入"
 #: bookwyrm/templates/import/import.html:108
 #: bookwyrm/templates/import/import_user.html:158
 msgid "You've reached the import limit."
-msgstr ""
+msgstr "您已达到导入限额。"
 
 #: bookwyrm/templates/import/import.html:117
 #: bookwyrm/templates/import/import_user.html:27
@@ -2930,24 +2965,24 @@ msgstr "最近的导入"
 
 #: bookwyrm/templates/import/import.html:129
 #: bookwyrm/templates/import/import_user.html:171
-#: bookwyrm/templates/settings/imports/imports.html:153
-#: bookwyrm/templates/settings/imports/imports.html:243
+#: bookwyrm/templates/settings/imports/imports.html:202
+#: bookwyrm/templates/settings/imports/imports.html:292
 msgid "Date Created"
-msgstr ""
+msgstr "创建日期"
 
 #: bookwyrm/templates/import/import.html:132
 #: bookwyrm/templates/import/import_user.html:174
 msgid "Last Updated"
-msgstr ""
+msgstr "最后更新"
 
 #: bookwyrm/templates/import/import.html:135
-#: bookwyrm/templates/settings/imports/imports.html:162
+#: bookwyrm/templates/settings/imports/imports.html:211
 msgid "Items"
 msgstr ""
 
 #: bookwyrm/templates/import/import.html:144
 #: bookwyrm/templates/import/import_user.html:183
-#: bookwyrm/templates/preferences/export-user.html:87
+#: bookwyrm/templates/preferences/export-user.html:96
 msgid "No recent imports"
 msgstr "无最近的导入"
 
@@ -2983,10 +3018,10 @@ msgid "Refresh"
 msgstr "刷新"
 
 #: bookwyrm/templates/import/import_status.html:72
-#: bookwyrm/templates/settings/imports/imports.html:194
-#: bookwyrm/templates/settings/imports/imports.html:271
+#: bookwyrm/templates/settings/imports/imports.html:243
+#: bookwyrm/templates/settings/imports/imports.html:320
 msgid "Stop import"
-msgstr ""
+msgstr "停止导入"
 
 #: bookwyrm/templates/import/import_status.html:78
 #, python-format
@@ -3014,8 +3049,8 @@ msgid "Row"
 msgstr "行"
 
 #: bookwyrm/templates/import/import_status.html:110
-#: bookwyrm/templates/shelf/shelf.html:150
-#: bookwyrm/templates/shelf/shelf.html:172
+#: bookwyrm/templates/shelf/shelf.html:151
+#: bookwyrm/templates/shelf/shelf.html:173
 msgid "Title"
 msgstr "标题"
 
@@ -3028,8 +3063,8 @@ msgid "Openlibrary key"
 msgstr "Openlibrary key"
 
 #: bookwyrm/templates/import/import_status.html:121
-#: bookwyrm/templates/shelf/shelf.html:151
-#: bookwyrm/templates/shelf/shelf.html:175
+#: bookwyrm/templates/shelf/shelf.html:152
+#: bookwyrm/templates/shelf/shelf.html:176
 msgid "Author"
 msgstr "作者"
 
@@ -3084,11 +3119,11 @@ msgstr "更新导入"
 #: bookwyrm/templates/import/import_user.html:6
 #: bookwyrm/templates/preferences/layout.html:51
 msgid "Import BookWyrm Account"
-msgstr ""
+msgstr "导入 BookWyrm 帐户"
 
 #: bookwyrm/templates/import/import_user.html:13
 msgid "Not a valid import file"
-msgstr ""
+msgstr "无效的导入文件"
 
 #: bookwyrm/templates/import/import_user.html:18
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set this account as an <strong>alias</strong> of the one you are migrating from, or <strong>move</strong> that account to this one, before you import your user data."
@@ -3106,7 +3141,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:41
 msgid "Step 1:"
-msgstr ""
+msgstr "步骤1:"
 
 #: bookwyrm/templates/import/import_user.html:43
 msgid "Select an export file generated from another BookWyrm account. The file format should be <code>.tar.gz</code>."
@@ -3114,13 +3149,14 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:58
 msgid "Step 2:"
-msgstr ""
+msgstr "步骤2:"
 
 #: bookwyrm/templates/import/import_user.html:60
 msgid "Deselect any checkboxes for data you do not wish to include in your import."
 msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:71
+#: bookwyrm/templates/preferences/export-user.html:20
 #: bookwyrm/templates/shelf/shelf.html:26
 #: bookwyrm/templates/user/relationships/followers.html:18
 #: bookwyrm/templates/user/relationships/following.html:18
@@ -3133,7 +3169,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:80
 msgid "User settings"
-msgstr ""
+msgstr "用户设置"
 
 #: bookwyrm/templates/import/import_user.html:83
 msgid "Overwrites:"
@@ -3161,39 +3197,43 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:101
 msgid "Your timezone"
-msgstr ""
+msgstr "您的时区"
 
 #: bookwyrm/templates/import/import_user.html:104
 msgid "Your default post privacy setting"
-msgstr ""
+msgstr "默认帖文隐私设定"
 
 #: bookwyrm/templates/import/import_user.html:112
 msgid "Followers and following"
-msgstr ""
+msgstr "关注者和正在关注"
 
 #: bookwyrm/templates/import/import_user.html:116
 msgid "User blocks"
 msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:123
+#: bookwyrm/templates/preferences/export-user.html:22
 msgid "Reading goals"
-msgstr ""
+msgstr "阅读目标"
 
 #: bookwyrm/templates/import/import_user.html:126
 msgid "Overwrites reading goals for all years listed in the import file"
 msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:130
+#: bookwyrm/templates/preferences/export-user.html:23
 msgid "Shelves"
-msgstr ""
+msgstr "书架"
 
 #: bookwyrm/templates/import/import_user.html:133
+#: bookwyrm/templates/preferences/export-user.html:24
 msgid "Reading history"
-msgstr ""
+msgstr "阅读记录"
 
 #: bookwyrm/templates/import/import_user.html:136
+#: bookwyrm/templates/preferences/export-user.html:25
 msgid "Book reviews"
-msgstr ""
+msgstr "书评"
 
 #: bookwyrm/templates/import/import_user.html:142
 msgid "Comments about books"
@@ -3201,7 +3241,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:145
 msgid "Book lists"
-msgstr ""
+msgstr "书目"
 
 #: bookwyrm/templates/import/import_user.html:148
 msgid "Saved lists"
@@ -3227,7 +3267,7 @@ msgid "Reject"
 msgstr "驳回"
 
 #: bookwyrm/templates/import/troubleshoot.html:7
-#: bookwyrm/templates/settings/imports/imports.html:171
+#: bookwyrm/templates/settings/imports/imports.html:220
 msgid "Failed items"
 msgstr "失败项目"
 
@@ -3257,8 +3297,8 @@ msgstr "如果您看到意外失败的项目，请联系您的管理员或 <a hr
 
 #: bookwyrm/templates/landing/invite.html:4
 #: bookwyrm/templates/landing/invite.html:8
-#: bookwyrm/templates/landing/login.html:48
-#: bookwyrm/templates/landing/reactivate.html:41
+#: bookwyrm/templates/landing/login.html:50
+#: bookwyrm/templates/landing/reactivate.html:43
 msgid "Create an Account"
 msgstr "创建帐号"
 
@@ -3309,7 +3349,7 @@ msgid "Login"
 msgstr "登录"
 
 #: bookwyrm/templates/landing/login.html:7
-#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:142
+#: bookwyrm/templates/landing/login.html:38 bookwyrm/templates/layout.html:142
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
 msgstr "登录"
@@ -3325,22 +3365,22 @@ msgstr "成功！邮箱地址已确认。"
 msgid "Username:"
 msgstr "用户名:"
 
-#: bookwyrm/templates/landing/login.html:27
+#: bookwyrm/templates/landing/login.html:28
 #: bookwyrm/templates/landing/password_reset.html:26
-#: bookwyrm/templates/landing/reactivate.html:23
+#: bookwyrm/templates/landing/reactivate.html:24
 #: bookwyrm/templates/layout.html:132 bookwyrm/templates/ostatus/error.html:32
 #: bookwyrm/templates/preferences/2fa.html:91
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
 msgstr "密码:"
 
-#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:139
+#: bookwyrm/templates/landing/login.html:41 bookwyrm/templates/layout.html:139
 #: bookwyrm/templates/ostatus/error.html:34
 msgid "Forgot your password?"
 msgstr "忘记了密码？"
 
-#: bookwyrm/templates/landing/login.html:61
-#: bookwyrm/templates/landing/reactivate.html:54
+#: bookwyrm/templates/landing/login.html:63
+#: bookwyrm/templates/landing/reactivate.html:56
 msgid "More about this site"
 msgstr "更多关于本站点的信息"
 
@@ -3368,7 +3408,7 @@ msgstr "重设密码"
 msgid "Reactivate Account"
 msgstr ""
 
-#: bookwyrm/templates/landing/reactivate.html:32
+#: bookwyrm/templates/landing/reactivate.html:34
 msgid "Reactivate account"
 msgstr ""
 
@@ -3378,8 +3418,8 @@ msgid "%(site_name)s search"
 msgstr "%(site_name)s 搜索"
 
 #: bookwyrm/templates/layout.html:39
-msgid "Search for a book, user, or list"
-msgstr "搜索书籍、用户或列表"
+msgid "Search for a book, author, user, or list"
+msgstr ""
 
 #: bookwyrm/templates/layout.html:54 bookwyrm/templates/layout.html:55
 msgid "Scan Barcode"
@@ -3395,7 +3435,7 @@ msgstr "密码"
 
 #: bookwyrm/templates/layout.html:136
 msgid "Show/Hide password"
-msgstr ""
+msgstr "显示/隐藏密码"
 
 #: bookwyrm/templates/layout.html:150
 msgid "Join"
@@ -3676,7 +3716,7 @@ msgstr ""
 
 #: bookwyrm/templates/moved.html:42
 msgid "Undo move"
-msgstr ""
+msgstr "撤销移动"
 
 #: bookwyrm/templates/moved.html:46 bookwyrm/templates/user_menu.html:77
 msgid "Log out"
@@ -4146,7 +4186,7 @@ msgstr "您正在关注 %(display_name)s！"
 #: bookwyrm/templates/preferences/2fa.html:7
 #: bookwyrm/templates/preferences/layout.html:24
 msgid "Two Factor Authentication"
-msgstr ""
+msgstr "双重验证"
 
 #: bookwyrm/templates/preferences/2fa.html:16
 msgid "Successfully updated 2FA settings"
@@ -4176,11 +4216,11 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/2fa.html:40
 msgid "Generate backup codes"
-msgstr ""
+msgstr "生成备份代码"
 
 #: bookwyrm/templates/preferences/2fa.html:45
 msgid "Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up."
-msgstr ""
+msgstr "使用身份验证应用扫描二维码，然后输入代码以确保您已设置。"
 
 #: bookwyrm/templates/preferences/2fa.html:52
 msgid "Use setup key"
@@ -4216,24 +4256,24 @@ msgstr "设置双重身份验证"
 #: bookwyrm/templates/preferences/move_user.html:7
 #: bookwyrm/templates/preferences/move_user.html:39
 msgid "Move Account"
-msgstr ""
+msgstr "移动帐户"
 
 #: bookwyrm/templates/preferences/alias_user.html:7
 #: bookwyrm/templates/preferences/alias_user.html:34
 msgid "Create Alias"
-msgstr ""
+msgstr "创建别名"
 
 #: bookwyrm/templates/preferences/alias_user.html:12
 msgid "Add another account as an alias"
-msgstr ""
+msgstr "添加另一个帐户作为别名"
 
 #: bookwyrm/templates/preferences/alias_user.html:16
 msgid "Marking another account as an alias is required if you want to move that account to this one."
-msgstr ""
+msgstr "如果您想要将另一个帐户移动到此帐户，则需要将其标记为别名。"
 
 #: bookwyrm/templates/preferences/alias_user.html:19
 msgid "This is a reversable action and will not change the functionality of this account."
-msgstr ""
+msgstr "这是一个可逆的操作，不会改变此帐户的功能。"
 
 #: bookwyrm/templates/preferences/alias_user.html:25
 msgid "Enter the username for the account you want to add as an alias e.g. <em>user@example.com </em>:"
@@ -4242,16 +4282,16 @@ msgstr ""
 #: bookwyrm/templates/preferences/alias_user.html:30
 #: bookwyrm/templates/preferences/move_user.html:35
 msgid "Confirm your password:"
-msgstr ""
+msgstr "确认密码"
 
 #: bookwyrm/templates/preferences/alias_user.html:39
 #: bookwyrm/templates/preferences/layout.html:28
 msgid "Aliases"
-msgstr ""
+msgstr "别名"
 
 #: bookwyrm/templates/preferences/alias_user.html:49
 msgid "Remove alias"
-msgstr ""
+msgstr "移除别名"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
@@ -4388,64 +4428,106 @@ msgstr "默认发文隐私:"
 #: bookwyrm/templates/preferences/edit_user.html:136
 #, python-format
 msgid "Looking for shelf privacy? You can set a separate visibility level for each of your shelves. Go to <a href=\"%(path)s\">Your Books</a>, pick a shelf from the tab bar, and click \"Edit shelf.\""
-msgstr ""
+msgstr "正在寻找保护书架隐私的方法吗？您可以为每个书架设置一个单独的可见度。转到 <a href=\"%(path)s\"> 您的书架 </a>，从标签栏中选择一个书架，然后单击“编辑书架”。"
 
 #: bookwyrm/templates/preferences/export-user.html:5
 #: bookwyrm/templates/preferences/export-user.html:8
 #: bookwyrm/templates/preferences/layout.html:55
 msgid "Export BookWyrm Account"
-msgstr ""
+msgstr "导出 BookWyrm 帐户"
 
 #: bookwyrm/templates/preferences/export-user.html:14
 msgid "You can create an export file here. This will allow you to migrate your data to another BookWyrm account."
+msgstr "您可以在此创建一个导出文件。这将允许您迁移您的数据到另一个 BookWyrm 帐户。"
+
+#: bookwyrm/templates/preferences/export-user.html:18
+msgid "Your file will include:"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:17
-msgid "<div class=\"column is-half\"> <h2 class=\"is-size-5\">Your file will include:</h2> <ul> <li>User profile</li> <li>Most user settings</li> <li>Reading goals</li> <li>Shelves</li> <li>Reading history</li> <li>Book reviews</li> <li>Statuses</li> <li>Your own lists and saved lists</li> <li>Which users you follow and block</li> </ul> </div> <div class=\"column is-half\"> <h2 class=\"is-size-5\">Your file will not include:</h2> <ul> <li>Direct messages</li> <li>Replies to your statuses</li> <li>Groups</li> <li>Favorites</li> </ul> </div>"
+#: bookwyrm/templates/preferences/export-user.html:21
+msgid "Most user settings"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:43
+#: bookwyrm/templates/preferences/export-user.html:26
+#: bookwyrm/templates/settings/dashboard/dashboard.html:27
+msgid "Statuses"
+msgstr "状态"
+
+#: bookwyrm/templates/preferences/export-user.html:27
+msgid "Your own lists and saved lists"
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:28
+msgid "Which users you follow and block"
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:32
+msgid "Your file will not include:"
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:34
+msgid "Direct messages"
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:35
+msgid "Replies to your statuses"
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:37
+msgid "Favorites"
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:41
 msgid "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported."
-msgstr ""
+msgstr "在您新的 BookWyrm 帐户中可以选择导入什么：您无需导入所有导出的内容。"
 
-#: bookwyrm/templates/preferences/export-user.html:46
+#: bookwyrm/templates/preferences/export-user.html:44
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set the account you are moving to as an <strong>alias</strong> of this one, or <strong>move</strong> this account to the new account, before you import your user data."
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:51
+#: bookwyrm/templates/preferences/export-user.html:49
+msgid "New user exports are currently disabled."
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:53
+#, python-format
+msgid "User exports settings can be changed from <a href=\"%(url)s\">the Imports page</a> in the Admin dashboard."
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:60
 #, python-format
 msgid "You will be able to create a new export file at %(next_available)s"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:60
+#: bookwyrm/templates/preferences/export-user.html:69
 msgid "Create user export file"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:67
+#: bookwyrm/templates/preferences/export-user.html:76
 msgid "Recent Exports"
-msgstr ""
+msgstr "最近导出"
 
-#: bookwyrm/templates/preferences/export-user.html:69
+#: bookwyrm/templates/preferences/export-user.html:78
 msgid "User export files will show 'complete' once ready. This may take a little while. Click the link to download your file."
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:75
+#: bookwyrm/templates/preferences/export-user.html:84
 msgid "Date"
-msgstr ""
+msgstr "日期"
 
-#: bookwyrm/templates/preferences/export-user.html:81
+#: bookwyrm/templates/preferences/export-user.html:90
 msgid "Size"
-msgstr ""
+msgstr "大小"
 
-#: bookwyrm/templates/preferences/export-user.html:125
+#: bookwyrm/templates/preferences/export-user.html:134
 msgid "Download your export"
-msgstr ""
+msgstr "下载您导出的文件"
 
 #: bookwyrm/templates/preferences/export.html:4
 #: bookwyrm/templates/preferences/export.html:7
 #: bookwyrm/templates/preferences/layout.html:47
 msgid "Export Book List"
-msgstr ""
+msgstr "导出书单"
 
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your CSV export file will include all the books on your shelves, books you have reviewed, and books with reading activity. <br/>Use this to import into a service like Goodreads."
@@ -4461,7 +4543,7 @@ msgstr "帐号"
 
 #: bookwyrm/templates/preferences/layout.html:32
 msgid "Move  Account"
-msgstr ""
+msgstr "移动帐户"
 
 #: bookwyrm/templates/preferences/layout.html:39
 msgid "Data"
@@ -4473,11 +4555,11 @@ msgstr "关系"
 
 #: bookwyrm/templates/preferences/move_user.html:12
 msgid "Migrate account to another server"
-msgstr ""
+msgstr "迁移帐户到另一个服务器"
 
 #: bookwyrm/templates/preferences/move_user.html:16
 msgid "Moving your account will notify all your followers and direct them to follow the new account."
-msgstr ""
+msgstr "移动您的帐户将会通知您所有的关注者并指示他们关注新帐户。"
 
 #: bookwyrm/templates/preferences/move_user.html:19
 #, python-format
@@ -4668,8 +4750,8 @@ msgstr "搜索请求"
 msgid "Search type"
 msgstr "搜索类型"
 
-#: bookwyrm/templates/search/layout.html:24
-#: bookwyrm/templates/search/layout.html:47
+#: bookwyrm/templates/search/layout.html:25
+#: bookwyrm/templates/search/layout.html:51
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:27
 #: bookwyrm/templates/settings/federation/instance_list.html:52
 #: bookwyrm/templates/settings/layout.html:36
@@ -4679,16 +4761,16 @@ msgstr "搜索类型"
 msgid "Users"
 msgstr "用户"
 
-#: bookwyrm/templates/search/layout.html:59
+#: bookwyrm/templates/search/layout.html:63
 #, python-format
 msgid "No results found for \"%(query)s\""
 msgstr "没有找到 “%(query)s” 的搜索结果"
 
-#: bookwyrm/templates/search/layout.html:61
+#: bookwyrm/templates/search/layout.html:65
 #, python-format
 msgid "%(result_count)s result found"
 msgid_plural "%(result_count)s results found"
-msgstr[0] ""
+msgstr[0] "找到 %(result_count)s 条搜索结果"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:5
 #: bookwyrm/templates/settings/announcements/announcement.html:8
@@ -4705,7 +4787,7 @@ msgstr "编辑"
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:99
+#: bookwyrm/templates/settings/layout.html:103
 msgid "Announcements"
 msgstr "公告"
 
@@ -4723,13 +4805,13 @@ msgstr "否"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:57
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:79
-#: bookwyrm/templates/settings/dashboard/dashboard.html:80
+#: bookwyrm/templates/settings/dashboard/dashboard.html:84
 msgid "Start date:"
 msgstr "开始日期:"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:62
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:89
-#: bookwyrm/templates/settings/dashboard/dashboard.html:86
+#: bookwyrm/templates/settings/dashboard/dashboard.html:90
 msgid "End date:"
 msgstr "结束日期:"
 
@@ -4901,11 +4983,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:32
 msgid "Broadcast"
-msgstr ""
+msgstr "广播"
 
 #: bookwyrm/templates/settings/celery.html:38
 msgid "Inbox"
-msgstr ""
+msgstr "收件箱"
 
 #: bookwyrm/templates/settings/celery.html:51
 msgid "Import triggered"
@@ -4955,8 +5037,9 @@ msgid "Active Tasks"
 msgstr "当前任务"
 
 #: bookwyrm/templates/settings/celery.html:131
-#: bookwyrm/templates/settings/imports/imports.html:146
-#: bookwyrm/templates/settings/imports/imports.html:236
+#: bookwyrm/templates/settings/imports/imports.html:195
+#: bookwyrm/templates/settings/imports/imports.html:285
+#: bookwyrm/templates/settings/schedules.html:95
 msgid "ID"
 msgstr "ID"
 
@@ -5008,7 +5091,7 @@ msgid "Dashboard"
 msgstr "仪表盘"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
-#: bookwyrm/templates/settings/dashboard/dashboard.html:109
+#: bookwyrm/templates/settings/dashboard/dashboard.html:113
 msgid "Total users"
 msgstr "用户总数"
 
@@ -5017,40 +5100,36 @@ msgstr "用户总数"
 msgid "Active this month"
 msgstr "今月活跃"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:27
-msgid "Statuses"
-msgstr "状态"
-
 #: bookwyrm/templates/settings/dashboard/dashboard.html:33
 #: bookwyrm/templates/settings/dashboard/works_chart.html:11
 msgid "Works"
 msgstr "作品"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:74
+#: bookwyrm/templates/settings/dashboard/dashboard.html:78
 msgid "Instance Activity"
 msgstr "实例活动"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:92
+#: bookwyrm/templates/settings/dashboard/dashboard.html:96
 msgid "Interval:"
 msgstr "区段："
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:96
+#: bookwyrm/templates/settings/dashboard/dashboard.html:100
 msgid "Days"
 msgstr "天"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:97
+#: bookwyrm/templates/settings/dashboard/dashboard.html:101
 msgid "Weeks"
 msgstr "周"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:115
+#: bookwyrm/templates/settings/dashboard/dashboard.html:119
 msgid "User signup activity"
 msgstr "用户注册活动"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:121
+#: bookwyrm/templates/settings/dashboard/dashboard.html:125
 msgid "Status activity"
 msgstr "状态动态"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:127
+#: bookwyrm/templates/settings/dashboard/dashboard.html:131
 msgid "Works created"
 msgstr "创建的作品"
 
@@ -5065,6 +5144,14 @@ msgstr "发布的状态"
 #: bookwyrm/templates/settings/dashboard/user_chart.html:11
 msgid "Total"
 msgstr "总数"
+
+#: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:12
+msgid "Would you like to automatically check for new BookWyrm releases? (recommended)"
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:20
+msgid "Schedule checks"
+msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/warnings/domain_review.html:9
 #, python-format
@@ -5142,7 +5229,7 @@ msgstr "目前没有屏蔽邮件域名"
 
 #: bookwyrm/templates/settings/email_config.html:6
 #: bookwyrm/templates/settings/email_config.html:8
-#: bookwyrm/templates/settings/layout.html:90
+#: bookwyrm/templates/settings/layout.html:94
 msgid "Email Configuration"
 msgstr "电子邮箱配置"
 
@@ -5372,7 +5459,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:37
 msgid "Disable imports"
-msgstr ""
+msgstr "禁用导入功能"
 
 #: bookwyrm/templates/settings/imports/imports.html:51
 msgid "Users are currently unable to start new imports"
@@ -5380,7 +5467,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:56
 msgid "Enable imports"
-msgstr ""
+msgstr "启用导入功能"
 
 #: bookwyrm/templates/settings/imports/imports.html:64
 msgid "Limit the amount of imports"
@@ -5391,7 +5478,7 @@ msgid "Some users might try to import a large number of books, which you want to
 msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:76
-#: bookwyrm/templates/settings/imports/imports.html:108
+#: bookwyrm/templates/settings/imports/imports.html:135
 msgid "Set the value to 0 to not enforce any limit."
 msgstr ""
 
@@ -5411,59 +5498,87 @@ msgstr "天。"
 msgid "Set limit"
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:96
+#: bookwyrm/templates/settings/imports/imports.html:98
+msgid "Disable starting new user exports"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:109
+msgid "This is only intended to be used when things have gone very wrong with exports and you need to pause the feature while addressing issues."
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:110
+msgid "While exports are disabled, users will not be allowed to start new user exports, but existing exports will not be affected."
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:115
+msgid "Disable user exports"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:123
 msgid "Limit how often users can import and export"
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:107
+#: bookwyrm/templates/settings/imports/imports.html:134
 msgid "Some users might try to run user imports or exports very frequently, which you want to limit."
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:111
-msgid "Restrict user imports and exports to once every "
+#: bookwyrm/templates/settings/imports/imports.html:138
+msgid "Limit how often users can import and export user data"
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:113
+#: bookwyrm/templates/settings/imports/imports.html:140
 msgid "hours"
-msgstr ""
+msgstr "小时"
 
-#: bookwyrm/templates/settings/imports/imports.html:117
+#: bookwyrm/templates/settings/imports/imports.html:144
 msgid "Change limit"
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:125
+#: bookwyrm/templates/settings/imports/imports.html:159
+msgid "Users are currently unable to start new user exports. This is the default setting."
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:161
+msgid "It is not currently possible to provide user exports when using s3 storage. The BookWyrm development team are working on a fix for this."
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:167
+msgid "Enable user exports"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:174
 msgid "Book Imports"
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:135
-#: bookwyrm/templates/settings/imports/imports.html:225
+#: bookwyrm/templates/settings/imports/imports.html:184
+#: bookwyrm/templates/settings/imports/imports.html:274
 msgid "Completed"
 msgstr "已完成"
 
-#: bookwyrm/templates/settings/imports/imports.html:149
-#: bookwyrm/templates/settings/imports/imports.html:239
+#: bookwyrm/templates/settings/imports/imports.html:198
+#: bookwyrm/templates/settings/imports/imports.html:288
 msgid "User"
 msgstr "用户"
 
-#: bookwyrm/templates/settings/imports/imports.html:158
-#: bookwyrm/templates/settings/imports/imports.html:248
+#: bookwyrm/templates/settings/imports/imports.html:207
+#: bookwyrm/templates/settings/imports/imports.html:297
 msgid "Date Updated"
 msgstr "日期已更新"
 
-#: bookwyrm/templates/settings/imports/imports.html:165
+#: bookwyrm/templates/settings/imports/imports.html:214
 msgid "Pending items"
-msgstr ""
+msgstr "待处理的项目"
 
-#: bookwyrm/templates/settings/imports/imports.html:168
+#: bookwyrm/templates/settings/imports/imports.html:217
 msgid "Successful items"
-msgstr ""
+msgstr "成功的项目"
 
-#: bookwyrm/templates/settings/imports/imports.html:203
-#: bookwyrm/templates/settings/imports/imports.html:295
+#: bookwyrm/templates/settings/imports/imports.html:252
+#: bookwyrm/templates/settings/imports/imports.html:344
 msgid "No matching imports found."
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:215
+#: bookwyrm/templates/settings/imports/imports.html:264
 msgid "User Imports"
 msgstr ""
 
@@ -5644,18 +5759,24 @@ msgstr ""
 msgid "Celery status"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:95
+#: bookwyrm/templates/settings/layout.html:90
+#: bookwyrm/templates/settings/schedules.html:7
+#: bookwyrm/templates/settings/schedules.html:11
+msgid "Scheduled tasks"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:99
 msgid "Instance Settings"
 msgstr "实例设置"
 
-#: bookwyrm/templates/settings/layout.html:103
+#: bookwyrm/templates/settings/layout.html:107
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr "站点设置"
 
-#: bookwyrm/templates/settings/layout.html:109
-#: bookwyrm/templates/settings/layout.html:112
+#: bookwyrm/templates/settings/layout.html:113
+#: bookwyrm/templates/settings/layout.html:116
 #: bookwyrm/templates/settings/registration.html:4
 #: bookwyrm/templates/settings/registration.html:6
 #: bookwyrm/templates/settings/registration_limited.html:4
@@ -5663,7 +5784,7 @@ msgstr "站点设置"
 msgid "Registration"
 msgstr "注册"
 
-#: bookwyrm/templates/settings/layout.html:118
+#: bookwyrm/templates/settings/layout.html:122
 #: bookwyrm/templates/settings/site.html:107
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
@@ -5721,7 +5842,7 @@ msgstr "允许注册"
 
 #: bookwyrm/templates/settings/registration.html:43
 msgid "Default access level:"
-msgstr ""
+msgstr "默认权限等级："
 
 #: bookwyrm/templates/settings/registration.html:61
 msgid "Require users to confirm email address"
@@ -5869,6 +5990,56 @@ msgstr "已解决"
 msgid "No reports found."
 msgstr "没有找到报告"
 
+#: bookwyrm/templates/settings/schedules.html:17
+#: bookwyrm/templates/settings/schedules.html:101
+msgid "Tasks"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:22
+msgid "Name"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:25
+msgid "Celery task"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:28
+msgid "Date changed"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:31
+msgid "Last run at"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:34
+#: bookwyrm/templates/settings/schedules.html:98
+msgid "Schedule"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:37
+msgid "Schedule ID"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:40
+msgid "Enabled"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:73
+msgid "Un-schedule"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:81
+msgid "No scheduled tasks"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:90
+msgid "Schedules"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:119
+msgid "No schedules found"
+msgstr ""
+
 #: bookwyrm/templates/settings/site.html:10
 #: bookwyrm/templates/settings/site.html:43
 msgid "Instance Info"
@@ -6007,7 +6178,7 @@ msgstr "删除主题"
 
 #: bookwyrm/templates/settings/themes.html:134
 msgid "Test theme"
-msgstr ""
+msgstr "测试主题"
 
 #: bookwyrm/templates/settings/themes.html:143
 msgid "Broken theme"
@@ -6015,7 +6186,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/themes.html:152
 msgid "Loaded successfully"
-msgstr ""
+msgstr "加载成功"
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:5
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:52
@@ -6038,7 +6209,7 @@ msgstr "用户: <small>%(instance_name)s</small>"
 
 #: bookwyrm/templates/settings/users/user_admin.html:29
 msgid "Deleted users"
-msgstr ""
+msgstr "已删除帐户"
 
 #: bookwyrm/templates/settings/users/user_admin.html:44
 #: bookwyrm/templates/settings/users/username_filter.html:5
@@ -6148,7 +6319,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:35
 msgid "Activate user"
-msgstr ""
+msgstr "激活用户"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:41
 msgid "Suspend user"
@@ -6280,7 +6451,7 @@ msgid "Edit Shelf"
 msgstr "编辑书架"
 
 #: bookwyrm/templates/shelf/shelf.html:41
-#: bookwyrm/templatetags/shelf_tags.py:13 bookwyrm/views/shelf/shelf.py:53
+#: bookwyrm/templatetags/shelf_tags.py:13 bookwyrm/views/shelf/shelf.py:59
 msgid "All books"
 msgstr "所有书目"
 
@@ -6294,42 +6465,55 @@ msgid "%(formatted_count)s book"
 msgid_plural "%(formatted_count)s books"
 msgstr[0] "%(formatted_count)s 本书籍"
 
-#: bookwyrm/templates/shelf/shelf.html:106
+#: bookwyrm/templates/shelf/shelf.html:105
 #, python-format
 msgid "(showing %(start)s-%(end)s)"
 msgstr "（正在显示 %(start)s 到 %(end)s）"
 
-#: bookwyrm/templates/shelf/shelf.html:118
+#: bookwyrm/templates/shelf/shelf.html:119
 msgid "Edit shelf"
 msgstr "编辑书架"
 
-#: bookwyrm/templates/shelf/shelf.html:126
+#: bookwyrm/templates/shelf/shelf.html:127
 msgid "Delete shelf"
 msgstr "删除书架"
 
-#: bookwyrm/templates/shelf/shelf.html:154
-#: bookwyrm/templates/shelf/shelf.html:180
+#: bookwyrm/templates/shelf/shelf.html:155
+#: bookwyrm/templates/shelf/shelf.html:181
 msgid "Shelved"
 msgstr "上架时间"
 
-#: bookwyrm/templates/shelf/shelf.html:155
-#: bookwyrm/templates/shelf/shelf.html:183
+#: bookwyrm/templates/shelf/shelf.html:156
+#: bookwyrm/templates/shelf/shelf.html:184
 msgid "Started"
 msgstr "开始时间"
 
-#: bookwyrm/templates/shelf/shelf.html:156
-#: bookwyrm/templates/shelf/shelf.html:186
+#: bookwyrm/templates/shelf/shelf.html:157
+#: bookwyrm/templates/shelf/shelf.html:187
 msgid "Finished"
 msgstr "完成时间"
 
-#: bookwyrm/templates/shelf/shelf.html:156
-#: bookwyrm/templates/shelf/shelf.html:186
+#: bookwyrm/templates/shelf/shelf.html:157
+#: bookwyrm/templates/shelf/shelf.html:187
 msgid "Until"
 msgstr "直到"
 
-#: bookwyrm/templates/shelf/shelf.html:212
+#: bookwyrm/templates/shelf/shelf.html:216
+#, python-format
+msgid "We couldn't find any books that matched %(shelves_filter_query)s"
+msgstr ""
+
+#: bookwyrm/templates/shelf/shelf.html:220
 msgid "This shelf is empty."
 msgstr "此书架是空的。"
+
+#: bookwyrm/templates/shelf/shelves_filter_field.html:6
+msgid "Filter by keyword"
+msgstr ""
+
+#: bookwyrm/templates/shelf/shelves_filter_field.html:7
+msgid "Enter text here"
+msgstr ""
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:16
 msgid "Invite"
@@ -6433,7 +6617,7 @@ msgstr "评论:"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:19
 msgid "Update"
-msgstr ""
+msgstr "更新"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:21
 msgid "Post"
@@ -6460,7 +6644,7 @@ msgstr "页码："
 msgid "At percent:"
 msgstr "百分比："
 
-#: bookwyrm/templates/snippets/create_status/quotation.html:69
+#: bookwyrm/templates/snippets/create_status/quotation.html:68
 msgid "to"
 msgstr ""
 
@@ -6538,7 +6722,7 @@ msgstr "在 <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopen
 
 #: bookwyrm/templates/snippets/footer.html:49
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
-msgstr ""
+msgstr "BookWyrm的源代码是免费可用的。您可以在 <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a> 上贡献或报告问题。"
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:20
 #: bookwyrm/templates/snippets/stars.html:23
@@ -6698,7 +6882,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/shelf_selector.html:53
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:21
 msgid "Stopped reading"
-msgstr ""
+msgstr "停止阅读"
 
 #: bookwyrm/templates/snippets/reading_modals/want_to_read_modal.html:6
 #, python-format
@@ -6771,7 +6955,7 @@ msgstr "更多书架"
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:31
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:48
 msgid "Stop reading"
-msgstr ""
+msgstr "停止阅读"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:40
 msgid "Finish reading"
@@ -6940,7 +7124,7 @@ msgstr "显示更少"
 
 #: bookwyrm/templates/snippets/user_active_tag.html:5
 msgid "Moved"
-msgstr ""
+msgstr "已移动"
 
 #: bookwyrm/templates/snippets/user_active_tag.html:12
 msgid "Deleted"
@@ -7148,6 +7332,10 @@ msgstr[0] "%(num)d 本书 - 来自 %(user)s"
 #, python-format
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s：%(subtitle)s"
+
+#: bookwyrm/templatetags/utilities.py:129
+msgid "a new user account"
+msgstr ""
 
 #: bookwyrm/views/rss_feed.py:35
 #, python-brace-format
