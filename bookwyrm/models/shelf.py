@@ -6,7 +6,7 @@ from django.db import models
 from django.utils import timezone
 
 from bookwyrm import activitypub
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 from bookwyrm.tasks import BROADCAST
 from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
 from .base_model import BookWyrmModel
@@ -71,7 +71,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     @property
     def local_path(self):
         """No slugs"""
-        return self.get_remote_id().replace(f"https://{DOMAIN}", "")
+        return self.get_remote_id().replace(BASE_URL, "")
 
     def raise_not_deletable(self, viewer):
         """don't let anyone delete a default shelf"""

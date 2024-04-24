@@ -7,7 +7,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from bookwyrm import activitypub
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 
 from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
 from .base_model import BookWyrmModel
@@ -50,7 +50,7 @@ class List(OrderedCollectionMixin, BookWyrmModel):
 
     def get_remote_id(self):
         """don't want the user to be in there in this case"""
-        return f"https://{DOMAIN}/list/{self.id}"
+        return f"{BASE_URL}/list/{self.id}"
 
     @property
     def collection_queryset(self):

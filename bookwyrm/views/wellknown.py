@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET
 
 from bookwyrm import models
-from bookwyrm.settings import DOMAIN, VERSION, LANGUAGE_CODE
+from bookwyrm.settings import BASE_URL, DOMAIN, VERSION, LANGUAGE_CODE
 
 
 @require_GET
@@ -34,7 +34,7 @@ def webfinger(request):
                 },
                 {
                     "rel": "http://ostatus.org/schema/1.0/subscribe",
-                    "template": f"https://{DOMAIN}/ostatus_subscribe?acct={{uri}}",
+                    "template": f"{BASE_URL}/ostatus_subscribe?acct={{uri}}",
                 },
             ],
         }

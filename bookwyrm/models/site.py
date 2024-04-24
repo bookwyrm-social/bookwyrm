@@ -12,7 +12,7 @@ from model_utils import FieldTracker
 
 from bookwyrm.connectors.abstract_connector import get_data
 from bookwyrm.preview_images import generate_site_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, STATIC_FULL_URL
+from bookwyrm.settings import BASE_URL, ENABLE_PREVIEW_IMAGES, STATIC_FULL_URL
 from bookwyrm.settings import RELEASE_API
 from bookwyrm.tasks import app, MISC
 from .base_model import BookWyrmModel, new_access_code
@@ -188,7 +188,7 @@ class SiteInvite(models.Model):
     @property
     def link(self):
         """formats the invite link"""
-        return f"https://{DOMAIN}/invite/{self.code}"
+        return f"{BASE_URL}/invite/{self.code}"
 
 
 class InviteRequest(BookWyrmModel):
@@ -235,7 +235,7 @@ class PasswordReset(models.Model):
     @property
     def link(self):
         """formats the invite link"""
-        return f"https://{DOMAIN}/password-reset/{self.code}"
+        return f"{BASE_URL}/password-reset/{self.code}"
 
 
 # pylint: disable=unused-argument

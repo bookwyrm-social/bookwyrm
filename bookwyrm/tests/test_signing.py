@@ -15,7 +15,7 @@ from django.utils.http import http_date
 
 from bookwyrm import models
 from bookwyrm.activitypub import Follow
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import DOMAIN, NETLOC
 from bookwyrm.signatures import create_key_pair, make_signature, make_digest
 
 
@@ -77,7 +77,7 @@ class Signature(TestCase):
                 "HTTP_SIGNATURE": signature,
                 "HTTP_DIGEST": digest,
                 "HTTP_CONTENT_TYPE": "application/activity+json; charset=utf-8",
-                "HTTP_HOST": DOMAIN,
+                "HTTP_HOST": NETLOC,
             },
         )
 
