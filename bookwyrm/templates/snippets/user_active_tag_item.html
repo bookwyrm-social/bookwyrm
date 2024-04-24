@@ -1,0 +1,19 @@
+{% if large %}
+
+<p class="notification is-{{ level }}">
+<span class="icon icon-{{ icon }}" aria-hidden="true"></span>
+    {{ text }}
+    {% if deactivation_reason %}
+    <span class="help">({{ deactivation_reason }})</span>
+    {% endif %}
+</p>
+
+{% else %}
+
+<span class="tag is-{{ level }}" aria-hidden="true">
+    <span class="icon icon-{{ icon }}"></span>
+</span>
+{{ text }}
+
+{% endif %}
+

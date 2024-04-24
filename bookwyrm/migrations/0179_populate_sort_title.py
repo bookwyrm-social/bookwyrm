@@ -45,5 +45,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(populate_sort_title),
+        migrations.RunPython(
+            populate_sort_title, reverse_code=migrations.RunPython.noop
+        ),
     ]

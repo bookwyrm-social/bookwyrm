@@ -1,12 +1,21 @@
 """ alert a user to activity """
 from django.db import models, transaction
 from django.dispatch import receiver
+from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
 from .base_model import BookWyrmModel
-from . import Boost, Favorite, GroupMemberInvitation, ImportJob, LinkDomain
+from . import (
+    Boost,
+    Favorite,
+    GroupMemberInvitation,
+    ImportJob,
+    BookwyrmImportJob,
+    LinkDomain,
+)
 from . import ListItem, Report, Status, User, UserFollowRequest
+from .site import InviteRequest
 
 
-class Notification(BookWyrmModel):
+class NotificationType(models.TextChoices):
     """you've been tagged, liked, followed, etc"""
 
     # Status interactions
@@ -22,6 +31,8 @@ class Notification(BookWyrmModel):
 
     # Imports
     IMPORT = "IMPORT"
+    USER_IMPORT = "USER_IMPORT"
+    USER_EXPORT = "USER_EXPORT"
 
     # List activity
     ADD = "ADD"
@@ -29,6 +40,7 @@ class Notification(BookWyrmModel):
     # Admin
     REPORT = "REPORT"
     LINK_DOMAIN = "LINK_DOMAIN"
+    INVITE_REQUEST = "INVITE_REQUEST"
 
     # Groups
     INVITE = "INVITE"
@@ -40,12 +52,12 @@ class Notification(BookWyrmModel):
     GROUP_NAME = "GROUP_NAME"
     GROUP_DESCRIPTION = "GROUP_DESCRIPTION"
 
-    # pylint: disable=line-too-long
-    NotificationType = models.TextChoices(
-        # there has got be a better way to do this
-        "NotificationType",
-        f"{FAVORITE} {REPLY} {MENTION} {TAG} {FOLLOW} {FOLLOW_REQUEST} {BOOST} {IMPORT} {ADD} {REPORT} {LINK_DOMAIN} {INVITE} {ACCEPT} {JOIN} {LEAVE} {REMOVE} {GROUP_PRIVACY} {GROUP_NAME} {GROUP_DESCRIPTION}",
-    )
+    # Migrations
+    MOVE = "MOVE"
+
+
+class Notification(BookWyrmModel):
+    """a notification object"""
 
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     read = models.BooleanField(default=False)
@@ -61,11 +73,15 @@ class Notification(BookWyrmModel):
     )
     related_status = models.ForeignKey("Status", on_delete=models.CASCADE, null=True)
     related_import = models.ForeignKey("ImportJob", on_delete=models.CASCADE, null=True)
+    related_user_export = models.ForeignKey(
+        "BookwyrmExportJob", on_delete=models.CASCADE, null=True
+    )
     related_list_items = models.ManyToManyField(
         "ListItem", symmetrical=False, related_name="notifications"
     )
-    related_reports = models.ManyToManyField("Report", symmetrical=False)
-    related_link_domains = models.ManyToManyField("LinkDomain", symmetrical=False)
+    related_reports = models.ManyToManyField("Report")
+    related_link_domains = models.ManyToManyField("LinkDomain")
+    related_invite_requests = models.ManyToManyField("InviteRequest")
 
     @classmethod
     @transaction.atomic
@@ -90,11 +106,11 @@ class Notification(BookWyrmModel):
             user=user,
             related_users=related_user,
             related_list_items__book_list=list_item.book_list,
-            notification_type=Notification.ADD,
+            notification_type=NotificationType.ADD,
         ).first()
         if not notification:
             notification = cls.objects.create(
-                user=user, notification_type=Notification.ADD
+                user=user, notification_type=NotificationType.ADD
             )
             notification.related_users.add(related_user)
         notification.related_list_items.add(list_item)
@@ -121,7 +137,7 @@ def notify_on_fav(sender, instance, *args, **kwargs):
         instance.status.user,
         instance.user,
         related_status=instance.status,
-        notification_type=Notification.FAVORITE,
+        notification_type=NotificationType.FAVORITE,
     )
 
 
@@ -135,7 +151,7 @@ def notify_on_unfav(sender, instance, *args, **kwargs):
         instance.status.user,
         instance.user,
         related_status=instance.status,
-        notification_type=Notification.FAVORITE,
+        notification_type=NotificationType.FAVORITE,
     )
 
 
@@ -160,7 +176,7 @@ def notify_user_on_mention(sender, instance, *args, **kwargs):
             instance.reply_parent.user,
             instance.user,
             related_status=instance,
-            notification_type=Notification.REPLY,
+            notification_type=NotificationType.REPLY,
         )
 
     for mention_user in instance.mention_users.all():
@@ -172,7 +188,7 @@ def notify_user_on_mention(sender, instance, *args, **kwargs):
         Notification.notify(
             mention_user,
             instance.user,
-            notification_type=Notification.MENTION,
+            notification_type=NotificationType.MENTION,
             related_status=instance,
         )
 
@@ -191,7 +207,7 @@ def notify_user_on_boost(sender, instance, *args, **kwargs):
         instance.boosted_status.user,
         instance.user,
         related_status=instance.boosted_status,
-        notification_type=Notification.BOOST,
+        notification_type=NotificationType.BOOST,
     )
 
 
@@ -203,7 +219,7 @@ def notify_user_on_unboost(sender, instance, *args, **kwargs):
         instance.boosted_status.user,
         instance.user,
         related_status=instance.boosted_status,
-        notification_type=Notification.BOOST,
+        notification_type=NotificationType.BOOST,
     )
 
 
@@ -218,8 +234,38 @@ def notify_user_on_import_complete(
         return
     Notification.objects.get_or_create(
         user=instance.user,
-        notification_type=Notification.IMPORT,
+        notification_type=NotificationType.IMPORT,
         related_import=instance,
+    )
+
+
+@receiver(models.signals.post_save, sender=BookwyrmImportJob)
+# pylint: disable=unused-argument
+def notify_user_on_user_import_complete(
+    sender, instance, *args, update_fields=None, **kwargs
+):
+    """we imported your user details! aren't you proud of us"""
+    update_fields = update_fields or []
+    if not instance.complete or "complete" not in update_fields:
+        return
+    Notification.objects.create(
+        user=instance.user, notification_type=NotificationType.USER_IMPORT
+    )
+
+
+@receiver(models.signals.post_save, sender=BookwyrmExportJob)
+# pylint: disable=unused-argument
+def notify_user_on_user_export_complete(
+    sender, instance, *args, update_fields=None, **kwargs
+):
+    """we exported your user details! aren't you proud of us"""
+    update_fields = update_fields or []
+    if not instance.complete or "complete" not in update_fields:
+        return
+    Notification.objects.create(
+        user=instance.user,
+        notification_type=NotificationType.USER_EXPORT,
+        related_user_export=instance,
     )
 
 
@@ -233,11 +279,10 @@ def notify_admins_on_report(sender, instance, created, *args, **kwargs):
         return
 
     # moderators and superusers should be notified
-    admins = User.admins()
-    for admin in admins:
+    for admin in User.admins():
         notification, _ = Notification.objects.get_or_create(
             user=admin,
-            notification_type=Notification.REPORT,
+            notification_type=NotificationType.REPORT,
             read=False,
         )
         notification.related_reports.add(instance)
@@ -253,14 +298,31 @@ def notify_admins_on_link_domain(sender, instance, created, *args, **kwargs):
         return
 
     # moderators and superusers should be notified
-    admins = User.admins()
-    for admin in admins:
+    for admin in User.admins():
         notification, _ = Notification.objects.get_or_create(
             user=admin,
-            notification_type=Notification.LINK_DOMAIN,
+            notification_type=NotificationType.LINK_DOMAIN,
             read=False,
         )
         notification.related_link_domains.add(instance)
+
+
+@receiver(models.signals.post_save, sender=InviteRequest)
+@transaction.atomic
+# pylint: disable=unused-argument
+def notify_admins_on_invite_request(sender, instance, created, *args, **kwargs):
+    """need to handle a new invite request"""
+    if not created:
+        return
+
+    # moderators and superusers should be notified
+    for admin in User.admins():
+        notification, _ = Notification.objects.get_or_create(
+            user=admin,
+            notification_type=NotificationType.INVITE_REQUEST,
+            read=False,
+        )
+        notification.related_invite_requests.add(instance)
 
 
 @receiver(models.signals.post_save, sender=GroupMemberInvitation)
@@ -271,7 +333,7 @@ def notify_user_on_group_invite(sender, instance, *args, **kwargs):
         instance.user,
         instance.group.user,
         related_group=instance.group,
-        notification_type=Notification.INVITE,
+        notification_type=NotificationType.INVITE,
     )
 
 
@@ -309,11 +371,12 @@ def notify_user_on_follow(sender, instance, created, *args, **kwargs):
         notification = Notification.objects.filter(
             user=instance.user_object,
             related_users=instance.user_subject,
-            notification_type=Notification.FOLLOW_REQUEST,
+            notification_type=NotificationType.FOLLOW_REQUEST,
         ).first()
         if not notification:
             notification = Notification.objects.create(
-                user=instance.user_object, notification_type=Notification.FOLLOW_REQUEST
+                user=instance.user_object,
+                notification_type=NotificationType.FOLLOW_REQUEST,
             )
         notification.related_users.set([instance.user_subject])
         notification.read = False
@@ -323,6 +386,6 @@ def notify_user_on_follow(sender, instance, created, *args, **kwargs):
         Notification.notify(
             instance.user_object,
             instance.user_subject,
-            notification_type=Notification.FOLLOW,
+            notification_type=NotificationType.FOLLOW,
             read=False,
         )

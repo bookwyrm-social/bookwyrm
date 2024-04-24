@@ -1,5 +1,6 @@
 """ models for storing different kinds of Activities """
 from dataclasses import MISSING
+from typing import Optional
 import re
 
 from django.apps import apps
@@ -11,6 +12,8 @@ from django.db.models import Q
 from django.dispatch import receiver
 from django.template.loader import get_template
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext_lazy
 from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
 
@@ -77,6 +80,10 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """default sorting"""
 
         ordering = ("-published_date",)
+        indexes = [
+            models.Index(fields=["remote_id"]),
+            models.Index(fields=["thread_id"]),
+        ]
 
     def save(self, *args, **kwargs):
         """save and notify"""
@@ -101,19 +108,19 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         if hasattr(self, "quotation"):
             self.quotation = None  # pylint: disable=attribute-defined-outside-init
         self.deleted_date = timezone.now()
-        self.save()
+        self.save(*args, **kwargs)
 
     @property
     def recipients(self):
         """tagged users who definitely need to get this status in broadcast"""
-        mentions = [u for u in self.mention_users.all() if not u.local]
+        mentions = {u for u in self.mention_users.all() if not u.local}
         if (
             hasattr(self, "reply_parent")
             and self.reply_parent
             and not self.reply_parent.user.local
         ):
-            mentions.append(self.reply_parent.user)
-        return list(set(mentions))
+            mentions.add(self.reply_parent.user)
+        return list(mentions)
 
     @classmethod
     def ignore_activity(
@@ -176,6 +183,24 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     def boostable(self):
         """you can't boost dms"""
         return self.privacy in ["unlisted", "public"]
+
+    @property
+    def page_title(self):
+        """title of the page when only this status is shown"""
+        return _("%(display_name)s's status") % {"display_name": self.user.display_name}
+
+    @property
+    def page_description(self):
+        """description of the page in meta tags when only this status is shown"""
+        return None
+
+    @property
+    def page_image(self):
+        """image to use as preview in meta tags when only this status is shown"""
+        if self.mention_books.exists():
+            book = self.mention_books.first()
+            return book.preview_image or book.cover
+        return self.user.preview_image
 
     def to_replies(self, **kwargs):
         """helper function for loading AP serialized replies to a status"""
@@ -269,7 +294,7 @@ class GeneratedNote(Status):
         """indicate the book in question for mastodon (or w/e) users"""
         message = self.content
         books = ", ".join(
-            f'<a href="{book.remote_id}">"{book.title}"</a>'
+            f'<a href="{book.remote_id}"><i>{book.title}</i></a>'
             for book in self.mention_books.all()
         )
         return f"{self.user.display_name} {message} {books}"
@@ -300,6 +325,10 @@ class BookStatus(Status):
 
         abstract = True
 
+    @property
+    def page_image(self):
+        return self.book.preview_image or self.book.cover or super().page_image
+
 
 class Comment(BookStatus):
     """like a review but without a rating and transient"""
@@ -320,19 +349,23 @@ class Comment(BookStatus):
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
-        if self.progress_mode == "PG" and self.progress and (self.progress > 0):
-            return_value = (
-                f'{self.content}<p>(comment on <a href="{self.book.remote_id}">'
-                f'"{self.book.title}"</a>, page {self.progress})</p>'
-            )
-        else:
-            return_value = (
-                f'{self.content}<p>(comment on <a href="{self.book.remote_id}">'
-                f'"{self.book.title}"</a>)</p>'
-            )
-        return return_value
+        progress = self.progress or 0
+        citation = (
+            f'comment on <a href="{self.book.remote_id}">'
+            f"<i>{self.book.title}</i></a>"
+        )
+        if self.progress_mode == "PG" and progress > 0:
+            citation += f", p. {progress}"
+        return f"{self.content}<p>({citation})</p>"
 
     activity_serializer = activitypub.Comment
+
+    @property
+    def page_title(self):
+        return _("%(display_name)s's comment on %(book_title)s") % {
+            "display_name": self.user.display_name,
+            "book_title": self.book.title,
+        }
 
 
 class Quotation(BookStatus):
@@ -340,11 +373,13 @@ class Quotation(BookStatus):
 
     quote = fields.HtmlField()
     raw_quote = models.TextField(blank=True, null=True)
-    position = models.IntegerField(
-        validators=[MinValueValidator(0)], null=True, blank=True
+    position = models.TextField(
+        null=True,
+        blank=True,
     )
-    endposition = models.IntegerField(
-        validators=[MinValueValidator(0)], null=True, blank=True
+    endposition = models.TextField(
+        null=True,
+        blank=True,
     )
     position_mode = models.CharField(
         max_length=3,
@@ -354,24 +389,34 @@ class Quotation(BookStatus):
         blank=True,
     )
 
+    def _format_position(self) -> Optional[str]:
+        """serialize page position"""
+        beg = self.position
+        end = self.endposition
+        if self.position_mode != "PG" or not beg:
+            return None
+        return f"pp. {beg}-{end}" if end else f"p. {beg}"
+
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
         quote = re.sub(r"^<p>", '<p>"', self.quote)
         quote = re.sub(r"</p>$", '"</p>', quote)
-        if self.position_mode == "PG" and self.position and (self.position > 0):
-            return_value = (
-                f'{quote} <p>-- <a href="{self.book.remote_id}">'
-                f'"{self.book.title}"</a>, page {self.position}</p>{self.content}'
-            )
-        else:
-            return_value = (
-                f'{quote} <p>-- <a href="{self.book.remote_id}">'
-                f'"{self.book.title}"</a></p>{self.content}'
-            )
-        return return_value
+        title, href = self.book.title, self.book.remote_id
+        author = f"{name}: " if (name := self.book.author_text) else ""
+        citation = f'— {author}<a href="{href}"><i>{title}</i></a>'
+        if position := self._format_position():
+            citation += f", {position}"
+        return f"{quote} <p>{citation}</p>{self.content}"
 
     activity_serializer = activitypub.Quotation
+
+    @property
+    def page_title(self):
+        return _("%(display_name)s's quote from %(book_title)s") % {
+            "display_name": self.user.display_name,
+            "book_title": self.book.title,
+        }
 
 
 class Review(BookStatus):
@@ -402,6 +447,13 @@ class Review(BookStatus):
         """indicate the book in question for mastodon (or w/e) users"""
         return self.content
 
+    @property
+    def page_title(self):
+        return _("%(display_name)s's review of %(book_title)s") % {
+            "display_name": self.user.display_name,
+            "book_title": self.book.title,
+        }
+
     activity_serializer = activitypub.Review
     pure_type = "Article"
 
@@ -424,6 +476,18 @@ class ReviewRating(Review):
     def pure_content(self):
         template = get_template("snippets/generated_status/rating.html")
         return template.render({"book": self.book, "rating": self.rating}).strip()
+
+    @property
+    def page_description(self):
+        return ngettext_lazy(
+            "%(display_name)s rated %(book_title)s: %(display_rating).1f star",
+            "%(display_name)s rated %(book_title)s: %(display_rating).1f stars",
+            "display_rating",
+        ) % {
+            "display_name": self.user.display_name,
+            "book_title": self.book.title,
+            "display_rating": self.rating,
+        }
 
     activity_serializer = activitypub.Rating
     pure_type = "Note"

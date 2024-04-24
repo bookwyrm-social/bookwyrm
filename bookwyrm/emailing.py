@@ -4,7 +4,7 @@ from django.template.loader import get_template
 
 from bookwyrm import models, settings
 from bookwyrm.tasks import app, EMAIL
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import DOMAIN, BASE_URL
 
 
 def email_data():
@@ -14,6 +14,7 @@ def email_data():
         "site_name": site.name,
         "logo": site.logo_small_url,
         "domain": DOMAIN,
+        "base_url": BASE_URL,
         "user": None,
     }
 

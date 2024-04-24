@@ -171,9 +171,19 @@ class Reject(Verb):
     type: str = "Reject"
 
     def action(self, allow_external_connections=True):
-        """reject a follow request"""
-        obj = self.object.to_model(save=False, allow_create=False)
-        obj.reject()
+        """reject a follow or follow request"""
+
+        for model_name in ["UserFollowRequest", "UserFollows", None]:
+            model = apps.get_model(f"bookwyrm.{model_name}") if model_name else None
+            if obj := self.object.to_model(
+                model=model,
+                save=False,
+                allow_create=False,
+                allow_external_connections=allow_external_connections,
+            ):
+                # Reject the first model that can be built.
+                obj.reject()
+                break
 
 
 @dataclass(init=False)
@@ -231,3 +241,30 @@ class Announce(Verb):
     def action(self, allow_external_connections=True):
         """boost"""
         self.to_model(allow_external_connections=allow_external_connections)
+
+
+@dataclass(init=False)
+class Move(Verb):
+    """a user moving an object"""
+
+    object: str
+    type: str = "Move"
+    origin: str = None
+    target: str = None
+
+    def action(self, allow_external_connections=True):
+        """move"""
+
+        object_is_user = resolve_remote_id(remote_id=self.object, model="User")
+
+        if object_is_user:
+            model = apps.get_model("bookwyrm.MoveUser")
+
+            self.to_model(
+                model=model,
+                save=True,
+                allow_external_connections=allow_external_connections,
+            )
+        else:
+            # we might do something with this to move other objects at some point
+            pass

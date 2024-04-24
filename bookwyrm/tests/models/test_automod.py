@@ -14,14 +14,15 @@ from bookwyrm.models.antispam import automod_task
 class AutomodModel(TestCase):
     """every response to a get request, html or json"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
                 "password",
@@ -29,6 +30,9 @@ class AutomodModel(TestCase):
                 localname="mouse",
                 is_superuser=True,
             )
+
+    def setUp(self):
+        self.factory = RequestFactory()
 
     def test_automod_task_no_rules(self, *_):
         """nothing to see here"""

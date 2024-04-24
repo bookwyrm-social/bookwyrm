@@ -25,6 +25,10 @@ class ImportForm(forms.Form):
     csv_file = forms.FileField()
 
 
+class ImportUserForm(forms.Form):
+    archive_file = forms.FileField()
+
+
 class ShelfForm(CustomForm):
     class Meta:
         model = models.Shelf

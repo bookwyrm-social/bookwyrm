@@ -38,7 +38,7 @@ class Link(ActivitypubMixin, BookWyrmModel):
         """create a link"""
         # get or create the associated domain
         if not self.domain:
-            domain = urlparse(self.url).netloc
+            domain = urlparse(self.url).hostname
             self.domain, _ = LinkDomain.objects.get_or_create(domain=domain)
 
         # this is never broadcast, the owning model broadcasts an update

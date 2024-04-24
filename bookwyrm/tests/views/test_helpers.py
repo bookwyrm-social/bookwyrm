@@ -8,58 +8,65 @@ from django.test.client import RequestFactory
 import responses
 
 from bookwyrm import models, views
-from bookwyrm.settings import USER_AGENT, DOMAIN
+from bookwyrm.settings import USER_AGENT, BASE_URL
 
 
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.suggested_users.rerank_user_task.delay")
-class ViewsHelpers(TestCase):
+class ViewsHelpers(TestCase):  # pylint: disable=too-many-public-methods
     """viewing and creating statuses"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            with patch("bookwyrm.suggested_users.rerank_user_task.delay"):
-                self.local_user = models.User.objects.create_user(
-                    "mouse@local.com",
-                    "mouse@mouse.com",
-                    "mouseword",
-                    local=True,
-                    discoverable=True,
-                    localname="mouse",
-                    remote_id="https://example.com/users/mouse",
-                )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            with patch("bookwyrm.suggested_users.rerank_user_task.delay"):
-                self.remote_user = models.User.objects.create_user(
-                    "rat",
-                    "rat@rat.com",
-                    "ratword",
-                    local=False,
-                    remote_id="https://example.com/users/rat",
-                    discoverable=True,
-                    inbox="https://example.com/users/rat/inbox",
-                    outbox="https://example.com/users/rat/outbox",
-                )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+            patch("bookwyrm.suggested_users.rerank_user_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                discoverable=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
+            )
+        with (
+            patch("bookwyrm.models.user.set_remote_server.delay"),
+            patch("bookwyrm.suggested_users.rerank_user_task.delay"),
+        ):
+            cls.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                discoverable=True,
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
+        cls.work = models.Work.objects.create(title="Test Work")
+        cls.book = models.Edition.objects.create(
             title="Test Book",
             remote_id="https://example.com/book/1",
-            parent_work=self.work,
+            parent_work=cls.work,
         )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            cls.shelf = models.Shelf.objects.create(
+                name="Test Shelf", identifier="test-shelf", user=cls.local_user
+            )
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
         self.userdata = json.loads(datafile.read_bytes())
         del self.userdata["icon"]
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            self.shelf = models.Shelf.objects.create(
-                name="Test Shelf", identifier="test-shelf", user=self.local_user
-            )
 
     def test_get_edition(self, *_):
         """given an edition or a work, returns an edition"""
@@ -281,13 +288,13 @@ class ViewsHelpers(TestCase):
     def test_redirect_to_referer_valid_domain(self, *_):
         """redirect to within the app"""
         request = self.factory.get("/path")
-        request.META = {"HTTP_REFERER": f"https://{DOMAIN}/and/a/path"}
+        request.META = {"HTTP_REFERER": f"{BASE_URL}/and/a/path"}
         result = views.helpers.redirect_to_referer(request)
-        self.assertEqual(result.url, f"https://{DOMAIN}/and/a/path")
+        self.assertEqual(result.url, f"{BASE_URL}/and/a/path")
 
     def test_redirect_to_referer_with_get_args(self, *_):
         """if the path has get params (like sort) they are preserved"""
         request = self.factory.get("/path")
-        request.META = {"HTTP_REFERER": f"https://{DOMAIN}/and/a/path?sort=hello"}
+        request.META = {"HTTP_REFERER": f"{BASE_URL}/and/a/path?sort=hello"}
         result = views.helpers.redirect_to_referer(request)
-        self.assertEqual(result.url, f"https://{DOMAIN}/and/a/path?sort=hello")
+        self.assertEqual(result.url, f"{BASE_URL}/and/a/path?sort=hello")

@@ -1,13 +1,14 @@
 """ database schema for user data """
 import re
 from urllib.parse import urlparse
+from uuid import uuid4
 
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField, CICharField
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.dispatch import receiver
-from django.db import models, transaction
+from django.db import models, transaction, IntegrityError
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
@@ -18,7 +19,7 @@ from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status
 from bookwyrm.preview_images import generate_user_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES
+from bookwyrm.settings import BASE_URL, ENABLE_PREVIEW_IMAGES, LANGUAGES
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app, MISC
 from bookwyrm.utils import regex
@@ -41,18 +42,13 @@ def get_feed_filter_choices():
     return [f[0] for f in FeedFilterChoices]
 
 
-def site_link():
-    """helper for generating links to the site"""
-    protocol = "https" if USE_HTTPS else "http"
-    return f"{protocol}://{DOMAIN}"
-
-
 # pylint: disable=too-many-public-methods
 class User(OrderedCollectionPageMixin, AbstractUser):
     """a user who wants to read books"""
 
     username = fields.UsernameField()
     email = models.EmailField(unique=True, null=True)
+    is_deleted = models.BooleanField(default=False)
 
     key_pair = fields.OneToOneField(
         "KeyPair",
@@ -140,6 +136,19 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     theme = models.ForeignKey("Theme", null=True, blank=True, on_delete=models.SET_NULL)
     hide_follows = fields.BooleanField(default=False)
 
+    # migration fields
+
+    moved_to = fields.RemoteIdField(
+        null=True, unique=False, activitypub_field="movedTo", deduplication_field=False
+    )
+    also_known_as = fields.ManyToManyField(
+        "self",
+        symmetrical=False,
+        unique=False,
+        activitypub_field="alsoKnownAs",
+        deduplication_field=False,
+    )
+
     # options to turn features on and off
     show_goal = models.BooleanField(default=True)
     show_suggested_users = models.BooleanField(default=True)
@@ -183,6 +192,14 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     hotp_secret = models.CharField(max_length=32, default=None, blank=True, null=True)
     hotp_count = models.IntegerField(default=0, blank=True, null=True)
 
+    class Meta(AbstractUser.Meta):
+        """indexes"""
+
+        indexes = [
+            models.Index(fields=["username"]),
+            models.Index(fields=["is_active", "local"]),
+        ]
+
     @property
     def active_follower_requests(self):
         """Follow requests from active users"""
@@ -191,8 +208,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     @property
     def confirmation_link(self):
         """helper for generating confirmation links"""
-        link = site_link()
-        return f"{link}/confirm-email/{self.confirmation_code}"
+        return f"{BASE_URL}/confirm-email/{self.confirmation_code}"
 
     @property
     def following_link(self):
@@ -314,6 +330,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 "schema": "http://schema.org#",
                 "PropertyValue": "schema:PropertyValue",
                 "value": "schema:value",
+                "alsoKnownAs": {"@id": "as:alsoKnownAs", "@type": "@id"},
+                "movedTo": {"@id": "as:movedTo", "@type": "@id"},
             },
         ]
         return activity_object
@@ -324,7 +342,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         if not self.local and not re.match(regex.FULL_USERNAME, self.username):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
-            self.username = f"{self.username}@{actor_parts.netloc}"
+            self.username = f"{self.username}@{actor_parts.hostname}"
 
         # this user already exists, no need to populate fields
         if not created:
@@ -344,11 +362,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
         with transaction.atomic():
             # populate fields for local users
-            link = site_link()
-            self.remote_id = f"{link}/user/{self.localname}"
+            self.remote_id = f"{BASE_URL}/user/{self.localname}"
             self.followers_url = f"{self.remote_id}/followers"
             self.inbox = f"{self.remote_id}/inbox"
-            self.shared_inbox = f"{link}/inbox"
+            self.shared_inbox = f"{BASE_URL}/inbox"
             self.outbox = f"{self.remote_id}/outbox"
 
             # an id needs to be set before we can proceed with related models
@@ -379,9 +396,44 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         """We don't actually delete the database entry"""
         # pylint: disable=attribute-defined-outside-init
         self.is_active = False
-        self.avatar = ""
+        self.allow_reactivation = False
+        self.is_deleted = True
+
+        self.erase_user_data()
+        self.erase_user_statuses()
+
         # skip the logic in this class's save()
-        super().save(*args, **kwargs)
+        super().save(
+            *args,
+            **kwargs,
+        )
+
+    def erase_user_data(self):
+        """Wipe a user's custom data"""
+        if not self.is_deleted:
+            raise IntegrityError(
+                "Trying to erase user data on user that is not deleted"
+            )
+
+        # mangle email address
+        self.email = f"{uuid4()}@deleted.user"
+
+        # erase data fields
+        self.avatar = ""
+        self.preview_image = ""
+        self.summary = None
+        self.name = None
+        self.favorites.set([])
+
+    def erase_user_statuses(self, broadcast=True):
+        """Wipe the data on all the user's statuses"""
+        if not self.is_deleted:
+            raise IntegrityError(
+                "Trying to erase user data on user that is not deleted"
+            )
+
+        for status in self.status_set.all():
+            status.delete(broadcast=broadcast)
 
     def deactivate(self):
         """Disable the user but allow them to reactivate"""
@@ -457,6 +509,13 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
     activity_serializer = activitypub.PublicKey
     serialize_reverse_fields = [("owner", "owner", "id")]
 
+    class Meta:
+        """indexes"""
+
+        indexes = [
+            models.Index(fields=["remote_id"]),
+        ]
+
     def get_remote_id(self):
         # self.owner is set by the OneToOneField on User
         return f"{self.owner.remote_id}/#main-key"
@@ -472,12 +531,26 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
 
 
 @app.task(queue=MISC)
+def erase_user_data(user_id):
+    """Erase any custom data about this user asynchronously
+    This is for deleted historical user data that pre-dates data
+    being cleared automatically"""
+    user = User.objects.get(id=user_id)
+    user.erase_user_data()
+    user.save(
+        broadcast=False,
+        update_fields=["email", "avatar", "preview_image", "summary", "name"],
+    )
+    user.erase_user_statuses(broadcast=False)
+
+
+@app.task(queue=MISC)
 def set_remote_server(user_id, allow_external_connections=False):
     """figure out the user's remote server in the background"""
     user = User.objects.get(id=user_id)
     actor_parts = urlparse(user.remote_id)
     federated_server = get_or_create_remote_server(
-        actor_parts.netloc, allow_external_connections=allow_external_connections
+        actor_parts.hostname, allow_external_connections=allow_external_connections
     )
     # if we were unable to find the server, we need to create a new entry for it
     if not federated_server:

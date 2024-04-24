@@ -15,16 +15,19 @@ from bookwyrm import models, settings
 class Shelf(TestCase):
     """some activitypub oddness ahead"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """look, a shelf"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
         work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(title="test book", parent_work=work)
+        cls.book = models.Edition.objects.create(title="test book", parent_work=work)
 
     def test_remote_id(self, *_):
         """shelves use custom remote ids"""
@@ -32,7 +35,7 @@ class Shelf(TestCase):
             shelf = models.Shelf.objects.create(
                 name="Test Shelf", identifier="test-shelf", user=self.local_user
             )
-        expected_id = f"https://{settings.DOMAIN}/user/mouse/books/test-shelf"
+        expected_id = f"{settings.BASE_URL}/user/mouse/books/test-shelf"
         self.assertEqual(shelf.get_remote_id(), expected_id)
 
     def test_to_activity(self, *_):

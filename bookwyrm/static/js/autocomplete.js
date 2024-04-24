@@ -106,11 +106,15 @@ const tries = {
         e: {
             p: {
                 u: {
-                    b: "ePub",
+                    b: "EPUB",
                 },
             },
         },
         f: {
+            b: {
+                2: "FB2",
+                3: "FB3",
+            },
             l: {
                 a: {
                     c: "FLAC",

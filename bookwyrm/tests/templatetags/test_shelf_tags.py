@@ -15,13 +15,15 @@ from bookwyrm.templatetags import shelf_tags
 class ShelfTags(TestCase):
     """lotta different things here"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """create some filler objects"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.mouse",
                 "mouseword",
@@ -29,17 +31,21 @@ class ShelfTags(TestCase):
                 localname="mouse",
             )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.rat",
                 "ratword",
                 remote_id="http://example.com/rat",
                 local=False,
             )
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Test Book",
             parent_work=models.Work.objects.create(title="Test work"),
         )
+
+    def setUp(self):
+        """test data"""
+        self.factory = RequestFactory()
 
     def test_get_is_book_on_shelf(self, *_):
         """check if a book is on a shelf"""

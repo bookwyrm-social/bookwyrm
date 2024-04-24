@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load markdown %}
 {% load humanize %}
+{% load utilities %}
 
 <div class="block columns">
     <div class="column is-flex is-flex-direction-column">
@@ -13,7 +14,17 @@
             </div>
             {% endif %}
 
+            {% if user.localname|is_instance_admin %}
+            <div class="message is-warning">
+                <div class="message-body">
+                    {% trans "This account is the instance actor for signing HTTP requests." %}
+                </div>
+            </div>
+            {% else %}
             <p class="mt-2"><a href="{{ user.local_path }}">{% trans "View user profile" %}</a></p>
+            {% endif %}
+
+
             {% url 'settings-user' user.id as url %}
             {% if not request.path == url %}
             <p class="mt-2"><a href="{{ url }}">{% trans "Go to user admin" %}</a></p>
@@ -23,18 +34,7 @@
     <div class="column is-flex is-flex-direction-column is-4">
         <h4 class="title is-4">{% trans "Status" %}</h4>
         <div class="box is-flex-grow-1 has-text-weight-bold">
-            {% if user.is_active %}
-            <p class="notification is-success">
-                {% trans "Active" %}
-            </p>
-            {% else %}
-            <p class="notification is-warning">
-                {% trans "Inactive" %}
-                {% if user.deactivation_reason %}
-                <span class="help">({% trans user.get_deactivation_reason_display %})</span>
-                {% endif %}
-            </p>
-            {% endif %}
+            {% include "snippets/user_active_tag.html" with large=True %}
             <p class="notification">
                 {% if user.local %}
                 {% trans "Local" %}

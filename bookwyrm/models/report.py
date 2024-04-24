@@ -3,7 +3,7 @@ from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 from .base_model import BookWyrmModel
 
 
@@ -46,7 +46,7 @@ class Report(BookWyrmModel):
         raise PermissionDenied()
 
     def get_remote_id(self):
-        return f"https://{DOMAIN}/settings/reports/{self.id}"
+        return f"{BASE_URL}/settings/reports/{self.id}"
 
     def comment(self, user, note):
         """comment on a report"""

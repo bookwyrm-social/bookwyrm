@@ -1,14 +1,14 @@
 """ testing models """
-from io import BytesIO
 from collections import namedtuple
 from dataclasses import dataclass
+import datetime
 import json
 import pathlib
-import re
+from urllib.parse import urlparse
 from typing import List
+from unittest import expectedFailure
 from unittest.mock import patch
 
-from PIL import Image
 import responses
 
 from django.core.exceptions import ValidationError
@@ -22,7 +22,7 @@ from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.models import fields, User, Status, Edition
 from bookwyrm.models.base_model import BookWyrmModel
 from bookwyrm.models.activitypub_mixin import ActivitypubMixin
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import PROTOCOL, NETLOC
 
 # pylint: disable=too-many-public-methods
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -418,25 +418,21 @@ class ModelFields(TestCase):
         user = User.objects.create_user(
             "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
         )
-        image_file = pathlib.Path(__file__).parent.joinpath(
+        image_path = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
         )
-        image = Image.open(image_file)
-        output = BytesIO()
-        image.save(output, format=image.format)
-        user.avatar.save("test.jpg", ContentFile(output.getvalue()))
+        with open(image_path, "rb") as image_file:
+            user.avatar.save("test.jpg", image_file)
 
         instance = fields.ImageField()
 
         output = instance.field_to_activity(user.avatar)
-        self.assertIsNotNone(
-            re.match(
-                rf"https:\/\/{DOMAIN}\/.*\.jpg",
-                output.url,
-            )
-        )
+        parsed_url = urlparse(output.url)
+        self.assertEqual(parsed_url.scheme, PROTOCOL)
+        self.assertEqual(parsed_url.netloc, NETLOC)
+        self.assertRegex(parsed_url.path, r"\.jpg$")
         self.assertEqual(output.name, "")
-        self.assertEqual(output.type, "Document")
+        self.assertEqual(output.type, "Image")
 
     @responses.activate
     def test_image_field_from_activity(self, *_):
@@ -514,30 +510,25 @@ class ModelFields(TestCase):
     @responses.activate
     def test_image_field_set_field_from_activity_no_overwrite_with_cover(self, *_):
         """update a model instance from an activitypub object"""
-        image_file = pathlib.Path(__file__).parent.joinpath(
+        image_path = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
         )
-        image = Image.open(image_file)
-        output = BytesIO()
-        image.save(output, format=image.format)
-
-        another_image_file = pathlib.Path(__file__).parent.joinpath(
+        another_image_path = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/logo.png"
         )
-        another_image = Image.open(another_image_file)
-        another_output = BytesIO()
-        another_image.save(another_output, format=another_image.format)
 
         instance = fields.ImageField(activitypub_field="cover", name="cover")
 
-        responses.add(
-            responses.GET,
-            "http://www.example.com/image.jpg",
-            body=another_image.tobytes(),
-            status=200,
-        )
+        with open(another_image_path, "rb") as another_image_file:
+            responses.add(
+                responses.GET,
+                "http://www.example.com/image.jpg",
+                body=another_image_file.read(),
+                status=200,
+            )
         book = Edition.objects.create(title="hello")
-        book.cover.save("test.jpg", ContentFile(output.getvalue()))
+        with open(image_path, "rb") as image_file:
+            book.cover.save("test.jpg", image_file)
         cover_size = book.cover.size
         self.assertIsNotNone(cover_size)
 
@@ -551,24 +542,22 @@ class ModelFields(TestCase):
     @responses.activate
     def test_image_field_set_field_from_activity_with_overwrite_with_cover(self, *_):
         """update a model instance from an activitypub object"""
-        image_file = pathlib.Path(__file__).parent.joinpath(
+        image_path = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
         )
-        image = Image.open(image_file)
-        output = BytesIO()
-        image.save(output, format=image.format)
         book = Edition.objects.create(title="hello")
-        book.cover.save("test.jpg", ContentFile(output.getvalue()))
+        with open(image_path, "rb") as image_file:
+            book.cover.save("test.jpg", image_file)
         cover_size = book.cover.size
         self.assertIsNotNone(cover_size)
 
-        another_image_file = pathlib.Path(__file__).parent.joinpath(
+        another_image_path = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/logo.png"
         )
 
         instance = fields.ImageField(activitypub_field="cover", name="cover")
 
-        with open(another_image_file, "rb") as another_image:
+        with open(another_image_path, "rb") as another_image:
             responses.add(
                 responses.GET,
                 "http://www.example.com/image.jpg",
@@ -593,6 +582,36 @@ class ModelFields(TestCase):
         self.assertEqual(instance.field_to_activity(now), now.isoformat())
         self.assertEqual(instance.field_from_activity(now.isoformat()), now)
         self.assertEqual(instance.field_from_activity("bip"), None)
+
+    def test_partial_date_legacy_formats(self, *_):
+        """test support for full isoformat in partial dates"""
+        instance = fields.PartialDateField()
+        expected = datetime.date(2023, 10, 20)
+        test_cases = [
+            ("no_tz", "2023-10-20T00:00:00"),
+            ("no_tz_eod", "2023-10-20T23:59:59.999999"),
+            ("utc_offset_midday", "2023-10-20T12:00:00+0000"),
+            ("utc_offset_midnight", "2023-10-20T00:00:00+00"),
+            ("eastern_tz_parsed", "2023-10-20T15:20:30+04:30"),
+            ("western_tz_midnight", "2023-10-20:00:00-03"),
+        ]
+        for desc, value in test_cases:
+            with self.subTest(desc):
+                parsed = instance.field_from_activity(value)
+                self.assertIsNotNone(parsed)
+                self.assertEqual(expected, parsed.date())
+                self.assertTrue(parsed.has_day)
+                self.assertTrue(parsed.has_month)
+
+    @expectedFailure
+    def test_partial_date_timezone_fix(self, *_):
+        """deserialization compensates for unwanted effects of USE_TZ"""
+        instance = fields.PartialDateField()
+        expected = datetime.date(2023, 10, 1)
+        parsed = instance.field_from_activity("2023-09-30T21:00:00-03")
+        self.assertEqual(expected, parsed.date())
+        self.assertTrue(parsed.has_day)
+        self.assertTrue(parsed.has_month)
 
     def test_array_field(self, *_):
         """idk why it makes them strings but probably for a good reason"""

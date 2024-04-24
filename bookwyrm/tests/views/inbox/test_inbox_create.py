@@ -9,15 +9,17 @@ from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitySerializerError
 
 
-# pylint: disable=too-many-public-methods, invalid-name
+# pylint: disable=too-many-public-methods
 class TransactionInboxCreate(TransactionTestCase):
     """readthrough tests"""
 
     def setUp(self):
         """basic user and book data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -71,22 +73,25 @@ class TransactionInboxCreate(TransactionTestCase):
 class InboxCreate(TestCase):
     """readthrough tests"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """basic user and book data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
                 "mouseword",
                 local=True,
                 localname="mouse",
             )
-        self.local_user.remote_id = "https://example.com/user/mouse"
-        self.local_user.save(broadcast=False, update_fields=["remote_id"])
+        cls.local_user.remote_id = "https://example.com/user/mouse"
+        cls.local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -96,6 +101,10 @@ class InboxCreate(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
+        models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
         self.create_json = {
             "id": "hi",
             "type": "Create",
@@ -104,7 +113,6 @@ class InboxCreate(TestCase):
             "cc": ["https://example.com/user/mouse/followers"],
             "object": {},
         }
-        models.SiteSettings.objects.create()
 
     def test_create_status(self, *_):
         """the "it justs works" mode"""

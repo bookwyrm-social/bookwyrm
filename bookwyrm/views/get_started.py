@@ -1,4 +1,5 @@
 """ Helping new users figure out the lay of the land """
+
 import re
 
 from django.contrib.auth.decorators import login_required
@@ -11,7 +12,9 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import book_search, forms, models
+from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
 from bookwyrm.suggested_users import suggested_users
+from bookwyrm.views.helpers import get_mergeable_object_or_404
 from .preferences.edit_user import save_user_form
 
 
@@ -79,8 +82,8 @@ class GetStartedBooks(View):
             for k, v in request.POST.items()
             if re.match(r"\d+", k) and re.match(r"\d+", v)
         ]
-        for (book_id, shelf_id) in shelve_actions:
-            book = get_object_or_404(models.Edition, id=book_id)
+        for book_id, shelf_id in shelve_actions:
+            book = get_mergeable_object_or_404(models.Edition, id=book_id)
             shelf = get_object_or_404(models.Shelf, id=shelf_id)
 
             models.ShelfBook.objects.create(book=book, shelf=shelf, user=request.user)
@@ -108,6 +111,7 @@ class GetStartedUsers(View):
             .exclude(
                 id=request.user.id,
             )
+            .exclude(localname=INSTANCE_ACTOR_USERNAME)
             .order_by("-similarity")[:5]
         )
         data = {"no_results": not user_results}

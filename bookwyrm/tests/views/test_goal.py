@@ -15,13 +15,15 @@ from bookwyrm.tests.validate_html import validate_html
 class GoalViews(TestCase):
     """viewing and creating statuses"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -29,7 +31,7 @@ class GoalViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-            self.rat = models.User.objects.create_user(
+            cls.rat = models.User.objects.create_user(
                 "rat@local.com",
                 "rat@rat.com",
                 "ratword",
@@ -37,14 +39,18 @@ class GoalViews(TestCase):
                 localname="rat",
                 remote_id="https://example.com/users/rat",
             )
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
         )
+        models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.year = timezone.now().year
+        self.factory = RequestFactory()
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
-        self.year = timezone.now().year
-        models.SiteSettings.objects.create()
 
     def test_goal_page_no_goal(self):
         """view a reading goal page for another's unset goal"""

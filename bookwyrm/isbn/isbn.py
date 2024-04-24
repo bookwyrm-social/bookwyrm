@@ -26,7 +26,7 @@ class IsbnHyphenator:
 
     def update_range_message(self) -> None:
         """Download the range message xml file and save it locally"""
-        response = requests.get(self.__range_message_url)
+        response = requests.get(self.__range_message_url, timeout=15)
         with open(self.__range_file_path, "w", encoding="utf-8") as file:
             file.write(response.text)
         self.__element_tree = None
@@ -40,7 +40,12 @@ class IsbnHyphenator:
             self.__element_tree = ElementTree.parse(self.__range_file_path)
 
         gs1_prefix = isbn_13[:3]
-        reg_group = self.__find_reg_group(isbn_13, gs1_prefix)
+        try:
+            reg_group = self.__find_reg_group(isbn_13, gs1_prefix)
+        except ValueError:
+            # if the reg groups are invalid, just return the original isbn
+            return isbn_13
+
         if reg_group is None:
             return isbn_13  # failed to hyphenate
 
