@@ -206,14 +206,10 @@ class ObjectMixin(ActivitypubMixin):
         created: Optional[bool] = None,
         software: Any = None,
         priority: str = BROADCAST,
+        broadcast: bool = True,
         **kwargs: Any,
     ) -> None:
         """broadcast created/updated/deleted objects as appropriate"""
-        broadcast = kwargs.get("broadcast", True)
-        # this bonus kwarg would cause an error in the base save method
-        if "broadcast" in kwargs:
-            del kwargs["broadcast"]
-
         created = created or not bool(self.id)
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
