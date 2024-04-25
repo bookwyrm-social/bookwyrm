@@ -1,4 +1,5 @@
 """ make a list of books!! """
+from typing import Optional, Iterable
 import uuid
 
 from django.core.exceptions import PermissionDenied
@@ -8,6 +9,7 @@ from django.utils import timezone
 
 from bookwyrm import activitypub
 from bookwyrm.settings import BASE_URL
+from bookwyrm.utils.db import add_update_fields
 
 from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
 from .base_model import BookWyrmModel
@@ -124,11 +126,13 @@ class List(OrderedCollectionMixin, BookWyrmModel):
             group=None, curation="closed"
         )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
         """on save, update embed_key and avoid clash with existing code"""
         if not self.embed_key:
             self.embed_key = uuid.uuid4()
-        super().save(*args, **kwargs)
+            update_fields = add_update_fields(update_fields, "embed_key")
+
+        super().save(*args, update_fields=update_fields, **kwargs)
 
 
 class ListItem(CollectionItemMixin, BookWyrmModel):

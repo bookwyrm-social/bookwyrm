@@ -2,6 +2,7 @@
 import datetime
 import re
 import zoneinfo
+from typing import Optional, Iterable
 from urllib.parse import urlparse
 from uuid import uuid4
 
@@ -24,6 +25,7 @@ from bookwyrm.settings import BASE_URL, ENABLE_PREVIEW_IMAGES, LANGUAGES
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app, MISC
 from bookwyrm.utils import regex
+from bookwyrm.utils.db import add_update_fields
 from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
 from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .federated_server import FederatedServer
@@ -338,13 +340,14 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         ]
         return activity_object
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
         """populate fields for new local users"""
         created = not bool(self.id)
         if not self.local and not re.match(regex.FULL_USERNAME, self.username):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
             self.username = f"{self.username}@{actor_parts.hostname}"
+            update_fields = add_update_fields(update_fields, "username")
 
         # this user already exists, no need to populate fields
         if not created:
@@ -353,12 +356,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             elif not self.deactivation_date:
                 self.deactivation_date = timezone.now()
 
-            super().save(*args, **kwargs)
+            super().save(*args, update_fields=update_fields, **kwargs)
             return
 
         # this is a new remote user, we need to set their remote server field
         if not self.local:
-            super().save(*args, **kwargs)
+            super().save(*args, update_fields=update_fields, **kwargs)
             transaction.on_commit(lambda: set_remote_server(self.id))
             return
 
@@ -370,8 +373,17 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             self.shared_inbox = f"{BASE_URL}/inbox"
             self.outbox = f"{self.remote_id}/outbox"
 
+            update_fields = add_update_fields(
+                update_fields,
+                "remote_id",
+                "followers_url",
+                "inbox",
+                "shared_inbox",
+                "outbox",
+            )
+
             # an id needs to be set before we can proceed with related models
-            super().save(*args, **kwargs)
+            super().save(*args, update_fields=update_fields, **kwargs)
 
             # make users editors by default
             try:
@@ -522,14 +534,19 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
         # self.owner is set by the OneToOneField on User
         return f"{self.owner.remote_id}/#main-key"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
         """create a key pair"""
         # no broadcasting happening here
         if "broadcast" in kwargs:
             del kwargs["broadcast"]
+
         if not self.public_key:
             self.private_key, self.public_key = create_key_pair()
-        return super().save(*args, **kwargs)
+            update_fields = add_update_fields(
+                update_fields, "private_key", "public_key"
+            )
+
+        super().save(*args, update_fields=update_fields, **kwargs)
 
 
 @app.task(queue=MISC)

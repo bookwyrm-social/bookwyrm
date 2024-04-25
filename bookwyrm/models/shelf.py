@@ -1,5 +1,6 @@
 """ puttin' books on shelves """
 import re
+from typing import Optional, Iterable
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.db import models
@@ -8,6 +9,7 @@ from django.utils import timezone
 from bookwyrm import activitypub
 from bookwyrm.settings import BASE_URL
 from bookwyrm.tasks import BROADCAST
+from bookwyrm.utils.db import add_update_fields
 from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
 from .base_model import BookWyrmModel
 from . import fields
@@ -46,7 +48,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         if not self.identifier:
             # this needs the auto increment ID from the save() above
             self.identifier = self.get_identifier()
-            super().save(*args, **kwargs, broadcast=False)
+            super().save(*args, **kwargs, broadcast=False, update_fields={"identifier"})
 
     def get_identifier(self):
         """custom-shelf-123 for the url"""
@@ -101,12 +103,19 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
     activity_serializer = activitypub.ShelfItem
     collection_field = "shelf"
 
-    def save(self, *args, priority=BROADCAST, **kwargs):
+    def save(
+        self,
+        *args,
+        priority=BROADCAST,
+        update_fields: Optional[Iterable[str]] = None,
+        **kwargs,
+    ):
         if not self.user:
             self.user = self.shelf.user
+            update_fields = add_update_fields(update_fields, "user")
 
         is_update = self.id is not None
-        super().save(*args, priority=priority, **kwargs)
+        super().save(*args, priority=priority, update_fields=update_fields, **kwargs)
 
         if is_update and self.user.local:
             # remove all caches related to all editions of this book

@@ -2,7 +2,7 @@
 
 from itertools import chain
 import re
-from typing import Any, Dict
+from typing import Any, Dict, Optional, Iterable
 from typing_extensions import Self
 
 from django.contrib.postgres.search import SearchVectorField
@@ -27,7 +27,7 @@ from bookwyrm.settings import (
     ENABLE_PREVIEW_IMAGES,
     ENABLE_THUMBNAIL_GENERATION,
 )
-from bookwyrm.utils.db import format_trigger
+from bookwyrm.utils.db import format_trigger, add_update_fields
 
 from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
@@ -96,14 +96,19 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
 
         abstract = True
 
-    def save(self, *args: Any, **kwargs: Any) -> None:
+    def save(
+        self, *args: Any, update_fields: Optional[Iterable[str]] = None, **kwargs: Any
+    ) -> None:
         """ensure that the remote_id is within this instance"""
         if self.id:
             self.remote_id = self.get_remote_id()
+            update_fields = add_update_fields(update_fields, "remote_id")
         else:
             self.origin_id = self.remote_id
             self.remote_id = None
-        super().save(*args, **kwargs)
+            update_fields = add_update_fields(update_fields, "origin_id", "remote_id")
+
+        super().save(*args, update_fields=update_fields, **kwargs)
 
     # pylint: disable=arguments-differ
     def broadcast(self, activity, sender, software="bookwyrm", **kwargs):
@@ -510,28 +515,39 @@ class Edition(Book):
         # max rank is 9
         return rank
 
-    def save(self, *args: Any, **kwargs: Any) -> None:
+    def save(
+        self, *args: Any, update_fields: Optional[Iterable[str]] = None, **kwargs: Any
+    ) -> None:
         """set some fields on the edition object"""
         # calculate isbn 10/13
-        if self.isbn_13 and self.isbn_13[:3] == "978" and not self.isbn_10:
+        if (
+            self.isbn_10 is None
+            and self.isbn_13 is not None
+            and self.isbn_13[:3] == "978"
+        ):
             self.isbn_10 = isbn_13_to_10(self.isbn_13)
-        if self.isbn_10 and not self.isbn_13:
+            update_fields = add_update_fields(update_fields, "isbn_10")
+        if self.isbn_13 is None and self.isbn_10 is not None:
             self.isbn_13 = isbn_10_to_13(self.isbn_10)
+            update_fields = add_update_fields(update_fields, "isbn_13")
 
         # normalize isbn format
-        if self.isbn_10:
+        if self.isbn_10 is not None:
             self.isbn_10 = normalize_isbn(self.isbn_10)
-        if self.isbn_13:
+        if self.isbn_13 is not None:
             self.isbn_13 = normalize_isbn(self.isbn_13)
 
         # set rank
-        self.edition_rank = self.get_rank()
+        if (new := self.get_rank()) != self.edition_rank:
+            self.edition_rank = new
+            update_fields = add_update_fields(update_fields, "edition_rank")
 
         # Create sort title by removing articles from title
         if self.sort_title in [None, ""]:
             self.sort_title = self.guess_sort_title()
+            update_fields = add_update_fields(update_fields, "sort_title")
 
-        super().save(*args, **kwargs)
+        super().save(*args, update_fields=update_fields, **kwargs)
 
         # clear author cache
         if self.id:
