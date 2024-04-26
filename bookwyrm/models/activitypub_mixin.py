@@ -169,7 +169,7 @@ class ActivitypubMixin:
             # filter users first by whether they're using the desired software
             # this lets us send book updates only to other bw servers
             if software:
-                queryset = queryset.filter(bookwyrm_user=(software == "bookwyrm"))
+                queryset = queryset.filter(bookwyrm_user=software == "bookwyrm")
             # if there's a user, we only want to send to the user's followers
             if user:
                 queryset = queryset.filter(following=user)
