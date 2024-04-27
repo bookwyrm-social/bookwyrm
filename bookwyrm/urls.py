@@ -830,6 +830,7 @@ urlpatterns = [
     ),
     path("guided-tour/<tour>", views.toggle_guided_tour),
     re_path(r"^o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
+    re_path(r"^api/", include("bookwyrm.api.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Serves /static when DEBUG is true.
