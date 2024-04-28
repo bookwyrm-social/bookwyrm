@@ -1,0 +1,30 @@
+name: Repository Dispatch
+on:
+  pull_request:
+    types: [closed]
+jobs:
+  dispatch:
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'needs-docs')
+    runs-on: ubuntu-latest
+    steps:
+      - name: authenticate
+        id: get_workflow_token
+        uses: peter-murray/workflow-application-token-action@v3
+        with:
+          application_id: ${{ secrets.APPLICATION_ID }}
+          application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+
+      - name: dispatch
+        uses: peter-evans/repository-dispatch@v3
+        env:
+          DOCS_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
+        with:
+          token: ${{ env.DOCS_TOKEN }}
+          repository: bookwyrm-social/documentation
+          event-type: docs-needed
+          client-payload: |-
+            {
+              "title": "${{ github.event.pull_request.title }}",
+              "body": ${{ toJson(github.event.pull_request.body) }},
+              "number": "${{ github.event.number }}"
+            }
