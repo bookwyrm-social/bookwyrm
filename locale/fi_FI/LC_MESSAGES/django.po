@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-04-29 11:07\n"
+"PO-Revision-Date: 2024-04-29 13:02\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Finnish\n"
 "Language: fi\n"
@@ -371,24 +371,24 @@ msgstr "Käyttäjän %(display_name)s tila"
 #: bookwyrm/models/status.py:361
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
-msgstr ""
+msgstr "Käyttäjan %(display_name)s kommentti kirjasta %(book_title)s"
 
 #: bookwyrm/models/status.py:412
 #, python-format
 msgid "%(display_name)s's quote from %(book_title)s"
-msgstr ""
+msgstr "Käyttäjän %(display_name)s lainaus kirjasta %(book_title)s"
 
 #: bookwyrm/models/status.py:448
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
-msgstr ""
+msgstr "Käyttäjan %(display_name)s arvostelu kirjasta %(book_title)s"
 
 #: bookwyrm/models/status.py:479
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_name)s arvosteli %(book_title)s: %(display_rating).1f tähti"
+msgstr[1] "%(display_name)s arvosteli %(book_title)s: %(display_rating).1f tähteä"
 
 #: bookwyrm/models/user.py:33 bookwyrm/templates/book/book.html:312
 msgid "Reviews"
@@ -2883,7 +2883,7 @@ msgstr "Tätä aihetunnistetta ei ole vielä käytetty!"
 #: bookwyrm/templates/import/import.html:6
 #: bookwyrm/templates/preferences/layout.html:43
 msgid "Import Book List"
-msgstr ""
+msgstr "Tuo kirjalista"
 
 #: bookwyrm/templates/import/import.html:12
 msgid "Not a valid CSV file"
@@ -4275,16 +4275,16 @@ msgstr "Ota kaksivaiheinen tunnistautuminen käyttöön"
 #: bookwyrm/templates/preferences/move_user.html:7
 #: bookwyrm/templates/preferences/move_user.html:39
 msgid "Move Account"
-msgstr ""
+msgstr "Siirrä tili"
 
 #: bookwyrm/templates/preferences/alias_user.html:7
 #: bookwyrm/templates/preferences/alias_user.html:34
 msgid "Create Alias"
-msgstr ""
+msgstr "Luo alias"
 
 #: bookwyrm/templates/preferences/alias_user.html:12
 msgid "Add another account as an alias"
-msgstr ""
+msgstr "Lisää toinen tili aliakseksi"
 
 #: bookwyrm/templates/preferences/alias_user.html:16
 msgid "Marking another account as an alias is required if you want to move that account to this one."
@@ -4310,7 +4310,7 @@ msgstr "Muut nimet"
 
 #: bookwyrm/templates/preferences/alias_user.html:49
 msgid "Remove alias"
-msgstr ""
+msgstr "Poista alias"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
@@ -4453,7 +4453,7 @@ msgstr "Haluatko pitää hyllysi yksityisenä? Voit asettaa kunkin hyllyn näkyv
 #: bookwyrm/templates/preferences/export-user.html:8
 #: bookwyrm/templates/preferences/layout.html:55
 msgid "Export BookWyrm Account"
-msgstr ""
+msgstr "Vie BookWyrm -tili"
 
 #: bookwyrm/templates/preferences/export-user.html:14
 msgid "You can create an export file here. This will allow you to migrate your data to another BookWyrm account."
@@ -4486,7 +4486,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export-user.html:34
 msgid "Direct messages"
-msgstr ""
+msgstr "Yksityisviestit"
 
 #: bookwyrm/templates/preferences/export-user.html:35
 msgid "Replies to your statuses"
@@ -4532,11 +4532,11 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export-user.html:84
 msgid "Date"
-msgstr ""
+msgstr "Pvm"
 
 #: bookwyrm/templates/preferences/export-user.html:90
 msgid "Size"
-msgstr ""
+msgstr "Koko"
 
 #: bookwyrm/templates/preferences/export-user.html:134
 msgid "Download your export"
@@ -6022,7 +6022,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/schedules.html:22
 msgid "Name"
-msgstr ""
+msgstr "Nimi"
 
 #: bookwyrm/templates/settings/schedules.html:25
 msgid "Celery task"
