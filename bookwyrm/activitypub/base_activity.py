@@ -250,7 +250,10 @@ class ActivityObject:
                 pass
         data = {k: v for (k, v) in data.items() if v is not None and k not in omit}
         if "@context" not in omit:
-            data["@context"] = "https://www.w3.org/ns/activitystreams"
+            data["@context"] = [
+                "https://www.w3.org/ns/activitystreams",
+                {"Hashtag": "as:Hashtag"},
+            ]
         return data
 
 
