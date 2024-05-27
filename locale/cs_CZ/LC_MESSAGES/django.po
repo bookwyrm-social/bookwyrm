@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-03-26 00:29\n"
+"PO-Revision-Date: 2024-05-27 16:03\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -1844,7 +1844,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a> ohodnotil <a href=\"%(book_pa
 #: bookwyrm/templates/discover/card-header.html:27
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> reviewed <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "<a href=\"%(user_path)s\">%(username)s</a> hodnotil/a <a href=\"%(book_path)s\">%(book_title)s</a>"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> hodnotil*a <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:31
 #, python-format
@@ -2483,7 +2483,7 @@ msgstr "Pokud jste četli tuto knihu, můžete vložit recenzi včetně voliteln
 
 #: bookwyrm/templates/guided_tour/book.html:128
 msgid "Post a review"
-msgstr "Zveřejnit recenzi"
+msgstr "Zveřejnit hodnocení"
 
 #: bookwyrm/templates/guided_tour/book.html:151
 msgid "You can share your thoughts on this book generally with a simple comment"
@@ -6631,12 +6631,12 @@ msgstr ""
 #: bookwyrm/templates/snippets/boost_button.html:20
 #: bookwyrm/templates/snippets/boost_button.html:21
 msgid "Boost"
-msgstr ""
+msgstr "Boostnout"
 
 #: bookwyrm/templates/snippets/boost_button.html:33
 #: bookwyrm/templates/snippets/boost_button.html:34
 msgid "Un-boost"
-msgstr ""
+msgstr "Zrušit boostnutí"
 
 #: bookwyrm/templates/snippets/create_status.html:36
 msgid "Quote"
@@ -6671,7 +6671,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/layout.html:53
 #: bookwyrm/templates/snippets/status/layout.html:54
 msgid "Reply"
-msgstr ""
+msgstr "Odpovědět"
 
 #: bookwyrm/templates/snippets/create_status/content_field.html:18
 msgid "Content"
@@ -7033,7 +7033,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:38
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:55
 msgid "Want to read"
-msgstr ""
+msgstr "Plánuji si přečíst"
 
 #: bookwyrm/templates/snippets/shelf_selector.html:81
 #: bookwyrm/templates/snippets/shelf_selector.html:95
@@ -7049,11 +7049,11 @@ msgstr ""
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:31
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:48
 msgid "Stop reading"
-msgstr ""
+msgstr "Přestat číst"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:40
 msgid "Finish reading"
-msgstr ""
+msgstr "Přečteno"
 
 #: bookwyrm/templates/snippets/status/content_status.html:69
 msgid "Show status"
@@ -7110,7 +7110,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/quotation.html:8
 #, python-format
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "citoval*a <a href=\"%(book_path)s\">%(book)s</a> od <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:15
 #, python-format
@@ -7125,12 +7125,12 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/read.html:10
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "přečetl*a <a href=\"%(book_path)s\">%(book)s</a> od <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/read.html:17
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "přečetl*a <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:10
 #, python-format
