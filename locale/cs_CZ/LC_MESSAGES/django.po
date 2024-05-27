@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-05-27 16:03\n"
+"PO-Revision-Date: 2024-05-27 17:17\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -381,7 +381,7 @@ msgstr ""
 #: bookwyrm/models/status.py:448
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
-msgstr ""
+msgstr "%(display_name)s' hodnocení knihy %(book_title)s"
 
 #: bookwyrm/models/status.py:479
 #, python-format
@@ -598,7 +598,7 @@ msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> má nejrozporuplnějš�
 
 #: bookwyrm/templates/about/about.html:94
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
-msgstr "Sledujte své čtení, mluvte o knihách, píšte recenze a objevte, co chcete číst dál. BookWyrm je bez reklam, proti korporátním a komunitně orientovaným software, který je navržen tak, aby zůstal malý i osobní. Máte-li žádosti o funkci, hlášení chyb nebo velkolepé sny, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">oslovte</a> a dejte se slyšet."
+msgstr "Zaznamenávejte si své čtení, povídejte si o knihách, píšte hodnocení a objevujte další knihy ke čtení. BookWyrm je komunitně orientovaným software, bez reklam a proti korporátní, který je navržen tak, aby zůstal malý i osobní. Objevili jste chybu, nebo máte nápady na zlepšení či velkolepé sny, nebojte se <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">ozvat</a>."
 
 #: bookwyrm/templates/about/about.html:105
 msgid "Meet your admins"
@@ -1066,9 +1066,9 @@ msgstr "Kliknutím zvětšíte"
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
-msgstr[0] "(%(review_count)s recenze)"
-msgstr[1] "(%(review_count)s recenze)"
-msgstr[2] "(%(review_count)s recenze)"
+msgstr[0] "(%(review_count)s hodnocení)"
+msgstr[1] "(%(review_count)s hodnocení)"
+msgstr[2] "(%(review_count)s hodnocení)"
 msgstr[3] "(%(review_count)s hodnocení)"
 
 #: bookwyrm/templates/book/book.html:214
@@ -6730,7 +6730,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/create_status/review.html:24
 #, python-format
 msgid "Your review of '%(book_title)s'"
-msgstr ""
+msgstr "Tvoje hodnocení knihy '%(book_title)s'"
 
 #: bookwyrm/templates/snippets/create_status/review.html:39
 msgid "Review:"
@@ -7145,12 +7145,12 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/review.html:8
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr "hodnotil/a <a href=\"%(book_path)s\">%(book)s</a> od <a href=\"%(author_path)s\">%(author_name)s</a>"
+msgstr "hodnotil*a <a href=\"%(book_path)s\">%(book)s</a> od <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/review.html:15
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr "hodnotil/a <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "hodnotil*a <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
 #, python-format
@@ -7294,7 +7294,7 @@ msgstr ""
 #: bookwyrm/templates/user/reviews_comments.html:6
 #: bookwyrm/templates/user/reviews_comments.html:12
 msgid "Reviews and Comments"
-msgstr ""
+msgstr "Hodnocení a komentáře"
 
 #: bookwyrm/templates/user/lists.html:16
 #, python-format
@@ -7330,7 +7330,7 @@ msgstr "%(username)s nesleduje žádné uživatele"
 
 #: bookwyrm/templates/user/reviews_comments.html:26
 msgid "No reviews or comments yet!"
-msgstr ""
+msgstr "Prozatím žádná hodnocení či komentáře!"
 
 #: bookwyrm/templates/user/user.html:20
 msgid "Edit profile"
