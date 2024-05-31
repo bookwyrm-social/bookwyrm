@@ -247,7 +247,8 @@ class ExportArchive(View):
                 export.export_data,
                 content_type="application/gzip",
                 headers={
-                    "Content-Disposition": 'attachment; filename="bookwyrm-account-export.tar.gz"'  # pylint: disable=line-too-long
+                    # pylint: disable=line-too-long
+                    "Content-Disposition": 'attachment; filename="bookwyrm-account-export.tar.gz"'
                 },
             )
         except FileNotFoundError:
