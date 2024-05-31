@@ -231,7 +231,7 @@ class PartialDateModel(models.DateTimeField):  # type: ignore[type-arg]
         kwargs.setdefault("form_class", PartialDateFormField)
         return super().formfield(**kwargs)
 
-    # pylint: disable-next=arguments-renamed
+    # pylint: disable-next=arguments-renamed,line-too-long
     def contribute_to_class(self, model, our_name_in_model, **kwargs):  # type: ignore[no-untyped-def]
         # Define precision field.
         descriptor = self.descriptor_class(self)
