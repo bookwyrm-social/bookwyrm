@@ -1,8 +1,7 @@
 """ testing activitystreams """
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import patch
 from django.test import TestCase
-from django.utils import timezone
 
 from bookwyrm import activitystreams, models
 

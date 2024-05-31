@@ -400,11 +400,11 @@ def get_representative():
     to sign outgoing HTTP GET requests"""
     return models.User.objects.get_or_create(
         username=f"{INSTANCE_ACTOR_USERNAME}@{DOMAIN}",
-        defaults=dict(
-            email="bookwyrm@localhost",
-            local=True,
-            localname=INSTANCE_ACTOR_USERNAME,
-        ),
+        defaults={
+            "email": "bookwyrm@localhost",
+            "local": True,
+            "localname": INSTANCE_ACTOR_USERNAME,
+        },
     )[0]
 
 

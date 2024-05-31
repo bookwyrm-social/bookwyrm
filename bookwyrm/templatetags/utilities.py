@@ -137,14 +137,14 @@ def get_file_size(nbytes):
         raw_size = float(nbytes)
     except (ValueError, TypeError):
         return repr(nbytes)
-    else:
-        if raw_size < 1024:
-            return f"{raw_size} bytes"
-        if raw_size < 1024**2:
-            return f"{raw_size/1024:.2f} KB"
-        if raw_size < 1024**3:
-            return f"{raw_size/1024**2:.2f} MB"
-        return f"{raw_size/1024**3:.2f} GB"
+
+    if raw_size < 1024:
+        return f"{raw_size} bytes"
+    if raw_size < 1024**2:
+        return f"{raw_size/1024:.2f} KB"
+    if raw_size < 1024**3:
+        return f"{raw_size/1024**2:.2f} MB"
+    return f"{raw_size/1024**3:.2f} GB"
 
 
 @register.filter(name="get_user_permission")

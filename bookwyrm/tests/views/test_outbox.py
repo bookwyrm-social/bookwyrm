@@ -122,7 +122,7 @@ class OutboxView(TestCase):
                 privacy="public",
             )
 
-        request = self.factory.get("", {"page": 1}, HTTP_USER_AGENT=USER_AGENT)
+        request = self.factory.get("", {"page": 1}, headers={"user-agent": USER_AGENT})
         result = views.Outbox.as_view()(request, "mouse")
 
         data = json.loads(result.content)

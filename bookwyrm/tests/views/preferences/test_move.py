@@ -101,7 +101,7 @@ class ViewsHelpers(TestCase):
 
         request = self.factory.post("", form.data)
         request.user = self.local_user
-        middleware = SessionMiddleware()
+        middleware = SessionMiddleware(request)
         middleware.process_request(request)
         request.session.save()
 

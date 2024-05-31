@@ -2,18 +2,19 @@
 from bookwyrm import activitypub
 from .activitypub_mixin import ActivitypubMixin
 from .base_model import BookWyrmModel
-from .fields import CICharField
+from .fields import CharField
 
 
 class Hashtag(ActivitypubMixin, BookWyrmModel):
     "a hashtag which can be used in statuses"
 
-    name = CICharField(
+    name = CharField(
         max_length=256,
         blank=False,
         null=False,
         activitypub_field="name",
         deduplication_field=True,
+        db_collation="case_insensitive",
     )
 
     name_field = "name"

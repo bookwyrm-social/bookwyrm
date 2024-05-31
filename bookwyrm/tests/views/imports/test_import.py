@@ -123,8 +123,8 @@ class ImportViews(TestCase):
         """Give people a sense of the timing"""
         models.ImportJob.objects.create(
             user=self.local_user,
-            created_date=datetime.datetime(2000, 1, 1),
-            updated_date=datetime.datetime(2001, 1, 1),
+            created_date=datetime.datetime(2000, 1, 1, tzinfo=datetime.timezone.utc),
+            updated_date=datetime.datetime(2001, 1, 1, tzinfo=datetime.timezone.utc),
             status="complete",
             complete=True,
             mappings={},

@@ -1,8 +1,9 @@
 """ test searching for books """
 import datetime
+from datetime import timezone
+
 from django.db import connection
 from django.test import TestCase
-from django.utils import timezone
 
 from bookwyrm import book_search, models
 from bookwyrm.connectors.abstract_connector import AbstractMinimalConnector

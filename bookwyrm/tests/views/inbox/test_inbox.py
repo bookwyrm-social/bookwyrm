@@ -134,7 +134,10 @@ class Inbox(TestCase):
         """check for blocked servers"""
         request = self.factory.post(
             "",
-            HTTP_USER_AGENT="http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
+            headers={
+                # pylint: disable-next=line-too-long
+                "user-agent": "http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
+            },
         )
         self.assertIsNone(views.inbox.raise_is_blocked_user_agent(request))
 

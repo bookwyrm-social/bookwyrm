@@ -35,7 +35,7 @@ def validate_html(html):
         e for e in errors.split("\n") if not any(exclude in e for exclude in excluded)
     )
     if errors:
-        raise Exception(errors)
+        raise ValueError(errors)
 
     validator = HtmlValidator()
     # will raise exceptions
@@ -62,6 +62,6 @@ class HtmlValidator(HTMLParser):  # pylint: disable=abstract-method
                 and "noreferrer" in value
             ):
                 return
-        raise Exception(
+        raise ValueError(
             'Links to a new tab must have rel="nofollow noopener noreferrer"'
         )
