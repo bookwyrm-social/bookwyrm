@@ -1,7 +1,7 @@
 """ Database utilities """
 
 from typing import Optional, Iterable, Set, cast
-import sqlparse  # type: ignore
+import sqlparse  # type: ignore[import-untyped]
 
 
 def format_trigger(sql: str) -> str:

@@ -551,8 +551,12 @@ class Edition(Book):
 
         # clear author cache
         if self.id:
-            for author_id in self.authors.values_list("id", flat=True):
-                cache.delete(f"author-books-{author_id}")
+            cache.delete_many(
+                [
+                    f"author-books-{author_id}"
+                    for author_id in self.authors.values_list("id", flat=True)
+                ]
+            )
 
     @transaction.atomic
     def repair(self):
