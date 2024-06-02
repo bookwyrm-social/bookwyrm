@@ -95,6 +95,7 @@ class User(TestCase):
                     "PropertyValue": "schema:PropertyValue",
                     "alsoKnownAs": {"@id": "as:alsoKnownAs", "@type": "@id"},
                     "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+                    "Hashtag": "as:Hashtag",
                     "movedTo": {"@id": "as:movedTo", "@type": "@id"},
                     "schema": "http://schema.org#",
                     "value": "schema:value",

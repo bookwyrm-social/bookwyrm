@@ -331,6 +331,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             "https://w3id.org/security/v1",
             {
                 "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+                "Hashtag": "as:Hashtag",
                 "schema": "http://schema.org#",
                 "PropertyValue": "schema:PropertyValue",
                 "value": "schema:value",
