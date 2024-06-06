@@ -1,13 +1,15 @@
 """ database schema for books and shelves """
+
 from itertools import chain
 import re
-from typing import Any
+from typing import Any, Dict, Optional, Iterable
+from typing_extensions import Self
 
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.cache import cache
 from django.db import models, transaction
-from django.db.models import Prefetch
+from django.db.models import Prefetch, ManyToManyField
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
@@ -19,13 +21,13 @@ from bookwyrm import activitypub
 from bookwyrm.isbn.isbn import hyphenator_singleton as hyphenator
 from bookwyrm.preview_images import generate_edition_preview_image_task
 from bookwyrm.settings import (
-    DOMAIN,
+    BASE_URL,
     DEFAULT_LANGUAGE,
     LANGUAGE_ARTICLES,
     ENABLE_PREVIEW_IMAGES,
     ENABLE_THUMBNAIL_GENERATION,
 )
-from bookwyrm.utils.db import format_trigger
+from bookwyrm.utils.db import format_trigger, add_update_fields
 
 from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
@@ -94,23 +96,133 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
 
         abstract = True
 
-    def save(self, *args: Any, **kwargs: Any) -> None:
+    def save(
+        self, *args: Any, update_fields: Optional[Iterable[str]] = None, **kwargs: Any
+    ) -> None:
         """ensure that the remote_id is within this instance"""
         if self.id:
             self.remote_id = self.get_remote_id()
+            update_fields = add_update_fields(update_fields, "remote_id")
         else:
             self.origin_id = self.remote_id
             self.remote_id = None
-        return super().save(*args, **kwargs)
+            update_fields = add_update_fields(update_fields, "origin_id", "remote_id")
+
+        super().save(*args, update_fields=update_fields, **kwargs)
 
     # pylint: disable=arguments-differ
     def broadcast(self, activity, sender, software="bookwyrm", **kwargs):
         """only send book data updates to other bookwyrm instances"""
         super().broadcast(activity, sender, software=software, **kwargs)
 
+    def merge_into(self, canonical: Self, dry_run=False) -> Dict[str, Any]:
+        """merge this entity into another entity"""
+        if canonical.id == self.id:
+            raise ValueError(f"Cannot merge {self} into itself")
+
+        absorbed_fields = canonical.absorb_data_from(self, dry_run=dry_run)
+
+        if dry_run:
+            return absorbed_fields
+
+        canonical.save()
+
+        self.merged_model.objects.create(deleted_id=self.id, merged_into=canonical)
+
+        # move related models to canonical
+        related_models = [
+            (r.remote_field.name, r.related_model) for r in self._meta.related_objects
+        ]
+        # pylint: disable=protected-access
+        for related_field, related_model in related_models:
+            # Skip the ManyToMany fields that aren’t auto-created. These
+            # should have a corresponding OneToMany field in the model for
+            # the linking table anyway. If we update it through that model
+            # instead then we won’t lose the extra fields in the linking
+            # table.
+            # pylint: disable=protected-access
+            related_field_obj = related_model._meta.get_field(related_field)
+            if isinstance(related_field_obj, ManyToManyField):
+                through = related_field_obj.remote_field.through
+                if not through._meta.auto_created:
+                    continue
+            related_objs = related_model.objects.filter(**{related_field: self})
+            for related_obj in related_objs:
+                try:
+                    setattr(related_obj, related_field, canonical)
+                    related_obj.save()
+                except TypeError:
+                    getattr(related_obj, related_field).add(canonical)
+                    getattr(related_obj, related_field).remove(self)
+
+        self.delete()
+        return absorbed_fields
+
+    def absorb_data_from(self, other: Self, dry_run=False) -> Dict[str, Any]:
+        """fill empty fields with values from another entity"""
+        absorbed_fields = {}
+        for data_field in self._meta.get_fields():
+            if not hasattr(data_field, "activitypub_field"):
+                continue
+            canonical_value = getattr(self, data_field.name)
+            other_value = getattr(other, data_field.name)
+            if not other_value:
+                continue
+            if isinstance(data_field, fields.ArrayField):
+                if new_values := list(set(other_value) - set(canonical_value)):
+                    # append at the end (in no particular order)
+                    if not dry_run:
+                        setattr(self, data_field.name, canonical_value + new_values)
+                    absorbed_fields[data_field.name] = new_values
+            elif isinstance(data_field, fields.PartialDateField):
+                if (
+                    (not canonical_value)
+                    or (other_value.has_day and not canonical_value.has_day)
+                    or (other_value.has_month and not canonical_value.has_month)
+                ):
+                    if not dry_run:
+                        setattr(self, data_field.name, other_value)
+                    absorbed_fields[data_field.name] = other_value
+            else:
+                if not canonical_value:
+                    if not dry_run:
+                        setattr(self, data_field.name, other_value)
+                    absorbed_fields[data_field.name] = other_value
+        return absorbed_fields
+
+
+class MergedBookDataModel(models.Model):
+    """a BookDataModel instance that has been merged into another instance. kept
+    to be able to redirect old URLs"""
+
+    deleted_id = models.IntegerField(primary_key=True)
+
+    class Meta:
+        """abstract just like BookDataModel"""
+
+        abstract = True
+
+
+class MergedBook(MergedBookDataModel):
+    """an Book that has been merged into another one"""
+
+    merged_into = models.ForeignKey(
+        "Book", on_delete=models.PROTECT, related_name="absorbed"
+    )
+
+
+class MergedAuthor(MergedBookDataModel):
+    """an Author that has been merged into another one"""
+
+    merged_into = models.ForeignKey(
+        "Author", on_delete=models.PROTECT, related_name="absorbed"
+    )
+
 
 class Book(BookDataModel):
     """a generic book, which can mean either an edition or a work"""
+
+    merged_model = MergedBook
 
     connector = models.ForeignKey("Connector", on_delete=models.PROTECT, null=True)
 
@@ -192,9 +304,13 @@ class Book(BookDataModel):
         """properties of this edition, as a string"""
         items = [
             self.physical_format if hasattr(self, "physical_format") else None,
-            f"{self.languages[0]} language"
-            if self.languages and self.languages[0] and self.languages[0] != "English"
-            else None,
+            (
+                f"{self.languages[0]} language"
+                if self.languages
+                and self.languages[0]
+                and self.languages[0] != "English"
+                else None
+            ),
             str(self.published_date.year) if self.published_date else None,
             ", ".join(self.publishers) if hasattr(self, "publishers") else None,
         ]
@@ -212,11 +328,11 @@ class Book(BookDataModel):
         if not isinstance(self, (Edition, Work)):
             raise ValueError("Books should be added as Editions or Works")
 
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
-        return f"https://{DOMAIN}/book/{self.id}"
+        return f"{BASE_URL}/book/{self.id}"
 
     def guess_sort_title(self):
         """Get a best-guess sort title for the current book"""
@@ -289,10 +405,11 @@ class Work(OrderedCollectionPageMixin, Book):
 
     def save(self, *args, **kwargs):
         """set some fields on the edition object"""
+        super().save(*args, **kwargs)
+
         # set rank
         for edition in self.editions.all():
             edition.save()
-        return super().save(*args, **kwargs)
 
     @property
     def default_edition(self):
@@ -398,33 +515,48 @@ class Edition(Book):
         # max rank is 9
         return rank
 
-    def save(self, *args: Any, **kwargs: Any) -> None:
+    def save(
+        self, *args: Any, update_fields: Optional[Iterable[str]] = None, **kwargs: Any
+    ) -> None:
         """set some fields on the edition object"""
         # calculate isbn 10/13
-        if self.isbn_13 and self.isbn_13[:3] == "978" and not self.isbn_10:
+        if (
+            self.isbn_10 is None
+            and self.isbn_13 is not None
+            and self.isbn_13[:3] == "978"
+        ):
             self.isbn_10 = isbn_13_to_10(self.isbn_13)
-        if self.isbn_10 and not self.isbn_13:
+            update_fields = add_update_fields(update_fields, "isbn_10")
+        if self.isbn_13 is None and self.isbn_10 is not None:
             self.isbn_13 = isbn_10_to_13(self.isbn_10)
+            update_fields = add_update_fields(update_fields, "isbn_13")
 
         # normalize isbn format
-        if self.isbn_10:
+        if self.isbn_10 is not None:
             self.isbn_10 = normalize_isbn(self.isbn_10)
-        if self.isbn_13:
+        if self.isbn_13 is not None:
             self.isbn_13 = normalize_isbn(self.isbn_13)
 
         # set rank
-        self.edition_rank = self.get_rank()
-
-        # clear author cache
-        if self.id:
-            for author_id in self.authors.values_list("id", flat=True):
-                cache.delete(f"author-books-{author_id}")
+        if (new := self.get_rank()) != self.edition_rank:
+            self.edition_rank = new
+            update_fields = add_update_fields(update_fields, "edition_rank")
 
         # Create sort title by removing articles from title
         if self.sort_title in [None, ""]:
             self.sort_title = self.guess_sort_title()
+            update_fields = add_update_fields(update_fields, "sort_title")
 
-        return super().save(*args, **kwargs)
+        super().save(*args, update_fields=update_fields, **kwargs)
+
+        # clear author cache
+        if self.id:
+            cache.delete_many(
+                [
+                    f"author-books-{author_id}"
+                    for author_id in self.authors.values_list("id", flat=True)
+                ]
+            )
 
     @transaction.atomic
     def repair(self):

@@ -31,7 +31,7 @@ class Book(TestCase):
 
     def test_remote_id(self):
         """fanciness with remote/origin ids"""
-        remote_id = f"https://{settings.DOMAIN}/book/{self.work.id}"
+        remote_id = f"{settings.BASE_URL}/book/{self.work.id}"
         self.assertEqual(self.work.get_remote_id(), remote_id)
         self.assertEqual(self.work.remote_id, remote_id)
 

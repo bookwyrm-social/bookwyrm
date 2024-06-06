@@ -169,7 +169,7 @@ class ActivitypubMixin:
             # filter users first by whether they're using the desired software
             # this lets us send book updates only to other bw servers
             if software:
-                queryset = queryset.filter(bookwyrm_user=(software == "bookwyrm"))
+                queryset = queryset.filter(bookwyrm_user=software == "bookwyrm")
             # if there's a user, we only want to send to the user's followers
             if user:
                 queryset = queryset.filter(following=user)
@@ -206,14 +206,10 @@ class ObjectMixin(ActivitypubMixin):
         created: Optional[bool] = None,
         software: Any = None,
         priority: str = BROADCAST,
+        broadcast: bool = True,
         **kwargs: Any,
     ) -> None:
         """broadcast created/updated/deleted objects as appropriate"""
-        broadcast = kwargs.get("broadcast", True)
-        # this bonus kwarg would cause an error in the base save method
-        if "broadcast" in kwargs:
-            del kwargs["broadcast"]
-
         created = created or not bool(self.id)
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)

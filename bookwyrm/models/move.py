@@ -10,7 +10,7 @@ from .notification import Notification, NotificationType
 
 
 class Move(ActivityMixin, BookWyrmModel):
-    """migrating an activitypub user account"""
+    """migrating an activitypub object"""
 
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor"
@@ -48,24 +48,21 @@ class MoveUser(Move):
         """update user info and broadcast it"""
 
         # only allow if the source is listed in the target's alsoKnownAs
-        if self.user in self.target.also_known_as.all():
-            self.user.also_known_as.add(self.target.id)
-            self.user.update_active_date()
-            self.user.moved_to = self.target.remote_id
-            self.user.save(update_fields=["moved_to"])
-
-            if self.user.local:
-                kwargs[
-                    "broadcast"
-                ] = True  # Only broadcast if we are initiating the Move
-
-            super().save(*args, **kwargs)
-
-            for follower in self.user.followers.all():
-                if follower.local:
-                    Notification.notify(
-                        follower, self.user, notification_type=NotificationType.MOVE
-                    )
-
-        else:
+        if self.user not in self.target.also_known_as.all():
             raise PermissionDenied()
+
+        self.user.also_known_as.add(self.target.id)
+        self.user.update_active_date()
+        self.user.moved_to = self.target.remote_id
+        self.user.save(update_fields=["moved_to"])
+
+        if self.user.local:
+            kwargs["broadcast"] = True  # Only broadcast if we are initiating the Move
+
+        super().save(*args, **kwargs)
+
+        for follower in self.user.followers.all():
+            if follower.local:
+                Notification.notify(
+                    follower, self.user, notification_type=NotificationType.MOVE
+                )

@@ -1,21 +1,24 @@
 """ database schema for info about authors """
+
 import re
-from typing import Tuple, Any
+from typing import Any
 
 from django.db import models
 from django.contrib.postgres.indexes import GinIndex
 import pgtrigger
 
 from bookwyrm import activitypub
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 from bookwyrm.utils.db import format_trigger
 
-from .book import BookDataModel
+from .book import BookDataModel, MergedAuthor
 from . import fields
 
 
 class Author(BookDataModel):
     """basic biographic info"""
+
+    merged_model = MergedAuthor
 
     wikipedia_link = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
@@ -42,12 +45,12 @@ class Author(BookDataModel):
     )
     bio = fields.HtmlField(null=True, blank=True)
 
-    def save(self, *args: Tuple[Any, ...], **kwargs: dict[str, Any]) -> None:
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """normalize isni format"""
-        if self.isni:
+        if self.isni is not None:
             self.isni = re.sub(r"\s", "", self.isni)
 
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     @property
     def isni_link(self):
@@ -67,7 +70,7 @@ class Author(BookDataModel):
 
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
-        return f"https://{DOMAIN}/author/{self.id}"
+        return f"{BASE_URL}/author/{self.id}"
 
     class Meta:
         """sets up indexes and triggers"""

@@ -1,11 +1,12 @@
 """ shelf views """
+
 from django.db import IntegrityError, transaction
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
-from bookwyrm.views.helpers import redirect_to_referer
+from bookwyrm.views.helpers import redirect_to_referer, get_mergeable_object_or_404
 
 
 @login_required
@@ -36,7 +37,7 @@ def delete_shelf(request, shelf_id):
 @transaction.atomic
 def shelve(request):
     """put a book on a user's shelf"""
-    book = get_object_or_404(models.Edition, id=request.POST.get("book"))
+    book = get_mergeable_object_or_404(models.Edition, id=request.POST.get("book"))
     desired_shelf = get_object_or_404(
         request.user.shelf_set, identifier=request.POST.get("shelf")
     )
@@ -97,7 +98,7 @@ def shelve(request):
 def unshelve(request, book_id=False):
     """remove a book from a user's shelf"""
     identity = book_id if book_id else request.POST.get("book")
-    book = get_object_or_404(models.Edition, id=identity)
+    book = get_mergeable_object_or_404(models.Edition, id=identity)
     shelf_book = get_object_or_404(
         models.ShelfBook, book=book, shelf__id=request.POST["shelf"]
     )

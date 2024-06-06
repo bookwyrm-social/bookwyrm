@@ -229,7 +229,7 @@ class Connector(AbstractConnector):
             data = get_data(url)
         except ConnectorException:
             return ""
-        return data.get("extract", "")
+        return str(data.get("extract", ""))
 
     def get_remote_id_from_model(self, obj: models.BookDataModel) -> str:
         """use get_remote_id to figure out the link from a model obj"""

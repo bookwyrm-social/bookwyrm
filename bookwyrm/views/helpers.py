@@ -1,4 +1,5 @@
 """ helper functions used in various views """
+
 import re
 from datetime import datetime, timedelta
 import dateutil.parser
@@ -8,7 +9,7 @@ from dateutil.parser import ParserError
 from requests import HTTPError
 from django.db.models import Q
 from django.conf import settings as django_settings
-from django.shortcuts import redirect
+from django.shortcuts import redirect, _get_queryset
 from django.http import Http404
 from django.utils import translation
 
@@ -60,7 +61,7 @@ def is_bookwyrm_request(request):
     return True
 
 
-def handle_remote_webfinger(query, unknown_only=False):
+def handle_remote_webfinger(query, unknown_only=False, refresh=False):
     """webfingerin' other servers"""
     user = None
 
@@ -75,6 +76,11 @@ def handle_remote_webfinger(query, unknown_only=False):
         return None
 
     try:
+
+        if refresh:
+            # Always fetch the remote info - don't even bother checking the DB
+            raise models.User.DoesNotExist("remote_only is set to True")
+
         user = models.User.objects.get(username__iexact=query)
 
         if unknown_only:
@@ -92,7 +98,7 @@ def handle_remote_webfinger(query, unknown_only=False):
             if link.get("rel") == "self":
                 try:
                     user = activitypub.resolve_remote_id(
-                        link["href"], model=models.User
+                        link["href"], model=models.User, refresh=refresh
                     )
                 except (KeyError, activitypub.ActivitySerializerError):
                     return None
@@ -225,10 +231,26 @@ def maybe_redirect_local_path(request, model):
 def redirect_to_referer(request, *args, **kwargs):
     """Redirect to the referrer, if it's in our domain, with get params"""
     # make sure the refer is part of this instance
-    validated = validate_url_domain(request.META.get("HTTP_REFERER"))
+    validated = validate_url_domain(request.headers.get("referer", ""))
 
     if validated:
         return redirect(validated)
 
     # if not, use the args passed you'd normally pass to redirect()
     return redirect(*args or "/", **kwargs)
+
+
+# pylint: disable=redefined-builtin,invalid-name
+def get_mergeable_object_or_404(klass, id):
+    """variant of get_object_or_404 that also redirects if id has been merged
+    into another object"""
+    queryset = _get_queryset(klass)
+    try:
+        return queryset.get(pk=id)
+    except queryset.model.DoesNotExist:
+        try:
+            return queryset.get(absorbed__deleted_id=id)
+        except queryset.model.DoesNotExist:
+            pass
+
+        raise Http404(f"No {queryset.model} with ID {id} exists")

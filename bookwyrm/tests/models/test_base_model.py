@@ -5,7 +5,7 @@ from django.test import TestCase
 
 from bookwyrm import models
 from bookwyrm.models import base_model
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 
 
 # pylint: disable=attribute-defined-outside-init
@@ -44,14 +44,14 @@ class BaseModel(TestCase):
         """these should be generated"""
         self.test_model.id = 1  # pylint: disable=invalid-name
         expected = self.test_model.get_remote_id()
-        self.assertEqual(expected, f"https://{DOMAIN}/bookwyrmtestmodel/1")
+        self.assertEqual(expected, f"{BASE_URL}/bookwyrmtestmodel/1")
 
     def test_remote_id_with_user(self):
         """format of remote id when there's a user object"""
         self.test_model.user = self.local_user
         self.test_model.id = 1
         expected = self.test_model.get_remote_id()
-        self.assertEqual(expected, f"https://{DOMAIN}/user/mouse/bookwyrmtestmodel/1")
+        self.assertEqual(expected, f"{BASE_URL}/user/mouse/bookwyrmtestmodel/1")
 
     def test_set_remote_id(self):
         """this function sets remote ids after creation"""
@@ -60,7 +60,7 @@ class BaseModel(TestCase):
         instance = models.Work.objects.create(title="work title")
         instance.remote_id = None
         base_model.set_remote_id(None, instance, True)
-        self.assertEqual(instance.remote_id, f"https://{DOMAIN}/book/{instance.id}")
+        self.assertEqual(instance.remote_id, f"{BASE_URL}/book/{instance.id}")
 
         # shouldn't set remote_id if it's not created
         instance.remote_id = None

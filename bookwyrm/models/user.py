@@ -1,28 +1,31 @@
 """ database schema for user data """
+import datetime
 import re
+import zoneinfo
+from typing import Optional, Iterable
 from urllib.parse import urlparse
 from uuid import uuid4
 
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser
-from django.contrib.postgres.fields import ArrayField, CICharField
+from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.dispatch import receiver
 from django.db import models, transaction, IntegrityError
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
-import pytz
 
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status
 from bookwyrm.preview_images import generate_user_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES
+from bookwyrm.settings import BASE_URL, ENABLE_PREVIEW_IMAGES, LANGUAGES
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app, MISC
 from bookwyrm.utils import regex
+from bookwyrm.utils.db import add_update_fields
 from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
 from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .federated_server import FederatedServer
@@ -40,12 +43,6 @@ FeedFilterChoices = [
 def get_feed_filter_choices():
     """return a list of filter choice keys"""
     return [f[0] for f in FeedFilterChoices]
-
-
-def site_link():
-    """helper for generating links to the site"""
-    protocol = "https" if USE_HTTPS else "http"
-    return f"{protocol}://{DOMAIN}"
 
 
 # pylint: disable=too-many-public-methods
@@ -81,11 +78,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     summary = fields.HtmlField(null=True, blank=True)
     local = models.BooleanField(default=False)
     bookwyrm_user = fields.BooleanField(default=True)
-    localname = CICharField(
+    localname = models.CharField(
         max_length=255,
         null=True,
         unique=True,
         validators=[fields.validate_localname],
+        db_collation="case_insensitive",
     )
     # name is your display name, which you can change at will
     name = fields.CharField(max_length=100, null=True, blank=True)
@@ -162,7 +160,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     show_guided_tour = models.BooleanField(default=True)
 
     # feed options
-    feed_status_types = ArrayField(
+    feed_status_types = DjangoArrayField(
         models.CharField(max_length=10, blank=False, choices=FeedFilterChoices),
         size=8,
         default=get_feed_filter_choices,
@@ -171,8 +169,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     summary_keys = models.JSONField(null=True)
 
     preferred_timezone = models.CharField(
-        choices=[(str(tz), str(tz)) for tz in pytz.all_timezones],
-        default=str(pytz.utc),
+        choices=[(str(tz), str(tz)) for tz in sorted(zoneinfo.available_timezones())],
+        default=str(datetime.timezone.utc),
         max_length=255,
     )
     preferred_language = models.CharField(
@@ -214,8 +212,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     @property
     def confirmation_link(self):
         """helper for generating confirmation links"""
-        link = site_link()
-        return f"{link}/confirm-email/{self.confirmation_code}"
+        return f"{BASE_URL}/confirm-email/{self.confirmation_code}"
 
     @property
     def following_link(self):
@@ -334,6 +331,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             "https://w3id.org/security/v1",
             {
                 "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+                "Hashtag": "as:Hashtag",
                 "schema": "http://schema.org#",
                 "PropertyValue": "schema:PropertyValue",
                 "value": "schema:value",
@@ -343,13 +341,14 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         ]
         return activity_object
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
         """populate fields for new local users"""
         created = not bool(self.id)
         if not self.local and not re.match(regex.FULL_USERNAME, self.username):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
-            self.username = f"{self.username}@{actor_parts.netloc}"
+            self.username = f"{self.username}@{actor_parts.hostname}"
+            update_fields = add_update_fields(update_fields, "username")
 
         # this user already exists, no need to populate fields
         if not created:
@@ -358,26 +357,34 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             elif not self.deactivation_date:
                 self.deactivation_date = timezone.now()
 
-            super().save(*args, **kwargs)
+            super().save(*args, update_fields=update_fields, **kwargs)
             return
 
         # this is a new remote user, we need to set their remote server field
         if not self.local:
-            super().save(*args, **kwargs)
+            super().save(*args, update_fields=update_fields, **kwargs)
             transaction.on_commit(lambda: set_remote_server(self.id))
             return
 
         with transaction.atomic():
             # populate fields for local users
-            link = site_link()
-            self.remote_id = f"{link}/user/{self.localname}"
+            self.remote_id = f"{BASE_URL}/user/{self.localname}"
             self.followers_url = f"{self.remote_id}/followers"
             self.inbox = f"{self.remote_id}/inbox"
-            self.shared_inbox = f"{link}/inbox"
+            self.shared_inbox = f"{BASE_URL}/inbox"
             self.outbox = f"{self.remote_id}/outbox"
 
+            update_fields = add_update_fields(
+                update_fields,
+                "remote_id",
+                "followers_url",
+                "inbox",
+                "shared_inbox",
+                "outbox",
+            )
+
             # an id needs to be set before we can proceed with related models
-            super().save(*args, **kwargs)
+            super().save(*args, update_fields=update_fields, **kwargs)
 
             # make users editors by default
             try:
@@ -528,14 +535,19 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
         # self.owner is set by the OneToOneField on User
         return f"{self.owner.remote_id}/#main-key"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
         """create a key pair"""
         # no broadcasting happening here
         if "broadcast" in kwargs:
             del kwargs["broadcast"]
+
         if not self.public_key:
             self.private_key, self.public_key = create_key_pair()
-        return super().save(*args, **kwargs)
+            update_fields = add_update_fields(
+                update_fields, "private_key", "public_key"
+            )
+
+        super().save(*args, update_fields=update_fields, **kwargs)
 
 
 @app.task(queue=MISC)
@@ -558,7 +570,7 @@ def set_remote_server(user_id, allow_external_connections=False):
     user = User.objects.get(id=user_id)
     actor_parts = urlparse(user.remote_id)
     federated_server = get_or_create_remote_server(
-        actor_parts.netloc, allow_external_connections=allow_external_connections
+        actor_parts.hostname, allow_external_connections=allow_external_connections
     )
     # if we were unable to find the server, we need to create a new entry for it
     if not federated_server:

@@ -28,7 +28,7 @@ class List(TestCase):
     def test_remote_id(self, *_):
         """shelves use custom remote ids"""
         book_list = models.List.objects.create(name="Test List", user=self.local_user)
-        expected_id = f"https://{settings.DOMAIN}/list/{book_list.id}"
+        expected_id = f"{settings.BASE_URL}/list/{book_list.id}"
         self.assertEqual(book_list.get_remote_id(), expected_id)
 
     def test_to_activity(self, *_):

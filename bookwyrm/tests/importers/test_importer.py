@@ -3,7 +3,6 @@ from collections import namedtuple
 import pathlib
 from unittest.mock import patch
 import datetime
-import pytz
 
 from django.test import TestCase
 import responses
@@ -16,7 +15,7 @@ from bookwyrm.models.import_job import handle_imported_book
 
 def make_date(*args):
     """helper function to easily generate a date obj"""
-    return datetime.datetime(*args, tzinfo=pytz.UTC)
+    return datetime.datetime(*args, tzinfo=datetime.timezone.utc)
 
 
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")

@@ -38,13 +38,15 @@ class UserRelationship(BookWyrmModel):
 
     def save(self, *args, **kwargs):
         """clear the template cache"""
-        clear_cache(self.user_subject, self.user_object)
         super().save(*args, **kwargs)
+
+        clear_cache(self.user_subject, self.user_object)
 
     def delete(self, *args, **kwargs):
         """clear the template cache"""
-        clear_cache(self.user_subject, self.user_object)
         super().delete(*args, **kwargs)
+
+        clear_cache(self.user_subject, self.user_object)
 
     class Meta:
         """relationships should be unique"""

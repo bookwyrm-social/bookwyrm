@@ -1,6 +1,6 @@
 """ models for storing different kinds of Activities """
 from dataclasses import MISSING
-from typing import Optional
+from typing import Optional, Iterable
 import re
 
 from django.apps import apps
@@ -20,6 +20,7 @@ from model_utils.managers import InheritanceManager
 from bookwyrm import activitypub
 from bookwyrm.preview_images import generate_edition_preview_image_task
 from bookwyrm.settings import ENABLE_PREVIEW_IMAGES
+from bookwyrm.utils.db import add_update_fields
 from .activitypub_mixin import ActivitypubMixin, ActivityMixin
 from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
@@ -85,12 +86,13 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             models.Index(fields=["thread_id"]),
         ]
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
         """save and notify"""
-        if self.reply_parent:
+        if self.thread_id is None and self.reply_parent:
             self.thread_id = self.reply_parent.thread_id or self.reply_parent_id
+            update_fields = add_update_fields(update_fields, "thread_id")
 
-        super().save(*args, **kwargs)
+        super().save(*args, update_fields=update_fields, **kwargs)
 
         if not self.reply_parent:
             self.thread_id = self.id
@@ -392,10 +394,10 @@ class Quotation(BookStatus):
     def _format_position(self) -> Optional[str]:
         """serialize page position"""
         beg = self.position
-        end = self.endposition or 0
+        end = self.endposition
         if self.position_mode != "PG" or not beg:
             return None
-        return f"pp. {beg}-{end}" if end > beg else f"p. {beg}"
+        return f"pp. {beg}-{end}" if end else f"p. {beg}"
 
     @property
     def pure_content(self):
@@ -459,9 +461,10 @@ class Review(BookStatus):
 
     def save(self, *args, **kwargs):
         """clear rating caches"""
+        super().save(*args, **kwargs)
+
         if self.book.parent_work:
             cache.delete(f"book-rating-{self.book.parent_work.id}")
-        super().save(*args, **kwargs)
 
 
 class ReviewRating(Review):
