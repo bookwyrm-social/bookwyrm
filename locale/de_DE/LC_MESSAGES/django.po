@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-06-07 05:08\n"
+"PO-Revision-Date: 2024-06-07 06:37\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -381,14 +381,14 @@ msgstr "%(display_name)s's Zitat aus %(book_title)s"
 #: bookwyrm/models/status.py:448
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
-msgstr ""
+msgstr "%(display_name)s Rezension zu %(book_title)s"
 
 #: bookwyrm/models/status.py:479
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%(display_name)s bewertete %(book_title)s: %(display_rating).1f Sterne"
 
 #: bookwyrm/models/user.py:33 bookwyrm/templates/book/book.html:312
 msgid "Reviews"
@@ -460,7 +460,7 @@ msgstr "Italiano (Italienisch)"
 
 #: bookwyrm/settings.py:325
 msgid "한국어 (Korean)"
-msgstr ""
+msgstr "한국어 (Koreanisch)"
 
 #: bookwyrm/settings.py:326
 msgid "Suomi (Finnish)"
@@ -4461,7 +4461,7 @@ msgstr "Hier kannst du eine Export-Datei erstellen. So kannst du deine Daten zu 
 
 #: bookwyrm/templates/preferences/export-user.html:18
 msgid "Your file will include:"
-msgstr ""
+msgstr "In der Datei sind enthalten:"
 
 #: bookwyrm/templates/preferences/export-user.html:21
 msgid "Most user settings"
@@ -4482,7 +4482,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export-user.html:32
 msgid "Your file will not include:"
-msgstr ""
+msgstr "In der Datei sind nicht enhalten:"
 
 #: bookwyrm/templates/preferences/export-user.html:34
 msgid "Direct messages"
@@ -4490,7 +4490,7 @@ msgstr "Direktnachrichten"
 
 #: bookwyrm/templates/preferences/export-user.html:35
 msgid "Replies to your statuses"
-msgstr ""
+msgstr "Antworten auf deine Status"
 
 #: bookwyrm/templates/preferences/export-user.html:37
 msgid "Favorites"
@@ -5790,7 +5790,7 @@ msgstr "Celery-Status"
 #: bookwyrm/templates/settings/schedules.html:7
 #: bookwyrm/templates/settings/schedules.html:11
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Geplante Aufgaben"
 
 #: bookwyrm/templates/settings/layout.html:99
 msgid "Instance Settings"
@@ -6032,20 +6032,20 @@ msgstr ""
 
 #: bookwyrm/templates/settings/schedules.html:28
 msgid "Date changed"
-msgstr ""
+msgstr "Änderungsdatum"
 
 #: bookwyrm/templates/settings/schedules.html:31
 msgid "Last run at"
-msgstr ""
+msgstr "Zuletzt ausgeführt am"
 
 #: bookwyrm/templates/settings/schedules.html:34
 #: bookwyrm/templates/settings/schedules.html:98
 msgid "Schedule"
-msgstr ""
+msgstr "Zeitplan"
 
 #: bookwyrm/templates/settings/schedules.html:37
 msgid "Schedule ID"
-msgstr ""
+msgstr "ID des Zeitplans"
 
 #: bookwyrm/templates/settings/schedules.html:40
 msgid "Enabled"
@@ -6053,19 +6053,19 @@ msgstr "Aktiviert"
 
 #: bookwyrm/templates/settings/schedules.html:73
 msgid "Un-schedule"
-msgstr ""
+msgstr "Entfernen"
 
 #: bookwyrm/templates/settings/schedules.html:81
 msgid "No scheduled tasks"
-msgstr ""
+msgstr "Keine geplanten Aufgaben"
 
 #: bookwyrm/templates/settings/schedules.html:90
 msgid "Schedules"
-msgstr ""
+msgstr "Zeitpläne"
 
 #: bookwyrm/templates/settings/schedules.html:119
 msgid "No schedules found"
-msgstr ""
+msgstr "Keine Zeitpläne gefunden"
 
 #: bookwyrm/templates/settings/site.html:10
 #: bookwyrm/templates/settings/site.html:43
