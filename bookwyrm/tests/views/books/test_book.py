@@ -7,6 +7,7 @@ import responses
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.db import connection
 from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -16,8 +17,9 @@ from django.utils import timezone
 from bookwyrm import forms, models, views
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.tests.validate_html import validate_html
+from bookwyrm.tests.query_logger import QueryLogger, raise_long_query_runtime
 
-
+# pylint: disable=invalid-name
 class BookViews(TestCase):
     """books books books"""
 
@@ -68,9 +70,15 @@ class BookViews(TestCase):
         )
         request = self.factory.get("")
         request.user = self.local_user
-        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
-            is_api.return_value = False
-            result = view(request, self.book.id)
+
+        query_logger = QueryLogger()
+        with connection.execute_wrapper(query_logger):
+            with patch("bookwyrm.views.books.books.is_api_request") as is_api:
+                is_api.return_value = False
+                result = view(request, self.book.id)
+
+            raise_long_query_runtime(query_logger.queries)
+
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
 
