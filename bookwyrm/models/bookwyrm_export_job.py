@@ -7,7 +7,6 @@ from boto3.session import Session as BotoSession
 from s3_tar import S3Tar
 
 from django.db.models import BooleanField, FileField, JSONField
-from django.db.models import Q
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
 from django.core.files.storage import storages
