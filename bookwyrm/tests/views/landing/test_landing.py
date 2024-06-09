@@ -1,6 +1,7 @@
 """ test for app action functionality """
 from unittest.mock import patch
 from django.contrib.auth.models import AnonymousUser
+from django.db import connection
 from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -8,9 +9,11 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models
 from bookwyrm import views
+from bookwyrm.tests.query_logger import QueryLogger, raise_long_query_runtime
 from bookwyrm.tests.validate_html import validate_html
 
 
+# pylint: disable=invalid-name
 class LandingViews(TestCase):
     """pages you land on without really trying"""
 
@@ -39,7 +42,7 @@ class LandingViews(TestCase):
 
     @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
     def test_home_page(self, _):
-        """there are so many views, this just makes sure it LOADS"""
+        """home page for a logged in user"""
         view = views.Home.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -53,6 +56,19 @@ class LandingViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         self.assertEqual(result.status_code, 200)
         validate_html(result.render())
+
+    def test_landing(self):
+        """tests landing page for an anonymous user"""
+        view = views.Landing.as_view()
+        request = self.factory.get("")
+
+        query_logger = QueryLogger()
+        with connection.execute_wrapper(query_logger):
+            result = view(request)
+            raise_long_query_runtime(query_logger.queries)
+
+        validate_html(result.render())
+        self.assertIsInstance(result, TemplateResponse)
 
     def test_about_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -105,10 +121,3 @@ class LandingViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
-
-    def test_landing(self):
-        """there are so many views, this just makes sure it LOADS"""
-        view = views.Landing.as_view()
-        request = self.factory.get("")
-        result = view(request)
-        self.assertIsInstance(result, TemplateResponse)

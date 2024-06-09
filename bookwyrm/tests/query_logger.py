@@ -17,7 +17,7 @@ class QueryLogger:
         start = time.monotonic()
         try:
             result = execute(sql, params, many, context)
-        except Exception as err: # pylint: disable=broad-except
+        except Exception as err:  # pylint: disable=broad-except
             current_query["status"] = "error"
             current_query["exception"] = err
             raise
@@ -34,6 +34,6 @@ def raise_long_query_runtime(queries, threshold=0.0006):
     """Raises an exception if any query took longer than the threshold"""
     for query in queries:
         if query["duration"] > threshold:
-            raise Exception( # pylint: disable=broad-exception-raised
+            raise Exception(  # pylint: disable=broad-exception-raised
                 "This looks like a slow query:", query["duration"], query["sql"]
             )

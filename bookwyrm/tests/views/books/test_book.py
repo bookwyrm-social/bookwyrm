@@ -16,8 +16,8 @@ from django.utils import timezone
 
 from bookwyrm import forms, models, views
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.tests.validate_html import validate_html
 from bookwyrm.tests.query_logger import QueryLogger, raise_long_query_runtime
+from bookwyrm.tests.validate_html import validate_html
 
 # pylint: disable=invalid-name
 class BookViews(TestCase):
@@ -117,26 +117,34 @@ class BookViews(TestCase):
 
         request = self.factory.get("")
         request.user = self.local_user
-        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
-            is_api.return_value = False
-            result = view(request, self.book.id, user_statuses="review")
+        query_logger = QueryLogger()
+        with connection.execute_wrapper(query_logger):
+            with patch("bookwyrm.views.books.books.is_api_request") as is_api:
+                is_api.return_value = False
+                result = view(request, self.book.id, user_statuses="review")
+            raise_long_query_runtime(query_logger.queries)
+
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
 
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.context_data["statuses"].object_list[0], review)
 
-        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
-            is_api.return_value = False
-            result = view(request, self.book.id, user_statuses="comment")
+        with connection.execute_wrapper(query_logger):
+            with patch("bookwyrm.views.books.books.is_api_request") as is_api:
+                is_api.return_value = False
+                result = view(request, self.book.id, user_statuses="comment")
+            raise_long_query_runtime(query_logger.queries)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.context_data["statuses"].object_list[0], comment)
 
-        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
-            is_api.return_value = False
-            result = view(request, self.book.id, user_statuses="quotation")
+        with connection.execute_wrapper(query_logger):
+            with patch("bookwyrm.views.books.books.is_api_request") as is_api:
+                is_api.return_value = False
+                result = view(request, self.book.id, user_statuses="quotation")
+            raise_long_query_runtime(query_logger.queries)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
