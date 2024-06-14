@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  nginx:
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./certbot/conf:/etc/nginx/ssl
+      - ./certbot/data:/var/www/certbot
+  certbot:
+    # Uncomment this after the first run to set up renewal
+    #command: renew --webroot --webroot-path /var/www/certbot
+  web:
+    ports:
+      - "8000"
+    command: gunicorn bookwyrm.wsgi:application --bind 0.0.0.0:8000
+  flower:
+    ports:
+      - "${FLOWER_PORT}:${FLOWER_PORT}"
