@@ -7,7 +7,6 @@ from boto3.session import Session as BotoSession
 from s3_tar import S3Tar
 
 from django.db.models import BooleanField, FileField, JSONField
-from django.db.models import Q
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
 from django.core.files.storage import storages
@@ -315,19 +314,28 @@ def export_book(user: User, edition: Edition):
 
 
 def get_books_for_user(user):
-    """Get all the books and editions related to a user"""
+    """
+    Get all the books and editions related to a user.
 
-    editions = (
-        Edition.objects.select_related("parent_work")
-        .filter(
-            Q(shelves__user=user)
-            | Q(readthrough__user=user)
-            | Q(review__user=user)
-            | Q(list__user=user)
-            | Q(comment__user=user)
-            | Q(quotation__user=user)
-        )
-        .distinct()
+    We use union() instead of Q objects because it creates
+    multiple simple queries in stead of a much more complex DB query
+    that can time out.
+
+    """
+
+    shelf_eds = Edition.objects.select_related("parent_work").filter(shelves__user=user)
+    rt_eds = Edition.objects.select_related("parent_work").filter(
+        readthrough__user=user
     )
+    review_eds = Edition.objects.select_related("parent_work").filter(review__user=user)
+    list_eds = Edition.objects.select_related("parent_work").filter(list__user=user)
+    comment_eds = Edition.objects.select_related("parent_work").filter(
+        comment__user=user
+    )
+    quote_eds = Edition.objects.select_related("parent_work").filter(
+        quotation__user=user
+    )
+
+    editions = shelf_eds.union(rt_eds, review_eds, list_eds, comment_eds, quote_eds)
 
     return editions
