@@ -404,6 +404,13 @@ if USE_S3:
                 "default_acl": "public-read",
             },
         },
+        "sass_processor": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "location": "static",
+                "default_acl": "public-read",
+            },
+        },
         "exports": {
             "BACKEND": "storages.backends.s3.S3Storage",
             "OPTIONS": {
