@@ -1,5 +1,6 @@
 """ the particulars for this instance of BookWyrm """
 import datetime
+from typing import Optional, Iterable
 from urllib.parse import urljoin
 import uuid
 
@@ -10,8 +11,12 @@ from django.dispatch import receiver
 from django.utils import timezone
 from model_utils import FieldTracker
 
+from bookwyrm.connectors.abstract_connector import get_data
 from bookwyrm.preview_images import generate_site_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, STATIC_FULL_URL
+from bookwyrm.settings import BASE_URL, ENABLE_PREVIEW_IMAGES, STATIC_FULL_URL
+from bookwyrm.settings import RELEASE_API
+from bookwyrm.tasks import app, MISC
+from bookwyrm.utils.db import add_update_fields
 from .base_model import BookWyrmModel, new_access_code
 from .user import User
 from .fields import get_absolute_url
@@ -45,7 +50,7 @@ class SiteSettings(SiteModel):
     default_theme = models.ForeignKey(
         "Theme", null=True, blank=True, on_delete=models.SET_NULL
     )
-    version = models.CharField(null=True, blank=True, max_length=10)
+    available_version = models.CharField(null=True, blank=True, max_length=10)
 
     # admin setup options
     install_mode = models.BooleanField(default=False)
@@ -96,6 +101,8 @@ class SiteSettings(SiteModel):
     imports_enabled = models.BooleanField(default=True)
     import_size_limit = models.IntegerField(default=0)
     import_limit_reset = models.IntegerField(default=0)
+    user_exports_enabled = models.BooleanField(default=False)
+    user_import_time_limit = models.IntegerField(default=48)
 
     field_tracker = FieldTracker(fields=["name", "instance_tagline", "logo"])
 
@@ -131,16 +138,19 @@ class SiteSettings(SiteModel):
             return get_absolute_url(uploaded)
         return urljoin(STATIC_FULL_URL, default_path)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
         """if require_confirm_email is disabled, make sure no users are pending,
         if enabled, make sure invite_question_text is not empty"""
+        if not self.invite_question_text:
+            self.invite_question_text = "What is your favourite book?"
+            update_fields = add_update_fields(update_fields, "invite_question_text")
+
+        super().save(*args, update_fields=update_fields, **kwargs)
+
         if not self.require_confirm_email:
             User.objects.filter(is_active=False, deactivation_reason="pending").update(
                 is_active=True, deactivation_reason=None
             )
-        if not self.invite_question_text:
-            self.invite_question_text = "What is your favourite book?"
-        super().save(*args, **kwargs)
 
 
 class Theme(SiteModel):
@@ -183,7 +193,7 @@ class SiteInvite(models.Model):
     @property
     def link(self):
         """formats the invite link"""
-        return f"https://{DOMAIN}/invite/{self.code}"
+        return f"{BASE_URL}/invite/{self.code}"
 
 
 class InviteRequest(BookWyrmModel):
@@ -230,7 +240,7 @@ class PasswordReset(models.Model):
     @property
     def link(self):
         """formats the invite link"""
-        return f"https://{DOMAIN}/password-reset/{self.code}"
+        return f"{BASE_URL}/password-reset/{self.code}"
 
 
 # pylint: disable=unused-argument
@@ -243,3 +253,14 @@ def preview_image(instance, *args, **kwargs):
 
     if len(changed_fields) > 0:
         generate_site_preview_image_task.delay()
+
+
+@app.task(queue=MISC)
+def check_for_updates_task():
+    """See if git remote knows about a new version"""
+    site = SiteSettings.objects.get()
+    release = get_data(RELEASE_API, timeout=3)
+    available_version = release.get("tag_name", None)
+    if available_version:
+        site.available_version = available_version
+        site.save(update_fields=["available_version"])

@@ -2,7 +2,7 @@
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from django.views.generic.base import TemplateView
 
 from bookwyrm import settings, views
@@ -329,9 +329,24 @@ urlpatterns = [
         name="settings-imports-complete",
     ),
     re_path(
+        r"^settings/user-imports/(?P<import_id>\d+)/complete/?$",
+        views.set_user_import_completed,
+        name="settings-user-import-complete",
+    ),
+    re_path(
         r"^settings/imports/disable/?$",
         views.disable_imports,
         name="settings-imports-disable",
+    ),
+    re_path(
+        r"^settings/user-exports/enable/?$",
+        views.enable_user_exports,
+        name="settings-user-exports-enable",
+    ),
+    re_path(
+        r"^settings/user-exports/disable/?$",
+        views.disable_user_exports,
+        name="settings-user-exports-disable",
     ),
     re_path(
         r"^settings/imports/enable/?$",
@@ -344,10 +359,20 @@ urlpatterns = [
         name="settings-imports-set-limit",
     ),
     re_path(
+        r"^settings/user-imports/set-limit/?$",
+        views.set_user_import_limit,
+        name="settings-user-imports-set-limit",
+    ),
+    re_path(
         r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
     ),
     re_path(
         r"^settings/celery/ping/?$", views.celery_ping, name="settings-celery-ping"
+    ),
+    re_path(
+        r"^settings/schedules/(?P<task_id>\d+)?$",
+        views.ScheduledTasks.as_view(),
+        name="settings-schedules",
     ),
     re_path(
         r"^settings/email-config/?$",
@@ -408,6 +433,7 @@ urlpatterns = [
     re_path(r"^search/?$", views.Search.as_view(), name="search"),
     # imports
     re_path(r"^import/?$", views.Import.as_view(), name="import"),
+    re_path(r"^user-import/?$", views.UserImport.as_view(), name="user-import"),
     re_path(
         r"^import/(?P<job_id>\d+)/?$",
         views.ImportStatus.as_view(),
@@ -605,6 +631,16 @@ urlpatterns = [
         name="prompt-2fa",
     ),
     re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
+    re_path(
+        r"^preferences/user-export/?$",
+        views.ExportUser.as_view(),
+        name="prefs-user-export",
+    ),
+    path(
+        "preferences/user-export/<archive_id>",
+        views.ExportArchive.as_view(),
+        name="prefs-export-file",
+    ),
     re_path(r"^preferences/move/?$", views.MoveUser.as_view(), name="prefs-move"),
     re_path(r"^preferences/alias/?$", views.AliasUser.as_view(), name="prefs-alias"),
     re_path(
@@ -768,6 +804,9 @@ urlpatterns = [
     # following
     re_path(r"^follow/?$", views.follow, name="follow"),
     re_path(r"^unfollow/?$", views.unfollow, name="unfollow"),
+    re_path(
+        r"^remove-follow/(?P<user_id>\d+)/?$", views.remove_follow, name="remove-follow"
+    ),
     re_path(r"^accept-follow-request/?$", views.accept_follow_request),
     re_path(r"^delete-follow-request/?$", views.delete_follow_request),
     re_path(r"^ostatus_follow/?$", views.remote_follow, name="remote-follow"),
@@ -790,6 +829,7 @@ urlpatterns = [
         r"^summary_revoke_key/?$", views.summary_revoke_key, name="summary-revoke-key"
     ),
     path("guided-tour/<tour>", views.toggle_guided_tour),
+    re_path(r"^o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Serves /static when DEBUG is true.

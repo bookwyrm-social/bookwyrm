@@ -16,20 +16,22 @@ from bookwyrm.tests.validate_html import validate_html
 class GroupViews(TestCase):
     """view group and edit details"""
 
-    def setUp(self):  # pylint: disable=invalid-name
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
                 "password",
                 local=True,
                 localname="mouse",
             )
-            self.rat = models.User.objects.create_user(
+            cls.rat = models.User.objects.create_user(
                 "rat@local.com",
                 "rat@rat.rat",
                 "password",
@@ -37,19 +39,22 @@ class GroupViews(TestCase):
                 localname="rat",
             )
 
-        self.testgroup = models.Group.objects.create(
+        cls.testgroup = models.Group.objects.create(
             name="Test Group",
             description="Initial description",
-            user=self.local_user,
+            user=cls.local_user,
             privacy="public",
         )
-        self.membership = models.GroupMember.objects.create(
-            group=self.testgroup, user=self.local_user
+        cls.membership = models.GroupMember.objects.create(
+            group=cls.testgroup, user=cls.local_user
         )
+        models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
-
-        models.SiteSettings.objects.create()
 
     def test_group_get(self, _):
         """there are so many views, this just makes sure it LOADS"""

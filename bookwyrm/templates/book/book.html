@@ -9,7 +9,8 @@
 {% block title %}{{ book|book_title }}{% endblock %}
 
 {% block opengraph %}
-    {% include 'snippets/opengraph.html' with title=book.title description=book|book_description image=book.preview_image %}
+    {% firstof book.preview_image book.cover as book_image %}
+    {% include 'snippets/opengraph.html' with title=book.title description=book|book_description image=book_image %}
 {% endblock %}
 
 {% block content %}
@@ -44,18 +45,22 @@
                     {% endif %}
 
                     {% if book.series %}
-                        <meta itemprop="position" content="{{ book.series_number }}">
+                        {% spaceless %}
                         <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
                         {% if book.authors.exists %}
                             <a href="{% url 'book-series-by' book.authors.first.id %}?series_name={{ book.series | urlencode }}"
                                itemprop="url">
                         {% endif %}
                         <span itemprop="name">{{ book.series }}</span>
-                        {% if book.series_number %} #{{ book.series_number }}{% endif %}
                         {% if book.authors.exists %}
                             </a>
                         {% endif %}
                         </span>
+                        {% if book.series_number %}
+                            <span>, #</span>
+                            <span itemprop="position">{{ book.series_number }}</span>
+                        {% endif %}
+                        {% endspaceless %}
                     {% endif %}
                 </p>
             {% endif %}

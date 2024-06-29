@@ -6,15 +6,16 @@ import responses
 from bookwyrm import models
 from bookwyrm.connectors import abstract_connector, ConnectorException
 from bookwyrm.connectors.abstract_connector import Mapping, get_data
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 
 
 class AbstractConnector(TestCase):
     """generic code for connecting to outside data sources"""
 
-    def setUp(self):
-        """we need an example connector"""
-        self.connector_info = models.Connector.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        """we need an example connector in the database"""
+        models.Connector.objects.create(
             identifier="example.com",
             connector_file="openlibrary",
             base_url="https://example.com",
@@ -22,19 +23,27 @@ class AbstractConnector(TestCase):
             covers_url="https://example.com/covers",
             search_url="https://example.com/search?q=",
         )
+        cls.book = models.Edition.objects.create(
+            title="Test Book",
+            remote_id="https://example.com/book/1234",
+            openlibrary_key="OL1234M",
+        )
+
+    def setUp(self):
+        """test data"""
         work_data = {
             "id": "abc1",
             "title": "Test work",
             "type": "work",
             "openlibraryKey": "OL1234W",
         }
-        self.work_data = work_data
         edition_data = {
             "id": "abc2",
             "title": "Test edition",
             "type": "edition",
             "openlibraryKey": "OL1234M",
         }
+        self.work_data = work_data
         self.edition_data = edition_data
 
         class TestConnector(abstract_connector.AbstractConnector):
@@ -70,12 +79,6 @@ class AbstractConnector(TestCase):
             Mapping("openlibraryKey"),
         ]
 
-        self.book = models.Edition.objects.create(
-            title="Test Book",
-            remote_id="https://example.com/book/1234",
-            openlibrary_key="OL1234M",
-        )
-
     def test_abstract_connector_init(self):
         """barebones connector for search with defaults"""
         self.assertIsInstance(self.connector.book_mappings, list)
@@ -83,7 +86,7 @@ class AbstractConnector(TestCase):
     def test_get_or_create_book_existing(self):
         """find an existing book by remote/origin id"""
         self.assertEqual(models.Book.objects.count(), 1)
-        self.assertEqual(self.book.remote_id, f"https://{DOMAIN}/book/{self.book.id}")
+        self.assertEqual(self.book.remote_id, f"{BASE_URL}/book/{self.book.id}")
         self.assertEqual(self.book.origin_id, "https://example.com/book/1234")
 
         # dedupe by origin id
@@ -92,9 +95,7 @@ class AbstractConnector(TestCase):
         self.assertEqual(result, self.book)
 
         # dedupe by remote id
-        result = self.connector.get_or_create_book(
-            f"https://{DOMAIN}/book/{self.book.id}"
-        )
+        result = self.connector.get_or_create_book(f"{BASE_URL}/book/{self.book.id}")
 
         self.assertEqual(models.Book.objects.count(), 1)
         self.assertEqual(result, self.book)

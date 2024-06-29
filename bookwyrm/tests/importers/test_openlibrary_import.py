@@ -2,7 +2,6 @@
 import pathlib
 from unittest.mock import patch
 import datetime
-import pytz
 
 from django.test import TestCase
 
@@ -13,31 +12,40 @@ from bookwyrm.models.import_job import handle_imported_book
 
 def make_date(*args):
     """helper function to easily generate a date obj"""
-    return datetime.datetime(*args, tzinfo=pytz.UTC)
+    return datetime.datetime(*args, tzinfo=datetime.timezone.utc)
 
 
-# pylint: disable=consider-using-with
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 class OpenLibraryImport(TestCase):
     """importing from openlibrary csv"""
 
-    # pylint: disable=invalid-name
     def setUp(self):
         """use a test csv"""
         self.importer = OpenLibraryImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/openlibrary.csv")
+        # pylint: disable-next=consider-using-with
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+
+    def tearDown(self):
+        """close test csv"""
+        self.csv.close()
+
+    @classmethod
+    def setUpTestData(cls):
+        """populate database"""
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
         models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,

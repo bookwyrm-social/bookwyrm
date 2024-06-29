@@ -152,8 +152,9 @@ class ActivitypubMixin:
         # find anyone who's tagged in a status, for example
         mentions = self.recipients if hasattr(self, "recipients") else []
 
-        # we always send activities to explicitly mentioned users' inboxes
-        recipients = [u.inbox for u in mentions or [] if not u.local]
+        # we always send activities to explicitly mentioned users (using shared inboxes
+        # where available to avoid duplicate submissions to a given instance)
+        recipients = {u.shared_inbox or u.inbox for u in mentions if not u.local}
 
         # unless it's a dm, all the followers should receive the activity
         if privacy != "direct":
@@ -168,23 +169,23 @@ class ActivitypubMixin:
             # filter users first by whether they're using the desired software
             # this lets us send book updates only to other bw servers
             if software:
-                queryset = queryset.filter(bookwyrm_user=(software == "bookwyrm"))
+                queryset = queryset.filter(bookwyrm_user=software == "bookwyrm")
             # if there's a user, we only want to send to the user's followers
             if user:
                 queryset = queryset.filter(following=user)
 
-            # ideally, we will send to shared inboxes for efficiency
-            shared_inboxes = (
-                queryset.filter(shared_inbox__isnull=False)
-                .values_list("shared_inbox", flat=True)
-                .distinct()
+            # as above, we prefer shared inboxes if available
+            recipients.update(
+                queryset.filter(shared_inbox__isnull=False).values_list(
+                    "shared_inbox", flat=True
+                )
             )
-            # but not everyone has a shared inbox
-            inboxes = queryset.filter(shared_inbox__isnull=True).values_list(
-                "inbox", flat=True
+            recipients.update(
+                queryset.filter(shared_inbox__isnull=True).values_list(
+                    "inbox", flat=True
+                )
             )
-            recipients += list(shared_inboxes) + list(inboxes)
-        return list(set(recipients))
+        return list(recipients)
 
     def to_activity_dataclass(self):
         """convert from a model to an activity"""
@@ -205,14 +206,10 @@ class ObjectMixin(ActivitypubMixin):
         created: Optional[bool] = None,
         software: Any = None,
         priority: str = BROADCAST,
+        broadcast: bool = True,
         **kwargs: Any,
     ) -> None:
         """broadcast created/updated/deleted objects as appropriate"""
-        broadcast = kwargs.get("broadcast", True)
-        # this bonus kwarg would cause an error in the base save method
-        if "broadcast" in kwargs:
-            del kwargs["broadcast"]
-
         created = created or not bool(self.id)
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
@@ -602,7 +599,7 @@ def to_ordered_collection_page(
     if activity_page.has_next():
         next_page = f"{remote_id}?page={activity_page.next_page_number()}"
     if activity_page.has_previous():
-        prev_page = f"{remote_id}?page=%d{activity_page.previous_page_number()}"
+        prev_page = f"{remote_id}?page={activity_page.previous_page_number()}"
     return activitypub.OrderedCollectionPage(
         id=f"{remote_id}?page={page}",
         partOf=remote_id,

@@ -8,23 +8,34 @@ def validate_html(html):
     _, errors = tidy_document(
         html.content,
         options={
+            "doctype": "html5",
             "drop-empty-elements": False,
             "warn-proprietary-attributes": False,
         },
     )
-    # idk how else to filter out these unescape amp errs
+    # Tidy's parser is strict when validating unescaped/encoded ampersands found within
+    # the html document that are notpart of a character or entity reference
+    # (eg: `&amp;` or `&#38`). Despite the fact the HTML5 spec no longer recommends
+    # escaping ampersands in URLs, Tidy will still complain if they are used as query
+    # param keys. Unfortunately, there is no way currently to configure tidy to ignore
+    # this so we must explictly redlist related strings that will appear in Tidy's
+    # errors output.
+    #
+    # See further discussion: https://github.com/htacg/tidy-html5/issues/1017
+    excluded = [
+        "&book",
+        "&type",
+        "&resolved",
+        "id and name attribute",
+        "illegal characters found in URI",
+        "escaping malformed URI reference",
+        "&filter",
+    ]
     errors = "\n".join(
-        e
-        for e in errors.split("\n")
-        if "&book" not in e
-        and "&type" not in e
-        and "&resolved" not in e
-        and "id and name attribute" not in e
-        and "illegal characters found in URI" not in e
-        and "escaping malformed URI reference" not in e
+        e for e in errors.split("\n") if not any(exclude in e for exclude in excluded)
     )
     if errors:
-        raise Exception(errors)
+        raise ValueError(errors)
 
     validator = HtmlValidator()
     # will raise exceptions
@@ -51,6 +62,6 @@ class HtmlValidator(HTMLParser):  # pylint: disable=abstract-method
                 and "noreferrer" in value
             ):
                 return
-        raise Exception(
+        raise ValueError(
             'Links to a new tab must have rel="nofollow noopener noreferrer"'
         )

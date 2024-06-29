@@ -16,14 +16,15 @@ from bookwyrm.tests.validate_html import validate_html
 class ImportViews(TestCase):
     """goodreads import views"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
                 "password",
@@ -31,6 +32,10 @@ class ImportViews(TestCase):
                 localname="mouse",
             )
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_import_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -76,13 +81,13 @@ class ImportViews(TestCase):
         form.data["source"] = "Goodreads"
         form.data["privacy"] = "public"
         form.data["include_reviews"] = False
-        csv_file = pathlib.Path(__file__).parent.joinpath("../../data/goodreads.csv")
-        form.data["csv_file"] = SimpleUploadedFile(
-            # pylint: disable=consider-using-with
-            csv_file,
-            open(csv_file, "rb").read(),
-            content_type="text/csv",
-        )
+        csv_path = pathlib.Path(__file__).parent.joinpath("../../data/goodreads.csv")
+        with open(csv_path, "rb") as csv_file:
+            form.data["csv_file"] = SimpleUploadedFile(
+                csv_path,
+                csv_file.read(),
+                content_type="text/csv",
+            )
 
         request = self.factory.post("", form.data)
         request.user = self.local_user
@@ -118,8 +123,8 @@ class ImportViews(TestCase):
         """Give people a sense of the timing"""
         models.ImportJob.objects.create(
             user=self.local_user,
-            created_date=datetime.datetime(2000, 1, 1),
-            updated_date=datetime.datetime(2001, 1, 1),
+            created_date=datetime.datetime(2000, 1, 1, tzinfo=datetime.timezone.utc),
+            updated_date=datetime.datetime(2001, 1, 1, tzinfo=datetime.timezone.utc),
             status="complete",
             complete=True,
             mappings={},

@@ -260,12 +260,12 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
 
         if to == [self.public]:
             setattr(instance, self.name, "public")
+        elif self.public in cc:
+            setattr(instance, self.name, "unlisted")
         elif to == [user.followers_url]:
             setattr(instance, self.name, "followers")
         elif cc == []:
             setattr(instance, self.name, "direct")
-        elif self.public in cc:
-            setattr(instance, self.name, "unlisted")
         else:
             setattr(instance, self.name, "followers")
         return original == getattr(instance, self.name)
@@ -482,7 +482,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         if not url:
             return None
 
-        return activitypub.Document(url=url, name=alt)
+        return activitypub.Image(url=url, name=alt)
 
     def field_from_activity(self, value, allow_external_connections=True):
         image_slug = value

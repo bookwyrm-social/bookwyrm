@@ -120,12 +120,31 @@ def id_to_username(user_id):
     """given an arbitrary remote id, return the username"""
     if user_id:
         url = urlparse(user_id)
-        domain = url.netloc
+        domain = url.hostname
         parts = url.path.split("/")
         name = parts[-1]
         value = f"{name}@{domain}"
 
-    return value
+        return value
+    return _("a new user account")
+
+
+@register.filter(name="get_file_size")
+def get_file_size(nbytes):
+    """display the size of a file in human readable terms"""
+
+    try:
+        raw_size = float(nbytes)
+    except (ValueError, TypeError):
+        return repr(nbytes)
+
+    if raw_size < 1024:
+        return f"{raw_size} bytes"
+    if raw_size < 1024**2:
+        return f"{raw_size/1024:.2f} KB"
+    if raw_size < 1024**3:
+        return f"{raw_size/1024**2:.2f} MB"
+    return f"{raw_size/1024**3:.2f} GB"
 
 
 @register.filter(name="get_user_permission")

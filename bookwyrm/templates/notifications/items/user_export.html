@@ -1,0 +1,15 @@
+{% extends 'notifications/items/layout.html' %}
+{% load i18n %}
+
+{% block primary_link %}{% spaceless %}
+{% url 'prefs-user-export' %}
+{% endspaceless %}{% endblock %}
+
+{% block icon %}
+<span class="icon icon-list"></span>
+{% endblock %}
+
+{% block description %}
+    {% url 'prefs-user-export'  as url %}
+    {% blocktrans %}Your <a href="{{ url }}">user export</a> is ready.{% endblocktrans %}
+{% endblock %}

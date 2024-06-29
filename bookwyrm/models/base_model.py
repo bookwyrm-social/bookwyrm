@@ -10,7 +10,7 @@ from django.http import Http404
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
 
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 from .fields import RemoteIdField
 
 
@@ -38,7 +38,7 @@ class BookWyrmModel(models.Model):
 
     def get_remote_id(self):
         """generate the url that resolves to the local object, without a slug"""
-        base_path = f"https://{DOMAIN}"
+        base_path = BASE_URL
         if hasattr(self, "user"):
             base_path = f"{base_path}{self.user.local_path}"
 
@@ -53,7 +53,7 @@ class BookWyrmModel(models.Model):
     @property
     def local_path(self):
         """how to link to this object in the local app, with a slug"""
-        local = self.get_remote_id().replace(f"https://{DOMAIN}", "")
+        local = self.get_remote_id().replace(BASE_URL, "")
 
         name = None
         if hasattr(self, "name_field"):

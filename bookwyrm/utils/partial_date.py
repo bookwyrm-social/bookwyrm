@@ -67,6 +67,14 @@ class PartialDate(datetime):
         # current_timezone and default_timezone.
         return cls.from_datetime(datetime(year, month, day, tzinfo=_westmost_tz))
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, PartialDate):
+            return NotImplemented
+        return self.partial_isoformat() == other.partial_isoformat()
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__} object: {self.partial_isoformat()}>"
+
 
 class MonthParts(PartialDate):
     """a date bound into month precision"""
@@ -214,17 +222,17 @@ class PartialDateDescriptor:
         return [("DAY", "Day prec."), ("MONTH", "Month prec."), ("YEAR", "Year prec.")]
 
 
-class PartialDateModel(models.DateTimeField):  # type: ignore
+class PartialDateModel(models.DateTimeField):  # type: ignore[type-arg]
     """a date field for Django models, using PartialDate as values"""
 
     descriptor_class = PartialDateDescriptor
 
-    def formfield(self, **kwargs):  # type: ignore
+    def formfield(self, **kwargs):  # type: ignore[no-untyped-def]
         kwargs.setdefault("form_class", PartialDateFormField)
         return super().formfield(**kwargs)
 
-    # pylint: disable-next=arguments-renamed
-    def contribute_to_class(self, model, our_name_in_model, **kwargs):  # type: ignore
+    # pylint: disable-next=arguments-renamed,line-too-long
+    def contribute_to_class(self, model, our_name_in_model, **kwargs):  # type: ignore[no-untyped-def]
         # Define precision field.
         descriptor = self.descriptor_class(self)
         precision: models.Field[Optional[str], Optional[str]] = models.CharField(

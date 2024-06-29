@@ -15,16 +15,10 @@ def naturalday_partial(date, arg=None):
     If arg is a Django-defined format such as "DATE_FORMAT", it will be adjusted
     so that the precision of the PartialDate object is honored.
     """
-    django_formats = ("DATE_FORMAT", "SHORT_DATE_FORMAT", "YEAR_MONTH_FORMAT")
-    if not isinstance(date, PartialDate):
-        return defaultfilters.date(date, arg)
-    if arg is None:
-        arg = "DATE_FORMAT"
-    if date.has_day:
-        fmt = arg
-    elif date.has_month:
-        # there is no SHORT_YEAR_MONTH_FORMAT, so we ignore SHORT_DATE_FORMAT :(
-        fmt = "YEAR_MONTH_FORMAT" if arg == "DATE_FORMAT" else arg
-    else:
-        fmt = "Y" if arg in django_formats else arg
-    return naturalday(date, fmt)
+    if not isinstance(date, PartialDate) or date.has_day:
+        return naturalday(date, arg)
+    if not arg or arg == "DATE_FORMAT":
+        arg = "YEAR_MONTH_FORMAT" if date.has_month else "Y"
+    elif not date.has_month and arg in ("SHORT_DATE_FORMAT", "YEAR_MONTH_FORMAT"):
+        arg = "Y"
+    return defaultfilters.date(date, arg)

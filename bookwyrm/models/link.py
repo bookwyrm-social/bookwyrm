@@ -1,4 +1,5 @@
 """ outlink data """
+from typing import Optional, Iterable
 from urllib.parse import urlparse
 
 from django.core.exceptions import PermissionDenied
@@ -6,6 +7,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import activitypub
+from bookwyrm.utils.db import add_update_fields
 from .activitypub_mixin import ActivitypubMixin
 from .base_model import BookWyrmModel
 from . import fields
@@ -34,17 +36,19 @@ class Link(ActivitypubMixin, BookWyrmModel):
         """link name via the associated domain"""
         return self.domain.name
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
         """create a link"""
         # get or create the associated domain
         if not self.domain:
-            domain = urlparse(self.url).netloc
+            domain = urlparse(self.url).hostname
             self.domain, _ = LinkDomain.objects.get_or_create(domain=domain)
+            update_fields = add_update_fields(update_fields, "domain")
 
         # this is never broadcast, the owning model broadcasts an update
         if "broadcast" in kwargs:
             del kwargs["broadcast"]
-        return super().save(*args, **kwargs)
+
+        super().save(*args, update_fields=update_fields, **kwargs)
 
 
 AvailabilityChoices = [
@@ -88,8 +92,10 @@ class LinkDomain(BookWyrmModel):
             return
         raise PermissionDenied()
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
         """set a default name"""
         if not self.name:
             self.name = self.domain
-        super().save(*args, **kwargs)
+            update_fields = add_update_fields(update_fields, "name")
+
+        super().save(*args, update_fields=update_fields, **kwargs)

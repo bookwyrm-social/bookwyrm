@@ -1,12 +1,9 @@
 """ testing models """
-from io import BytesIO
 import pathlib
 
 import pytest
 
 from dateutil.parser import parse
-from PIL import Image
-from django.core.files.base import ContentFile
 from django.test import TestCase
 from django.utils import timezone
 
@@ -18,22 +15,23 @@ from bookwyrm.settings import ENABLE_THUMBNAIL_GENERATION
 class Book(TestCase):
     """not too much going on in the books model but here we are"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we'll need some books"""
-        self.work = models.Work.objects.create(
+        cls.work = models.Work.objects.create(
             title="Example Work", remote_id="https://example.com/book/1"
         )
-        self.first_edition = models.Edition.objects.create(
-            title="Example Edition", parent_work=self.work
+        cls.first_edition = models.Edition.objects.create(
+            title="Example Edition", parent_work=cls.work
         )
-        self.second_edition = models.Edition.objects.create(
+        cls.second_edition = models.Edition.objects.create(
             title="Another Example Edition",
-            parent_work=self.work,
+            parent_work=cls.work,
         )
 
     def test_remote_id(self):
         """fanciness with remote/origin ids"""
-        remote_id = f"https://{settings.DOMAIN}/book/{self.work.id}"
+        remote_id = f"{settings.BASE_URL}/book/{self.work.id}"
         self.assertEqual(self.work.get_remote_id(), remote_id)
         self.assertEqual(self.work.remote_id, remote_id)
 
@@ -129,15 +127,13 @@ class Book(TestCase):
     )
     def test_thumbnail_fields(self):
         """Just hit them"""
-        image_file = pathlib.Path(__file__).parent.joinpath(
+        image_path = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
         )
-        image = Image.open(image_file)
-        output = BytesIO()
-        image.save(output, format=image.format)
 
         book = models.Edition.objects.create(title="hello")
-        book.cover.save("test.jpg", ContentFile(output.getvalue()))
+        with open(image_path, "rb") as image_file:
+            book.cover.save("test.jpg", image_file)
 
         self.assertIsNotNone(book.cover_bw_book_xsmall_webp.url)
         self.assertIsNotNone(book.cover_bw_book_xsmall_jpg.url)

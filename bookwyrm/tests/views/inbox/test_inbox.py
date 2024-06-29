@@ -15,15 +15,27 @@ from bookwyrm import models, views
 class Inbox(TestCase):
     """readthrough tests"""
 
-    # pylint: disable=invalid-name
     def setUp(self):
-        """basic user and book data"""
+        """individual test setup"""
         self.client = Client()
         self.factory = RequestFactory()
+        self.create_json = {
+            "id": "hi",
+            "type": "Create",
+            "actor": "hi",
+            "to": ["https://www.w3.org/ns/activitystreams#public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            "object": {},
+        }
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+    @classmethod
+    def setUpTestData(cls):
+        """basic user and book data"""
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -34,7 +46,7 @@ class Inbox(TestCase):
         local_user.remote_id = "https://example.com/user/mouse"
         local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -43,14 +55,6 @@ class Inbox(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        self.create_json = {
-            "id": "hi",
-            "type": "Create",
-            "actor": "hi",
-            "to": ["https://www.w3.org/ns/activitystreams#public"],
-            "cc": ["https://example.com/user/mouse/followers"],
-            "object": {},
-        }
         models.SiteSettings.objects.create()
 
     def test_inbox_invalid_get(self):
@@ -130,7 +134,10 @@ class Inbox(TestCase):
         """check for blocked servers"""
         request = self.factory.post(
             "",
-            HTTP_USER_AGENT="http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
+            headers={
+                # pylint: disable-next=line-too-long
+                "user-agent": "http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
+            },
         )
         self.assertIsNone(views.inbox.raise_is_blocked_user_agent(request))
 

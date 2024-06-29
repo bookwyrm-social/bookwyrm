@@ -19,20 +19,7 @@
     </h1>
 </header>
 {% if user.moved_to %}
-<div class="container my-6">
-    <div class="notification is-info has-text-centered">
-        <p>
-            {% trans "You have have moved to" %}
-            <a href="{{user.moved_to}}">{% id_to_username user.moved_to %}</a>
-        </p>
-        <p> {% trans "You can undo this move to restore full functionality, but some followers may have already unfollowed this account." %}</p>
-        <form name="remove-alias" action="{% url 'prefs-unmove' %}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="remote_id" id="remote_id" value="{{user.moved_to}}">
-            <button type="submit" class="button is-small">{% trans "Undo move" %}</button>
-        </form>
-    </div>
-</div>
+    {% include "snippets/moved_user_notice.html" with user=user %}
 {% else %}
 <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
     <ul>
@@ -114,7 +101,6 @@
                     {% plural %}
                         {{ formatted_count }} books
                     {% endblocktrans %}
-
                     {% if books.has_other_pages %}
                         {% blocktrans trimmed with start=books.start_index end=books.end_index %}
                         (showing {{ start }}-{{ end }})
@@ -124,6 +110,8 @@
                 {% endif %}
                 {% endwith %}
             </h2>
+            {% include 'shelf/shelves_filters.html' with user=user query=query %}
+
         </div>
         {% if is_self and shelf.id %}
         <div class="column is-narrow">
@@ -222,7 +210,17 @@
             </tbody>
         </table>
         {% else %}
-        <p><em>{% trans "This shelf is empty." %}</em></p>
+        <p>
+            <em>
+                {% if shelves_filter_query %}
+                    {% blocktrans trimmed %}
+                        We couldn't find any books that matched {{ shelves_filter_query }}
+                    {% endblocktrans %}
+                {% else %}
+                    {% trans "This shelf is empty." %}
+                {% endif %}
+            </em>
+        </p>
         {% endif %}
 
     </div>
