@@ -16,6 +16,7 @@ from django.views import View
 from bookwyrm import forms, models
 from bookwyrm.importers import (
     BookwyrmImporter,
+    BookwyrmBooksImporter,
     CalibreImporter,
     LibrarythingImporter,
     GoodreadsImporter,
@@ -105,8 +106,8 @@ class Import(View):
                 request.user,
                 TextIOWrapper(request.FILES["csv_file"], encoding=importer.encoding),
                 include_reviews,
-                create_shelves,
                 privacy,
+                create_shelves,
             )
         except (UnicodeDecodeError, ValueError, KeyError):
             return self.get(request, invalid=True)

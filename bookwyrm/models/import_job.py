@@ -375,7 +375,7 @@ def import_item_task(item_id):
     item.update_job()
 
 
-def handle_imported_book(item):
+def handle_imported_book(item):  # pylint: disable=too-many-branches
     """process a csv and then post about it"""
     job = item.job
     if job.complete:
@@ -392,39 +392,32 @@ def handle_imported_book(item):
         item.book = item.book.edition
 
     existing_shelf = ShelfBook.objects.filter(book=item.book, user=user).exists()
-
-    # shelve the book if it hasn't been shelved already
-    if item.shelf and not existing_shelf:
+    if job.create_shelves and item.shelf and not existing_shelf:
+        # shelve the book if it hasn't been shelved already
 
         shelved_date = item.date_added or timezone.now()
+        shelfname = getattr(item, "shelf_name", item.shelf)
 
         try:
-
-            desired_shelf = Shelf.objects.get(identifier=item.shelf, user=user)
-            shelved_date = item.date_added or timezone.now()
-            ShelfBook(
-                book=item.book,
-                shelf=desired_shelf,
-                user=user,
-                shelved_date=shelved_date,
-            ).save(priority=IMPORT_TRIGGERED)
-
+            shelf = Shelf.objects.get(name=shelfname, user=user)
         except ObjectDoesNotExist:
-            if job.create_shelves:
-                shelfname = getattr(item, "shelf_name", item.shelf)
-                new_shelf = Shelf.objects.create(
+            try:
+                shelf = Shelf.objects.get(identifier=item.shelf, user=user)
+            except ObjectDoesNotExist:
+
+                shelf = Shelf.objects.create(
                     user=user,
                     identifier=item.shelf,
                     name=shelfname,
                     privacy=job.privacy,
                 )
 
-                ShelfBook(
-                    book=item.book,
-                    shelf=new_shelf,
-                    user=user,
-                    shelved_date=shelved_date,
-                ).save(priority=IMPORT_TRIGGERED)
+        ShelfBook(
+            book=item.book,
+            shelf=shelf,
+            user=user,
+            shelved_date=shelved_date,
+        ).save(priority=IMPORT_TRIGGERED)
 
     for read in item.reads:
         # check for an existing readthrough with the same dates
