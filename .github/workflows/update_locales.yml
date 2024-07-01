@@ -1,0 +1,37 @@
+name: Update locales
+
+on:
+  push:
+    # run this workflow when someone pushes to the l10n_main branch
+    branches: [ l10n_main ]
+
+jobs:
+  update_locales:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: main
+    # Create the mock file for the update_locales command to work, otherwise
+    # we'll get an 'no such file' error
+    - name: Create mock .env file
+      run: echo "DEBUG=true" > .env
+
+    - name: Run update_locales command
+      run: ./bw-dev update_locales
+
+    - name: Create commit
+      run: |
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git config user.name "github-actions[bot]"
+        git add -A
+        git commit -a -m "[GitHub Action] Update locales"
+
+    - name: Push to main branch
+      # we rebase it first, in case there was a push to main while running
+      # update_locales above
+      run: |
+        git pull --rebase
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
