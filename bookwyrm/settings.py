@@ -368,6 +368,9 @@ else:
 BASE_URL = f"{PROTOCOL}://{NETLOC}"
 CSRF_TRUSTED_ORIGINS = [BASE_URL]
 
+if DEBUG:
+    CORS_ORIGIN_WHITELIST = [BASE_URL]
+
 USER_AGENT = f"BookWyrm (BookWyrm/{VERSION}; +{BASE_URL})"
 
 # Storage
