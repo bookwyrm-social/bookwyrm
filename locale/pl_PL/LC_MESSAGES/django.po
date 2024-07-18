@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-07-18 14:54\n"
+"PO-Revision-Date: 2024-07-18 17:26\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -636,7 +636,7 @@ msgstr "Regulamin"
 #: bookwyrm/templates/about/layout.html:54
 #: bookwyrm/templates/snippets/footer.html:34
 msgid "Impressum"
-msgstr ""
+msgstr "Impressum"
 
 #: bookwyrm/templates/about/layout.html:11
 msgid "Active users:"
@@ -749,10 +749,10 @@ msgstr "Przekłada się to na średnio %(pages)s stron na książkę."
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] "(Nie mamy informacji o liczbie stron dla książki %(no_page_number)s)"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "(Brak informacji o liczbie stron dla %(no_page_number)s książki)"
+msgstr[1] "(Brak informacji o liczbie stron dla %(no_page_number)s książek)"
+msgstr[2] "(Brak informacji o liczbie stron dla %(no_page_number)s książek)"
+msgstr[3] "(Brak informacji o liczbie stron dla %(no_page_number)s książek)"
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -934,7 +934,7 @@ msgstr "Odnośnik do Wikipedii:"
 
 #: bookwyrm/templates/author/edit_author.html:58
 msgid "Wikidata:"
-msgstr ""
+msgstr "Wikidata:"
 
 #: bookwyrm/templates/author/edit_author.html:62
 msgid "Website:"
@@ -3219,75 +3219,75 @@ msgstr "Nadpisuje:"
 
 #: bookwyrm/templates/import/import_user.html:86
 msgid "Whether manual approval is required for other users to follow your account"
-msgstr ""
+msgstr "Czy wymagana jest ręczna weryfikacja osób chcących obserwować twoje konto"
 
 #: bookwyrm/templates/import/import_user.html:89
 msgid "Whether following/followers are shown on your profile"
-msgstr ""
+msgstr "Czy obserwowani/obserwujący mają być wyświetlani na twoim profilu"
 
 #: bookwyrm/templates/import/import_user.html:92
 msgid "Whether your reading goal is shown on your profile"
-msgstr ""
+msgstr "Czy twój cel czytania ma być wyświetlany na twoim profilu"
 
 #: bookwyrm/templates/import/import_user.html:95
 msgid "Whether you see user follow suggestions"
-msgstr ""
+msgstr "Czy chcesz widzieć sugestie obserwowania"
 
 #: bookwyrm/templates/import/import_user.html:98
 msgid "Whether your account is suggested to others"
-msgstr ""
+msgstr "Czy twoje konto ma być sugerowane pozostałym"
 
 #: bookwyrm/templates/import/import_user.html:101
 msgid "Your timezone"
-msgstr ""
+msgstr "Twoja strefa czasowa"
 
 #: bookwyrm/templates/import/import_user.html:104
 msgid "Your default post privacy setting"
-msgstr ""
+msgstr "Twoje domyślne ustawienie prywatności wpisów"
 
 #: bookwyrm/templates/import/import_user.html:112
 msgid "Followers and following"
-msgstr ""
+msgstr "Obserwowani i obserwujący"
 
 #: bookwyrm/templates/import/import_user.html:116
 msgid "User blocks"
-msgstr ""
+msgstr "Blokowanie osób"
 
 #: bookwyrm/templates/import/import_user.html:123
 #: bookwyrm/templates/preferences/export-user.html:22
 msgid "Reading goals"
-msgstr ""
+msgstr "Cele czytania"
 
 #: bookwyrm/templates/import/import_user.html:126
 msgid "Overwrites reading goals for all years listed in the import file"
-msgstr ""
+msgstr "Nadpisuje cele czytania dla wszystkich lat zawartych w pliku importu"
 
 #: bookwyrm/templates/import/import_user.html:130
 #: bookwyrm/templates/preferences/export-user.html:23
 msgid "Shelves"
-msgstr ""
+msgstr "Półki"
 
 #: bookwyrm/templates/import/import_user.html:133
 #: bookwyrm/templates/preferences/export-user.html:24
 msgid "Reading history"
-msgstr ""
+msgstr "Historia czytania"
 
 #: bookwyrm/templates/import/import_user.html:136
 #: bookwyrm/templates/preferences/export-user.html:25
 msgid "Book reviews"
-msgstr ""
+msgstr "Recenzje książek"
 
 #: bookwyrm/templates/import/import_user.html:142
 msgid "Comments about books"
-msgstr ""
+msgstr "Komentarze o książkach"
 
 #: bookwyrm/templates/import/import_user.html:145
 msgid "Book lists"
-msgstr ""
+msgstr "Listy książek"
 
 #: bookwyrm/templates/import/import_user.html:148
 msgid "Saved lists"
-msgstr ""
+msgstr "Zapisane listy"
 
 #: bookwyrm/templates/import/manual_review.html:5
 #: bookwyrm/templates/import/troubleshoot.html:4
@@ -3296,7 +3296,7 @@ msgstr "Rozwiązywanie problemów z importowaniem"
 
 #: bookwyrm/templates/import/manual_review.html:21
 msgid "Approving a suggestion will permanently add the suggested book to your shelves and associate your reading dates, reviews, and ratings with that book."
-msgstr ""
+msgstr "Zatwierdzenie sugestii spowoduje dodanie na stałe sugerowanej książki do twoich półek oraz powiązanie daty czytania, recenzji i ocen z tą książką."
 
 #: bookwyrm/templates/import/manual_review.html:58
 #: bookwyrm/templates/lists/curate.html:71
@@ -3311,11 +3311,11 @@ msgstr "Odrzuć"
 #: bookwyrm/templates/import/troubleshoot.html:7
 #: bookwyrm/templates/settings/imports/imports.html:220
 msgid "Failed items"
-msgstr ""
+msgstr "Elementy z błędami"
 
 #: bookwyrm/templates/import/troubleshoot.html:12
 msgid "Troubleshooting"
-msgstr ""
+msgstr "Rozwiązywanie problemów"
 
 #: bookwyrm/templates/import/troubleshoot.html:20
 msgid "Re-trying an import can fix missing items in cases such as:"
@@ -3327,11 +3327,11 @@ msgstr "Książka została dodana do tej instancji od czasu tego importu"
 
 #: bookwyrm/templates/import/troubleshoot.html:24
 msgid "A transient error or timeout caused the external data source to be unavailable."
-msgstr ""
+msgstr "Tymczasowy błąd lub przekroczenie czasu połączenia spowodowały brak dostępu do zewnętrznego źródła danych."
 
 #: bookwyrm/templates/import/troubleshoot.html:25
 msgid "BookWyrm has been updated since this import with a bug fix"
-msgstr ""
+msgstr "BookWyrm zostało zaktualizowane z poprawką od czasu tego importu"
 
 #: bookwyrm/templates/import/troubleshoot.html:28
 msgid "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items."
