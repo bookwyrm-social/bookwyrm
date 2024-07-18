@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-07-18 13:15\n"
+"PO-Revision-Date: 2024-07-18 14:54\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -158,7 +158,7 @@ msgstr "Usunięte samodzielnie"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Self deactivation"
-msgstr "Automatyczna dezaktywacja"
+msgstr "Dezaktywowane samodzielnie"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Moderator suspension"
@@ -196,7 +196,7 @@ msgstr "Miękka oprawa"
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
 #: bookwyrm/templates/settings/federation/instance_list.html:22
 msgid "Federated"
-msgstr "Federacja"
+msgstr "Sfederowane"
 
 #: bookwyrm/models/federated_server.py:12 bookwyrm/models/link.py:71
 #: bookwyrm/templates/settings/federation/edit_instance.html:56
@@ -223,7 +223,7 @@ msgstr "nazwa użytkownika"
 
 #: bookwyrm/models/fields.py:203
 msgid "A user with that username already exists."
-msgstr "Ta nazwa użytkownika jest już w użyciu."
+msgstr "Ta nazwa użytkownika jest już używana."
 
 #: bookwyrm/models/fields.py:222
 #: bookwyrm/templates/snippets/privacy-icons.html:3
@@ -366,31 +366,31 @@ msgstr "Usunięty element"
 #: bookwyrm/models/status.py:186
 #, python-format
 msgid "%(display_name)s's status"
-msgstr ""
+msgstr "Status %(display_name)s"
 
 #: bookwyrm/models/status.py:361
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
-msgstr ""
+msgstr "%(display_name)s komentuje %(book_title)s"
 
 #: bookwyrm/models/status.py:412
 #, python-format
 msgid "%(display_name)s's quote from %(book_title)s"
-msgstr ""
+msgstr "%(display_name)s cytuje %(book_title)s"
 
 #: bookwyrm/models/status.py:448
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
-msgstr ""
+msgstr "%(display_name)s ocenia %(book_title)s"
 
 #: bookwyrm/models/status.py:479
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%(display_name)s ocenia %(book_title)s: %(display_rating).1f gwiazdka"
+msgstr[1] "%(display_name)s ocenia %(book_title)s: %(display_rating).1f gwiazdki"
+msgstr[2] "%(display_name)s ocenia %(book_title)s: %(display_rating).1f gwiazdek"
+msgstr[3] "%(display_name)s ocenia %(book_title)s: %(display_rating).1f gwiazdek"
 
 #: bookwyrm/models/user.py:33 bookwyrm/templates/book/book.html:312
 msgid "Reviews"
@@ -434,55 +434,55 @@ msgstr "English (Angielski)"
 
 #: bookwyrm/settings.py:318
 msgid "Català (Catalan)"
-msgstr "Català (Kataloński)"
+msgstr "Català (kataloński)"
 
 #: bookwyrm/settings.py:319
 msgid "Deutsch (German)"
-msgstr "Deutsch (Niemiecki)"
+msgstr "Deutsch (niemiecki)"
 
 #: bookwyrm/settings.py:320
 msgid "Esperanto (Esperanto)"
-msgstr "Esperanto (Esperanto)"
+msgstr "Esperanto (esperanto)"
 
 #: bookwyrm/settings.py:321
 msgid "Español (Spanish)"
-msgstr "Español (Hiszpański)"
+msgstr "Español (hiszpański)"
 
 #: bookwyrm/settings.py:322
 msgid "Euskara (Basque)"
-msgstr "Euskara (Baskijski)"
+msgstr "Euskara (baskijski)"
 
 #: bookwyrm/settings.py:323
 msgid "Galego (Galician)"
-msgstr "Galego (Galicyjski)"
+msgstr "Galego (galicyjski)"
 
 #: bookwyrm/settings.py:324
 msgid "Italiano (Italian)"
-msgstr "Italiano (Włoski)"
+msgstr "Italiano (włoski)"
 
 #: bookwyrm/settings.py:325
 msgid "한국어 (Korean)"
-msgstr ""
+msgstr "한국어 (koreański)"
 
 #: bookwyrm/settings.py:326
 msgid "Suomi (Finnish)"
-msgstr "Suomi (Fiński)"
+msgstr "Suomi (fiński)"
 
 #: bookwyrm/settings.py:327
 msgid "Français (French)"
-msgstr "Français (Francuski)"
+msgstr "Français (francuski)"
 
 #: bookwyrm/settings.py:328
 msgid "Lietuvių (Lithuanian)"
-msgstr "Lietuvių (Litewski)"
+msgstr "Lietuvių (litewski)"
 
 #: bookwyrm/settings.py:329
 msgid "Nederlands (Dutch)"
-msgstr "Holenderski"
+msgstr "Nederlands (holenderski)"
 
 #: bookwyrm/settings.py:330
 msgid "Norsk (Norwegian)"
-msgstr "Norsk (Norweski)"
+msgstr "Norsk (norweski)"
 
 #: bookwyrm/settings.py:331
 msgid "Polski (Polish)"
@@ -490,31 +490,31 @@ msgstr "polski"
 
 #: bookwyrm/settings.py:332
 msgid "Português do Brasil (Brazilian Portuguese)"
-msgstr "Português do Brasil (Brazylijski Portugalski)"
+msgstr "Português do Brasil (portugalski — Brazylia)"
 
 #: bookwyrm/settings.py:333
 msgid "Português Europeu (European Portuguese)"
-msgstr "Português Europeu (Portugalski)"
+msgstr "Português Europeu (portugalski — Portugalia)"
 
 #: bookwyrm/settings.py:334
 msgid "Română (Romanian)"
-msgstr "Română (Rumuński)"
+msgstr "Română (rumuński)"
 
 #: bookwyrm/settings.py:335
 msgid "Svenska (Swedish)"
-msgstr "Svenska (Szwedzki)"
+msgstr "Svenska (szwedzki)"
 
 #: bookwyrm/settings.py:336
 msgid "Українська (Ukrainian)"
-msgstr "Українська (Ukraiński)"
+msgstr "Українська (ukraiński)"
 
 #: bookwyrm/settings.py:337
 msgid "简体中文 (Simplified Chinese)"
-msgstr "简体中文 (Uproszczony chiński)"
+msgstr "简体中文 (chiński — uproszczony)"
 
 #: bookwyrm/settings.py:338
 msgid "繁體中文 (Traditional Chinese)"
-msgstr "繁體中文 (Tradycyjny chiński)"
+msgstr "繁體中文 (chiński — tradycyjny)"
 
 #: bookwyrm/templates/403.html:5
 msgid "Oh no!"
@@ -551,7 +551,7 @@ msgstr "Przesyłany plik jest za duży."
 
 #: bookwyrm/templates/413.html:11
 msgid "You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting."
-msgstr ""
+msgstr "Możesz spróbować użyć mniejszego pliku lub zapytać administratora swojego serwera BookWyrm o zwiększenie wartości ustawienia <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code>."
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -563,7 +563,7 @@ msgstr "Błąd serwera"
 
 #: bookwyrm/templates/500.html:9
 msgid "Something went wrong! Sorry about that."
-msgstr "Coś poszło nie tak! Przepraszamy za to."
+msgstr "Coś poszło nie tak! Przykro nam."
 
 #: bookwyrm/templates/about/about.html:9
 #: bookwyrm/templates/about/layout.html:35
@@ -574,7 +574,7 @@ msgstr "Informacje"
 #: bookwyrm/templates/get_started/layout.html:22
 #, python-format
 msgid "Welcome to %(site_name)s!"
-msgstr "Witaj na %(site_name)s!"
+msgstr "Witaj w %(site_name)s!"
 
 #: bookwyrm/templates/about/about.html:25
 #, python-format
