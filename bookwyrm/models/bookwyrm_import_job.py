@@ -182,7 +182,7 @@ def upsert_statuses(user, cls, data, book_remote_id):
 
     for status in data:
         if is_alias(
-            user, status["attributedTo"]
+            user, status.get("attributedTo", False)
         ):  # don't let l33t hax0rs steal other people's posts
             # update ids and remove replies
             status["attributedTo"] = user.remote_id
@@ -215,7 +215,9 @@ def upsert_statuses(user, cls, data, book_remote_id):
                 instance.save()  # save and broadcast
 
         else:
-            logger.warning("User does not have permission to import statuses")
+            logger.warning(
+                "User does not have permission to import statuses, or status is tombstone"
+            )
 
 
 def upsert_lists(user, lists, book_id):
@@ -436,16 +438,19 @@ def is_alias(user, remote_id):
     """check that the user is listed as movedTo or also_known_as
     in the remote user's profile"""
 
+    if not remote_id:
+        return False
+
     remote_user = activitypub.resolve_remote_id(
         remote_id=remote_id, model=models.User, save=False
     )
 
     if remote_user:
 
-        if remote_user.moved_to:
+        if hasattr(remote_user, "moved_to"):
             return user.remote_id == remote_user.moved_to
 
-        if remote_user.also_known_as:
+        if hasattr(remote_user, "also_known_as"):
             return user in remote_user.also_known_as.all()
 
     return False
