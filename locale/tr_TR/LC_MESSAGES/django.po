@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-07-23 11:51\n"
+"PO-Revision-Date: 2024-07-23 13:22\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Turkish\n"
 "Language: tr\n"
@@ -549,7 +549,7 @@ msgstr "Yüklediğiniz dosya çok büyük."
 
 #: bookwyrm/templates/413.html:11
 msgid "You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting."
-msgstr ""
+msgstr "Daha küçük bir dosya kullanmay deneyebilirı ya da BookWyrm serveri yöneticisine <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> ayarını yükseltmesi için ulaşabilirsiniz."
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -667,17 +667,17 @@ msgstr "Gizlilik Politikası"
 #: bookwyrm/templates/feed/summary_card.html:8
 #, python-format
 msgid "%(year)s in the books"
-msgstr ""
+msgstr "Kitaplarla %(year)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:43
 #, python-format
 msgid "%(year)s <em>in the books</em>"
-msgstr ""
+msgstr "%(year)s <em>kitaplarla</em>"
 
 #: bookwyrm/templates/annual_summary/layout.html:47
 #, python-format
 msgid "<em>%(display_name)s’s</em> year of reading"
-msgstr ""
+msgstr "<em>%(display_name)s</em> kitaplarla bu senesi"
 
 #: bookwyrm/templates/annual_summary/layout.html:53
 msgid "Share this page"
@@ -745,8 +745,8 @@ msgstr "Bu ortalamada kitap başına %(pages)s sayfa."
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%(no_page_number)s kitabı için bir sayfa mevcut değil)"
+msgstr[1] "(%(no_page_number)s kitapları için bir sayfa mevcut değil)"
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -776,88 +776,88 @@ msgstr "…ve en uzun"
 #, python-format
 msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_name)s %(year)s yılında %(goal)s kitap okuma hedefi koydu,<br /> ve bu hedefin %(goal_percent)s%% kadarını gerçekleştirdi"
+msgstr[1] "%(display_name)s %(year)s yılında %(goal)s kitap okuma hedefi koydu,<br /> ve bu hedefin %(goal_percent)s%% kadarını gerçekleştirdi"
 
 #: bookwyrm/templates/annual_summary/layout.html:211
 msgid "Way to go!"
-msgstr ""
+msgstr "Harikasın!"
 
 #: bookwyrm/templates/annual_summary/layout.html:226
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_name)s %(ratings_total)s kere puanlama yaptı, <br />ortalama puanı %(rating_average)s"
+msgstr[1] "%(display_name)s %(ratings_total)s kere puanlama yaptı, <br />ortalama puanı %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:240
 msgid "Their best rated review"
-msgstr ""
+msgstr "En yüksek puanlı incelemesi"
 
 #: bookwyrm/templates/annual_summary/layout.html:253
 #, python-format
 msgid "Their rating: <strong>%(rating)s</strong>"
-msgstr ""
+msgstr "Puanı: <strong>%(rating)s</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:270
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
-msgstr ""
+msgstr "%(display_name)s kullanıcısının %(year)s yılında okuduğu tüm kitaplar"
 
 #: bookwyrm/templates/author/author.html:19
 #: bookwyrm/templates/author/author.html:20
 msgid "Edit Author"
-msgstr ""
+msgstr "Yazarı Düzenle"
 
 #: bookwyrm/templates/author/author.html:36
 msgid "Author details"
-msgstr ""
+msgstr "Yazar detayları"
 
 #: bookwyrm/templates/author/author.html:40
 #: bookwyrm/templates/author/edit_author.html:42
 msgid "Aliases:"
-msgstr ""
+msgstr "Diğer Adlar:"
 
 #: bookwyrm/templates/author/author.html:49
 msgid "Born:"
-msgstr ""
+msgstr "Doğum:"
 
 #: bookwyrm/templates/author/author.html:56
 msgid "Died:"
-msgstr ""
+msgstr "Ölüm:"
 
 #: bookwyrm/templates/author/author.html:66
 msgid "External links"
-msgstr ""
+msgstr "Harici bağlantılar"
 
 #: bookwyrm/templates/author/author.html:71
 msgid "Wikipedia"
-msgstr ""
+msgstr "Vikipedi"
 
 #: bookwyrm/templates/author/author.html:79
 msgid "Website"
-msgstr ""
+msgstr "Web sitesi"
 
 #: bookwyrm/templates/author/author.html:87
 msgid "View ISNI record"
-msgstr ""
+msgstr "ISNI kaydını gör"
 
 #: bookwyrm/templates/author/author.html:95
 #: bookwyrm/templates/book/book.html:180
 msgid "View on ISFDB"
-msgstr ""
+msgstr "ISFDB'de gör"
 
 #: bookwyrm/templates/author/author.html:100
 #: bookwyrm/templates/author/sync_modal.html:5
 #: bookwyrm/templates/book/book.html:147
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
-msgstr ""
+msgstr "Veri yükle"
 
 #: bookwyrm/templates/author/author.html:104
 #: bookwyrm/templates/book/book.html:151
 msgid "View on OpenLibrary"
-msgstr ""
+msgstr "OpenLibrary'de aç"
 
 #: bookwyrm/templates/author/author.html:119
 #: bookwyrm/templates/book/book.html:165
@@ -1148,58 +1148,58 @@ msgstr ""
 
 #: bookwyrm/templates/book/book_identifiers.html:8
 msgid "ISBN:"
-msgstr ""
+msgstr "ISBN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:12
 #: bookwyrm/templates/book/book_identifiers.html:13
 msgid "Copy ISBN"
-msgstr ""
+msgstr "ISBN kopyala"
 
 #: bookwyrm/templates/book/book_identifiers.html:16
 msgid "Copied ISBN!"
-msgstr ""
+msgstr "ISBN kopyalandı!"
 
 #: bookwyrm/templates/book/book_identifiers.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:352
 msgid "OCLC Number:"
-msgstr ""
+msgstr "OCLC Sayısı:"
 
 #: bookwyrm/templates/book/book_identifiers.html:30
 #: bookwyrm/templates/book/edit/edit_book_form.html:361
 msgid "ASIN:"
-msgstr ""
+msgstr "ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:37
 #: bookwyrm/templates/book/edit/edit_book_form.html:370
 msgid "Audible ASIN:"
-msgstr ""
+msgstr "Sesli ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:44
 #: bookwyrm/templates/book/edit/edit_book_form.html:379
 msgid "ISFDB ID:"
-msgstr ""
+msgstr "ISFDB ID:"
 
 #: bookwyrm/templates/book/book_identifiers.html:51
 msgid "Goodreads:"
-msgstr ""
+msgstr "Goodreads:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
-msgstr ""
+msgstr "Kapak resmi ekle"
 
 #: bookwyrm/templates/book/cover_add_modal.html:17
 #: bookwyrm/templates/book/edit/edit_book_form.html:244
 msgid "Upload cover:"
-msgstr ""
+msgstr "Kapak resmi yükle:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:250
 msgid "Load cover from URL:"
-msgstr ""
+msgstr "URL ile kapak resmi yükle:"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
 msgid "Book cover preview"
-msgstr ""
+msgstr "Kitap kapağı önizlemesi"
 
 #: bookwyrm/templates/book/cover_show_modal.html:11
 #: bookwyrm/templates/components/inline_form.html:8
@@ -1209,62 +1209,62 @@ msgstr ""
 #: bookwyrm/templates/get_started/layout.html:27
 #: bookwyrm/templates/get_started/layout.html:60
 msgid "Close"
-msgstr ""
+msgstr "Kapat"
 
 #: bookwyrm/templates/book/edit/edit_book.html:8
 #: bookwyrm/templates/book/edit/edit_book.html:18
 #, python-format
 msgid "Edit \"%(book_title)s\""
-msgstr ""
+msgstr "Düzenle \"%(book_title)s\""
 
 #: bookwyrm/templates/book/edit/edit_book.html:10
 #: bookwyrm/templates/book/edit/edit_book.html:20
 msgid "Add Book"
-msgstr ""
+msgstr "Kitap Ekle"
 
 #: bookwyrm/templates/book/edit/edit_book.html:43
 msgid "Failed to save book, see errors below for more information."
-msgstr ""
+msgstr "Kitap kaydetme başarısız oldu, daha fazla bilgi için hata raporuna bakın."
 
 #: bookwyrm/templates/book/edit/edit_book.html:70
 msgid "Confirm Book Info"
-msgstr ""
+msgstr "Kitap Bilgisni Onayla"
 
 #: bookwyrm/templates/book/edit/edit_book.html:78
 #, python-format
 msgid "Is \"%(name)s\" one of these authors?"
-msgstr ""
+msgstr "\"%(name)s\" yazarlardan biri mi?"
 
 #: bookwyrm/templates/book/edit/edit_book.html:89
 #, python-format
 msgid "Author of <em>%(book_title)s</em>"
-msgstr ""
+msgstr "<em>%(book_title)s</em> kitabının yazarı"
 
 #: bookwyrm/templates/book/edit/edit_book.html:93
 #, python-format
 msgid "Author of <em>%(alt_title)s</em>"
-msgstr ""
+msgstr "<em>%(alt_title)s</em> kitabının yazarı"
 
 #: bookwyrm/templates/book/edit/edit_book.html:95
 msgid "Find more information at isni.org"
-msgstr ""
+msgstr "Daha fazla bilgi için isni.org sitesine bakın"
 
 #: bookwyrm/templates/book/edit/edit_book.html:105
 msgid "This is a new author"
-msgstr ""
+msgstr "Bu yeni bir yazar"
 
 #: bookwyrm/templates/book/edit/edit_book.html:115
 #, python-format
 msgid "Creating a new author: %(name)s"
-msgstr ""
+msgstr "Yeni yazar oluşturuluyor: %(name)s"
 
 #: bookwyrm/templates/book/edit/edit_book.html:122
 msgid "Is this an edition of an existing work?"
-msgstr ""
+msgstr "Bu zaten olan bir kitabın yeni bir edisyonu mu?"
 
 #: bookwyrm/templates/book/edit/edit_book.html:130
 msgid "This is a new work"
-msgstr ""
+msgstr "Bu yeni bir kitap"
 
 #: bookwyrm/templates/book/edit/edit_book.html:139
 #: bookwyrm/templates/feed/status.html:17
@@ -1313,112 +1313,112 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_profile.html:135
 #: bookwyrm/templates/user/user.html:93 bookwyrm/templates/user_menu.html:18
 msgid "Back"
-msgstr ""
+msgstr "Geri"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:26
 #: bookwyrm/templates/snippets/create_status/review.html:15
 msgid "Title:"
-msgstr ""
+msgstr "Başlık:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:35
 msgid "Sort Title:"
-msgstr ""
+msgstr "Başlığı sırala:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:44
 msgid "Subtitle:"
-msgstr ""
+msgstr "Alt başlık:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:64
 msgid "Series:"
-msgstr ""
+msgstr "Dizi:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:74
 msgid "Series number:"
-msgstr ""
+msgstr "Seri numarası:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:85
 msgid "Languages:"
-msgstr ""
+msgstr "Diller:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:97
 msgid "Subjects:"
-msgstr ""
+msgstr "Konular:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:101
 msgid "Add subject"
-msgstr ""
+msgstr "Konu ekle"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:119
 msgid "Remove subject"
-msgstr ""
+msgstr "Konu kaldır"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:142
 msgid "Add Another Subject"
-msgstr ""
+msgstr "Başka Konu Ekle"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:150
 msgid "Publication"
-msgstr ""
+msgstr "Yayın"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:155
 msgid "Publisher:"
-msgstr ""
+msgstr "Yayıncı:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:167
 msgid "First published date:"
-msgstr ""
+msgstr "İlk yayınlanma tarihi:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:175
 msgid "Published date:"
-msgstr ""
+msgstr "Yayınlanma tarihi:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:186
 #: bookwyrm/templates/search/layout.html:23
 #: bookwyrm/templates/search/layout.html:47
 msgid "Authors"
-msgstr ""
+msgstr "Yazarlar"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:197
 #, python-format
 msgid "Remove %(name)s"
-msgstr ""
+msgstr "%(name)s kaldır"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:200
 #, python-format
 msgid "Author page for %(name)s"
-msgstr ""
+msgstr "%(name)s yazar sayfası"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:208
 msgid "Add Authors:"
-msgstr ""
+msgstr "Yazarlar Ekle:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:211
 #: bookwyrm/templates/book/edit/edit_book_form.html:214
 msgid "Add Author"
-msgstr ""
+msgstr "Yazar Ekle"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:212
 #: bookwyrm/templates/book/edit/edit_book_form.html:215
 msgid "Jane Doe"
-msgstr ""
+msgstr "Anonim"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:221
 msgid "Add Another Author"
-msgstr ""
+msgstr "Başka Yazar Ekle"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:231
 #: bookwyrm/templates/shelf/shelf.html:150
 msgid "Cover"
-msgstr ""
+msgstr "Kapak"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:263
 msgid "Physical Properties"
-msgstr ""
+msgstr "Fiziksel Özellikler"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:270
 #: bookwyrm/templates/book/editions/format_filter.html:6
 msgid "Format:"
-msgstr ""
+msgstr "Biçim:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:280
 msgid "Format details:"
