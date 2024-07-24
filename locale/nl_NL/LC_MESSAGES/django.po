@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-03-26 11:34\n"
+"PO-Revision-Date: 2024-07-24 11:48\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -376,19 +376,19 @@ msgstr "%(display_name)s's reactie op %(book_title)s"
 #: bookwyrm/models/status.py:412
 #, python-format
 msgid "%(display_name)s's quote from %(book_title)s"
-msgstr ""
+msgstr "%(display_name)s's citaat van %(book_title)s"
 
 #: bookwyrm/models/status.py:448
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
-msgstr ""
+msgstr "%(display_name)s's beoordeling van %(book_title)s"
 
 #: bookwyrm/models/status.py:479
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_name)s beoordeelde %(book_title)s: %(display_rating).1f ster"
+msgstr[1] "%(display_name)s beoordeelde %(book_title)s: %(display_rating).1f sterren"
 
 #: bookwyrm/models/user.py:33 bookwyrm/templates/book/book.html:312
 msgid "Reviews"
@@ -460,7 +460,7 @@ msgstr "Italiano (Italiaans)"
 
 #: bookwyrm/settings.py:325
 msgid "한국어 (Korean)"
-msgstr ""
+msgstr "한국어 (Koreaans)"
 
 #: bookwyrm/settings.py:326
 msgid "Suomi (Finnish)"
@@ -504,7 +504,7 @@ msgstr "Svenska (Zweeds)"
 
 #: bookwyrm/settings.py:336
 msgid "Українська (Ukrainian)"
-msgstr ""
+msgstr "Українська (Oekraïens)"
 
 #: bookwyrm/settings.py:337
 msgid "简体中文 (Simplified Chinese)"
@@ -549,7 +549,7 @@ msgstr "Het bestand dat u wilt uploaden is te groot."
 
 #: bookwyrm/templates/413.html:11
 msgid "You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting."
-msgstr ""
+msgstr "Je kunt proberen een kleiner bestand te gebruiken, of je BookWyrm serverbeheerder vragen om de <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> instelling te verhogen."
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -2632,7 +2632,7 @@ msgstr "Meldingen"
 
 #: bookwyrm/templates/guided_tour/home.html:200
 msgid "Your profile, user directory, direct messages, and settings can be accessed by clicking on your name in the menu here."
-msgstr ""
+msgstr "Uw profiel, gebruikersmap, directe berichten en instellingen kunnen worden geopend door op uw naam te klikken in het menu hier."
 
 #: bookwyrm/templates/guided_tour/home.html:200
 msgid "Try selecting <strong>Profile</strong> from the drop down menu to continue the tour."
@@ -3141,17 +3141,17 @@ msgstr "Geen geldig importbestand"
 
 #: bookwyrm/templates/import/import_user.html:18
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set this account as an <strong>alias</strong> of the one you are migrating from, or <strong>move</strong> that account to this one, before you import your user data."
-msgstr ""
+msgstr "Als u statussen (opmerkingen, recensies of citaten) wilt migreren, moet u dit account instellen als een <strong>alias</strong> van het account waarvan u migreert, of dat account naar dit account <strong>verplaatsen</strong> voordat u uw gebruikersgegevens importeert."
 
 #: bookwyrm/templates/import/import_user.html:32
 #, python-format
 msgid "Currently you are allowed to import one user every %(user_import_hours)s hours."
-msgstr ""
+msgstr "Je hebt momenteel toestemming om elke %(user_import_hours)s uur één gebruiker te importeren."
 
 #: bookwyrm/templates/import/import_user.html:33
 #, python-format
 msgid "You will next be able to import a user file at %(next_available)s"
-msgstr ""
+msgstr "Je kunt een volgend gebruikersbestand importeren binnen %(next_available)s"
 
 #: bookwyrm/templates/import/import_user.html:41
 msgid "Step 1:"
@@ -3159,7 +3159,7 @@ msgstr "Stap 1:"
 
 #: bookwyrm/templates/import/import_user.html:43
 msgid "Select an export file generated from another BookWyrm account. The file format should be <code>.tar.gz</code>."
-msgstr ""
+msgstr "Selecteer een exportbestand gegenereerd uit een ander BookWyrm account. De bestandsindeling moet <code>.tar.gz</code> zijn."
 
 #: bookwyrm/templates/import/import_user.html:58
 msgid "Step 2:"
@@ -3167,7 +3167,7 @@ msgstr "Stap 2:"
 
 #: bookwyrm/templates/import/import_user.html:60
 msgid "Deselect any checkboxes for data you do not wish to include in your import."
-msgstr ""
+msgstr "Deselecteer alle selectievakjes voor gegevens die u niet wilt opnemen in uw import."
 
 #: bookwyrm/templates/import/import_user.html:71
 #: bookwyrm/templates/preferences/export-user.html:20
@@ -3179,7 +3179,7 @@ msgstr "Gebruikersprofiel"
 
 #: bookwyrm/templates/import/import_user.html:74
 msgid "Overwrites display name, summary, and avatar"
-msgstr ""
+msgstr "Overschrijft weergavenaam, samenvatting en avatar"
 
 #: bookwyrm/templates/import/import_user.html:80
 msgid "User settings"
@@ -3187,27 +3187,27 @@ msgstr "Gebruikersinstellingen"
 
 #: bookwyrm/templates/import/import_user.html:83
 msgid "Overwrites:"
-msgstr ""
+msgstr "Overschrijft:"
 
 #: bookwyrm/templates/import/import_user.html:86
 msgid "Whether manual approval is required for other users to follow your account"
-msgstr ""
+msgstr "Of handmatige goedkeuring vereist is voor andere gebruikers om uw account te volgen"
 
 #: bookwyrm/templates/import/import_user.html:89
 msgid "Whether following/followers are shown on your profile"
-msgstr ""
+msgstr "Of volgers worden weergegeven op jouw profiel"
 
 #: bookwyrm/templates/import/import_user.html:92
 msgid "Whether your reading goal is shown on your profile"
-msgstr ""
+msgstr "Of je leesdoel wordt weergegeven op je profiel"
 
 #: bookwyrm/templates/import/import_user.html:95
 msgid "Whether you see user follow suggestions"
-msgstr ""
+msgstr "Of u gebruikers ziet volgen suggesties"
 
 #: bookwyrm/templates/import/import_user.html:98
 msgid "Whether your account is suggested to others"
-msgstr ""
+msgstr "Of uw account wordt voorgesteld aan anderen"
 
 #: bookwyrm/templates/import/import_user.html:101
 msgid "Your timezone"
@@ -3944,8 +3944,8 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> heeft je uitgenod
 #, python-format
 msgid "New <a href=\"%(path)s\">invite request</a> awaiting response"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">invite requests</a> awaiting response"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nieuwe <a href=\"%(path)s\">uitnodigingsaanvraag</a> wachtend op antwoord"
+msgstr[1] "%(display_count)s nieuwe <a href=\"%(path)s\">uitnodigingsverzoeken</a> wachtend op antwoord"
 
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
@@ -4064,12 +4064,12 @@ msgstr "heeft de omschrijving van <a href=\"%(group_path)s\">%(group_name)s</a> 
 #: bookwyrm/templates/notifications/items/user_export.html:14
 #, python-format
 msgid "Your <a href=\"%(url)s\">user export</a> is ready."
-msgstr ""
+msgstr "Je <a href=\"%(url)s\">gebruikersexport</a> is klaar."
 
 #: bookwyrm/templates/notifications/items/user_import.html:14
 #, python-format
 msgid "Your <a href=\"%(import_url)s\">user import</a> is complete."
-msgstr ""
+msgstr "Je <a href=\"<a href=\"%(import_url)s\">gebruikersimport</a> is klaar."
 
 #: bookwyrm/templates/notifications/notifications_page.html:19
 msgid "Delete notifications"
@@ -4457,11 +4457,11 @@ msgstr "Exporteer BookWyrm Account"
 
 #: bookwyrm/templates/preferences/export-user.html:14
 msgid "You can create an export file here. This will allow you to migrate your data to another BookWyrm account."
-msgstr ""
+msgstr "Hier kunt u een exportbestand aanmaken. Dit zal u toestaan uw gegevens te migreren naar een ander BookWyrm account."
 
 #: bookwyrm/templates/preferences/export-user.html:18
 msgid "Your file will include:"
-msgstr ""
+msgstr "Het bestand zal bevatten:"
 
 #: bookwyrm/templates/preferences/export-user.html:21
 msgid "Most user settings"
@@ -4478,7 +4478,7 @@ msgstr "Uw eigen lijsten en opgeslagen lijsten"
 
 #: bookwyrm/templates/preferences/export-user.html:28
 msgid "Which users you follow and block"
-msgstr ""
+msgstr "Welke gebruikers u volgt en blokkeert"
 
 #: bookwyrm/templates/preferences/export-user.html:32
 msgid "Your file will not include:"
@@ -4498,25 +4498,25 @@ msgstr "Favorieten"
 
 #: bookwyrm/templates/preferences/export-user.html:41
 msgid "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported."
-msgstr ""
+msgstr "In je nieuwe BookWyrm account kan je kiezen wat je wilt importeren: je hoeft niet alles te importeren wat geëxporteerd wordt."
 
 #: bookwyrm/templates/preferences/export-user.html:44
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set the account you are moving to as an <strong>alias</strong> of this one, or <strong>move</strong> this account to the new account, before you import your user data."
-msgstr ""
+msgstr "Als u statussen (opmerkingen, recensies of citaten) wilt migreren, moet u het account waarnaar u verplaatst instellen als een <strong>alias</strong> van dit account, of dit account naar het nieuwe account <strong>verplaatsen</strong> voordat u uw gebruikersgegevens importeert."
 
 #: bookwyrm/templates/preferences/export-user.html:49
 msgid "New user exports are currently disabled."
-msgstr ""
+msgstr "Nieuwe gebruikersexporten zijn momenteel uitgeschakeld."
 
 #: bookwyrm/templates/preferences/export-user.html:53
 #, python-format
 msgid "User exports settings can be changed from <a href=\"%(url)s\">the Imports page</a> in the Admin dashboard."
-msgstr ""
+msgstr "De instellingen voor gebruikersexports kunnen worden gewijzigd via <a href=\"%(url)s\" >de pagina Import in het Beheerders-dashboard</a>."
 
 #: bookwyrm/templates/preferences/export-user.html:60
 #, python-format
 msgid "You will be able to create a new export file at %(next_available)s"
-msgstr ""
+msgstr "U kunt een nieuw exportbestand aanmaken binnen %(next_available)s"
 
 #: bookwyrm/templates/preferences/export-user.html:69
 msgid "Create user export file"
@@ -4528,7 +4528,7 @@ msgstr "Recente exporten"
 
 #: bookwyrm/templates/preferences/export-user.html:78
 msgid "User export files will show 'complete' once ready. This may take a little while. Click the link to download your file."
-msgstr ""
+msgstr "Exportbestanden van gebruikers worden als 'voltooid' weergegeven zodra ze klaar zijn. Dit kan even duren. Klik op de link om je bestand te downloaden."
 
 #: bookwyrm/templates/preferences/export-user.html:84
 msgid "Date"
@@ -4550,7 +4550,7 @@ msgstr "Exporteer boekenlijst"
 
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your CSV export file will include all the books on your shelves, books you have reviewed, and books with reading activity. <br/>Use this to import into a service like Goodreads."
-msgstr ""
+msgstr "Je CSV-exportbestand bevat alle boeken op je planken, boeken die je hebt beoordeeld en boeken met leesactiviteit. <br/>Gebruik dit om te importeren in een service zoals Goodreads."
 
 #: bookwyrm/templates/preferences/export.html:20
 msgid "Download file"
@@ -5170,11 +5170,11 @@ msgstr "Totaal"
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:12
 msgid "Would you like to automatically check for new BookWyrm releases? (recommended)"
-msgstr ""
+msgstr "Wil je automatisch controleren of er nieuwe BookWyrm releases zijn? (aanbevolen)"
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:20
 msgid "Schedule checks"
-msgstr ""
+msgstr "Controles plannen"
 
 #: bookwyrm/templates/settings/dashboard/warnings/domain_review.html:9
 #, python-format
@@ -5466,7 +5466,7 @@ msgstr "Stop met importeren?"
 
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:7
 msgid "This action will stop the user import before it is complete and cannot be un-done"
-msgstr ""
+msgstr "Met deze actie wordt het importeren van de gebruiker gestopt voordat deze is voltooid en kan niet ongedaan worden gemaakt"
 
 #: bookwyrm/templates/settings/imports/imports.html:19
 msgid "Disable starting new imports"
@@ -5482,7 +5482,7 @@ msgstr "Zolang importeren is uitgeschakeld kunnen gebruikers geen nieuwe imports
 
 #: bookwyrm/templates/settings/imports/imports.html:32
 msgid "This setting prevents both book imports and user imports."
-msgstr ""
+msgstr "Deze instelling voorkomt zowel de import van boeken als de import van gebruikers."
 
 #: bookwyrm/templates/settings/imports/imports.html:37
 msgid "Disable imports"
@@ -5527,31 +5527,31 @@ msgstr "Limiet instellen"
 
 #: bookwyrm/templates/settings/imports/imports.html:98
 msgid "Disable starting new user exports"
-msgstr ""
+msgstr "Schakel het starten van nieuwe gebruikersexports uit"
 
 #: bookwyrm/templates/settings/imports/imports.html:109
 msgid "This is only intended to be used when things have gone very wrong with exports and you need to pause the feature while addressing issues."
-msgstr ""
+msgstr "Dit is alleen bedoeld om te worden gebruikt als er iets heel erg mis is gegaan met exports en u de functie moet pauzeren terwijl u problemen oplost."
 
 #: bookwyrm/templates/settings/imports/imports.html:110
 msgid "While exports are disabled, users will not be allowed to start new user exports, but existing exports will not be affected."
-msgstr ""
+msgstr "Als exports zijn uitgeschakeld, mogen gebruikers geen nieuwe gebruikersexports starten, dit heeft geen invloed op bestaande exports."
 
 #: bookwyrm/templates/settings/imports/imports.html:115
 msgid "Disable user exports"
-msgstr ""
+msgstr "Gebruikersexports uitschakelen"
 
 #: bookwyrm/templates/settings/imports/imports.html:123
 msgid "Limit how often users can import and export"
-msgstr ""
+msgstr "Beperk hoe vaak gebruikers kunnen importeren en exporteren"
 
 #: bookwyrm/templates/settings/imports/imports.html:134
 msgid "Some users might try to run user imports or exports very frequently, which you want to limit."
-msgstr ""
+msgstr "Sommige gebruikers proberen mogelijk heel vaak gebruikersimports of -exports uit te voeren, wat u wilt beperken."
 
 #: bookwyrm/templates/settings/imports/imports.html:138
 msgid "Limit how often users can import and export user data"
-msgstr ""
+msgstr "Beperk hoe vaak gebruikers gebruikersgegevens kunnen importeren en exporteren"
 
 #: bookwyrm/templates/settings/imports/imports.html:140
 msgid "hours"
@@ -5563,15 +5563,15 @@ msgstr "Wijzig limiet"
 
 #: bookwyrm/templates/settings/imports/imports.html:159
 msgid "Users are currently unable to start new user exports. This is the default setting."
-msgstr ""
+msgstr "Gebruikers kunnen momenteel geen export van nieuwe gebruikers starten. Dit is de standaardinstelling."
 
 #: bookwyrm/templates/settings/imports/imports.html:161
 msgid "It is not currently possible to provide user exports when using s3 storage. The BookWyrm development team are working on a fix for this."
-msgstr ""
+msgstr "Het is momenteel niet mogelijk om gebruikersexports op te geven bij gebruik van s3-opslag. Het ontwikkelingsteam van BookWyrm werkt aan een oplossing voor dit probleem."
 
 #: bookwyrm/templates/settings/imports/imports.html:167
 msgid "Enable user exports"
-msgstr ""
+msgstr "Gebruikersexports inschakelen"
 
 #: bookwyrm/templates/settings/imports/imports.html:174
 msgid "Book Imports"
@@ -6028,7 +6028,7 @@ msgstr "Naam"
 
 #: bookwyrm/templates/settings/schedules.html:25
 msgid "Celery task"
-msgstr ""
+msgstr "Selderij taak"
 
 #: bookwyrm/templates/settings/schedules.html:28
 msgid "Date changed"
@@ -6045,7 +6045,7 @@ msgstr "Schema"
 
 #: bookwyrm/templates/settings/schedules.html:37
 msgid "Schedule ID"
-msgstr ""
+msgstr "Schema-ID"
 
 #: bookwyrm/templates/settings/schedules.html:40
 msgid "Enabled"
@@ -6852,7 +6852,7 @@ msgstr "Volg op nieuwe account"
 #: bookwyrm/templates/snippets/moved_user_notice.html:7
 #, python-format
 msgid "<em>%(user)s</em> has moved to <a href=\"%(moved_to_link)s\">%(moved_to_name)s</a>"
-msgstr ""
+msgstr "<em>%(user)s</em> is verplaatst naar <a href=\"%(moved_to_link)s\">%(moved_to_name)s</a>"
 
 #: bookwyrm/templates/snippets/page_text.html:8
 #, python-format
