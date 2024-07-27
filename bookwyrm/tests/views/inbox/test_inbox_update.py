@@ -8,7 +8,6 @@ from django.test import TestCase
 from bookwyrm import models, views
 
 
-# pylint: disable=too-many-public-methods
 class InboxUpdate(TestCase):
     """inbox tests"""
 
@@ -161,7 +160,6 @@ class InboxUpdate(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath("../../data/bw_edition.json")
         bookdata = json.loads(datafile.read_bytes())
         del bookdata["authors"]
-        # pylint: disable=line-too-long
         link_data = {
             "href": "https://openlibrary.org/books/OL11645413M/Queen_Victoria/daisy",
             "mediaType": "Daisy",

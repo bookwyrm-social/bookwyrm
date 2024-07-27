@@ -6,7 +6,6 @@ from django.test import TestCase
 from bookwyrm import models, views
 
 
-# pylint: disable=too-many-public-methods
 class InboxRemove(TestCase):
     """inbox tests"""
 
