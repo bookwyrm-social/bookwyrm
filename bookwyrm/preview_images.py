@@ -420,7 +420,6 @@ def save_and_cleanup(image, instance=None):
     return True
 
 
-# pylint: disable=invalid-name
 @app.task(queue=IMAGES)
 def generate_site_preview_image_task():
     """generate preview_image for the website"""
@@ -445,7 +444,6 @@ def generate_site_preview_image_task():
     save_and_cleanup(image, instance=site)
 
 
-# pylint: disable=invalid-name
 @app.task(queue=IMAGES)
 def generate_edition_preview_image_task(book_id):
     """generate preview_image for a book"""

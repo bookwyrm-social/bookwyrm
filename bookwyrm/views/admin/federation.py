@@ -152,7 +152,7 @@ class FederatedServer(View):
         }
         return TemplateResponse(request, "settings/federation/instance.html", data)
 
-    def post(self, request, server):  # pylint: disable=unused-argument
+    def post(self, request, server):
         """update note"""
         server = get_object_or_404(models.FederatedServer, id=server)
         server.notes = request.POST.get("notes")

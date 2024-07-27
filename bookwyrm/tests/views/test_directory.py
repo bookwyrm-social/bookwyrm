@@ -9,7 +9,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
 
-# pylint: disable=unused-argument
+
 class DirectoryViews(TestCase):
     """tag views"""
 

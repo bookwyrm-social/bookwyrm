@@ -14,7 +14,6 @@ from bookwyrm.tests.validate_html import validate_html
 class ImportUserViews(TestCase):
     """user import views"""
 
-    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()

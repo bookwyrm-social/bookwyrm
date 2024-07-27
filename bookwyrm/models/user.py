@@ -409,7 +409,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def delete(self, *args, **kwargs):
         """We don't actually delete the database entry"""
-        # pylint: disable=attribute-defined-outside-init
         self.is_active = False
         self.allow_reactivation = False
         self.is_deleted = True
@@ -452,7 +451,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def deactivate(self):
         """Disable the user but allow them to reactivate"""
-        # pylint: disable=attribute-defined-outside-init
         self.is_active = False
         self.deactivation_reason = "self_deactivation"
         self.allow_reactivation = True
@@ -460,7 +458,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def reactivate(self):
         """Now you want to come back, huh?"""
-        # pylint: disable=attribute-defined-outside-init
         if not self.allow_reactivation:
             return
         self.is_active = True

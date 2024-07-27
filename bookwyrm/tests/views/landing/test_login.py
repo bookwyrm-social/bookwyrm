@@ -11,7 +11,6 @@ from bookwyrm import forms, models, views
 from bookwyrm.tests.validate_html import validate_html
 
 
-# pylint: disable=too-many-public-methods
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 class LoginViews(TestCase):
