@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 class BookwyrmAwsSession(BotoSession):
     """a boto session that always uses settings.AWS_S3_ENDPOINT_URL"""
 
-    def client(self, *args, **kwargs):  # pylint: disable=arguments-differ
+    def client(self, *args, **kwargs):
         kwargs["endpoint_url"] = settings.AWS_S3_ENDPOINT_URL
         return super().client("s3", *args, **kwargs)
 

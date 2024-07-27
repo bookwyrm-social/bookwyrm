@@ -45,7 +45,6 @@ class Importer:
         "reading": ["currently-reading", "reading", "currently reading"],
     }
 
-    # pylint: disable=too-many-locals.too-many-arguments
     def create_job(
         self,
         user: User,

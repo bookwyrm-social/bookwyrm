@@ -7,8 +7,6 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 
 
-# pylint: disable=unused-argument
-# pylint: disable=too-many-public-methods
 class ListItemViews(TestCase):
     """list view"""
 

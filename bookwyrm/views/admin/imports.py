@@ -63,7 +63,6 @@ class ImportList(View):
         }
         return TemplateResponse(request, "settings/imports/imports.html", data)
 
-    # pylint: disable=unused-argument
     def post(self, request, import_id):
         """Mark an import as complete"""
         import_job = get_object_or_404(models.ImportJob, id=import_id)
@@ -95,7 +94,6 @@ def enable_imports(request):
 
 @require_POST
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
-# pylint: disable=unused-argument
 def set_import_size_limit(request):
     """Limit the amount of books users can import at once"""
     site = models.SiteSettings.objects.get()
@@ -120,7 +118,6 @@ def set_user_import_completed(request, import_id):
 
 @require_POST
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
-# pylint: disable=unused-argument
 def set_user_import_limit(request):
     """Limit how ofter users can import and export their account"""
     site = models.SiteSettings.objects.get()

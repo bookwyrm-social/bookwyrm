@@ -88,7 +88,6 @@ class CreateBook(View):
         data = {"form": forms.EditionForm()}
         return TemplateResponse(request, "book/edit/edit_book.html", data)
 
-    # pylint: disable=too-many-locals
     def post(self, request):
         """create a new book"""
         # returns None if no match is found

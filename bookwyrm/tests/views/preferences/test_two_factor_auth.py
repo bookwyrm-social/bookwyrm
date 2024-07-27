@@ -11,7 +11,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
 
-# pylint: disable=too-many-public-methods
+
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 class TwoFactorViews(TestCase):
