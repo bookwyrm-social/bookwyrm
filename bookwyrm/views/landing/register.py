@@ -97,7 +97,7 @@ class Register(View):
 class ConfirmEmailCode(View):
     """confirm email address"""
 
-    def get(self, request, code):  # pylint: disable=unused-argument
+    def get(self, request, code):
         """you got the code! good work"""
         settings = models.SiteSettings.get()
         if request.user.is_authenticated:
@@ -124,7 +124,7 @@ class ConfirmEmailCode(View):
 class ConfirmEmail(View):
     """enter code to confirm email address"""
 
-    def get(self, request):  # pylint: disable=unused-argument
+    def get(self, request):
         """you need a code! keep looking"""
         settings = models.SiteSettings.get()
         if request.user.is_authenticated or not settings.require_confirm_email:

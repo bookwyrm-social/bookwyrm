@@ -32,7 +32,7 @@ class ActivityStream(RedisStore):
         stream_id = self.stream_id(user_id)
         return f"{stream_id}-unread-by-type"
 
-    def get_rank(self, obj):  # pylint: disable=no-self-use
+    def get_rank(self, obj):
         """statuses are sorted by date published"""
         return obj.published_date.timestamp()
 

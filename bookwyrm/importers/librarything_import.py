@@ -20,7 +20,7 @@ class LibrarythingImporter(Importer):
 
     def normalize_row(
         self, entry: dict[str, str], mappings: dict[str, Optional[str]]
-    ) -> dict[str, Optional[str]]:  # pylint: disable=no-self-use
+    ) -> dict[str, Optional[str]]:
         """use the dataclass to create the formatted row of data"""
         normalized = {
             k: _remove_brackets(entry.get(v) if v else None)

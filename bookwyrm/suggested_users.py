@@ -34,7 +34,6 @@ class SuggestedUsers(RedisStore):
 
     def get_counts_from_rank(self, rank):  # pylint: disable=no-self-use
         """calculate mutuals count and shared books count from rank"""
-        # pylint: disable=c-extension-no-member
         return {
             "mutuals": math.floor(rank),
             # "shared_books": int(1 / (-1 * (rank % 1 - 1))) - 1,
@@ -128,7 +127,6 @@ def get_annotated_users(viewer, *args, **kwargs):
                 ),
                 distinct=True,
             ),
-            # pylint: disable=line-too-long
             # shared_books=Count(
             #     "shelfbook",
             #     filter=Q(
@@ -202,7 +200,7 @@ def update_suggestions_on_unfollow(sender, instance, **kwargs):
 
 
 @receiver(signals.post_save, sender=models.User)
-# pylint: disable=unused-argument, too-many-arguments
+# pylint: disable=unused-argument
 def update_user(sender, instance, created, update_fields=None, **kwargs):
     """an updated user, neat"""
     # a new user is found, create suggestions for them

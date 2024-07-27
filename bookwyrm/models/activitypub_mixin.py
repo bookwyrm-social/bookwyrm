@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 PropertyField = namedtuple("PropertyField", ("set_activity_from_field"))
 
-# pylint: disable=invalid-name
+
 def set_activity_from_property_field(activity, obj, field):
     """assign a model property value to the activity json"""
     activity[field[1]] = getattr(obj, field[0])

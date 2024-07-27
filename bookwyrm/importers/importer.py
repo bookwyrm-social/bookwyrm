@@ -36,7 +36,6 @@ class Importer:
         "reading": ["currently-reading", "reading", "currently reading"],
     }
 
-    # pylint: disable=too-many-locals
     def create_job(
         self, user: User, csv_file: Iterable[str], include_reviews: bool, privacy: str
     ) -> ImportJob:

@@ -22,7 +22,6 @@ logger = logging.getLogger(__name__)
 
 
 # pylint: disable=no-self-use
-# pylint: disable=too-many-return-statements
 @method_decorator(login_required, name="dispatch")
 class ReadingStatus(View):
     """consider reading a book"""

@@ -115,7 +115,6 @@ class AbstractConnector(TestCase):
     @responses.activate
     def test_get_or_create_author(self):
         """load an author"""
-        # pylint: disable=attribute-defined-outside-init
         self.connector.author_mappings = [
             Mapping("id"),
             Mapping("name"),
@@ -141,7 +140,6 @@ class AbstractConnector(TestCase):
     def test_update_author_from_remote(self):
         """trigger the function that looks up the remote data"""
         author = models.Author.objects.create(name="Test", openlibrary_key="OL123A")
-        # pylint: disable=attribute-defined-outside-init
         self.connector.author_mappings = [
             Mapping("id"),
             Mapping("name"),
