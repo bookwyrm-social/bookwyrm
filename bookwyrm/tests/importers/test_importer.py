@@ -100,7 +100,7 @@ class GenericImporter(TestCase):
         self.assertEqual(retry.include_reviews, False)
         self.assertEqual(retry.privacy, "unlisted")
 
-        retry_items = models.ImportItem.objects.filter(job=retry).all()
+        retry_items = models.ImportItem.objects.filter(job=retry).order_by("index")
         self.assertEqual(len(retry_items), 2)
         self.assertEqual(retry_items[0].index, 0)
         self.assertEqual(retry_items[0].normalized_data["id"], "38")

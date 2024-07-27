@@ -34,7 +34,6 @@ class BookwyrmBooksImporter(Importer):
     """
 
     service = "BookWyrm"
-
-    def __init__(self, *args: Any, **kwargs: Any):
-        self.row_mappings_guesses.append(("shelf_name", ["shelf_name"]))
-        super().__init__(*args, **kwargs)
+    row_mappings_guesses = Importer.row_mappings_guesses + [
+        ("shelf_name", ["shelf_name"]),
+    ]
