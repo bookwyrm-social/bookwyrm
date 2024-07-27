@@ -1,5 +1,4 @@
 """Import data from Bookwyrm export files"""
-from typing import Any
 from django.http import QueryDict
 
 from bookwyrm.models import User
