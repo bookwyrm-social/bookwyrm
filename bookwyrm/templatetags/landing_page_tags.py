@@ -71,14 +71,8 @@ def get_landing_books():
     """list of books for the landing page"""
     return list(
         set(
-            models.Edition.objects.filter(
-                review__published_date__isnull=False,
-                review__deleted=False,
-                review__user__local=True,
-                review__privacy__in=["public", "unlisted"],
-            )
-            .exclude(cover__exact="")
+            models.Edition.objects.exclude(cover__exact="")
             .distinct()
-            .order_by("-review__published_date")[:6]
+            .order_by("-updated_date")[:6]
         )
     )
