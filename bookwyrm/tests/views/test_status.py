@@ -1,6 +1,5 @@
 """ test for app action functionality """
 import json
-from unittest import expectedFailure
 from unittest.mock import patch
 import dateutil
 from django.core.exceptions import PermissionDenied
@@ -170,7 +169,6 @@ class StatusViews(TestCase):
         self.assertEqual(status.rating, 4.0)
         self.assertIsNone(status.edited_date)
 
-    @expectedFailure  # https://github.com/bookwyrm-social/bookwyrm/issues/3164
     def test_create_status_progress(self, *_):
         """create a status that updates a readthrough"""
         start_date = timezone.make_aware(dateutil.parser.parse("2024-07-27"))
@@ -200,7 +198,7 @@ class StatusViews(TestCase):
         readthrough.refresh_from_db()
 
         self.assertEqual(1, readthrough.progress)
-        self.assertEqual(start_date, readthrough.start_date)
+        self.assertEqual(start_date, readthrough.start_date)  # not overwritten
 
     def test_create_status_wrong_user(self, *_):
         """You can't compose statuses for someone else"""
