@@ -3,6 +3,7 @@ from django.http import QueryDict
 
 from bookwyrm.models import User
 from bookwyrm.models.bookwyrm_import_job import BookwyrmImportJob
+from . import Importer
 
 
 class BookwyrmImporter:
@@ -22,3 +23,16 @@ class BookwyrmImporter:
             user=user, archive_file=archive_file, required=required
         )
         return job
+
+
+class BookwyrmBooksImporter(Importer):
+    """
+    Handle reading a csv from BookWyrm.
+    Goodreads is the default importer, we basically just use the same structure
+    But BookWyrm has a shelf.id (shelf) and a shelf.name (shelf_name)
+    """
+
+    service = "BookWyrm"
+    row_mappings_guesses = Importer.row_mappings_guesses + [
+        ("shelf_name", ["shelf_name"]),
+    ]
