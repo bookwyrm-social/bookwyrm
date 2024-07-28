@@ -1,6 +1,8 @@
 """ test for app action functionality """
 from unittest.mock import patch
 
+import datetime
+
 from django.contrib.auth.models import AnonymousUser
 from django.http.response import Http404
 from django.template.response import TemplateResponse
@@ -10,6 +12,11 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.tests.validate_html import validate_html
+
+
+def make_date(*args):
+    """helper function to easily generate a date obj"""
+    return datetime.datetime(*args, tzinfo=datetime.timezone.utc)
 
 
 class UserViews(TestCase):
@@ -36,6 +43,10 @@ class UserViews(TestCase):
         cls.book = models.Edition.objects.create(
             title="test", parent_work=models.Work.objects.create(title="test work")
         )
+        cls.book_recently_shelved = models.Edition.objects.create(
+            title="recently shelved",
+            parent_work=models.Work.objects.create(title="recent shelved"),
+        )
         with (
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
@@ -45,6 +56,14 @@ class UserViews(TestCase):
                 book=cls.book,
                 user=cls.local_user,
                 shelf=cls.local_user.shelf_set.first(),
+                shelved_date=make_date(2020, 10, 21),
+            )
+
+            models.ShelfBook.objects.create(
+                book=cls.book_recently_shelved,
+                user=cls.local_user,
+                shelf=cls.local_user.shelf_set.first(),
+                shelved_date=make_date(2024, 7, 1),
             )
         models.SiteSettings.objects.create()
 
@@ -118,6 +137,23 @@ class UserViews(TestCase):
             is_api.return_value = False
             with self.assertRaises(Http404):
                 view(request, "rat")
+
+    def test_user_page_activity_sorted(self):
+        """the most recently shelved book should be displayed first"""
+        view = views.User.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.user.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, "mouse")
+
+        self.assertIsInstance(result, TemplateResponse)
+        self.assertEqual(result.status_code, 200)
+
+        first_shelf = result.context_data["shelves"][0]
+        first_book = first_shelf["books"][0]
+
+        self.assertEqual(first_book, self.book_recently_shelved)
 
     def test_followers_page(self):
         """there are so many views, this just makes sure it LOADS"""
