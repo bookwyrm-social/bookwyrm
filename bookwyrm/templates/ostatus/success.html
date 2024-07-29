@@ -2,6 +2,10 @@
 {% load i18n %}
 {% load utilities %}
 
+{% block title %}
+{% blocktrans with display_name=user.display_name %}You are now following {{ display_name }}!{% endblocktrans %}
+{% endblock %}
+
 {% block content %}
 <div class="block card">
     <div class="card-content">

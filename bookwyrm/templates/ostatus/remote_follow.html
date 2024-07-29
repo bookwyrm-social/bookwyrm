@@ -3,7 +3,9 @@
 {% load utilities %}
 
 {% block heading %}
+{% block title %}
 {% blocktrans with username=user.localname sitename=site.name %}Follow {{ username }} on the fediverse{% endblocktrans %}
+{% endblock %}
 {% endblock %}
 
 {% block content %}
