@@ -1,10 +1,5 @@
 <!--
-Thanks for contributing!
-
-Please ensure the name of your PR is written in imperative present tense. For example:
-
-- "fix color contrast on submit buttons"
-- "add 'favourite food' value to Author model"
+Thanks for contributing! This template has some checkboxes that help keep track of what changes go into a release.
 
 To check (tick) a list item, replace the space between square brackets with an x, like this:
 
@@ -12,24 +7,23 @@ To check (tick) a list item, replace the space between square brackets with an x
 
 You can find more information and tips for BookWyrm contributors at https://docs.joinbookwyrm.com/contributing.html
 -->
-
-## Are you finished?
-
-### Linters
+## Description
 <!--
-Please run linters on your code before submitting your PR.
-If you miss this step it is likely that the GitHub task runners will fail.
+Describe what your pull request does here
 -->
 
-- [ ] I have checked my code with `black`, `pylint`, and `mypy`, or `./bw-dev formatters`
 
-### Tests
-<!-- Check one -->
+<!--
+For pull requests that relate or close an issue, please include them
+below.  We like to follow [Github's guidance on linking issues to pull requests](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue).
 
-- [ ] My changes do not need new tests
-- [ ] All tests I have added are passing
-- [ ] I have written tests but need help to make them pass
-- [ ] I have not written tests and need help to write them
+For example having the text: "closes #1234" would connect the current pull
+request to issue 1234.  And when we merge the pull request, Github will
+automatically close the issue.
+-->
+
+- Related Issue #
+- Closes #
 
 ## What type of Pull Request is this?
 <!-- Check all that apply -->
@@ -48,21 +42,6 @@ If you miss this step it is likely that the GitHub task runners will fail.
 
 ### Details of breaking or configuration changes (if any of above checked)
 
-## Description
-
-<!--
-Describe what your pull request does here.
-
-For pull requests that relate or close an issue, please include them
-below.  We like to follow [Github's guidance on linking issues to pull requests](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue).
-
-For example having the text: "closes #1234" would connect the current pull
-request to issue 1234.  And when we merge the pull request, Github will
-automatically close the issue.
--->
-
-- Related Issue #
-- Closes #
 
 ## Documentation
 <!--
@@ -76,3 +55,14 @@ Our documentation is maintained in a separate repository at https://github.com/b
 - [ ] I have created a matching pull request in the Documentation repository
 - [ ] I intend to create a matching pull request in the Documentation repository after this PR is merged
 
+<!-- Amazing! Thanks for filling that out. Your PR will need to have passing tests and happy linters before we can merge
+You will need to check your code with `black`, `pylint`, and `mypy`, or `./bw-dev formatters`
+-->
+
+### Tests
+<!-- Check one -->
+
+- [ ] My changes do not need new tests
+- [ ] All tests I have added are passing
+- [ ] I have written tests but need help to make them pass
+- [ ] I have not written tests and need help to write them

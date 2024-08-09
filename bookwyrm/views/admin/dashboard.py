@@ -43,7 +43,6 @@ class Dashboard(View):
         ) or not re.match(regex.DOMAIN, settings.EMAIL_SENDER_DOMAIN)
 
         data["email_config_error"] = email_config_error
-        # pylint: disable=line-too-long
         data[
             "email_sender"
         ] = f"{settings.EMAIL_SENDER_NAME}@{settings.EMAIL_SENDER_DOMAIN}"

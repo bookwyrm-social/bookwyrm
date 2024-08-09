@@ -98,7 +98,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             self.thread_id = self.id
             super().save(broadcast=False, update_fields=["thread_id"])
 
-    def delete(self, *args, **kwargs):  # pylint: disable=unused-argument
+    def delete(self, *args, **kwargs):
         """ "delete" a status"""
         if hasattr(self, "boosted_status"):
             # okay but if it's a boost really delete it
@@ -213,7 +213,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             **kwargs,
         ).serialize()
 
-    def to_activity_dataclass(self, pure=False):  # pylint: disable=arguments-differ
+    def to_activity_dataclass(self, pure=False):
         """return tombstone if the status is deleted"""
         if self.deleted:
             return activitypub.Tombstone(

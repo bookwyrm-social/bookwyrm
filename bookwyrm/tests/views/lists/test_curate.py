@@ -11,7 +11,6 @@ from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
 
 
-# pylint: disable=unused-argument
 class ListViews(TestCase):
     """list view"""
 

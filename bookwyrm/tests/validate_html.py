@@ -42,7 +42,7 @@ def validate_html(html):
     validator.feed(str(html.content))
 
 
-class HtmlValidator(HTMLParser):  # pylint: disable=abstract-method
+class HtmlValidator(HTMLParser):
     """Checks for custom html validation requirements"""
 
     def __init__(self):

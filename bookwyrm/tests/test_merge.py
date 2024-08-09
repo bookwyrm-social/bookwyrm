@@ -10,7 +10,7 @@ class MergeBookDataModel(TestCase):
     """test merging of subclasses of BookDataModel"""
 
     @classmethod
-    def setUpTestData(cls):  # pylint: disable=invalid-name
+    def setUpTestData(cls):
         """shared data"""
         models.SiteSettings.objects.create()
 
