@@ -2,12 +2,14 @@
 from unittest.mock import patch
 
 from django.contrib.auth.models import Group
+from django.db import connection
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 from bookwyrm.management.commands import initdb
+from bookwyrm.tests.query_logger import QueryLogger, raise_long_query_runtime
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -46,7 +48,10 @@ class DashboardViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
 
-        result = view(request)
+        query_logger = QueryLogger()
+        with connection.execute_wrapper(query_logger):
+            result = view(request)
+            raise_long_query_runtime(query_logger.queries)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
