@@ -53,6 +53,8 @@ class BookViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=cls.work,
         )
+        for i in range(10000):
+            models.Edition.objects.create(title=i, parent_work=cls.work)
 
         models.SiteSettings.objects.create()
 
