@@ -1,5 +1,10 @@
 """ Log query runtimes for testing """
 import time
+from environs import Env
+
+env = Env()
+env.read_env()
+MAX_QUERY_DURATION = float(env("MAX_QUERY_DURATION"))
 
 
 class QueryLogger:
@@ -30,7 +35,7 @@ class QueryLogger:
             self.queries.append(current_query)
 
 
-def raise_long_query_runtime(queries, threshold=0.0006):
+def raise_long_query_runtime(queries, threshold=MAX_QUERY_DURATION):
     """Raises an exception if any query took longer than the threshold"""
     for query in queries:
         if query["duration"] > threshold:
