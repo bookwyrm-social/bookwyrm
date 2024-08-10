@@ -29,10 +29,11 @@ class BookwyrmBooksImporter(Importer):
     """
     Handle reading a csv from BookWyrm.
     Goodreads is the default importer, we basically just use the same structure
-    But BookWyrm has a shelf.id (shelf) and a shelf.name (shelf_name)
+    But BookWyrm has additional attributes in the csv
     """
 
     service = "BookWyrm"
     row_mappings_guesses = Importer.row_mappings_guesses + [
         ("shelf_name", ["shelf_name"]),
+        ("review_published", ["review_published"]),
     ]

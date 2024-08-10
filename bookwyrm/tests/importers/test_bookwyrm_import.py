@@ -60,11 +60,19 @@ class BookwyrmBooksImport(TestCase):
         import_items = models.ImportItem.objects.filter(job=import_job).all()
         self.assertEqual(len(import_items), 3)
         self.assertEqual(import_items[0].index, 0)
-        self.assertEqual(import_items[0].normalized_data["isbn_13"], "9781250313195")
-        self.assertEqual(import_items[0].normalized_data["isbn_10"], "1250313198")
+        self.assertEqual(import_items[0].normalized_data["isbn_13"], "")
+        self.assertEqual(import_items[0].normalized_data["isbn_10"], "")
+        self.assertEqual(import_items[0].shelf_name, "To Read")
+
         self.assertEqual(import_items[1].index, 1)
+        self.assertEqual(import_items[1].normalized_data["isbn_13"], "9780449017036")
+        self.assertEqual(import_items[1].normalized_data["isbn_10"], "0449017036")
+        self.assertEqual(import_items[1].shelf_name, "Cooking")
+
         self.assertEqual(import_items[2].index, 2)
-        self.assertEqual(import_items[2].shelf_name, "Cooking")
+        self.assertEqual(import_items[2].normalized_data["isbn_13"], "9780375503122")
+        self.assertEqual(import_items[2].normalized_data["isbn_10"], "0375503129")
+        self.assertEqual(import_items[2].shelf_name, "Read")
 
     def test_create_retry_job(self, *_):
         """trying again with items that didn't import"""
@@ -84,11 +92,9 @@ class BookwyrmBooksImport(TestCase):
         retry_items = models.ImportItem.objects.filter(job=retry).all()
         self.assertEqual(len(retry_items), 2)
         self.assertEqual(retry_items[0].index, 0)
-        self.assertEqual(
-            retry_items[0].data["title"], "Gideon the Ninth (The Locked Tomb #1)"
-        )
+        self.assertEqual(retry_items[0].data["title"], "我穿我自己")
         self.assertEqual(retry_items[1].index, 1)
-        self.assertEqual(retry_items[1].data["author_text"], "Aaron A. Reed")
+        self.assertEqual(retry_items[1].data["author_text"], "Yotam Ottolenghi")
 
     def test_handle_imported_book(self, *_):
         """import added a book, this adds related connections"""
@@ -100,7 +106,7 @@ class BookwyrmBooksImport(TestCase):
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "public"
         )
-        import_item = import_job.items.first()
+        import_item = import_job.items.last()
         import_item.book = self.book
         import_item.save()
 
@@ -110,13 +116,13 @@ class BookwyrmBooksImport(TestCase):
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
         self.assertEqual(
-            shelf.shelfbook_set.first().shelved_date, make_date(2020, 10, 21)
+            shelf.shelfbook_set.first().shelved_date, make_date(2024, 8, 10)
         )
 
         readthrough = models.ReadThrough.objects.get(user=self.local_user)
         self.assertEqual(readthrough.book, self.book)
-        self.assertEqual(readthrough.start_date, make_date(2020, 10, 21))
-        self.assertEqual(readthrough.finish_date, make_date(2020, 10, 25))
+        self.assertEqual(readthrough.start_date, make_date(2001, 6, 1))
+        self.assertEqual(readthrough.finish_date, make_date(2001, 7, 10))
 
     def test_create_new_shelf(self, *_):
         """import added a book, was a new shelf created?"""
@@ -126,14 +132,14 @@ class BookwyrmBooksImport(TestCase):
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "public"
         )
-        import_item = models.ImportItem.objects.filter(job=import_job).all()[2]
+        import_item = models.ImportItem.objects.filter(job=import_job).all()[1]
         import_item.book = self.book
         import_item.save()
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             handle_imported_book(import_item)
 
-        shelf_after = self.local_user.shelf_set.filter(identifier="cooking").first()
+        shelf_after = self.local_user.shelf_set.filter(identifier="cooking-9").first()
         self.assertEqual(shelf_after.books.first(), self.book)
 
     @patch("bookwyrm.activitystreams.add_status_task.delay")
@@ -142,7 +148,7 @@ class BookwyrmBooksImport(TestCase):
         import_job = self.importer.create_job(
             self.local_user, self.csv, True, "unlisted"
         )
-        import_item = import_job.items.get(index=2)
+        import_item = import_job.items.get(index=1)
         import_item.book = self.book
         import_item.save()
 
@@ -150,18 +156,19 @@ class BookwyrmBooksImport(TestCase):
             handle_imported_book(import_item)
 
         review = models.Review.objects.get(book=self.book, user=self.local_user)
-        self.assertEqual(review.content, "mixed feelings")
-        self.assertEqual(review.rating, 2)
-        self.assertEqual(review.published_date, make_date(2019, 7, 8))
+        self.assertEqual(review.name, "Too much tahini")
+        self.assertEqual(review.content, "...in his hummus")
+        self.assertEqual(review.rating, 4)
+        self.assertEqual(review.published_date, make_date(2022, 11, 10))
         self.assertEqual(review.privacy, "unlisted")
 
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_handle_imported_book_rating(self, *_):
         """rating import"""
         import_job = self.importer.create_job(
-            self.local_user, self.csv, True, "unlisted"
+            self.local_user, self.csv, True, "followers"
         )
-        import_item = import_job.items.filter(index=0).first()
+        import_item = import_job.items.filter(index=2).first()
         import_item.book = self.book
         import_item.save()
 
@@ -170,6 +177,6 @@ class BookwyrmBooksImport(TestCase):
 
         review = models.ReviewRating.objects.get(book=self.book, user=self.local_user)
         self.assertIsInstance(review, models.ReviewRating)
-        self.assertEqual(review.rating, 3)
-        self.assertEqual(review.published_date, make_date(2020, 10, 25))
-        self.assertEqual(review.privacy, "unlisted")
+        self.assertEqual(review.rating, 5)
+        self.assertEqual(review.published_date, make_date(2001, 7, 10))
+        self.assertEqual(review.privacy, "followers")

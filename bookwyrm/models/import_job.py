@@ -258,6 +258,16 @@ class ImportItem(models.Model):
         return self.normalized_data.get("review_body")
 
     @property
+    def review_name(self):
+        """a user-written review name, to be imported with the book data"""
+        return self.normalized_data.get("review_name")
+
+    @property
+    def review_published(self):
+        """date the review was published - included in BookWyrm export csv"""
+        return self.normalized_data.get("review_published", None)
+
+    @property
     def rating(self):
         """x/5 star rating for a book"""
         if not self.normalized_data.get("rating"):
@@ -435,17 +445,23 @@ def handle_imported_book(item):  # pylint: disable=too-many-branches
     if job.include_reviews and (item.rating or item.review) and not item.linked_review:
         # we don't necessarily know the publication date of the review,
         # but "now" is a bad guess unless we have no choice
-        published_date_guess = item.date_read or item.date_added or timezone.now()
+
+        published_date_guess = (
+            item.review_published or item.date_read or item.date_added or timezone.now()
+        )
         if item.review:
+
             # pylint: disable=consider-using-f-string
             review_title = "Review of {!r} on {!r}".format(
                 item.book.title,
                 job.source,
             )
+            review_name = getattr(item, "review_name", review_title)
+
             review = Review.objects.filter(
                 user=user,
                 book=item.book,
-                name=review_title,
+                name=review_name,
                 rating=item.rating,
                 published_date=published_date_guess,
             ).first()
@@ -453,7 +469,7 @@ def handle_imported_book(item):  # pylint: disable=too-many-branches
                 review = Review(
                     user=user,
                     book=item.book,
-                    name=review_title,
+                    name=review_name,
                     content=item.review,
                     rating=item.rating,
                     published_date=published_date_guess,
