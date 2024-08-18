@@ -3,15 +3,16 @@
 import json
 import logging
 
-from django.db.models import FileField, JSONField, CharField
+from django.db.models import FileField, JSONField, CharField, TextChoices, PROTECT
 from django.utils import timezone
 from django.utils.html import strip_tags
+from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 
 from bookwyrm import activitypub
 from bookwyrm import models
 from bookwyrm.tasks import app, IMPORTS
-from bookwyrm.models.job import ParentJob, ParentTask, SubTask
+from bookwyrm.models.job import ParentJob, ChildJob, ParentTask, SubTask
 from bookwyrm.utils.tar import BookwyrmTarFile
 
 logger = logging.getLogger(__name__)
@@ -26,12 +27,66 @@ class BookwyrmImportJob(ParentJob):
 
     def start_job(self):
         """Start the job"""
-        start_import_task.delay(job_id=self.id, no_children=True)
+        start_import_task.delay(job_id=self.id)
+
+    @property
+    def item_count(self):
+        """How many tasks are there?"""
+        return self.items.count()
+
+    @property
+    def pending_item_count(self):
+        """How many tasks are incomplete?"""
+        status = BookwyrmImportJob.Status
+        return self.items.filter(fail_reason__isnull=True, status__in=[status.PENDING, status.ACTIVE])
+
+    @property
+    def percent_complete(self):
+        """How far along?"""
+        item_count = self.item_count
+        if not item_count:
+            return 0
+        return math.floor((item_count - self.pending_item_count) / item_count * 100)
+
+class UserImportBook(ChildJob):
+    """ ChildJob to import each book.
+        Equivalent to ImportItem when importing a csv file of books """
+
+    book_data = JSONField(null=False)
+
+    def start_job(self):
+        """Start the job"""
+        import_book_task.delay(task_id=self.id)
+
+
+class UserImportStatuses(ChildJob):
+    """ ChildJob for comments, quotes, and reviews """
+
+    class StatusType(TextChoices):
+        """Possible status types."""
+
+        COMMENT = "comment", _("Comment")
+        REVIEW = "review", _("Review")
+        QUOTE = "quote", _("Quotation")
+
+    json = JSONField(null=False)
+    book = models.fields.ForeignKey(
+        "Edition", on_delete=PROTECT, activitypub_field="inReplyToBook"
+    )
+    status_type = CharField(
+        max_length=10, choices=StatusType.choices, default=StatusType.COMMENT, null=True
+    )
+
+    def start_job(self):
+        """Start the job"""
+        upsert_statuses_task.delay(task_id=self.id)
 
 
 @app.task(queue=IMPORTS, base=ParentTask)
 def start_import_task(**kwargs):
-    """trigger the child import tasks for each user data"""
+    """trigger the child import tasks for each user data
+       We always import the books even if not assigning
+       them to shelves, lists etc"""
     job = BookwyrmImportJob.objects.get(id=kwargs["job_id"])
     archive_file = job.archive_file
 
@@ -60,9 +115,13 @@ def start_import_task(**kwargs):
             if "include_blocks" in job.required:
                 upsert_user_blocks(job.user, job.import_data.get("blocks", []))
 
-            process_books(job, tar)
+            for data in job.import_data.get("books"):
 
-            job.set_status("complete")
+                book_job = UserImportBook.objects.create(parent_job=job, book_data=data)
+                book_job.parent_job = job
+                book_job.start_job()
+
+            #job.set_status("complete") # TODO: is this needed? Don't we want it to be "active"?
         archive_file.close()
 
     except Exception as err:  # pylint: disable=broad-except
@@ -70,46 +129,17 @@ def start_import_task(**kwargs):
         job.set_status("failed")
 
 
-def process_books(job, tar):
-    """
-    Process user import data related to books
-    We always import the books even if not assigning
-    them to shelves, lists etc
-    """
+# book-related updates
+######################
 
-    books = job.import_data.get("books")
-
-    for data in books:
-        book = get_or_create_edition(data, tar)
-
-        if "include_shelves" in job.required:
-            upsert_shelves(book, job.user, data)
-
-        if "include_readthroughs" in job.required:
-            upsert_readthroughs(data.get("readthroughs"), job.user, book.id)
-
-        if "include_comments" in job.required:
-            upsert_statuses(
-                job.user, models.Comment, data.get("comments"), book.remote_id
-            )
-        if "include_quotations" in job.required:
-            upsert_statuses(
-                job.user, models.Quotation, data.get("quotations"), book.remote_id
-            )
-
-        if "include_reviews" in job.required:
-            upsert_statuses(
-                job.user, models.Review, data.get("reviews"), book.remote_id
-            )
-
-        if "include_lists" in job.required:
-            upsert_lists(job.user, data.get("lists"), book.id)
-
-
-def get_or_create_edition(book_data, tar):
+@app.task(queue=IMPORTS, base=SubTask)
+def import_book_task(task_id):
     """Take a JSON string of work and edition data,
-    find or create the edition and work in the database and
-    return an edition instance"""
+    find or create the edition and work in the database"""
+
+    task = UserImportBook.objects.get(id=task_id)
+
+    # TODO: use try/except and mark item failed on except
 
     edition = book_data.get("edition")
     existing = models.Edition.find_existing(edition)
@@ -147,10 +177,109 @@ def get_or_create_edition(book_data, tar):
 
     # set the cover image from the tar
     if cover_path:
-        tar.write_image_to_file(cover_path, book.cover)
+        tar.write_image_to_file(cover_path, book.cover) # TODO: open tar file here
 
-    return book
+    required = task.parent_job.required
+    task_user = task.parent_job.user
 
+    if "include_shelves" in required:
+        upsert_shelves(book, task_user, book_data) # TODO: could this be book.id?
+
+    if "include_readthroughs" in required:
+        upsert_readthroughs(book_data.get("readthroughs"), task_user, book.id)
+
+    if "include_lists" in required:
+        upsert_lists(task_user, book_data.get("lists"), book.id)
+
+    # Now import statuses
+    # These are also subtasks so that we can isolate anything that fails
+
+    if "include_comments" in job.required:
+
+        for status in book_data.get("comments"):
+            UserImportStatuses.objects.create(
+                parent_job=task.parent_job,
+                json=status,
+                book=book,
+                status_type=UserImportStatuses.StatusType.COMMENT
+                )
+
+    if "include_quotations" in job.required:
+            # job.user, models.Quotation, data.get("quotations"), book.remote_id
+
+        for status in book_data.get("quotations"):
+            UserImportStatuses.objects.create(
+                parent_job=task.parent_job,
+                json=status,
+                book=book,
+                status_type=UserImportStatuses.StatusType.QUOTE
+                )
+
+    if "include_reviews" in job.required:
+        # job.user, models.Review, data.get("reviews"), book.remote_id
+        for status in book_data.get("reviews"):
+            UserImportStatuses.objects.create(
+                parent_job=task.parent_job,
+                json=status,
+                book=book,
+                status_type=UserImportStatuses.StatusType.REVIEW
+                )
+
+    for item in UserImportStatuses.objects.get(parent_job=task.parent_job):
+        item.start_job()
+
+    task.complete_job()
+
+
+@app.task(queue=IMPORTS, base=SubTask)
+def upsert_statuses_task(task_id):
+# def upsert_statuses_task(user, cls, data, book_remote_id):
+    """Find or create book statuses"""
+
+    task = UserImportStatuses.objects.get(id=task_id)
+    user = task.parent_job.user
+    status_class = models.Review if self.StatusType.REVIEW else models.Quotation if self.StatusType.QUOTE else models.Comment
+
+    if is_alias(
+        user, status.get("attributedTo", False)
+    ):  # don't let l33t hax0rs steal other people's posts
+        # update ids and remove replies
+        status["attributedTo"] = user.remote_id
+        status["to"] = update_followers_address(user, status["to"])
+        status["cc"] = update_followers_address(user, status["cc"])
+        status[
+            "replies"
+        ] = (
+            {}
+        )  # this parses incorrectly but we can't set it without knowing the new id
+        status["inReplyToBook"] = task.book.remote_id # TODO: what if there isn't a remote id?
+        parsed = activitypub.parse(status)
+        if not status_already_exists(
+            user, parsed
+        ):  # don't duplicate posts on multiple import
+
+            instance = parsed.to_model(model=status_class, save=True, overwrite=True)
+
+            for val in [
+                "progress",
+                "progress_mode",
+                "position",
+                "endposition",
+                "position_mode",
+            ]:
+                if status.get(val):
+                    instance.val = status[val]
+
+            instance.remote_id = instance.get_remote_id()  # update the remote_id
+            instance.save()  # save and broadcast
+
+        task.complete_job()
+
+    else:
+        logger.warning(
+            "User does not have permission to import statuses, or status is tombstone"
+        )
+        task.stop_job(reason="failed")
 
 def upsert_readthroughs(data, user, book_id):
     """Take a JSON string of readthroughs and
@@ -174,51 +303,6 @@ def upsert_readthroughs(data, user, book_id):
         existing = models.ReadThrough.objects.filter(**obj).first()
         if not existing:
             models.ReadThrough.objects.create(**obj)
-
-
-def upsert_statuses(user, cls, data, book_remote_id):
-    """Take a JSON string of a status and
-    find or create the instances in the database"""
-
-    for status in data:
-        if is_alias(
-            user, status.get("attributedTo", False)
-        ):  # don't let l33t hax0rs steal other people's posts
-            # update ids and remove replies
-            status["attributedTo"] = user.remote_id
-            status["to"] = update_followers_address(user, status["to"])
-            status["cc"] = update_followers_address(user, status["cc"])
-            status[
-                "replies"
-            ] = (
-                {}
-            )  # this parses incorrectly but we can't set it without knowing the new id
-            status["inReplyToBook"] = book_remote_id
-            parsed = activitypub.parse(status)
-            if not status_already_exists(
-                user, parsed
-            ):  # don't duplicate posts on multiple import
-
-                instance = parsed.to_model(model=cls, save=True, overwrite=True)
-
-                for val in [
-                    "progress",
-                    "progress_mode",
-                    "position",
-                    "endposition",
-                    "position_mode",
-                ]:
-                    if status.get(val):
-                        instance.val = status[val]
-
-                instance.remote_id = instance.get_remote_id()  # update the remote_id
-                instance.save()  # save and broadcast
-
-        else:
-            logger.warning(
-                "User does not have permission to import statuses, or status is tombstone"
-            )
-
 
 def upsert_lists(user, lists, book_id):
     """Take a list of objects each containing
@@ -276,6 +360,8 @@ def upsert_shelves(book, user, book_data):
                 book=book, shelf=book_shelf, user=user, shelved_date=timezone.now()
             )
 
+# user updates
+##############
 
 def update_user_profile(user, tar, data):
     """update the user's profile from import data"""
@@ -317,14 +403,6 @@ def update_user_settings(user, data):
     user.save(update_fields=update_fields)
 
 
-@app.task(queue=IMPORTS, base=SubTask)
-def update_user_settings_task(job_id):
-    """wrapper task for user's settings import"""
-    parent_job = BookwyrmImportJob.objects.get(id=job_id)
-
-    return update_user_settings(parent_job.user, parent_job.import_data.get("user"))
-
-
 def update_goals(user, data):
     """update the user's goals from import data"""
 
@@ -342,14 +420,6 @@ def update_goals(user, data):
             models.AnnualGoal.objects.create(**goal)
 
 
-@app.task(queue=IMPORTS, base=SubTask)
-def update_goals_task(job_id):
-    """wrapper task for user's goals import"""
-    parent_job = BookwyrmImportJob.objects.get(id=job_id)
-
-    return update_goals(parent_job.user, parent_job.import_data.get("goals"))
-
-
 def upsert_saved_lists(user, values):
     """Take a list of remote ids and add as saved lists"""
 
@@ -357,16 +427,6 @@ def upsert_saved_lists(user, values):
         book_list = activitypub.resolve_remote_id(remote_id, models.List)
         if book_list:
             user.saved_lists.add(book_list)
-
-
-@app.task(queue=IMPORTS, base=SubTask)
-def upsert_saved_lists_task(job_id):
-    """wrapper task for user's saved lists import"""
-    parent_job = BookwyrmImportJob.objects.get(id=job_id)
-
-    return upsert_saved_lists(
-        parent_job.user, parent_job.import_data.get("saved_lists")
-    )
 
 
 def upsert_follows(user, values):
@@ -384,14 +444,6 @@ def upsert_follows(user, values):
                 # this request probably failed to connect with the remote
                 # and should save to trigger a re-broadcast
                 follow_request.save()
-
-
-@app.task(queue=IMPORTS, base=SubTask)
-def upsert_follows_task(job_id):
-    """wrapper task for user's follows import"""
-    parent_job = BookwyrmImportJob.objects.get(id=job_id)
-
-    return upsert_follows(parent_job.user, parent_job.import_data.get("follows"))
 
 
 def upsert_user_blocks(user, user_ids):
@@ -412,16 +464,8 @@ def upsert_user_blocks(user, user_ids):
                 # remove the blocked user from all blocker's owned groups
                 models.GroupMember.remove(user, user_object)
 
-
-@app.task(queue=IMPORTS, base=SubTask)
-def upsert_user_blocks_task(job_id):
-    """wrapper task for user's blocks import"""
-    parent_job = BookwyrmImportJob.objects.get(id=job_id)
-
-    return upsert_user_blocks(
-        parent_job.user, parent_job.import_data.get("blocked_users")
-    )
-
+# utilities
+###########
 
 def update_followers_address(user, field):
     """statuses to or cc followers need to have the followers

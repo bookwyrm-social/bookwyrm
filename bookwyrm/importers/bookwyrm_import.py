@@ -21,4 +21,7 @@ class BookwyrmImporter:
         job = BookwyrmImportJob.objects.create(
             user=user, archive_file=archive_file, required=required
         )
+
+        # TODO need to read the tarfile here and create a childjob for each book
+
         return job
