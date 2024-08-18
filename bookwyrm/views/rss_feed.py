@@ -7,7 +7,7 @@ from ..models import Review, Quotation, Comment
 
 from .helpers import get_user_from_username
 
-# pylint: disable=no-self-use, unused-argument
+# pylint: disable=no-self-use
 class RssFeed(Feed):
     """serialize user's posts in rss feed"""
 

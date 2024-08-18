@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 class EditStatus(View):
     """the view for *posting*"""
 
-    def get(self, request, status_id):  # pylint: disable=unused-argument
+    def get(self, request, status_id):
         """load the edit panel"""
         status = get_object_or_404(
             models.Status.objects.select_subclasses(), id=status_id
@@ -201,12 +201,11 @@ def edit_readthrough(request):
     # TODO: remove this, it duplicates the code in the ReadThrough view
     readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
 
-    readthrough.start_date = load_date_in_user_tz_as_utc(
-        request.POST.get("start_date"), request.user
-    )
-    readthrough.finish_date = load_date_in_user_tz_as_utc(
-        request.POST.get("finish_date"), request.user
-    )
+    if start_date := request.POST.get("start_date"):
+        readthrough.start_date = load_date_in_user_tz_as_utc(start_date, request.user)
+
+    if finish_date := request.POST.get("finish_date"):
+        readthrough.finish_date = load_date_in_user_tz_as_utc(finish_date, request.user)
 
     progress = request.POST.get("progress")
     try:

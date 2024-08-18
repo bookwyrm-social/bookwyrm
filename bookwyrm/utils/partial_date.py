@@ -52,7 +52,6 @@ class PartialDate(datetime):
         Use subclasses to specify precision. If `dt` is naive, `ValueError`
         is raised.
         """
-        # pylint: disable=invalid-name
         if timezone.is_naive(dt):
             raise ValueError("naive datetime not accepted")
         return cls.combine(dt.date(), dt.time(), tzinfo=dt.tzinfo)
