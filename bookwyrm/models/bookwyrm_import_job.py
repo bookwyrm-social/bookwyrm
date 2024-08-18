@@ -38,7 +38,9 @@ class BookwyrmImportJob(ParentJob):
     def pending_item_count(self):
         """How many tasks are incomplete?"""
         status = BookwyrmImportJob.Status
-        return self.items.filter(fail_reason__isnull=True, status__in=[status.PENDING, status.ACTIVE])
+        return self.items.filter(
+            fail_reason__isnull=True, status__in=[status.PENDING, status.ACTIVE]
+        )
 
     @property
     def percent_complete(self):
@@ -48,9 +50,10 @@ class BookwyrmImportJob(ParentJob):
             return 0
         return math.floor((item_count - self.pending_item_count) / item_count * 100)
 
+
 class UserImportBook(ChildJob):
-    """ ChildJob to import each book.
-        Equivalent to ImportItem when importing a csv file of books """
+    """ChildJob to import each book.
+    Equivalent to ImportItem when importing a csv file of books"""
 
     book_data = JSONField(null=False)
 
@@ -60,7 +63,7 @@ class UserImportBook(ChildJob):
 
 
 class UserImportStatuses(ChildJob):
-    """ ChildJob for comments, quotes, and reviews """
+    """ChildJob for comments, quotes, and reviews"""
 
     class StatusType(TextChoices):
         """Possible status types."""
@@ -85,8 +88,8 @@ class UserImportStatuses(ChildJob):
 @app.task(queue=IMPORTS, base=ParentTask)
 def start_import_task(**kwargs):
     """trigger the child import tasks for each user data
-       We always import the books even if not assigning
-       them to shelves, lists etc"""
+    We always import the books even if not assigning
+    them to shelves, lists etc"""
     job = BookwyrmImportJob.objects.get(id=kwargs["job_id"])
     archive_file = job.archive_file
 
@@ -121,7 +124,7 @@ def start_import_task(**kwargs):
                 book_job.parent_job = job
                 book_job.start_job()
 
-            #job.set_status("complete") # TODO: is this needed? Don't we want it to be "active"?
+            # job.set_status("complete") # TODO: is this needed? Don't we want it to be "active"?
         archive_file.close()
 
     except Exception as err:  # pylint: disable=broad-except
@@ -131,6 +134,7 @@ def start_import_task(**kwargs):
 
 # book-related updates
 ######################
+
 
 @app.task(queue=IMPORTS, base=SubTask)
 def import_book_task(task_id):
@@ -177,13 +181,13 @@ def import_book_task(task_id):
 
     # set the cover image from the tar
     if cover_path:
-        tar.write_image_to_file(cover_path, book.cover) # TODO: open tar file here
+        tar.write_image_to_file(cover_path, book.cover)  # TODO: open tar file here
 
     required = task.parent_job.required
     task_user = task.parent_job.user
 
     if "include_shelves" in required:
-        upsert_shelves(book, task_user, book_data) # TODO: could this be book.id?
+        upsert_shelves(book, task_user, book_data)  # TODO: could this be book.id?
 
     if "include_readthroughs" in required:
         upsert_readthroughs(book_data.get("readthroughs"), task_user, book.id)
@@ -201,19 +205,19 @@ def import_book_task(task_id):
                 parent_job=task.parent_job,
                 json=status,
                 book=book,
-                status_type=UserImportStatuses.StatusType.COMMENT
-                )
+                status_type=UserImportStatuses.StatusType.COMMENT,
+            )
 
     if "include_quotations" in job.required:
-            # job.user, models.Quotation, data.get("quotations"), book.remote_id
+        # job.user, models.Quotation, data.get("quotations"), book.remote_id
 
         for status in book_data.get("quotations"):
             UserImportStatuses.objects.create(
                 parent_job=task.parent_job,
                 json=status,
                 book=book,
-                status_type=UserImportStatuses.StatusType.QUOTE
-                )
+                status_type=UserImportStatuses.StatusType.QUOTE,
+            )
 
     if "include_reviews" in job.required:
         # job.user, models.Review, data.get("reviews"), book.remote_id
@@ -222,8 +226,8 @@ def import_book_task(task_id):
                 parent_job=task.parent_job,
                 json=status,
                 book=book,
-                status_type=UserImportStatuses.StatusType.REVIEW
-                )
+                status_type=UserImportStatuses.StatusType.REVIEW,
+            )
 
     for item in UserImportStatuses.objects.get(parent_job=task.parent_job):
         item.start_job()
@@ -233,12 +237,18 @@ def import_book_task(task_id):
 
 @app.task(queue=IMPORTS, base=SubTask)
 def upsert_statuses_task(task_id):
-# def upsert_statuses_task(user, cls, data, book_remote_id):
+    # def upsert_statuses_task(user, cls, data, book_remote_id):
     """Find or create book statuses"""
 
     task = UserImportStatuses.objects.get(id=task_id)
     user = task.parent_job.user
-    status_class = models.Review if self.StatusType.REVIEW else models.Quotation if self.StatusType.QUOTE else models.Comment
+    status_class = (
+        models.Review
+        if self.StatusType.REVIEW
+        else models.Quotation
+        if self.StatusType.QUOTE
+        else models.Comment
+    )
 
     if is_alias(
         user, status.get("attributedTo", False)
@@ -249,10 +259,10 @@ def upsert_statuses_task(task_id):
         status["cc"] = update_followers_address(user, status["cc"])
         status[
             "replies"
-        ] = (
-            {}
-        )  # this parses incorrectly but we can't set it without knowing the new id
-        status["inReplyToBook"] = task.book.remote_id # TODO: what if there isn't a remote id?
+        ] = {}  # this parses incorrectly but we can't set it without knowing the new id
+        status[
+            "inReplyToBook"
+        ] = task.book.remote_id  # TODO: what if there isn't a remote id?
         parsed = activitypub.parse(status)
         if not status_already_exists(
             user, parsed
@@ -281,6 +291,7 @@ def upsert_statuses_task(task_id):
         )
         task.stop_job(reason="failed")
 
+
 def upsert_readthroughs(data, user, book_id):
     """Take a JSON string of readthroughs and
     find or create the instances in the database"""
@@ -303,6 +314,7 @@ def upsert_readthroughs(data, user, book_id):
         existing = models.ReadThrough.objects.filter(**obj).first()
         if not existing:
             models.ReadThrough.objects.create(**obj)
+
 
 def upsert_lists(user, lists, book_id):
     """Take a list of objects each containing
@@ -360,8 +372,10 @@ def upsert_shelves(book, user, book_data):
                 book=book, shelf=book_shelf, user=user, shelved_date=timezone.now()
             )
 
+
 # user updates
 ##############
+
 
 def update_user_profile(user, tar, data):
     """update the user's profile from import data"""
@@ -464,8 +478,10 @@ def upsert_user_blocks(user, user_ids):
                 # remove the blocked user from all blocker's owned groups
                 models.GroupMember.remove(user, user_object)
 
+
 # utilities
 ###########
+
 
 def update_followers_address(user, field):
     """statuses to or cc followers need to have the followers
