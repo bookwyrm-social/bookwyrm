@@ -193,10 +193,9 @@ let BookWyrm = new (class {
      */
     hideSelf(event) {
         let trigger = event.currentTarget;
-        this.addRemoveClass(trigger, "is-hidden", true)
+
+        this.addRemoveClass(trigger, "is-hidden", true);
     }
-
-
 
     /**
      * Execute actions on targets based on triggers.
