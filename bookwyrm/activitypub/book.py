@@ -67,7 +67,6 @@ class Edition(Book):
     type: str = "Edition"
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class Work(Book):
     """work instance of a book object"""

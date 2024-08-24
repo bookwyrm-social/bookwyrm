@@ -11,7 +11,7 @@ ConnectorFiles = models.TextChoices("ConnectorFiles", CONNECTORS)
 class Connector(BookWyrmModel):
     """book data source connectors"""
 
-    identifier = models.CharField(max_length=255, unique=True)
+    identifier = models.CharField(max_length=255, unique=True)  # domain
     priority = models.IntegerField(default=2)
     name = models.CharField(max_length=255, null=True, blank=True)
     connector_file = models.CharField(max_length=255, choices=ConnectorFiles.choices)

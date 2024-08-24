@@ -18,7 +18,7 @@ class ListsStream(RedisStore):
             return f"{user}-lists"
         return f"{user.id}-lists"
 
-    def get_rank(self, obj):  # pylint: disable=no-self-use
+    def get_rank(self, obj):
         """lists are sorted by updated date"""
         return obj.updated_date.timestamp()
 

@@ -16,19 +16,21 @@ class ReportViews(TestCase):
     """every response to a get request, html or json"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
                 "password",
                 local=True,
                 localname="mouse",
             )
-            self.rat = models.User.objects.create_user(
+            cls.rat = models.User.objects.create_user(
                 "rat@local.com",
                 "rat@mouse.mouse",
                 "password",
@@ -38,7 +40,7 @@ class ReportViews(TestCase):
         initdb.init_groups()
         initdb.init_permissions()
         group = Group.objects.get(name="moderator")
-        self.local_user.groups.set([group])
+        cls.local_user.groups.set([group])
         models.SiteSettings.objects.create()
 
     def setUp(self):
