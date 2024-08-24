@@ -18,6 +18,7 @@ class EditUserForm(CustomForm):
             "email",
             "summary",
             "show_goal",
+            "show_ratings",
             "show_suggested_users",
             "manually_approves_followers",
             "default_post_privacy",
