@@ -21,12 +21,7 @@ class RedisStatus(View):
 
     def get(self, request):
         """See workers and active tasks"""
-        data = {"errors": []}
-        try:
-            data["info"] = r.info
-        # pylint: disable=broad-except
-        except Exception as err:
-            data["errors"].append(err)
+        data = view_data()
 
         return TemplateResponse(request, "settings/redis.html", data)
 
@@ -34,19 +29,39 @@ class RedisStatus(View):
     def post(self, request):
         """Erase invalid keys"""
         dry_run = request.POST.get("dry_run")
-        patterns = [":*:*"]  # this pattern is a django cache with no prefix
-        for user_id in models.User.objects.filter(
-            is_deleted=True, local=True
-        ).values_list("id", flat=True):
-            patterns.append(f"{user_id}-*")
+        erase_cache = request.POST.get("erase_cache")
+        data_key = "cache" if erase_cache else "outdated"
+
+        if erase_cache:
+            patterns = [f"{settings.CACHE_KEY_PREFIX}:*:*"]
+        else:
+            patterns = [":*:*"]  # this pattern is a django cache with no prefix
+            for user_id in models.User.objects.filter(
+                is_deleted=True, local=True
+            ).values_list("id", flat=True):
+                patterns.append(f"{user_id}-*")
 
         deleted_count = 0
         for pattern in patterns:
             deleted_count += erase_keys(pattern, dry_run=dry_run)
 
+        data = view_data()
         if dry_run:
-            return HttpResponse(f"{deleted_count} keys identified for deletion")
-        return HttpResponse(f"{deleted_count} keys deleted")
+            data[f"{data_key}_identified"] = deleted_count
+        else:
+            data[f"{data_key}_deleted"] = deleted_count
+        return TemplateResponse(request, "settings/redis.html", data)
+
+
+def view_data():
+    """Helper function to load basic info for the view"""
+    data = {"errors": [], "prefix": settings.CACHE_KEY_PREFIX}
+    try:
+        data["info"] = r.info
+    # pylint: disable=broad-except
+    except Exception as err:
+        data["errors"].append(err)
+    return data
 
 
 def erase_keys(pattern, count=1000, dry_run=False):

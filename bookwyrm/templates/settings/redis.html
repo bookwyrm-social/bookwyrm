@@ -33,19 +33,67 @@
     </div>
 </section>
 
-<section>
-    {{ dead_key_count }}
-    <form name="erase-keys" method="POST" action="{% url 'settings-redis' %}">
-        {% csrf_token %}
-        <button type="submit" class="button">go</button>
-    </form>
-    <form name="erase-keys" method="POST" action="{% url 'settings-redis' %}">
-        {% csrf_token %}
-        <input type="hidden" name="dry_run" value="True">
-        <button type="submit" class="button">dry run</button>
-    </form>
+<section class="block content">
+    <h2>{% trans "Outdated cache keys" %}</h2>
+    <div class="box">
+        <p>
+        {% blocktrans trimmed %}
+        This will scan for keys in the Django redis cache that use no prefix (the current prefix is <code>{{ prefix }}</code>), and identify Activity Streams for users with deleted accounts.
+        {% endblocktrans %}
+        </p>
+
+        {% if outdated_identified is not None %}
+            <p class="notification has-text-weight-bold">
+            {% blocktrans trimmed with keys=outdated_identified|intcomma %}
+                {{ keys }} identified
+            {% endblocktrans %}
+            </p>
+
+            {% if outdated_identified > 0 %}
+            <form name="erase-keys" method="POST" action="{% url 'settings-redis' %}">
+                {% csrf_token %}
+                <button type="submit" class="button is-danger">{% trans "Erase outdated keys" %}</button>
+            </form>
+            {% endif %}
+        {% else %}
+        <form name="erase-keys" method="POST" action="{% url 'settings-redis' %}">
+            {% csrf_token %}
+                <input type="hidden" name="dry_run" value="True">
+                <button type="submit" class="button">
+                    {% trans "Scan for outdated keys" %}
+                </button>
+        </form>
+        {% endif %}
+    </div>
 </section>
+
+<section class="block content">
+    <h2>{% trans "Clear Django cache" %}</h2>
+    <div class="box">
+        <p>
+        {% blocktrans trimmed %}
+        This is <strong>NOT recommended</strong> and should only be used if something has gone very wrong with your cache. All sessions will be cleared and users will be logged out of their accounts.
+        {% endblocktrans %}
+        </p>
+
+        {% if cache_deleted %}
+            <p class="notification has-text-weight-bold">
+            {% blocktrans trimmed with keys=cache_deleted|intcomma %}
+                {{ keys }} keys deleted
+            {% endblocktrans %}
+            </p>
+        {% else %}
+            <form name="erase-keys" method="POST" action="{% url 'settings-redis' %}">
+                {% csrf_token %}
+                <input type="hidden" name="erase_cache" value="True">
+                <button type="submit" class="button is-danger">{% trans "Erase cache" %}</button>
+            </form>
+        {% endif %}
+    </div>
+</section>
+
 {% else %}
+
 <div class="notification is-danger is-flex is-align-items-start">
     <span class="icon icon-warning is-size-4 pr-3" aria-hidden="true"></span>
     <span>
