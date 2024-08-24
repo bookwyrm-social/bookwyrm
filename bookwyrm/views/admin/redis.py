@@ -53,11 +53,11 @@ def erase_keys(pattern, count=1000, dry_run=False):
     """Delete all redis activity keys according to a provided regex pattern"""
     pipeline = r.pipeline()
     key_count = 0
-    for keys in r.scan_iter(match=pattern, count=count):
-        key_count += len(keys)
-        if not dry_run:
-            for key in keys:
-                pipeline.delete(key)
+    for key in r.scan_iter(match=pattern, count=count):
+        key_count += 1
+        if dry_run:
+            continue
+        pipeline.delete(key)
     if not dry_run:
         pipeline.execute()
     return key_count
