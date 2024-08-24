@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import datetime
 import json
 import pathlib
-import re
+from urllib.parse import urlparse
 from typing import List
 from unittest import expectedFailure
 from unittest.mock import patch
@@ -22,7 +22,7 @@ from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.models import fields, User, Status, Edition
 from bookwyrm.models.base_model import BookWyrmModel
 from bookwyrm.models.activitypub_mixin import ActivitypubMixin
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import PROTOCOL, NETLOC
 
 # pylint: disable=too-many-public-methods
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -427,12 +427,10 @@ class ModelFields(TestCase):
         instance = fields.ImageField()
 
         output = instance.field_to_activity(user.avatar)
-        self.assertIsNotNone(
-            re.match(
-                rf"https:\/\/{DOMAIN}\/.*\.jpg",
-                output.url,
-            )
-        )
+        parsed_url = urlparse(output.url)
+        self.assertEqual(parsed_url.scheme, PROTOCOL)
+        self.assertEqual(parsed_url.netloc, NETLOC)
+        self.assertRegex(parsed_url.path, r"\.jpg$")
         self.assertEqual(output.name, "")
         self.assertEqual(output.type, "Image")
 

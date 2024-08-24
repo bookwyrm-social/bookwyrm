@@ -13,7 +13,6 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.tests.validate_html import validate_html
 
 
-# pylint: disable=unused-argument
 # pylint: disable=too-many-public-methods
 class ListViews(TestCase):
     """list view"""

@@ -9,7 +9,6 @@ from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitySerializerError
 
 
-# pylint: disable=too-many-public-methods
 class TransactionInboxCreate(TransactionTestCase):
     """readthrough tests"""
 

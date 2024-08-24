@@ -8,7 +8,7 @@ from django.test.client import RequestFactory
 import responses
 
 from bookwyrm import models, views
-from bookwyrm.settings import USER_AGENT, DOMAIN
+from bookwyrm.settings import USER_AGENT, BASE_URL
 
 
 @patch("bookwyrm.activitystreams.add_status_task.delay")
@@ -113,11 +113,20 @@ class ViewsHelpers(TestCase):  # pylint: disable=too-many-public-methods
         request = self.factory.get(
             "",
             {"q": "Test Book"},
-            HTTP_USER_AGENT="http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
+            headers={
+                # pylint: disable-next=line-too-long
+                "user-agent": "http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
+            },
         )
         self.assertFalse(views.helpers.is_bookwyrm_request(request))
 
-        request = self.factory.get("", {"q": "Test Book"}, HTTP_USER_AGENT=USER_AGENT)
+        request = self.factory.get(
+            "",
+            {"q": "Test Book"},
+            headers={
+                "user-agent": USER_AGENT,
+            },
+        )
         self.assertTrue(views.helpers.is_bookwyrm_request(request))
 
     def test_handle_remote_webfinger_invalid(self, *_):
@@ -271,8 +280,12 @@ class ViewsHelpers(TestCase):  # pylint: disable=too-many-public-methods
 
     def test_redirect_to_referer_outside_domain(self, *_):
         """safely send people on their way"""
-        request = self.factory.get("/path")
-        request.META = {"HTTP_REFERER": "http://outside.domain/name"}
+        request = self.factory.get(
+            "/path",
+            headers={
+                "referer": "http://outside.domain/name",
+            },
+        )
         result = views.helpers.redirect_to_referer(
             request, "user-feed", self.local_user.localname
         )
@@ -280,21 +293,33 @@ class ViewsHelpers(TestCase):  # pylint: disable=too-many-public-methods
 
     def test_redirect_to_referer_outside_domain_with_fallback(self, *_):
         """invalid domain with regular params for the redirect function"""
-        request = self.factory.get("/path")
-        request.META = {"HTTP_REFERER": "https://outside.domain/name"}
+        request = self.factory.get(
+            "/path",
+            headers={
+                "referer": "http://outside.domain/name",
+            },
+        )
         result = views.helpers.redirect_to_referer(request)
         self.assertEqual(result.url, "/")
 
     def test_redirect_to_referer_valid_domain(self, *_):
         """redirect to within the app"""
-        request = self.factory.get("/path")
-        request.META = {"HTTP_REFERER": f"https://{DOMAIN}/and/a/path"}
+        request = self.factory.get(
+            "/path",
+            headers={
+                "referer": f"{BASE_URL}/and/a/path",
+            },
+        )
         result = views.helpers.redirect_to_referer(request)
-        self.assertEqual(result.url, f"https://{DOMAIN}/and/a/path")
+        self.assertEqual(result.url, f"{BASE_URL}/and/a/path")
 
     def test_redirect_to_referer_with_get_args(self, *_):
         """if the path has get params (like sort) they are preserved"""
-        request = self.factory.get("/path")
-        request.META = {"HTTP_REFERER": f"https://{DOMAIN}/and/a/path?sort=hello"}
+        request = self.factory.get(
+            "/path",
+            headers={
+                "referer": f"{BASE_URL}/and/a/path?sort=hello",
+            },
+        )
         result = views.helpers.redirect_to_referer(request)
-        self.assertEqual(result.url, f"https://{DOMAIN}/and/a/path?sort=hello")
+        self.assertEqual(result.url, f"{BASE_URL}/and/a/path?sort=hello")

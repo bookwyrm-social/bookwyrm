@@ -18,7 +18,7 @@ class ExportViews(TestCase):
     """viewing and creating statuses"""
 
     @classmethod
-    def setUpTestData(cls):  # pylint: disable=invalid-name
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
@@ -41,7 +41,6 @@ class ExportViews(TestCase):
             bnf_id="beep",
         )
 
-    # pylint: disable=invalid-name
     def setUp(self):
         """individual test setup"""
         self.factory = RequestFactory()

@@ -26,7 +26,7 @@ class FileLinkForm(CustomForm):
         url = cleaned_data.get("url")
         filetype = cleaned_data.get("filetype")
         book = cleaned_data.get("book")
-        domain = urlparse(url).netloc
+        domain = urlparse(url).hostname
         if models.LinkDomain.objects.filter(domain=domain).exists():
             status = models.LinkDomain.objects.get(domain=domain).status
             if status == "blocked":

@@ -3,7 +3,19 @@ ignore=migrations
 load-plugins=pylint.extensions.no_self_use
 
 [MESSAGES CONTROL]
-disable=E1101,E1135,E1136,R0903,R0901,R0902,W0707,W0511,W0406,R0401,R0801,C3001,import-error
+disable =
+    cyclic-import,
+    duplicate-code,
+    fixme,
+    no-member,
+    raise-missing-from,
+    too-few-public-methods,
+    too-many-ancestors,
+    too-many-instance-attributes,
+    unnecessary-lambda-assignment,
+    unsubscriptable-object,
+enable =
+    useless-suppression
 
 [FORMAT]
 max-line-length=88

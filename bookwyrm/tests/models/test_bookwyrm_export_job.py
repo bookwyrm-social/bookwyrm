@@ -1,17 +1,18 @@
 """test bookwyrm user export functions"""
 import datetime
 import json
+import pathlib
+
 from unittest.mock import patch
 
-from django.core.serializers.json import DjangoJSONEncoder
-from django.test import TestCase
 from django.utils import timezone
+from django.test import TestCase
 
 from bookwyrm import models
-import bookwyrm.models.bookwyrm_export_job as export_job
+from bookwyrm.utils.tar import BookwyrmTarFile
 
 
-class BookwyrmExport(TestCase):
+class BookwyrmExportJob(TestCase):
     """testing user export functions"""
 
     def setUp(self):
@@ -42,6 +43,11 @@ class BookwyrmExport(TestCase):
                 preferred_timezone="America/Los Angeles",
                 default_post_privacy="followers",
             )
+            avatar_path = pathlib.Path(__file__).parent.joinpath(
+                "../../static/images/default_avi.jpg"
+            )
+            with open(avatar_path, "rb") as avatar_file:
+                self.local_user.avatar.save("mouse-avatar.jpg", avatar_file)
 
             self.rat_user = models.User.objects.create_user(
                 "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
@@ -86,6 +92,13 @@ class BookwyrmExport(TestCase):
             self.edition = models.Edition.objects.create(
                 title="Example Edition", parent_work=self.work
             )
+
+            # edition cover
+            cover_path = pathlib.Path(__file__).parent.joinpath(
+                "../../static/images/default_avi.jpg"
+            )
+            with open(cover_path, "rb") as cover_file:
+                self.edition.cover.save("tèst.jpg", cover_file)
 
             self.edition.authors.add(self.author)
 
@@ -139,91 +152,105 @@ class BookwyrmExport(TestCase):
                 book=self.edition,
             )
 
-    def test_json_export_user_settings(self):
-        """Test the json export function for basic user info"""
-        data = export_job.json_export(self.local_user)
-        user_data = json.loads(data)
-        self.assertEqual(user_data["preferredUsername"], "mouse")
-        self.assertEqual(user_data["name"], "Mouse")
-        self.assertEqual(user_data["summary"], "<p>I'm a real bookmouse</p>")
-        self.assertEqual(user_data["manuallyApprovesFollowers"], False)
-        self.assertEqual(user_data["hideFollows"], False)
-        self.assertEqual(user_data["discoverable"], True)
-        self.assertEqual(user_data["settings"]["show_goal"], False)
-        self.assertEqual(user_data["settings"]["show_suggested_users"], False)
+            self.job = models.BookwyrmExportJob.objects.create(user=self.local_user)
+
+            # run the first stage of the export
+            with patch("bookwyrm.models.bookwyrm_export_job.create_archive_task.delay"):
+                models.bookwyrm_export_job.create_export_json_task(job_id=self.job.id)
+            self.job.refresh_from_db()
+
+    def test_add_book_to_user_export_job(self):
+        """does AddBookToUserExportJob ...add the book to the export?"""
+        self.assertIsNotNone(self.job.export_json["books"])
+        self.assertEqual(len(self.job.export_json["books"]), 1)
+        book = self.job.export_json["books"][0]
+
+        self.assertEqual(book["work"]["id"], self.work.remote_id)
+        self.assertEqual(len(book["authors"]), 1)
+        self.assertEqual(len(book["shelves"]), 1)
+        self.assertEqual(len(book["lists"]), 1)
+        self.assertEqual(len(book["comments"]), 1)
+        self.assertEqual(len(book["reviews"]), 1)
+        self.assertEqual(len(book["quotations"]), 1)
+        self.assertEqual(len(book["readthroughs"]), 1)
+
+        self.assertEqual(book["edition"]["id"], self.edition.remote_id)
         self.assertEqual(
-            user_data["settings"]["preferred_timezone"], "America/Los Angeles"
-        )
-        self.assertEqual(user_data["settings"]["default_post_privacy"], "followers")
-
-    def test_json_export_extended_user_data(self):
-        """Test the json export function for other non-book user info"""
-        data = export_job.json_export(self.local_user)
-        json_data = json.loads(data)
-
-        # goal
-        self.assertEqual(len(json_data["goals"]), 1)
-        self.assertEqual(json_data["goals"][0]["goal"], 128937123)
-        self.assertEqual(json_data["goals"][0]["year"], timezone.now().year)
-        self.assertEqual(json_data["goals"][0]["privacy"], "followers")
-
-        # saved lists
-        self.assertEqual(len(json_data["saved_lists"]), 1)
-        self.assertEqual(json_data["saved_lists"][0], "https://local.lists/9999")
-
-        # follows
-        self.assertEqual(len(json_data["follows"]), 1)
-        self.assertEqual(json_data["follows"][0], "https://your.domain.here/user/rat")
-        # blocked users
-        self.assertEqual(len(json_data["blocks"]), 1)
-        self.assertEqual(json_data["blocks"][0], "https://your.domain.here/user/badger")
-
-    def test_json_export_books(self):
-        """Test the json export function for extended user info"""
-
-        data = export_job.json_export(self.local_user)
-        json_data = json.loads(data)
-        start_date = json_data["books"][0]["readthroughs"][0]["start_date"]
-
-        self.assertEqual(len(json_data["books"]), 1)
-        self.assertEqual(json_data["books"][0]["edition"]["title"], "Example Edition")
-        self.assertEqual(len(json_data["books"][0]["authors"]), 1)
-        self.assertEqual(json_data["books"][0]["authors"][0]["name"], "Sam Zhu")
-
-        self.assertEqual(
-            f'"{start_date}"', DjangoJSONEncoder().encode(self.readthrough_start)
+            book["edition"]["cover"]["url"], f"images/{self.edition.cover.name}"
         )
 
-        self.assertEqual(json_data["books"][0]["shelves"][0]["name"], "Read")
+    def test_start_export_task(self):
+        """test saved list task saves initial json and data"""
+        self.assertIsNotNone(self.job.export_data)
+        self.assertIsNotNone(self.job.export_json)
+        self.assertEqual(self.job.export_json["name"], self.local_user.name)
 
-        self.assertEqual(len(json_data["books"][0]["lists"]), 1)
-        self.assertEqual(json_data["books"][0]["lists"][0]["name"], "My excellent list")
+    def test_export_saved_lists_task(self):
+        """test export_saved_lists_task adds the saved lists"""
+        self.assertIsNotNone(self.job.export_json["saved_lists"])
         self.assertEqual(
-            json_data["books"][0]["lists"][0]["list_item"]["book"],
-            self.edition.remote_id,
-            self.edition.id,
+            self.job.export_json["saved_lists"][0], self.saved_list.remote_id
         )
 
-        self.assertEqual(len(json_data["books"][0]["reviews"]), 1)
-        self.assertEqual(len(json_data["books"][0]["comments"]), 1)
-        self.assertEqual(len(json_data["books"][0]["quotations"]), 1)
+    def test_export_follows_task(self):
+        """test export_follows_task adds the follows"""
+        self.assertIsNotNone(self.job.export_json["follows"])
+        self.assertEqual(self.job.export_json["follows"][0], self.rat_user.remote_id)
 
-        self.assertEqual(json_data["books"][0]["reviews"][0]["name"], "my review")
-        self.assertEqual(
-            json_data["books"][0]["reviews"][0]["content"], "<p>awesome</p>"
-        )
-        self.assertEqual(json_data["books"][0]["reviews"][0]["rating"], 5.0)
+    def test_export_blocks_task(self):
+        """test export_blocks_task adds the blocks"""
+        self.assertIsNotNone(self.job.export_json["blocks"])
+        self.assertEqual(self.job.export_json["blocks"][0], self.badger_user.remote_id)
 
-        self.assertEqual(
-            json_data["books"][0]["comments"][0]["content"], "<p>ok so far</p>"
-        )
-        self.assertEqual(json_data["books"][0]["comments"][0]["progress"], 15)
-        self.assertEqual(json_data["books"][0]["comments"][0]["progress_mode"], "PG")
+    def test_export_reading_goals_task(self):
+        """test export_reading_goals_task adds the goals"""
+        self.assertIsNotNone(self.job.export_json["goals"])
+        self.assertEqual(self.job.export_json["goals"][0]["goal"], 128937123)
 
+    def test_json_export(self):
+        """test json_export job adds settings"""
+        self.assertIsNotNone(self.job.export_json["settings"])
+        self.assertFalse(self.job.export_json["settings"]["show_goal"])
         self.assertEqual(
-            json_data["books"][0]["quotations"][0]["content"], "<p>check this out</p>"
+            self.job.export_json["settings"]["preferred_timezone"],
+            "America/Los Angeles",
         )
         self.assertEqual(
-            json_data["books"][0]["quotations"][0]["quote"],
-            "<p>A rose by any other name</p>",
+            self.job.export_json["settings"]["default_post_privacy"], "followers"
         )
+        self.assertFalse(self.job.export_json["settings"]["show_suggested_users"])
+
+    def test_get_books_for_user(self):
+        """does get_books_for_user get all the books"""
+
+        data = models.bookwyrm_export_job.get_books_for_user(self.local_user)
+
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0].title, "Example Edition")
+
+    def test_archive(self):
+        """actually create the TAR file"""
+        models.bookwyrm_export_job.create_archive_task(job_id=self.job.id)
+        self.job.refresh_from_db()
+
+        with (
+            self.job.export_data.open("rb") as tar_file,
+            BookwyrmTarFile.open(mode="r", fileobj=tar_file) as tar,
+        ):
+            archive_json_file = tar.extractfile("archive.json")
+            data = json.load(archive_json_file)
+
+            # JSON from the archive should be what we want it to be
+            self.assertEqual(data, self.job.export_json)
+
+            # User avatar should be present in archive
+            with self.local_user.avatar.open() as expected_avatar:
+                archive_avatar = tar.extractfile(data["icon"]["url"])
+                self.assertEqual(expected_avatar.read(), archive_avatar.read())
+
+            # Edition cover should be present in archive
+            with self.edition.cover.open() as expected_cover:
+                archive_cover = tar.extractfile(
+                    data["books"][0]["edition"]["cover"]["url"]
+                )
+                self.assertEqual(expected_cover.read(), archive_cover.read())

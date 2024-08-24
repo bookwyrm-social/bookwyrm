@@ -48,7 +48,7 @@ jobs:
     - name: Set up .env
       run: cp .env.example .env
     - name: Check migrations up-to-date
-      run: python ./manage.py makemigrations --check
+      run: python ./manage.py makemigrations --check -v 3
     - name: Run Tests
       run: pytest -n 3
 

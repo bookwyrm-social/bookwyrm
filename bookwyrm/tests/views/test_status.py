@@ -1,9 +1,11 @@
 """ test for app action functionality """
 import json
 from unittest.mock import patch
+import dateutil
 from django.core.exceptions import PermissionDenied
 from django.test import TestCase, TransactionTestCase
 from django.test.client import RequestFactory
+from django.utils import timezone
 
 from bookwyrm import forms, models, views
 from bookwyrm.views.status import find_mentions, find_or_create_hashtags
@@ -166,6 +168,37 @@ class StatusViews(TestCase):
         self.assertEqual(status.book, self.book)
         self.assertEqual(status.rating, 4.0)
         self.assertIsNone(status.edited_date)
+
+    def test_create_status_progress(self, *_):
+        """create a status that updates a readthrough"""
+        start_date = timezone.make_aware(dateutil.parser.parse("2024-07-27"))
+        readthrough = models.ReadThrough.objects.create(
+            book=self.book, user=self.local_user, start_date=start_date
+        )
+
+        self.assertEqual(start_date, readthrough.start_date)
+        self.assertIsNone(readthrough.progress)
+
+        view = views.CreateStatus.as_view()
+        form = forms.CommentForm(
+            {
+                "progress": 1,
+                "progress_mode": "PG",
+                "content": "I started the book",
+                "id": readthrough.id,
+                "book": self.book.id,
+                "user": self.local_user.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        view(request, "comment")
+        readthrough.refresh_from_db()
+
+        self.assertEqual(1, readthrough.progress)
+        self.assertEqual(start_date, readthrough.start_date)  # not overwritten
 
     def test_create_status_wrong_user(self, *_):
         """You can't compose statuses for someone else"""

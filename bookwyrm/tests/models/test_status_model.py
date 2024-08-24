@@ -60,7 +60,7 @@ class Status(TestCase):
     def test_status_generated_fields(self, *_):
         """setting remote id"""
         status = models.Status.objects.create(content="bleh", user=self.local_user)
-        expected_id = f"https://{settings.DOMAIN}/user/mouse/status/{status.id}"
+        expected_id = f"{settings.BASE_URL}/user/mouse/status/{status.id}"
         self.assertEqual(status.remote_id, expected_id)
         self.assertEqual(status.privacy, "public")
 
@@ -151,7 +151,7 @@ class Status(TestCase):
         self.assertEqual(activity["tag"][0]["type"], "Hashtag")
         self.assertEqual(activity["tag"][0]["name"], "#content")
         self.assertEqual(
-            activity["tag"][0]["href"], f"https://{settings.DOMAIN}/hashtag/{tag.id}"
+            activity["tag"][0]["href"], f"{settings.BASE_URL}/hashtag/{tag.id}"
         )
 
     def test_status_with_mention_to_activity(self, *_):
@@ -227,11 +227,9 @@ class Status(TestCase):
         self.assertEqual(activity["sensitive"], False)
         self.assertIsInstance(activity["attachment"], list)
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test(_[A-z0-9]+)?.jpg",
-                activity["attachment"][0]["url"],
-            )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test(_[A-z0-9]+)?.jpg$",
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
@@ -263,12 +261,10 @@ class Status(TestCase):
             ),
         )
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        # self.assertTrue(
-        #    re.match(
-        #        r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-        #        activity["attachment"][0].url,
-        #    )
-        # )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test_[A-z0-9]+.jpg$",
+        )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
     def test_quotation_to_activity(self, *_):
@@ -306,11 +302,9 @@ class Status(TestCase):
             ),
         )
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test(_[A-z0-9]+)?.jpg",
-                activity["attachment"][0]["url"],
-            )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test(_[A-z0-9]+)?.jpg$",
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
@@ -340,8 +334,11 @@ class Status(TestCase):
     def test_quotation_page_serialization(self, *_):
         """serialization of quotation page position"""
         tests = [
-            ("single pos", 7, None, "p. 7"),
-            ("page range", 7, 10, "pp. 7-10"),
+            ("single pos", "7", "", "p. 7"),
+            ("missing beg", "", "10", None),
+            ("page range", "7", "10", "pp. 7-10"),
+            ("page range roman", "xv", "xvi", "pp. xv-xvi"),
+            ("page range reverse", "14", "10", "pp. 14-10"),
         ]
         for desc, beg, end, pages in tests:
             with self.subTest(desc):
@@ -355,10 +352,12 @@ class Status(TestCase):
                     position_mode="PG",
                 )
                 activity = status.to_activity(pure=True)
-                self.assertRegex(
-                    activity["content"],
-                    f'^<p>"my quote"</p> <p>— <a .+</a>, {pages}</p>$',
-                )
+                if pages:
+                    pages_re = re.escape(pages)
+                    expect_re = f'^<p>"my quote"</p> <p>— <a .+</a>, {pages_re}</p>$'
+                else:
+                    expect_re = '^<p>"my quote"</p> <p>— <a .+</a></p>$'
+                self.assertRegex(activity["content"], expect_re)
 
     def test_review_to_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""
@@ -395,11 +394,9 @@ class Status(TestCase):
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-                activity["attachment"][0]["url"],
-            )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test_[A-z0-9]+.jpg$",
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
@@ -420,11 +417,9 @@ class Status(TestCase):
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-                activity["attachment"][0]["url"],
-            )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test_[A-z0-9]+.jpg$",
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
@@ -443,11 +438,9 @@ class Status(TestCase):
             f'rated <em><a href="{self.book.remote_id}">{self.book.title}</a></em>: 3 stars',
         )
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-                activity["attachment"][0]["url"],
-            )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test_[A-z0-9]+.jpg$",
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 

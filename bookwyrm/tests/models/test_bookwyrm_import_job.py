@@ -13,7 +13,7 @@ from bookwyrm.utils.tar import BookwyrmTarFile
 from bookwyrm.models import bookwyrm_import_job
 
 
-class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
+class BookwyrmImport(TestCase):
     """testing user import functions"""
 
     def setUp(self):

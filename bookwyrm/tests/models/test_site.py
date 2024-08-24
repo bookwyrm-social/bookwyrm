@@ -79,7 +79,7 @@ class SiteModels(TestCase):
     def test_site_invite_link(self):
         """invite link generator"""
         invite = models.SiteInvite.objects.create(user=self.local_user, code="hello")
-        self.assertEqual(invite.link, f"https://{settings.DOMAIN}/invite/hello")
+        self.assertEqual(invite.link, f"{settings.BASE_URL}/invite/hello")
 
     def test_invite_request(self):
         """someone wants an invite"""
@@ -95,7 +95,7 @@ class SiteModels(TestCase):
         """password reset token"""
         token = models.PasswordReset.objects.create(user=self.local_user, code="hello")
         self.assertTrue(token.valid())
-        self.assertEqual(token.link, f"https://{settings.DOMAIN}/password-reset/hello")
+        self.assertEqual(token.link, f"{settings.BASE_URL}/password-reset/hello")
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
     @patch("bookwyrm.suggested_users.remove_user_task.delay")

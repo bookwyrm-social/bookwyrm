@@ -1,7 +1,6 @@
 """testing the annual summary page"""
-from datetime import datetime
+import datetime
 from unittest.mock import patch
-import pytz
 
 from django.contrib.auth.models import AnonymousUser
 from django.http import Http404
@@ -15,7 +14,7 @@ from bookwyrm.tests.validate_html import validate_html
 
 def make_date(*args):
     """helper function to easily generate a date obj"""
-    return datetime(*args, tzinfo=pytz.UTC)
+    return datetime.datetime(*args, tzinfo=datetime.timezone.utc)
 
 
 class AnnualSummary(TestCase):

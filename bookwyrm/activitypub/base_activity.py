@@ -250,7 +250,10 @@ class ActivityObject:
                 pass
         data = {k: v for (k, v) in data.items() if v is not None and k not in omit}
         if "@context" not in omit:
-            data["@context"] = "https://www.w3.org/ns/activitystreams"
+            data["@context"] = [
+                "https://www.w3.org/ns/activitystreams",
+                {"Hashtag": "as:Hashtag"},
+            ]
         return data
 
 
@@ -400,11 +403,11 @@ def get_representative():
     to sign outgoing HTTP GET requests"""
     return models.User.objects.get_or_create(
         username=f"{INSTANCE_ACTOR_USERNAME}@{DOMAIN}",
-        defaults=dict(
-            email="bookwyrm@localhost",
-            local=True,
-            localname=INSTANCE_ACTOR_USERNAME,
-        ),
+        defaults={
+            "email": "bookwyrm@localhost",
+            "local": True,
+            "localname": INSTANCE_ACTOR_USERNAME,
+        },
     )[0]
 
 

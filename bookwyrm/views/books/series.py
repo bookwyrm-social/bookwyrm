@@ -1,10 +1,10 @@
 """ books belonging to the same series """
+
 from sys import float_info
 from django.views import View
-from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 
-from bookwyrm.views.helpers import is_api_request
+from bookwyrm.views.helpers import is_api_request, get_mergeable_object_or_404
 from bookwyrm import models
 
 
@@ -27,7 +27,7 @@ class BookSeriesBy(View):
         if is_api_request(request):
             pass
 
-        author = get_object_or_404(models.Author, id=author_id)
+        author = get_mergeable_object_or_404(models.Author, id=author_id)
 
         results = models.Edition.objects.filter(authors=author, series=series_name)
 
@@ -56,9 +56,11 @@ class BookSeriesBy(View):
             sorted(numbered_books, key=sort_by_series)
             + sorted(
                 dated_books,
-                key=lambda book: book.first_published_date
-                if book.first_published_date
-                else book.published_date,
+                key=lambda book: (
+                    book.first_published_date
+                    if book.first_published_date
+                    else book.published_date
+                ),
             )
             + sorted(
                 unsortable_books,
