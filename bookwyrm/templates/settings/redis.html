@@ -56,7 +56,7 @@
             </form>
             {% endif %}
         {% else %}
-        <form name="erase-keys" method="POST" action="{% url 'settings-redis' %}">
+        <form name="scan-keys" method="POST" action="{% url 'settings-redis' %}">
             {% csrf_token %}
                 <input type="hidden" name="dry_run" value="True">
                 <button type="submit" class="button">
@@ -90,7 +90,7 @@
             {% endblocktrans %}
             </p>
         {% else %}
-            <form name="erase-keys" method="POST" action="{% url 'settings-redis' %}">
+            <form name="erase-cache" method="POST" action="{% url 'settings-redis' %}">
                 {% csrf_token %}
                 <input type="hidden" name="erase_cache" value="True">
                 <div class="control">

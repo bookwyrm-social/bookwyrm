@@ -1,6 +1,5 @@
 """ redis cache status """
 from django.contrib.auth.decorators import login_required, permission_required
-from django.http import HttpResponse
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -25,7 +24,6 @@ class RedisStatus(View):
 
         return TemplateResponse(request, "settings/redis.html", data)
 
-    # pylint: disable=unused-argument
     def post(self, request):
         """Erase invalid keys"""
         dry_run = request.POST.get("dry_run")
