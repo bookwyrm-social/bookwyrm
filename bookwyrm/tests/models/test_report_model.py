@@ -9,7 +9,7 @@ class Relationship(TestCase):
     """following, blocking, stuff like that"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument, invalid-name
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need some users for this"""
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
@@ -45,7 +45,7 @@ class Relationship(TestCase):
         self.assertEqual(activity["type"], "Flag")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["to"], self.another_local_user.remote_id)
-        # self.assertEqual(activity["object"], [self.another_local_user.remote_id])
+        self.assertEqual(activity["object"], [self.another_local_user.remote_id])
         self.assertEqual(report.get_recipients(), [])
 
     def test_report_remote_user_with_broadcast(self):

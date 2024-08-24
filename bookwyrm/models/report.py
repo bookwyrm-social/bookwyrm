@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import activitypub
-from bookwyrm.settings import BASE_URL, DOMAIN
+from bookwyrm.settings import BASE_URL
 from .activitypub_mixin import ActivityMixin
 from .base_model import BookWyrmModel
 from . import fields
@@ -43,16 +43,29 @@ class Report(ActivityMixin, BookWyrmModel):
         blank=True,
         activitypub_field="to",
     )
-    status = fields.ForeignKey(
+    status = models.ForeignKey(
         "Status",
         null=True,
         blank=True,
         on_delete=models.PROTECT,
-        activitypub_field="object",
     )
     links = fields.ManyToManyField("Link", blank=True)
     resolved = models.BooleanField(default=False)
     allow_broadcast = models.BooleanField(default=False)
+
+    def to_activity_dataclass(self, **kwargs):
+        """generate the objects field"""
+        activity = super().to_activity_dataclass(**kwargs)
+        activity.object = self.object()
+        return activity
+
+    def object(self):
+        """Generate a list of reported objects in a format Mastodon will like"""
+        items = [self.reported_user.remote_id]
+        if self.status:
+            items.append(self.status.remote_id)
+
+        return items
 
     def broadcast(self, activity, sender, *args, **kwargs):
         """only need to send an activity for remote offenders"""
