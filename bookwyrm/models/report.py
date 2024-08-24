@@ -43,11 +43,10 @@ class Report(ActivityMixin, BookWyrmModel):
         blank=True,
         activitypub_field="to",
     )
-    status = models.ForeignKey(
+    statuses = models.ManyToManyField(
         "Status",
         null=True,
         blank=True,
-        on_delete=models.PROTECT,
     )
     links = fields.ManyToManyField("Link", blank=True)
     resolved = models.BooleanField(default=False)
@@ -62,8 +61,8 @@ class Report(ActivityMixin, BookWyrmModel):
     def object(self):
         """Generate a list of reported objects in a format Mastodon will like"""
         items = [self.reported_user.remote_id]
-        if self.status:
-            items.append(self.status.remote_id)
+        if self.statuses:
+            items += self.statuses.values_list("remote_id", flat=True)
 
         return items
 

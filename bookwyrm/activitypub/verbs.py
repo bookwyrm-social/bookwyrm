@@ -296,6 +296,4 @@ class Flag(Verb):
                 )
             except ActivitySerializerError:
                 continue
-            report.status = item
-            report.save()
-            break
+            report.statuses.add(item)

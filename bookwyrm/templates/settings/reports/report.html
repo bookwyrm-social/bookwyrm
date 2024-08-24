@@ -32,14 +32,18 @@
     </details>
 </div>
 
-{% if report.status %}
+{% if report.statuses.exists %}
 <div class="block">
-    <h3 class="title is-4">{% trans "Reported status" %}</h3>
-    {% if report.status.deleted %}
-    <em>{% trans "Status has been deleted" %}</em>
-    {% else %}
-    {% include 'snippets/status/status.html' with status=report.status|load_subclass moderation_mode=True %}
-    {% endif %}
+    <h3 class="title is-4">{% trans "Reported statuses" %}</h3>
+    {% for status in report.statuses.all %}
+    <div>
+        {% if status.deleted %}
+        <em>{% trans "Status has been deleted" %}</em>
+        {% else %}
+        {% include 'snippets/status/status.html' with status=status|load_subclass moderation_mode=True %}
+        {% endif %}
+    </div>
+    {% endfor %}
 </div>
 {% endif %}
 

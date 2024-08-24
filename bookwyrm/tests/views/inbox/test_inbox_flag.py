@@ -79,4 +79,4 @@ class InboxFlag(TestCase):
             user=self.remote_user, reported_user=self.local_user
         )
         self.assertEqual(report.note, "hello hello")
-        self.assertEqual(report.status, self.status)
+        self.assertEqual(report.statuses.first(), self.status)
