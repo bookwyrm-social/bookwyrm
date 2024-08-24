@@ -14,15 +14,10 @@ class CalibreImporter(Importer):
     def __init__(self, *args: Any, **kwargs: Any):
         # Add timestamp to row_mappings_guesses for date_added to avoid
         # integrity error
-        row_mappings_guesses = []
-
-        for field, mapping in self.row_mappings_guesses:
-            if field in ("date_added",):
-                row_mappings_guesses.append((field, mapping + ["timestamp"]))
-            else:
-                row_mappings_guesses.append((field, mapping))
-
-        self.row_mappings_guesses = row_mappings_guesses
+        self.row_mappings_guesses = [
+            (field, mapping + (["timestamp"] if field == "date_added" else []))
+            for field, mapping in self.row_mappings_guesses
+        ]
         super().__init__(*args, **kwargs)
 
     def get_shelf(self, normalized_row: dict[str, Optional[str]]) -> Optional[str]:

@@ -1,10 +1,10 @@
 """ test partial_date module """
 
 import datetime
+from datetime import timezone
 import unittest
 
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 from django.utils import translation
 
 from bookwyrm.utils import partial_date

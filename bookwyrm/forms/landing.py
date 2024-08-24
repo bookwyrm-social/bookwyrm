@@ -34,7 +34,6 @@ class LoginForm(CustomForm):
 
     def add_invalid_password_error(self):
         """We don't want to be too specific about this"""
-        # pylint: disable=attribute-defined-outside-init
         self.non_field_errors = _("Username or password are incorrect")
 
 

@@ -1,8 +1,6 @@
 """ test for app action functionality """
-from io import BytesIO
 import pathlib
 from unittest.mock import patch
-from PIL import Image
 
 import responses
 
@@ -24,12 +22,14 @@ class BookViews(TestCase):
     """books books books"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -37,19 +37,19 @@ class BookViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-        self.group = Group.objects.create(name="editor")
-        self.group.permissions.add(
+        cls.group = Group.objects.create(name="editor")
+        cls.group.permissions.add(
             Permission.objects.create(
                 name="edit_book",
                 codename="edit_book",
                 content_type=ContentType.objects.get_for_model(models.User),
             ).id
         )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.work = models.Work.objects.create(title="Test Work")
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
-            parent_work=self.work,
+            parent_work=cls.work,
         )
 
         models.SiteSettings.objects.create()
@@ -159,15 +159,15 @@ class BookViews(TestCase):
     def test_upload_cover_file(self):
         """add a cover via file upload"""
         self.assertFalse(self.book.cover)
-        image_file = pathlib.Path(__file__).parent.joinpath(
+        image_path = pathlib.Path(__file__).parent.joinpath(
             "../../../static/images/default_avi.jpg"
         )
 
         form = forms.CoverForm(instance=self.book)
-        # pylint: disable=consider-using-with
-        form.data["cover"] = SimpleUploadedFile(
-            image_file, open(image_file, "rb").read(), content_type="image/jpeg"
-        )
+        with open(image_path, "rb") as image_file:
+            form.data["cover"] = SimpleUploadedFile(
+                image_path, image_file.read(), content_type="image/jpeg"
+            )
 
         request = self.factory.post("", form.data)
         request.user = self.local_user
@@ -272,8 +272,8 @@ class BookViews(TestCase):
             book=self.book,
             content="hi",
             quote="wow",
-            position=12,
-            endposition=13,
+            position="12",
+            endposition="13",
         )
 
         request = self.factory.get("")
@@ -286,22 +286,22 @@ class BookViews(TestCase):
         validate_html(result.render())
         print(result.render())
         self.assertEqual(result.status_code, 200)
-        self.assertEqual(result.context_data["statuses"].object_list[0].endposition, 13)
+        self.assertEqual(
+            result.context_data["statuses"].object_list[0].endposition, "13"
+        )
 
 
 def _setup_cover_url():
     """creates cover url mock"""
     cover_url = "http://example.com"
-    image_file = pathlib.Path(__file__).parent.joinpath(
+    image_path = pathlib.Path(__file__).parent.joinpath(
         "../../../static/images/default_avi.jpg"
     )
-    image = Image.open(image_file)
-    output = BytesIO()
-    image.save(output, format=image.format)
-    responses.add(
-        responses.GET,
-        cover_url,
-        body=output.getvalue(),
-        status=200,
-    )
+    with open(image_path, "rb") as image_file:
+        responses.add(
+            responses.GET,
+            cover_url,
+            body=image_file.read(),
+            status=200,
+        )
     return cover_url

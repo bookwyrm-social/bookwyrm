@@ -2,7 +2,7 @@
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from django.views.generic.base import TemplateView
 
 from bookwyrm import settings, views
@@ -339,6 +339,16 @@ urlpatterns = [
         name="settings-imports-disable",
     ),
     re_path(
+        r"^settings/user-exports/enable/?$",
+        views.enable_user_exports,
+        name="settings-user-exports-enable",
+    ),
+    re_path(
+        r"^settings/user-exports/disable/?$",
+        views.disable_user_exports,
+        name="settings-user-exports-disable",
+    ),
+    re_path(
         r"^settings/imports/enable/?$",
         views.enable_imports,
         name="settings-imports-enable",
@@ -358,6 +368,11 @@ urlpatterns = [
     ),
     re_path(
         r"^settings/celery/ping/?$", views.celery_ping, name="settings-celery-ping"
+    ),
+    re_path(
+        r"^settings/schedules/(?P<task_id>\d+)?$",
+        views.ScheduledTasks.as_view(),
+        name="settings-schedules",
     ),
     re_path(
         r"^settings/email-config/?$",
@@ -814,6 +829,7 @@ urlpatterns = [
         r"^summary_revoke_key/?$", views.summary_revoke_key, name="summary-revoke-key"
     ),
     path("guided-tour/<tour>", views.toggle_guided_tour),
+    re_path(r"^o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Serves /static when DEBUG is true.

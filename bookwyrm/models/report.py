@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import activitypub
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL, DOMAIN
 from .activitypub_mixin import ActivityMixin
 from .base_model import BookWyrmModel
 from . import fields
@@ -69,7 +69,7 @@ class Report(ActivityMixin, BookWyrmModel):
         return [self.reported_user.shared_inbox or self.reported_user.inbox]
 
     def get_remote_id(self):
-        return f"https://{DOMAIN}/settings/reports/{self.id}"
+        return f"{BASE_URL}/settings/reports/{self.id}"
 
     def comment(self, user, note):
         """comment on a report"""

@@ -2,7 +2,7 @@
 from bookwyrm import models, settings
 
 
-def site_settings(request):  # pylint: disable=unused-argument
+def site_settings(request):
     """include the custom info about the site"""
     request_protocol = "https://"
     if not request.is_secure():

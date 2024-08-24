@@ -193,8 +193,7 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
 
     def __init__(self, activitypub_field="preferredUsername", **kwargs):
         self.activitypub_field = activitypub_field
-        # I don't totally know why pylint is mad at this, but it makes it work
-        super(ActivitypubFieldMixin, self).__init__(  # pylint: disable=bad-super-call
+        super(ActivitypubFieldMixin, self).__init__(
             _("username"),
             max_length=150,
             unique=True,
@@ -234,7 +233,6 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, max_length=255, choices=PrivacyLevels, default="public")
 
-    # pylint: disable=invalid-name
     def set_field_from_activity(
         self, instance, data, overwrite=True, allow_external_connections=True
     ):
@@ -260,12 +258,12 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
 
         if to == [self.public]:
             setattr(instance, self.name, "public")
+        elif self.public in cc:
+            setattr(instance, self.name, "unlisted")
         elif to == [user.followers_url]:
             setattr(instance, self.name, "followers")
         elif cc == []:
             setattr(instance, self.name, "direct")
-        elif self.public in cc:
-            setattr(instance, self.name, "unlisted")
         else:
             setattr(instance, self.name, "followers")
         return original == getattr(instance, self.name)
@@ -276,7 +274,6 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
         if hasattr(instance, "mention_users"):
             mentions = [u.remote_id for u in instance.mention_users.all()]
         # this is a link to the followers list
-        # pylint: disable=protected-access
         followers = instance.user.followers_url
         if instance.privacy == "public":
             activity["to"] = [self.public]
@@ -444,7 +441,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         self.alt_field = alt_field
         super().__init__(*args, **kwargs)
 
-    # pylint: disable=arguments-differ,arguments-renamed,too-many-arguments
+    # pylint: disable=arguments-renamed,too-many-arguments
     def set_field_from_activity(
         self, instance, data, save=True, overwrite=True, allow_external_connections=True
     ):
@@ -482,7 +479,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         if not url:
             return None
 
-        return activitypub.Document(url=url, name=alt)
+        return activitypub.Image(url=url, name=alt)
 
     def field_from_activity(self, value, allow_external_connections=True):
         image_slug = value

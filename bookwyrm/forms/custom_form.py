@@ -15,9 +15,9 @@ class StyledForm(ModelForm):
         css_classes["number"] = "input"
         css_classes["checkbox"] = "checkbox"
         css_classes["textarea"] = "textarea"
-        # pylint: disable=super-with-arguments
         super().__init__(*args, **kwargs)
         for visible in self.visible_fields():
+            input_type = ""
             if hasattr(visible.field.widget, "input_type"):
                 input_type = visible.field.widget.input_type
             if isinstance(visible.field.widget, Textarea):

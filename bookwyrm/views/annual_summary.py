@@ -225,4 +225,4 @@ def get_goal_status(user, year):
     if goal.privacy != "public":
         return None
 
-    return dict(**goal.progress, **{"goal": goal.goal})
+    return {**goal.progress, **{"goal": goal.goal}}

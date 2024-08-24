@@ -20,6 +20,7 @@ from bookwyrm.tasks import app, MISC
 
 logger = logging.getLogger(__name__)
 
+# pylint: disable=invalid-name
 TBookWyrmModel = TypeVar("TBookWyrmModel", bound=base_model.BookWyrmModel)
 
 
@@ -249,7 +250,10 @@ class ActivityObject:
                 pass
         data = {k: v for (k, v) in data.items() if v is not None and k not in omit}
         if "@context" not in omit:
-            data["@context"] = "https://www.w3.org/ns/activitystreams"
+            data["@context"] = [
+                "https://www.w3.org/ns/activitystreams",
+                {"Hashtag": "as:Hashtag"},
+            ]
         return data
 
 
@@ -399,11 +403,11 @@ def get_representative():
     to sign outgoing HTTP GET requests"""
     return models.User.objects.get_or_create(
         username=f"{INSTANCE_ACTOR_USERNAME}@{DOMAIN}",
-        defaults=dict(
-            email="bookwyrm@localhost",
-            local=True,
-            localname=INSTANCE_ACTOR_USERNAME,
-        ),
+        defaults={
+            "email": "bookwyrm@localhost",
+            "local": True,
+            "localname": INSTANCE_ACTOR_USERNAME,
+        },
     )[0]
 
 
@@ -423,6 +427,7 @@ def get_activitypub_data(url):
                 "Date": now,
                 "Signature": make_signature("get", sender, url, now),
             },
+            timeout=15,
         )
     except requests.RequestException:
         raise ConnectorException()

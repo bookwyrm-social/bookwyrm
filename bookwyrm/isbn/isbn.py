@@ -26,7 +26,7 @@ class IsbnHyphenator:
 
     def update_range_message(self) -> None:
         """Download the range message xml file and save it locally"""
-        response = requests.get(self.__range_message_url)
+        response = requests.get(self.__range_message_url, timeout=15)
         with open(self.__range_file_path, "w", encoding="utf-8") as file:
             file.write(response.text)
         self.__element_tree = None
