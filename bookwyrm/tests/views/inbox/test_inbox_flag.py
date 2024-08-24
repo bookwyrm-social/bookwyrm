@@ -36,10 +36,6 @@ class InboxFlag(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
-        cls.status = models.Status.objects.create(
-            user=cls.local_user, content="bad things"
-        )
-
         models.SiteSettings.objects.create()
 
     def test_flag_local_user(self):
@@ -63,11 +59,22 @@ class InboxFlag(TestCase):
 
     def test_flag_local_user_with_statuses(self):
         """A report that includes a user and a status"""
+        status_1 = models.Status.objects.create(
+            user=self.local_user, content="bad things"
+        )
+        status_2 = models.Status.objects.create(
+            user=self.local_user, content="bad things"
+        )
+
         activity = {
             "id": "https://example.com/settings/reports/6189",
             "type": "Flag",
             "actor": self.remote_user.remote_id,
-            "object": [self.local_user.remote_id, self.status.remote_id],
+            "object": [
+                self.local_user.remote_id,
+                status_1.remote_id,
+                status_2.remote_id,
+            ],
             "to": self.local_user.remote_id,
             "published": "Mon, 25 May 2020 19:31:20 GMT",
             "content": "hello hello",
@@ -79,4 +86,6 @@ class InboxFlag(TestCase):
             user=self.remote_user, reported_user=self.local_user
         )
         self.assertEqual(report.note, "hello hello")
-        self.assertEqual(report.statuses.first(), self.status)
+        self.assertEqual(report.statuses.count(), 2)
+        self.assertTrue(report.statuses.filter(id=status_1.id).exists())
+        self.assertTrue(report.statuses.filter(id=status_2.id).exists())

@@ -8,7 +8,6 @@ from bookwyrm import forms, models, views
 from bookwyrm.tests.validate_html import validate_html
 
 
-# pylint: disable=invalid-name
 class ReportViews(TestCase):
     """every response to a get request, html or json"""
 

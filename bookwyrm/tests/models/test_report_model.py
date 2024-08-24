@@ -48,6 +48,32 @@ class Relationship(TestCase):
         self.assertEqual(activity["object"], [self.another_local_user.remote_id])
         self.assertEqual(report.get_recipients(), [])
 
+    def test_report_local_user_status(self):
+        """a report/flag within an instance"""
+        report = models.Report.objects.create(
+            user=self.local_user,
+            note="oh no bad",
+            reported_user=self.another_local_user,
+        )
+        status_1 = models.Status.objects.create(
+            user=self.local_user, content="bad things"
+        )
+        status_2 = models.Status.objects.create(
+            user=self.local_user, content="bad things"
+        )
+        report.statuses.add(status_1)
+        report.statuses.add(status_2)
+
+        activity = report.to_activity()
+        self.assertEqual(activity["type"], "Flag")
+        self.assertEqual(activity["actor"], self.local_user.remote_id)
+        self.assertEqual(activity["to"], self.another_local_user.remote_id)
+        self.assertEqual(len(activity["object"]), 3)
+        self.assertEqual(activity["object"][0], self.another_local_user.remote_id)
+        self.assertTrue(status_1.remote_id in activity["object"])
+        self.assertTrue(status_2.remote_id in activity["object"])
+        self.assertEqual(report.get_recipients(), [])
+
     def test_report_remote_user_with_broadcast(self):
         """a report to the outside needs to broadcast"""
         with patch("bookwyrm.models.report.Report.broadcast") as broadcast_mock:
