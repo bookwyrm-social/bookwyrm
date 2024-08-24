@@ -49,3 +49,45 @@ class RedisStatusViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
+
+    def test_redis_status_post_scan_keys(self):
+        """count keys in redis"""
+        view = views.RedisStatus.as_view()
+        request = self.factory.post("", {"dry_run": True})
+        request.user = self.local_user
+
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertTrue("outdated_identified" in result.context_data)
+        self.assertFalse("outdated_deleted" in result.context_data)
+        self.assertFalse("cache_deleted" in result.context_data)
+
+    def test_redis_status_post_erase_keys(self):
+        """count keys in redis"""
+        view = views.RedisStatus.as_view()
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertFalse("outdated_identified" in result.context_data)
+        self.assertTrue("outdated_deleted" in result.context_data)
+        self.assertFalse("cache_deleted" in result.context_data)
+
+    def test_redis_status_post_erase_cache(self):
+        """count keys in redis"""
+        view = views.RedisStatus.as_view()
+        request = self.factory.post("", {"erase_cache": True})
+        request.user = self.local_user
+
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertFalse("outdated_identified" in result.context_data)
+        self.assertFalse("outdated_deleted" in result.context_data)
+        self.assertTrue("cache_deleted" in result.context_data)
