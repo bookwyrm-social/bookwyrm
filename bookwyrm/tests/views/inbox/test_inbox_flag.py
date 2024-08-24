@@ -2,17 +2,15 @@
 from unittest.mock import patch
 
 from django.test import TestCase
-import responses
 
 from bookwyrm import models, views
 
 
-# pylint: disable=too-many-public-methods
 class InboxFlag(TestCase):
     """inbox tests"""
 
     @classmethod
-    def setUpTestData(cls):  # pylint: disable=invalid-name
+    def setUpTestData(cls):
         """basic user and book data"""
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
@@ -26,7 +24,6 @@ class InboxFlag(TestCase):
                 local=True,
                 localname="mouse",
             )
-        cls.local_user.remote_id = "https://example.com/user/mouse"
         cls.local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             cls.remote_user = models.User.objects.create_user(
@@ -39,26 +36,47 @@ class InboxFlag(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
+        cls.status = models.Status.objects.create(
+            user=cls.local_user, content="bad things"
+        )
+
         models.SiteSettings.objects.create()
 
-    @responses.activate
     def test_flag_local_user(self):
         """Serialize a report from a remote server"""
-        # TODO: is this actually what a Flag object from mastodon looks like?
         activity = {
-            "id": "https://example.com/shelfbook/6189#add",
+            "id": "https://example.com/settings/reports/6189",
             "type": "Flag",
             "actor": self.remote_user.remote_id,
-            "object": {},
+            "object": [self.local_user.remote_id],
             "to": self.local_user.remote_id,
-            "cc": ["https://example.com/user/mouse/followers"],
             "published": "Mon, 25 May 2020 19:31:20 GMT",
+            "content": "hello hello",
             "@context": "https://www.w3.org/ns/activitystreams",
         }
         views.inbox.activity_task(activity)
         # a report should now exist
-        self.assertTrue(
-            models.Report.objects.filter(
-                user=self.remote_user, reported_user=self.local_user
-            ).exists()
+        report = models.Report.objects.get(
+            user=self.remote_user, reported_user=self.local_user
         )
+        self.assertEqual(report.note, "hello hello")
+
+    def test_flag_local_user_with_statuses(self):
+        """A report that includes a user and a status"""
+        activity = {
+            "id": "https://example.com/settings/reports/6189",
+            "type": "Flag",
+            "actor": self.remote_user.remote_id,
+            "object": [self.local_user.remote_id, self.status.remote_id],
+            "to": self.local_user.remote_id,
+            "published": "Mon, 25 May 2020 19:31:20 GMT",
+            "content": "hello hello",
+            "@context": "https://www.w3.org/ns/activitystreams",
+        }
+        views.inbox.activity_task(activity)
+        # a report should now exist
+        report = models.Report.objects.get(
+            user=self.remote_user, reported_user=self.local_user
+        )
+        self.assertEqual(report.note, "hello hello")
+        self.assertEqual(report.status, self.status)

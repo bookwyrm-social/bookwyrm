@@ -3,7 +3,12 @@ from dataclasses import dataclass, field
 from typing import List
 from django.apps import apps
 
-from .base_activity import ActivityObject, Signature, resolve_remote_id
+from .base_activity import (
+    ActivityObject,
+    ActivitySerializerError,
+    Signature,
+    resolve_remote_id,
+)
 from .ordered_collection import CollectionItem
 
 
@@ -277,5 +282,20 @@ class Flag(Verb):
     content: str = None
 
     def action(self, allow_external_connections=False):
-        """usually we just want to update and save"""
-        self.to_model(allow_external_connections=allow_external_connections)
+        """Create the report and attach reported statuses"""
+        report = self.to_model(allow_external_connections=allow_external_connections)
+        # go through "objects" and figure out what they are
+        for obj in self.object:
+            # what type of obj is it?
+            try:
+                item = resolve_remote_id(
+                    remote_id=obj,
+                    save=False,
+                    model="Status",
+                    allow_external_connections=allow_external_connections,
+                )
+            except ActivitySerializerError:
+                continue
+            report.status = item
+            report.save()
+            break
