@@ -8,6 +8,7 @@ from opentelemetry import trace
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
+from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
 from bookwyrm.tasks import app, SUGGESTED_USERS
 from bookwyrm.telemetry import open_telemetry
 
@@ -33,7 +34,6 @@ class SuggestedUsers(RedisStore):
 
     def get_counts_from_rank(self, rank):  # pylint: disable=no-self-use
         """calculate mutuals count and shared books count from rank"""
-        # pylint: disable=c-extension-no-member
         return {
             "mutuals": math.floor(rank),
             # "shared_books": int(1 / (-1 * (rank % 1 - 1))) - 1,
@@ -98,9 +98,15 @@ class SuggestedUsers(RedisStore):
             for (pk, score) in values
         ]
         # annotate users with mutuals and shared book counts
-        users = models.User.objects.filter(
-            is_active=True, bookwyrm_user=True, id__in=[pk for (pk, _) in values]
-        ).annotate(mutuals=Case(*annotations, output_field=IntegerField(), default=0))
+        users = (
+            models.User.objects.filter(
+                is_active=True, bookwyrm_user=True, id__in=[pk for (pk, _) in values]
+            )
+            .annotate(
+                mutuals=Case(*annotations, output_field=IntegerField(), default=0)
+            )
+            .exclude(localname=INSTANCE_ACTOR_USERNAME)
+        )
         if local:
             users = users.filter(local=True)
         return users.order_by("-mutuals")[:5]
@@ -121,7 +127,6 @@ def get_annotated_users(viewer, *args, **kwargs):
                 ),
                 distinct=True,
             ),
-            # pylint: disable=line-too-long
             # shared_books=Count(
             #     "shelfbook",
             #     filter=Q(
@@ -195,7 +200,7 @@ def update_suggestions_on_unfollow(sender, instance, **kwargs):
 
 
 @receiver(signals.post_save, sender=models.User)
-# pylint: disable=unused-argument, too-many-arguments
+# pylint: disable=unused-argument
 def update_user(sender, instance, created, update_fields=None, **kwargs):
     """an updated user, neat"""
     # a new user is found, create suggestions for them
@@ -254,7 +259,8 @@ def rerank_suggestions_task(user_id):
 def rerank_user_task(user_id, update_only=False):
     """do the hard work in celery"""
     user = models.User.objects.get(id=user_id)
-    suggested_users.rerank_obj(user, update_only=update_only)
+    if user:
+        suggested_users.rerank_obj(user, update_only=update_only)
 
 
 @app.task(queue=SUGGESTED_USERS)

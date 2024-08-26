@@ -18,7 +18,6 @@ class OrderedCollection(ActivityObject):
     type: str = "OrderedCollection"
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class OrderedCollectionPrivate(OrderedCollection):
     """an ordered collection with privacy settings"""

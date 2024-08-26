@@ -11,7 +11,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.settings import PAGE_LENGTH, INSTANCE_ACTOR_USERNAME
 from .helpers import get_user_from_username, is_api_request
 
 
@@ -30,6 +30,10 @@ class User(View):
             # we have a json request
             return ActivitypubResponse(user.to_activity())
         # otherwise we're at a UI view
+
+        # if it's not an API request, never show the instance actor profile page
+        if user.localname == INSTANCE_ACTOR_USERNAME:
+            raise Http404()
 
         shelf_preview = []
 

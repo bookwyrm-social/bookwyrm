@@ -1,7 +1,8 @@
 """ url routing for the app and api """
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, re_path
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.urls import path, re_path, include
 from django.views.generic.base import TemplateView
 
 from bookwyrm import settings, views
@@ -32,6 +33,12 @@ urlpatterns = [
     path(
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+    ),
+    path(
+        "manifest.json",
+        TemplateView.as_view(
+            template_name="manifest.json", content_type="application/json"
+        ),
     ),
     # federation endpoints
     re_path(r"^inbox/?$", views.Inbox.as_view(), name="inbox"),
@@ -103,6 +110,11 @@ urlpatterns = [
         name="settings-themes-delete",
     ),
     re_path(
+        r"^settings/themes/(?P<theme_id>\d+)/test/?$",
+        views.test_theme,
+        name="settings-themes-test",
+    ),
+    re_path(
         r"^settings/announcements/?$",
         views.Announcements.as_view(),
         name="settings-announcements",
@@ -141,12 +153,12 @@ urlpatterns = [
         name="settings-users",
     ),
     re_path(
-        r"^settings/users/(?P<user>\d+)/?$",
+        r"^settings/users/(?P<user_id>\d+)/(?P<report_id>\d+)?$",
         views.UserAdmin.as_view(),
         name="settings-user",
     ),
     re_path(
-        r"^settings/users/(?P<user>\d+)/activate/?$",
+        r"^settings/users/(?P<user_id>\d+)/activate/?$",
         views.ActivateUserAdmin.as_view(),
         name="settings-activate-user",
     ),
@@ -231,7 +243,7 @@ urlpatterns = [
         name="settings-link-domain",
     ),
     re_path(
-        r"^setting/link-domains/(?P<domain_id>\d+)/(?P<status>(pending|approved|blocked))/?$",
+        r"^setting/link-domains/(?P<domain_id>\d+)/(?P<status>(pending|approved|blocked))/(?P<report_id>\d+)?$",
         views.update_domain_status,
         name="settings-link-domain-status",
     ),
@@ -275,17 +287,17 @@ urlpatterns = [
         name="settings-report",
     ),
     re_path(
-        r"^settings/reports/(?P<user_id>\d+)/suspend/?$",
+        r"^settings/reports/(?P<user_id>\d+)/suspend/(?P<report_id>\d+)?$",
         views.suspend_user,
         name="settings-report-suspend",
     ),
     re_path(
-        r"^settings/reports/(?P<user_id>\d+)/unsuspend/?$",
+        r"^settings/reports/(?P<user_id>\d+)/unsuspend/(?P<report_id>\d+)?$",
         views.unsuspend_user,
         name="settings-report-unsuspend",
     ),
     re_path(
-        r"^settings/reports/(?P<user_id>\d+)/delete/?$",
+        r"^settings/reports/(?P<user_id>\d+)/delete/(?P<report_id>\d+)?$",
         views.moderator_delete_user,
         name="settings-delete-user",
     ),
@@ -317,9 +329,24 @@ urlpatterns = [
         name="settings-imports-complete",
     ),
     re_path(
+        r"^settings/user-imports/(?P<import_id>\d+)/complete/?$",
+        views.set_user_import_completed,
+        name="settings-user-import-complete",
+    ),
+    re_path(
         r"^settings/imports/disable/?$",
         views.disable_imports,
         name="settings-imports-disable",
+    ),
+    re_path(
+        r"^settings/user-exports/enable/?$",
+        views.enable_user_exports,
+        name="settings-user-exports-enable",
+    ),
+    re_path(
+        r"^settings/user-exports/disable/?$",
+        views.disable_user_exports,
+        name="settings-user-exports-disable",
     ),
     re_path(
         r"^settings/imports/enable/?$",
@@ -332,10 +359,20 @@ urlpatterns = [
         name="settings-imports-set-limit",
     ),
     re_path(
+        r"^settings/user-imports/set-limit/?$",
+        views.set_user_import_limit,
+        name="settings-user-imports-set-limit",
+    ),
+    re_path(
         r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
     ),
     re_path(
         r"^settings/celery/ping/?$", views.celery_ping, name="settings-celery-ping"
+    ),
+    re_path(
+        r"^settings/schedules/(?P<task_id>\d+)?$",
+        views.ScheduledTasks.as_view(),
+        name="settings-schedules",
     ),
     re_path(
         r"^settings/email-config/?$",
@@ -396,6 +433,7 @@ urlpatterns = [
     re_path(r"^search/?$", views.Search.as_view(), name="search"),
     # imports
     re_path(r"^import/?$", views.Import.as_view(), name="import"),
+    re_path(r"^user-import/?$", views.UserImport.as_view(), name="user-import"),
     re_path(
         r"^import/(?P<job_id>\d+)/?$",
         views.ImportStatus.as_view(),
@@ -593,6 +631,22 @@ urlpatterns = [
         name="prompt-2fa",
     ),
     re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
+    re_path(
+        r"^preferences/user-export/?$",
+        views.ExportUser.as_view(),
+        name="prefs-user-export",
+    ),
+    path(
+        "preferences/user-export/<archive_id>",
+        views.ExportArchive.as_view(),
+        name="prefs-export-file",
+    ),
+    re_path(r"^preferences/move/?$", views.MoveUser.as_view(), name="prefs-move"),
+    re_path(r"^preferences/alias/?$", views.AliasUser.as_view(), name="prefs-alias"),
+    re_path(
+        r"^preferences/remove-alias/?$", views.remove_alias, name="prefs-remove-alias"
+    ),
+    re_path(r"^preferences/unmove/?$", views.unmove, name="prefs-unmove"),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(
         r"^preferences/deactivate/?$",
@@ -633,7 +687,7 @@ urlpatterns = [
         name="create-status",
     ),
     re_path(
-        r"^delete-status/(?P<status_id>\d+)/?$",
+        r"^delete-status/(?P<status_id>\d+)/?(?P<report_id>\d+)?$",
         views.DeleteStatus.as_view(),
         name="delete-status",
     ),
@@ -760,6 +814,9 @@ urlpatterns = [
     # following
     re_path(r"^follow/?$", views.follow, name="follow"),
     re_path(r"^unfollow/?$", views.unfollow, name="unfollow"),
+    re_path(
+        r"^remove-follow/(?P<user_id>\d+)/?$", views.remove_follow, name="remove-follow"
+    ),
     re_path(r"^accept-follow-request/?$", views.accept_follow_request),
     re_path(r"^delete-follow-request/?$", views.delete_follow_request),
     re_path(r"^ostatus_follow/?$", views.remote_follow, name="remote-follow"),
@@ -782,7 +839,14 @@ urlpatterns = [
         r"^summary_revoke_key/?$", views.summary_revoke_key, name="summary-revoke-key"
     ),
     path("guided-tour/<tour>", views.toggle_guided_tour),
+    re_path(r"^o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Serves /static when DEBUG is true.
+urlpatterns.extend(staticfiles_urlpatterns())
 
 # pylint: disable=invalid-name
 handler500 = "bookwyrm.views.server_error"
+
+# pylint: disable=invalid-name
+handler403 = "bookwyrm.views.permission_denied"

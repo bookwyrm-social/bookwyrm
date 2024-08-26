@@ -1,4 +1,5 @@
 """ the good stuff! the books! """
+
 import logging
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
@@ -11,6 +12,7 @@ from django.views import View
 from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
+from bookwyrm.views.helpers import get_mergeable_object_or_404
 from bookwyrm.views.shelf.shelf_actions import unshelve
 from .status import CreateStatus
 from .helpers import get_edition, handle_reading_status, is_api_request
@@ -20,7 +22,6 @@ logger = logging.getLogger(__name__)
 
 
 # pylint: disable=no-self-use
-# pylint: disable=too-many-return-statements
 @method_decorator(login_required, name="dispatch")
 class ReadingStatus(View):
     """consider reading a book"""
@@ -130,7 +131,7 @@ class ReadThrough(View):
 
     def get(self, request, book_id, readthrough_id=None):
         """standalone form in case of errors"""
-        book = get_object_or_404(models.Edition, id=book_id)
+        book = get_mergeable_object_or_404(models.Edition, id=book_id)
         form = forms.ReadThroughForm()
         data = {"form": form, "book": book}
         if readthrough_id:
@@ -152,7 +153,7 @@ class ReadThrough(View):
         )
         form = forms.ReadThroughForm(request.POST)
         if not form.is_valid():
-            book = get_object_or_404(models.Edition, id=book_id)
+            book = get_mergeable_object_or_404(models.Edition, id=book_id)
             data = {"form": form, "book": book}
             if request.POST.get("id"):
                 data["readthrough"] = get_object_or_404(
@@ -203,7 +204,7 @@ def delete_readthrough(request):
     readthrough.raise_not_deletable(request.user)
 
     readthrough.delete()
-    return redirect("/")
+    return redirect_to_referer(request)
 
 
 @login_required
@@ -214,4 +215,4 @@ def delete_progressupdate(request):
     update.raise_not_deletable(request.user)
 
     update.delete()
-    return redirect("/")
+    return redirect_to_referer(request)

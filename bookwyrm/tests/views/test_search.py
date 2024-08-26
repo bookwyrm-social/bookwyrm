@@ -10,20 +10,22 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 from bookwyrm.book_search import SearchResult
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 from bookwyrm.tests.validate_html import validate_html
 
 
 class Views(TestCase):
     """tag views"""
 
-    def setUp(self):  # pylint: disable=invalid-name
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -31,13 +33,17 @@ class Views(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.work = models.Work.objects.create(title="Test Work")
+        cls.book = models.Edition.objects.create(
             title="Test Book",
             remote_id="https://example.com/book/1",
-            parent_work=self.work,
+            parent_work=cls.work,
         )
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_search_json_response(self):
         """searches local data only and returns book data in json format"""
@@ -51,7 +57,7 @@ class Views(TestCase):
         data = json.loads(response.content)
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["title"], "Test Book")
-        self.assertEqual(data[0]["key"], f"https://{DOMAIN}/book/{self.book.id}")
+        self.assertEqual(data[0]["key"], f"{BASE_URL}/book/{self.book.id}")
 
     def test_search_no_query(self):
         """just the search page"""
@@ -96,6 +102,20 @@ class Views(TestCase):
 
         connector_results = response.context_data["remote_results"]
         self.assertEqual(connector_results[0]["results"][0].title, "Mock Book")
+
+    def test_search_books_extra_whitespace(self):
+        """just the search page"""
+        view = views.Search.as_view()
+        request = self.factory.get("", {"q": " Test Book ", "remote": False})
+        request.user = self.local_user
+        with patch("bookwyrm.views.search.is_api_request") as is_api:
+            is_api.return_value = False
+            response = view(request)
+        self.assertIsInstance(response, TemplateResponse)
+        validate_html(response.render())
+
+        local_results = response.context_data["results"]
+        self.assertEqual(local_results[0].title, "Test Book")
 
     def test_search_book_anonymous(self):
         """Don't search remote for logged out user"""
@@ -144,6 +164,17 @@ class Views(TestCase):
         validate_html(response.render())
         self.assertEqual(response.context_data["results"][0], self.local_user)
 
+    def test_search_users_extra_whitespace(self):
+        """searches remote connectors"""
+        view = views.Search.as_view()
+        request = self.factory.get("", {"q": " mouse ", "type": "user"})
+        request.user = self.local_user
+        response = view(request)
+
+        self.assertIsInstance(response, TemplateResponse)
+        validate_html(response.render())
+        self.assertEqual(response.context_data["results"][0], self.local_user)
+
     def test_search_users_logged_out(self):
         """searches remote connectors"""
         view = views.Search.as_view()
@@ -156,18 +187,37 @@ class Views(TestCase):
         response = view(request)
 
         validate_html(response.render())
-        self.assertFalse("results" in response.context_data)
+        self.assertTrue("results" in response.context_data)
 
     def test_search_lists(self):
         """searches remote connectors"""
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+        ):
             booklist = models.List.objects.create(
                 user=self.local_user, name="test list"
             )
         view = views.Search.as_view()
         request = self.factory.get("", {"q": "test", "type": "list"})
+        request.user = self.local_user
+        response = view(request)
+
+        self.assertIsInstance(response, TemplateResponse)
+        validate_html(response.render())
+        self.assertEqual(response.context_data["results"][0], booklist)
+
+    def test_search_lists_extra_whitespace(self):
+        """searches remote connectors"""
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+        ):
+            booklist = models.List.objects.create(
+                user=self.local_user, name="test list"
+            )
+        view = views.Search.as_view()
+        request = self.factory.get("", {"q": " test ", "type": "list"})
         request.user = self.local_user
         response = view(request)
 

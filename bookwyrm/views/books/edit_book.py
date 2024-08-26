@@ -1,4 +1,5 @@
 """ the good stuff! the books! """
+
 from re import sub, findall
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import SearchRank, SearchVector
@@ -18,8 +19,9 @@ from bookwyrm.utils.isni import (
     build_author_from_isni,
     augment_author_metadata,
 )
-from bookwyrm.views.helpers import get_edition
+from bookwyrm.views.helpers import get_edition, get_mergeable_object_or_404
 from .books import set_cover_from_url
+
 
 # pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
@@ -32,6 +34,9 @@ class EditBook(View):
     def get(self, request, book_id):
         """info about a book"""
         book = get_edition(book_id)
+        # This doesn't update the sort title, just pre-populates it in the form
+        if book.sort_title in ["", None]:
+            book.sort_title = book.guess_sort_title()
         if not book.description:
             book.description = book.parent_work.description
         data = {"book": book, "form": forms.EditionForm(instance=book)}
@@ -39,7 +44,8 @@ class EditBook(View):
 
     def post(self, request, book_id):
         """edit a book cool"""
-        book = get_object_or_404(models.Edition, id=book_id)
+        book = get_mergeable_object_or_404(models.Edition, id=book_id)
+
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
 
         data = {"book": book, "form": form}
@@ -82,7 +88,6 @@ class CreateBook(View):
         data = {"form": forms.EditionForm()}
         return TemplateResponse(request, "book/edit/edit_book.html", data)
 
-    # pylint: disable=too-many-locals
     def post(self, request):
         """create a new book"""
         # returns None if no match is found
@@ -126,7 +131,7 @@ class CreateBook(View):
 
         with transaction.atomic():
             book = form.save(request)
-            parent_work = get_object_or_404(models.Work, id=parent_work_id)
+            parent_work = get_mergeable_object_or_404(models.Work, id=parent_work_id)
             book.parent_work = parent_work
 
             if authors:
@@ -157,6 +162,7 @@ def add_authors(request, data):
     """helper for adding authors"""
     add_author = [author for author in request.POST.getlist("add_author") if author]
     if not add_author:
+        data["add_author"] = []
         return data
 
     data["add_author"] = add_author
@@ -290,7 +296,7 @@ class ConfirmEditBook(View):
             if not book.parent_work:
                 work_match = request.POST.get("parent_work")
                 if work_match and work_match != "0":
-                    work = get_object_or_404(models.Work, id=work_match)
+                    work = get_mergeable_object_or_404(models.Work, id=work_match)
                 else:
                     work = models.Work.objects.create(title=form.cleaned_data["title"])
                     work.authors.set(book.authors.all())

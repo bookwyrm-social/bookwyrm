@@ -19,7 +19,7 @@ class Directory(View):
         software = request.GET.get("software")
         if not software or software == "bookwyrm":
             filters["bookwyrm_user"] = True
-        scope = request.GET.get("scope")
+        scope = request.GET.get("scope", "federated")
         if scope == "local":
             filters["local"] = True
 
@@ -38,6 +38,8 @@ class Directory(View):
                 page.number, on_each_side=2, on_ends=1
             ),
             "users": page,
+            "sort": sort,
+            "scope": scope,
         }
         return TemplateResponse(request, "directory/directory.html", data)
 

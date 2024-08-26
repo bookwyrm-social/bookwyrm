@@ -2,7 +2,7 @@ version: '3'
 
 services:
   nginx:
-    image: nginx:latest
+    image: nginx:1.25.2
     restart: unless-stopped
     ports:
       - "1333:80"
@@ -29,6 +29,7 @@ services:
       - .:/app
       - static_volume:/app/static
       - media_volume:/app/images
+      - exports_volume:/app/exports
     depends_on:
       - db
       - celery_worker
@@ -38,7 +39,7 @@ services:
     ports:
       - "8000"
   redis_activity:
-    image: redis
+    image: redis:7.2.1
     command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD} --appendonly yes --port ${REDIS_ACTIVITY_PORT}
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
@@ -48,7 +49,7 @@ services:
       - main
     restart: on-failure
   redis_broker:
-    image: redis
+    image: redis:7.2.1
     command: redis-server --requirepass ${REDIS_BROKER_PASSWORD} --appendonly yes --port ${REDIS_BROKER_PORT}
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
@@ -63,11 +64,11 @@ services:
     networks:
       - main
     command: celery -A celerywyrm worker -l info -Q high_priority,medium_priority,low_priority,streams,images,suggested_users,email,connectors,lists,inbox,imports,import_triggered,broadcast,misc
-
     volumes:
       - .:/app
       - static_volume:/app/static
       - media_volume:/app/images
+      - exports_volume:/app/exports
     depends_on:
       - db
       - redis_broker
@@ -82,6 +83,7 @@ services:
       - .:/app
       - static_volume:/app/static
       - media_volume:/app/images
+      - exports_volume:/app/exports
     depends_on:
       - celery_worker
     restart: on-failure
@@ -91,6 +93,7 @@ services:
     env_file: .env
     volumes:
       - .:/app
+      - static_volume:/app/static
     networks:
       - main
     depends_on:
@@ -101,11 +104,15 @@ services:
     build: dev-tools
     env_file: .env
     volumes:
+      - /app/dev-tools/
       - .:/app
+    profiles:
+      - tools
 volumes:
   pgdata:
   static_volume:
   media_volume:
+  exports_volume:
   redis_broker_data:
   redis_activity_data:
 networks:

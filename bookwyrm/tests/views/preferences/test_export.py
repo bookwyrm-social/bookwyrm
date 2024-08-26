@@ -17,13 +17,14 @@ from bookwyrm.tests.validate_html import validate_html
 class ExportViews(TestCase):
     """viewing and creating statuses"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
         ):
-            self.local_user = models.User.objects.create_user(
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -31,14 +32,18 @@ class ExportViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.work = models.Work.objects.create(title="Test Work")
+        cls.book = models.Edition.objects.create(
             title="Test Book",
             remote_id="https://example.com/book/1",
-            parent_work=self.work,
+            parent_work=cls.work,
             isbn_13="9781234567890",
             bnf_id="beep",
         )
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def tst_export_get(self, *_):
         """request export"""
@@ -49,11 +54,12 @@ class ExportViews(TestCase):
 
     def test_export_file(self, *_):
         """simple export"""
-        models.ShelfBook.objects.create(
+        shelfbook = models.ShelfBook.objects.create(
             shelf=self.local_user.shelf_set.first(),
             user=self.local_user,
             book=self.book,
         )
+        book_date = str.encode(f"{shelfbook.shelved_date.date()}")
         request = self.factory.post("")
         request.user = self.local_user
         export = views.Export.as_view()(request)
@@ -62,7 +68,7 @@ class ExportViews(TestCase):
         # pylint: disable=line-too-long
         self.assertEqual(
             export.content,
-            b"title,author_text,remote_id,openlibrary_key,inventaire_id,librarything_key,goodreads_key,bnf_id,viaf,wikidata,asin,aasin,isfdb,isbn_10,isbn_13,oclc_number,rating,review_name,review_cw,review_content\r\nTest Book,,"
-            + self.book.remote_id.encode("utf-8")
-            + b",,,,,beep,,,,,,123456789X,9781234567890,,,,,\r\n",
+            b"title,author_text,remote_id,openlibrary_key,inventaire_id,librarything_key,goodreads_key,bnf_id,viaf,wikidata,asin,aasin,isfdb,isbn_10,isbn_13,oclc_number,start_date,finish_date,stopped_date,rating,review_name,review_cw,review_content,review_published,shelf,shelf_name,shelf_date\r\n"
+            + b"Test Book,,%b,,,,,beep,,,,,,123456789X,9781234567890,,,,,,,,,,to-read,To Read,%b\r\n"
+            % (self.book.remote_id.encode("utf-8"), book_date),
         )

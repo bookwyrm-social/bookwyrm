@@ -1,5 +1,5 @@
 """ style fixes and lookups for templates """
-from datetime import datetime
+import datetime
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -14,12 +14,15 @@ from bookwyrm.templatetags import status_display
 class StatusDisplayTags(TestCase):
     """lotta different things here"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """create some filler objects"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.mouse",
                 "mouseword",
@@ -27,14 +30,14 @@ class StatusDisplayTags(TestCase):
                 localname="mouse",
             )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.rat",
                 "ratword",
                 remote_id="http://example.com/rat",
                 local=False,
             )
-        self.book = models.Edition.objects.create(title="Test Book")
+        cls.book = models.Edition.objects.create(title="Test Book")
 
     def test_get_mentions(self, *_):
         """list of people mentioned"""
@@ -92,14 +95,18 @@ class StatusDisplayTags(TestCase):
 
     def test_get_published_date(self, *_):
         """date formatting"""
-        date = datetime(2020, 1, 1, 0, 0, tzinfo=timezone.utc)
+        date = datetime.datetime(2020, 1, 1, 0, 0, tzinfo=datetime.timezone.utc)
         with patch("django.utils.timezone.now") as timezone_mock:
-            timezone_mock.return_value = datetime(2022, 1, 1, 0, 0, tzinfo=timezone.utc)
+            timezone_mock.return_value = datetime.datetime(
+                2022, 1, 1, 0, 0, tzinfo=datetime.timezone.utc
+            )
             result = status_display.get_published_date(date)
         self.assertEqual(result, "Jan. 1, 2020")
 
-        date = datetime(2022, 1, 1, 0, 0, tzinfo=timezone.utc)
+        date = datetime.datetime(2022, 1, 1, 0, 0, tzinfo=datetime.timezone.utc)
         with patch("django.utils.timezone.now") as timezone_mock:
-            timezone_mock.return_value = datetime(2022, 1, 8, 0, 0, tzinfo=timezone.utc)
+            timezone_mock.return_value = datetime.datetime(
+                2022, 1, 8, 0, 0, tzinfo=datetime.timezone.utc
+            )
             result = status_display.get_published_date(date)
         self.assertEqual(result, "Jan 1")

@@ -5,6 +5,6 @@
 
 {{ invite_link }}
 
-{% blocktrans %}Learn more about {{ site_name }}:{% endblocktrans %} https://{{ domain }}{% url 'about' %}
+{% blocktrans %}Learn more about {{ site_name }}:{% endblocktrans %} {{ base_url }}{% url 'about' %}
 
 {% endblock %}

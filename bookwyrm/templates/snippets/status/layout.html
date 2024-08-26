@@ -18,7 +18,7 @@
 
 <div class="card-footer-item">
     {# moderation options #}
-    <form name="delete-{{ status.id }}" action="/delete-status/{{ status.id }}" method="post">
+    <form name="delete-{{ status.id }}" action="/delete-status/{{ status.id }}/{{ report.id }}" method="post">
         {% csrf_token %}
         <button class="button is-danger is-light" type="submit">
             {% trans "Delete status" %}

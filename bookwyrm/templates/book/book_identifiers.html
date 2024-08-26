@@ -4,42 +4,50 @@
 {% if book.isbn_13 or book.oclc_number or book.asin or book.aasin or book.isfdb %}
 <dl>
     {% if book.isbn_13 %}
-        <div class="is-flex">
+        <div class="is-flex is-flex-wrap-wrap">
             <dt class="mr-1">{% trans "ISBN:" %}</dt>
-            <dd itemprop="isbn">{{ book.isbn_13 }}</dd>
+            <dd itemprop="isbn" class="mr-1" id="isbn_content">{{ book.hyphenated_isbn13 }}</dd>
+            <div>
+                <button class="button is-small" data-copywithtooltip data-content-id="isbn_content" data-tooltip-id="isbn_tooltip">
+                    <span class="icon icon-copy" title="{% trans "Copy ISBN" %}">
+                        <span class="is-sr-only">{% trans "Copy ISBN" %}</span>
+                    </span>
+                </button>
+                <span class="copy-tooltip" id="isbn_tooltip">{% trans "Copied ISBN!" %}</span>
+            </div>
         </div>
     {% endif %}
 
     {% if book.oclc_number %}
-        <div class="is-flex">
+        <div class="is-flex is-flex-wrap-wrap">
             <dt class="mr-1">{% trans "OCLC Number:" %}</dt>
             <dd>{{ book.oclc_number }}</dd>
         </div>
     {% endif %}
 
     {% if book.asin %}
-        <div class="is-flex">
+        <div class="is-flex is-flex-wrap-wrap">
             <dt class="mr-1">{% trans "ASIN:" %}</dt>
             <dd>{{ book.asin }}</dd>
         </div>
     {% endif %}
 
     {% if book.aasin %}
-        <div class="is-flex">
+        <div class="is-flex is-flex-wrap-wrap">
             <dt class="mr-1">{% trans "Audible ASIN:" %}</dt>
             <dd>{{ book.aasin }}</dd>
         </div>
     {% endif %}
 
     {% if book.isfdb %}
-        <div class="is-flex">
+        <div class="is-flex is-flex-wrap-wrap">
             <dt class="mr-1">{% trans "ISFDB ID:" %}</dt>
             <dd>{{ book.isfdb }}</dd>
         </div>
     {% endif %}
 
     {% if book.goodreads_key %}
-        <div class="is-flex">
+        <div class="is-flex is-flex-wrap-wrap">
             <dt class="mr-1">{% trans "Goodreads:" %}</dt>
             <dd>{{ book.goodreads_key }}</dd>
         </div>

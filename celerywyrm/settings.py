@@ -15,8 +15,12 @@ REDIS_BROKER_URL = env(
     f"redis://:{REDIS_BROKER_PASSWORD}@{REDIS_BROKER_HOST}:{REDIS_BROKER_PORT}/{REDIS_BROKER_DB_INDEX}",
 )
 
-CELERY_BROKER_URL = REDIS_BROKER_URL.replace("unix:", "redis+socket:")
-CELERY_RESULT_BACKEND = REDIS_BROKER_URL.replace("unix:", "redis+socket:")
+CELERY_BROKER_URL = env(
+    "CELERY_BROKER_URL", REDIS_BROKER_URL.replace("unix:", "redis+socket:")
+)
+CELERY_RESULT_BACKEND = env(
+    "CELERY_RESULT_BACKEND", REDIS_BROKER_URL.replace("unix:", "redis+socket:")
+)
 
 CELERY_DEFAULT_QUEUE = "low_priority"
 CELERY_CREATE_MISSING_QUEUES = True

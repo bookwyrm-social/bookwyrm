@@ -1,6 +1,9 @@
 """ bookwyrm settings and configuration """
 import os
+from typing import AnyStr
+
 from environs import Env
+
 
 import requests
 from django.utils.translation import gettext_lazy as _
@@ -12,7 +15,12 @@ from django.core.exceptions import ImproperlyConfigured
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.6.4"
+
+with open("VERSION", encoding="utf-8") as f:
+    version = f.read()
+    version = version.replace("\n", "")
+
+VERSION = version
 
 RELEASE_API = env(
     "RELEASE_API",
@@ -21,8 +29,11 @@ RELEASE_API = env(
 
 PAGE_LENGTH = env.int("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
+# TODO: extend maximum age to 1 year once termination of active sessions
+# is implemented (see bookwyrm-social#2278, bookwyrm-social#3082).
+SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE", 3600 * 24 * 30)  # 1 month
 
-JS_CACHE = "b972a43c"
+JS_CACHE = "8a89cad7"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
@@ -37,7 +48,7 @@ EMAIL_SENDER_DOMAIN = env("EMAIL_SENDER_DOMAIN", DOMAIN)
 EMAIL_SENDER = f"{EMAIL_SENDER_NAME}@{EMAIL_SENDER_DOMAIN}"
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR: AnyStr = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, "locale"),
 ]
@@ -90,11 +101,14 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "oauth2_provider",
+    "file_resubmit",
     "sass_processor",
     "bookwyrm",
     "celery",
     "django_celery_beat",
     "imagekit",
+    "pgtrigger",
     "storages",
 ]
 
@@ -110,6 +124,7 @@ MIDDLEWARE = [
     "bookwyrm.middleware.IPBlocklistMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "bookwyrm.middleware.FileTooBig",
 ]
 
 ROOT_URLCONF = "bookwyrm.urls"
@@ -233,17 +248,22 @@ if env.bool("USE_DUMMY_CACHE", False):
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-        }
+        },
+        "file_resubmit": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+            "LOCATION": "/tmp/file_resubmit_tests/",
+        },
     }
 else:
     CACHES = {
         "default": {
-            "BACKEND": "django_redis.cache.RedisCache",
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
             "LOCATION": REDIS_ACTIVITY_URL,
-            "OPTIONS": {
-                "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            },
-        }
+        },
+        "file_resubmit": {
+            "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+            "LOCATION": "/tmp/file_resubmit/",
+        },
     }
 
     SESSION_ENGINE = "django.contrib.sessions.backends.cache"
@@ -299,47 +319,40 @@ LANGUAGES = [
     ("eu-es", _("Euskara (Basque)")),
     ("gl-es", _("Galego (Galician)")),
     ("it-it", _("Italiano (Italian)")),
+    ("ko-kr", _("한국어 (Korean)")),
     ("fi-fi", _("Suomi (Finnish)")),
     ("fr-fr", _("Français (French)")),
     ("lt-lt", _("Lietuvių (Lithuanian)")),
+    ("nl-nl", _("Nederlands (Dutch)")),
     ("no-no", _("Norsk (Norwegian)")),
     ("pl-pl", _("Polski (Polish)")),
     ("pt-br", _("Português do Brasil (Brazilian Portuguese)")),
     ("pt-pt", _("Português Europeu (European Portuguese)")),
     ("ro-ro", _("Română (Romanian)")),
     ("sv-se", _("Svenska (Swedish)")),
+    ("uk-ua", _("Українська (Ukrainian)")),
     ("zh-hans", _("简体中文 (Simplified Chinese)")),
     ("zh-hant", _("繁體中文 (Traditional Chinese)")),
 ]
 
 LANGUAGE_ARTICLES = {
     "English": {"the", "a", "an"},
+    "Español (Spanish)": {"un", "una", "unos", "unas", "el", "la", "los", "las"},
 }
 
 TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-USE_L10N = True
-
 USE_TZ = True
-
-
-agent = requests.utils.default_user_agent()
-USER_AGENT = f"{agent} (BookWyrm/{VERSION}; +https://{DOMAIN}/)"
 
 # Imagekit generated thumbnails
 ENABLE_THUMBNAIL_GENERATION = env.bool("ENABLE_THUMBNAIL_GENERATION", False)
 IMAGEKIT_CACHEFILE_DIR = "thumbnails"
 IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "bookwyrm.thumbnail_generation.Strategy"
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 CSP_ADDITIONAL_HOSTS = env.list("CSP_ADDITIONAL_HOSTS", [])
-
-# Storage
 
 PROTOCOL = "http"
 if USE_HTTPS:
@@ -347,57 +360,150 @@ if USE_HTTPS:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
+PORT = env.int("PORT", 443 if USE_HTTPS else 80)
+if (USE_HTTPS and PORT == 443) or (not USE_HTTPS and PORT == 80):
+    NETLOC = DOMAIN
+else:
+    NETLOC = f"{DOMAIN}:{PORT}"
+BASE_URL = f"{PROTOCOL}://{NETLOC}"
+CSRF_TRUSTED_ORIGINS = [BASE_URL]
+
+USER_AGENT = f"BookWyrm (BookWyrm/{VERSION}; +{BASE_URL})"
+
+# Storage
+
 USE_S3 = env.bool("USE_S3", False)
 USE_AZURE = env.bool("USE_AZURE", False)
+S3_SIGNED_URL_EXPIRY = env.int("S3_SIGNED_URL_EXPIRY", 900)
 
 if USE_S3:
     # AWS settings
     AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
     AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-    AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN")
+    AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN", None)
     AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME", "")
-    AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL")
+    AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL", None)
     AWS_DEFAULT_ACL = "public-read"
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+    AWS_S3_URL_PROTOCOL = env("AWS_S3_URL_PROTOCOL", f"{PROTOCOL}:")
+    # Storages
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "location": "images",
+                "default_acl": "public-read",
+                "file_overwrite": False,
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "location": "static",
+                "default_acl": "public-read",
+            },
+        },
+        "sass_processor": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "location": "static",
+                "default_acl": "public-read",
+            },
+        },
+        "exports": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "location": "images",
+                "default_acl": None,
+                "file_overwrite": False,
+            },
+        },
+    }
     # S3 Static settings
     STATIC_LOCATION = "static"
-    STATIC_URL = f"{PROTOCOL}://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
-    STATICFILES_STORAGE = "bookwyrm.storage_backends.StaticStorage"
+    STATIC_URL = f"{AWS_S3_URL_PROTOCOL}//{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
+    STATIC_FULL_URL = STATIC_URL
     # S3 Media settings
     MEDIA_LOCATION = "images"
-    MEDIA_URL = f"{PROTOCOL}://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/"
+    MEDIA_URL = f"{AWS_S3_URL_PROTOCOL}//{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/"
     MEDIA_FULL_URL = MEDIA_URL
-    STATIC_FULL_URL = STATIC_URL
-    DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.ImagesStorage"
-    CSP_DEFAULT_SRC = ["'self'", AWS_S3_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
-    CSP_SCRIPT_SRC = ["'self'", AWS_S3_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
+    # Content Security Policy
+    CSP_DEFAULT_SRC = [
+        "'self'",
+        f"{AWS_S3_URL_PROTOCOL}//{AWS_S3_CUSTOM_DOMAIN}"
+        if AWS_S3_CUSTOM_DOMAIN
+        else None,
+    ] + CSP_ADDITIONAL_HOSTS
+    CSP_SCRIPT_SRC = [
+        "'self'",
+        f"{AWS_S3_URL_PROTOCOL}//{AWS_S3_CUSTOM_DOMAIN}"
+        if AWS_S3_CUSTOM_DOMAIN
+        else None,
+    ] + CSP_ADDITIONAL_HOSTS
 elif USE_AZURE:
+    # Azure settings
     AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
     AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
     AZURE_CONTAINER = env("AZURE_CONTAINER")
     AZURE_CUSTOM_DOMAIN = env("AZURE_CUSTOM_DOMAIN")
+    # Storages
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.azure_storage.AzureStorage",
+            "OPTIONS": {
+                "location": "images",
+                "overwrite_files": False,
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "storages.backends.azure_storage.AzureStorage",
+            "OPTIONS": {
+                "location": "static",
+            },
+        },
+        "exports": {
+            "BACKEND": None,  # not implemented yet
+        },
+    }
     # Azure Static settings
     STATIC_LOCATION = "static"
     STATIC_URL = (
         f"{PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/{STATIC_LOCATION}/"
     )
-    STATICFILES_STORAGE = "bookwyrm.storage_backends.AzureStaticStorage"
+    STATIC_FULL_URL = STATIC_URL
     # Azure Media settings
     MEDIA_LOCATION = "images"
     MEDIA_URL = (
         f"{PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/{MEDIA_LOCATION}/"
     )
     MEDIA_FULL_URL = MEDIA_URL
-    STATIC_FULL_URL = STATIC_URL
-    DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.AzureImagesStorage"
+    # Content Security Policy
     CSP_DEFAULT_SRC = ["'self'", AZURE_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
     CSP_SCRIPT_SRC = ["'self'", AZURE_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
 else:
+    # Storages
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+        "exports": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+            "OPTIONS": {
+                "location": "exports",
+            },
+        },
+    }
+    # Static settings
     STATIC_URL = "/static/"
+    STATIC_FULL_URL = BASE_URL + STATIC_URL
+    # Media settings
     MEDIA_URL = "/images/"
-    MEDIA_FULL_URL = f"{PROTOCOL}://{DOMAIN}{MEDIA_URL}"
-    STATIC_FULL_URL = f"{PROTOCOL}://{DOMAIN}{STATIC_URL}"
+    MEDIA_FULL_URL = BASE_URL + MEDIA_URL
+    # Content Security Policy
     CSP_DEFAULT_SRC = ["'self'"] + CSP_ADDITIONAL_HOSTS
     CSP_SCRIPT_SRC = ["'self'"] + CSP_ADDITIONAL_HOSTS
 
@@ -420,3 +526,7 @@ if HTTP_X_FORWARDED_PROTO:
 # Do not change this setting unless you already have an existing
 # user with the same username - in which case you should change it!
 INSTANCE_ACTOR_USERNAME = "bookwyrm.instance.actor"
+
+# We only allow specifying DATA_UPLOAD_MAX_MEMORY_SIZE in MiB from .env
+# (note the difference in variable names).
+DATA_UPLOAD_MAX_MEMORY_SIZE = env.int("DATA_UPLOAD_MAX_MEMORY_MiB", 100) << 20

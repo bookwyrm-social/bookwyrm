@@ -6,8 +6,9 @@ from functools import reduce
 import json
 import operator
 import logging
-from typing import List
+from typing import Any, Optional
 from uuid import uuid4
+from typing_extensions import Self
 
 import aiohttp
 from Crypto.PublicKey import RSA
@@ -30,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 PropertyField = namedtuple("PropertyField", ("set_activity_from_field"))
 
-# pylint: disable=invalid-name
+
 def set_activity_from_property_field(activity, obj, field):
     """assign a model property value to the activity json"""
     activity[field[1]] = getattr(obj, field[0])
@@ -85,7 +86,7 @@ class ActivitypubMixin:
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def find_existing_by_remote_id(cls, remote_id):
+    def find_existing_by_remote_id(cls, remote_id: str) -> Self:
         """look up a remote id in the db"""
         return cls.find_existing({"id": remote_id})
 
@@ -137,7 +138,7 @@ class ActivitypubMixin:
             queue=queue,
         )
 
-    def get_recipients(self, software=None) -> List[str]:
+    def get_recipients(self, software=None) -> list[str]:
         """figure out which inbox urls to post to"""
         # first we have to figure out who should receive this activity
         privacy = self.privacy if hasattr(self, "privacy") else "public"
@@ -151,8 +152,9 @@ class ActivitypubMixin:
         # find anyone who's tagged in a status, for example
         mentions = self.recipients if hasattr(self, "recipients") else []
 
-        # we always send activities to explicitly mentioned users' inboxes
-        recipients = [u.inbox for u in mentions or [] if not u.local]
+        # we always send activities to explicitly mentioned users (using shared inboxes
+        # where available to avoid duplicate submissions to a given instance)
+        recipients = {u.shared_inbox or u.inbox for u in mentions if not u.local}
 
         # unless it's a dm, all the followers should receive the activity
         if privacy != "direct":
@@ -167,23 +169,23 @@ class ActivitypubMixin:
             # filter users first by whether they're using the desired software
             # this lets us send book updates only to other bw servers
             if software:
-                queryset = queryset.filter(bookwyrm_user=(software == "bookwyrm"))
+                queryset = queryset.filter(bookwyrm_user=software == "bookwyrm")
             # if there's a user, we only want to send to the user's followers
             if user:
                 queryset = queryset.filter(following=user)
 
-            # ideally, we will send to shared inboxes for efficiency
-            shared_inboxes = (
-                queryset.filter(shared_inbox__isnull=False)
-                .values_list("shared_inbox", flat=True)
-                .distinct()
+            # as above, we prefer shared inboxes if available
+            recipients.update(
+                queryset.filter(shared_inbox__isnull=False).values_list(
+                    "shared_inbox", flat=True
+                )
             )
-            # but not everyone has a shared inbox
-            inboxes = queryset.filter(shared_inbox__isnull=True).values_list(
-                "inbox", flat=True
+            recipients.update(
+                queryset.filter(shared_inbox__isnull=True).values_list(
+                    "inbox", flat=True
+                )
             )
-            recipients += list(shared_inboxes) + list(inboxes)
-        return list(set(recipients))
+        return list(recipients)
 
     def to_activity_dataclass(self):
         """convert from a model to an activity"""
@@ -198,13 +200,16 @@ class ActivitypubMixin:
 class ObjectMixin(ActivitypubMixin):
     """add this mixin for object models that are AP serializable"""
 
-    def save(self, *args, created=None, software=None, priority=BROADCAST, **kwargs):
+    def save(
+        self,
+        *args: Any,
+        created: Optional[bool] = None,
+        software: Any = None,
+        priority: str = BROADCAST,
+        broadcast: bool = True,
+        **kwargs: Any,
+    ) -> None:
         """broadcast created/updated/deleted objects as appropriate"""
-        broadcast = kwargs.get("broadcast", True)
-        # this bonus kwarg would cause an error in the base save method
-        if "broadcast" in kwargs:
-            del kwargs["broadcast"]
-
         created = created or not bool(self.id)
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
@@ -507,14 +512,14 @@ def unfurl_related_field(related_field, sort_field=None):
 
 
 @app.task(queue=BROADCAST)
-def broadcast_task(sender_id: int, activity: str, recipients: List[str]):
+def broadcast_task(sender_id: int, activity: str, recipients: list[str]):
     """the celery task for broadcast"""
     user_model = apps.get_model("bookwyrm.User", require_ready=True)
     sender = user_model.objects.select_related("key_pair").get(id=sender_id)
     asyncio.run(async_broadcast(recipients, sender, activity))
 
 
-async def async_broadcast(recipients: List[str], sender, data: str):
+async def async_broadcast(recipients: list[str], sender, data: str):
     """Send all the broadcasts simultaneously"""
     timeout = aiohttp.ClientTimeout(total=10)
     async with aiohttp.ClientSession(timeout=timeout) as session:
@@ -594,7 +599,7 @@ def to_ordered_collection_page(
     if activity_page.has_next():
         next_page = f"{remote_id}?page={activity_page.next_page_number()}"
     if activity_page.has_previous():
-        prev_page = f"{remote_id}?page=%d{activity_page.previous_page_number()}"
+        prev_page = f"{remote_id}?page={activity_page.previous_page_number()}"
     return activitypub.OrderedCollectionPage(
         id=f"{remote_id}?page={page}",
         partOf=remote_id,

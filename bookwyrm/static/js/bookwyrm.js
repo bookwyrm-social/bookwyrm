@@ -31,6 +31,12 @@ let BookWyrm = new (class {
             .forEach((button) => button.addEventListener("click", this.back));
 
         document
+            .querySelectorAll("[data-password-icon]")
+            .forEach((button) =>
+                button.addEventListener("click", this.togglePasswordVisibility.bind(this))
+            );
+
+        document
             .querySelectorAll('input[type="file"]')
             .forEach((node) => node.addEventListener("change", this.disableIfTooLarge.bind(this)));
 
@@ -65,6 +71,9 @@ let BookWyrm = new (class {
                 .querySelectorAll('input[type="file"]')
                 .forEach(bookwyrm.disableIfTooLarge.bind(bookwyrm));
             document.querySelectorAll("[data-copytext]").forEach(bookwyrm.copyText.bind(bookwyrm));
+            document
+                .querySelectorAll("[data-copywithtooltip]")
+                .forEach(bookwyrm.copyWithTooltip.bind(bookwyrm));
             document
                 .querySelectorAll(".modal.is-active")
                 .forEach(bookwyrm.handleActiveModal.bind(bookwyrm));
@@ -524,6 +533,21 @@ let BookWyrm = new (class {
         textareaEl.parentNode.appendChild(copyButtonEl);
     }
 
+    copyWithTooltip(copyButtonEl) {
+        const text = document.getElementById(copyButtonEl.dataset.contentId).innerHTML;
+        const tooltipEl = document.getElementById(copyButtonEl.dataset.tooltipId);
+
+        copyButtonEl.addEventListener("click", () => {
+            navigator.clipboard.writeText(text);
+            tooltipEl.style.visibility = "visible";
+            tooltipEl.style.opacity = 1;
+            setTimeout(function () {
+                tooltipEl.style.visibility = "hidden";
+                tooltipEl.style.opacity = 0;
+            }, 3000);
+        });
+    }
+
     /**
      * Handle the details dropdown component.
      *
@@ -801,5 +825,25 @@ let BookWyrm = new (class {
         const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
         form.querySelector('input[name="preferred_timezone"]').value = tz;
+    }
+
+    togglePasswordVisibility(event) {
+        const iconElement = event.currentTarget.getElementsByTagName("button")[0];
+        const passwordElementId = event.currentTarget.dataset.for;
+        const passwordInputElement = document.getElementById(passwordElementId);
+
+        if (!passwordInputElement) return;
+
+        if (passwordInputElement.type === "password") {
+            passwordInputElement.type = "text";
+            this.addRemoveClass(iconElement, "icon-eye-blocked");
+            this.addRemoveClass(iconElement, "icon-eye", true);
+        } else {
+            passwordInputElement.type = "password";
+            this.addRemoveClass(iconElement, "icon-eye");
+            this.addRemoveClass(iconElement, "icon-eye-blocked", true);
+        }
+
+        this.toggleFocus(passwordElementId);
     }
 })();
