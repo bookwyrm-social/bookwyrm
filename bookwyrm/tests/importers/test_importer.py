@@ -63,7 +63,9 @@ class GenericImporter(TestCase):
         self.assertEqual(import_job.include_reviews, False)
         self.assertEqual(import_job.privacy, "public")
 
-        import_items = models.ImportItem.objects.filter(job=import_job).all()
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")
+        )
         self.assertEqual(len(import_items), 4)
         self.assertEqual(import_items[0].index, 0)
         self.assertEqual(import_items[0].normalized_data["id"], "38")
