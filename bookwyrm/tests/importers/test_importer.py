@@ -63,30 +63,29 @@ class GenericImporter(TestCase):
         self.assertEqual(import_job.include_reviews, False)
         self.assertEqual(import_job.privacy, "public")
 
-        import_items = models.ImportItem.objects.filter(job=import_job).all()
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")
+        )
         self.assertEqual(len(import_items), 4)
+        self.assertEqual(import_items[0].index, 0)
+        self.assertEqual(import_items[0].normalized_data["id"], "38")
+        self.assertEqual(import_items[0].normalized_data["title"], "Gideon the Ninth")
+        self.assertEqual(import_items[0].normalized_data["authors"], "Tamsyn Muir")
+        self.assertEqual(import_items[0].normalized_data["isbn_13"], "9781250313195")
+        self.assertIsNone(import_items[0].normalized_data["isbn_10"])
+        self.assertEqual(import_items[0].normalized_data["shelf"], "read")
 
-        # items don't get added in a predictable order, so we're using this weird loop
-        for item in import_items:
-            if item.index == 0:
-                self.assertEqual(item.normalized_data["id"], "38")
-                self.assertEqual(item.normalized_data["title"], "Gideon the Ninth")
-                self.assertEqual(item.normalized_data["authors"], "Tamsyn Muir")
-                self.assertEqual(item.normalized_data["isbn_13"], "9781250313195")
-                self.assertIsNone(item.normalized_data["isbn_10"])
-                self.assertEqual(item.normalized_data["shelf"], "read")
-            elif item.index == 1:
-                self.assertEqual(item.index, 1)
-                self.assertEqual(item.normalized_data["id"], "48")
-                self.assertEqual(item.normalized_data["title"], "Harrow the Ninth")
-            elif item.index == 2:
-                self.assertEqual(item.index, 2)
-                self.assertEqual(item.normalized_data["id"], "23")
-                self.assertEqual(item.normalized_data["title"], "Subcutanean")
-            elif item.index == 3:
-                self.assertEqual(item.index, 3)
-                self.assertEqual(item.normalized_data["id"], "10")
-                self.assertEqual(item.normalized_data["title"], "Patisserie at Home")
+        self.assertEqual(import_items[1].index, 1)
+        self.assertEqual(import_items[1].normalized_data["id"], "48")
+        self.assertEqual(import_items[1].normalized_data["title"], "Harrow the Ninth")
+
+        self.assertEqual(import_items[2].index, 2)
+        self.assertEqual(import_items[2].normalized_data["id"], "23")
+        self.assertEqual(import_items[2].normalized_data["title"], "Subcutanean")
+
+        self.assertEqual(import_items[3].index, 3)
+        self.assertEqual(import_items[3].normalized_data["id"], "10")
+        self.assertEqual(import_items[3].normalized_data["title"], "Patisserie at Home")
 
     def test_create_retry_job(self, *_):
         """trying again with items that didn't import"""
