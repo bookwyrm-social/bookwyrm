@@ -1,6 +1,5 @@
 {% load i18n %}
 {% load utilities %}
-{% load markdown %}
 
 {% if item.notes %}
 <div class="media notification">
@@ -15,7 +14,7 @@
                 <a href="{{ user_path }}">{{ username }}</a> says:
                 {% endblocktrans %}
             </header>
-            {{ item.notes|to_markdown|safe }}
+            {% include 'snippets/trimmed_text.html' with no_trim=no_trim full=item.notes %}
         </div>
         {% if item.user == request.user and not hide_edit %}
         <div>

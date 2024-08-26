@@ -1,15 +1,23 @@
 {% load i18n %}
+{% load humanize %}
 
 <h2 class="title is-3" id="suggestions-section">
     {% trans "Suggestions" %}
+    {% if book.suggestion_list %}
+    <a class="help has-text-weight-normal" href="{% url 'list' book.suggestion_list.id %}">
+        {% blocktrans trimmed  with count=book.suggestion_list.listitem_set.count|intcomma %}
+        View all {{ count }} suggestions
+        {% endblocktrans %}
+    </a>
+    {% endif %}
 </h2>
 
 {% if book.suggestion_list %}
-{% with book.suggestion_list.listitem_set.all as items %}
+{% with book.suggestion_list.listitem_set.all|slice:3 as items %}
 
     {% if items|length == 0 %}
     <section class="section has-background-light is-flex is-flex-direction-column is-align-items-center">
-        <div class="column is-one-third is-centered">
+        <div class="column is-full is-centered">
            {% include "book/suggestion_list/search.html" %}
         </div>
     </section>

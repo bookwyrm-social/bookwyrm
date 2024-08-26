@@ -1,8 +1,8 @@
 {% load i18n %}
 {% load book_display_tags %}
 
-<div class="card">
-    <div class="card-content pb-3 columns">
+<div class="card is-stretchable">
+    <div class="card-content pb-0 columns is-multiline">
         {% with item_book=item.book %}
             <div class="column is-one-third">
                 <div class="is-cover">
@@ -11,22 +11,29 @@
                     </a>
                 </div>
             </div>
-            <div class="column">
-                <p class="mt-3">
+            <div class="column is-two-thirds">
+                <p>
                     {% include 'snippets/book_titleby.html' with book=item_book %}
                 </p>
                 {% if item_book|book_description %}
-                <blockquote>
-                    {% with full=item_book|book_description trim_length=20 %}
-                        {% include 'snippets/trimmed_text.html' with hide_more=True %}
+                    <blockquote>
+                    {% with full=item_book|book_description %}
+                        {% include 'snippets/trimmed_text.html' with trim_length=15 hide_more=True %}
                     {% endwith %}
+                    </blockquote>
+                {% else %}
+                    {% include "lists/list_item_notes.html" with list=book.suggestion_list hide_edit=True %}
                 {% endif %}
-                {% include "lists/list_item_notes.html" with list=book.suggestion_list hide_edit=True %}
             </div>
+            {% if item_book|book_description %}
+            <div class="column is-full">
+                {% include "lists/list_item_notes.html" with list=book.suggestion_list hide_edit=True no_trim=False trim_length=10 %}
+            </div>
+            {% endif %}
         {% endwith %}
     </div>
     <div class="card-footer is-stacked-mobile has-background-tertiary is-align-items-stretch">
-        <div class="card-footer-item">
+        <div class="card-footer-item p-0">
             <p>
                 {% blocktrans trimmed with username=item.user.display_name user_path=item.user.local_path %}
                 Added by <a href="{{ user_path }}">{{ username }}</a>
