@@ -2,7 +2,7 @@
 {% load book_display_tags %}
 
 <div class="card is-stretchable">
-    <div class="card-content pb-0 columns is-multiline">
+    <div class="card-content pb-0 columns">
         {% with item_book=item.book %}
             <div class="column is-one-third">
                 <div class="is-cover">
@@ -15,21 +15,16 @@
                 <p>
                     {% include 'snippets/book_titleby.html' with book=item_book %}
                 </p>
-                {% if item_book|book_description %}
+                {% if item.notes %}
+                    {% include "lists/list_item_notes.html" with list=book.suggestion_list hide_edit=True no_trim=False trim_length=15 %}
+                {% else %}
                     <blockquote>
                     {% with full=item_book|book_description %}
                         {% include 'snippets/trimmed_text.html' with trim_length=15 hide_more=True %}
                     {% endwith %}
                     </blockquote>
-                {% else %}
-                    {% include "lists/list_item_notes.html" with list=book.suggestion_list hide_edit=True %}
                 {% endif %}
             </div>
-            {% if item_book|book_description %}
-            <div class="column is-full">
-                {% include "lists/list_item_notes.html" with list=book.suggestion_list hide_edit=True no_trim=False trim_length=10 %}
-            </div>
-            {% endif %}
         {% endwith %}
     </div>
     <div class="card-footer is-stacked-mobile has-background-tertiary is-align-items-stretch">
