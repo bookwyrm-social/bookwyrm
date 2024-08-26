@@ -435,6 +435,11 @@ urlpatterns = [
     re_path(r"^import/?$", views.Import.as_view(), name="import"),
     re_path(r"^user-import/?$", views.UserImport.as_view(), name="user-import"),
     re_path(
+        r"^user-import/(?P<job_id>\d+)/?$",
+        views.UserImportStatus.as_view(),
+        name="user-import-status",
+    ),
+    re_path(
         r"^import/(?P<job_id>\d+)/?$",
         views.ImportStatus.as_view(),
         name="import-status",
@@ -443,6 +448,11 @@ urlpatterns = [
         r"^import/(?P<job_id>\d+)/stop/?$",
         views.stop_import,
         name="import-stop",
+    ),
+    re_path(
+        r"^user-import/(?P<job_id>\d+)/stop/?$",
+        views.user_stop_import,
+        name="user-import-stop",
     ),
     re_path(
         r"^import/(?P<job_id>\d+)/retry/(?P<item_id>\d+)/?$",

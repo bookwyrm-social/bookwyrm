@@ -87,7 +87,13 @@ from .shelf.shelf_actions import shelve, unshelve
 
 # csv import
 from .imports.import_data import Import, UserImport
-from .imports.import_status import ImportStatus, retry_item, stop_import
+from .imports.import_status import (
+    ImportStatus,
+    UserImportStatus,
+    retry_item,
+    stop_import,
+    user_stop_import,
+)
 from .imports.troubleshoot import ImportTroubleshoot
 from .imports.manually_review import (
     ImportManualReview,

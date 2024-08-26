@@ -186,10 +186,10 @@
             {% endif %}
             {% for job in jobs %}
             <tr>
+                <td><a href="{% url 'user-import-status' job.id %}">{{ job.created_date }}</a></td>
                 <td>
-                    <p>{{ job.created_date }}</p>
+                    <p>{{ job.updated_date }}</p>
                 </td>
-                <td>{{ job.updated_date }}</td>
                 <td>
                     <span
                         {% if job.status == "stopped" or job.status == "failed" %}
