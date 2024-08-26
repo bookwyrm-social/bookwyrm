@@ -249,11 +249,9 @@ def create_suggestion_list(request, book_id):
 
     if not form.is_valid():
         return redirect("book", book.id)
+    # saving in two steps means django uses the model's custom save functionality,
+    # which adds an embed key and fixes the privacy and curation settings
     suggestion_list = form.save(request, commit=False)
-
-    # default values for the suggestion list
-    suggestion_list.privacy = "public"
-    suggestion_list.curation = "open"
     suggestion_list.save()
 
     return redirect("book", book.id)

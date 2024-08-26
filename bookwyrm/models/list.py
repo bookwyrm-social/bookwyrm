@@ -162,6 +162,11 @@ class List(OrderedCollectionMixin, BookWyrmModel):
             self.embed_key = uuid.uuid4()
             update_fields = add_update_fields(update_fields, "embed_key")
 
+        # ensure that suggestion lists have the right properties
+        if self.suggests_for:
+            self.privacy = "public"
+            self.curation = "open"
+
         super().save(*args, update_fields=update_fields, **kwargs)
 
 
