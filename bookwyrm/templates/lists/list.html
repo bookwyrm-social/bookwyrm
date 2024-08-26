@@ -80,50 +80,8 @@
                             </div>
                         </div>
                         {% endwith %}
+                        {% include "lists/list_item_notes.html" with item=item %}
 
-                        {% if item.notes %}
-                        <div class="media notification">
-                            <figure class="media-left" aria-hidden="true">
-                                {% include "snippets/avatar.html" with user=item.user %}
-                            </figure>
-                            <div class="media-content">
-                                <div class="content">
-                                    <header>
-                                        {% url 'user-feed' item.user|username as user_path %}
-                                        {% blocktrans trimmed with username=item.user.display_name %}
-                                        <a href="{{ user_path }}">{{ username }}</a> says:
-                                        {% endblocktrans %}
-                                    </header>
-                                    {{ item.notes|to_markdown|safe }}
-                                </div>
-                                {% if item.user == request.user %}
-                                <div>
-                                    <details class="details-panel box">
-                                        <summary>
-                                            <span role="heading" aria-level="3">
-                                                {% trans "Edit notes" %}
-                                                <span class="details-close icon icon-pencil" aria-hidden="true"></span>
-                                            </span>
-                                        </summary>
-                                        {% include "lists/edit_item_form.html" with book=item.book %}
-                                    </details>
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% elif item.user == request.user %}
-                        <div>
-                            <details class="details-panel box">
-                                <summary>
-                                    <span role="heading" aria-level="3">
-                                        {% trans "Add notes" %}
-                                        <span class="details-close icon icon-x" aria-hidden="true"></span>
-                                    </span>
-                                </summary>
-                                {% include "lists/edit_item_form.html" with book=item.book %}
-                            </details>
-                        </div>
-                        {% endif %}
                     </div>
                     <div class="card-footer is-stacked-mobile has-background-tertiary is-align-items-stretch">
                         <div class="card-footer-item">
