@@ -2,20 +2,22 @@
 {% load utilities %}
 
 {% if item.notes %}
-<div class="media notification">
-    <figure class="media-left" aria-hidden="true">
-        {% include "snippets/avatar.html" with user=item.user %}
-    </figure>
-    <div class="media-content">
-        <div class="content">
-            <header>
-                {% url 'user-feed' item.user|username as user_path %}
-                {% blocktrans trimmed with username=item.user.display_name %}
-                <a href="{{ user_path }}">{{ username }}</a> says:
-                {% endblocktrans %}
-            </header>
-            {% include 'snippets/trimmed_text.html' with no_trim=no_trim full=item.notes %}
-        </div>
+<div class="notification">
+    <div class="is-flex mb-3">
+        <figure class="mr-3" aria-hidden="true">
+            {% include "snippets/avatar.html" with user=item.user %}
+        </figure>
+        <header>
+            {% url 'user-feed' item.user|username as user_path %}
+            {% blocktrans trimmed with username=item.user.display_name %}
+            <a href="{{ user_path }}">{{ username }}</a> says:
+            {% endblocktrans %}
+        </header>
+    </div>
+    <div class="block">
+
+        {% include 'snippets/trimmed_text.html' with no_trim=no_trim full=item.notes %}
+
         {% if item.user == request.user and not hide_edit %}
         <div>
             <details class="details-panel box">

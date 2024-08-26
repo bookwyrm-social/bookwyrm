@@ -12,7 +12,7 @@
     </summary>
     {% url 'book' book_id=book.id as partial_url %}
     {% with search_url=partial_url|add:"#add-suggestions" %}
-    {% include "lists/suggestion_search.html" with is_suggestion=True query_param="suggestion_query" %}
+    {% include "lists/suggestion_search.html" with is_suggestion=True query_param="suggestion_query" columns=True %}
     {% endwith %}
 </details>
 {% endwith %}

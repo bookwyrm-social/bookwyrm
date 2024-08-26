@@ -27,7 +27,9 @@
 {% endif %}
 
 {% if suggested_books|length > 0 %}
+<div{% if columns %} class="columns is-multiline"{% endif %}>
     {% for book in suggested_books %}
+    <div class="block {% if columns %}column is-5 m-0{% endif %}">
         <div class="columns is-mobile is-gapless">
             <a
                 class="column is-2-mobile is-3-tablet is-cover align to-c"
@@ -37,7 +39,7 @@
                 {% include 'snippets/book_cover.html' with book=book cover_class='is-w-auto is-h-s-mobile align to-t' size='small' %}
             </a>
 
-            <div class="column ml-3">
+            <div class="column ml-3 control">
                 <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
 
                 {% join "add_item" list.id book.id as modal_id %}
@@ -55,6 +57,8 @@
                 {% include "lists/add_item_modal.html" with id=modal_id is_suggestion=is_suggestion %}
             </div>
         </div>
+    </div>
     {% endfor %}
+</div>
 {% endif %}
 

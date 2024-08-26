@@ -3,16 +3,16 @@
 
 <h2 class="title is-3" id="suggestions-section">
     {% trans "Suggestions" %}
-    {% if book.suggestion_list %}
-    <a class="help has-text-weight-normal" href="{% url 'list' book.suggestion_list.id %}">
-        {% blocktrans trimmed  with count=book.suggestion_list.listitem_set.count|intcomma %}
-        View all {{ count }} suggestions
-        {% endblocktrans %}
-    </a>
-    {% endif %}
 </h2>
 
 {% if book.suggestion_list %}
+
+<p class="subtitle">
+    {% blocktrans trimmed with title=book.title %}
+    Readers who liked <em>{{ title }}</em> recommend giving these books a try:
+    {% endblocktrans %}
+</p>
+
 {% with book.suggestion_list.listitem_set.all|slice:3 as items %}
 
     {% if items|length == 0 %}
@@ -22,16 +22,22 @@
         </div>
     </section>
     {% else %}
+    <a class="help has-text-weight-normal" href="{% url 'list' book.suggestion_list.id %}">
+        {% blocktrans trimmed  with count=book.suggestion_list.listitem_set.count|intcomma %}
+        View all {{ count }} suggestions
+        {% endblocktrans %}
+    </a>
     <ol class="columns is-multiline">
     {% for item in items %}
         <li class="mb-5 column is-one-third">
             {% include "book/suggestion_list/book_card.html" %}
         </li>
     {% endfor %}
-        <li class="mb-5 column is-full">
-            {% include "book/suggestion_list/search.html" %}
-        </li>
     </ol>
+
+    <div class="mb-5 column is-full">
+        {% include "book/suggestion_list/search.html" %}
+    </div>
     {% endif %}
 {% endwith %}
 {% else %}
