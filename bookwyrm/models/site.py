@@ -12,7 +12,6 @@ from django.utils import timezone
 from model_utils import FieldTracker
 
 from bookwyrm.connectors.abstract_connector import get_data
-from bookwyrm.connectors import ConnectorException
 from bookwyrm.preview_images import generate_site_preview_image_task
 from bookwyrm.settings import BASE_URL, ENABLE_PREVIEW_IMAGES, STATIC_FULL_URL
 from bookwyrm.settings import RELEASE_API
@@ -137,7 +136,7 @@ class SiteSettings(SiteModel):
     def raise_federation_disabled(self):
         """Don't connect to the outside world"""
         if self.disable_federation:
-            raise ConnectorException("Federation is disabled")
+            raise PermissionDenied("Federation is disabled")
 
     def get_url(self, field, default_path):
         """get a media url or a default static path"""
