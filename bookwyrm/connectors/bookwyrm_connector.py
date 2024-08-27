@@ -5,10 +5,18 @@ from typing import Any, Iterator
 from bookwyrm import activitypub, models
 from bookwyrm.book_search import SearchResult
 from .abstract_connector import AbstractMinimalConnector
+from .connector_manager import ConnectorException
 
 
 class Connector(AbstractMinimalConnector):
     """this is basically just for search"""
+
+    def __init__(self, identifier: str):
+        if models.SiteSettings.objects.get().disable_federation:
+            raise ConnectorException(
+                "Federation is disabled, cannot load BookWyrm connector", identifier
+            )
+        super().__init__(identifier)
 
     def get_or_create_book(self, remote_id: str) -> models.Edition:
         return activitypub.resolve_remote_id(remote_id, model=models.Edition)

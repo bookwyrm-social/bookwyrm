@@ -111,7 +111,11 @@ def first_search_result(
 
 def get_connectors() -> Iterator[abstract_connector.AbstractConnector]:
     """load all connectors"""
-    for info in models.Connector.objects.filter(active=True).order_by("priority").all():
+    queryset = models.Connector.objects.filter(active=True)
+    if models.SiteSettings.objects.get().disable_federation:
+        queryset = queryset.exclude(connector_file="bookwyrm_connector")
+
+    for info in queryset.order_by("priority").all():
         yield load_connector(info)
 
 

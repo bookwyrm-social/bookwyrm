@@ -184,6 +184,7 @@ class FederationSettings(CustomForm):
             "disable_federation",
         ]
 
+
 class AutoModRuleForm(CustomForm):
     class Meta:
         model = models.AutoMod
