@@ -13,7 +13,7 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views import Book
-from bookwyrm.views.helpers import is_api_request
+from bookwyrm.views.helpers import is_api_request, redirect_to_referer
 from bookwyrm.views.list.list import get_list_suggestions
 
 # pylint: disable=no-self-use
@@ -57,6 +57,7 @@ class SuggestionList(View):
             "add_failed": add_failed,
             "add_succeeded": add_succeeded,
             "add_book_url": reverse("book-add-suggestion", args=[book_id]),
+            "remove_book_url": reverse("book-remove-suggestion", args=[book_id]),
         }
 
         if request.user.is_authenticated:
@@ -97,4 +98,17 @@ def book_add_suggestion(request, book_id):
     item = form.save(request, commit=False)
     item.save()
 
-    return Book().get(request, book_id, add_succeeded=True)
+    return redirect_to_referer(request)
+
+
+@require_POST
+@login_required
+def book_remove_suggestion(request, _):
+    """remove a book from a suggestion list"""
+    item = get_object_or_404(models.SuggestionListItem, id=request.POST.get("item"))
+    item.raise_not_deletable(request.user)
+
+    with transaction.atomic():
+        item.delete()
+
+    return redirect_to_referer(request)

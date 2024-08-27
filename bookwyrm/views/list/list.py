@@ -74,6 +74,7 @@ class List(View):
             "add_failed": add_failed,
             "add_succeeded": add_succeeded,
             "add_book_url": reverse("list-add-book"),
+            "remove_book_url": reverse("list-remove-book", args=[list_id]),
         }
 
         if request.user.is_authenticated:
