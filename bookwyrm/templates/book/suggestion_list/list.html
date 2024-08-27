@@ -3,38 +3,35 @@
 
 <h2 class="title is-3" id="suggestions-section">
     {% trans "Suggestions" %}
-    <a class="help has-text-weight-normal" href="{% url 'suggestion-list' book_id=book.id %}">
-        {% blocktrans trimmed with count=book.suggestion_list.suggestionlistitem_set.count|intcomma %}
-        View all {{ count }} suggestions
-        {% endblocktrans %}
+    <a class="help has-text-weight-normal" href="{% url 'suggestion-list' book_id=work.id %}">
+        {% trans "View all suggestions" %}
     </a>
 </h2>
 
-{% if book.suggestion_list %}
+{% if suggestion_list %}
 
 <p class="subtitle">
     {% blocktrans trimmed with title=book.title %}
     Readers who liked <em>{{ title }}</em> recommend giving these books a try:
     {% endblocktrans %}
 </p>
-
     {% if items|length == 0 %}
     <section class="section has-background-light is-flex is-flex-direction-column is-align-items-center">
         <div class="column is-full is-centered">
-           {% include "book/suggestion_list/search.html" %}
+           {% include "book/suggestion_list/search.html" with list=suggestion_list is_suggestion=True %}
         </div>
     </section>
     {% else %}
     <ol class="columns is-multiline">
     {% for item in items %}
         <li class="mb-5 column is-one-third">
-            {% include "book/suggestion_list/book_card.html" %}
+            {% include "book/suggestion_list/book_card.html" with list=suggestion_list %}
         </li>
     {% endfor %}
     </ol>
 
     <div class="mb-5 column is-full">
-        {% include "book/suggestion_list/search.html" %}
+        {% include "book/suggestion_list/search.html" with list=suggestion_list is_suggestion=True %}
     </div>
     {% endif %}
 {% else %}
@@ -42,7 +39,7 @@
         <form name="create-list" method="post" action="{% url 'suggestion-list' book_id=book.id %}#suggestions-section" class="has-text-centered">
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ request.user.id }}">
-            <input type="hidden" name="suggests_for" value="{{ book.id }}">
+            <input type="hidden" name="suggests_for" value="{{ work.id }}">
             <button type="submit" class="button is-medium">{% trans "Create suggestion list" %}</button>
         </form>
     </section>

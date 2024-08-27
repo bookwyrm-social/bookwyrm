@@ -112,13 +112,13 @@ def get_list_suggestions(
             query,
             filters=[
                 ~Q(parent_work__editions__in=book_list.books.all()),
-                ~Q(parent_work__editions__in=[ignore_book]),
+                ~Q(parent_work=ignore_book),
             ],
         )
     # just suggest whatever books are nearby
     suggestions = (
         user.shelfbook_set.filter(~Q(book__in=book_list.books.all()))
-        .exclude(book=ignore_book)
+        .exclude(book__parent_work=ignore_book)
         .distinct()[:num_suggestions]
     )
     suggestions = [s.book for s in suggestions[:num_suggestions]]
@@ -127,7 +127,7 @@ def get_list_suggestions(
             s.default_edition
             for s in models.Work.objects.filter(
                 ~Q(editions__in=book_list.books.all()),
-                ~Q(editions__in=[ignore_book]),
+                ~Q(id=ignore_book.id),
             )
             .distinct()
             .order_by("-updated_date")[:num_suggestions]

@@ -2,8 +2,8 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import transaction
-from django.db.models import Count
-from django.shortcuts import get_object_or_404, redirect
+from django.db.models import Count, Q
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -26,7 +26,13 @@ class SuggestionList(View):
         add_failed = kwargs.get("add_failed", False)
         add_succeeded = kwargs.get("add_succeeded", False)
 
-        book_list = get_object_or_404(models.SuggestionList, suggests_for=book_id)
+        work = models.Work.objects.filter(
+            Q(id=book_id) | Q(editions=book_id)
+        ).distinct()
+        print(work.count())
+        work = work.first()
+
+        book_list = get_object_or_404(models.SuggestionList, suggests_for=work)
 
         if is_api_request(request):
             return ActivitypubResponse(book_list.to_activity(**request.GET))
@@ -53,6 +59,7 @@ class SuggestionList(View):
         query = request.GET.get("q", "")
         data = {
             "list": book_list,
+            "work": book_list.suggests_for,
             "items": page,
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
@@ -72,19 +79,18 @@ class SuggestionList(View):
         return TemplateResponse(request, "lists/list.html", data)
 
     @method_decorator(login_required, name="dispatch")
-    def post(self, request, book_id):
+    def post(self, request, book_id):  # pylint: disable=unused-argument
         """create a suggestion_list"""
         form = forms.SuggestionListForm(request.POST)
-        book = get_object_or_404(models.Edition, id=book_id)
 
         if not form.is_valid():
-            return redirect("book", book.id)
+            return redirect_to_referer(request)
         # saving in two steps means django uses the model's custom save functionality,
         # which adds an embed key and fixes the privacy and curation settings
         suggestion_list = form.save(request, commit=False)
         suggestion_list.save()
 
-        return redirect("book", book.id)
+        return redirect_to_referer(request)
 
 
 @login_required

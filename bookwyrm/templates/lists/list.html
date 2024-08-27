@@ -93,7 +93,7 @@
                         </div>
                         {% if list.suggests_for %}
                         <div class="card-footer-item">
-                            {% include "book/suggestion_list/endorsement_button.html" with book=list.suggests_for %}
+                            {% include "book/suggestion_list/endorsement_button.html" with work=list.suggests_for %}
                         </div>
                         {% endif %}
                         {% if list.user == request.user or list.group|is_member:request.user %}
@@ -172,7 +172,7 @@
                 {% trans "Suggest Books" %}
             {% endif %}
         </h2>
-        {% include "lists/suggestion_search.html" with query_param="q" search_url=add_book_url %}
+        {% include "lists/suggestion_search.html" with query_param="q" search_url=request.path %}
     {% endif %}
         <div>
             <h2 class="title is-5 mt-6" id="embed-label">

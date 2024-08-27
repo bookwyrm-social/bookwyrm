@@ -63,7 +63,7 @@ class SuggestionList(AbstractList):
     )
 
     suggests_for = fields.OneToOneField(
-        "Edition",
+        "Work",
         on_delete=models.PROTECT,
         activitypub_field="book",
         related_name="suggestion_list",

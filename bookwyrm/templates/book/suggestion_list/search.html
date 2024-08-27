@@ -2,7 +2,6 @@
 {% load utilities %}
 
 {% if request.user.is_authenticated %}
-{% with book.suggestion_list as list %}
 <details class="details-panel box" {% if query %}open{% endif %} id="add-suggestions">
     <summary>
         <span class="title is-5" role="heading" aria-level="3">
@@ -10,11 +9,9 @@
         </span>
         <span class="details-close icon icon-x" aria-hidden="true"></span>
     </summary>
-    {% url 'book' book_id=book.id as partial_url %}
-    {% with search_url=partial_url|add:"#add-suggestions" %}
+    {% with search_url=request.path|add:"#add-suggestions" %}
     {% include "lists/suggestion_search.html" with is_suggestion=True query_param="suggestion_query" columns=True %}
     {% endwith %}
 </details>
-{% endwith %}
 {% endif %}
 

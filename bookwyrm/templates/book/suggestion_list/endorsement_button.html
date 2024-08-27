@@ -1,5 +1,5 @@
 {% load i18n %}
-<form class="" action="{% url "suggestion-endorse" book.id item.id %}" method="POST">
+<form class="" action="{% url "suggestion-endorse" work.id item.id %}" method="POST">
     {% csrf_token %}
     <button class="tag is-info {% if request.user not in item.endorsement.all and request.user != item.user %}is-light{% endif %}" type="submit" {% if request.user == item.user %}disabled{% endif %}>
         <span class="icon icon-star-empty" aria-label="{% trans 'Endorsements' %}"></span>

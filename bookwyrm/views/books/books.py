@@ -90,6 +90,7 @@ class Book(View):
         )
         data = {
             "book": book,
+            "work": book.parent_work,
             "statuses": paginated.get_page(request.GET.get("page")),
             "review_count": reviews.count(),
             "ratings": (
@@ -135,21 +136,22 @@ class Book(View):
                 "comment_count": book.comment_set.filter(**filters).count(),
                 "quotation_count": book.quotation_set.filter(**filters).count(),
             }
-            if hasattr(book, "suggestion_list"):
-
+            if hasattr(book.parent_work, "suggestion_list"):
+                suggestion_list = book.parent_work.suggestion_list
+                data["suggestion_list"] = suggestion_list
                 data["items"] = (
-                    book.suggestion_list.suggestionlistitem_set.prefetch_related(
-                        "user", "book", "book__authors"
+                    suggestion_list.suggestionlistitem_set.prefetch_related(
+                        "user", "book", "book__authors", "endorsement"
                     )
                     .annotate(endorsement_count=Count("endorsement"))
                     .order_by("-endorsement_count")[:3]
                 )
 
                 data["suggested_books"] = get_list_suggestions(
-                    book.suggestion_list,
+                    suggestion_list,
                     request.user,
                     query=request.GET.get("suggestion_query", ""),
-                    ignore_book=book,
+                    ignore_book=book.parent_work,
                 )
 
         return TemplateResponse(request, "book/book.html", data)
