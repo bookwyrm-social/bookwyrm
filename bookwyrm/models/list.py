@@ -69,6 +69,7 @@ class SuggestionList(AbstractList):
         related_name="suggestion_list",
         unique=True,
     )
+    activity_serializer = activitypub.SuggestionList
 
     @property
     def collection_queryset(self):

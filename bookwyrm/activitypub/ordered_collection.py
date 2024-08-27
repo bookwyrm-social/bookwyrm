@@ -39,8 +39,16 @@ class BookList(OrderedCollectionPrivate):
 
     summary: str = None
     curation: str = "closed"
-    book: str = None
     type: str = "BookList"
+
+
+@dataclass(init=False)
+class SuggestionList(OrderedCollectionPrivate):
+    """structure of an ordered collection activity"""
+
+    summary: str = None
+    book: str = None
+    type: str = "SuggestionList"
 
 
 # pylint: disable=invalid-name
