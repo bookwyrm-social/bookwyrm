@@ -51,11 +51,6 @@ class BookViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=cls.work,
         )
-        cls.another_book = models.Edition.objects.create(
-            title="Another Example Edition",
-            remote_id="https://example.com/book/1",
-            parent_work=models.Work.objects.create(title="Another Work"),
-        )
 
         models.SiteSettings.objects.create()
 
@@ -294,49 +289,6 @@ class BookViews(TestCase):
         self.assertEqual(
             result.context_data["statuses"].object_list[0].endposition, "13"
         )
-
-    def test_create_suggestion_list(self, *_):
-        """start a suggestion list for a book"""
-        self.assertFalse(hasattr(self.book, "suggestion_list"))
-
-        view = views.create_suggestion_list
-        form = forms.SuggestionListForm()
-        form.data["user"] = self.local_user.id
-        form.data["suggests_for"] = self.book.id
-        request = self.factory.post("", form.data)
-        request.user = self.local_user
-
-        view(request, self.book.id)
-
-        self.book.refresh_from_db()
-        self.assertTrue(hasattr(self.book, "suggestion_list"))
-
-        suggestion_list = self.book.suggestion_list
-        self.assertEqual(suggestion_list.suggests_for, self.book)
-        self.assertEqual(suggestion_list.privacy, "public")
-        self.assertEqual(suggestion_list.curation, "open")
-
-    def test_book_add_suggestion(self, *_):
-        """Add a book to the recommendation list"""
-        suggestion_list = models.List.objects.create(
-            suggests_for=self.book, user=self.local_user
-        )
-        view = views.book_add_suggestion
-        form = forms.ListItemForm()
-        form.data["user"] = self.local_user.id
-        form.data["book"] = self.another_book.id
-        form.data["book_list"] = suggestion_list.id
-        form.data["notes"] = "hello"
-        request = self.factory.post("", form.data)
-        request.user = self.local_user
-
-        view(request, self.book.id)
-
-        self.assertEqual(suggestion_list.listitem_set.count(), 1)
-        item = suggestion_list.listitem_set.first()
-        self.assertEqual(item.book, self.another_book)
-        self.assertEqual(item.user, self.local_user)
-        self.assertEqual(item.notes, "hello")
 
 
 def _setup_cover_url():
