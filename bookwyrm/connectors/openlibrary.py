@@ -99,10 +99,10 @@ class Connector(AbstractConnector):
         ]
 
     def get_book_data(self, remote_id: str) -> JsonDict:
-        data = get_data(remote_id)
+        data = get_data(remote_id, is_activitypub=False)
         if data.get("type", {}).get("key") == "/type/redirect":
             remote_id = self.base_url + data.get("location", "")
-            return get_data(remote_id)
+            return get_data(remote_id, is_activitypub=False)
         return data
 
     def get_remote_id_from_data(self, data: JsonDict) -> str:

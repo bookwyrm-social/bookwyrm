@@ -63,6 +63,9 @@ def is_bookwyrm_request(request):
 
 def handle_remote_webfinger(query, unknown_only=False, refresh=False):
     """webfingerin' other servers"""
+    # SHOULD we do a remote webfinger? Is it allowed?
+    models.SiteSettings.objects.get().raise_federation_disabled()
+
     user = None
 
     # usernames could be @user@domain or user@domain
@@ -107,6 +110,9 @@ def handle_remote_webfinger(query, unknown_only=False, refresh=False):
 
 def subscribe_remote_webfinger(query):
     """get subscribe template from other servers"""
+    # SHOULD we do a remote webfinger? Is it allowed?
+    models.SiteSettings.objects.get().raise_federation_disabled()
+
     template = None
     # usernames could be @user@domain or user@domain
     if not query:

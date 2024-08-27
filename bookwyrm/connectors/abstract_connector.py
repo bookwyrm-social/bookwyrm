@@ -191,7 +191,7 @@ class AbstractConnector(AbstractMinimalConnector):
 
     def get_book_data(self, remote_id: str) -> JsonDict:  # pylint: disable=no-self-use
         """this allows connectors to override the default behavior"""
-        return get_data(remote_id)
+        return get_data(remote_id, is_activitypub=False)
 
     def create_edition_from_data(
         self,
@@ -310,8 +310,13 @@ def get_data(
     url: str,
     params: Optional[dict[str, str]] = None,
     timeout: int = settings.QUERY_TIMEOUT,
+    is_activitypub: bool = True,
 ) -> JsonDict:
     """wrapper for request.get"""
+    # make sure this isn't a forbidden federated request
+    if is_activitypub:
+        models.SiteSettings.objects.get().raise_federation_disabled()
+
     # check if the url is blocked
     raise_not_valid_url(url)
 
