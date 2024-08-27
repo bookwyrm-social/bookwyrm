@@ -15,6 +15,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 from django.apps import apps
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.utils.http import http_date
@@ -130,7 +131,10 @@ class ActivitypubMixin:
     def broadcast(self, activity, sender, software=None, queue=BROADCAST):
         """send out an activity"""
         site_model = apps.get_model("bookwyrm.SiteSettings", require_ready=True)
-        site_model.objects.get().raise_federation_disabled()
+        try:
+            site_model.objects.get().raise_federation_disabled()
+        except PermissionDenied:
+            return
 
         broadcast_task.apply_async(
             args=(
@@ -517,6 +521,11 @@ def unfurl_related_field(related_field, sort_field=None):
 @app.task(queue=BROADCAST)
 def broadcast_task(sender_id: int, activity: str, recipients: list[str]):
     """the celery task for broadcast"""
+    # checking this here ought to be redundant unless there are already-spawned tasks
+    # when federation is turned off. In that case this should prevent them from running.
+    site_model = apps.get_model("bookwyrm.SiteSettings", require_ready=True)
+    site_model.objects.get().raise_federation_disabled()
+
     user_model = apps.get_model("bookwyrm.User", require_ready=True)
     sender = user_model.objects.select_related("key_pair").get(id=sender_id)
     asyncio.run(async_broadcast(recipients, sender, activity))
