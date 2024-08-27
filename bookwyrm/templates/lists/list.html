@@ -12,7 +12,7 @@
         <li><a href="{% url 'lists' %}">{% trans "Lists" %}</a></li>
         <li class="is-active">
             <a href="#" aria-current="page">
-                {{ list.get_name|truncatechars:30 }}
+                {{ list.name|truncatechars:30 }}
             </a>
         </li>
     </ul>
@@ -182,7 +182,7 @@
                     data-copytext
                     data-copytext-label="{% trans 'Copy embed code' %}"
                     data-copytext-success="{% trans 'Copied!' %}"
-                >&lt;iframe style="border-width:0;" id="bookwyrm_list_embed" width="400" height="600" title="{% blocktrans trimmed with list_name=list.get_name site_name=site.name owner=list.user.display_name %}
+                >&lt;iframe style="border-width:0;" id="bookwyrm_list_embed" width="400" height="600" title="{% blocktrans trimmed with list_name=list.name site_name=site.name owner=list.user.display_name %}
                     {{ list_name }}, a list by {{owner}} on {{ site_name }}
                 {% endblocktrans %}" src="{{ embed_url }}"&gt;&lt;/iframe&gt;</textarea>
             </div>

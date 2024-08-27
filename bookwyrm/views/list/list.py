@@ -80,7 +80,6 @@ class List(View):
                 book_list,
                 request.user,
                 query=query,
-                ignore_book=book_list.suggests_for,
             )
         return TemplateResponse(request, "lists/list.html", data)
 
@@ -92,7 +91,7 @@ class List(View):
         form = forms.ListForm(request.POST, instance=book_list)
         if not form.is_valid():
             # this shouldn't happen
-            raise Exception(form.errors)
+            raise Exception(form.errors)  # pylint: disable=broad-exception-raised
         book_list = form.save(request)
         if not book_list.curation == "group":
             book_list.group = None

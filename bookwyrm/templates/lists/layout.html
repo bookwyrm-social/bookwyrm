@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load list_page_tags %}
 
-{% block title %}{{ list.get_name }}{% endblock %}
+{% block title %}{{ list.name }}{% endblock %}
 
 {% block opengraph %}
     {% include 'snippets/opengraph.html' with title=list|opengraph_title description=list|opengraph_description %}
@@ -11,7 +11,7 @@
 {% block content %}
 <header class="columns content is-mobile">
     <div class="column">
-        <h1 class="title">{{ list.get_name }} <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span></h1>
+        <h1 class="title">{{ list.name }} <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span></h1>
         {% if list.suggests_for == None %}
         <p class="subtitle help">
             {% include 'lists/created_text.html' with list=list %}
@@ -35,7 +35,7 @@
 {% block breadcrumbs %}{% endblock %}
 
 <div class="block content">
-    {% include 'snippets/trimmed_text.html' with full=list.get_description %}
+    {% include 'snippets/trimmed_text.html' with full=list.description %}
 </div>
 
 <div class="block">

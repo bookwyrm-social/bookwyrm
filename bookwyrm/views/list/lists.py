@@ -21,7 +21,6 @@ class Lists(View):
             lists = ListsStream().get_list_stream(request.user)
         else:
             lists = models.List.objects.filter(privacy="public")
-        lists = lists.filter(suggests_for__isnull=True)
         paginated = Paginator(lists, 12)
         data = {
             "lists": paginated.get_page(request.GET.get("page")),
@@ -31,7 +30,6 @@ class Lists(View):
         return TemplateResponse(request, "lists/lists.html", data)
 
     @method_decorator(login_required, name="dispatch")
-    # pylint: disable=unused-argument
     def post(self, request):
         """create a book_list"""
         form = forms.ListForm(request.POST)
@@ -72,11 +70,7 @@ class UserLists(View):
     def get(self, request, username):
         """display a book list"""
         user = get_user_from_username(request.user, username)
-        lists = (
-            models.List.privacy_filter(request.user)
-            .filter(user=user)
-            .filter(suggests_for__isnull=True)
-        )
+        lists = models.List.privacy_filter(request.user).filter(user=user)
         paginated = Paginator(lists, 12)
 
         data = {

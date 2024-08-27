@@ -55,14 +55,7 @@ from .preferences.two_factor_auth import (
 )
 
 # books
-from .books.books import (
-    Book,
-    upload_cover,
-    add_description,
-    resolve_book,
-    create_suggestion_list,
-    book_add_suggestion,
-)
+from .books.books import Book, upload_cover, add_description, resolve_book
 from .books.series import BookSeriesBy
 from .books.books import update_book_from_remote
 from .books.edit_book import (
@@ -111,6 +104,10 @@ from .list.list import (
     remove_book,
     set_book_position,
 )
+
+# suggestion lists
+from .suggestion_list import SuggestionList
+from .suggestion_list import book_add_suggestion
 
 # misc views
 from .author import Author, EditAuthor, update_author_from_remote

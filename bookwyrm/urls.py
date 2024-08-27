@@ -761,12 +761,12 @@ urlpatterns = [
         name="book-update-remote",
     ),
     re_path(
-        rf"{BOOK_PATH}/create-suggestion-list/?$",
-        views.create_suggestion_list,
-        name="book-create-suggestion-list",
+        rf"{BOOK_PATH}/suggestions(.json)?/?$",
+        views.SuggestionList.as_view(),
+        name="suggestion-list",
     ),
     re_path(
-        rf"{BOOK_PATH}/book-add-suggestion/?$",
+        rf"{BOOK_PATH}/suggestions/add/?$",
         views.book_add_suggestion,
         name="book-add-suggestion",
     ),

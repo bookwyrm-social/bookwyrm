@@ -3,6 +3,11 @@
 
 <h2 class="title is-3" id="suggestions-section">
     {% trans "Suggestions" %}
+    <a class="help has-text-weight-normal" href="{% url 'suggestion-list' book_id=book.id %}">
+        {% blocktrans trimmed with count=book.suggestion_list.suggestionlistitem_set.count|intcomma %}
+        View all {{ count }} suggestions
+        {% endblocktrans %}
+    </a>
 </h2>
 
 {% if book.suggestion_list %}
@@ -13,7 +18,7 @@
     {% endblocktrans %}
 </p>
 
-{% with book.suggestion_list.listitem_set.all|slice:3 as items %}
+{% with book.suggestion_list.suggestionlistitem_set.all|slice:3 as items %}
 
     {% if items|length == 0 %}
     <section class="section has-background-light is-flex is-flex-direction-column is-align-items-center">
@@ -22,11 +27,6 @@
         </div>
     </section>
     {% else %}
-    <a class="help has-text-weight-normal" href="{% url 'list' book.suggestion_list.id %}">
-        {% blocktrans trimmed  with count=book.suggestion_list.listitem_set.count|intcomma %}
-        View all {{ count }} suggestions
-        {% endblocktrans %}
-    </a>
     <ol class="columns is-multiline">
     {% for item in items %}
         <li class="mb-5 column is-one-third">
@@ -42,7 +42,7 @@
 {% endwith %}
 {% else %}
     <section class="section is-medium has-background-light">
-        <form name="create-list" method="post" action="{% url 'book-create-suggestion-list' book_id=book.id %}#suggestions-section" class="has-text-centered">
+        <form name="create-list" method="post" action="{% url 'suggestion-list' book_id=book.id %}#suggestions-section" class="has-text-centered">
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ request.user.id }}">
             <input type="hidden" name="suggests_for" value="{{ book.id }}">

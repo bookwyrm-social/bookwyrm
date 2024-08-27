@@ -8,7 +8,7 @@
         <div class="card is-stretchable">
             <header class="card-header">
                 <h4 class="card-header-title is-clipped">
-                    <a href="{{ list.local_path }}" class="is-clipped">{{ list.get_name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span>
+                    <a href="{{ list.local_path }}" class="is-clipped">{{ list.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span>
                 </h4>
                 {% if request.user.is_authenticated and request.user|saved:list %}
                 <div class="card-header-icon">
@@ -33,9 +33,9 @@
             {% endwith %}
 
             <div class="card-content is-flex-grow-0">
-                <div class="is-clipped" {% if list.description %}title="{{ list.get_description }}"{% endif %}>
-                {% if list.get_description %}
-                    {{ list.get_description|to_markdown|safe|truncatechars_html:30 }}
+                <div class="is-clipped" {% if list.description %}title="{{ list.description }}"{% endif %}>
+                {% if list.description %}
+                    {{ list.description|to_markdown|safe|truncatechars_html:30 }}
                 {% else %}
                 &nbsp;
                 {% endif %}
