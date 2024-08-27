@@ -127,7 +127,7 @@ def get_list_suggestions(
             s.default_edition
             for s in models.Work.objects.filter(
                 ~Q(editions__in=book_list.books.all()),
-                ~Q(id=ignore_book.id),
+                ~Q(id=ignore_book.id if ignore_book else None),
             )
             .distinct()
             .order_by("-updated_date")[:num_suggestions]
