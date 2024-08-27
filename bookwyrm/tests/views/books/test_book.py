@@ -51,6 +51,11 @@ class BookViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=cls.work,
         )
+        cls.another_book = models.Edition.objects.create(
+            title="Another Example Edition",
+            remote_id="https://example.com/book/1",
+            parent_work=models.Work.objects.create(title="Another Work"),
+        )
 
         models.SiteSettings.objects.create()
 
@@ -133,6 +138,43 @@ class BookViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.context_data["statuses"].object_list[0], quote)
+
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+    def test_book_page_suggestions(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Book.as_view()
+        suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
+
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.book.id, user_statuses="review")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.context_data["suggestion_list"], suggestion_list)
+
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+    def test_book_page_suggestions_with_items(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Book.as_view()
+        suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
+        models.SuggestionListItem.objects.create(
+            book_list=suggestion_list, user=self.local_user, book=self.another_book
+        )
+
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.book.id, user_statuses="review")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.context_data["suggestion_list"], suggestion_list)
 
     def test_book_page_invalid_id(self):
         """there are so many views, this just makes sure it LOADS"""

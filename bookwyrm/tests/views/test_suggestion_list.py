@@ -1,6 +1,7 @@
 """ test for app action functionality """
 from unittest.mock import patch
 
+from django.core.exceptions import PermissionDenied
 from django.test import TestCase
 from django.test.client import RequestFactory
 
@@ -28,6 +29,14 @@ class BookViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
+            cls.another_user = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.com",
+                "ratword",
+                local=True,
+                localname="rat",
+                remote_id="https://example.com/users/rat",
+            )
         cls.work = models.Work.objects.create(title="Test Work")
         cls.book = models.Edition.objects.create(
             title="Example Edition",
@@ -48,7 +57,7 @@ class BookViews(TestCase):
 
     def test_suggestion_list_get(self, *_):
         """start a suggestion list for a book"""
-        models.SuggestionList.objects.create(suggests_for=self.book)
+        models.SuggestionList.objects.create(suggests_for=self.work)
         view = views.SuggestionList.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -58,7 +67,7 @@ class BookViews(TestCase):
 
     def test_suggestion_list_get_json(self, *_):
         """start a suggestion list for a book"""
-        models.SuggestionList.objects.create(suggests_for=self.book)
+        models.SuggestionList.objects.create(suggests_for=self.work)
         view = views.SuggestionList.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -70,40 +79,106 @@ class BookViews(TestCase):
 
     def test_suggestion_create(self, *_):
         """start a suggestion list for a book"""
-        self.assertFalse(hasattr(self.book, "suggestion_list"))
+        self.assertFalse(hasattr(self.work, "suggestion_list"))
 
         view = views.SuggestionList.as_view()
         form = forms.SuggestionListForm()
-        form.data["suggests_for"] = self.book.id
+        form.data["suggests_for"] = self.work.id
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
         view(request, self.book.id)
 
-        self.book.refresh_from_db()
-        self.assertTrue(hasattr(self.book, "suggestion_list"))
+        self.work.refresh_from_db()
+        self.assertTrue(hasattr(self.work, "suggestion_list"))
 
-        suggestion_list = self.book.suggestion_list
-        self.assertEqual(suggestion_list.suggests_for, self.book)
+        suggestion_list = self.work.suggestion_list
+        self.assertEqual(suggestion_list.suggests_for, self.work)
         self.assertEqual(suggestion_list.privacy, "public")
         self.assertEqual(suggestion_list.user, get_representative())
 
     def test_book_add_suggestion(self, *_):
         """Add a book to the recommendation list"""
-        suggestion_list = models.SuggestionList.objects.create(suggests_for=self.book)
+        suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
         view = views.book_add_suggestion
+
         form = forms.SuggestionListItemForm()
         form.data["user"] = self.local_user.id
         form.data["book"] = self.another_book.id
         form.data["book_list"] = suggestion_list.id
         form.data["notes"] = "hello"
+
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        view(request, self.book.id)
+        view(request, self.work.id)
 
         self.assertEqual(suggestion_list.suggestionlistitem_set.count(), 1)
         item = suggestion_list.suggestionlistitem_set.first()
         self.assertEqual(item.book, self.another_book)
         self.assertEqual(item.user, self.local_user)
         self.assertEqual(item.notes, "hello")
+
+    def test_book_remove_suggestion(self, *_):
+        """Remove a book from the recommendation list"""
+        suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
+        item = models.SuggestionListItem.objects.create(
+            book_list=suggestion_list, user=self.local_user, book=self.another_book
+        )
+        self.assertEqual(suggestion_list.suggestionlistitem_set.count(), 1)
+
+        view = views.book_remove_suggestion
+        request = self.factory.post("", {"item": item.id})
+        request.user = self.local_user
+
+        view(request, self.work.id)
+
+        self.assertEqual(suggestion_list.suggestionlistitem_set.count(), 0)
+
+    def test_book_remove_suggestion_without_permission(self, *_):
+        """Remove a book from the recommendation list"""
+        suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
+        item = models.SuggestionListItem.objects.create(
+            book_list=suggestion_list, user=self.local_user, book=self.another_book
+        )
+        self.assertEqual(suggestion_list.suggestionlistitem_set.count(), 1)
+
+        view = views.book_remove_suggestion
+        request = self.factory.post("", {"item": item.id})
+        request.user = self.another_user
+
+        with self.assertRaises(PermissionDenied):
+            view(request, self.work.id)
+
+        self.assertEqual(suggestion_list.suggestionlistitem_set.count(), 1)
+
+    def test_endorse_suggestion(self, *_):
+        """Endorse a suggestion"""
+        suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
+        item = models.SuggestionListItem.objects.create(
+            book_list=suggestion_list, user=self.local_user, book=self.another_book
+        )
+        self.assertEqual(item.endorsement.count(), 0)
+        view = views.endorse_suggestion
+        request = self.factory.post("")
+        request.user = self.another_user
+
+        view(request, self.work.id, item.id)
+
+        self.assertEqual(item.endorsement.count(), 1)
+
+    def test_endorse_suggestion_by_self(self, *_):
+        """Endorse a suggestion error handling"""
+        suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
+        item = models.SuggestionListItem.objects.create(
+            book_list=suggestion_list, user=self.local_user, book=self.another_book
+        )
+        self.assertEqual(item.endorsement.count(), 0)
+        view = views.endorse_suggestion
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        view(request, self.work.id, item.id)
+
+        # no impact
+        self.assertEqual(item.endorsement.count(), 0)

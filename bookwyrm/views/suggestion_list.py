@@ -95,7 +95,6 @@ class SuggestionList(View):
 
 @login_required
 @require_POST
-@transaction.atomic
 def book_add_suggestion(request, book_id):
     """put a book on the suggestion list"""
     _ = get_object_or_404(
@@ -106,8 +105,7 @@ def book_add_suggestion(request, book_id):
     if not form.is_valid():
         return Book().get(request, book_id, add_failed=True)
 
-    item = form.save(request, commit=False)
-    item.save()
+    form.save(request)
 
     return redirect_to_referer(request)
 

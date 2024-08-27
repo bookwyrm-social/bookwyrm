@@ -137,10 +137,10 @@ class Book(View):
                 "quotation_count": book.quotation_set.filter(**filters).count(),
             }
             if hasattr(book.parent_work, "suggestion_list"):
-                suggestion_list = book.parent_work.suggestion_list
-                data["suggestion_list"] = suggestion_list
+                data["suggestion_list"] = book.parent_work.suggestion_list
                 data["items"] = (
-                    suggestion_list.suggestionlistitem_set.prefetch_related(
+                    data["suggestion_list"]
+                    .suggestionlistitem_set.prefetch_related(
                         "user", "book", "book__authors", "endorsement"
                     )
                     .annotate(endorsement_count=Count("endorsement"))
@@ -148,7 +148,7 @@ class Book(View):
                 )
 
                 data["suggested_books"] = get_list_suggestions(
-                    suggestion_list,
+                    data["suggestion_list"],
                     request.user,
                     query=request.GET.get("suggestion_query", ""),
                     ignore_book=book.parent_work,
