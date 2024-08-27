@@ -184,6 +184,12 @@ class FederationSettings(CustomForm):
             "disable_federation",
         ]
 
+        widgets = {
+            "disable_federation": forms.CheckboxInput(
+                attrs={"aria-describedby": "desc_disable_federation"}
+            ),
+        }
+
 
 class AutoModRuleForm(CustomForm):
     class Meta:
