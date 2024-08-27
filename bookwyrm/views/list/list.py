@@ -73,6 +73,7 @@ class List(View):
             "embed_url": embed_url,
             "add_failed": add_failed,
             "add_succeeded": add_succeeded,
+            "add_book_url": reverse("list-add-book"),
         }
 
         if request.user.is_authenticated:

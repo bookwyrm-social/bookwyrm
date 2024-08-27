@@ -161,14 +161,13 @@
     {% endif %}
     {% if request.user.is_authenticated and not list.curation == 'closed' or request.user == list.user %}
         <h2 class="title is-5 mt-6">
-            {% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
+            {% if list.suggests_for or list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
                 {% trans "Add Books" %}
             {% else %}
                 {% trans "Suggest Books" %}
             {% endif %}
         </h2>
-        {% url 'list' list_id=list.id slug=list.name|slugify as search_url %}
-        {% include "lists/suggestion_search.html" with query_param="q" %}
+        {% include "lists/suggestion_search.html" with query_param="q" search_url=add_book_url %}
     {% endif %}
         <div>
             <h2 class="title is-5 mt-6" id="embed-label">

@@ -56,6 +56,7 @@ class SuggestionList(View):
             "embed_url": embed_url,
             "add_failed": add_failed,
             "add_succeeded": add_succeeded,
+            "add_book_url": reverse("book-add-suggestion", args=[book_id]),
         }
 
         if request.user.is_authenticated:
