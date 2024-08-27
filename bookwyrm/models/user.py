@@ -141,7 +141,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     hide_follows = fields.BooleanField(default=False)
 
     # migration fields
-
     moved_to = fields.RemoteIdField(
         null=True, unique=False, activitypub_field="movedTo", deduplication_field=False
     )
@@ -158,6 +157,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     show_suggested_users = models.BooleanField(default=True)
     discoverable = fields.BooleanField(default=False)
     show_guided_tour = models.BooleanField(default=True)
+    show_ratings = models.BooleanField(default=True)
 
     # feed options
     feed_status_types = DjangoArrayField(
