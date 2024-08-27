@@ -163,6 +163,11 @@ urlpatterns = [
         name="settings-activate-user",
     ),
     re_path(
+        r"^settings/federation-settings/?$",
+        views.FederationSettings.as_view(),
+        name="settings-federation-settings",
+    ),
+    re_path(
         r"^settings/federation/(?P<status>(federated|blocked))?/?$",
         views.Federation.as_view(),
         name="settings-federation",

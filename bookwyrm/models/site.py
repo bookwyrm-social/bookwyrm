@@ -83,6 +83,7 @@ class SiteSettings(SiteModel):
     invite_question_text = models.CharField(
         max_length=255, blank=True, default="What is your favourite book?"
     )
+
     # images
     logo = models.ImageField(upload_to="logos/", null=True, blank=True)
     logo_small = models.ImageField(upload_to="logos/", null=True, blank=True)
@@ -103,6 +104,7 @@ class SiteSettings(SiteModel):
     import_limit_reset = models.IntegerField(default=0)
     user_exports_enabled = models.BooleanField(default=False)
     user_import_time_limit = models.IntegerField(default=48)
+    disable_federation = models.BooleanField(default=False)
 
     field_tracker = FieldTracker(fields=["name", "instance_tagline", "logo"])
 

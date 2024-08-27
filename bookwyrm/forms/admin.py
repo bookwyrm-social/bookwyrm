@@ -177,6 +177,13 @@ class ServerForm(CustomForm):
         exclude = ["remote_id"]
 
 
+class FederationSettings(CustomForm):
+    class Meta:
+        model = models.SiteSettings
+        fields = [
+            "disable_federation",
+        ]
+
 class AutoModRuleForm(CustomForm):
     class Meta:
         model = models.AutoMod
