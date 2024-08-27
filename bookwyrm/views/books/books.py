@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.db.models import Avg, Q
+from django.db.models import Avg, Q, Count
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -136,6 +136,15 @@ class Book(View):
                 "quotation_count": book.quotation_set.filter(**filters).count(),
             }
             if hasattr(book, "suggestion_list"):
+
+                data["items"] = (
+                    book.suggestion_list.suggestionlistitem_set.prefetch_related(
+                        "user", "book", "book__authors"
+                    )
+                    .annotate(endorsement_count=Count("endorsement"))
+                    .order_by("-endorsement_count")[:3]
+                )
+
                 data["suggested_books"] = get_list_suggestions(
                     book.suggestion_list,
                     request.user,

@@ -2,6 +2,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import transaction
+from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -30,8 +31,12 @@ class SuggestionList(View):
         if is_api_request(request):
             return ActivitypubResponse(book_list.to_activity(**request.GET))
 
-        items = book_list.suggestionlistitem_set.prefetch_related(
-            "user", "book", "book__authors"
+        items = (
+            book_list.suggestionlistitem_set.prefetch_related(
+                "user", "book", "book__authors"
+            )
+            .annotate(endorsement_count=Count("endorsement"))
+            .order_by("-endorsement_count")
         )
 
         paginated = Paginator(items, PAGE_LENGTH)
@@ -103,12 +108,30 @@ def book_add_suggestion(request, book_id):
 
 @require_POST
 @login_required
-def book_remove_suggestion(request, _):
+def book_remove_suggestion(request, book_id):
     """remove a book from a suggestion list"""
-    item = get_object_or_404(models.SuggestionListItem, id=request.POST.get("item"))
+    item = get_object_or_404(
+        models.SuggestionListItem,
+        id=request.POST.get("item"),
+        book_list__suggests_for=book_id,
+    )
     item.raise_not_deletable(request.user)
 
     with transaction.atomic():
         item.delete()
 
+    return redirect_to_referer(request)
+
+
+@require_POST
+@login_required
+def endorse_suggestion(request, book_id, item_id):
+    """endorse a suggestion"""
+    item = get_object_or_404(
+        models.SuggestionListItem, id=item_id, book_list__suggests_for=book_id
+    )
+    if request.user not in item.endorsement.all():
+        item.endorse(request.user)
+    else:
+        item.unendorse(request.user)
     return redirect_to_referer(request)

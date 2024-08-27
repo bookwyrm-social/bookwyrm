@@ -91,6 +91,11 @@
                                 {% endblocktrans %}
                             </p>
                         </div>
+                        {% if list.suggests_for %}
+                        <div class="card-footer-item">
+                            {% include "book/suggestion_list/endorsement_button.html" with book=list.suggests_for %}
+                        </div>
+                        {% endif %}
                         {% if list.user == request.user or list.group|is_member:request.user %}
                         <form
                             name="set-position-{{ item.id }}"

@@ -215,15 +215,22 @@ class AbstractListItem(CollectionItemMixin, BookWyrmModel):
     activity_serializer = activitypub.ListItem
     collection_field = "book_list"
 
+    def endorse(self, user):
+        """another user supports this suggestion"""
+        # you can't endorse your own contribution, silly
+        if user == self.user:
+            return
+        self.endorsement.add(user)
+
+    def unendorse(self, user):
+        """the user rescinds support this suggestion"""
+        if user == self.user:
+            return
+        self.endorsement.remove(user)
+
     def raise_not_deletable(self, viewer):
         """the associated user OR the list owner can delete"""
         if self.book_list.user == viewer:
-            return
-        # group members can delete items in group lists
-        is_group_member = GroupMember.objects.filter(
-            group=self.book_list.group, user=viewer
-        ).exists()
-        if is_group_member:
             return
         super().raise_not_deletable(viewer)
 
@@ -242,6 +249,16 @@ class ListItem(AbstractListItem):
     book_list = models.ForeignKey("List", on_delete=models.CASCADE)
     approved = models.BooleanField(default=True)
     order = fields.IntegerField()
+
+    def raise_not_deletable(self, viewer):
+        """the associated user OR the list owner can delete"""
+        # group members can delete items in group lists
+        is_group_member = GroupMember.objects.filter(
+            group=self.book_list.group, user=viewer
+        ).exists()
+        if is_group_member:
+            return
+        super().raise_not_deletable(viewer)
 
     def save(self, *args, **kwargs):
         """Update the list's date"""

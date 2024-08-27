@@ -107,7 +107,11 @@ from .list.list import (
 
 # suggestion lists
 from .suggestion_list import SuggestionList
-from .suggestion_list import book_add_suggestion, book_remove_suggestion
+from .suggestion_list import (
+    book_add_suggestion,
+    book_remove_suggestion,
+    endorse_suggestion,
+)
 
 # misc views
 from .author import Author, EditAuthor, update_author_from_remote

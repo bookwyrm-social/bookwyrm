@@ -18,8 +18,6 @@
     {% endblocktrans %}
 </p>
 
-{% with book.suggestion_list.suggestionlistitem_set.all|slice:3 as items %}
-
     {% if items|length == 0 %}
     <section class="section has-background-light is-flex is-flex-direction-column is-align-items-center">
         <div class="column is-full is-centered">
@@ -39,7 +37,6 @@
         {% include "book/suggestion_list/search.html" %}
     </div>
     {% endif %}
-{% endwith %}
 {% else %}
     <section class="section is-medium has-background-light">
         <form name="create-list" method="post" action="{% url 'suggestion-list' book_id=book.id %}#suggestions-section" class="has-text-centered">
