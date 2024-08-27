@@ -9,6 +9,7 @@ from django.template.response import TemplateResponse
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
+from bookwyrm.decorators import require_federation
 from bookwyrm.models.relationship import clear_cache
 from .helpers import (
     get_user_from_username,
@@ -131,6 +132,7 @@ def delete_follow_request(request):
     return redirect(f"/user/{request.user.localname}")
 
 
+@require_federation
 def ostatus_follow_request(request):
     """prepare an outgoing remote follow request"""
     uri = urllib.parse.unquote(request.GET.get("acct"))
@@ -169,6 +171,7 @@ def ostatus_follow_request(request):
 
 
 @login_required
+@require_federation
 def ostatus_follow_success(request):
     """display success message for remote follow"""
     user = get_user_from_username(request.user, request.GET.get("following"))
@@ -176,6 +179,7 @@ def ostatus_follow_success(request):
     return TemplateResponse(request, "ostatus/success.html", data)
 
 
+@require_federation
 def remote_follow_page(request):
     """display remote follow page"""
     user = get_user_from_username(request.user, request.GET.get("user"))
@@ -184,6 +188,7 @@ def remote_follow_page(request):
 
 
 @require_POST
+@require_federation
 def remote_follow(request):
     """direct user to follow from remote account using ostatus subscribe protocol"""
     remote_user = request.POST.get("remote_user")

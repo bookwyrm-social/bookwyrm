@@ -129,6 +129,9 @@ class ActivitypubMixin:
 
     def broadcast(self, activity, sender, software=None, queue=BROADCAST):
         """send out an activity"""
+        site_model = apps.get_model("bookwyrm.SiteSettings", require_ready=True)
+        site_model.objects.get().raise_federation_disabled()
+
         broadcast_task.apply_async(
             args=(
                 sender.id,
