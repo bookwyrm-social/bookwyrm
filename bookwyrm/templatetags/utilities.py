@@ -1,46 +1,50 @@
 """ template filters for really common utilities """
+from typing import Any, Optional
+
 import os
 import re
 from uuid import uuid4
 from urllib.parse import urlparse
 from django import template
+from django.contrib.auth.models import Group
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
+from django_stubs_ext import StrPromise
 
-from bookwyrm.models import User
+from bookwyrm.models import Author, Edition, User
 from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
 
 register = template.Library()
 
 
 @register.filter(name="uuid")
-def get_uuid(identifier):
+def get_uuid(identifier: str) -> str:
     """for avoiding clashing ids when there are many forms"""
     return f"{identifier}{uuid4()}"
 
 
 @register.simple_tag(takes_context=False)
-def join(*args):
+def join(*args: tuple[Any]) -> str:
     """concatenate an arbitrary set of values"""
     return "_".join(str(a) for a in args)
 
 
 @register.filter(name="username")
-def get_user_identifier(user):
+def get_user_identifier(user: User) -> str:
     """use localname for local users, username for remote"""
-    return user.localname if user.localname else user.username
+    return user.localname if user.localname else user.username or ""
 
 
 @register.filter(name="user_from_remote_id")
-def get_user_identifier_from_remote_id(remote_id):
+def get_user_identifier_from_remote_id(remote_id: str) -> Optional[User]:
     """get the local user id from their remote id"""
     user = User.objects.get(remote_id=remote_id)
     return user if user else None
 
 
 @register.filter(name="book_title")
-def get_title(book, too_short=5):
+def get_title(book: Edition, too_short: int = 5) -> Any:
     """display the subtitle if the title is short"""
     if not book:
         return ""
@@ -54,7 +58,7 @@ def get_title(book, too_short=5):
 
 
 @register.simple_tag(takes_context=False)
-def comparison_bool(str1, str2, reverse=False):
+def comparison_bool(str1: str, str2: str, reverse: bool = False) -> bool:
     """idk why I need to write a tag for this, it returns a bool"""
     if reverse:
         return str1 != str2
@@ -62,7 +66,7 @@ def comparison_bool(str1, str2, reverse=False):
 
 
 @register.filter(is_safe=True)
-def truncatepath(value, arg):
+def truncatepath(value: Any, arg: Any) -> Any:
     """Truncate a path by removing all directories except the first and truncating"""
     path = os.path.normpath(value.name)
     path_list = path.split(os.sep)
@@ -74,7 +78,9 @@ def truncatepath(value, arg):
 
 
 @register.simple_tag(takes_context=False)
-def get_book_cover_thumbnail(book, size="medium", ext="jpg"):
+def get_book_cover_thumbnail(
+    book: Edition, size: str = "medium", ext: str = "jpg"
+) -> Any:
     """Returns a book thumbnail at the specified size and extension,
     with fallback if needed"""
     if size == "":
@@ -87,7 +93,7 @@ def get_book_cover_thumbnail(book, size="medium", ext="jpg"):
 
 
 @register.filter(name="get_isni_bio")
-def get_isni_bio(existing, author):
+def get_isni_bio(existing: int, author: Author) -> str:
     """Returns the isni bio string if an existing author has an isni listed"""
     auth_isni = re.sub(r"\D", "", str(author.isni))
     if len(existing) == 0:
@@ -101,7 +107,7 @@ def get_isni_bio(existing, author):
 
 # pylint: disable=unused-argument
 @register.filter(name="get_isni", needs_autoescape=True)
-def get_isni(existing, author, autoescape=True):
+def get_isni(existing: str, author: Author, autoescape: bool = True) -> str:
     """Returns the isni ID if an existing author has an ISNI listing"""
     auth_isni = re.sub(r"\D", "", str(author.isni))
     if len(existing) == 0:
@@ -116,7 +122,7 @@ def get_isni(existing, author, autoescape=True):
 
 
 @register.simple_tag(takes_context=False)
-def id_to_username(user_id):
+def id_to_username(user_id: str) -> str | StrPromise:
     """given an arbitrary remote id, return the username"""
     if user_id:
         url = urlparse(user_id)
@@ -130,7 +136,7 @@ def id_to_username(user_id):
 
 
 @register.filter(name="get_file_size")
-def get_file_size(nbytes):
+def get_file_size(nbytes: int) -> str:
     """display the size of a file in human readable terms"""
 
     try:
@@ -148,13 +154,13 @@ def get_file_size(nbytes):
 
 
 @register.filter(name="get_user_permission")
-def get_user_permission(user):
+def get_user_permission(user: User) -> Group | str:
     """given a user, return their permission level"""
 
     return user.groups.first() or "User"
 
 
 @register.filter(name="is_instance_admin")
-def is_instance_admin(localname):
+def is_instance_admin(localname: str) -> bool:
     """Returns a boolean indicating whether the user is the instance admin account"""
     return localname == INSTANCE_ACTOR_USERNAME

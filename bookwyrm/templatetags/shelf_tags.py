@@ -1,6 +1,8 @@
 """ Filters and tags related to shelving books """
+from typing import Any
 from django import template
 from django.utils.translation import gettext_lazy as _
+from django_stubs_ext import StrPromise
 
 from bookwyrm import models
 from bookwyrm.utils import cache
@@ -19,7 +21,7 @@ SHELF_NAMES = {
 
 
 @register.filter(name="is_book_on_shelf")
-def get_is_book_on_shelf(book, shelf):
+def get_is_book_on_shelf(book: models.Edition, shelf: models.Shelf) -> Any:
     """is a book on a shelf"""
     return cache.get_or_set(
         f"book-on-shelf-{book.id}-{shelf.id}",
@@ -31,7 +33,7 @@ def get_is_book_on_shelf(book, shelf):
 
 
 @register.filter(name="next_shelf")
-def get_next_shelf(current_shelf):
+def get_next_shelf(current_shelf: str) -> str:
     """shelf you'd use to update reading progress"""
     if current_shelf == "to-read":
         return "reading"
@@ -45,7 +47,7 @@ def get_next_shelf(current_shelf):
 
 
 @register.filter(name="translate_shelf_name")
-def get_translated_shelf_name(shelf):
+def get_translated_shelf_name(shelf: models.Shelf | dict[str, str]) -> str | StrPromise:
     """produce translated shelf identifiername"""
     if not shelf:
         return ""
@@ -59,7 +61,7 @@ def get_translated_shelf_name(shelf):
 
 
 @register.simple_tag(takes_context=True)
-def active_shelf(context, book):
+def active_shelf(context: dict[str, Any], book: models.Edition) -> Any:
     """check what shelf a user has a book on, if any"""
     user = context["request"].user
     return cache.get_or_set(
@@ -78,7 +80,7 @@ def active_shelf(context, book):
 
 
 @register.simple_tag(takes_context=False)
-def latest_read_through(book, user):
+def latest_read_through(book: models.Edition, user: models.User) -> Any:
     """the most recent read activity"""
     return cache.get_or_set(
         f"latest_read_through-{user.id}-{book.id}",

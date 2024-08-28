@@ -1,4 +1,5 @@
 """ template filters """
+from typing import Any
 from django import template
 from django.db.models import Avg
 
@@ -10,7 +11,7 @@ register = template.Library()
 
 
 @register.filter(name="rating")
-def get_rating(book, user):
+def get_rating(book: models.Edition, user: models.User) -> Any:
     """get the overall rating of a book"""
     # this shouldn't happen, but it CAN
     if not book.parent_work:
@@ -29,7 +30,7 @@ def get_rating(book, user):
 
 
 @register.filter(name="user_rating")
-def get_user_rating(book, user):
+def get_user_rating(book: models.Edition, user: models.User) -> Any:
     """get a user's rating of a book"""
     rating = (
         models.Review.objects.filter(
