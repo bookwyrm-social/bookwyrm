@@ -89,3 +89,17 @@ class UtilitiesTags(TestCase):
 
         result = utilities.get_isni_bio(data, self.author)
         self.assertEqual(result, "Author of <em>One\\Dtwo</em>")
+
+    def test_id_to_username(self, *_):
+        """given an arbitrary remote id, return the username"""
+        self.assertEqual(
+            utilities.id_to_username("http://example.com/rat"), "rat@example.com"
+        )
+        self.assertEqual(utilities.id_to_username(None), "a new user account")
+
+    def test_get_file_size(self, *_):
+        """display the size of a file in human readable terms"""
+        self.assertEqual(utilities.get_file_size(5), "5.0 bytes")
+        self.assertEqual(utilities.get_file_size(5120), "5.00 KB")
+        self.assertEqual(utilities.get_file_size(5242880), "5.00 MB")
+        self.assertEqual(utilities.get_file_size(5368709000), "5.00 GB")
