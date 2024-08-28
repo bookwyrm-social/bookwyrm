@@ -1,8 +1,11 @@
 """ the good stuff! the books! """
+from typing import Any
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Count, Q
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -21,7 +24,9 @@ from bookwyrm.views.list.list import get_list_suggestions
 class SuggestionList(View):
     """book list page"""
 
-    def get(self, request, book_id, **kwargs):
+    def get(
+        self, request: HttpRequest, book_id: int, **kwargs: Any
+    ) -> ActivitypubResponse | TemplateResponse:
         """display a book list"""
         add_failed = kwargs.get("add_failed", False)
         add_succeeded = kwargs.get("add_succeeded", False)
@@ -29,7 +34,6 @@ class SuggestionList(View):
         work = models.Work.objects.filter(
             Q(id=book_id) | Q(editions=book_id)
         ).distinct()
-        print(work.count())
         work = work.first()
 
         book_list = get_object_or_404(models.SuggestionList, suggests_for=work)
@@ -49,7 +53,7 @@ class SuggestionList(View):
 
         page = paginated.get_page(request.GET.get("page"))
 
-        embed_key = str(book_list.embed_key.hex)
+        embed_key = str(book_list.embed_key.hex)  # type: ignore
         embed_url = reverse("embed-list", args=[book_list.id, embed_key])
         embed_url = request.build_absolute_uri(embed_url)
 
@@ -79,7 +83,9 @@ class SuggestionList(View):
         return TemplateResponse(request, "lists/list.html", data)
 
     @method_decorator(login_required, name="dispatch")
-    def post(self, request, book_id):  # pylint: disable=unused-argument
+    def post(
+        self, request: HttpRequest, book_id: int
+    ) -> Any:  # pylint: disable=unused-argument
         """create a suggestion_list"""
         form = forms.SuggestionListForm(request.POST)
 
@@ -95,7 +101,7 @@ class SuggestionList(View):
 
 @login_required
 @require_POST
-def book_add_suggestion(request, book_id):
+def book_add_suggestion(request: HttpRequest, book_id: int) -> Any:
     """put a book on the suggestion list"""
     _ = get_object_or_404(
         models.SuggestionList, suggests_for=book_id, id=request.POST.get("book_list")
@@ -112,7 +118,7 @@ def book_add_suggestion(request, book_id):
 
 @require_POST
 @login_required
-def book_remove_suggestion(request, book_id):
+def book_remove_suggestion(request: HttpRequest, book_id: int) -> Any:
     """remove a book from a suggestion list"""
     item = get_object_or_404(
         models.SuggestionListItem,
@@ -129,7 +135,7 @@ def book_remove_suggestion(request, book_id):
 
 @require_POST
 @login_required
-def endorse_suggestion(request, book_id, item_id):
+def endorse_suggestion(request: HttpRequest, book_id: int, item_id: int) -> Any:
     """endorse a suggestion"""
     item = get_object_or_404(
         models.SuggestionListItem, id=item_id, book_list__suggests_for=book_id
