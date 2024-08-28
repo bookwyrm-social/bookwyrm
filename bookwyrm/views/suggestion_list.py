@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Count, Q
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -84,8 +84,8 @@ class SuggestionList(View):
 
     @method_decorator(login_required, name="dispatch")
     def post(
-        self, request: HttpRequest, book_id: int
-    ) -> Any:  # pylint: disable=unused-argument
+        self, request: HttpRequest, book_id: int  # pylint: disable=unused-argument
+    ) -> Any:
         """create a suggestion_list"""
         form = forms.SuggestionListForm(request.POST)
 
