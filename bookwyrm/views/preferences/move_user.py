@@ -32,7 +32,7 @@ class MoveUser(View):
 
         if form.is_valid() and user.check_password(form.cleaned_data["password"]):
             username = form.cleaned_data["target"]
-            target = handle_remote_webfinger(username)
+            target = handle_remote_webfinger(username, refresh=True)
 
             try:
                 models.MoveUser.objects.create(
@@ -81,6 +81,7 @@ class AliasUser(View):
                 return TemplateResponse(request, "preferences/alias_user.html", data)
 
             user.also_known_as.add(remote_user.id)
+            user.save(broadcast=True)  # broadcast the alias
 
             return redirect("prefs-alias")
 

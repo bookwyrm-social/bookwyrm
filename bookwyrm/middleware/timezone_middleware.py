@@ -1,5 +1,5 @@
 """ Makes the app aware of the users timezone """
-import pytz
+import zoneinfo
 
 from django.utils import timezone
 
@@ -12,9 +12,7 @@ class TimezoneMiddleware:
 
     def __call__(self, request):
         if request.user.is_authenticated:
-            timezone.activate(pytz.timezone(request.user.preferred_timezone))
+            timezone.activate(zoneinfo.ZoneInfo(request.user.preferred_timezone))
         else:
-            timezone.activate(pytz.utc)
-        response = self.get_response(request)
-        timezone.deactivate()
-        return response
+            timezone.deactivate()
+        return self.get_response(request)

@@ -33,7 +33,6 @@ class BookwyrmConfig(AppConfig):
     name = "bookwyrm"
     verbose_name = "BookWyrm"
 
-    # pylint: disable=no-self-use
     def ready(self):
         """set up OTLP and preview image files, if desired"""
         if settings.OTEL_EXPORTER_OTLP_ENDPOINT or settings.OTEL_EXPORTER_CONSOLE:

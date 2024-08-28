@@ -6,7 +6,7 @@ from base64 import b64encode, b64decode
 
 from Crypto import Random
 from Crypto.PublicKey import RSA
-from Crypto.Signature import pkcs1_15  # pylint: disable=no-name-in-module
+from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 
 MAX_SIGNATURE_AGE = 300
@@ -84,7 +84,6 @@ class Signature:
         self.headers = headers
         self.signature = signature
 
-    # pylint: disable=invalid-name
     @classmethod
     def parse(cls, request):
         """extract and parse a signature from an http request"""

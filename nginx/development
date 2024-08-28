@@ -64,7 +64,7 @@ server {
     # directly serve static files from the
     # bookwyrm filesystem using sendfile.
     # make the logs quieter by not reporting these requests
-    location ~ ^/static/ {
+    location /static/ {
         root /app;
         try_files $uri =404;
         add_header X-Cache-Status STATIC;
@@ -72,15 +72,14 @@ server {
     }
 
     # same with image files not in static folder
-    location ~ \.(bmp|ico|jpg|jpeg|png|svg|tif|tiff|webp)$ {
-        root /app;
-        try_files $uri =404;
-        add_header X-Cache-Status STATIC;
-        access_log off;
-    }
-
-    # block access to any non-image files from images
-    location ~ ^/images/ {
+    location /images/ {
+        location ~ \.(bmp|ico|jpg|jpeg|png|svg|tif|tiff|webp)$ {
+            root /app;
+            try_files $uri =404;
+            add_header X-Cache-Status STATIC;
+            access_log off;
+        }
+        # block access to any non-image files from images
         return 403;
     }
 

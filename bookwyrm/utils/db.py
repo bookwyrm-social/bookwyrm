@@ -1,7 +1,7 @@
 """ Database utilities """
 
-from typing import cast
-import sqlparse  # type: ignore
+from typing import Optional, Iterable, Set, cast
+import sqlparse  # type: ignore[import-untyped]
 
 
 def format_trigger(sql: str) -> str:
@@ -21,3 +21,15 @@ def format_trigger(sql: str) -> str:
             identifier_case="lower",
         ),
     )
+
+
+def add_update_fields(
+    update_fields: Optional[Iterable[str]], *fields: str
+) -> Optional[Set[str]]:
+    """
+    Helper for adding fields to the update_fields kwarg when modifying an object
+    in a model's save() method.
+
+    https://docs.djangoproject.com/en/5.0/releases/4.2/#setting-update-fields-in-model-save-may-now-be-required
+    """
+    return set(fields).union(update_fields) if update_fields is not None else None

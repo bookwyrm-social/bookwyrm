@@ -10,6 +10,6 @@
     <Image width="16" height="16" type="image/x-icon">{{ image }}</Image>
     <Url
         type="text/html"
-        template="https://{{ DOMAIN }}{% url 'search' %}?q={searchTerms}"
+        template="{{ BASE_URL }}{% url 'search' %}?q={searchTerms}"
     />
 </OpenSearchDescription>

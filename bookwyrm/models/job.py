@@ -135,8 +135,7 @@ class ParentJob(Job):
         )
         app.control.revoke(list(tasks))
 
-        for task in self.pending_child_jobs:
-            task.update(status=self.Status.STOPPED)
+        self.pending_child_jobs.update(status=self.Status.STOPPED)
 
     @property
     def has_completed(self):
@@ -248,7 +247,7 @@ class SubTask(app.Task):
     """
 
     def before_start(
-        self, task_id, args, kwargs
+        self, task_id, *args, **kwargs
     ):  # pylint: disable=no-self-use, unused-argument
         """Handler called before the task starts. Override.
 
@@ -272,7 +271,7 @@ class SubTask(app.Task):
         child_job.set_status(ChildJob.Status.ACTIVE)
 
     def on_success(
-        self, retval, task_id, args, kwargs
+        self, retval, task_id, *args, **kwargs
     ):  # pylint: disable=no-self-use, unused-argument
         """Run by the worker if the task executes successfully. Override.
 

@@ -4,6 +4,7 @@ import math
 import re
 import dateutil.parser
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -59,6 +60,7 @@ class ImportJob(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
     include_reviews: bool = models.BooleanField(default=True)
+    create_shelves: bool = models.BooleanField(default=True)
     mappings = models.JSONField()
     source = models.CharField(max_length=100)
     privacy = models.CharField(max_length=255, default="public", choices=PrivacyLevels)
@@ -246,9 +248,24 @@ class ImportItem(models.Model):
         return self.normalized_data.get("shelf")
 
     @property
+    def shelf_name(self):
+        """the goodreads shelf field"""
+        return self.normalized_data.get("shelf_name")
+
+    @property
     def review(self):
         """a user-written review, to be imported with the book data"""
         return self.normalized_data.get("review_body")
+
+    @property
+    def review_name(self):
+        """a user-written review name, to be imported with the book data"""
+        return self.normalized_data.get("review_name")
+
+    @property
+    def review_published(self):
+        """date the review was published - included in BookWyrm export csv"""
+        return self.normalized_data.get("review_published", None)
 
     @property
     def rating(self):
@@ -352,7 +369,7 @@ def import_item_task(item_id):
 
     try:
         item.resolve()
-    except Exception as err:  # pylint: disable=broad-except
+    except Exception as err:
         item.fail_reason = _("Error loading book")
         item.save()
         item.update_job()
@@ -368,7 +385,7 @@ def import_item_task(item_id):
     item.update_job()
 
 
-def handle_imported_book(item):
+def handle_imported_book(item):  # pylint: disable=too-many-branches
     """process a csv and then post about it"""
     job = item.job
     if job.complete:
@@ -385,13 +402,31 @@ def handle_imported_book(item):
         item.book = item.book.edition
 
     existing_shelf = ShelfBook.objects.filter(book=item.book, user=user).exists()
+    if job.create_shelves and item.shelf and not existing_shelf:
+        # shelve the book if it hasn't been shelved already
 
-    # shelve the book if it hasn't been shelved already
-    if item.shelf and not existing_shelf:
-        desired_shelf = Shelf.objects.get(identifier=item.shelf, user=user)
         shelved_date = item.date_added or timezone.now()
+        shelfname = getattr(item, "shelf_name", item.shelf)
+
+        try:
+            shelf = Shelf.objects.get(name=shelfname, user=user)
+        except ObjectDoesNotExist:
+            try:
+                shelf = Shelf.objects.get(identifier=item.shelf, user=user)
+            except ObjectDoesNotExist:
+
+                shelf = Shelf.objects.create(
+                    user=user,
+                    identifier=item.shelf,
+                    name=shelfname,
+                    privacy=job.privacy,
+                )
+
         ShelfBook(
-            book=item.book, shelf=desired_shelf, user=user, shelved_date=shelved_date
+            book=item.book,
+            shelf=shelf,
+            user=user,
+            shelved_date=shelved_date,
         ).save(priority=IMPORT_TRIGGERED)
 
     for read in item.reads:
@@ -408,19 +443,25 @@ def handle_imported_book(item):
         read.save()
 
     if job.include_reviews and (item.rating or item.review) and not item.linked_review:
-        # we don't know the publication date of the review,
-        # but "now" is a bad guess
-        published_date_guess = item.date_read or item.date_added
+        # we don't necessarily know the publication date of the review,
+        # but "now" is a bad guess unless we have no choice
+
+        published_date_guess = (
+            item.review_published or item.date_read or item.date_added or timezone.now()
+        )
         if item.review:
+
             # pylint: disable=consider-using-f-string
             review_title = "Review of {!r} on {!r}".format(
                 item.book.title,
                 job.source,
             )
+            review_name = getattr(item, "review_name", review_title)
+
             review = Review.objects.filter(
                 user=user,
                 book=item.book,
-                name=review_title,
+                name=review_name,
                 rating=item.rating,
                 published_date=published_date_guess,
             ).first()
@@ -428,7 +469,7 @@ def handle_imported_book(item):
                 review = Review(
                     user=user,
                     book=item.book,
-                    name=review_title,
+                    name=review_name,
                     content=item.review,
                     rating=item.rating,
                     published_date=published_date_guess,

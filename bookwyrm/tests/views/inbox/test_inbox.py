@@ -11,7 +11,6 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 
 
-# pylint: disable=too-many-public-methods
 class Inbox(TestCase):
     """readthrough tests"""
 
@@ -29,11 +28,13 @@ class Inbox(TestCase):
         }
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """basic user and book data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -44,7 +45,7 @@ class Inbox(TestCase):
         local_user.remote_id = "https://example.com/user/mouse"
         local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -132,7 +133,10 @@ class Inbox(TestCase):
         """check for blocked servers"""
         request = self.factory.post(
             "",
-            HTTP_USER_AGENT="http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
+            headers={
+                # pylint: disable-next=line-too-long
+                "user-agent": "http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
+            },
         )
         self.assertIsNone(views.inbox.raise_is_blocked_user_agent(request))
 
