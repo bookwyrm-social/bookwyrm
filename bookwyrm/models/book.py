@@ -9,7 +9,7 @@ from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.cache import cache
 from django.db import models, transaction
-from django.db.models import Prefetch, ManyToManyField
+from django.db.models import Avg, Prefetch, ManyToManyField
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
@@ -19,6 +19,7 @@ import pgtrigger
 
 from bookwyrm import activitypub
 from bookwyrm.isbn.isbn import hyphenator_singleton as hyphenator
+from bookwyrm.models.status import Review
 from bookwyrm.preview_images import generate_edition_preview_image_task
 from bookwyrm.settings import (
     BASE_URL,
@@ -490,6 +491,11 @@ class Edition(Book):
     def hyphenated_isbn13(self):
         """generate the hyphenated version of the ISBN-13"""
         return hyphenator.hyphenate(self.isbn_13)
+
+    @property
+    def average_rating(self, user):
+        reviews = Review.privacy_filter(user).filter(book__parent_work__editions=self)
+        reviews.aggregate(Avg("rating"))["rating__avg"]
 
     def get_rank(self):
         """calculate how complete the data is on this edition"""

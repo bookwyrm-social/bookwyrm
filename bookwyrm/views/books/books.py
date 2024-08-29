@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.db.models import Avg, Q
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -98,7 +98,7 @@ class Book(View):
                 if not user_statuses
                 else None
             ),
-            "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
+            "rating": book.average_rating(request.user),
             "lists": lists,
             "update_error": kwargs.get("update_error", False),
         }
