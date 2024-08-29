@@ -494,8 +494,9 @@ class Edition(Book):
 
     @property
     def average_rating(self, user):
+        """generate average rating of a book"""
         reviews = Review.privacy_filter(user).filter(book__parent_work__editions=self)
-        reviews.aggregate(Avg("rating"))["rating__avg"]
+        return reviews.aggregate(Avg("rating"))["rating__avg"]
 
     def get_rank(self):
         """calculate how complete the data is on this edition"""
