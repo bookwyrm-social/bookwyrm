@@ -122,7 +122,7 @@ class SiteSettings(SiteModel):
     @classmethod
     def raise_federation_disabled(cls) -> None:
         """Don't connect to the outside world"""
-        if cls.objects.get().disable_federation:
+        if cls.get().disable_federation:
             raise PermissionDenied("Federation is disabled")
 
     @property
