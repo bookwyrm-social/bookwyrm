@@ -315,7 +315,7 @@ def get_data(
     """wrapper for request.get"""
     # make sure this isn't a forbidden federated request
     if is_activitypub:
-        models.SiteSettings.objects.get().raise_federation_disabled()
+        models.SiteSettings.raise_federation_disabled()
 
     # check if the url is blocked
     raise_not_valid_url(url)

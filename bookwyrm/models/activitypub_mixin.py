@@ -132,7 +132,7 @@ class ActivitypubMixin:
         """send out an activity"""
         site_model = apps.get_model("bookwyrm.SiteSettings", require_ready=True)
         try:
-            site_model.objects.get().raise_federation_disabled()
+            site_model.raise_federation_disabled()
         except PermissionDenied:
             return
 
@@ -524,7 +524,7 @@ def broadcast_task(sender_id: int, activity: str, recipients: list[str]):
     # checking this here ought to be redundant unless there are already-spawned tasks
     # when federation is turned off. In that case this should prevent them from running.
     site_model = apps.get_model("bookwyrm.SiteSettings", require_ready=True)
-    site_model.objects.get().raise_federation_disabled()
+    site_model.raise_federation_disabled()
 
     user_model = apps.get_model("bookwyrm.User", require_ready=True)
     sender = user_model.objects.select_related("key_pair").get(id=sender_id)

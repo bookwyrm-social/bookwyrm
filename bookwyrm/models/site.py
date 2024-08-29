@@ -119,6 +119,12 @@ class SiteSettings(SiteModel):
             default_settings.save()
             return default_settings
 
+    @classmethod
+    def raise_federation_disabled(cls) -> None:
+        """Don't connect to the outside world"""
+        if cls.objects.get().disable_federation:
+            raise PermissionDenied("Federation is disabled")
+
     @property
     def logo_url(self) -> Any:
         """helper to build the logo url"""
@@ -133,11 +139,6 @@ class SiteSettings(SiteModel):
     def favicon_url(self) -> Any:
         """helper to build the logo url"""
         return self.get_url("favicon", "images/favicon.png")
-
-    def raise_federation_disabled(self) -> None:
-        """Don't connect to the outside world"""
-        if self.disable_federation:
-            raise PermissionDenied("Federation is disabled")
 
     def get_url(self, field: str, default_path: str) -> Any:
         """get a media url or a default static path"""

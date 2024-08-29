@@ -8,6 +8,6 @@ def require_federation(function):
 
     @wraps(function)
     def wrap(request, *args, **kwargs):  # pylint: disable=unused-argument
-        SiteSettings.objects.get().raise_federation_disabled()
+        SiteSettings.raise_federation_disabled()
 
     return wrap
