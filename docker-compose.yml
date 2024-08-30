@@ -29,6 +29,7 @@ services:
       - .:/app
       - static_volume:/app/static
       - media_volume:/app/images
+      - exports_volume:/app/exports
     depends_on:
       - db
       - celery_worker
@@ -63,11 +64,11 @@ services:
     networks:
       - main
     command: celery -A celerywyrm worker -l info -Q high_priority,medium_priority,low_priority,streams,images,suggested_users,email,connectors,lists,inbox,imports,import_triggered,broadcast,misc
-
     volumes:
       - .:/app
       - static_volume:/app/static
       - media_volume:/app/images
+      - exports_volume:/app/exports
     depends_on:
       - db
       - redis_broker
@@ -82,6 +83,7 @@ services:
       - .:/app
       - static_volume:/app/static
       - media_volume:/app/images
+      - exports_volume:/app/exports
     depends_on:
       - celery_worker
     restart: on-failure
@@ -91,6 +93,7 @@ services:
     env_file: .env
     volumes:
       - .:/app
+      - static_volume:/app/static
     networks:
       - main
     depends_on:
@@ -103,10 +106,13 @@ services:
     volumes:
       - /app/dev-tools/
       - .:/app
+    profiles:
+      - tools
 volumes:
   pgdata:
   static_volume:
   media_volume:
+  exports_volume:
   redis_broker_data:
   redis_activity_data:
 networks:

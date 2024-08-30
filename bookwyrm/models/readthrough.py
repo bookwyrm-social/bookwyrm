@@ -1,8 +1,12 @@
 """ progress in a book """
+from typing import Optional, Iterable
+
 from django.core import validators
 from django.core.cache import cache
 from django.db import models
 from django.db.models import F, Q
+
+from bookwyrm.utils.db import add_update_fields
 
 from .base_model import BookWyrmModel
 
@@ -30,14 +34,17 @@ class ReadThrough(BookWyrmModel):
     stopped_date = models.DateTimeField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
         """update user active time"""
-        cache.delete(f"latest_read_through-{self.user_id}-{self.book_id}")
-        self.user.update_active_date()
         # an active readthrough must have an unset finish date
         if self.finish_date or self.stopped_date:
             self.is_active = False
-        super().save(*args, **kwargs)
+            update_fields = add_update_fields(update_fields, "is_active")
+
+        super().save(*args, update_fields=update_fields, **kwargs)
+
+        cache.delete(f"latest_read_through-{self.user_id}-{self.book_id}")
+        self.user.update_active_date()
 
     def create_update(self):
         """add update to the readthrough"""

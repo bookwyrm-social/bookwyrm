@@ -1,8 +1,19 @@
 {% spaceless %}
+{% load utilities %}
 {% load i18n %}
 
-<span class="stars">
+{% with 0|uuid as uuid %}
+<span class="stars tag">
+    {% if not request.user.show_ratings %}
+
+    <button type="button" data-controls="rating-{{ uuid }}" id="rating-button-{{ uuid }}" aria-pressed="false" data-disappear>
+        <em>{% trans "Show rating" %} </em>
+    </button>
+
+    {% endif %}
+
     {% if rating %}
+    <span class="{% if not request.user.show_ratings %}is-hidden{% endif %}" id="rating-{{ uuid }}">
         <span class="is-sr-only">
             {% blocktranslate trimmed with rating=rating|floatformat:0 count counter=rating|floatformat:0|add:0 %}
                 {{ rating }} star
@@ -19,8 +30,11 @@
                 aria-hidden="true"
             ></span>
         {% endfor %}
+    </span>
     {% else %}
         <span class="no-rating">{% trans "No rating" %}</span>
     {% endif %}
+
 </span>
+{% endwith %}
 {% endspaceless %}

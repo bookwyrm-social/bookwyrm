@@ -16,6 +16,8 @@
 # BookWyrm
 .env
 /images/
+/exports/
+/static/
 bookwyrm/static/css/bookwyrm.css
 bookwyrm/static/css/themes/
 !bookwyrm/static/css/themes/bookwyrm-*.scss
@@ -36,3 +38,6 @@ nginx/default.conf
 
 #macOS
 **/.DS_Store
+
+# Docker
+docker-compose.override.yml

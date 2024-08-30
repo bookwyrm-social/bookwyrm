@@ -1,12 +1,10 @@
 """ tests the base functionality for activitypub dataclasses """
-from io import BytesIO
 import json
 import pathlib
 from unittest.mock import patch
 
 from dataclasses import dataclass
 from django.test import TestCase
-from PIL import Image
 import responses
 
 from bookwyrm import activitypub
@@ -29,16 +27,18 @@ class BaseActivity(TestCase):
     """the super class for model-linked activitypub dataclasses"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we're probably going to re-use this so why copy/paste"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
-        self.user.remote_id = "http://example.com/a/b"
-        self.user.save(broadcast=False, update_fields=["remote_id"])
+        cls.user.remote_id = "http://example.com/a/b"
+        cls.user.save(broadcast=False, update_fields=["remote_id"])
 
     def setUp(self):
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
@@ -46,13 +46,11 @@ class BaseActivity(TestCase):
         # don't try to load the user icon
         del self.userdata["icon"]
 
-        image_file = pathlib.Path(__file__).parent.joinpath(
+        image_path = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
         )
-        image = Image.open(image_file)
-        output = BytesIO()
-        image.save(output, format=image.format)
-        self.image_data = output.getvalue()
+        with open(image_path, "rb") as image_file:
+            self.image_data = image_file.read()
 
     def test_get_representative_not_existing(self, *_):
         """test that an instance representative actor is created if it does not exist"""
@@ -232,10 +230,12 @@ class BaseActivity(TestCase):
         )
 
         # sets the celery task call to the function call
-        with patch("bookwyrm.activitypub.base_activity.set_related_field.delay"):
-            with patch("bookwyrm.models.status.Status.ignore_activity") as discarder:
-                discarder.return_value = False
-                update_data.to_model(model=models.Status, instance=status)
+        with (
+            patch("bookwyrm.activitypub.base_activity.set_related_field.delay"),
+            patch("bookwyrm.models.status.Status.ignore_activity") as discarder,
+        ):
+            discarder.return_value = False
+            update_data.to_model(model=models.Status, instance=status)
         self.assertIsNone(status.attachments.first())
 
     @responses.activate

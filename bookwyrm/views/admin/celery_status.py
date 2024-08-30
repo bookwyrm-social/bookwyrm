@@ -88,6 +88,7 @@ class CeleryStatus(View):
     def post(self, request):
         """Submit form to clear queues"""
         form = ClearCeleryForm(request.POST)
+        results = []
         if form.is_valid():
             if len(celery.control.ping()) != 0:
                 return HttpResponse(

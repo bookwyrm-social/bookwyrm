@@ -9,21 +9,20 @@ import responses
 
 from bookwyrm import models
 from bookwyrm.management.commands import initdb
-from bookwyrm.settings import USE_HTTPS, DOMAIN
+from bookwyrm.settings import DOMAIN, BASE_URL
 
 
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
 class User(TestCase):
-
-    protocol = "https://" if USE_HTTPS else "http://"
-
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.user = models.User.objects.create_user(
+    def setUpTestData(cls):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.user = models.User.objects.create_user(
                 f"mouse@{DOMAIN}",
                 "mouse@mouse.mouse",
                 "mouseword",
@@ -33,7 +32,7 @@ class User(TestCase):
                 summary="a summary",
                 bookwyrm_user=False,
             )
-            self.another_user = models.User.objects.create_user(
+            cls.another_user = models.User.objects.create_user(
                 f"nutria@{DOMAIN}",
                 "nutria@nutria.nutria",
                 "nutriaword",
@@ -47,11 +46,11 @@ class User(TestCase):
 
     def test_computed_fields(self):
         """username instead of id here"""
-        expected_id = f"{self.protocol}{DOMAIN}/user/mouse"
+        expected_id = f"{BASE_URL}/user/mouse"
         self.assertEqual(self.user.remote_id, expected_id)
         self.assertEqual(self.user.username, f"mouse@{DOMAIN}")
         self.assertEqual(self.user.localname, "mouse")
-        self.assertEqual(self.user.shared_inbox, f"{self.protocol}{DOMAIN}/inbox")
+        self.assertEqual(self.user.shared_inbox, f"{BASE_URL}/inbox")
         self.assertEqual(self.user.inbox, f"{expected_id}/inbox")
         self.assertEqual(self.user.outbox, f"{expected_id}/outbox")
         self.assertEqual(self.user.followers_url, f"{expected_id}/followers")
@@ -96,6 +95,7 @@ class User(TestCase):
                     "PropertyValue": "schema:PropertyValue",
                     "alsoKnownAs": {"@id": "as:alsoKnownAs", "@type": "@id"},
                     "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+                    "Hashtag": "as:Hashtag",
                     "movedTo": {"@id": "as:movedTo", "@type": "@id"},
                     "schema": "http://schema.org#",
                     "value": "schema:value",
@@ -122,11 +122,13 @@ class User(TestCase):
 
         site.default_user_auth_group = Group.objects.get(name="editor")
         site.save()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             user = models.User.objects.create_user(
-                f"test2{DOMAIN}",
+                "test2",
                 "test2@bookwyrm.test",
                 localname="test2",
                 **user_attrs,
@@ -135,11 +137,13 @@ class User(TestCase):
 
         site.default_user_auth_group = None
         site.save()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             user = models.User.objects.create_user(
-                f"test1{DOMAIN}",
+                "test1",
                 "test1@bookwyrm.test",
                 localname="test1",
                 **user_attrs,
@@ -228,11 +232,14 @@ class User(TestCase):
         self.assertEqual(self.user.name, "hi")
         self.assertEqual(self.user.summary, "a summary")
         self.assertEqual(self.user.email, "mouse@mouse.mouse")
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ) as broadcast_mock, patch(
-            "bookwyrm.models.user.User.erase_user_statuses"
-        ) as erase_statuses_mock:
+        with (
+            patch(
+                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            ) as broadcast_mock,
+            patch(
+                "bookwyrm.models.user.User.erase_user_statuses"
+            ) as erase_statuses_mock,
+        ):
             self.user.delete()
 
         self.assertEqual(erase_statuses_mock.call_count, 1)

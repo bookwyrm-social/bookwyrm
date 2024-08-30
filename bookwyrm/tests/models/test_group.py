@@ -10,21 +10,23 @@ class Group(TestCase):
     """some activitypub oddness ahead"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """Set up for tests"""
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.owner_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.owner_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
 
-            self.rat = models.User.objects.create_user(
+            cls.rat = models.User.objects.create_user(
                 "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
             )
 
-            self.badger = models.User.objects.create_user(
+            cls.badger = models.User.objects.create_user(
                 "badger",
                 "badger@badger.badger",
                 "badgerword",
@@ -32,7 +34,7 @@ class Group(TestCase):
                 localname="badger",
             )
 
-            self.capybara = models.User.objects.create_user(
+            cls.capybara = models.User.objects.create_user(
                 "capybara",
                 "capybara@capybara.capybara",
                 "capybaraword",
@@ -40,32 +42,32 @@ class Group(TestCase):
                 localname="capybara",
             )
 
-        self.public_group = models.Group.objects.create(
+        cls.public_group = models.Group.objects.create(
             name="Public Group",
             description="Initial description",
-            user=self.owner_user,
+            user=cls.owner_user,
             privacy="public",
         )
 
-        self.private_group = models.Group.objects.create(
+        cls.private_group = models.Group.objects.create(
             name="Private Group",
             description="Top secret",
-            user=self.owner_user,
+            user=cls.owner_user,
             privacy="direct",
         )
 
-        self.followers_only_group = models.Group.objects.create(
+        cls.followers_only_group = models.Group.objects.create(
             name="Followers Group",
             description="No strangers",
-            user=self.owner_user,
+            user=cls.owner_user,
             privacy="followers",
         )
 
-        models.GroupMember.objects.create(group=self.private_group, user=self.badger)
+        models.GroupMember.objects.create(group=cls.private_group, user=cls.badger)
         models.GroupMember.objects.create(
-            group=self.followers_only_group, user=self.badger
+            group=cls.followers_only_group, user=cls.badger
         )
-        models.GroupMember.objects.create(group=self.public_group, user=self.capybara)
+        models.GroupMember.objects.create(group=cls.public_group, user=cls.capybara)
 
     def test_group_members_can_see_private_groups(self, _):
         """direct privacy group should not be excluded from group listings for group
@@ -81,9 +83,10 @@ class Group(TestCase):
         """follower-only group booklists should not be excluded from group booklist
         listing for group members who do not follower list owner"""
 
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+        ):
             followers_list = models.List.objects.create(
                 name="Followers List",
                 curation="group",
@@ -104,9 +107,10 @@ class Group(TestCase):
         """private group booklists should not be excluded from group booklist listing
         for group members"""
 
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+        ):
             private_list = models.List.objects.create(
                 name="Private List",
                 privacy="direct",
