@@ -15,6 +15,10 @@ let BookWyrm = new (class {
             .forEach((button) => button.addEventListener("click", this.toggleAction.bind(this)));
 
         document
+            .querySelectorAll("[data-disappear]")
+            .forEach((button) => button.addEventListener("click", this.hideSelf.bind(this)));
+
+        document
             .querySelectorAll(".interaction")
             .forEach((button) => button.addEventListener("submit", this.interact.bind(this)));
 
@@ -179,6 +183,18 @@ let BookWyrm = new (class {
         let visible = document.getElementById(targetId);
 
         this.addRemoveClass(visible, "is-hidden", true);
+    }
+
+    /**
+     * Hide the element you just clicked
+     *
+     * @param {Event} event
+     * @return {undefined}
+     */
+    hideSelf(event) {
+        let trigger = event.currentTarget;
+
+        this.addRemoveClass(trigger, "is-hidden", true);
     }
 
     /**

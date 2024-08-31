@@ -3,6 +3,7 @@ from django.http import QueryDict
 
 from bookwyrm.models import User
 from bookwyrm.models.bookwyrm_import_job import BookwyrmImportJob
+from . import Importer
 
 
 class BookwyrmImporter:
@@ -25,3 +26,17 @@ class BookwyrmImporter:
         # TODO need to read the tarfile here and create a childjob for each book
 
         return job
+
+
+class BookwyrmBooksImporter(Importer):
+    """
+    Handle reading a csv from BookWyrm.
+    Goodreads is the default importer, we basically just use the same structure
+    But BookWyrm has additional attributes in the csv
+    """
+
+    service = "BookWyrm"
+    row_mappings_guesses = Importer.row_mappings_guesses + [
+        ("shelf_name", ["shelf_name"]),
+        ("review_published", ["review_published"]),
+    ]
