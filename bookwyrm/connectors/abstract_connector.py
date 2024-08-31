@@ -86,7 +86,7 @@ class AbstractMinimalConnector(ABC):
             ),
             "User-Agent": USER_AGENT,
         }
-        params = {"min_confidence": min_confidence}
+        params = {"min_confidence": str(min_confidence)}
         try:
             async with session.get(url, headers=headers, params=params) as response:
                 if not response.ok:
