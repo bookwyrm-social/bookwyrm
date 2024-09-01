@@ -451,7 +451,7 @@ urlpatterns = [
     ),
     re_path(
         r"^user-import/(?P<job_id>\d+)/stop/?$",
-        views.user_stop_import,
+        views.stop_user_import,
         name="user-import-stop",
     ),
     re_path(
@@ -463,6 +463,11 @@ urlpatterns = [
         r"^import/(?P<job_id>\d+)/failed/?$",
         views.ImportTroubleshoot.as_view(),
         name="import-troubleshoot",
+    ),
+    re_path(
+        r"^user-import/(?P<job_id>\d+)/failed/?$",
+        views.UserImportTroubleshoot.as_view(),
+        name="user-import-troubleshoot",
     ),
     re_path(
         r"^import/(?P<job_id>\d+)/review/?$",

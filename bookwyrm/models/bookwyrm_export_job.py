@@ -42,7 +42,10 @@ class BookwyrmExportJob(ParentJob):
 
     export_data = FileField(null=True, storage=select_exports_storage)
     export_json = JSONField(null=True, encoder=DjangoJSONEncoder)
-    json_completed = BooleanField(default=False)
+
+    """
+    TODO: make the _tasks actual subjobs!
+    """
 
     def start_job(self):
         """schedule the first task"""

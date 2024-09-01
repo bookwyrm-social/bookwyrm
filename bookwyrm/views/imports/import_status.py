@@ -103,39 +103,47 @@ class UserImportStatus(View):
         page = paginated.get_page(request.GET.get("page"))
 
         book_jobs_count = job.book_tasks.count() or "(pending...)"
-        failed_books_count = job.book_tasks.filter(status="failed").count() or 0
         if job.complete and not job.book_tasks.count():
             book_jobs_count = 0
 
-        status_jobs_count = job.status_tasks.count() or "(ending...)"
+        status_jobs_count = job.status_tasks.count() or "(pending...)"
         if job.complete and not job.status_tasks.count():
             status_jobs_count = 0
-        failed_statuses_count = job.status_tasks.filter(status="failed").count() or 0
 
         relationship_jobs_count = job.relationship_tasks.count() or "(pending...)"
         if job.complete and not job.relationship_tasks.count():
             relationship_jobs_count = 0
-        failed_relationships_count = (
-            job.relationship_tasks.filter(status="failed").count() or 0
-        )
-
-        pending_item_count = job.pending_item_count
 
         data = {
             "job": job,
             "items": page,
+            "completed_books_count": job.book_tasks.filter(status="complete").count()
+            or 0,
+            "completed_statuses_count": job.status_tasks.filter(
+                status="complete"
+            ).count()
+            or 0,
+            "completed_relationships_count": job.relationship_tasks.filter(
+                status="complete"
+            ).count()
+            or 0,
+            "failed_books_count": job.book_tasks.filter(status="failed").count() or 0,
+            "failed_statuses_count": job.status_tasks.filter(status="failed").count()
+            or 0,
+            "failed_relationships_count": job.relationship_tasks.filter(
+                status="failed"
+            ).count()
+            or 0,
+            "fail_count": job.child_jobs.filter(status="failed").count(),
             "book_jobs_count": book_jobs_count,
             "status_jobs_count": status_jobs_count,
             "relationship_jobs_count": relationship_jobs_count,
-            "failed_books_count": failed_books_count,
-            "failed_statuses_count": failed_statuses_count,
-            "failed_relationships_count": failed_relationships_count,
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
             "show_progress": True,
             "item_count": item_count,
-            "complete_count": item_count - pending_item_count,
+            "complete_count": item_count - job.pending_item_count,
             "percent": job.percent_complete,
             # hours since last import item update
             "inactive_time": (job.updated_date - timezone.now()).seconds / 60 / 60,
@@ -146,19 +154,8 @@ class UserImportStatus(View):
 
 @login_required
 @require_POST
-def user_stop_import(request, job_id):
+def stop_user_import(request, job_id):
     """scrap that"""
     job = get_object_or_404(models.BookwyrmImportJob, id=job_id, user=request.user)
     job.stop_job()
-    return redirect("user-import-status", job_id)
-
-
-@login_required
-@require_POST
-def user_retry_item(request, job_id, item_id):
-    """retry an item from a user import"""
-    item = get_object_or_404(
-        models.UserImportBook, id=item_id, job__id=job_id, job__user=request.user
-    )
-    import_book_task.delay(child_id=item_id, job_id=job_id)
     return redirect("user-import-status", job_id)

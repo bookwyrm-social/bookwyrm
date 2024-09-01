@@ -1,6 +1,7 @@
 """ import books from another app """
 from io import TextIOWrapper
 import datetime
+from typing import Optional
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, ExpressionWrapper, F, fields
@@ -149,25 +150,12 @@ class UserImport(View):
         jobs = BookwyrmImportJob.objects.filter(user=request.user).order_by(
             "-created_date"
         )
-        site = models.SiteSettings.objects.get()
-        hours = site.user_import_time_limit
-        allowed = (
-            jobs.first().created_date < timezone.now() - datetime.timedelta(hours=hours)
-            if jobs.first()
-            else True
-        )
-        next_available = (
-            jobs.first().created_date + datetime.timedelta(hours=hours)
-            if not allowed
-            else False
-        )
         paginated = Paginator(jobs, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "import_form": forms.ImportUserForm(),
             "jobs": page,
-            "user_import_hours": hours,
-            "next_available": next_available,
+            "next_available": user_import_available(user=request.user),
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
@@ -178,6 +166,10 @@ class UserImport(View):
 
     def post(self, request):
         """ingest a Bookwyrm json file"""
+
+        site = models.SiteSettings.objects.get()
+        if not site.imports_enabled:
+            raise PermissionDenied()
 
         importer = BookwyrmImporter()
 
@@ -194,3 +186,19 @@ class UserImport(View):
         job.start_job()
 
         return redirect("user-import")
+
+
+def user_import_available(user: models.User) -> Optional[tuple[datetime, int]]:
+
+    jobs = BookwyrmImportJob.objects.filter(user=user).order_by("-created_date")
+    site = models.SiteSettings.objects.get()
+    hours = site.user_import_time_limit
+    allowed = (
+        jobs.first().created_date < timezone.now() - datetime.timedelta(hours=hours)
+        if jobs.first()
+        else True
+    )
+    if allowed and site.imports_enabled:
+        return
+
+    return (jobs.first().created_date + datetime.timedelta(hours=hours), hours)

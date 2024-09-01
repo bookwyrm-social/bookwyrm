@@ -10,7 +10,7 @@
     <h1 class="title">
         {% block page_title %}
         {% if job.retry %}
-            {% trans "Retry Status" %}
+            {% trans "User Import Retry Status" %}
         {% else %}
             {% trans "User Import Status" %}
         {% endif %}
@@ -23,11 +23,7 @@
             {% url 'user-import-status' job.id as path %}
             <li{% if request.path in path %} class="is-active"{% endif %}>
                 <a href="{{ path }}" {% if request.path in path %}aria-current="page"{% endif %}>
-                    {% if job.retry %}
-                    {% trans "Retry Status" %}
-                    {% else %}
-                    {% trans "Import Status" %}
-                    {% endif %}
+                    {% trans "User Import Status" %}
                 </a>
             </li>
             {% block breadcrumbs %}{% endblock %}
@@ -36,9 +32,9 @@
 
     <div class="block">
         <dl>
-            <dt class="is-pulled-left mr-5">{% trans "Import started:" %}</dt>
+            <dt class="is-pulled-left mr-5 has-text-weight-bold">{% trans "Import started:" %}</dt>
             <dd>{{ job.created_date | naturaltime }}</dd>
-            <dt class="is-pulled-left mr-5">Import Job Status: </dt>
+            <dt class="is-pulled-left mr-5 has-text-weight-bold">Import Job Status: </dt>
             <dd>
                 <span
                     {% if job.status == "stopped" or job.status == "failed" %}
@@ -61,20 +57,40 @@
                     {% endif %}
                 </span>
             </dd>
-            <dt class="is-pulled-left mr-5">{% trans "Books" %}:</dt>
-            <dd>
-                {% blocktrans %}total {{ book_jobs_count }}, failed {{ failed_books_count }}{% endblocktrans %}
-            </dd>
-            <dt class="is-pulled-left mr-5">{% trans "Statuses" %}:</dt>
-            <dd>
-                {% blocktrans %}total {{ status_jobs_count }}, failed {{ failed_statuses_count }}{% endblocktrans %}
-            </dd>
-            <dt class="is-pulled-left mr-5">{% trans "Follows & Blocks" %}:</dt>
-            <dd>
-                {% blocktrans %}total {{ relationship_jobs_count }}, failed {{ failed_relationships_count }}{% endblocktrans %}
-            </dd>
         </dl>
     </div>
+    {% block import_counts %}
+    <div class="block">
+        <div class="table-container">
+            <table class="table is-striped is-fullwidth">
+                <tr>
+                    <th></th>
+                    <th class="has-text-centered">{% trans "Imported" %}</th>
+                    <th class="has-text-centered">{% trans "Failed" %}</th>
+                    <th class="has-text-centered">{% trans "Total" %}</th>
+                </tr>
+                <tr>
+                    <th>{% trans "Books" %}</th>
+                    <td class="has-text-centered">{{ completed_books_count }}</td>
+                    <td class="has-text-centered">{{ failed_books_count }}</td>
+                    <td class="has-text-centered">{{ book_jobs_count }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "Statuses" %}</th>
+                    <td class="has-text-centered">{{ completed_statuses_count }}</td>
+                    <td class="has-text-centered">{{ failed_statuses_count }}</td>
+                    <td class="has-text-centered">{{ status_jobs_count }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "Follows & Blocks" %}</th>
+                    <td class="has-text-centered">{{ completed_relationships_count }}</td>
+                    <td class="has-text-centered">{{ failed_relationships_count }}</td>
+                    <td class="has-text-centered">{{ relationship_jobs_count }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    {% endblock %}
 
     {% if job.status == "active" and show_progress %}
     <div class="box is-processing">
@@ -108,14 +124,14 @@
     </form>
     {% endif %}
 
-    {% if job.complete and fail_count and not job.retry and not legacy %}
+    {% if job.complete and fail_count and not job.retry %}
     <div class="notification is-warning">
         {% blocktrans trimmed count counter=fail_count with display_counter=fail_count|intcomma %}
             {{ display_counter }} item failed to import.
             {% plural %}
             {{ display_counter }} items failed to import.
         {% endblocktrans %}
-        <a href="{% url 'import-troubleshoot' job.id %}">
+        <a href="{% url 'user-import-troubleshoot' job.id %}">
             {% trans "View and troubleshoot failed items" %}
         </a>
     </div>
@@ -124,6 +140,8 @@
 
 <div class="block">
     {% block actions %}{% endblock %}
+    {% block item_list %}
+    <h2 class="title">{% trans "Imported books" %}</h2>
     <div class="table-container">
         <table class="table is-striped is-fullwidth">
             <tr>
@@ -145,13 +163,6 @@
                 </th>
                 {% endblock %}
             </tr>
-            {% if not items %}
-            <tr>
-                <td colspan="6">
-                    <em>{% trans "No items currently need review" %}</em>
-                </td>
-            </tr>
-            {% else %}
             {% for item in items %}
             <tr>
                 <td>
@@ -181,13 +192,6 @@
                     {% else %}
                     <div class="is-flex">
                         <span class="is-sr-only-mobile">{{ item.status }}</span>
-                        {# retry option if an item appears to be hanging #}
-                        {% if job.created_date != job.updated_date and inactive_time > 24 %}
-                        <form class="ml-2" method="POST" action="{% url 'import-item-retry' job.id item.id %}" name="retry-{{ item.id }}">
-                            {% csrf_token %}
-                            <button class="button is-danger is-outlined is-small">{% trans "Retry" %}</button>
-                        </form>
-                        {% endif %}
                     </div>
                     {% endif %}
                 </td>
@@ -195,9 +199,9 @@
             </tr>
             {% block action_row %}{% endblock %}
             {% endfor %}
-            {% endif %}
         </table>
     </div>
+    {% endblock %}
 </div>
 
 <div>

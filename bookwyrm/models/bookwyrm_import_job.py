@@ -1,19 +1,21 @@
 """Import a user from another Bookwyrm instance"""
 
+# TODO: tests
+
 import json
 import logging
 import math
 
 from django.db.models import (
+    BooleanField,
     ForeignKey,
     FileField,
     JSONField,
+    TextField,
     TextChoices,
-    CASCADE,
     PROTECT,
     SET_NULL,
 )
-from django.db.utils import IntegrityError
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
@@ -36,6 +38,7 @@ class BookwyrmImportJob(ParentJob):
     required = DjangoArrayField(
         models.fields.CharField(max_length=50, blank=True), blank=True
     )
+    retry = BooleanField(default=False)
 
     def start_job(self):
         """Start the job"""
@@ -94,6 +97,7 @@ class UserImportBook(ChildJob):
 
     book = ForeignKey(models.Book, on_delete=SET_NULL, null=True, blank=True)
     book_data = JSONField(null=False)
+    fail_reason = TextField(null=True)
 
     def start_job(self):
         """Start the job"""
@@ -117,10 +121,11 @@ class UserImportPost(ChildJob):
     status_type = models.fields.CharField(
         max_length=10, choices=StatusType.choices, default=StatusType.COMMENT, null=True
     )
+    fail_reason = TextField(null=True)
 
     def start_job(self):
         """Start the job"""
-        upsert_statuses_task.delay(child_id=self.id)
+        upsert_status_task.delay(child_id=self.id)
 
 
 class UserRelationshipImport(ChildJob):
@@ -136,6 +141,7 @@ class UserRelationshipImport(ChildJob):
         max_length=10, choices=RelationshipType.choices, null=True
     )
     remote_id = models.fields.RemoteIdField(null=True, unique=False)
+    fail_reason = TextField(null=True)
 
     def start_job(self):
         """Start the job"""
@@ -150,8 +156,11 @@ def start_import_task(**kwargs):
     job = BookwyrmImportJob.objects.get(id=kwargs["job_id"])
     archive_file = job.bookwyrmimportjob.archive_file
 
-    # don't start the job if it was stopped from the UI
-    if job.complete:
+    # don't run if user is not allowed imports yet
+    if user_import_available(user=job.user):
+        return
+
+    if job.status == "stopped":
         return
 
     job.status = "active"
@@ -194,7 +203,6 @@ def start_import_task(**kwargs):
                 book_job.start_job()
 
         archive_file.close()
-        # job.complete_job()
 
     except Exception as err:  # pylint: disable=broad-except
         logger.exception("User Import Job %s Failed with error: %s", job.id, err)
@@ -202,7 +210,7 @@ def start_import_task(**kwargs):
 
 
 @app.task(queue=IMPORTS, base=SubTask)
-def import_book_task(**kwargs):
+def import_book_task(**kwargs):  # pylint: disable=too-many-locals,too-many-branches
     """Take work and edition data,
     find or create the edition and work in the database"""
 
@@ -211,8 +219,7 @@ def import_book_task(**kwargs):
     archive_file = job.bookwyrmimportjob.archive_file
     book_data = task.book_data
 
-    # don't start the job if it was stopped from the UI
-    if job.complete or task.complete:
+    if task.complete or job.status == "stopped":
         return
 
     try:
@@ -227,7 +234,7 @@ def import_book_task(**kwargs):
                 instance = parsed_author.to_model(
                     model=models.Author,
                     save=True,
-                    overwrite=True,  # TODO: why do we use overwrite?
+                    overwrite=True,  # TODO: why do we use overwrite? (check with test)
                 )
 
                 edition["authors"].append(instance.remote_id)
@@ -255,8 +262,6 @@ def import_book_task(**kwargs):
             )
 
             # set the cover image from the tar
-            # NOTE we don't have the images to go with test json!
-            # TODO: test this later
             if cover_path:
                 archive_file.open("rb")
                 with BookwyrmTarFile.open(mode="r:gz", fileobj=archive_file) as tar:
@@ -277,11 +282,13 @@ def import_book_task(**kwargs):
         if "include_lists" in required:
             upsert_lists(task_user, book.id, book_data.get("lists"))
 
-    except Exception as err:
+    except Exception as err:  # pylint: disable=broad-except
         logger.exception(
             "Book Import Task %s for Job %s Failed with error: %s", task.id, job.id, err
         )
-        job.set_status("failed")
+        task.fail_reason = _("unknown")
+        task.save(update_fields=["fail_reason"])
+        task.set_status("failed")
 
     # Now import statuses
     # These are also subtasks so that we can isolate anything that fails
@@ -319,7 +326,7 @@ def import_book_task(**kwargs):
 
 
 @app.task(queue=IMPORTS, base=SubTask)
-def upsert_statuses_task(**kwargs):
+def upsert_status_task(**kwargs):
     """Find or create book statuses"""
 
     task = UserImportPost.objects.get(id=kwargs["child_id"])
@@ -334,13 +341,11 @@ def upsert_statuses_task(**kwargs):
         else models.Comment
     )
 
-    # don't start the job if it was stopped from the UI
-    if job.complete or task.complete:
+    if task.complete or job.status == "stopped":
         return
 
     try:
         # only add statuses if this is the same user
-        logger.info("attributedTo: %s ", status.get("attributedTo", False))
         if is_alias(user, status.get("attributedTo", False)):
             status["attributedTo"] = user.remote_id
             status["to"] = update_followers_address(user, status["to"])
@@ -377,12 +382,16 @@ def upsert_statuses_task(**kwargs):
 
         else:
             logger.warning(
-                "User does not have permission to import statuses, or status is tombstone"
+                "User not authorized to import statuses, or status is tombstone"
             )
+            task.fail_reason = _("unauthorized")
+            task.save(update_fields=["fail_reason"])
             task.set_status("failed")
 
-    except Exception as err:
-        logger.exception("User Import Job %s Failed with error: %s", task.id, err)
+    except Exception as err:  # pylint: disable=broad-except
+        logger.exception("User Import Task %s Failed with error: %s", task.id, err)
+        task.fail_reason = _("unknown")
+        task.save(update_fields=["fail_reason"])
         task.set_status("failed")
 
 
@@ -408,8 +417,6 @@ def upsert_readthroughs(user, book_id, data):
         existing = models.ReadThrough.objects.filter(**obj).first()
         if not existing:
             models.ReadThrough.objects.create(**obj)
-
-    return
 
 
 def upsert_lists(
@@ -451,8 +458,6 @@ def upsert_lists(
                 order=count + 1,
             )
 
-    return
-
 
 def upsert_shelves(user, book, shelves):
     """Take shelf JSON objects and create
@@ -472,8 +477,6 @@ def upsert_shelves(user, book, shelves):
             models.ShelfBook.objects.create(
                 book=book, shelf=book_shelf, user=user, shelved_date=timezone.now()
             )
-
-    return
 
 
 # user updates
@@ -577,9 +580,11 @@ def import_user_relationship_task(**kwargs):
                 logger.exception(
                     "Could not resolve user %s task %s", task.remote_id, task.id
                 )
+                task.fail_reason = _("connection_error")
+                task.save(update_fields=["fail_reason"])
                 task.set_status("failed")
 
-        elif tasks.relationship == "block":
+        elif task.relationship == "block":
 
             user_object = activitypub.resolve_remote_id(task.remote_id, models.User)
             if user_object:
@@ -601,6 +606,8 @@ def import_user_relationship_task(**kwargs):
                 logger.exception(
                     "Could not resolve user %s task %s", task.remote_id, task.id
                 )
+                task.fail_reason = _("connection_error")
+                task.save(update_fields=["fail_reason"])
                 task.set_status("failed")
 
         else:
@@ -609,19 +616,14 @@ def import_user_relationship_task(**kwargs):
                 task.relationship,
                 task.id,
             )
+            task.fail_reason = _("invalid_relationship")
+            task.save(update_fields=["fail_reason"])
             task.set_status("failed")
 
-    except IntegrityError as err:
-        # `null value in column "to_user_id" of relation "bookwyrm_user_also_known_as" violates not-null constraint`
-        # TODO: this seems to indicate that the *alias* doesn't have an ID, which will always be the case
-        # if we don't have them in our DB already?
-        # seems like a bug in activitypub.resolve_remote_id? We need to import BOTH users
-        logger.exception(
-            "User Import Job %s experienced an IntegrityError: %s", task.id, err
-        )
-        task.set_status("failed")
-    except Exception as err:
-        logger.exception("User Import Job %s Failed with error: %s", task.id, err)
+    except Exception as err:  # pylint: disable=broad-except
+        logger.exception("User Import Task %s Failed with error: %s", task.id, err)
+        task.fail_reason = _("unknown")
+        task.save(update_fields=["fail_reason"])
         task.set_status("failed")
 
 

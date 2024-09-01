@@ -23,7 +23,19 @@ class BookwyrmImporter:
             user=user, archive_file=archive_file, required=required
         )
 
-        # TODO need to read the tarfile here and create a childjob for each book
+        return job
+
+    def create_retry_job(
+        self, user: User, original_job: BookwyrmImportJob
+    ) -> BookwyrmImportJob:
+        """retry items that didn't import"""
+
+        job = BookwyrmImportJob.objects.create(
+            user=user,
+            archive_file=original_job.archive_file,
+            required=original_job.required,
+            retry=True,
+        )
 
         return job
 
