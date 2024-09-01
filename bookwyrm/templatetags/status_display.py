@@ -1,4 +1,5 @@
 """ template filters """
+import datetime
 from typing import Any, Optional
 from dateutil.relativedelta import relativedelta
 from django import template
@@ -55,7 +56,7 @@ def get_boosted(boost: models.Boost) -> Any:
 
 
 @register.filter(name="published_date")
-def get_published_date(date: str) -> Any:
+def get_published_date(date: datetime.datetime) -> str | None:
     """less verbose combo of humanize filters"""
     if not date:
         return ""
