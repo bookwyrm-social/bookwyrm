@@ -49,8 +49,9 @@ class BookwyrmImport(TestCase):
                 "badger",
                 "badger@badger.badger",
                 "password",
-                local=True,
+                local=False,
                 localname="badger",
+                remote_id="badger@remote.remote",
             )
 
             self.work = models.Work.objects.create(title="Sand Talk")
@@ -73,6 +74,10 @@ class BookwyrmImport(TestCase):
 
         self.archive_file = pathlib.Path(__file__).parent.joinpath(
             "../data/bookwyrm_account_export.tar.gz"
+        )
+
+        self.job = bookwyrm_import_job.BookwyrmImportJob.objects.create(
+            user=self.local_user, required=[]
         )
 
     def test_update_user_profile(self):
@@ -195,8 +200,14 @@ class BookwyrmImport(TestCase):
 
         self.assertTrue(self.local_user.saved_lists.filter(id=book_list.id).exists())
 
-    def test_upsert_follows(self):
-        """Test take a list of remote ids and add as follows"""
+    def test_follow_relationship(self):
+        """Test take a remote ID and create a follow"""
+
+        task = bookwyrm_import_job.UserRelationshipImport.objects.create(
+            parent_job=self.job,
+            relationship="follow",
+            remote_id="https://blah.blah/user/rat",
+        )
 
         before_follow = models.UserFollows.objects.filter(
             user_subject=self.local_user, user_object=self.rat_user
@@ -208,18 +219,24 @@ class BookwyrmImport(TestCase):
             patch("bookwyrm.activitystreams.add_user_statuses_task.delay"),
             patch("bookwyrm.lists_stream.add_user_lists_task.delay"),
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.activitypub.resolve_remote_id", return_value=self.rat_user),
         ):
-            models.bookwyrm_import_job.upsert_follows(
-                self.local_user, self.json_data.get("follows")
-            )
+
+            bookwyrm_import_job.import_user_relationship_task(child_id=task.id)
 
         after_follow = models.UserFollows.objects.filter(
             user_subject=self.local_user, user_object=self.rat_user
         ).exists()
         self.assertTrue(after_follow)
 
-    def test_upsert_user_blocks(self):
-        """test adding blocked users"""
+    def test_block_relationship(self):
+        """test adding blocks for users"""
+
+        task = bookwyrm_import_job.UserRelationshipImport.objects.create(
+            parent_job=self.job,
+            relationship="block",
+            remote_id="https://blah.blah/user/badger",
+        )
 
         blocked_before = models.UserBlocks.objects.filter(
             Q(
@@ -234,10 +251,11 @@ class BookwyrmImport(TestCase):
             patch("bookwyrm.activitystreams.remove_user_statuses_task.delay"),
             patch("bookwyrm.lists_stream.remove_user_lists_task.delay"),
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch(
+                "bookwyrm.activitypub.resolve_remote_id", return_value=self.badger_user
+            ),
         ):
-            models.bookwyrm_import_job.upsert_user_blocks(
-                self.local_user, self.json_data.get("blocks")
-            )
+            bookwyrm_import_job.import_user_relationship_task(child_id=task.id)
 
         blocked_after = models.UserBlocks.objects.filter(
             Q(
@@ -248,37 +266,29 @@ class BookwyrmImport(TestCase):
         self.assertTrue(blocked_after)
 
     def test_get_or_create_edition_existing(self):
-        """Test take a JSON string of books and editions,
-        find or create the editions in the database and
-        return a list of edition instances"""
+        """Test import existing book"""
+
+        task = bookwyrm_import_job.UserImportBook.objects.create(
+            parent_job=self.job,
+            book_data=self.json_data["books"][1],
+        )
 
         self.assertEqual(models.Edition.objects.count(), 1)
 
-        with (
-            open(self.archive_file, "rb") as fileobj,
-            BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj) as tarfile,
-        ):
-            bookwyrm_import_job.get_or_create_edition(
-                self.json_data["books"][1], tarfile
-            )  # Sand Talk
+        bookwyrm_import_job.import_book_task(child_id=task.id)
 
-            self.assertEqual(models.Edition.objects.count(), 1)
+        self.assertEqual(models.Edition.objects.count(), 1)
 
     def test_get_or_create_edition_not_existing(self):
-        """Test take a JSON string of books and editions,
-        find or create the editions in the database and
-        return a list of edition instances"""
+        """Test import new book"""
+
+        task = bookwyrm_import_job.UserImportBook.objects.create(
+            parent_job=self.job,
+            book_data=self.json_data["books"][0],
+        )
 
         self.assertEqual(models.Edition.objects.count(), 1)
-
-        with (
-            open(self.archive_file, "rb") as fileobj,
-            BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj) as tarfile,
-        ):
-            bookwyrm_import_job.get_or_create_edition(
-                self.json_data["books"][0], tarfile
-            )  # Seeing like a state
-
+        bookwyrm_import_job.import_book_task(child_id=task.id)
         self.assertTrue(models.Edition.objects.filter(isbn_13="9780300070163").exists())
         self.assertEqual(models.Edition.objects.count(), 2)
 
@@ -305,7 +315,7 @@ class BookwyrmImport(TestCase):
 
         self.assertEqual(models.ReadThrough.objects.count(), 0)
         bookwyrm_import_job.upsert_readthroughs(
-            readthroughs, self.local_user, self.book.id
+            self.local_user, self.book.id, readthroughs
         )
 
         self.assertEqual(models.ReadThrough.objects.count(), 1)
@@ -320,15 +330,17 @@ class BookwyrmImport(TestCase):
     def test_get_or_create_review(self):
         """Test get_or_create_review_status with a review"""
 
+        task = bookwyrm_import_job.UserImportPost.objects.create(
+            parent_job=self.job,
+            book=self.book,
+            json=self.json_data["books"][0]["reviews"][0],
+            status_type="review",
+        )
+
         self.assertEqual(models.Review.objects.filter(user=self.local_user).count(), 0)
-        reviews = self.json_data["books"][0]["reviews"]
-        with (
-            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
-            patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True),
-        ):
-            bookwyrm_import_job.upsert_statuses(
-                self.local_user, models.Review, reviews, self.book.remote_id
-            )
+
+        with patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True):
+            bookwyrm_import_job.upsert_status_task(child_id=task.id)
 
         self.assertEqual(models.Review.objects.filter(user=self.local_user).count(), 1)
         self.assertEqual(
@@ -356,16 +368,18 @@ class BookwyrmImport(TestCase):
     def test_get_or_create_comment(self):
         """Test get_or_create_review_status with a comment"""
 
-        self.assertEqual(models.Comment.objects.filter(user=self.local_user).count(), 0)
-        comments = self.json_data["books"][1]["comments"]
+        task = bookwyrm_import_job.UserImportPost.objects.create(
+            parent_job=self.job,
+            book=self.book,
+            json=self.json_data["books"][1]["comments"][0],
+            status_type="comment",
+        )
 
-        with (
-            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
-            patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True),
-        ):
-            bookwyrm_import_job.upsert_statuses(
-                self.local_user, models.Comment, comments, self.book.remote_id
-            )
+        self.assertEqual(models.Comment.objects.filter(user=self.local_user).count(), 0)
+
+        with patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True):
+            bookwyrm_import_job.upsert_status_task(child_id=task.id)
+
         self.assertEqual(models.Comment.objects.filter(user=self.local_user).count(), 1)
         self.assertEqual(
             models.Comment.objects.filter(book=self.book).first().content,
@@ -384,18 +398,20 @@ class BookwyrmImport(TestCase):
     def test_get_or_create_quote(self):
         """Test get_or_create_review_status with a quote"""
 
+        task = bookwyrm_import_job.UserImportPost.objects.create(
+            parent_job=self.job,
+            book=self.book,
+            json=self.json_data["books"][1]["quotations"][0],
+            status_type="quote",
+        )
+
         self.assertEqual(
             models.Quotation.objects.filter(user=self.local_user).count(), 0
         )
-        quotes = self.json_data["books"][1]["quotations"]
-        with (
-            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
-            patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True),
-        ):
 
-            bookwyrm_import_job.upsert_statuses(
-                self.local_user, models.Quotation, quotes, self.book.remote_id
-            )
+        with patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True):
+            bookwyrm_import_job.upsert_status_task(child_id=task.id)
+
         self.assertEqual(
             models.Quotation.objects.filter(user=self.local_user).count(), 1
         )
@@ -418,18 +434,18 @@ class BookwyrmImport(TestCase):
     def test_get_or_create_quote_unauthorized(self):
         """Test get_or_create_review_status with a quote but not authorized"""
 
+        task = bookwyrm_import_job.UserImportPost.objects.create(
+            parent_job=self.job,
+            book=self.book,
+            json=self.json_data["books"][1]["quotations"][0],
+            status="quote",
+        )
+
         self.assertEqual(
             models.Quotation.objects.filter(user=self.local_user).count(), 0
         )
-        quotes = self.json_data["books"][1]["quotations"]
-        with (
-            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
-            patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=False),
-        ):
-
-            bookwyrm_import_job.upsert_statuses(
-                self.local_user, models.Quotation, quotes, self.book.remote_id
-            )
+        with patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=False):
+            bookwyrm_import_job.upsert_status_task(child_id=task.id)
         self.assertEqual(
             models.Quotation.objects.filter(user=self.local_user).count(), 0
         )
@@ -437,8 +453,6 @@ class BookwyrmImport(TestCase):
     def test_upsert_list_existing(self):
         """Take a list and ListItems as JSON and create DB entries
         if they don't already exist"""
-
-        book_data = self.json_data["books"][0]
 
         other_book = models.Edition.objects.create(
             title="Another Book", remote_id="https://example.com/book/9876"
@@ -471,8 +485,8 @@ class BookwyrmImport(TestCase):
         ):
             bookwyrm_import_job.upsert_lists(
                 self.local_user,
-                book_data["lists"],
                 other_book.id,
+                self.json_data["books"][0]["lists"],
             )
 
         self.assertEqual(models.List.objects.filter(user=self.local_user).count(), 1)
@@ -488,8 +502,6 @@ class BookwyrmImport(TestCase):
         """Take a list and ListItems as JSON and create DB entries
         if they don't already exist"""
 
-        book_data = self.json_data["books"][0]
-
         self.assertEqual(models.List.objects.filter(user=self.local_user).count(), 0)
         self.assertFalse(models.ListItem.objects.filter(book=self.book.id).exists())
 
@@ -499,8 +511,8 @@ class BookwyrmImport(TestCase):
         ):
             bookwyrm_import_job.upsert_lists(
                 self.local_user,
-                book_data["lists"],
                 self.book.id,
+                self.json_data["books"][0]["lists"],
             )
 
         self.assertEqual(models.List.objects.filter(user=self.local_user).count(), 1)
@@ -526,12 +538,13 @@ class BookwyrmImport(TestCase):
                 book=self.book, shelf=shelf, user=self.local_user
             )
 
-        book_data = self.json_data["books"][0]
         with (
             patch("bookwyrm.activitystreams.add_book_statuses_task.delay"),
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
         ):
-            bookwyrm_import_job.upsert_shelves(self.book, self.local_user, book_data)
+            bookwyrm_import_job.upsert_shelves(
+                self.local_user, self.book, self.json_data["books"][0].get("shelves")
+            )
 
         self.assertEqual(
             models.ShelfBook.objects.filter(user=self.local_user.id).count(), 2
@@ -545,13 +558,13 @@ class BookwyrmImport(TestCase):
             models.ShelfBook.objects.filter(user=self.local_user.id).count(), 0
         )
 
-        book_data = self.json_data["books"][0]
-
         with (
             patch("bookwyrm.activitystreams.add_book_statuses_task.delay"),
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
         ):
-            bookwyrm_import_job.upsert_shelves(self.book, self.local_user, book_data)
+            bookwyrm_import_job.upsert_shelves(
+                self.local_user, self.book, self.json_data["books"][0].get("shelves")
+            )
 
         self.assertEqual(
             models.ShelfBook.objects.filter(user=self.local_user.id).count(), 2

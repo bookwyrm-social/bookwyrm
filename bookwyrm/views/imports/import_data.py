@@ -189,6 +189,9 @@ class UserImport(View):
 
 
 def user_import_available(user: models.User) -> Optional[tuple[datetime, int]]:
+    """for a given user, determine whether they are allowed to run
+    a user import and if not, return a tuple with the next available
+    time they can import, and how many hours between imports allowed"""
 
     jobs = BookwyrmImportJob.objects.filter(user=user).order_by("-created_date")
     site = models.SiteSettings.objects.get()
@@ -199,6 +202,6 @@ def user_import_available(user: models.User) -> Optional[tuple[datetime, int]]:
         else True
     )
     if allowed and site.imports_enabled:
-        return
+        return False
 
     return (jobs.first().created_date + datetime.timedelta(hours=hours), hours)

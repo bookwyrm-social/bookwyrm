@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.views import View
 
 from bookwyrm import models
-from bookwyrm.importers import Importer, BookwyrmImporter
+from bookwyrm.importers import BookwyrmImporter
 from bookwyrm.views import user_import_available
 from bookwyrm.settings import PAGE_LENGTH
 

@@ -1,7 +1,5 @@
 """Import a user from another Bookwyrm instance"""
 
-# TODO: tests
-
 import json
 import logging
 import math
@@ -156,10 +154,6 @@ def start_import_task(**kwargs):
     job = BookwyrmImportJob.objects.get(id=kwargs["job_id"])
     archive_file = job.bookwyrmimportjob.archive_file
 
-    # don't run if user is not allowed imports yet
-    if user_import_available(user=job.user):
-        return
-
     if job.status == "stopped":
         return
 
@@ -182,13 +176,11 @@ def start_import_task(**kwargs):
                 update_goals(job.user, job.import_data.get("goals", []))
             if "include_saved_lists" in job.required:
                 upsert_saved_lists(job.user, job.import_data.get("saved_lists", []))
-
             if "include_follows" in job.required:
                 for remote_id in job.import_data.get("follows", []):
                     UserRelationshipImport.objects.create(
                         parent_job=job, remote_id=remote_id, relationship="follow"
                     )
-
             if "include_blocks" in job.required:
                 for remote_id in job.import_data.get("blocks", []):
                     UserRelationshipImport.objects.create(
@@ -230,8 +222,7 @@ def import_book_task(**kwargs):  # pylint: disable=too-many-locals,too-many-bran
             # replace the old author ids in the edition JSON
             edition["authors"] = []
             for author in book_data.get("authors"):
-                parsed_author = activitypub.parse(author)
-                instance = parsed_author.to_model(
+                instance = activitypub.parse(author).to_model(
                     model=models.Author,
                     save=True,
                     overwrite=True,  # TODO: why do we use overwrite? (check with test)
@@ -248,16 +239,14 @@ def import_book_task(**kwargs):  # pylint: disable=too-many-locals,too-many-bran
             # first we need the parent work to exist
             work = book_data.get("work")
             work["editions"] = []
-            parsed_work = activitypub.parse(work)
-            work_instance = parsed_work.to_model(
+            work_instance = activitypub.parse(work).to_model(
                 model=models.Work, save=True, overwrite=True
             )
 
             # now we have a work we can add it to the edition
             # and create the edition model instance
             edition["work"] = work_instance.remote_id
-            parsed_edition = activitypub.parse(edition)
-            book = parsed_edition.to_model(
+            book = activitypub.parse(edition).to_model(
                 model=models.Edition, save=True, overwrite=True
             )
 
@@ -271,16 +260,17 @@ def import_book_task(**kwargs):  # pylint: disable=too-many-locals,too-many-bran
         task.book = book
         task.save(update_fields=["book"])
         required = task.parent_job.bookwyrmimportjob.required
-        task_user = task.parent_job.user
 
         if "include_shelves" in required:
-            upsert_shelves(task_user, book, book_data.get("shelves"))
+            upsert_shelves(task.parent_job.user, book, book_data.get("shelves"))
 
         if "include_readthroughs" in required:
-            upsert_readthroughs(task_user, book.id, book_data.get("readthroughs"))
+            upsert_readthroughs(
+                task.parent_job.user, book.id, book_data.get("readthroughs")
+            )
 
         if "include_lists" in required:
-            upsert_lists(task_user, book.id, book_data.get("lists"))
+            upsert_lists(task.parent_job.user, book.id, book_data.get("lists"))
 
     except Exception as err:  # pylint: disable=broad-except
         logger.exception(
@@ -335,9 +325,9 @@ def upsert_status_task(**kwargs):
     status = task.json
     status_class = (
         models.Review
-        if task.StatusType.REVIEW
+        if task.status_type == "review"
         else models.Quotation
-        if task.StatusType.QUOTE
+        if task.status_type == "quote"
         else models.Comment
     )
 
