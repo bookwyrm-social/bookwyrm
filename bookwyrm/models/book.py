@@ -9,7 +9,7 @@ from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.cache import cache
 from django.db import models, transaction
-from django.db.models import Avg, Prefetch, ManyToManyField
+from django.db.models import Avg, Prefetch, ManyToManyField, Q
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
@@ -492,10 +492,34 @@ class Edition(Book):
         """generate the hyphenated version of the ISBN-13"""
         return hyphenator.hyphenate(self.isbn_13)
 
-    @property
-    def average_rating(self, user):
-        """generate average rating of a book"""
-        reviews = Review.privacy_filter(user).filter(book__parent_work__editions=self)
+    @classmethod
+    def average_rating(cls, include_parents=False, user=None, privacy=None):
+        """
+        Generate the average rating of a book
+
+        Args:
+            include_parents: allows the caller to determine if ratings
+            from other Editions of the Work should be included
+            user: if we're given a value for user, use privacy_filter
+            privacy: if we're given a value for privacy, use it in filtering the reviews
+        Returns:
+            an aggregation of the average rating of the book across its reviews.
+        """
+        # get the base review queryset which we will refine
+        # based on the arguments provided
+        if include_parents:
+            base_reviews = Review.objects.filter(
+                Q(book__parent_work__editions=cls) & Q(deleted=False) & Q(rating_gt=0)
+            )
+        else:
+            base_reviews = Review.objects.filter(Q(deleted=False) & Q(rating_gt=0))
+        if user:
+            reviews = base_reviews.privacy_filter(user).exclude(rating=None)
+        elif privacy:
+            reviews = base_reviews.filter(Q(privacy=privacy)).exclude(rating=None)
+        else:
+            reviews = base_reviews.exclude(rating=None)
+
         return reviews.aggregate(Avg("rating"))["rating__avg"]
 
     def get_rank(self):

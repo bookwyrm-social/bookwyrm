@@ -98,7 +98,7 @@ class Book(View):
                 if not user_statuses
                 else None
             ),
-            "rating": book.average_rating(request.user),
+            "rating": book.average_rating(include_parents=True, user=request.user),
             "lists": lists,
             "update_error": kwargs.get("update_error", False),
         }
