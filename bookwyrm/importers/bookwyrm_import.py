@@ -25,7 +25,6 @@ class BookwyrmImporter:
 
         return job
 
-
     def create_retry_job(
         self, user: User, original_job: BookwyrmImportJob
     ) -> BookwyrmImportJob:
