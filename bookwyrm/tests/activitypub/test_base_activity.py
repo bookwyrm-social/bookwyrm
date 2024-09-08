@@ -46,6 +46,13 @@ class BaseActivity(TestCase):
         # don't try to load the user icon
         del self.userdata["icon"]
 
+        alias_datafile = pathlib.Path(__file__).parent.joinpath(
+            "../data/ap_user_aliased.json"
+        )
+        self.alias_userdata = json.loads(alias_datafile.read_bytes())
+        # don't try to load the user icon
+        del self.alias_userdata["icon"]
+
         image_path = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
         )
@@ -110,6 +117,13 @@ class BaseActivity(TestCase):
             status=200,
         )
 
+        responses.add(
+            responses.GET,
+            "https://example.com/user/moose",
+            json=self.alias_userdata,
+            status=200,
+        )
+
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             result = resolve_remote_id(
                 "https://example.com/user/mouse", model=models.User
@@ -117,6 +131,42 @@ class BaseActivity(TestCase):
         self.assertIsInstance(result, models.User)
         self.assertEqual(result.remote_id, "https://example.com/user/mouse")
         self.assertEqual(result.name, "MOUSE?? MOUSE!!")
+
+    @responses.activate
+    def test_resolve_remote_alias(self, *_):
+        """look up or load user who has an unknown alias"""
+
+        self.assertEqual(models.User.objects.count(), 1)
+
+        # remote user with unknown user as an alias
+        responses.add(
+            responses.GET,
+            "https://example.com/user/moose",
+            json=self.alias_userdata,
+            status=200,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://example.com/user/mouse",
+            json=self.userdata,
+            status=200,
+        )
+
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            result = resolve_remote_id(
+                "https://example.com/user/mouse", model=models.User
+            )
+        self.assertIsInstance(result, models.User)
+        self.assertEqual(result.name, "MOUSE?? MOUSE!!")
+        self.assertEqual(
+            models.User.objects.count(), 3
+        )  # created a new mouse plus the alias
+        alias = models.User.objects.last()  # moose
+        self.assertEqual(alias.name, "moose?? moose!!")  # check it's moose
+        self.assertEqual(
+            result.also_known_as.first(), alias
+        )  # moose is alias of new mouse
 
     def test_to_model_invalid_model(self, *_):
         """catch mismatch between activity type and model type"""
