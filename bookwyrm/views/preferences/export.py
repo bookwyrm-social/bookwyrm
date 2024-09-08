@@ -5,7 +5,8 @@ import datetime
 import io
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg, ExpressionWrapper, F, fields
+from django.db.models import Avg, ExpressionWrapper, F
+from django.db.models.fields import DurationField
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseServerError, Http404
@@ -276,7 +277,7 @@ def get_average_export_time() -> float:
         .annotate(
             runtime=ExpressionWrapper(
                 F("updated_date") - F("created_date"),
-                output_field=fields.DurationField(),
+                output_field=DurationField(),
             )
         )
         .aggregate(Avg("runtime"))

@@ -15,7 +15,7 @@ from bookwyrm.utils.tar import BookwyrmTarFile
 from bookwyrm.models import bookwyrm_import_job
 
 
-class BookwyrmImport(TestCase):
+class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
     """testing user import functions"""
 
     def setUp(self):
@@ -238,7 +238,7 @@ class BookwyrmImport(TestCase):
         already known to the server does not overwrite"""
 
         self.assertEqual(models.Author.objects.count(), 0)
-        self.author = models.Author.objects.create(
+        models.Author.objects.create(
             id=1,
             name="James C. Scott",
             wikipedia_link="https://en.wikipedia.org/wiki/James_C._Scott",
@@ -750,7 +750,7 @@ class BookwyrmImport(TestCase):
     def test_status_already_exists(self):
         """test status checking"""
 
-        string = '{"id":"https://www.example.com/user/rat/comment/4","type":"Comment","published":"2023-08-14T04:48:18.746+00:00","attributedTo":"https://www.example.com/user/rat","content":"<p>this is a comment about an amazing book</p>","to":["https://www.w3.org/ns/activitystreams#Public"],"cc":["https://www.example.com/user/rat/followers"],"replies":{"id":"https://www.example.com/user/rat/comment/4/replies","type":"OrderedCollection","totalItems":0,"first":"https://www.example.com/user/rat/comment/4/replies?page=1","last":"https://www.example.com/user/rat/comment/4/replies?page=1","@context":"https://www.w3.org/ns/activitystreams"},"tag":[],"attachment":[],"sensitive":false,"inReplyToBook":"https://www.example.com/book/4","readingStatus":null,"@context":"https://www.w3.org/ns/activitystreams"}'
+        string = '{"id":"https://www.example.com/user/rat/comment/4","type":"Comment","published":"2023-08-14T04:48:18.746+00:00","attributedTo":"https://www.example.com/user/rat","content":"<p>this is a comment about an amazing book</p>","to":["https://www.w3.org/ns/activitystreams#Public"],"cc":["https://www.example.com/user/rat/followers"],"replies":{"id":"https://www.example.com/user/rat/comment/4/replies","type":"OrderedCollection","totalItems":0,"first":"https://www.example.com/user/rat/comment/4/replies?page=1","last":"https://www.example.com/user/rat/comment/4/replies?page=1","@context":"https://www.w3.org/ns/activitystreams"},"tag":[],"attachment":[],"sensitive":false,"inReplyToBook":"https://www.example.com/book/4","readingStatus":null,"@context":"https://www.w3.org/ns/activitystreams"}'  # pylint: disable=line-too-long
 
         status = json.loads(string)
         parsed = activitypub.parse(status)
@@ -763,8 +763,6 @@ class BookwyrmImport(TestCase):
         )
         status_two = comment.to_activity()
         parsed_two = activitypub.parse(status_two)
-
-        post = models.Status.objects.filter(user=self.local_user).first()
         exists_two = bookwyrm_import_job.status_already_exists(
             self.local_user, parsed_two
         )
