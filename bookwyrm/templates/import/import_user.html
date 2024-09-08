@@ -33,6 +33,21 @@
             <p>{% blocktrans with next_time=next_available.0 %}You will next be able to import a user file at {{ next_time }}{% endblocktrans %}</p>
         </div>
     {% else %}
+    {% if recent_avg_hours or recent_avg_minutes %}
+    <div class="notification">
+        <p>
+        {% if recent_avg_hours %}
+            {% blocktrans trimmed with hours=recent_avg_hours|floatformat:0|intcomma %}
+                On average, recent imports have taken {{ hours }} hours.
+            {% endblocktrans %}
+        {% else %}
+            {% blocktrans trimmed with minutes=recent_avg_minutes|floatformat:0|intcomma %}
+                On average, recent imports have taken {{ minutes }} minutes.
+            {% endblocktrans %}
+        {% endif %}
+        </p>
+    </div>
+    {% endif %}
     <form class="box content" name="import-user" action="/user-import" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 

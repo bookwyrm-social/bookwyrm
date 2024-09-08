@@ -162,6 +162,14 @@ class UserImport(View):
             "invalid": invalid,
         }
 
+        seconds = get_or_set(
+            "avg-user-import-time", get_average_user_import_time, timeout=86400
+        )
+        if seconds and seconds > 60**2:
+            data["recent_avg_hours"] = seconds / (60**2)
+        elif seconds:
+            data["recent_avg_minutes"] = seconds / 60
+
         return TemplateResponse(request, "import/import_user.html", data)
 
     def post(self, request):
@@ -205,3 +213,26 @@ def user_import_available(user: models.User) -> Optional[tuple[datetime, int]]:
         return False
 
     return (jobs.first().created_date + datetime.timedelta(hours=hours), hours)
+
+
+def get_average_user_import_time() -> float:
+    """Helper to figure out how long imports are taking (returns seconds)"""
+    last_week = timezone.now() - datetime.timedelta(days=7)
+    recent_avg = (
+        models.BookwyrmImportJob.objects.filter(
+            created_date__gte=last_week, complete=True
+        )
+        .exclude(status="stopped")
+        .annotate(
+            runtime=ExpressionWrapper(
+                F("updated_date") - F("created_date"),
+                output_field=fields.DurationField(),
+            )
+        )
+        .aggregate(Avg("runtime"))
+        .get("runtime__avg")
+    )
+
+    if recent_avg:
+        return recent_avg.total_seconds()
+    return None
