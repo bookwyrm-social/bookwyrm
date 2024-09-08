@@ -25,7 +25,7 @@ class BookwyrmImporter:
 
         return job
 
-    # TODO: need a test for this (in a new file)
+
     def create_retry_job(
         self, user: User, original_job: BookwyrmImportJob
     ) -> BookwyrmImportJob:
