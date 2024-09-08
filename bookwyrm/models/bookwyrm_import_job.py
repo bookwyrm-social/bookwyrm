@@ -216,19 +216,20 @@ def import_book_task(**kwargs):  # pylint: disable=too-many-locals,too-many-bran
 
     try:
         edition = book_data.get("edition")
+        work = book_data.get("work")
         book = models.Edition.find_existing(edition)
         if not book:
             # make sure we have the authors in the local DB
             # replace the old author ids in the edition JSON
             edition["authors"] = []
+            work["authors"] = []
             for author in book_data.get("authors"):
                 instance = activitypub.parse(author).to_model(
-                    model=models.Author,
-                    save=True,
-                    overwrite=True,  # TODO: why do we use overwrite? (check with test)
+                    model=models.Author, save=True, overwrite=False
                 )
 
                 edition["authors"].append(instance.remote_id)
+                work["authors"].append(instance.remote_id)
 
             # we will add the cover later from the tar
             # don't try to load it from the old server
@@ -237,17 +238,16 @@ def import_book_task(**kwargs):  # pylint: disable=too-many-locals,too-many-bran
             edition["cover"] = {}
 
             # first we need the parent work to exist
-            work = book_data.get("work")
             work["editions"] = []
             work_instance = activitypub.parse(work).to_model(
-                model=models.Work, save=True, overwrite=True
+                model=models.Work, save=True, overwrite=False
             )
 
             # now we have a work we can add it to the edition
             # and create the edition model instance
             edition["work"] = work_instance.remote_id
             book = activitypub.parse(edition).to_model(
-                model=models.Edition, save=True, overwrite=True
+                model=models.Edition, save=True, overwrite=False
             )
 
             # set the cover image from the tar
