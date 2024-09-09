@@ -369,17 +369,13 @@ def resolve_remote_id(
 
     # load the data and create the object
     try:
-        data = get_data(remote_id)
+        data = get_activitypub_data(remote_id)
     except ConnectionError:
         logger.info("Could not connect to host for remote_id: %s", remote_id)
         return None
     except requests.HTTPError as e:
-        if (e.response is not None) and e.response.status_code == 401:
-            # This most likely means it's a mastodon with secure fetch enabled.
-            data = get_activitypub_data(remote_id)
-        else:
-            logger.info("Could not connect to host for remote_id: %s", remote_id)
-            return None
+        logger.exception("HTTP error - remote_id: %s - error: %s", remote_id, e)
+        return None
     # determine the model implicitly, if not provided
     # or if it's a model with subclasses like Status, check again
     if not model or hasattr(model.objects, "select_subclasses"):
