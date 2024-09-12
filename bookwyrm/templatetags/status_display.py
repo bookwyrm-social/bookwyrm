@@ -1,4 +1,5 @@
 """ template filters """
+import datetime
 from typing import Any, Optional
 from dateutil.relativedelta import relativedelta
 from django import template
@@ -34,11 +35,13 @@ def get_replies(status: models.Status) -> Any:
 @register.filter(name="parent")
 def get_parent(status: models.Status) -> Any:
     """get the reply parent for a status"""
-    return (
-        models.Status.objects.filter(id=status.reply_parent_id)
-        .select_subclasses()
-        .first()
-    )
+    if status.reply_parent_id:
+        return (
+            models.Status.objects.filter(id=status.reply_parent_id)
+            .select_subclasses()
+            .first()
+        )
+    return None
 
 
 @register.filter(name="boosted_status")
@@ -53,7 +56,7 @@ def get_boosted(boost: models.Boost) -> Any:
 
 
 @register.filter(name="published_date")
-def get_published_date(date: str) -> Any:
+def get_published_date(date: datetime.datetime) -> str | None:
     """less verbose combo of humanize filters"""
     if not date:
         return ""

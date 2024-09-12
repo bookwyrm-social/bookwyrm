@@ -93,7 +93,7 @@ def get_book_cover_thumbnail(
 
 
 @register.filter(name="get_isni_bio")
-def get_isni_bio(existing: int, author: Author) -> str:
+def get_isni_bio(existing: list[str], author: Author) -> str:
     """Returns the isni bio string if an existing author has an isni listed"""
     auth_isni = re.sub(r"\D", "", str(author.isni))
     if len(existing) == 0:
