@@ -1,8 +1,9 @@
 """ database schema for books and shelves """
+from __future__ import annotations
 
 from itertools import chain
 import re
-from typing import Any, Dict, Optional, Iterable
+from typing import Any, Dict, Optional, Iterable, TYPE_CHECKING
 from typing_extensions import Self
 
 from django.contrib.postgres.search import SearchVectorField
@@ -32,6 +33,9 @@ from bookwyrm.utils.db import format_trigger, add_update_fields
 from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
 from . import fields
+
+if TYPE_CHECKING:
+    from bookwyrm.models import Author
 
 
 class BookDataModel(ObjectMixin, BookWyrmModel):
@@ -415,7 +419,7 @@ class Work(OrderedCollectionPageMixin, Book):
         """in case the default edition is not set"""
         return self.editions.order_by("-edition_rank").first()
 
-    def author_edition(self, author):
+    def author_edition(self, author: Author) -> Any:
         """in case the default edition doesn't have the required author"""
         return self.editions.filter(authors=author).order_by("-edition_rank").first()
 
