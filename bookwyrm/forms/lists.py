@@ -14,6 +14,12 @@ class ListForm(CustomForm):
         fields = ["user", "name", "description", "curation", "privacy", "group"]
 
 
+class SuggestionListForm(CustomForm):
+    class Meta:
+        model = models.List
+        fields = ["user", "suggests_for"]
+
+
 class ListItemForm(CustomForm):
     class Meta:
         model = models.ListItem
