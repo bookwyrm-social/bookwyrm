@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-09-14 11:11\n"
+"PO-Revision-Date: 2024-09-14 13:13\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -3977,9 +3977,9 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> zaprasza Cię do 
 msgid "New <a href=\"%(path)s\">invite request</a> awaiting response"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">invite requests</a> awaiting response"
 msgstr[0] "Nowa <a href=\"%(path)s\">prośba o zaproszenie</a> oczekuje na odpowiedź"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[1] "%(display_count)s nowe <a href=\"%(path)s\">prośby o zaproszenie</a> oczekują na odpowiedź"
+msgstr[2] "%(display_count)s nowych <a href=\"%(path)s\">próśb o zaproszenie</a> oczekuje na odpowiedź"
+msgstr[3] "%(display_count)s nowych <a href=\"%(path)s\">próśb o zaproszenie</a> oczekuje na odpowiedź"
 
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
@@ -4005,10 +4005,10 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i jeszcze %(other
 #, python-format
 msgid "A new <a href=\"%(path)s\">link domain</a> needs review"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">link domains</a> need moderation"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Nowy <a href=\"%(path)s\">odnośnik domeny</a> wymaga sprawdzenia"
+msgstr[1] "%(display_count)s nowe <a href=\"%(path)s\">odnośniki domeny</a> wymagają sprawdzenia"
+msgstr[2] "%(display_count)s nowych <a href=\"%(path)s\">odnośników domeny</a> wymaga sprawdzenia"
+msgstr[3] "%(display_count)s nowych <a href=\"%(path)s\">odnośników domeny</a> wymaga sprawdzenia"
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
@@ -4033,12 +4033,12 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> wspomina Cię w <
 #: bookwyrm/templates/notifications/items/move_user.html:18
 #, python-format
 msgid "%(related_user)s has moved to <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
-msgstr ""
+msgstr "%(related_user)s przenosi się do <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
 
 #: bookwyrm/templates/notifications/items/move_user.html:25
 #, python-format
 msgid "%(related_user)s has undone their move"
-msgstr ""
+msgstr "%(related_user)s anuluje swoje przeniesienie"
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
@@ -4082,7 +4082,7 @@ msgstr[3] "%(display_count)s nowych <a href=\"%(path)s\">zgłoszeń</a> wymaga u
 #: bookwyrm/templates/notifications/items/status_preview.html:4
 #: bookwyrm/templates/snippets/status/content_status.html:62
 msgid "Content warning"
-msgstr ""
+msgstr "Ostrzeżenie o treści"
 
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
@@ -4102,12 +4102,12 @@ msgstr "zmienia opis dla <a href=\"%(group_path)s\">%(group_name)s</a>"
 #: bookwyrm/templates/notifications/items/user_export.html:14
 #, python-format
 msgid "Your <a href=\"%(url)s\">user export</a> is ready."
-msgstr ""
+msgstr "Twój <a href=\"%(url)s\">eksport użytkownika</a> jest gotowy."
 
 #: bookwyrm/templates/notifications/items/user_import.html:14
 #, python-format
 msgid "Your <a href=\"%(import_url)s\">user import</a> is complete."
-msgstr ""
+msgstr "Twój <a href=\"%(import_url)s\">import użytkownika</a> został ukończony."
 
 #: bookwyrm/templates/notifications/notifications_page.html:19
 msgid "Delete notifications"
@@ -4195,7 +4195,7 @@ msgstr ""
 
 #: bookwyrm/templates/ostatus/remote_follow.html:42
 msgid "Follow!"
-msgstr ""
+msgstr "Obserwuj!"
 
 #: bookwyrm/templates/ostatus/remote_follow_button.html:15
 msgid "Follow on Fediverse"
@@ -4313,20 +4313,20 @@ msgstr "Skonfiguruj 2FA"
 #: bookwyrm/templates/preferences/move_user.html:7
 #: bookwyrm/templates/preferences/move_user.html:39
 msgid "Move Account"
-msgstr ""
+msgstr "Przenieś konto"
 
 #: bookwyrm/templates/preferences/alias_user.html:7
 #: bookwyrm/templates/preferences/alias_user.html:34
 msgid "Create Alias"
-msgstr ""
+msgstr "Utwórz alias"
 
 #: bookwyrm/templates/preferences/alias_user.html:12
 msgid "Add another account as an alias"
-msgstr ""
+msgstr "Dodaj inne konto jako alias"
 
 #: bookwyrm/templates/preferences/alias_user.html:16
 msgid "Marking another account as an alias is required if you want to move that account to this one."
-msgstr ""
+msgstr "Oznaczenie innego konta jako alias jest wymagane, jeśli chcesz przenieść tamto konto do tego konta."
 
 #: bookwyrm/templates/preferences/alias_user.html:19
 msgid "This is a reversable action and will not change the functionality of this account."
@@ -4339,16 +4339,16 @@ msgstr ""
 #: bookwyrm/templates/preferences/alias_user.html:30
 #: bookwyrm/templates/preferences/move_user.html:35
 msgid "Confirm your password:"
-msgstr ""
+msgstr "Potwierdź swoje hasło:"
 
 #: bookwyrm/templates/preferences/alias_user.html:39
 #: bookwyrm/templates/preferences/layout.html:28
 msgid "Aliases"
-msgstr ""
+msgstr "Aliasy"
 
 #: bookwyrm/templates/preferences/alias_user.html:49
 msgid "Remove alias"
-msgstr ""
+msgstr "Usuń alias"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
@@ -4447,7 +4447,7 @@ msgstr "Prywatność"
 
 #: bookwyrm/templates/preferences/edit_user.html:69
 msgid "Show reading goal prompt in feed"
-msgstr ""
+msgstr "Pokaż monit o cel czytania na kanale"
 
 #: bookwyrm/templates/preferences/edit_user.html:75
 msgid "Show suggested users"
@@ -4485,25 +4485,25 @@ msgstr "Domyślna prywatność wpisu:"
 #: bookwyrm/templates/preferences/edit_user.html:136
 #, python-format
 msgid "Looking for shelf privacy? You can set a separate visibility level for each of your shelves. Go to <a href=\"%(path)s\">Your Books</a>, pick a shelf from the tab bar, and click \"Edit shelf.\""
-msgstr ""
+msgstr "Szukasz ustawień prywatności półki? Możesz ustawić oddzielne poziomy widoczności dla każdej ze swoich półek. Przejdź do <a href=\"%(path)s\">Twoje książki</a>, wybierz półkę z paska kart i naciśnij na \"Edytuj półkę\"."
 
 #: bookwyrm/templates/preferences/export-user.html:5
 #: bookwyrm/templates/preferences/export-user.html:8
 #: bookwyrm/templates/preferences/layout.html:55
 msgid "Export BookWyrm Account"
-msgstr ""
+msgstr "Eksportuj konto BookWyrm"
 
 #: bookwyrm/templates/preferences/export-user.html:14
 msgid "You can create an export file here. This will allow you to migrate your data to another BookWyrm account."
-msgstr ""
+msgstr "Tutaj możesz utworzyć plik eksportu. Umożliwi to przeniesienie twoich danych na inne konto BookWyrm."
 
 #: bookwyrm/templates/preferences/export-user.html:18
 msgid "Your file will include:"
-msgstr ""
+msgstr "Twój plik będzie zawierać:"
 
 #: bookwyrm/templates/preferences/export-user.html:21
 msgid "Most user settings"
-msgstr ""
+msgstr "Większość ustawień użytkownika"
 
 #: bookwyrm/templates/preferences/export-user.html:26
 #: bookwyrm/templates/settings/dashboard/dashboard.html:27
@@ -4512,31 +4512,31 @@ msgstr "Statusów"
 
 #: bookwyrm/templates/preferences/export-user.html:27
 msgid "Your own lists and saved lists"
-msgstr ""
+msgstr "Twoje własne listy i zapisane listy"
 
 #: bookwyrm/templates/preferences/export-user.html:28
 msgid "Which users you follow and block"
-msgstr ""
+msgstr "Listę obserwowanych i blokowanych użytkowników"
 
 #: bookwyrm/templates/preferences/export-user.html:32
 msgid "Your file will not include:"
-msgstr ""
+msgstr "Twój plik nie będzie zawierać:"
 
 #: bookwyrm/templates/preferences/export-user.html:34
 msgid "Direct messages"
-msgstr ""
+msgstr "Wiadomości bezpośrednich"
 
 #: bookwyrm/templates/preferences/export-user.html:35
 msgid "Replies to your statuses"
-msgstr ""
+msgstr "Odpowiedzi na twoje statusy"
 
 #: bookwyrm/templates/preferences/export-user.html:37
 msgid "Favorites"
-msgstr ""
+msgstr "Ulubionych"
 
 #: bookwyrm/templates/preferences/export-user.html:41
 msgid "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported."
-msgstr ""
+msgstr "Na swoim nowym koncie BookWyrm możesz wybrać elementy do importu: nie musisz importować wszystkiego, co zostało wyeksportowane."
 
 #: bookwyrm/templates/preferences/export-user.html:44
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set the account you are moving to as an <strong>alias</strong> of this one, or <strong>move</strong> this account to the new account, before you import your user data."
@@ -4544,7 +4544,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export-user.html:49
 msgid "New user exports are currently disabled."
-msgstr ""
+msgstr "Nowe eksporty użytkownika są obecnie wyłączone."
 
 #: bookwyrm/templates/preferences/export-user.html:53
 #, python-format
@@ -4570,21 +4570,21 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export-user.html:84
 msgid "Date"
-msgstr ""
+msgstr "Data"
 
 #: bookwyrm/templates/preferences/export-user.html:90
 msgid "Size"
-msgstr ""
+msgstr "Rozmiar"
 
 #: bookwyrm/templates/preferences/export-user.html:134
 msgid "Download your export"
-msgstr ""
+msgstr "Pobierz swój eksport"
 
 #: bookwyrm/templates/preferences/export.html:4
 #: bookwyrm/templates/preferences/export.html:7
 #: bookwyrm/templates/preferences/layout.html:47
 msgid "Export Book List"
-msgstr ""
+msgstr "Eksportuj listę książek"
 
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your CSV export file will include all the books on your shelves, books you have reviewed, and books with reading activity. <br/>Use this to import into a service like Goodreads."
@@ -4600,7 +4600,7 @@ msgstr "Konto"
 
 #: bookwyrm/templates/preferences/layout.html:32
 msgid "Move  Account"
-msgstr ""
+msgstr "Przenieś konto"
 
 #: bookwyrm/templates/preferences/layout.html:39
 msgid "Data"
@@ -4612,7 +4612,7 @@ msgstr "Relacje"
 
 #: bookwyrm/templates/preferences/move_user.html:12
 msgid "Migrate account to another server"
-msgstr ""
+msgstr "Przenieś konto na inny serwer"
 
 #: bookwyrm/templates/preferences/move_user.html:16
 msgid "Moving your account will notify all your followers and direct them to follow the new account."
@@ -5038,19 +5038,19 @@ msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:22
 msgid "Queues"
-msgstr ""
+msgstr "Kolejki"
 
 #: bookwyrm/templates/settings/celery.html:26
 msgid "Streams"
-msgstr ""
+msgstr "Transmisje"
 
 #: bookwyrm/templates/settings/celery.html:32
 msgid "Broadcast"
-msgstr ""
+msgstr "Transmituj"
 
 #: bookwyrm/templates/settings/celery.html:38
 msgid "Inbox"
-msgstr ""
+msgstr "Odebrane"
 
 #: bookwyrm/templates/settings/celery.html:51
 msgid "Import triggered"
@@ -5210,11 +5210,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:12
 msgid "Would you like to automatically check for new BookWyrm releases? (recommended)"
-msgstr ""
+msgstr "Czy chcesz włączyć automatyczne sprawdzanie nowych wydań BookWyrm? (zalecane)"
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:20
 msgid "Schedule checks"
-msgstr ""
+msgstr "Zaplanuj sprawdzenie"
 
 #: bookwyrm/templates/settings/dashboard/warnings/domain_review.html:9
 #, python-format
