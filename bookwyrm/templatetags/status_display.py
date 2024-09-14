@@ -60,7 +60,7 @@ def get_published_date(date):
     delta = relativedelta(now, date)
     if delta.years:
         return naturalday(date)
-    if delta.days:
+    if delta.days or delta.months:
         return naturalday(date, "M j")
     return naturaltime(date)
 
