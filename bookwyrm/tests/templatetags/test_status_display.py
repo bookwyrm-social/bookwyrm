@@ -109,4 +109,4 @@ class StatusDisplayTags(TestCase):
                 2022, 1, 8, 0, 0, tzinfo=datetime.timezone.utc
             )
             result = status_display.get_published_date(date)
-        self.assertEqual(result, "Jan 1")
+        self.assertEqual(result, "January 1")
