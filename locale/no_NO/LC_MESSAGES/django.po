@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-03-26 00:29\n"
+"PO-Revision-Date: 2024-09-19 18:31\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Norwegian\n"
 "Language: no\n"
@@ -294,7 +294,7 @@ msgstr "Fant ikke den boka"
 
 #: bookwyrm/models/job.py:22
 msgid "Failed"
-msgstr ""
+msgstr "Mislyktes"
 
 #: bookwyrm/models/link.py:51
 msgid "Free"
@@ -321,7 +321,7 @@ msgstr "Kommentar"
 
 #: bookwyrm/models/report.py:85
 msgid "Resolved report"
-msgstr ""
+msgstr "Løst rapport"
 
 #: bookwyrm/models/report.py:86
 msgid "Re-opened report"
@@ -353,42 +353,42 @@ msgstr "Slettet brukerkonto"
 
 #: bookwyrm/models/report.py:93
 msgid "Blocked domain"
-msgstr ""
+msgstr "Blokkert domene"
 
 #: bookwyrm/models/report.py:94
 msgid "Approved domain"
-msgstr ""
+msgstr "Godkjent domene"
 
 #: bookwyrm/models/report.py:95
 msgid "Deleted item"
-msgstr ""
+msgstr "Slettet element"
 
 #: bookwyrm/models/status.py:186
 #, python-format
 msgid "%(display_name)s's status"
-msgstr ""
+msgstr "%(display_name)s sin status"
 
 #: bookwyrm/models/status.py:361
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
-msgstr ""
+msgstr "%(display_name)s sin kommentar på %(book_title)s"
 
 #: bookwyrm/models/status.py:412
 #, python-format
 msgid "%(display_name)s's quote from %(book_title)s"
-msgstr ""
+msgstr "%(display_name)s sitt sitat fra %(book_title)s"
 
 #: bookwyrm/models/status.py:448
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
-msgstr ""
+msgstr "%(display_name)s sin omtale av %(book_title)s"
 
 #: bookwyrm/models/status.py:479
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_name)s vurderte %(book_title)s: %(display_rating).1f stjerne"
+msgstr[1] "%(display_name)s vurderte %(book_title)s: %(display_rating).1f stjerner"
 
 #: bookwyrm/models/user.py:33 bookwyrm/templates/book/book.html:312
 msgid "Reviews"
@@ -460,7 +460,7 @@ msgstr "Italiano (Italiensk)"
 
 #: bookwyrm/settings.py:325
 msgid "한국어 (Korean)"
-msgstr ""
+msgstr "한국어 (koreansk)"
 
 #: bookwyrm/settings.py:326
 msgid "Suomi (Finnish)"
@@ -476,7 +476,7 @@ msgstr "Lietuvių (Litauisk)"
 
 #: bookwyrm/settings.py:329
 msgid "Nederlands (Dutch)"
-msgstr ""
+msgstr "Nederlands (nederlandsk)"
 
 #: bookwyrm/settings.py:330
 msgid "Norsk (Norwegian)"
@@ -504,7 +504,7 @@ msgstr "Svenska (Svensk)"
 
 #: bookwyrm/settings.py:336
 msgid "Українська (Ukrainian)"
-msgstr ""
+msgstr "Українська (ukrainsk)"
 
 #: bookwyrm/settings.py:337
 msgid "简体中文 (Simplified Chinese)"
@@ -516,7 +516,7 @@ msgstr "繁體中文 (Tradisjonelt kinesisk)"
 
 #: bookwyrm/templates/403.html:5
 msgid "Oh no!"
-msgstr ""
+msgstr "Å nei!"
 
 #: bookwyrm/templates/403.html:9 bookwyrm/templates/landing/invite.html:21
 msgid "Permission Denied"
@@ -525,11 +525,11 @@ msgstr "Tilgang nektet"
 #: bookwyrm/templates/403.html:11
 #, python-format
 msgid "You do not have permission to view this page or perform this action. Your user permission level is <code>%(level)s</code>."
-msgstr ""
+msgstr "Du har ikke rettigheter til å se denne siden eller utføre denne handlingen. Ditt brukertilgangsnivå er <code>%(level)s</code>."
 
 #: bookwyrm/templates/403.html:15
 msgid "If you think you should have access, please speak to your BookWyrm server administrator."
-msgstr ""
+msgstr "Hvis du tror du burde ha tilgang til, snakk med din BookWyrm-serveradministrator."
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
@@ -541,15 +541,15 @@ msgstr "Den siden synes ikke å eksistere!"
 
 #: bookwyrm/templates/413.html:4 bookwyrm/templates/413.html:8
 msgid "File too large"
-msgstr ""
+msgstr "Filen er for stor"
 
 #: bookwyrm/templates/413.html:9
 msgid "The file you are uploading is too large."
-msgstr ""
+msgstr "Filen du laster opp er for stor."
 
 #: bookwyrm/templates/413.html:11
 msgid "You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting."
-msgstr ""
+msgstr "Du kan prøve å bruke en mindre fil, eller be din BookWyrm-serveradministrator om å øke <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code>-innstillingen."
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -924,7 +924,7 @@ msgstr "Lenke til wikipedia:"
 
 #: bookwyrm/templates/author/edit_author.html:58
 msgid "Wikidata:"
-msgstr ""
+msgstr "Wikidata:"
 
 #: bookwyrm/templates/author/edit_author.html:62
 msgid "Website:"
@@ -1153,11 +1153,11 @@ msgstr "ISBN:"
 #: bookwyrm/templates/book/book_identifiers.html:12
 #: bookwyrm/templates/book/book_identifiers.html:13
 msgid "Copy ISBN"
-msgstr ""
+msgstr "Kopier ISBN"
 
 #: bookwyrm/templates/book/book_identifiers.html:16
 msgid "Copied ISBN!"
-msgstr ""
+msgstr "Kopierte ISBN!"
 
 #: bookwyrm/templates/book/book_identifiers.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:352
@@ -1322,7 +1322,7 @@ msgstr "Tittel:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:35
 msgid "Sort Title:"
-msgstr ""
+msgstr "Sorter etter tittel:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:44
 msgid "Subtitle:"
