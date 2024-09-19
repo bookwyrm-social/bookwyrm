@@ -114,7 +114,12 @@ class StatusDisplayTags(TestCase):
         with patch("django.utils.timezone.now") as timezone_mock:
             timezone_mock.return_value = datetime.datetime(
                 # bookwyrm-social#3365: bug with exact month deltas
-                2022, 3, 1, 0, 0, tzinfo=datetime.timezone.utc
+                2022,
+                3,
+                1,
+                0,
+                0,
+                tzinfo=datetime.timezone.utc,
             )
             result = status_display.get_published_date(date)
         self.assertEqual(result, "January 1")
