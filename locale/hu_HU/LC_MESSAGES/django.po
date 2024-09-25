@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-09-25 09:10\n"
+"PO-Revision-Date: 2024-09-25 11:07\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Hungarian\n"
 "Language: hu\n"
@@ -48,35 +48,35 @@ msgstr "Helytelen jelszó"
 
 #: bookwyrm/forms/edit_user.py:111 bookwyrm/forms/landing.py:90
 msgid "Password does not match"
-msgstr ""
+msgstr "A jelszó nem egyezik"
 
 #: bookwyrm/forms/edit_user.py:134
 msgid "Incorrect Password"
-msgstr ""
+msgstr "Helytelen jelszó"
 
 #: bookwyrm/forms/forms.py:58
 msgid "Reading finish date cannot be before start date."
-msgstr ""
+msgstr "A könyv befejezésének a dátuma nem lehet korábbi az olvasás megkezdésének dátumánál."
 
 #: bookwyrm/forms/forms.py:63
 msgid "Reading stopped date cannot be before start date."
-msgstr ""
+msgstr "A könyv félbehagyásának a dátuma nem lehet korábbi az olvasás megkezdésének dátumánál."
 
 #: bookwyrm/forms/forms.py:71
 msgid "Reading stopped date cannot be in the future."
-msgstr ""
+msgstr "A könyv félbehagyásának a dátuma nem lehet a jövőben."
 
 #: bookwyrm/forms/forms.py:78
 msgid "Reading finished date cannot be in the future."
-msgstr ""
+msgstr "A könyv befejezésének a dátuma nem lehet a jövőben."
 
 #: bookwyrm/forms/landing.py:38
 msgid "Username or password are incorrect"
-msgstr ""
+msgstr "Helytelen felhasználónév vagy jelszó"
 
 #: bookwyrm/forms/landing.py:57
 msgid "User with this username already exists"
-msgstr ""
+msgstr "Ez a felhasználónév már foglalt"
 
 #: bookwyrm/forms/landing.py:66
 msgid "A user with this email already exists."
@@ -88,7 +88,7 @@ msgstr ""
 
 #: bookwyrm/forms/links.py:37
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
-msgstr ""
+msgstr "Ez a domain blokkolva van. Kérjük, lépjen kapcsolatba a rendszergazdával, ha úgy gondolja, hogy ez hiba."
 
 #: bookwyrm/forms/links.py:49
 msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
@@ -96,61 +96,61 @@ msgstr ""
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
-msgstr ""
+msgstr "Rendezett lista"
 
 #: bookwyrm/forms/lists.py:27
 msgid "Book Title"
-msgstr ""
+msgstr "Könyv címe"
 
 #: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:159
 #: bookwyrm/templates/shelf/shelf.html:191
 #: bookwyrm/templates/snippets/create_status/review.html:32
 msgid "Rating"
-msgstr ""
+msgstr "Értékelés"
 
 #: bookwyrm/forms/lists.py:30 bookwyrm/templates/lists/list.html:185
 msgid "Sort By"
-msgstr ""
+msgstr "Rendezés"
 
 #: bookwyrm/forms/lists.py:34
 msgid "Ascending"
-msgstr ""
+msgstr "Növekvő"
 
 #: bookwyrm/forms/lists.py:35
 msgid "Descending"
-msgstr ""
+msgstr "Csökkenő"
 
 #: bookwyrm/models/announcement.py:11
 msgid "Primary"
-msgstr ""
+msgstr "Elsődleges"
 
 #: bookwyrm/models/announcement.py:12
 msgid "Success"
-msgstr ""
+msgstr "Sikeres"
 
 #: bookwyrm/models/announcement.py:13
 #: bookwyrm/templates/settings/invites/manage_invites.html:47
 msgid "Link"
-msgstr ""
+msgstr "Hivatkozás"
 
 #: bookwyrm/models/announcement.py:14
 msgid "Warning"
-msgstr ""
+msgstr "Figyelmeztetés"
 
 #: bookwyrm/models/announcement.py:15
 msgid "Danger"
-msgstr ""
+msgstr "Veszély"
 
 #: bookwyrm/models/antispam.py:113 bookwyrm/models/antispam.py:147
 msgid "Automatically generated report"
-msgstr ""
+msgstr "Automatikusan előállított jelentés"
 
 #: bookwyrm/models/base_model.py:18 bookwyrm/models/import_job.py:48
 #: bookwyrm/models/job.py:18 bookwyrm/models/link.py:72
 #: bookwyrm/templates/import/import_status.html:214
 #: bookwyrm/templates/settings/link_domains/link_domains.html:19
 msgid "Pending"
-msgstr ""
+msgstr "Függőben"
 
 #: bookwyrm/models/base_model.py:19
 msgid "Self deletion"
@@ -162,41 +162,41 @@ msgstr ""
 
 #: bookwyrm/models/base_model.py:21
 msgid "Moderator suspension"
-msgstr ""
+msgstr "Moderátor által felfüggesztve"
 
 #: bookwyrm/models/base_model.py:22
 msgid "Moderator deletion"
-msgstr ""
+msgstr "Moderátor által törölve"
 
 #: bookwyrm/models/base_model.py:23
 msgid "Domain block"
-msgstr ""
+msgstr "Domain tiltás"
 
 #: bookwyrm/models/book.py:324
 msgid "Audiobook"
-msgstr ""
+msgstr "Hangoskönyv"
 
 #: bookwyrm/models/book.py:325
 msgid "eBook"
-msgstr ""
+msgstr "e-Könyv"
 
 #: bookwyrm/models/book.py:326
 msgid "Graphic novel"
-msgstr ""
+msgstr "Képregényalbum"
 
 #: bookwyrm/models/book.py:327
 msgid "Hardcover"
-msgstr ""
+msgstr "Keménytáblás"
 
 #: bookwyrm/models/book.py:328
 msgid "Paperback"
-msgstr ""
+msgstr "Puhatáblás"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
 #: bookwyrm/templates/settings/federation/instance_list.html:22
 msgid "Federated"
-msgstr ""
+msgstr "Összekapcsolt"
 
 #: bookwyrm/models/federated_server.py:12 bookwyrm/models/link.py:71
 #: bookwyrm/templates/settings/federation/edit_instance.html:56
@@ -204,7 +204,7 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance_list.html:26
 #: bookwyrm/templates/settings/link_domains/link_domains.html:27
 msgid "Blocked"
-msgstr ""
+msgstr "Zárolt"
 
 #: bookwyrm/models/fields.py:35
 #, python-format
@@ -257,7 +257,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/privacy_select.html:20
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:17
 msgid "Private"
-msgstr ""
+msgstr "Személyes"
 
 #: bookwyrm/models/import_job.py:49 bookwyrm/models/job.py:19
 #: bookwyrm/templates/import/import.html:173
@@ -274,58 +274,58 @@ msgstr ""
 #: bookwyrm/templates/import/import_user.html:209
 #: bookwyrm/templates/preferences/export-user.html:119
 msgid "Complete"
-msgstr ""
+msgstr "Kész"
 
 #: bookwyrm/models/import_job.py:51 bookwyrm/models/job.py:21
 msgid "Stopped"
-msgstr ""
+msgstr "Leállítva"
 
 #: bookwyrm/models/import_job.py:84 bookwyrm/models/import_job.py:92
 msgid "Import stopped"
-msgstr ""
+msgstr "Importálás megszakítva"
 
 #: bookwyrm/models/import_job.py:356 bookwyrm/models/import_job.py:381
 msgid "Error loading book"
-msgstr ""
+msgstr "Hiba a könyv betöltésekor"
 
 #: bookwyrm/models/import_job.py:365
 msgid "Could not find a match for book"
-msgstr ""
+msgstr "Nem található egyezés a könyvhöz"
 
 #: bookwyrm/models/job.py:22
 msgid "Failed"
-msgstr ""
+msgstr "Sikertelen"
 
 #: bookwyrm/models/link.py:51
 msgid "Free"
-msgstr ""
+msgstr "Ingyenes"
 
 #: bookwyrm/models/link.py:52
 msgid "Purchasable"
-msgstr ""
+msgstr "Megvásárólható"
 
 #: bookwyrm/models/link.py:53
 msgid "Available for loan"
-msgstr ""
+msgstr "Kölcsönözhető"
 
 #: bookwyrm/models/link.py:70
 #: bookwyrm/templates/settings/link_domains/link_domains.html:23
 msgid "Approved"
-msgstr ""
+msgstr "Jóváhagyva"
 
 #: bookwyrm/models/report.py:84
 #: bookwyrm/templates/settings/reports/report.html:115
 #: bookwyrm/templates/snippets/create_status.html:26
 msgid "Comment"
-msgstr ""
+msgstr "Megjegyzés"
 
 #: bookwyrm/models/report.py:85
 msgid "Resolved report"
-msgstr ""
+msgstr "Megoldott jelentés"
 
 #: bookwyrm/models/report.py:86
 msgid "Re-opened report"
-msgstr ""
+msgstr "Újranyitott jelentés"
 
 #: bookwyrm/models/report.py:87
 msgid "Messaged reporter"
@@ -349,7 +349,7 @@ msgstr ""
 
 #: bookwyrm/models/report.py:92
 msgid "Deleted user account"
-msgstr ""
+msgstr "Törölt felhasználói fiók"
 
 #: bookwyrm/models/report.py:93
 msgid "Blocked domain"
@@ -428,51 +428,51 @@ msgstr ""
 
 #: bookwyrm/settings.py:317
 msgid "English"
-msgstr ""
+msgstr "English (Angol)"
 
 #: bookwyrm/settings.py:318
 msgid "Català (Catalan)"
-msgstr ""
+msgstr "Català (Katalán)"
 
 #: bookwyrm/settings.py:319
 msgid "Deutsch (German)"
-msgstr ""
+msgstr "Deutsch (Német)"
 
 #: bookwyrm/settings.py:320
 msgid "Esperanto (Esperanto)"
-msgstr ""
+msgstr "Esperanto (Eszperantó)"
 
 #: bookwyrm/settings.py:321
 msgid "Español (Spanish)"
-msgstr ""
+msgstr "Español (Spanyol)"
 
 #: bookwyrm/settings.py:322
 msgid "Euskara (Basque)"
-msgstr ""
+msgstr "Euskara (Baszk)"
 
 #: bookwyrm/settings.py:323
 msgid "Galego (Galician)"
-msgstr ""
+msgstr "Galego (Galiciai)"
 
 #: bookwyrm/settings.py:324
 msgid "Italiano (Italian)"
-msgstr ""
+msgstr "Italiano (Olasz)"
 
 #: bookwyrm/settings.py:325
 msgid "한국어 (Korean)"
-msgstr ""
+msgstr "한국어 (Koreai)"
 
 #: bookwyrm/settings.py:326
 msgid "Suomi (Finnish)"
-msgstr ""
+msgstr "Suomi (Finn)"
 
 #: bookwyrm/settings.py:327
 msgid "Français (French)"
-msgstr ""
+msgstr "Français (Francia)"
 
 #: bookwyrm/settings.py:328
 msgid "Lietuvių (Lithuanian)"
-msgstr ""
+msgstr "Lietuvių (Litván)"
 
 #: bookwyrm/settings.py:329
 msgid "Nederlands (Dutch)"
