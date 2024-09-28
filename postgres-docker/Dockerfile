@@ -1,4 +1,4 @@
-FROM postgres:13.0
+FROM postgres:13.16
 
 # crontab
 RUN mkdir /backups
@@ -15,6 +15,6 @@ RUN touch /var/log/cron.log
 # We need to start the cron service the first time it runs, when it's still being run
 # as the root user. We're going to add a check that looks at the first argument and
 # if it's 'cron', starts the service and then removes that argument.
-RUN awk '$0 ~ /^\t_main "\$@"$/ { print "\tif [[ $1 == cron ]]; then\n\t\techo \"POSTGRES_DB=${POSTGRES_DB}\" > /backups/.env\n\t\techo \"POSTGRES_USER=${POSTGRES_USER}\" >> /backups/.env\n\t\tservice cron start\n\t\tshift\n\tfi" }{ print }' docker-entrypoint.sh > bookwyrm-entrypoint.sh
+RUN awk '$0 ~ /^\t_main "\$@"$/ { print "\tif [[ $1 == cron ]]; then\n\t\techo \"POSTGRES_DB=${POSTGRES_DB}\" > /backups/.env\n\t\techo \"POSTGRES_USER=${POSTGRES_USER}\" >> /backups/.env\n\t\tservice cron start\n\t\tshift\n\tfi" }{ print }' /usr/local/bin/docker-entrypoint.sh > bookwyrm-entrypoint.sh
 RUN chown postgres /bookwyrm-entrypoint.sh
 RUN chmod u=rwx,go=r /bookwyrm-entrypoint.sh
