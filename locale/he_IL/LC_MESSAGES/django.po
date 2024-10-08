@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-10-08 20:09\n"
+"PO-Revision-Date: 2024-10-08 21:22\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Hebrew\n"
 "Language: he\n"
@@ -462,7 +462,7 @@ msgstr "Italiano (איטלקית)"
 
 #: bookwyrm/settings.py:325
 msgid "한국어 (Korean)"
-msgstr ""
+msgstr "한국어 (קוריאנית)"
 
 #: bookwyrm/settings.py:326
 msgid "Suomi (Finnish)"
@@ -506,7 +506,7 @@ msgstr "Svenska (שוודית)"
 
 #: bookwyrm/settings.py:336
 msgid "Українська (Ukrainian)"
-msgstr ""
+msgstr "Українська (אוקראינית)"
 
 #: bookwyrm/settings.py:337
 msgid "简体中文 (Simplified Chinese)"
@@ -518,7 +518,7 @@ msgstr "繁體中文 (סינית מסורתית)"
 
 #: bookwyrm/templates/403.html:5
 msgid "Oh no!"
-msgstr ""
+msgstr "הו לא!"
 
 #: bookwyrm/templates/403.html:9 bookwyrm/templates/landing/invite.html:21
 msgid "Permission Denied"
@@ -1209,7 +1209,7 @@ msgstr "העלאת כריכה:"
 #: bookwyrm/templates/book/cover_add_modal.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:250
 msgid "Load cover from URL:"
-msgstr ""
+msgstr "טעינת כריכה מכתובת:"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
 msgid "Book cover preview"
@@ -1466,7 +1466,7 @@ msgstr "מהדורות של %(book_title)s"
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
 msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
-msgstr ""
+msgstr "מהדורות של <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
@@ -1648,7 +1648,7 @@ msgstr "דירג/ה"
 
 #: bookwyrm/templates/book/series.html:11
 msgid "Series by"
-msgstr ""
+msgstr "סדרה מאת"
 
 #: bookwyrm/templates/book/series.html:28
 #, python-format
@@ -1788,7 +1788,7 @@ msgstr "חשבון נעול"
 #: bookwyrm/templates/directory/user_card.html:40
 msgid "follower you follow"
 msgid_plural "followers you follow"
-msgstr[0] "עוקב/ת שאת/ה עוקב/ת אחריו/ה"
+msgstr[0] "עוקבים שנעקבים על ידיך"
 msgstr[1] "עוקבים שאת/ה עוקב/ת אחריהם"
 msgstr[2] "עוקבים שאת/ה עוקב/ת אחריהם"
 msgstr[3] ""
@@ -1799,7 +1799,7 @@ msgid_plural "books on your shelves"
 msgstr[0] "ספר על המדפים שלך"
 msgstr[1] ""
 msgstr[2] "ספרים על המדפים שלך"
-msgstr[3] ""
+msgstr[3] "ספרים על המדפים שלך"
 
 #: bookwyrm/templates/directory/user_card.html:55
 msgid "posts"
@@ -3165,7 +3165,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:13
 msgid "Not a valid import file"
-msgstr ""
+msgstr "קובץ ייבוא לא תקין"
 
 #: bookwyrm/templates/import/import_user.html:18
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set this account as an <strong>alias</strong> of the one you are migrating from, or <strong>move</strong> that account to this one, before you import your user data."
@@ -3183,7 +3183,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:41
 msgid "Step 1:"
-msgstr ""
+msgstr "שלב 1:"
 
 #: bookwyrm/templates/import/import_user.html:43
 msgid "Select an export file generated from another BookWyrm account. The file format should be <code>.tar.gz</code>."
@@ -3191,7 +3191,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:58
 msgid "Step 2:"
-msgstr ""
+msgstr "שלב 2:"
 
 #: bookwyrm/templates/import/import_user.html:60
 msgid "Deselect any checkboxes for data you do not wish to include in your import."
@@ -3215,7 +3215,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:83
 msgid "Overwrites:"
-msgstr ""
+msgstr "דורס את:"
 
 #: bookwyrm/templates/import/import_user.html:86
 msgid "Whether manual approval is required for other users to follow your account"
@@ -3243,7 +3243,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:104
 msgid "Your default post privacy setting"
-msgstr ""
+msgstr "הגדרות ברירת המחדל של פרטיות הפוסטים"
 
 #: bookwyrm/templates/import/import_user.html:112
 msgid "Followers and following"
@@ -3256,7 +3256,7 @@ msgstr ""
 #: bookwyrm/templates/import/import_user.html:123
 #: bookwyrm/templates/preferences/export-user.html:22
 msgid "Reading goals"
-msgstr ""
+msgstr "יעדי קריאה"
 
 #: bookwyrm/templates/import/import_user.html:126
 msgid "Overwrites reading goals for all years listed in the import file"
@@ -3265,12 +3265,12 @@ msgstr ""
 #: bookwyrm/templates/import/import_user.html:130
 #: bookwyrm/templates/preferences/export-user.html:23
 msgid "Shelves"
-msgstr ""
+msgstr "מדפים"
 
 #: bookwyrm/templates/import/import_user.html:133
 #: bookwyrm/templates/preferences/export-user.html:24
 msgid "Reading history"
-msgstr ""
+msgstr "היסטוריית קריאה"
 
 #: bookwyrm/templates/import/import_user.html:136
 #: bookwyrm/templates/preferences/export-user.html:25
@@ -3283,11 +3283,11 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:145
 msgid "Book lists"
-msgstr ""
+msgstr "רשימות ספרים"
 
 #: bookwyrm/templates/import/import_user.html:148
 msgid "Saved lists"
-msgstr ""
+msgstr "רשימות שמורות"
 
 #: bookwyrm/templates/import/manual_review.html:5
 #: bookwyrm/templates/import/troubleshoot.html:4
@@ -3331,7 +3331,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/troubleshoot.html:25
 msgid "BookWyrm has been updated since this import with a bug fix"
-msgstr ""
+msgstr "מאז ייבוא זה, BookWyrm עודכן ותוקנה תקלה"
 
 #: bookwyrm/templates/import/troubleshoot.html:28
 msgid "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items."
@@ -3477,7 +3477,7 @@ msgstr "סיסמה"
 
 #: bookwyrm/templates/layout.html:136
 msgid "Show/Hide password"
-msgstr ""
+msgstr "הצג/הסתר סיסמה"
 
 #: bookwyrm/templates/layout.html:150
 msgid "Join"
@@ -3707,7 +3707,7 @@ msgstr ""
 
 #: bookwyrm/templates/lists/list.html:224
 msgid "Clear search"
-msgstr ""
+msgstr "ניקוי חיפוש"
 
 #: bookwyrm/templates/lists/list.html:229
 #, python-format
