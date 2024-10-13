@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-10-13 16:58\n"
+"PO-Revision-Date: 2024-10-13 18:06\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Norwegian\n"
 "Language: no\n"
@@ -4447,7 +4447,7 @@ msgstr "Standard tilgangsnivå på innlegg:"
 #: bookwyrm/templates/preferences/edit_user.html:136
 #, python-format
 msgid "Looking for shelf privacy? You can set a separate visibility level for each of your shelves. Go to <a href=\"%(path)s\">Your Books</a>, pick a shelf from the tab bar, and click \"Edit shelf.\""
-msgstr ""
+msgstr "Ser du etter hylle-personvern? Du kan angi et eget synlighetsnivå for hver av hyllene dine. Gå til <a href=\"%(path)s\">Bøkene dine</a>, velg en hylle fra fanelinjen, og klikk «Rediger hylle»."
 
 #: bookwyrm/templates/preferences/export-user.html:5
 #: bookwyrm/templates/preferences/export-user.html:8
@@ -4511,7 +4511,7 @@ msgstr "Nye brukereksporter er for øyeblikket deaktivert."
 #: bookwyrm/templates/preferences/export-user.html:53
 #, python-format
 msgid "User exports settings can be changed from <a href=\"%(url)s\">the Imports page</a> in the Admin dashboard."
-msgstr ""
+msgstr "Brukereksportinnstillingene kan endres fra <a href=\"%(url)s\">Import-siden</a> i Admin-panelet."
 
 #: bookwyrm/templates/preferences/export-user.html:60
 #, python-format
@@ -4578,7 +4578,7 @@ msgstr "Migrer konto til en annen server"
 
 #: bookwyrm/templates/preferences/move_user.html:16
 msgid "Moving your account will notify all your followers and direct them to follow the new account."
-msgstr ""
+msgstr "Å flytte kontoen din vil varsle alle dine følgere og instruere til å følge den nye kontoen."
 
 #: bookwyrm/templates/preferences/move_user.html:19
 #, python-format
@@ -4959,7 +4959,7 @@ msgstr "Legg til regel"
 #: bookwyrm/templates/settings/automod/rules.html:116
 #: bookwyrm/templates/settings/automod/rules.html:160
 msgid "String match"
-msgstr ""
+msgstr "Streng-samsvar"
 
 #: bookwyrm/templates/settings/automod/rules.html:126
 #: bookwyrm/templates/settings/automod/rules.html:163
@@ -5018,7 +5018,7 @@ msgstr "Import utløst"
 
 #: bookwyrm/templates/settings/celery.html:57
 msgid "Connectors"
-msgstr ""
+msgstr "Koblinger"
 
 #: bookwyrm/templates/settings/celery.html:64
 #: bookwyrm/templates/settings/site.html:91
@@ -5101,7 +5101,7 @@ msgstr "Tøm køer"
 
 #: bookwyrm/templates/settings/celery.html:182
 msgid "Clearing queues can cause serious problems including data loss! Only play with this if you really know what you're doing. You must shut down the Celery worker before you do this."
-msgstr ""
+msgstr "Å slette køer kan føre til alvorlige problemer, inkludert tap av data! Bare lek med dette hvis du vet hva du gjør. Du må stenge ned Celery-arbeideren før du gjør dette."
 
 #: bookwyrm/templates/settings/celery.html:208
 msgid "Errors"
@@ -5170,11 +5170,11 @@ msgstr "Totalt"
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:12
 msgid "Would you like to automatically check for new BookWyrm releases? (recommended)"
-msgstr ""
+msgstr "Ønsker du å automatisk se etter nye BookWyrm-utgivelser? (anbefales)"
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:20
 msgid "Schedule checks"
-msgstr ""
+msgstr "Planlegg kontroller"
 
 #: bookwyrm/templates/settings/dashboard/warnings/domain_review.html:9
 #, python-format
@@ -5186,11 +5186,11 @@ msgstr[1] "%(display_count)s domener må godkjennes"
 #: bookwyrm/templates/settings/dashboard/warnings/email_config.html:8
 #, python-format
 msgid "Your outgoing email address, <code>%(email_sender)s</code>, may be misconfigured."
-msgstr ""
+msgstr "Din utgående e-postadresse, <code>%(email_sender)s</code>, kan være feilkonfigurert."
 
 #: bookwyrm/templates/settings/dashboard/warnings/email_config.html:11
 msgid "Check the <code>EMAIL_SENDER_NAME</code> and <code>EMAIL_SENDER_DOMAIN</code> in your <code>.env</code> file."
-msgstr ""
+msgstr "Kontroller <code>EMAIL_SENDER_NAME</code> og <code>EMAIL_SENDER_DOMAIN</code> i <code>.env</code>-filen."
 
 #: bookwyrm/templates/settings/dashboard/warnings/invites.html:9
 #, python-format
@@ -5275,7 +5275,7 @@ msgstr "E-postsender:"
 
 #: bookwyrm/templates/settings/email_config.html:39
 msgid "Email backend:"
-msgstr ""
+msgstr "E-post-backend:"
 
 #: bookwyrm/templates/settings/email_config.html:46
 msgid "Host:"
@@ -5439,7 +5439,7 @@ msgstr "Mislyktes:"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:62
 msgid "Expects a json file in the format provided by FediBlock, with a list of entries that have <code>instance</code> and <code>url</code> fields. For example:"
-msgstr ""
+msgstr "Forventer en json-fil i FediBlock-format, med en liste over oppføringer som har <code>instance</code>- og <code>url</code>-felt. For eksempel:"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:36
 #: bookwyrm/templates/settings/users/server_filter.html:5
@@ -5466,23 +5466,23 @@ msgstr "Stopp import?"
 
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:7
 msgid "This action will stop the user import before it is complete and cannot be un-done"
-msgstr ""
+msgstr "Denne handlingen vil stoppe brukerimport før den er fullført og kan ikke omgjøres"
 
 #: bookwyrm/templates/settings/imports/imports.html:19
 msgid "Disable starting new imports"
-msgstr ""
+msgstr "Deaktiver oppstart av nye importer"
 
 #: bookwyrm/templates/settings/imports/imports.html:30
 msgid "This is only intended to be used when things have gone very wrong with imports and you need to pause the feature while addressing issues."
-msgstr ""
+msgstr "Dette er bare ment å bli brukt når ting har gått galt med importer og du må pause funksjonen mens du tar tak i problemene."
 
 #: bookwyrm/templates/settings/imports/imports.html:31
 msgid "While imports are disabled, users will not be allowed to start new imports, but existing imports will not be affected."
-msgstr ""
+msgstr "Mens import er deaktivert vil ikke brukere kunne starte nye importer, men pågående importer vil ikke påvirkes."
 
 #: bookwyrm/templates/settings/imports/imports.html:32
 msgid "This setting prevents both book imports and user imports."
-msgstr ""
+msgstr "Denne innstillingen hindrer både bokimport og brukerimport."
 
 #: bookwyrm/templates/settings/imports/imports.html:37
 msgid "Disable imports"
@@ -5490,7 +5490,7 @@ msgstr "Deaktiver import"
 
 #: bookwyrm/templates/settings/imports/imports.html:51
 msgid "Users are currently unable to start new imports"
-msgstr ""
+msgstr "Brukere kan for øyeblikket ikke starte nye importer"
 
 #: bookwyrm/templates/settings/imports/imports.html:56
 msgid "Enable imports"
@@ -5498,16 +5498,16 @@ msgstr "Aktiver import"
 
 #: bookwyrm/templates/settings/imports/imports.html:64
 msgid "Limit the amount of imports"
-msgstr ""
+msgstr "Begrens mengde import"
 
 #: bookwyrm/templates/settings/imports/imports.html:75
 msgid "Some users might try to import a large number of books, which you want to limit."
-msgstr ""
+msgstr "Noen brukere kan prøve å importere et stort antall bøker, noe du vil begrense."
 
 #: bookwyrm/templates/settings/imports/imports.html:76
 #: bookwyrm/templates/settings/imports/imports.html:135
 msgid "Set the value to 0 to not enforce any limit."
-msgstr ""
+msgstr "Sett verdien til 0 for å ikke håndheve noen grense."
 
 #: bookwyrm/templates/settings/imports/imports.html:79
 msgid "Set import limit to"
@@ -5527,15 +5527,15 @@ msgstr "Sett grense"
 
 #: bookwyrm/templates/settings/imports/imports.html:98
 msgid "Disable starting new user exports"
-msgstr ""
+msgstr "Deaktiver oppstart av nye brukereksporter"
 
 #: bookwyrm/templates/settings/imports/imports.html:109
 msgid "This is only intended to be used when things have gone very wrong with exports and you need to pause the feature while addressing issues."
-msgstr ""
+msgstr "Dette er bare ment å bli brukt når ting har gått galt med eksporten og du må pause funksjonen mens du tar tak i problemene."
 
 #: bookwyrm/templates/settings/imports/imports.html:110
 msgid "While exports are disabled, users will not be allowed to start new user exports, but existing exports will not be affected."
-msgstr ""
+msgstr "Mens eksporten er deaktivert vil ikke brukere kunne starte nye brukereksporter, men pågående eksporteringer vil ikke påvirkes."
 
 #: bookwyrm/templates/settings/imports/imports.html:115
 msgid "Disable user exports"
@@ -5543,15 +5543,15 @@ msgstr "Deaktiver brukereksport"
 
 #: bookwyrm/templates/settings/imports/imports.html:123
 msgid "Limit how often users can import and export"
-msgstr ""
+msgstr "Begrens hvor ofte brukere kan importere og eksportere"
 
 #: bookwyrm/templates/settings/imports/imports.html:134
 msgid "Some users might try to run user imports or exports very frequently, which you want to limit."
-msgstr ""
+msgstr "Noen brukere kan prøve å kjøre brukerimport eller -eksport svært hyppig, noe du vil begrense."
 
 #: bookwyrm/templates/settings/imports/imports.html:138
 msgid "Limit how often users can import and export user data"
-msgstr ""
+msgstr "Begrens hvor ofte brukere kan importere og eksportere brukerdata"
 
 #: bookwyrm/templates/settings/imports/imports.html:140
 msgid "hours"
@@ -5563,15 +5563,15 @@ msgstr "Endre grense"
 
 #: bookwyrm/templates/settings/imports/imports.html:159
 msgid "Users are currently unable to start new user exports. This is the default setting."
-msgstr ""
+msgstr "Brukere kan for øyeblikket ikke starte ny brukereksport. Dette er standardinnstillingen."
 
 #: bookwyrm/templates/settings/imports/imports.html:161
 msgid "It is not currently possible to provide user exports when using s3 storage. The BookWyrm development team are working on a fix for this."
-msgstr ""
+msgstr "Det er for tiden ikke mulig å gi brukereksport når du bruker S3-lagring. BookWyrm-utviklerne jobber med å utbedre dette."
 
 #: bookwyrm/templates/settings/imports/imports.html:167
 msgid "Enable user exports"
-msgstr ""
+msgstr "Aktiver brukereksport"
 
 #: bookwyrm/templates/settings/imports/imports.html:174
 msgid "Book Imports"
@@ -5594,20 +5594,20 @@ msgstr "Dato oppdatert"
 
 #: bookwyrm/templates/settings/imports/imports.html:214
 msgid "Pending items"
-msgstr ""
+msgstr "Ventende oppføringer"
 
 #: bookwyrm/templates/settings/imports/imports.html:217
 msgid "Successful items"
-msgstr ""
+msgstr "Vellykkede oppføringer"
 
 #: bookwyrm/templates/settings/imports/imports.html:252
 #: bookwyrm/templates/settings/imports/imports.html:344
 msgid "No matching imports found."
-msgstr ""
+msgstr "Ingen samsvarende import funnet."
 
 #: bookwyrm/templates/settings/imports/imports.html:264
 msgid "User Imports"
-msgstr ""
+msgstr "Brukerimport"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:4
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:11
@@ -5790,7 +5790,7 @@ msgstr "Celery-status"
 #: bookwyrm/templates/settings/schedules.html:7
 #: bookwyrm/templates/settings/schedules.html:11
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Planlagte oppgaver"
 
 #: bookwyrm/templates/settings/layout.html:99
 msgid "Instance Settings"
@@ -5891,7 +5891,7 @@ msgstr "Invitasjonsforespørsel tekst:"
 #: bookwyrm/templates/settings/registration.html:80
 #: bookwyrm/templates/settings/registration_limited.html:50
 msgid "Set a question for invite requests"
-msgstr ""
+msgstr "Angi et spørsmål for invitasjonsforespørsler"
 
 #: bookwyrm/templates/settings/registration.html:85
 #: bookwyrm/templates/settings/registration_limited.html:55
@@ -5921,7 +5921,7 @@ msgstr "Oppdatering på din rapport:"
 
 #: bookwyrm/templates/settings/reports/report.html:37
 msgid "Reported status"
-msgstr ""
+msgstr "Rapportert status"
 
 #: bookwyrm/templates/settings/reports/report.html:39
 msgid "Status has been deleted"
@@ -5933,7 +5933,7 @@ msgstr "Rapporterte lenker"
 
 #: bookwyrm/templates/settings/reports/report.html:66
 msgid "Moderation Activity"
-msgstr ""
+msgstr "Modereringsaktivitet"
 
 #: bookwyrm/templates/settings/reports/report.html:73
 #, python-format
@@ -5963,7 +5963,7 @@ msgstr "Rapportér #%(report_id)s: Lenke lagt til av @%(username)s"
 #: bookwyrm/templates/settings/reports/report_header.html:17
 #, python-format
 msgid "Report #%(report_id)s: Link domain"
-msgstr ""
+msgstr "Rapport #%(report_id)s: Lenkedomene"
 
 #: bookwyrm/templates/settings/reports/report_header.html:24
 #, python-format
