@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-10-13 15:39\n"
+"PO-Revision-Date: 2024-10-13 16:58\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Norwegian\n"
 "Language: no\n"
@@ -2860,7 +2860,7 @@ msgstr "Bøker-fanen viser dine bokhyller. Vi vil utforske dette senere i omvisn
 
 #: bookwyrm/templates/guided_tour/user_profile.html:123
 msgid "Now you understand the basics of your profile page, let's add a book to your shelves."
-msgstr ""
+msgstr "Nå som du forstår du det grunnleggende på profilsiden, la oss legge til en bok på hyllen."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:123
 msgid "Search for a title or author to continue the tour."
@@ -2873,7 +2873,7 @@ msgstr "Finn en bok"
 #: bookwyrm/templates/hashtag.html:12
 #, python-format
 msgid "See tagged statuses in the local %(site_name)s community"
-msgstr ""
+msgstr "Se merkede statuser i det lokale %(site_name)s-samfunnet"
 
 #: bookwyrm/templates/hashtag.html:25
 msgid "No activities for this hashtag yet!"
@@ -2893,8 +2893,8 @@ msgstr "Ikke en gyldig CSV-fil"
 #, python-format
 msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
 msgid_plural "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s days."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "For øyeblikket kan du importere %(display_size)s bøker hver %(import_limit_reset)s dag."
+msgstr[1] "For øyeblikket kan du importere %(display_size)s bøker hver %(import_limit_reset)s dager."
 
 #: bookwyrm/templates/import/import.html:26
 #, python-format
@@ -3141,17 +3141,17 @@ msgstr "Ikke en gyldig importfil"
 
 #: bookwyrm/templates/import/import_user.html:18
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set this account as an <strong>alias</strong> of the one you are migrating from, or <strong>move</strong> that account to this one, before you import your user data."
-msgstr ""
+msgstr "Hvis du ønsker å migrere enkelte statuser (kommentarer, omtaler, eller sitater) må du enten må angi denne kontoen som et <strong>alias</strong> av den du migrerer fra, eller <strong>flytte</strong> kontoen til denne, før du importerer dine brukerdata."
 
 #: bookwyrm/templates/import/import_user.html:32
 #, python-format
 msgid "Currently you are allowed to import one user every %(user_import_hours)s hours."
-msgstr ""
+msgstr "For øyeblikket har du tilgang til å importere en bruker hver %(user_import_hours)s time."
 
 #: bookwyrm/templates/import/import_user.html:33
 #, python-format
 msgid "You will next be able to import a user file at %(next_available)s"
-msgstr ""
+msgstr "Du vil kunne importere neste brukerfil %(next_available)s"
 
 #: bookwyrm/templates/import/import_user.html:41
 msgid "Step 1:"
@@ -3793,142 +3793,142 @@ msgstr[1] "<a href=\"%(related_user_link)s\">%(related_user)s</a> foreslo å leg
 #: bookwyrm/templates/notifications/items/boost.html:21
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> fremhevet din <a href=\"%(related_path)s\">omtale av <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:27
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og <a href=\"%(second_user_link)s\">%(second_user)s</a> fremhevet din <a href=\"%(related_path)s\">omtale av <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og %(other_user_display_count)s andre fremhevet din <a href=\"%(related_path)s\">omtale av <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:44
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> fremhevet din <a href=\"%(related_path)s\">kommentar på <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:50
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og <a href=\"%(second_user_link)s\">%(second_user)s</a> fremhevet din <a href=\"%(related_path)s\">kommentar på <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:59
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og %(other_user_display_count)s andre fremhevet din <a href=\"%(related_path)s\">kommentar på <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:67
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> fremhevet ditt <a href=\"%(related_path)s\">sitat fra <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:73
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og <a href=\"%(second_user_link)s\">%(second_user)s</a> fremhevet ditt <a href=\"%(related_path)s\">sitat fra <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:82
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og %(other_user_display_count)s andre fremhevet ditt <a href=\"%(related_path)s\">sitat fra <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:90
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> fremhevet din <a href=\"%(related_path)s\">status</a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:96
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og <a href=\"%(second_user_link)s\">%(second_user)s</a> fremhevet din <a href=\"%(related_path)s\">status</a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:105
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og %(other_user_display_count)s andre fremhevet din <a href=\"%(related_path)s\">status</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:21
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> likte din <a href=\"%(related_path)s\">omtale av <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:27
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og <a href=\"%(second_user_link)s\">%(second_user)s</a> likte din <a href=\"%(related_path)s\">omtale av <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og %(other_user_display_count)s andre likte din <a href=\"%(related_path)s\">omtale av <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:44
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> likte din <a href=\"%(related_path)s\">kommentar på <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:50
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og <a href=\"%(second_user_link)s\">%(second_user)s</a> likte din <a href=\"%(related_path)s\">kommentar på <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:59
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og %(other_user_display_count)s andre likte din <a href=\"%(related_path)s\">kommentar på <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:67
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> likte ditt <a href=\"%(related_path)s\">sitat fra <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:73
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og <a href=\"%(second_user_link)s\">%(second_user)s</a> likte ditt <a href=\"%(related_path)s\">sitat fra <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:82
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og %(other_user_display_count)s andre likte ditt <a href=\"%(related_path)s\">sitat fra <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:90
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> likte din <a href=\"%(related_path)s\">status</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:96
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og <a href=\"%(second_user_link)s\">%(second_user)s</a> likte din <a href=\"%(related_path)s\">status</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:105
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og %(other_user_display_count)s andre likte din <a href=\"%(related_path)s\">status</a>"
 
 #: bookwyrm/templates/notifications/items/follow.html:16
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> followed you"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> fulgte deg"
 
 #: bookwyrm/templates/notifications/items/follow.html:20
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> followed you"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og <a href=\"%(second_user_link)s\">%(second_user)s</a> fulgte deg"
 
 #: bookwyrm/templates/notifications/items/follow.html:25
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others followed you"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og %(other_user_display_count)s andre fulgte deg"
 
 #: bookwyrm/templates/notifications/items/follow_request.html:15
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> sent you a follow request"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> sendte deg en følgeforespørsel"
 
 #: bookwyrm/templates/notifications/items/import.html:14
 #, python-format
@@ -3938,14 +3938,14 @@ msgstr "<a href=\"%(url)s\">Importen din</a> er fullført."
 #: bookwyrm/templates/notifications/items/invite.html:16
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> invited you to join the group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> inviterte deg til å bli med i gruppa «<a href=\"%(group_path)s\">%(group_name)s</a>»"
 
 #: bookwyrm/templates/notifications/items/invite_request.html:15
 #, python-format
 msgid "New <a href=\"%(path)s\">invite request</a> awaiting response"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">invite requests</a> awaiting response"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ny <a href=\"%(path)s\">invitasjonsforespørsel</a> venter på svar"
+msgstr[1] "%(display_count)s nye <a href=\"%(path)s\">invitasjonsforespørsler</a> venter på svar"
 
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
@@ -3955,49 +3955,49 @@ msgstr "har blitt med i gruppa di \"<a href=\"%(group_path)s\">%(group_name)s</a
 #: bookwyrm/templates/notifications/items/leave.html:18
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> has left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> har forlatt din gruppe «<a href=\"%(group_path)s\">%(group_name)s</a>»"
 
 #: bookwyrm/templates/notifications/items/leave.html:26
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> have left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og <a href=\"%(second_user_link)s\">%(second_user)s</a> har forlatt din gruppe «<a href=\"%(group_path)s\">%(group_name)s</a>»"
 
 #: bookwyrm/templates/notifications/items/leave.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others have left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> og %(other_user_display_count)s andre har forlatt din gruppe «<a href=\"%(group_path)s\">%(group_name)s</a>»"
 
 #: bookwyrm/templates/notifications/items/link_domain.html:15
 #, python-format
 msgid "A new <a href=\"%(path)s\">link domain</a> needs review"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">link domains</a> need moderation"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Et nytt <a href=\"%(path)s\">lenke-domene</a> trenger gjennomsyn"
+msgstr[1] "%(display_count)s nye <a href=\"%(path)s\">lenke-domener</a> trenger moderering"
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> nevnte deg i en <a href=\"%(related_path)s\">omtale av <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/mention.html:26
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> nevnte deg i en <a href=\"%(related_path)s\">kommentar på <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/mention.html:32
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> nevnte deg i et <a href=\"%(related_path)s\">sitat fra <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/mention.html:38
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> nevnte deg i en <a href=\"%(related_path)s\">status</a>"
 
 #: bookwyrm/templates/notifications/items/move_user.html:18
 #, python-format
 msgid "%(related_user)s has moved to <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
-msgstr ""
+msgstr "%(related_user)s har flyttet til <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
 
 #: bookwyrm/templates/notifications/items/move_user.html:25
 #, python-format
@@ -4288,15 +4288,15 @@ msgstr "Legg til en annen konto som alias"
 
 #: bookwyrm/templates/preferences/alias_user.html:16
 msgid "Marking another account as an alias is required if you want to move that account to this one."
-msgstr ""
+msgstr "Å merke en annen konto som alias kreves om du vil flytte kontoen til denne."
 
 #: bookwyrm/templates/preferences/alias_user.html:19
 msgid "This is a reversable action and will not change the functionality of this account."
-msgstr ""
+msgstr "Dette er en reverserbar handling og vil ikke endre funksjonaliteten til denne kontoen."
 
 #: bookwyrm/templates/preferences/alias_user.html:25
 msgid "Enter the username for the account you want to add as an alias e.g. <em>user@example.com </em>:"
-msgstr ""
+msgstr "Skriv inn brukernavnet for kontoen du ønsker å legge til som et alias, f.eks. <em>user@example.com </em>:"
 
 #: bookwyrm/templates/preferences/alias_user.html:30
 #: bookwyrm/templates/preferences/move_user.html:35
@@ -4310,7 +4310,7 @@ msgstr "Aliaser"
 
 #: bookwyrm/templates/preferences/alias_user.html:49
 msgid "Remove alias"
-msgstr ""
+msgstr "Fjern alias"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
@@ -4331,7 +4331,7 @@ msgstr "Endre passord"
 
 #: bookwyrm/templates/preferences/change_password.html:15
 msgid "Successfully changed password"
-msgstr ""
+msgstr "Passordet ble endret"
 
 #: bookwyrm/templates/preferences/change_password.html:22
 msgid "Current password:"
@@ -4400,7 +4400,7 @@ msgstr "Profil"
 #: bookwyrm/templates/settings/site.html:89
 #: bookwyrm/templates/setup/config.html:91
 msgid "Display"
-msgstr ""
+msgstr "Vis"
 
 #: bookwyrm/templates/preferences/edit_user.html:14
 #: bookwyrm/templates/preferences/edit_user.html:112
@@ -4438,7 +4438,7 @@ msgstr "Godkjenn følgere manuelt"
 
 #: bookwyrm/templates/preferences/edit_user.html:123
 msgid "Hide followers and following on profile"
-msgstr ""
+msgstr "Skjul følgere og fulgte på profilen"
 
 #: bookwyrm/templates/preferences/edit_user.html:128
 msgid "Default post privacy:"
@@ -4474,11 +4474,11 @@ msgstr "Statuser"
 
 #: bookwyrm/templates/preferences/export-user.html:27
 msgid "Your own lists and saved lists"
-msgstr ""
+msgstr "Dine egne lister og lagrede lister"
 
 #: bookwyrm/templates/preferences/export-user.html:28
 msgid "Which users you follow and block"
-msgstr ""
+msgstr "Hvilke brukere du følger og blokkerer"
 
 #: bookwyrm/templates/preferences/export-user.html:32
 msgid "Your file will not include:"
@@ -5201,11 +5201,11 @@ msgstr[1] "%(display_count)s invitasjonsforespørsler"
 
 #: bookwyrm/templates/settings/dashboard/warnings/missing_conduct.html:8
 msgid "Your instance is missing a code of conduct."
-msgstr ""
+msgstr "Instansen din mangler en oppførselskodeks."
 
 #: bookwyrm/templates/settings/dashboard/warnings/missing_privacy.html:8
 msgid "Your instance is missing a privacy policy."
-msgstr ""
+msgstr "Instansen din mangler personvernsregler."
 
 #: bookwyrm/templates/settings/dashboard/warnings/reports.html:9
 #, python-format
@@ -5217,7 +5217,7 @@ msgstr[1] "%(display_count)s åpne rapporter"
 #: bookwyrm/templates/settings/dashboard/warnings/update_version.html:8
 #, python-format
 msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
-msgstr ""
+msgstr "En oppdatering er tilgjengelig! Du kjører v%(current)s og den siste utgivelsen er %(available)s."
 
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:10
@@ -5486,7 +5486,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:37
 msgid "Disable imports"
-msgstr ""
+msgstr "Deaktiver import"
 
 #: bookwyrm/templates/settings/imports/imports.html:51
 msgid "Users are currently unable to start new imports"
@@ -5494,7 +5494,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:56
 msgid "Enable imports"
-msgstr ""
+msgstr "Aktiver import"
 
 #: bookwyrm/templates/settings/imports/imports.html:64
 msgid "Limit the amount of imports"
@@ -5539,7 +5539,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:115
 msgid "Disable user exports"
-msgstr ""
+msgstr "Deaktiver brukereksport"
 
 #: bookwyrm/templates/settings/imports/imports.html:123
 msgid "Limit how often users can import and export"
@@ -5869,7 +5869,7 @@ msgstr "Tillat registrering"
 
 #: bookwyrm/templates/settings/registration.html:43
 msgid "Default access level:"
-msgstr ""
+msgstr "Standard tilgangsnivå:"
 
 #: bookwyrm/templates/settings/registration.html:61
 msgid "Require users to confirm email address"
@@ -5896,7 +5896,7 @@ msgstr ""
 #: bookwyrm/templates/settings/registration.html:85
 #: bookwyrm/templates/settings/registration_limited.html:55
 msgid "Question:"
-msgstr ""
+msgstr "Spørsmål:"
 
 #: bookwyrm/templates/settings/registration.html:90
 #: bookwyrm/templates/settings/registration_limited.html:67
@@ -5905,7 +5905,7 @@ msgstr "Registrering lukket tekst:"
 
 #: bookwyrm/templates/settings/registration_limited.html:29
 msgid "Registration is enabled on this instance"
-msgstr ""
+msgstr "Registrering er aktivert på denne instansen"
 
 #: bookwyrm/templates/settings/reports/report.html:13
 msgid "Back to reports"
@@ -6053,7 +6053,7 @@ msgstr "Aktivert"
 
 #: bookwyrm/templates/settings/schedules.html:73
 msgid "Un-schedule"
-msgstr ""
+msgstr "Fjern fra tidsplan"
 
 #: bookwyrm/templates/settings/schedules.html:81
 msgid "No scheduled tasks"
@@ -6378,15 +6378,15 @@ msgstr "Administrasjonsnøkkel:"
 
 #: bookwyrm/templates/setup/admin.html:32
 msgid "An admin key was created when you installed BookWyrm. You can get your admin key by running <code>./bw-dev admin_code</code> from the command line on your server."
-msgstr ""
+msgstr "En admin-nøkkel ble opprettet da du installerte BookWyrm. Du kan få din admin-nøkkel ved å kjøre <code>./bw-dev admin_code</code> fra kommandolinjen på din tjener."
 
 #: bookwyrm/templates/setup/admin.html:45
 msgid "As an admin, you'll be able to configure the instance name and information, and moderate your instance. This means you will have access to private information about your users, and are responsible for responding to reports of bad behavior or spam."
-msgstr ""
+msgstr "Som en administrator vil du kunne konfigurere instansens navn og informasjon, og moderere instansen. Dette betyr at du har tilgang til privat informasjon om dine brukere, og er ansvarlig for å svare på rapporter om dårlig oppførsel og søppelmeldinger."
 
 #: bookwyrm/templates/setup/admin.html:51
 msgid "Once the instance is set up, you can promote other users to moderator or admin roles from the admin panel."
-msgstr ""
+msgstr "Når forekomsten er satt opp, kan du forfremme andre brukere til moderator eller admin-roller fra admin-panelet."
 
 #: bookwyrm/templates/setup/admin.html:55
 msgid "Learn more about moderation"
@@ -6581,12 +6581,12 @@ msgstr "<a href=\"%(path)s\">%(title)s</a> av"
 #: bookwyrm/templates/snippets/boost_button.html:20
 #: bookwyrm/templates/snippets/boost_button.html:21
 msgid "Boost"
-msgstr "Støtt"
+msgstr "Fremhev"
 
 #: bookwyrm/templates/snippets/boost_button.html:33
 #: bookwyrm/templates/snippets/boost_button.html:34
 msgid "Un-boost"
-msgstr "Fjern støtte"
+msgstr "Fjern fremheving"
 
 #: bookwyrm/templates/snippets/create_status.html:36
 msgid "Quote"
@@ -7120,7 +7120,7 @@ msgstr "Slett status"
 #: bookwyrm/templates/snippets/status/layout.html:57
 #: bookwyrm/templates/snippets/status/layout.html:58
 msgid "Boost status"
-msgstr "Støtt status"
+msgstr "Fremhev status"
 
 #: bookwyrm/templates/snippets/status/layout.html:61
 #: bookwyrm/templates/snippets/status/layout.html:62
@@ -7129,7 +7129,7 @@ msgstr "Lik status"
 
 #: bookwyrm/templates/snippets/status/status.html:10
 msgid "boosted"
-msgstr "støttet"
+msgstr "fremhevet"
 
 #: bookwyrm/templates/snippets/status/status_options.html:7
 #: bookwyrm/templates/snippets/user_options.html:7
