@@ -73,6 +73,14 @@
                 </div>
                 {% endif %}
 
+                {% if author.wikidata %}
+                <div>
+                    <a itemprop="sameAs" href="https://www.wikidata.org/wiki/{{ author.wikidata }}" rel="nofollow noopener noreferrer" target="_blank">
+                        {% trans "View on Wikidata" %}
+                    </a>
+                </div>
+                {% endif %} 
+
                 {% if author.website %}
                 <div>
                      <a itemprop="sameAs" href="{{ author.website }}" rel="nofollow noopener noreferrer" target="_blank">
