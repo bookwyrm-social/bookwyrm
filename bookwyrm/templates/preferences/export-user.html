@@ -126,14 +126,13 @@
                         {% elif export.job.status == "pending" %}
                         class="tag is-warning"
                         {% elif export.job.complete %}
-                        class="tag"
-                        {% else %}
                         class="tag is-success"
+                        {% else %}
+                        class="tag"
                         {% endif %}
                     >
                         {% if export.job.status %}
-                        {{ export.job.status }}
-                            {{ export.job.status_display }}
+                            {{ export.job.get_status_display }}
                         {% elif export.job.complete %}
                             {% trans "Complete" %}
                         {% else %}
