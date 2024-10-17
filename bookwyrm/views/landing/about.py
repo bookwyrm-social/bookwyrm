@@ -42,7 +42,7 @@ def privacy(request):
 @require_GET
 def impressum(request):
     """more information about the instance"""
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
     if not site.show_impressum:
         raise Http404()
     return TemplateResponse(request, "about/impressum.html")

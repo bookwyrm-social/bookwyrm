@@ -54,7 +54,6 @@ class Inbox(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        models.SiteSettings.objects.create()
 
     def test_inbox_invalid_get(self):
         """shouldn't try to handle if the user is not found"""

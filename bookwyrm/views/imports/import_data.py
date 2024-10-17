@@ -54,7 +54,7 @@ class Import(View):
         elif seconds:
             data["recent_avg_minutes"] = seconds / 60
 
-        site_settings = models.SiteSettings.objects.get()
+        site_settings = models.SiteSettings.get()
         time_range = timezone.now() - datetime.timedelta(
             days=site_settings.import_limit_reset
         )
@@ -71,7 +71,7 @@ class Import(View):
 
     def post(self, request):
         """ingest a book data csv"""
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         if not site.imports_enabled:
             raise PermissionDenied()
 
@@ -149,7 +149,7 @@ class UserImport(View):
         jobs = BookwyrmImportJob.objects.filter(user=request.user).order_by(
             "-created_date"
         )
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         hours = site.user_import_time_limit
         allowed = (
             jobs.first().created_date < timezone.now() - datetime.timedelta(hours=hours)

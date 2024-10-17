@@ -269,7 +269,7 @@ def preview_image(instance: SiteSettings, *args, **kwargs) -> None:
 @app.task(queue=MISC)
 def check_for_updates_task() -> None:
     """See if git remote knows about a new version"""
-    site = SiteSettings.objects.get()
+    site = SiteSettings.get()
     release = get_data(RELEASE_API, timeout=3, is_activitypub=False)
     available_version = release.get("tag_name", None)
     if available_version:

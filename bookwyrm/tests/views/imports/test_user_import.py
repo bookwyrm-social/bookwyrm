@@ -29,7 +29,6 @@ class ImportUserViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        models.SiteSettings.objects.create()
 
     def test_get_user_import_page(self):
         """there are so many views, this just makes sure it LOADS"""

@@ -166,7 +166,7 @@ class ExportUser(View):
         last_job = self.user_jobs.first()
         if not last_job:
             return None
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         blocked_until = last_job.created_date + timedelta(
             hours=site.user_import_time_limit
         )

@@ -9,7 +9,7 @@ from bookwyrm.settings import DOMAIN, BASE_URL
 
 def email_data():
     """fields every email needs"""
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
     return {
         "site_name": site.name,
         "logo": site.logo_small_url,

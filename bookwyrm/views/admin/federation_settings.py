@@ -18,7 +18,7 @@ class FederationSettings(View):
 
     def get(self, request):
         """show the current settings"""
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         data = {
             "form": forms.FederationSettings(instance=site),
         }
@@ -26,7 +26,7 @@ class FederationSettings(View):
 
     def post(self, request):
         """Update federation settings"""
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         form = forms.FederationSettings(request.POST, instance=site)
         if not form.is_valid():
             data = {"form": form}

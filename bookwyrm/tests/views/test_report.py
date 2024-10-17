@@ -41,7 +41,6 @@ class ReportViews(TestCase):
                 user=cls.local_user,
                 content="Test status",
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

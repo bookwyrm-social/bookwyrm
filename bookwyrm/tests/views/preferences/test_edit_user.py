@@ -50,8 +50,6 @@ class EditUserViews(TestCase):
                     shelf=cls.local_user.shelf_set.first(),
                 )
 
-        models.SiteSettings.objects.create()
-
     def setUp(self):
         """individual test setup"""
         self.factory = RequestFactory()

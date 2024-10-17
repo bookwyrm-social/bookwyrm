@@ -22,7 +22,7 @@ class InstanceConfig(View):
     def get(self, request):
         """Check out this cool instance"""
         # only allow this view when an instance is being configured
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         if not site.install_mode:
             raise PermissionDenied()
 
@@ -55,7 +55,7 @@ class CreateAdmin(View):
     def get(self, request):
         """Create admin user form"""
         # only allow this view when an instance is being configured
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         if not site.install_mode:
             raise PermissionDenied()
 
@@ -65,7 +65,7 @@ class CreateAdmin(View):
     @transaction.atomic
     def post(self, request):
         """Create that user"""
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         # you can't create an admin user if you're in config mode
         if not site.install_mode:
             raise PermissionDenied()

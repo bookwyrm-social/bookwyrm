@@ -46,7 +46,6 @@ class GenericImporter(TestCase):
             cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
-        models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
         cls.book = models.Edition.objects.create(
             title="Example Edition",
@@ -374,7 +373,7 @@ class GenericImporter(TestCase):
 
     def test_import_limit(self, *_):
         """checks if import limit works"""
-        site_settings = models.SiteSettings.objects.get()
+        site_settings = models.SiteSettings.get()
         site_settings.import_size_limit = 2
         site_settings.import_limit_reset = 2
         site_settings.save()

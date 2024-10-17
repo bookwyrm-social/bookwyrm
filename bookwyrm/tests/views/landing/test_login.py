@@ -47,7 +47,9 @@ class LoginViews(TestCase):
                 localname="badger",
                 two_factor_auth=True,
             )
-        models.SiteSettings.objects.create(id=1, require_confirm_email=False)
+        site = models.SiteSettings.get()
+        site.require_confirm_email = False
+        site.save()
 
     def setUp(self):
         """individual test setup"""
