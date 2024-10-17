@@ -28,7 +28,7 @@
     <meta itemprop="name" content="{{ author.name }}">
 
     {% firstof author.aliases author.born author.died as details %}
-    {% firstof author.wikipedia_link author.website author.openlibrary_key author.inventaire_id author.isni author.isfdb as links %}
+    {% firstof author.wikipedia_link author.website author.openlibrary_key author.inventaire_id author.isni author.isfdb author.wikidata as links %}
     {% if details or links %}
     <div class="column is-3">
         {% if details %}
