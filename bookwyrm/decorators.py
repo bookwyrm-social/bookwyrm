@@ -7,7 +7,8 @@ def require_federation(function):
     """Ensure that federation is allowed before proceeding with this view"""
 
     @wraps(function)
-    def wrap(request, *args, **kwargs):  # pylint: disable=unused-argument
+    def wrap(request, *args, **kwargs):
         SiteSettings.raise_federation_disabled()
+        return function(request, *args, **kwargs)
 
     return wrap
