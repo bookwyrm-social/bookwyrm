@@ -42,7 +42,7 @@ class AdminThemesViews(TestCase):
         group = Group.objects.get(name="admin")
         cls.local_user.groups.set([group])
 
-        cls.site = models.SiteSettings.objects.create()
+        cls.site = models.SiteSettings.get()
 
     def setUp(self):
         """individual test setup"""

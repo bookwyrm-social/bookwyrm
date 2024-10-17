@@ -1,5 +1,5 @@
 {% load i18n %}
-{% if request.user == user %}
+{% if request.user == user or site.disable_federation %}
 {% else %}
 
 <div class="field mb-0">

@@ -28,7 +28,6 @@ class RssFeedView(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=work,
         )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

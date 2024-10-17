@@ -29,7 +29,6 @@ class LandingViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""
@@ -94,7 +93,7 @@ class LandingViews(TestCase):
 
     def test_impressum_page_on(self):
         """there are so many views, this just makes sure it LOADS"""
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         site.show_impressum = True
         site.save()
 

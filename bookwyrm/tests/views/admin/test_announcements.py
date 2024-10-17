@@ -27,8 +27,6 @@ class AnnouncementViews(TestCase):
                 localname="mouse",
             )
 
-        models.SiteSettings.objects.create()
-
     def setUp(self):
         """individual test setup"""
         self.factory = RequestFactory()
