@@ -1,0 +1,210 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% load humanize %}
+{% load static %}
+
+{% block title %}{% trans "User Import Status" %}{% endblock %}
+
+{% block content %}{% spaceless %}
+<header class="block">
+    <h1 class="title">
+        {% block page_title %}
+        {% if job.retry %}
+            {% trans "User Import Retry Status" %}
+        {% else %}
+            {% trans "User Import Status" %}
+        {% endif %}
+        {% endblock %}
+    </h1>
+
+    <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="{% url 'user-import' %}">{% trans "User Imports" %}</a></li>
+            {% url 'user-import-status' job.id as path %}
+            <li{% if request.path in path %} class="is-active"{% endif %}>
+                <a href="{{ path }}" {% if request.path in path %}aria-current="page"{% endif %}>
+                    {% trans "User Import Status" %}
+                </a>
+            </li>
+            {% block breadcrumbs %}{% endblock %}
+        </ul>
+    </nav>
+
+    <div class="block">
+        <dl>
+            <dt class="is-pulled-left mr-5 has-text-weight-bold">{% trans "Import started:" %}</dt>
+            <dd>{{ job.created_date | naturaltime }}</dd>
+            <dt class="is-pulled-left mr-5 has-text-weight-bold">Import Job Status: </dt>
+            <dd>
+                <span
+                    {% if job.status == "stopped" or job.status == "failed" %}
+                    class="tag is-danger"
+                    {% elif job.status == "pending" %}
+                    class="tag is-warning"
+                    {% elif job.complete %}
+                    class="tag"
+                    {% else %}
+                    class="tag is-success"
+                    {% endif %}
+                >
+                    {% if job.status %}
+                    {{ job.status }}
+                        {{ job.status_display }}
+                    {% elif job.complete %}
+                        {% trans "Complete" %}
+                    {% else %}
+                        {% trans "Active" %}
+                    {% endif %}
+                </span>
+            </dd>
+        </dl>
+    </div>
+    {% block import_counts %}
+    <div class="block">
+        <div class="table-container">
+            <table class="table is-striped is-fullwidth">
+                <tr>
+                    <th></th>
+                    <th class="has-text-centered">{% trans "Imported" %}</th>
+                    <th class="has-text-centered">{% trans "Failed" %}</th>
+                    <th class="has-text-centered">{% trans "Total" %}</th>
+                </tr>
+                <tr>
+                    <th>{% trans "Books" %}</th>
+                    <td class="has-text-centered">{{ completed_books_count }}</td>
+                    <td class="has-text-centered">{{ failed_books_count }}</td>
+                    <td class="has-text-centered">{{ book_jobs_count }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "Statuses" %}</th>
+                    <td class="has-text-centered">{{ completed_statuses_count }}</td>
+                    <td class="has-text-centered">{{ failed_statuses_count }}</td>
+                    <td class="has-text-centered">{{ status_jobs_count }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "Follows & Blocks" %}</th>
+                    <td class="has-text-centered">{{ completed_relationships_count }}</td>
+                    <td class="has-text-centered">{{ failed_relationships_count }}</td>
+                    <td class="has-text-centered">{{ relationship_jobs_count }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% if job.status == "active" and show_progress %}
+    <div class="box is-processing">
+        <div class="block">
+            <span class="icon icon-spinner is-pulled-left" aria-hidden="true"></span>
+            <span>{% trans "In progress" %}</span>
+            <span class="is-pulled-right">
+                <a href="{% url 'user-import-status' job.id %}" class="button is-small">{% trans "Refresh" %}</a>
+            </span>
+        </div>
+        <div class="is-flex">
+            <progress
+                class="progress is-success is-medium mr-2"
+                role="progressbar"
+                aria-min="0"
+                value="{{ complete_count }}"
+                aria-valuenow="{{ complete_count }}"
+                max="{{ item_count }}"
+                aria-valuemax="{{ item_count }}">
+                {{ percent }} %
+            </progress>
+            <span>{{ percent }}%</span>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if not job.complete %}
+    <form name="stop-import" action="{% url 'user-import-stop' job.id %}" method="POST">
+        {% csrf_token %}
+        <button class="button is-danger" type="submit">{% trans "Stop import" %}</button>
+    </form>
+    {% endif %}
+
+    {% if job.complete and fail_count and not job.retry %}
+    <div class="notification is-warning">
+        {% blocktrans trimmed count counter=fail_count with display_counter=fail_count|intcomma %}
+            {{ display_counter }} item failed to import.
+            {% plural %}
+            {{ display_counter }} items failed to import.
+        {% endblocktrans %}
+        <a href="{% url 'user-import-troubleshoot' job.id %}">
+            {% trans "View and troubleshoot failed items" %}
+        </a>
+    </div>
+    {% endif %}
+</header>
+
+<div class="block">
+    {% block actions %}{% endblock %}
+    {% block item_list %}
+    <h2 class="title">{% trans "Imported books" %}</h2>
+    <div class="table-container">
+        <table class="table is-striped is-fullwidth">
+            <tr>
+                <th>
+                    {% trans "Title" %}
+                </th>
+                <th>
+                    {% trans "ISBN" %}
+                </th>
+                <th>
+                    {% trans "Authors" %}
+                </th>
+                {% block import_cols_headers %}
+                <th>
+                    {% trans "Book" %}
+                </th>
+                <th>
+                    {% trans "Status" %}
+                </th>
+                {% endblock %}
+            </tr>
+            {% for item in items %}
+            <tr>
+                <td>
+                    {{ item.book_data.edition.title }}
+                </td>
+                <td>
+                    {{ item.book_data.edition.isbn13|default:'' }}
+
+                </td>
+                <td>
+                    {% for author in item.book_data.authors %}
+                    <p>{{ author.name }}</p>
+                    {% endfor %}
+                </td>
+                {% block import_cols %}
+                <td>
+                    {% if item.book %}
+                    <a href="{{ item.book.local_path }}">
+                    {% include 'snippets/book_cover.html' with book=item.book cover_class='is-h-s' size='small' %}
+                    </a>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if item.book %}
+                    <span class="icon icon-check" aria-hidden="true"></span>
+                    <span class="is-sr-only-mobile">{% trans "Imported" %}</span>
+                    {% else %}
+                    <div class="is-flex">
+                        <span class="is-sr-only-mobile">{{ item.status }}</span>
+                    </div>
+                    {% endif %}
+                </td>
+                {% endblock %}
+            </tr>
+            {% block action_row %}{% endblock %}
+            {% endfor %}
+        </table>
+    </div>
+    {% endblock %}
+</div>
+
+<div>
+    {% include 'snippets/pagination.html' with page=items path=page_path %}
+</div>
+{% endspaceless %}{% endblock %}
