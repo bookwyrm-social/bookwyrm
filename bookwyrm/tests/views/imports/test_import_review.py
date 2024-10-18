@@ -26,7 +26,6 @@ class ImportManualReviewViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        models.SiteSettings.objects.create()
         cls.job = models.ImportJob.objects.create(user=cls.local_user, mappings={})
 
         work = models.Work.objects.create(title="Test Work")

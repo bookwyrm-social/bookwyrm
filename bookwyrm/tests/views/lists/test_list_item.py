@@ -38,8 +38,6 @@ class ListItemViews(TestCase):
         ):
             cls.list = models.List.objects.create(name="Test List", user=cls.local_user)
 
-        models.SiteSettings.objects.create()
-
     def setUp(self):
         """individual test setup"""
         self.factory = RequestFactory()

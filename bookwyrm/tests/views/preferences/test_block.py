@@ -39,8 +39,6 @@ class BlockViews(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
-        models.SiteSettings.objects.create()
-
     def setUp(self):
         """individual test setup"""
         self.factory = RequestFactory()

@@ -177,6 +177,20 @@ class ServerForm(CustomForm):
         exclude = ["remote_id"]
 
 
+class FederationSettings(CustomForm):
+    class Meta:
+        model = models.SiteSettings
+        fields = [
+            "disable_federation",
+        ]
+
+        widgets = {
+            "disable_federation": forms.CheckboxInput(
+                attrs={"aria-describedby": "desc_disable_federation"}
+            ),
+        }
+
+
 class AutoModRuleForm(CustomForm):
     class Meta:
         model = models.AutoMod

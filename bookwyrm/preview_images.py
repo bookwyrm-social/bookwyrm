@@ -172,7 +172,7 @@ def generate_instance_layer(content_width):
     """Places components for instance preview"""
     font_instance = get_font("light", size=28)
 
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
 
     if site.logo_small:
         with Image.open(site.logo_small) as logo_img:
@@ -426,7 +426,7 @@ def generate_site_preview_image_task():
     if not settings.ENABLE_PREVIEW_IMAGES:
         return
 
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
 
     if site.logo:
         logo = site.logo
