@@ -35,6 +35,9 @@ SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE", 3600 * 24 * 30)  # 1 month
 
 JS_CACHE = "8a89cad7"
 
+HCAPTCHA_SITEKEY = env("HCAPTCHA_SITEKEY")
+HCAPTCHA_SECRET = env("HCAPTCHA_SECRET")
+
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
 EMAIL_HOST = env("EMAIL_HOST")
@@ -101,6 +104,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "hcaptcha_field",
     "oauth2_provider",
     "file_resubmit",
     "sass_processor",
@@ -479,8 +483,8 @@ elif USE_AZURE:
     )
     MEDIA_FULL_URL = MEDIA_URL
     # Content Security Policy
-    CSP_DEFAULT_SRC = ["'self'", AZURE_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
-    CSP_SCRIPT_SRC = ["'self'", AZURE_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
+    CSP_DEFAULT_SRC = ["'self'", AZURE_CUSTOM_DOMAIN] + env.list("CSP_ADDITIONAL_HOSTS")
+    CSP_SCRIPT_SRC = ["'self'", AZURE_CUSTOM_DOMAIN] + env.list("CSP_ADDITIONAL_HOSTS")
 else:
     # Storages
     STORAGES = {
@@ -504,8 +508,8 @@ else:
     MEDIA_URL = "/images/"
     MEDIA_FULL_URL = BASE_URL + MEDIA_URL
     # Content Security Policy
-    CSP_DEFAULT_SRC = ["'self'"] + CSP_ADDITIONAL_HOSTS
-    CSP_SCRIPT_SRC = ["'self'"] + CSP_ADDITIONAL_HOSTS
+    CSP_DEFAULT_SRC = ["'self'"] + env.list("CSP_ADDITIONAL_HOSTS")
+    CSP_SCRIPT_SRC = ["'self'"] + env.list("CSP_ADDITIONAL_HOSTS")
 
 CSP_INCLUDE_NONCE_IN = ["script-src"]
 

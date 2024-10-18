@@ -62,6 +62,13 @@
 
 <div class="field">
     <div class="control">
+        {{ register_form.hcaptcha }}
+        {% include 'snippets/form_errors.html' with errors_list=register_form.hcaptcha.errors id="desc_hcaptcha_register" %}
+    </div>
+</div>
+
+<div class="field">
+    <div class="control">
         <button class="button is-primary" type="submit">
             {% trans "Sign Up" %}
         </button>
