@@ -9,7 +9,6 @@ from django.db.models import (
     ForeignKey,
     FileField,
     JSONField,
-    TextField,
     TextChoices,
     PROTECT,
     SET_NULL,
@@ -95,7 +94,6 @@ class UserImportBook(ChildJob):
 
     book = ForeignKey(models.Book, on_delete=SET_NULL, null=True, blank=True)
     book_data = JSONField(null=False)
-    fail_reason = TextField(null=True)
 
     def start_job(self):
         """Start the job"""
@@ -119,7 +117,6 @@ class UserImportPost(ChildJob):
     status_type = models.fields.CharField(
         max_length=10, choices=StatusType.choices, default=StatusType.COMMENT, null=True
     )
-    fail_reason = TextField(null=True)
 
     def start_job(self):
         """Start the job"""
@@ -139,7 +136,6 @@ class UserRelationshipImport(ChildJob):
         max_length=10, choices=RelationshipType.choices, null=True
     )
     remote_id = models.fields.RemoteIdField(null=True, unique=False)
-    fail_reason = TextField(null=True)
 
     def start_job(self):
         """Start the job"""

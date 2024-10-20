@@ -29,6 +29,7 @@ class Job(models.Model):
     status = models.CharField(
         max_length=50, choices=Status.choices, default=Status.PENDING, null=True
     )
+    fail_reason = models.TextField(null=True)
 
     class Meta:
         """Make it abstract"""
