@@ -70,8 +70,8 @@
         </tr>
         {% for item in items %}
         <tr>
-            <td {% if item.userimportpost.json.name %}class="is-italic"{% endif %}>{{ item.userimportpost.book.title }}</td>
-            <td>{{ item.userimportpost.json.name }}</td>
+            <td class="is-italic">{{ item.userimportpost.book.title }}</td>
+            <td>{{ item.userimportpost.json.type }}</td>
             <td>{% id_to_username item.userrelationshipimport.remote_id True %}</td>
             <td>
                 {% if item.fail_reason == "unauthorized" %}
