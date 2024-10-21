@@ -34,7 +34,6 @@ class UserAdminViews(TestCase):
         initdb.init_permissions()
         group = Group.objects.get(name="moderator")
         cls.local_user.groups.set([group])
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

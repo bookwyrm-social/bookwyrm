@@ -29,7 +29,6 @@ class DirectoryViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""
