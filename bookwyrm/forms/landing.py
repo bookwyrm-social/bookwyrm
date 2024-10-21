@@ -4,6 +4,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+from hcaptcha_field import hCaptchaField
 import pyotp
 
 from bookwyrm import models
@@ -38,9 +39,11 @@ class LoginForm(CustomForm):
 
 
 class RegisterForm(CustomForm):
+    hcaptcha = hCaptchaField()
+
     class Meta:
         model = models.User
-        fields = ["localname", "email", "password"]
+        fields = ["localname", "email", "password", "hcaptcha"]
         help_texts = {f: None for f in fields}
         widgets = {"password": forms.PasswordInput()}
 
