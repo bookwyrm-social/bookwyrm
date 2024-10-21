@@ -155,9 +155,19 @@ class BaseActivity(TestCase):
             result = resolve_remote_id(
                 "https://example.com/user/moose", model=models.User
             )
+
+        self.assertTrue(
+            models.User.objects.filter(
+                remote_id="https://example.com/user/moose"
+            ).exists()
+        )  # moose has been added to DB
+        self.assertTrue(
+            models.User.objects.filter(
+                remote_id="https://example.com/user/ali"
+            ).exists()
+        )  # Ali has been added to DB
         self.assertIsInstance(result, models.User)
         self.assertEqual(result.name, "moose?? moose!!")
-        self.assertEqual(models.User.objects.count(), 3)  # created moose plus the alias
         alias = models.User.objects.last()
         self.assertEqual(alias.name, "Ali As")
         self.assertEqual(result.also_known_as.first(), alias)  # Ali is alias of Moose
