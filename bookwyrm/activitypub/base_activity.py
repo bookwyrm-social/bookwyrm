@@ -120,6 +120,7 @@ class ActivityObject:
         save: bool = True,
         overwrite: bool = True,
         allow_external_connections: bool = True,
+        trigger=None,
     ) -> Optional[TBookWyrmModel]:
         """convert from an activity to a model instance. Args:
         model: the django model that this object is being converted to
@@ -133,6 +134,9 @@ class ActivityObject:
             only update blank fields if false
         allow_external_connections: look up missing data if true,
             throw an exception if false and an external connection is needed
+        trigger: the object that originally triggered this
+            self.to_model. e.g. if this is a Work being dereferenced from
+            an incoming Edition
         """
         model = model or get_model_from_type(self.type)
 
@@ -223,6 +227,8 @@ class ActivityObject:
             related_field_name = model_field.field.name
 
             for item in values:
+                if trigger and item == trigger.remote_id:
+                    continue
                 set_related_field.delay(
                     related_model.__name__,
                     instance.__class__.__name__,
