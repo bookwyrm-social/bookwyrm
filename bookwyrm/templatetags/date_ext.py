@@ -1,4 +1,6 @@
 """ additional formatting of dates """
+from typing import Any
+
 from django import template
 from django.template import defaultfilters
 from django.contrib.humanize.templatetags.humanize import naturalday
@@ -9,7 +11,7 @@ register = template.Library()
 
 
 @register.filter(expects_localtime=True)
-def naturalday_partial(date, arg=None):
+def naturalday_partial(date: Any, arg: Any = None) -> str | None:
     """chooses appropriate precision if date is a PartialDate object
 
     If arg is a Django-defined format such as "DATE_FORMAT", it will be adjusted
