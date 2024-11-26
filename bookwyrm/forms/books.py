@@ -1,4 +1,5 @@
 """ using django model forms """
+
 from django import forms
 
 from file_resubmit.widgets import ResubmitImageWidget
@@ -25,7 +26,6 @@ class EditionForm(CustomForm):
             "subtitle",
             "description",
             "series",
-            "series_number",
             "languages",
             "subjects",
             "publishers",
@@ -55,9 +55,6 @@ class EditionForm(CustomForm):
                 attrs={"aria-describedby": "desc_description"}
             ),
             "series": forms.TextInput(attrs={"aria-describedby": "desc_series"}),
-            "series_number": forms.TextInput(
-                attrs={"aria-describedby": "desc_series_number"}
-            ),
             "subjects": ArrayWidget(),
             "languages": forms.TextInput(
                 attrs={"aria-describedby": "desc_languages_help desc_languages"}
@@ -116,7 +113,6 @@ class EditionFromWorkForm(CustomForm):
             "description",
             "languages",
             "series",
-            "series_number",
             "subjects",
             "subject_places",
             "cover",
