@@ -1,6 +1,7 @@
 """ import books from another app """
 from io import TextIOWrapper
 import datetime
+from typing import Optional
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, ExpressionWrapper, F, fields
@@ -149,35 +150,34 @@ class UserImport(View):
         jobs = BookwyrmImportJob.objects.filter(user=request.user).order_by(
             "-created_date"
         )
-        site = models.SiteSettings.objects.get()
-        hours = site.user_import_time_limit
-        allowed = (
-            jobs.first().created_date < timezone.now() - datetime.timedelta(hours=hours)
-            if jobs.first()
-            else True
-        )
-        next_available = (
-            jobs.first().created_date + datetime.timedelta(hours=hours)
-            if not allowed
-            else False
-        )
         paginated = Paginator(jobs, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "import_form": forms.ImportUserForm(),
             "jobs": page,
-            "user_import_hours": hours,
-            "next_available": next_available,
+            "next_available": user_import_available(user=request.user),
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
             "invalid": invalid,
         }
 
+        seconds = get_or_set(
+            "avg-user-import-time", get_average_user_import_time, timeout=86400
+        )
+        if seconds and seconds > 60**2:
+            data["recent_avg_hours"] = seconds / (60**2)
+        elif seconds:
+            data["recent_avg_minutes"] = seconds / 60
+
         return TemplateResponse(request, "import/import_user.html", data)
 
     def post(self, request):
         """ingest a Bookwyrm json file"""
+
+        site = models.SiteSettings.objects.get()
+        if not site.imports_enabled:
+            raise PermissionDenied()
 
         importer = BookwyrmImporter()
 
@@ -194,3 +194,45 @@ class UserImport(View):
         job.start_job()
 
         return redirect("user-import")
+
+
+def user_import_available(user: models.User) -> Optional[tuple[datetime, int]]:
+    """for a given user, determine whether they are allowed to run
+    a user import and if not, return a tuple with the next available
+    time they can import, and how many hours between imports allowed"""
+
+    jobs = BookwyrmImportJob.objects.filter(user=user).order_by("-created_date")
+    site = models.SiteSettings.objects.get()
+    hours = site.user_import_time_limit
+    allowed = (
+        jobs.first().created_date < timezone.now() - datetime.timedelta(hours=hours)
+        if jobs.first()
+        else True
+    )
+    if allowed and site.imports_enabled:
+        return False
+
+    return (jobs.first().created_date + datetime.timedelta(hours=hours), hours)
+
+
+def get_average_user_import_time() -> float:
+    """Helper to figure out how long imports are taking (returns seconds)"""
+    last_week = timezone.now() - datetime.timedelta(days=7)
+    recent_avg = (
+        models.BookwyrmImportJob.objects.filter(
+            created_date__gte=last_week, complete=True
+        )
+        .exclude(status="stopped")
+        .annotate(
+            runtime=ExpressionWrapper(
+                F("updated_date") - F("created_date"),
+                output_field=fields.DurationField(),
+            )
+        )
+        .aggregate(Avg("runtime"))
+        .get("runtime__avg")
+    )
+
+    if recent_avg:
+        return recent_avg.total_seconds()
+    return None
