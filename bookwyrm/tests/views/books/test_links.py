@@ -47,8 +47,6 @@ class LinkViews(TestCase):
             parent_work=cls.work,
         )
 
-        models.SiteSettings.objects.create()
-
     def setUp(self):
         """individual test setup"""
         self.factory = RequestFactory()

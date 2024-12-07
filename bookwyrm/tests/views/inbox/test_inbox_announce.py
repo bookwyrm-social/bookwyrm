@@ -48,8 +48,6 @@ class InboxActivities(TestCase):
                 remote_id="https://example.com/status/1",
             )
 
-        models.SiteSettings.objects.create()
-
     def setUp(self):
         """individual test setup"""
         self.create_json = {
