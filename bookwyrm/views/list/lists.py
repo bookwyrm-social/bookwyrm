@@ -21,6 +21,7 @@ class Lists(View):
             lists = ListsStream().get_list_stream(request.user)
         else:
             lists = models.List.objects.filter(privacy="public")
+        lists = lists.filter(suggests_for__isnull=True)
         paginated = Paginator(lists, 12)
         data = {
             "lists": paginated.get_page(request.GET.get("page")),
@@ -71,7 +72,11 @@ class UserLists(View):
     def get(self, request, username):
         """display a book list"""
         user = get_user_from_username(request.user, username)
-        lists = models.List.privacy_filter(request.user).filter(user=user)
+        lists = (
+            models.List.privacy_filter(request.user)
+            .filter(user=user)
+            .filter(suggests_for__isnull=True)
+        )
         paginated = Paginator(lists, 12)
 
         data = {

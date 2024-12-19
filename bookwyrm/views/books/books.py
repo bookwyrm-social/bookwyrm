@@ -4,7 +4,8 @@ from uuid import uuid4
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.db.models import Avg, Q
+from django.db import transaction
+from django.db.models import Avg, Q, Max
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -21,6 +22,7 @@ from bookwyrm.views.helpers import (
     maybe_redirect_local_path,
     get_mergeable_object_or_404,
 )
+from bookwyrm.views.list.list import get_list_suggestions, increment_order_in_reverse
 
 
 # pylint: disable=no-self-use
@@ -83,9 +85,15 @@ class Book(View):
         queryset = queryset.select_related("user").order_by("-published_date")
         paginated = Paginator(queryset, PAGE_LENGTH)
 
-        lists = models.List.privacy_filter(request.user,).filter(
-            listitem__approved=True,
-            listitem__book__in=book.parent_work.editions.all(),
+        lists = (
+            models.List.privacy_filter(
+                request.user,
+            )
+            .filter(
+                listitem__approved=True,
+                listitem__book__in=book.parent_work.editions.all(),
+            )
+            .filter(suggests_for__isnull=True)
         )
         data = {
             "book": book,
@@ -101,10 +109,13 @@ class Book(View):
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
             "lists": lists,
             "update_error": kwargs.get("update_error", False),
+            "query": request.GET.get("suggestion_query", ""),
         }
 
         if request.user.is_authenticated:
-            data["list_options"] = request.user.list_set.exclude(id__in=data["lists"])
+            data["list_options"] = request.user.list_set.filter(
+                suggests_for__isnull=True
+            ).exclude(id__in=data["lists"])
             data["file_link_form"] = forms.FileLinkForm()
             readthroughs = models.ReadThrough.objects.filter(
                 user=request.user,
@@ -133,6 +144,13 @@ class Book(View):
                 "comment_count": book.comment_set.filter(**filters).count(),
                 "quotation_count": book.quotation_set.filter(**filters).count(),
             }
+            if hasattr(book, "suggestion_list"):
+                data["suggested_books"] = get_list_suggestions(
+                    book.suggestion_list,
+                    request.user,
+                    query=request.GET.get("suggestion_query", ""),
+                    ignore_book=book,
+                )
 
         return TemplateResponse(request, "book/book.html", data)
 
@@ -220,3 +238,48 @@ def update_book_from_remote(request, book_id, connector_identifier):
         return Book().get(request, book_id, update_error=True)
 
     return redirect("book", book.id)
+
+
+@login_required
+@require_POST
+def create_suggestion_list(request, book_id):
+    """create a suggestion_list"""
+    form = forms.SuggestionListForm(request.POST)
+    book = get_object_or_404(models.Edition, id=book_id)
+
+    if not form.is_valid():
+        return redirect("book", book.id)
+    suggestion_list = form.save(request, commit=False)
+
+    # default values for the suggestion list
+    suggestion_list.privacy = "public"
+    suggestion_list.curation = "open"
+    suggestion_list.save()
+
+    return redirect("book", book.id)
+
+
+@login_required
+@require_POST
+@transaction.atomic
+def book_add_suggestion(request, book_id):
+    """put a book on the suggestion list"""
+    book_list = get_object_or_404(models.List, id=request.POST.get("book_list"))
+
+    form = forms.ListItemForm(request.POST)
+    if not form.is_valid():
+        return Book().get(request, book_id, add_failed=True)
+
+    item = form.save(request, commit=False)
+
+    # add the book at the latest order of approved books, before pending books
+    order_max = (
+        book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
+            "order__max"
+        ]
+    ) or 0
+    increment_order_in_reverse(book_list.id, order_max + 1)
+    item.order = order_max + 1
+    item.save()
+
+    return Book().get(request, book_id, add_succeeded=True)
