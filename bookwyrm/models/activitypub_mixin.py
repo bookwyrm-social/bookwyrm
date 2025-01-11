@@ -129,7 +129,20 @@ class ActivitypubMixin:
 
     def broadcast(self, activity, sender, software=None, queue=BROADCAST):
         """send out an activity"""
+
+        # if we're posting about ShelfBooks, set a delay to give the base activity
+        # time to add the book on remote servers first to avoid race conditions
+        countdown = (
+            10
+            if (
+                isinstance(activity, object)
+                and not isinstance(activity["object"], str)
+                and activity["object"].get("type", None) in ["GeneratedNote", "Comment"]
+            )
+            else 0
+        )
         broadcast_task.apply_async(
+            countdown=countdown,
             args=(
                 sender.id,
                 json.dumps(activity, cls=activitypub.ActivityEncoder),
@@ -227,6 +240,7 @@ class ObjectMixin(ActivitypubMixin):
                 return
 
             try:
+                # TODO: here is where we might use an ActivityPub extension instead
                 # do we have a "pure" activitypub version of this for mastodon?
                 if software != "bookwyrm" and hasattr(self, "pure_content"):
                     pure_activity = self.to_create_activity(user, pure=True)
