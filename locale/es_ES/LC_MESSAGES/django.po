@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-17 21:56+0000\n"
-"PO-Revision-Date: 2024-10-17 23:17\n"
+"PO-Revision-Date: 2025-01-12 15:11\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -366,12 +366,12 @@ msgstr "Elemento eliminado"
 #: bookwyrm/models/status.py:192
 #, python-format
 msgid "%(display_name)s's status"
-msgstr ""
+msgstr "Estado de %(display_name)s"
 
 #: bookwyrm/models/status.py:367
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
-msgstr ""
+msgstr "Comentario de %(display_name)s sobre %(book_title)s"
 
 #: bookwyrm/models/status.py:418
 #, python-format
@@ -460,7 +460,7 @@ msgstr "Italiano"
 
 #: bookwyrm/settings.py:322
 msgid "한국어 (Korean)"
-msgstr ""
+msgstr "한국어 (Coreano)"
 
 #: bookwyrm/settings.py:323
 msgid "Suomi (Finnish)"
@@ -1652,15 +1652,15 @@ msgstr "La carga de datos se conectará a <strong>%(source_name)s</strong> y com
 
 #: bookwyrm/templates/compose.html:7 bookwyrm/templates/compose.html:21
 msgid "Edit review"
-msgstr ""
+msgstr "Editar reseña"
 
 #: bookwyrm/templates/compose.html:9 bookwyrm/templates/compose.html:23
 msgid "Edit quote"
-msgstr ""
+msgstr "Editar cita"
 
 #: bookwyrm/templates/compose.html:11 bookwyrm/templates/compose.html:25
 msgid "Edit comment"
-msgstr ""
+msgstr "Editar comentario"
 
 #: bookwyrm/templates/compose.html:13 bookwyrm/templates/compose.html:27
 msgid "Edit status"
@@ -3453,7 +3453,7 @@ msgstr "Busqueda en %(site_name)s"
 
 #: bookwyrm/templates/layout.html:39
 msgid "Search for a book, author, user, or list"
-msgstr ""
+msgstr "Buscar un libro, autor, usuario o lista"
 
 #: bookwyrm/templates/layout.html:54 bookwyrm/templates/layout.html:55
 msgid "Scan Barcode"
@@ -4434,7 +4434,7 @@ msgstr "Mostrar el indicador del objetivo de lectura en el feed"
 
 #: bookwyrm/templates/preferences/edit_user.html:75
 msgid "Show ratings"
-msgstr ""
+msgstr "Mostrar valoraciones"
 
 #: bookwyrm/templates/preferences/edit_user.html:81
 msgid "Show suggested users"
@@ -4486,11 +4486,11 @@ msgstr "Puedes crear un archivo de exportación aquí. Esto te permitirá migrar
 
 #: bookwyrm/templates/preferences/export-user.html:18
 msgid "Your file will include:"
-msgstr ""
+msgstr "Tu archivo incluirá:"
 
 #: bookwyrm/templates/preferences/export-user.html:21
 msgid "Most user settings"
-msgstr ""
+msgstr "Más ajustes de usuario"
 
 #: bookwyrm/templates/preferences/export-user.html:26
 #: bookwyrm/templates/settings/dashboard/dashboard.html:27
@@ -4499,27 +4499,27 @@ msgstr "Estados"
 
 #: bookwyrm/templates/preferences/export-user.html:27
 msgid "Your own lists and saved lists"
-msgstr ""
+msgstr "Tus propias listas y listas guardadas"
 
 #: bookwyrm/templates/preferences/export-user.html:28
 msgid "Which users you follow and block"
-msgstr ""
+msgstr "Qué usuarios sigues y bloqueas"
 
 #: bookwyrm/templates/preferences/export-user.html:32
 msgid "Your file will not include:"
-msgstr ""
+msgstr "Tu archivo no incluirá:"
 
 #: bookwyrm/templates/preferences/export-user.html:34
 msgid "Direct messages"
-msgstr ""
+msgstr "Mensajes directos"
 
 #: bookwyrm/templates/preferences/export-user.html:35
 msgid "Replies to your statuses"
-msgstr ""
+msgstr "Respuestas a tus estados"
 
 #: bookwyrm/templates/preferences/export-user.html:37
 msgid "Favorites"
-msgstr ""
+msgstr "Favoritos"
 
 #: bookwyrm/templates/preferences/export-user.html:41
 msgid "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported."
@@ -4531,7 +4531,7 @@ msgstr "Si deseas migrar otros elementos (comentarios, reseñas o citas), debes 
 
 #: bookwyrm/templates/preferences/export-user.html:49
 msgid "New user exports are currently disabled."
-msgstr ""
+msgstr "Las exportaciones de nuevos usuarios están actualmente deshabilitadas."
 
 #: bookwyrm/templates/preferences/export-user.html:53
 #, python-format
@@ -4569,7 +4569,7 @@ msgstr "Descargar su exportación"
 
 #: bookwyrm/templates/preferences/export-user.html:139
 msgid "Archive is no longer available"
-msgstr ""
+msgstr "El archivo ya no está disponible"
 
 #: bookwyrm/templates/preferences/export.html:4
 #: bookwyrm/templates/preferences/export.html:7
@@ -5199,7 +5199,7 @@ msgstr "Suma"
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:12
 msgid "Would you like to automatically check for new BookWyrm releases? (recommended)"
-msgstr ""
+msgstr "¿Desea comprobar automáticamente si hay nuevas versiones de BookWyrm? (recomendado)"
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:20
 msgid "Schedule checks"
@@ -5568,7 +5568,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:115
 msgid "Disable user exports"
-msgstr ""
+msgstr "Desactivar exportaciones de usuario"
 
 #: bookwyrm/templates/settings/imports/imports.html:123
 msgid "Limit how often users can import and export"
@@ -5819,7 +5819,7 @@ msgstr "Estado de Celery"
 #: bookwyrm/templates/settings/schedules.html:7
 #: bookwyrm/templates/settings/schedules.html:11
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Tareas programadas"
 
 #: bookwyrm/templates/settings/layout.html:99
 msgid "Instance Settings"
@@ -6049,11 +6049,11 @@ msgstr "No se encontró ningún informe."
 #: bookwyrm/templates/settings/schedules.html:17
 #: bookwyrm/templates/settings/schedules.html:101
 msgid "Tasks"
-msgstr ""
+msgstr "Tareas"
 
 #: bookwyrm/templates/settings/schedules.html:22
 msgid "Name"
-msgstr ""
+msgstr "Nombre"
 
 #: bookwyrm/templates/settings/schedules.html:25
 msgid "Celery task"
@@ -6061,7 +6061,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/schedules.html:28
 msgid "Date changed"
-msgstr ""
+msgstr "Fecha cambiada"
 
 #: bookwyrm/templates/settings/schedules.html:31
 msgid "Last run at"
@@ -6070,7 +6070,7 @@ msgstr ""
 #: bookwyrm/templates/settings/schedules.html:34
 #: bookwyrm/templates/settings/schedules.html:98
 msgid "Schedule"
-msgstr ""
+msgstr "Horario"
 
 #: bookwyrm/templates/settings/schedules.html:37
 msgid "Schedule ID"
@@ -6078,7 +6078,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/schedules.html:40
 msgid "Enabled"
-msgstr ""
+msgstr "Habilitada"
 
 #: bookwyrm/templates/settings/schedules.html:73
 msgid "Un-schedule"
