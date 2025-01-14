@@ -1,5 +1,6 @@
 {% extends 'preferences/layout.html' %}
 {% load i18n %}
+{% load humanize %}
 {% load utilities %}
 
 {% block title %}{% trans "Export BookWyrm Account" %}{% endblock %}
@@ -48,12 +49,12 @@
     <p class="notification is-danger">
         {% trans "New user exports are currently disabled." %}
         {% if perms.bookwyrm.edit_instance_settings %}
-        <br/>
-        {% url 'settings-imports' as url %}
-        {% blocktrans trimmed %}
-            User exports settings can be changed from <a href="{{ url }}">the Imports page</a> in the Admin dashboard.
-        {% endblocktrans %}
-    {% endif%}
+            <br/>
+            {% url 'settings-imports' as url %}
+            {% blocktrans trimmed %}
+                User exports settings can be changed from <a href="{{ url }}">the Imports page</a> in the Admin dashboard.
+            {% endblocktrans %}
+        {% endif%}
     </p>
     {% elif next_available %}
     <p class="notification is-warning">
@@ -61,7 +62,25 @@
         You will be able to create a new export file at {{ next_available }}
         {% endblocktrans %}
     </p>
+
     {% else %}
+
+    {% if recent_avg_hours or recent_avg_minutes %}
+    <div class="notification">
+        <p>
+        {% if recent_avg_hours %}
+            {% blocktrans trimmed with hours=recent_avg_hours|floatformat:0|intcomma %}
+                On average, recent exports have taken {{ hours }} hours.
+            {% endblocktrans %}
+        {% else %}
+            {% blocktrans trimmed with minutes=recent_avg_minutes|floatformat:0|intcomma %}
+                On average, recent exports have taken {{ minutes }} minutes.
+            {% endblocktrans %}
+        {% endif %}
+        </p>
+    </div>
+    {% endif %}
+
     <form name="export" method="POST" href="{% url 'prefs-user-export' %}">
         {% csrf_token %}
         <button type="submit" class="button">
@@ -107,14 +126,13 @@
                         {% elif export.job.status == "pending" %}
                         class="tag is-warning"
                         {% elif export.job.complete %}
-                        class="tag"
-                        {% else %}
                         class="tag is-success"
+                        {% else %}
+                        class="tag"
                         {% endif %}
                     >
                         {% if export.job.status %}
-                        {{ export.job.status }}
-                            {{ export.job.status_display }}
+                            {{ export.job.get_status_display }}
                         {% elif export.job.complete %}
                             {% trans "Complete" %}
                         {% else %}

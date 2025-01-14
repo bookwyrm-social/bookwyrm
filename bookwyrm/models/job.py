@@ -29,6 +29,7 @@ class Job(models.Model):
     status = models.CharField(
         max_length=50, choices=Status.choices, default=Status.PENDING, null=True
     )
+    fail_reason = models.TextField(null=True)
 
     class Meta:
         """Make it abstract"""
@@ -133,7 +134,8 @@ class ParentJob(Job):
         tasks = self.pending_child_jobs.filter(task_id__isnull=False).values_list(
             "task_id", flat=True
         )
-        app.control.revoke(list(tasks))
+        tasklist = [str(task) for task in list(tasks)]
+        app.control.revoke(tasklist)
 
         self.pending_child_jobs.update(status=self.Status.STOPPED)
 
@@ -208,7 +210,7 @@ class ParentTask(app.Task):
         job.task_id = task_id
         job.save(update_fields=["task_id"])
 
-        if kwargs["no_children"]:
+        if kwargs.get("no_children"):
             job.set_status(ChildJob.Status.ACTIVE)
 
     def on_success(
@@ -233,7 +235,7 @@ class ParentTask(app.Task):
             None: The return value of this handler is ignored.
         """
 
-        if kwargs["no_children"]:
+        if kwargs.get("no_children"):
             job = ParentJob.objects.get(id=kwargs["job_id"])
             job.complete_job()
 
@@ -247,7 +249,7 @@ class SubTask(app.Task):
     """
 
     def before_start(
-        self, task_id, *args, **kwargs
+        self, task_id, args, kwargs
     ):  # pylint: disable=no-self-use, unused-argument
         """Handler called before the task starts. Override.
 
@@ -271,7 +273,7 @@ class SubTask(app.Task):
         child_job.set_status(ChildJob.Status.ACTIVE)
 
     def on_success(
-        self, retval, task_id, *args, **kwargs
+        self, retval, task_id, args, kwargs
     ):  # pylint: disable=no-self-use, unused-argument
         """Run by the worker if the task executes successfully. Override.
 
