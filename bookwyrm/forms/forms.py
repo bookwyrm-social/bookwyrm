@@ -44,7 +44,14 @@ class GoalForm(CustomForm):
 class ReportForm(CustomForm):
     class Meta:
         model = models.Report
-        fields = ["user", "reporter", "status", "links", "note"]
+        fields = [
+            "reported_user",
+            "user",
+            "statuses",
+            "links",
+            "note",
+            "allow_broadcast",
+        ]
 
 
 class ReadThroughForm(CustomForm):
