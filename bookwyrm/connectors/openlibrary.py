@@ -181,17 +181,19 @@ class Connector(AbstractConnector):
             )
 
     def parse_isbn_search_data(self, data: JsonDict) -> Iterator[SearchResult]:
-        for search_result in list(data.values()):
+        for search_result in list(data.get("docs", [])):
             # build the remote id from the openlibrary key
             key = self.books_url + search_result["key"]
-            authors = search_result.get("authors") or [{"name": "Unknown"}]
-            author_names = [author.get("name") for author in authors]
+            authors = search_result.get("author_name") or ["Unknown"]
+            cover_blob = search_result.get("cover_i")
+            cover = self.get_cover_url([cover_blob], size="M") if cover_blob else None
             yield SearchResult(
                 title=search_result.get("title"),
                 key=key,
-                author=", ".join(author_names),
+                author=", ".join(authors),
                 connector=self,
-                year=search_result.get("publish_date"),
+                year=search_result.get("first_publish_year"),
+                cover=cover,
             )
 
     def load_edition_data(self, olkey: str) -> JsonDict:
