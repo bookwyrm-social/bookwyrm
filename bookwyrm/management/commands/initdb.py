@@ -114,6 +114,24 @@ def init_connectors():
         priority=1,
     )
 
+    models.Connector.objects.create(
+        identifier="api.finna.fi",
+        name="Finna API",
+        connector_file="finna",
+        base_url="https://www.finna.fi",
+        books_url="https://api.finna.fi/api/v1/record" "?id=",
+        covers_url="https://api.finna.fi",
+        search_url="https://api.finna.fi/api/v1/search?limit=20"
+        "&filter[]=format%3a%220%2fBook%2f%22"
+        "&field[]=title&field[]=recordPage&field[]=authors&field[]=year&field[]=id&field[]=formats"
+        "&lookfor=",
+        isbn_search_url="https://api.finna.fi/api/v1/search?limit=1"
+        "&filter[]=format%3a%220%2fBook%2f%22"
+        "&field[]=title&field[]=recordPage&field[]=authors&field[]=year&field[]=id&field[]=formats"
+        "&lookfor=isbn:",
+        priority=1,
+    )
+
 
 def init_settings():
     """info about the instance"""
