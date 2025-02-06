@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-17 21:56+0000\n"
-"PO-Revision-Date: 2025-02-06 16:10\n"
+"PO-Revision-Date: 2025-02-06 17:37\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Slovak\n"
 "Language: sk\n"
@@ -267,7 +267,7 @@ msgstr "Súkromne"
 #: bookwyrm/templates/settings/imports/imports.html:270
 #: bookwyrm/templates/snippets/user_active_tag.html:8
 msgid "Active"
-msgstr "Aktívne"
+msgstr "Aktívny"
 
 #: bookwyrm/models/import_job.py:51 bookwyrm/models/job.py:20
 #: bookwyrm/templates/import/import.html:179
@@ -337,7 +337,7 @@ msgstr ""
 
 #: bookwyrm/models/report.py:89
 msgid "Suspended user"
-msgstr ""
+msgstr "Vylúčený užívateľ"
 
 #: bookwyrm/models/report.py:90
 msgid "Un-suspended user"
@@ -366,7 +366,7 @@ msgstr "Vymazaná položka"
 #: bookwyrm/models/status.py:192
 #, python-format
 msgid "%(display_name)s's status"
-msgstr ""
+msgstr "príspevok od %(display_name)s"
 
 #: bookwyrm/models/status.py:367
 #, python-format
@@ -394,19 +394,19 @@ msgstr[3] ""
 
 #: bookwyrm/models/user.py:36 bookwyrm/templates/book/book.html:312
 msgid "Reviews"
-msgstr ""
+msgstr "Recenzie"
 
 #: bookwyrm/models/user.py:37
 msgid "Comments"
-msgstr ""
+msgstr "Komentáre"
 
 #: bookwyrm/models/user.py:38 bookwyrm/templates/import/import_user.html:139
 msgid "Quotations"
-msgstr ""
+msgstr "Citácie"
 
 #: bookwyrm/models/user.py:39
 msgid "Everything else"
-msgstr ""
+msgstr "Všetko ostatné"
 
 #: bookwyrm/settings.py:236
 msgid "Home Timeline"
@@ -518,7 +518,7 @@ msgstr ""
 
 #: bookwyrm/templates/403.html:5
 msgid "Oh no!"
-msgstr ""
+msgstr "Oh, nie!"
 
 #: bookwyrm/templates/403.html:9 bookwyrm/templates/landing/invite.html:21
 msgid "Permission Denied"
@@ -527,7 +527,7 @@ msgstr "Povolenie zamietnuté"
 #: bookwyrm/templates/403.html:11
 #, python-format
 msgid "You do not have permission to view this page or perform this action. Your user permission level is <code>%(level)s</code>."
-msgstr ""
+msgstr "Nemáte povolenie zobraziť túto stránku, alebo vykonať tento úkon. Tvoja užívateľská úroveň povolení je <code>%(level)s</code>."
 
 #: bookwyrm/templates/403.html:15
 msgid "If you think you should have access, please speak to your BookWyrm server administrator."
@@ -663,18 +663,18 @@ msgstr "O %(site_name)s"
 #: bookwyrm/templates/about/privacy.html:9
 #: bookwyrm/templates/snippets/footer.html:30
 msgid "Privacy Policy"
-msgstr ""
+msgstr "Podmienky súkromia"
 
 #: bookwyrm/templates/annual_summary/layout.html:7
 #: bookwyrm/templates/feed/summary_card.html:8
 #, python-format
 msgid "%(year)s in the books"
-msgstr ""
+msgstr "%(year)s v knihách"
 
 #: bookwyrm/templates/annual_summary/layout.html:43
 #, python-format
 msgid "%(year)s <em>in the books</em>"
-msgstr ""
+msgstr "%(year)s <em>v knihách</em>"
 
 #: bookwyrm/templates/annual_summary/layout.html:47
 #, python-format
@@ -683,7 +683,7 @@ msgstr ""
 
 #: bookwyrm/templates/annual_summary/layout.html:53
 msgid "Share this page"
-msgstr ""
+msgstr "Zdieľať túto stránku"
 
 #: bookwyrm/templates/annual_summary/layout.html:67
 msgid "Copy address"
@@ -926,7 +926,7 @@ msgstr "Oddeľte viacero položiek čiarkami."
 
 #: bookwyrm/templates/author/edit_author.html:50
 msgid "Bio:"
-msgstr ""
+msgstr "Život:"
 
 #: bookwyrm/templates/author/edit_author.html:56
 msgid "Wikipedia link:"
@@ -1252,7 +1252,7 @@ msgstr ""
 #: bookwyrm/templates/book/edit/edit_book.html:89
 #, python-format
 msgid "Author of <em>%(book_title)s</em>"
-msgstr ""
+msgstr "Autor knihy <em>%(book_title)s</em>"
 
 #: bookwyrm/templates/book/edit/edit_book.html:93
 #, python-format
@@ -1751,7 +1751,7 @@ msgstr "Adresár"
 
 #: bookwyrm/templates/directory/directory.html:17
 msgid "Make your profile discoverable to other BookWyrm users."
-msgstr ""
+msgstr "Urobte váš profil objaviteľný ostatnými užívateľmi BookWyrm."
 
 #: bookwyrm/templates/directory/directory.html:21
 msgid "Join Directory"
@@ -2050,7 +2050,7 @@ msgstr ""
 #: bookwyrm/templates/user/goal_form.html:6
 #, python-format
 msgid "%(year)s Reading Goal"
-msgstr ""
+msgstr "Čitateľský cieľ %(year)s"
 
 #: bookwyrm/templates/feed/goal_card.html:18
 #, python-format
@@ -3059,7 +3059,7 @@ msgstr ""
 #: bookwyrm/templates/settings/imports/imports.html:9
 #: bookwyrm/templates/settings/layout.html:82
 msgid "Imports"
-msgstr ""
+msgstr "Nahrania"
 
 #: bookwyrm/templates/import/import_status.html:39
 msgid "Import started:"
@@ -3067,7 +3067,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:48
 msgid "In progress"
-msgstr ""
+msgstr "Prebieha"
 
 #: bookwyrm/templates/import/import_status.html:50
 msgid "Refresh"
@@ -3077,7 +3077,7 @@ msgstr "Obnoviť"
 #: bookwyrm/templates/settings/imports/imports.html:243
 #: bookwyrm/templates/settings/imports/imports.html:320
 msgid "Stop import"
-msgstr ""
+msgstr "Zastaviť nahrávanie"
 
 #: bookwyrm/templates/import/import_status.html:78
 #, python-format
@@ -3276,7 +3276,7 @@ msgstr "Užívateľské blokovania"
 #: bookwyrm/templates/import/import_user.html:123
 #: bookwyrm/templates/preferences/export-user.html:22
 msgid "Reading goals"
-msgstr "Čítateľské ciele"
+msgstr "Čitateľské ciele"
 
 #: bookwyrm/templates/import/import_user.html:126
 msgid "Overwrites reading goals for all years listed in the import file"
@@ -4665,17 +4665,17 @@ msgstr ""
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
 msgid "Finish \"%(book_title)s\""
-msgstr ""
+msgstr "Dokončiť \"%(book_title)s\""
 
 #: bookwyrm/templates/reading_progress/start.html:5
 #, python-format
 msgid "Start \"%(book_title)s\""
-msgstr ""
+msgstr "Začať \"%(book_title)s\""
 
 #: bookwyrm/templates/reading_progress/stop.html:5
 #, python-format
 msgid "Stop Reading \"%(book_title)s\""
-msgstr ""
+msgstr "Prestať čítať \"%(book_title)s\""
 
 #: bookwyrm/templates/reading_progress/want.html:5
 #, python-format
@@ -4703,18 +4703,18 @@ msgstr ""
 #: bookwyrm/templates/snippets/reading_modals/start_reading_modal.html:21
 #: bookwyrm/templates/snippets/reading_modals/stop_reading_modal.html:24
 msgid "Started reading"
-msgstr ""
+msgstr "Začal/a som čítať"
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:18
 #: bookwyrm/templates/readthrough/readthrough_modal.html:56
 msgid "Progress"
-msgstr ""
+msgstr "Postup"
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:25
 #: bookwyrm/templates/readthrough/readthrough_modal.html:63
 #: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:32
 msgid "Finished reading"
-msgstr ""
+msgstr "Skončil/a som čítanie"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:9
 msgid "Progress Updates:"
@@ -4722,11 +4722,11 @@ msgstr ""
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:14
 msgid "finished"
-msgstr ""
+msgstr "skončené"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:16
 msgid "stopped"
-msgstr ""
+msgstr "zastavené"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:27
 msgid "Show all updates"
@@ -6895,7 +6895,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/goal_form.html:16
 msgid "Reading goal:"
-msgstr ""
+msgstr "Čitateľský cieľ:"
 
 #: bookwyrm/templates/snippets/goal_form.html:21
 msgid "books"
@@ -6908,7 +6908,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/goal_form.html:33
 #: bookwyrm/templates/snippets/reading_modals/layout.html:13
 msgid "Post to feed"
-msgstr ""
+msgstr "Zverejniť na kanáli"
 
 #: bookwyrm/templates/snippets/goal_form.html:37
 msgid "Set goal"
@@ -7289,7 +7289,7 @@ msgstr ""
 #: bookwyrm/templates/user/goal.html:12
 #, python-format
 msgid "%(year)s Reading Progress"
-msgstr ""
+msgstr "%(year)s postup v čítaní"
 
 #: bookwyrm/templates/user/goal.html:16
 msgid "Edit Goal"
