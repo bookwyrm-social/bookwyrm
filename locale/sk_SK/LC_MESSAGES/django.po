@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-17 21:56+0000\n"
-"PO-Revision-Date: 2025-02-07 10:15\n"
+"PO-Revision-Date: 2025-02-07 11:46\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Slovak\n"
 "Language: sk\n"
@@ -1466,11 +1466,11 @@ msgstr "Edície %(book_title)s"
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
 msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
-msgstr ""
+msgstr "Edície <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
-msgstr ""
+msgstr "Neviete nájsť edíciu, ktorú hľadáte?"
 
 #: bookwyrm/templates/book/editions/editions.html:76
 msgid "Add another edition"
@@ -1555,7 +1555,7 @@ msgstr "Doména"
 #: bookwyrm/templates/settings/users/user_admin.html:56
 #: bookwyrm/templates/settings/users/user_info.html:35
 msgid "Status"
-msgstr ""
+msgstr "Príspevok"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:37
 #: bookwyrm/templates/settings/announcements/announcements.html:41
@@ -1588,7 +1588,7 @@ msgstr "Pridať odkaz na súbor"
 
 #: bookwyrm/templates/book/file_links/file_link_page.html:6
 msgid "File Links"
-msgstr ""
+msgstr "Odkazy na súbor"
 
 #: bookwyrm/templates/book/file_links/links.html:9
 msgid "Get a copy"
@@ -1755,7 +1755,7 @@ msgstr "Urobte váš profil objaviteľný ostatnými užívateľmi BookWyrm."
 
 #: bookwyrm/templates/directory/directory.html:21
 msgid "Join Directory"
-msgstr ""
+msgstr "Pridať sa do adresára"
 
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
@@ -1781,7 +1781,7 @@ msgstr "Nedávno aktívni"
 
 #: bookwyrm/templates/directory/sort_filter.html:10
 msgid "Suggested"
-msgstr ""
+msgstr "Navrhované"
 
 #: bookwyrm/templates/directory/user_card.html:17
 #: bookwyrm/templates/directory/user_card.html:18
@@ -1831,7 +1831,7 @@ msgstr "BookWyrm užívatelia"
 
 #: bookwyrm/templates/directory/user_type_filter.html:12
 msgid "All known users"
-msgstr ""
+msgstr "Všetci známi užívatelia"
 
 #: bookwyrm/templates/discover/card-header.html:8
 #, python-format
@@ -1991,16 +1991,16 @@ msgstr ""
 #: bookwyrm/templates/email/password_reset/subject.html:2
 #, python-format
 msgid "Reset your %(site_name)s password"
-msgstr ""
+msgstr "Obnov svoje heslo %(site_name)s"
 
 #: bookwyrm/templates/email/test/html_content.html:6
 #: bookwyrm/templates/email/test/text_content.html:4
 msgid "This is a test email."
-msgstr ""
+msgstr "Toto je testovací email."
 
 #: bookwyrm/templates/email/test/subject.html:2
 msgid "Test email"
-msgstr ""
+msgstr "Skúšobný email"
 
 #: bookwyrm/templates/embed-layout.html:21 bookwyrm/templates/layout.html:33
 #: bookwyrm/templates/layout.html:163 bookwyrm/templates/setup/layout.html:15
@@ -2008,7 +2008,7 @@ msgstr ""
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:18
 #, python-format
 msgid "%(site_name)s home page"
-msgstr ""
+msgstr "Domovská stránka %(site_name)s"
 
 #: bookwyrm/templates/embed-layout.html:40
 #: bookwyrm/templates/snippets/footer.html:12
@@ -2017,12 +2017,12 @@ msgstr "Kontaktovať správcu stránky"
 
 #: bookwyrm/templates/embed-layout.html:46
 msgid "Join BookWyrm"
-msgstr ""
+msgstr "Pridať sa k BookWyrm"
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
 msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "Súkromné správy s <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/feed/direct_messages.html:10
 #: bookwyrm/templates/user_menu.html:39
@@ -2035,11 +2035,11 @@ msgstr "Všetky správy"
 
 #: bookwyrm/templates/feed/direct_messages.html:22
 msgid "You have no messages right now."
-msgstr ""
+msgstr "Práve teraz nemáš žiadne správy."
 
 #: bookwyrm/templates/feed/feed.html:55
 msgid "There aren't any activities right now! Try following a user to get started"
-msgstr ""
+msgstr "Práve teraz tu niesu žiadne činnosti! Pre začiatok skúste nasledovať používateľa"
 
 #: bookwyrm/templates/feed/feed.html:56
 msgid "Alternatively, you can try enabling more status types"
@@ -2055,7 +2055,7 @@ msgstr "Čitateľský cieľ %(year)s"
 #: bookwyrm/templates/feed/goal_card.html:18
 #, python-format
 msgid "You can set or change your reading goal any time from your <a href=\"%(path)s\">profile page</a>"
-msgstr ""
+msgstr "Môžete nastaviť, alebo zmeniť váš čitateľský cieľ hocikedy zo svojho <a href=\"%(path)s\">profilu</a>"
 
 #: bookwyrm/templates/feed/layout.html:4
 msgid "Updates"
@@ -2069,7 +2069,7 @@ msgstr "Tvoje knihy"
 
 #: bookwyrm/templates/feed/suggested_books.html:10
 msgid "There are no books here right now! Try searching for a book to get started"
-msgstr ""
+msgstr "Teraz tu niesu žiadne knihy! Pre začiatok skúste vyhľadať knihu"
 
 #: bookwyrm/templates/feed/suggested_books.html:13
 msgid "Do you have book data from another service like GoodReads?"
@@ -2077,7 +2077,7 @@ msgstr ""
 
 #: bookwyrm/templates/feed/suggested_books.html:16
 msgid "Import your reading history"
-msgstr ""
+msgstr "Nahrať svoju čítaciu históriu"
 
 #: bookwyrm/templates/feed/suggested_users.html:5
 #: bookwyrm/templates/get_started/users.html:6
@@ -2086,11 +2086,11 @@ msgstr "Koho nasledovať"
 
 #: bookwyrm/templates/feed/suggested_users.html:9
 msgid "Don't show suggested users"
-msgstr ""
+msgstr "Neukazovať navrhovaných užívateľov"
 
 #: bookwyrm/templates/feed/suggested_users.html:14
 msgid "View directory"
-msgstr ""
+msgstr "Zobraziť adresár"
 
 #: bookwyrm/templates/feed/summary_card.html:21
 msgid "The end of the year is the best moment to take stock of all the books read during the last 12 months. How many pages have you read? Which book is your best-rated of the year? We compiled these stats, and more!"
@@ -2099,7 +2099,7 @@ msgstr ""
 #: bookwyrm/templates/feed/summary_card.html:26
 #, python-format
 msgid "Discover your stats for %(year)s!"
-msgstr ""
+msgstr "Objavte svoje štatistiky z roku %(year)s!"
 
 #: bookwyrm/templates/get_started/book_preview.html:6
 #, python-format
@@ -2406,7 +2406,7 @@ msgstr "Stránka knihy"
 #: bookwyrm/templates/guided_tour/user_groups.html:19
 #: bookwyrm/templates/guided_tour/user_profile.html:19
 msgid "End Tour"
-msgstr ""
+msgstr "Ukončiť prehliadku"
 
 #: bookwyrm/templates/guided_tour/book.html:26
 #: bookwyrm/templates/guided_tour/book.html:50
@@ -2537,7 +2537,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/book.html:249
 msgid "Download links"
-msgstr ""
+msgstr "Odkazy na stiahnutie"
 
 #: bookwyrm/templates/guided_tour/book.html:273
 msgid "Continue the tour by selecting <strong>Your books</strong> from the drop down menu."
@@ -2695,7 +2695,7 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/lists.html:35
 #: bookwyrm/templates/guided_tour/lists.html:59
 msgid "Creating a new list"
-msgstr ""
+msgstr "Vytváranie nového zoznamu"
 
 #: bookwyrm/templates/guided_tour/lists.html:58
 msgid "You must give your list a name and can optionally give it a description to help other people understand what your list is about."
