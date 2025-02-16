@@ -12,7 +12,7 @@
         <li><a href="{% url 'lists' %}">{% trans "Lists" %}</a></li>
         <li class="is-active">
             <a href="#" aria-current="page">
-                {{ list.name|truncatechars:30 }}
+                {{ list.get_name|truncatechars:30 }}
             </a>
         </li>
     </ul>
@@ -177,6 +177,7 @@
     </section>
 
     <section class="column is-one-quarter">
+    {% if list.suggests_for == None %}
         <h2 class="title is-5">
             {% trans "Sort List" %}
         </h2>
@@ -199,6 +200,7 @@
                 </button>
             </div>
         </form>
+    {% endif %}
     {% if request.user.is_authenticated and not list.curation == 'closed' or request.user == list.user %}
         <h2 class="title is-5 mt-6">
             {% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
@@ -275,7 +277,7 @@
                     data-copytext
                     data-copytext-label="{% trans 'Copy embed code' %}"
                     data-copytext-success="{% trans 'Copied!' %}"
-                >&lt;iframe style="border-width:0;" id="bookwyrm_list_embed" width="400" height="600" title="{% blocktrans trimmed with list_name=list.name site_name=site.name owner=list.user.display_name %}
+                >&lt;iframe style="border-width:0;" id="bookwyrm_list_embed" width="400" height="600" title="{% blocktrans trimmed with list_name=list.get_name site_name=site.name owner=list.user.display_name %}
                     {{ list_name }}, a list by {{owner}} on {{ site_name }}
                 {% endblocktrans %}" src="{{ embed_url }}"&gt;&lt;/iframe&gt;</textarea>
             </div>
