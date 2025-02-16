@@ -26,7 +26,6 @@ class Emailing(TestCase):
                 local=True,
                 localname="mouse",
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """other test data"""
