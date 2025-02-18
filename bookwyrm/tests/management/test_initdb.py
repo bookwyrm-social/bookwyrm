@@ -99,7 +99,7 @@ class InitDB(TestCase):
         # everything should have been called
         self.assertEqual(Group.objects.count(), 4)
         self.assertTrue(Permission.objects.exists())
-        self.assertEqual(models.Connector.objects.count(), 3)
+        self.assertEqual(models.Connector.objects.count(), 4)
         self.assertEqual(models.SiteSettings.objects.count(), 1)
         self.assertEqual(models.LinkDomain.objects.count(), 5)
 
