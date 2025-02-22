@@ -22,6 +22,7 @@ from bookwyrm.importers import (
     GoodreadsImporter,
     StorygraphImporter,
     OpenLibraryImporter,
+    OpenReadsImporter,
 )
 from bookwyrm.models.bookwyrm_import_job import BookwyrmImportJob
 from bookwyrm.settings import PAGE_LENGTH
@@ -95,6 +96,8 @@ class Import(View):
             importer = StorygraphImporter()
         elif source == "OpenLibrary":
             importer = OpenLibraryImporter()
+        elif source == "OpenReads":
+            importer = OpenReadsImporter()
         elif source == "Calibre":
             importer = CalibreImporter()
         else:
