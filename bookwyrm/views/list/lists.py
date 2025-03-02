@@ -11,6 +11,7 @@ from bookwyrm.lists_stream import ListsStream
 from bookwyrm.views.helpers import get_user_from_username
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 # pylint: disable=no-self-use
@@ -71,7 +72,7 @@ class UserLists(View):
 
     def get(self, request, username):
         """display a book list"""
-        
+
         user = get_user_from_username(request.user, username)
         lists = models.List.privacy_filter(request.user).filter(user=user)
         paginated = Paginator(lists, 12)
