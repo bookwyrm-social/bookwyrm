@@ -160,7 +160,7 @@ class ListViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
-        
+
     def test_lists_create(self):
         """create list view"""
         view = views.Lists.as_view()
