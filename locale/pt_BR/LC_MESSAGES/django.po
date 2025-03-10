@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-17 21:56+0000\n"
-"PO-Revision-Date: 2024-10-18 01:48\n"
+"PO-Revision-Date: 2025-03-10 20:19\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt\n"
@@ -294,7 +294,7 @@ msgstr "Não foi possível encontrar o livro"
 
 #: bookwyrm/models/job.py:22
 msgid "Failed"
-msgstr ""
+msgstr "Falhou"
 
 #: bookwyrm/models/link.py:55
 msgid "Free"
@@ -329,66 +329,66 @@ msgstr "Relatório reaberto"
 
 #: bookwyrm/models/report.py:87
 msgid "Messaged reporter"
-msgstr ""
+msgstr "Relatório de mensagens"
 
 #: bookwyrm/models/report.py:88
 msgid "Messaged reported user"
-msgstr ""
+msgstr "Mensagem reportada de usuário"
 
 #: bookwyrm/models/report.py:89
 msgid "Suspended user"
-msgstr ""
+msgstr "Usuário suspenso"
 
 #: bookwyrm/models/report.py:90
 msgid "Un-suspended user"
-msgstr ""
+msgstr "Usuário não suspenso"
 
 #: bookwyrm/models/report.py:91
 msgid "Changed user permission level"
-msgstr ""
+msgstr "Nível de permissão de usário mudado"
 
 #: bookwyrm/models/report.py:92
 msgid "Deleted user account"
-msgstr ""
+msgstr "Conta de usuário excluída"
 
 #: bookwyrm/models/report.py:93
 msgid "Blocked domain"
-msgstr ""
+msgstr "Domínio bloqueado"
 
 #: bookwyrm/models/report.py:94
 msgid "Approved domain"
-msgstr ""
+msgstr "Domínio aprovado"
 
 #: bookwyrm/models/report.py:95
 msgid "Deleted item"
-msgstr ""
+msgstr "Item deletado"
 
 #: bookwyrm/models/status.py:192
 #, python-format
 msgid "%(display_name)s's status"
-msgstr ""
+msgstr "Status de %(display_name)s"
 
 #: bookwyrm/models/status.py:367
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
-msgstr ""
+msgstr "Comentário de %(display_name)s em %(book_title)s"
 
 #: bookwyrm/models/status.py:418
 #, python-format
 msgid "%(display_name)s's quote from %(book_title)s"
-msgstr ""
+msgstr "Citação de %(display_name)s em %(book_title)s"
 
 #: bookwyrm/models/status.py:454
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
-msgstr ""
+msgstr "Resenha de %(display_name)s de %(book_title)s"
 
 #: bookwyrm/models/status.py:486
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_name)s avaliou %(book_title)s: %(display_rating).1f estrela"
+msgstr[1] "%(display_name)s avaliou %(book_title)s: %(display_rating).1f estrelas"
 
 #: bookwyrm/models/user.py:36 bookwyrm/templates/book/book.html:312
 msgid "Reviews"
@@ -460,7 +460,7 @@ msgstr "Italiano (Italiano)"
 
 #: bookwyrm/settings.py:322
 msgid "한국어 (Korean)"
-msgstr ""
+msgstr "한국어 (Coreano)"
 
 #: bookwyrm/settings.py:323
 msgid "Suomi (Finnish)"
@@ -476,7 +476,7 @@ msgstr "Lietuvių (Lituano)"
 
 #: bookwyrm/settings.py:326
 msgid "Nederlands (Dutch)"
-msgstr ""
+msgstr "Holandês (Alemão)"
 
 #: bookwyrm/settings.py:327
 msgid "Norsk (Norwegian)"
@@ -504,7 +504,7 @@ msgstr "Svenska (Sueco)"
 
 #: bookwyrm/settings.py:333
 msgid "Українська (Ukrainian)"
-msgstr ""
+msgstr "Українська (Ucraniano)"
 
 #: bookwyrm/settings.py:334
 msgid "简体中文 (Simplified Chinese)"
@@ -516,7 +516,7 @@ msgstr "繁體中文 (Chinês tradicional)"
 
 #: bookwyrm/templates/403.html:5
 msgid "Oh no!"
-msgstr ""
+msgstr "Ai!"
 
 #: bookwyrm/templates/403.html:9 bookwyrm/templates/landing/invite.html:21
 msgid "Permission Denied"
@@ -525,11 +525,11 @@ msgstr "Permissão negada"
 #: bookwyrm/templates/403.html:11
 #, python-format
 msgid "You do not have permission to view this page or perform this action. Your user permission level is <code>%(level)s</code>."
-msgstr ""
+msgstr "Você não tem permissão para ver essa página ou executar essa ação. Seu nível de usuário é  <code>%(level)s</code>."
 
 #: bookwyrm/templates/403.html:15
 msgid "If you think you should have access, please speak to your BookWyrm server administrator."
-msgstr ""
+msgstr "Se você acha que deveria ter acesso, por favor, fale com seu administrador do servidor do seu BookWyrm."
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
@@ -541,11 +541,11 @@ msgstr "A página que você procura não existe!"
 
 #: bookwyrm/templates/413.html:4 bookwyrm/templates/413.html:8
 msgid "File too large"
-msgstr ""
+msgstr "Arquivo muito pesado"
 
 #: bookwyrm/templates/413.html:9
 msgid "The file you are uploading is too large."
-msgstr ""
+msgstr "O arquivo que você está upando é muito pesado."
 
 #: bookwyrm/templates/413.html:11
 msgid "You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting."
@@ -745,8 +745,8 @@ msgstr "Isso dá uma média de %(pages)s páginas por livro."
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] ""
-msgstr[1] "(Não há página de dados disponível para%(no_page_number)s livros)"
+msgstr[0] "Não há página de dados disponível para  %(no_page_number)s livro)"
+msgstr[1] "(Não há página de dados disponível para %(no_page_number)s livros)"
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -1153,11 +1153,11 @@ msgstr "ISBN:"
 #: bookwyrm/templates/book/book_identifiers.html:12
 #: bookwyrm/templates/book/book_identifiers.html:13
 msgid "Copy ISBN"
-msgstr ""
+msgstr "Copiar ISBN"
 
 #: bookwyrm/templates/book/book_identifiers.html:16
 msgid "Copied ISBN!"
-msgstr ""
+msgstr "ISBN copiado!"
 
 #: bookwyrm/templates/book/book_identifiers.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:352
@@ -1195,7 +1195,7 @@ msgstr "Enviar capa:"
 #: bookwyrm/templates/book/cover_add_modal.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:250
 msgid "Load cover from URL:"
-msgstr ""
+msgstr "Subir capa desde URL:"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
 msgid "Book cover preview"
@@ -1322,7 +1322,7 @@ msgstr "Título:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:35
 msgid "Sort Title:"
-msgstr ""
+msgstr "Organizar título:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:44
 msgid "Subtitle:"
@@ -1452,7 +1452,7 @@ msgstr "Edições de %(book_title)s"
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
 msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
-msgstr ""
+msgstr "Edições de <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
@@ -1652,15 +1652,15 @@ msgstr "Para carregar informações nos conectaremos a <strong>%(source_name)s</
 
 #: bookwyrm/templates/compose.html:7 bookwyrm/templates/compose.html:21
 msgid "Edit review"
-msgstr ""
+msgstr "Editar resenha"
 
 #: bookwyrm/templates/compose.html:9 bookwyrm/templates/compose.html:23
 msgid "Edit quote"
-msgstr ""
+msgstr "Editar citação"
 
 #: bookwyrm/templates/compose.html:11 bookwyrm/templates/compose.html:25
 msgid "Edit comment"
-msgstr ""
+msgstr "Editar comentário"
 
 #: bookwyrm/templates/compose.html:13 bookwyrm/templates/compose.html:27
 msgid "Edit status"
@@ -1898,7 +1898,7 @@ msgstr "Olá,"
 #: bookwyrm/templates/email/html_layout.html:21
 #, python-format
 msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"%(base_url)s\">%(site_name)s</a>"
-msgstr ""
+msgstr "BookWyrm é hospedado em <a style=\"color: #3273dc;\" href=\"%(base_url)s\">%(site_name)s</a>"
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
@@ -1917,7 +1917,7 @@ msgstr "Inscreva-se"
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
 msgid "Learn more <a href=\"%(base_url)s%(about_path)s\">about %(site_name)s</a>."
-msgstr ""
+msgstr "Saiba mais <a href=\"%(base_url)s%(about_path)s\">sobre %(site_name)s</a>."
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
@@ -2365,7 +2365,7 @@ msgstr "Gerente"
 
 #: bookwyrm/templates/groups/user_groups.html:35
 msgid "No groups found."
-msgstr ""
+msgstr "Nenhum grupo encontrado."
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
@@ -2477,15 +2477,15 @@ msgstr "Escrever uma avaliação"
 
 #: bookwyrm/templates/guided_tour/book.html:151
 msgid "You can share your thoughts on this book generally with a simple comment"
-msgstr ""
+msgstr "Você pode compartilhar o que pensa sobre este livro com um simples comentário"
 
 #: bookwyrm/templates/guided_tour/book.html:152
 msgid "Post a comment"
-msgstr ""
+msgstr "Postar um comentário"
 
 #: bookwyrm/templates/guided_tour/book.html:175
 msgid "Just read some perfect prose? Let the world know by sharing a quote!"
-msgstr ""
+msgstr "Acaba de ler uma prosa perfeita? Espalhe-a pelo mundo através de uma citação!"
 
 #: bookwyrm/templates/guided_tour/book.html:176
 msgid "Share a quote"
@@ -2493,11 +2493,11 @@ msgstr "Compartilhar uma citação"
 
 #: bookwyrm/templates/guided_tour/book.html:199
 msgid "If your review or comment might ruin the book for someone who hasn't read it yet, you can hide your post behind a <strong>spoiler alert</strong>"
-msgstr ""
+msgstr "Se sua resenha ou comentário pode estragar o livro para alguém que ainda não o leu, você pode esconder suas postagem com <strong>alerta de spoiler</strong>"
 
 #: bookwyrm/templates/guided_tour/book.html:200
 msgid "Spoiler alerts"
-msgstr ""
+msgstr "Alerta de spoiler"
 
 #: bookwyrm/templates/guided_tour/book.html:224
 msgid "Choose who can see your post here. Post privacy can be <strong>Public</strong> (everyone can see), <strong>Unlisted</strong> (everyone can see, but it doesn't appear in public feeds or discovery pages), <strong>Followers</strong> (only your followers can see), or <strong>Private</strong> (only you can see)"
@@ -2511,15 +2511,15 @@ msgstr "Privacidade da publicação"
 
 #: bookwyrm/templates/guided_tour/book.html:248
 msgid "Some ebooks can be downloaded for free from external sources. They will be shown here."
-msgstr ""
+msgstr "Alguns livros podem ser baixados gratuitamente de fontes externas. Elas aparecerão aqui."
 
 #: bookwyrm/templates/guided_tour/book.html:249
 msgid "Download links"
-msgstr ""
+msgstr "Link para baixar"
 
 #: bookwyrm/templates/guided_tour/book.html:273
 msgid "Continue the tour by selecting <strong>Your books</strong> from the drop down menu."
-msgstr ""
+msgstr "Continue o passeio selecionando  <strong>Seus livros</strong> no menu suspenso."
 
 #: bookwyrm/templates/guided_tour/book.html:296
 #: bookwyrm/templates/guided_tour/home.html:50
@@ -2529,15 +2529,15 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_groups.html:116
 #: bookwyrm/templates/guided_tour/user_profile.html:141
 msgid "Ok"
-msgstr ""
+msgstr "Correto"
 
 #: bookwyrm/templates/guided_tour/group.html:10
 msgid "Welcome to the page for your group! This is where you can add and remove users, create user-curated lists, and edit the group details."
-msgstr ""
+msgstr "Benvindo à página do seu grupo! Aqui é onde você pode adicionar e remover usuários, criar uma lista de usuários curadores e editar os detalhes do grupo."
 
 #: bookwyrm/templates/guided_tour/group.html:11
 msgid "Your group"
-msgstr ""
+msgstr "Seu grupo."
 
 #: bookwyrm/templates/guided_tour/group.html:31
 msgid "Use this search box to find users to join your group. Currently users must be members of the same Bookwyrm instance and be invited by the group owner."
@@ -2545,7 +2545,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/group.html:32
 msgid "Find users"
-msgstr ""
+msgstr "Encontre usuários"
 
 #: bookwyrm/templates/guided_tour/group.html:54
 msgid "Your group members will appear here. The group owner is marked with a star symbol."
@@ -2561,7 +2561,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/group.html:78
 msgid "Group lists"
-msgstr ""
+msgstr "Lista de grupos"
 
 #: bookwyrm/templates/guided_tour/group.html:100
 msgid "Congratulations, you've finished the tour! Now you know the basics, but there is lots more to explore on your own. Happy reading!"
@@ -2569,7 +2569,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/group.html:115
 msgid "End tour"
-msgstr ""
+msgstr "Fim do passeio"
 
 #: bookwyrm/templates/guided_tour/home.html:16
 msgid "Welcome to Bookwyrm!<br><br>Would you like to take the guided tour to help you get started?"
