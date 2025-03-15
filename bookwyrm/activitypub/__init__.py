@@ -15,7 +15,7 @@ from .note import Review, Rating
 from .note import Tombstone
 from .ordered_collection import OrderedCollection, OrderedCollectionPage
 from .ordered_collection import CollectionItem, ListItem, ShelfItem
-from .ordered_collection import BookList, Shelf
+from .ordered_collection import BookList, SuggestionList, Shelf
 from .person import Person, PublicKey
 from .response import ActivitypubResponse
 from .book import Edition, Work, Author
