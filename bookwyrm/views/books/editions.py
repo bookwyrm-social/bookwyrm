@@ -12,6 +12,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views import View
 from django.views.decorators.http import require_POST
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
@@ -23,6 +24,7 @@ from bookwyrm.views.helpers import is_api_request, get_mergeable_object_or_404
 class Editions(View):
     """list of editions"""
 
+    @vary_on_headers("Accept")
     def get(self, request, book_id):
         """list of editions of a book"""
         work = get_mergeable_object_or_404(models.Work, id=book_id)

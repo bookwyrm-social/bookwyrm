@@ -7,6 +7,7 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
@@ -24,6 +25,7 @@ class Author(View):
     """this person wrote a book"""
 
     # pylint: disable=unused-argument
+    @vary_on_headers("Accept")
     def get(self, request, author_id, slug=None):
         """landing page for an author"""
         author = get_mergeable_object_or_404(models.Author, id=author_id)

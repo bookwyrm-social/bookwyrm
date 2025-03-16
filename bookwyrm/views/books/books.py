@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.views import View
 from django.views.decorators.http import require_POST
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
@@ -27,6 +28,7 @@ from bookwyrm.views.helpers import (
 class Book(View):
     """a book! this is the stuff"""
 
+    @vary_on_headers("Accept")
     def get(self, request, book_id, **kwargs):
         """info about a book"""
         if is_api_request(request):
