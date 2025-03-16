@@ -1,6 +1,7 @@
 """ template filters """
+from typing import Optional
 from django import template
-from django.db.models import Avg, StdDev, Count, F, Q
+from django.db.models import Avg, StdDev, Count, F, Q, QuerySet
 
 from bookwyrm import models
 
@@ -8,7 +9,7 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context=False)
-def get_book_superlatives():
+def get_book_superlatives() -> dict[str, Optional[models.Work]]:
     """get book stats for the about page"""
     total_ratings = models.Review.objects.filter(local=True, deleted=False).count()
     data = {}
@@ -67,7 +68,7 @@ def get_book_superlatives():
 
 
 @register.simple_tag(takes_context=False)
-def get_landing_books():
+def get_landing_books() -> list[QuerySet[models.Edition]]:
     """list of books for the landing page"""
     return list(
         set(
