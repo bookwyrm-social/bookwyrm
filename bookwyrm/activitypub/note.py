@@ -50,6 +50,7 @@ class Note(ActivityObject):
         save=True,
         overwrite=True,
         allow_external_connections=True,
+        trigger=None,
     ):
         instance = super().to_model(
             model, instance, allow_create, save, overwrite, allow_external_connections
