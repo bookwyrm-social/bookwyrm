@@ -1,0 +1,43 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        types: [file, text]
+      - id: end-of-file-fixer
+        types: [file, text]
+      - id: check-docstring-first
+      - id: check-case-conflict
+      - id: check-yaml
+  - repo: https://github.com/psf/black
+    rev: 23.12.1
+    hooks:
+      - id: black
+        types: [python]
+  - repo: https://github.com/PyCQA/pylint
+    rev: v3.0.3
+    hooks:
+      - id: pylint
+        types: [python]
+  - repo: https://github.com/thibaudcolas/curlylint
+    rev: v0.13.1
+    hooks:
+      - id: curlylint
+        types: [html]
+  - repo: https://github.com/awebdeveloper/pre-commit-stylelint
+    rev: 0.0.2
+    hooks:
+      - id: stylelint
+        types: [css]
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.0.0-alpha.1
+    hooks:
+      - id: eslint
+        types: [javascript]
+  # - repo: local
+  #   hooks:
+  #     - id: pytest
+  #       name: pytest
+  #       entry: ./bw-dev pytest
+  #       language: system
+  #       files: \.py$
