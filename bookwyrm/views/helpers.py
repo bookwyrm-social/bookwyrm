@@ -48,9 +48,14 @@ def get_user_from_username(viewer, username):
 
 def is_api_request(request):
     """check whether a request is asking for html or data"""
-    return "json" in request.headers.get("Accept", "") or re.match(
+    is_api = "json" in request.headers.get("Accept", "") or re.match(
         r".*\.json/?$", request.path
     )
+
+    if is_api:
+        # don't allow API requests if federation is disabled
+        models.SiteSettings.raise_federation_disabled()
+    return is_api
 
 
 def is_bookwyrm_request(request):
@@ -63,6 +68,9 @@ def is_bookwyrm_request(request):
 
 def handle_remote_webfinger(query, unknown_only=False, refresh=False):
     """webfingerin' other servers"""
+    # SHOULD we do a remote webfinger? Is it allowed?
+    models.SiteSettings.raise_federation_disabled()
+
     user = None
 
     # usernames could be @user@domain or user@domain
@@ -107,6 +115,9 @@ def handle_remote_webfinger(query, unknown_only=False, refresh=False):
 
 def subscribe_remote_webfinger(query):
     """get subscribe template from other servers"""
+    # SHOULD we do a remote webfinger? Is it allowed?
+    models.SiteSettings.raise_federation_disabled()
+
     template = None
     # usernames could be @user@domain or user@domain
     if not query:

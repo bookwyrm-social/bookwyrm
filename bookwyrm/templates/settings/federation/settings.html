@@ -1,0 +1,51 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% block title %}{% trans "Federation Settings" %}{% endblock %}
+
+{% block header %}{% trans "Federated Settings" %}{% endblock %}
+
+{% block panel %}
+{% if success %}
+<div class="notification is-success is-light">
+    <span class="icon icon-check" aria-hidden="true"></span>
+    <span>
+        {% trans "Settings saved" %}
+    </span>
+</div>
+{% endif %}
+
+{% if form.errors %}
+<div class="notification is-danger is-light">
+    <span class="icon icon-x" aria-hidden="true"></span>
+    <span>
+        {% trans "Unable to save settings" %}
+    </span>
+</div>
+{% endif %}
+
+<form
+    name="federation-settings"
+    class="content"
+    action="{% url 'settings-federation-settings' %}"
+    method="POST"
+>
+    {% csrf_token %}
+    <section class="block box">
+        <div class="field">
+            <label class="label" for="id_disable_federation">
+                {{ form.disable_federation }}
+                {% trans "Disable federation" %}
+            </label>
+            <span class="help" id="desc_disable_federation">
+                {% trans "Prevents your instance from interacting with other federated services. Existing data from other instances will still be present." %}
+            </span>
+        </div>
+    </section>
+    <footer class="block">
+        <button class="button is-primary" type="submit">{% trans "Save" %}</button>
+    </footer>
+</form>
+
+
+{% endblock %}
+

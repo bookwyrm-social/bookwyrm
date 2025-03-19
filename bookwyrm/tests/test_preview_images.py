@@ -92,7 +92,7 @@ class PreviewImages(TestCase):
             parent_work=self.work,
         )
 
-        self.site = models.SiteSettings.objects.create()
+        self.site = models.SiteSettings.get()
 
         settings.ENABLE_PREVIEW_IMAGES = True
 

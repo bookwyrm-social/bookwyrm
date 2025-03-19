@@ -34,7 +34,7 @@ class SiteSettingsViews(TestCase):
         group = Group.objects.get(name="admin")
         cls.local_user.groups.set([group])
 
-        cls.site = models.SiteSettings.objects.create()
+        cls.site = models.SiteSettings.get()
 
     def setUp(self):
         """individual test setup"""
@@ -73,7 +73,7 @@ class SiteSettingsViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         self.assertEqual(site.name, "Name!")
 
     def test_site_post_invalid(self):

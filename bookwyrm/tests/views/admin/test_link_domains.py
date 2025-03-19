@@ -41,8 +41,6 @@ class LinkDomainViews(TestCase):
             added_by=cls.local_user,
         )
 
-        models.SiteSettings.objects.create()
-
     def setUp(self):
         """individual test setup"""
         self.factory = RequestFactory()
