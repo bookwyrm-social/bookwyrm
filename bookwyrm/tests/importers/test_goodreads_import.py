@@ -63,6 +63,7 @@ class GoodreadsImport(TestCase):
         self.assertEqual(import_items[0].data["Book Id"], "42036538")
         self.assertEqual(import_items[0].normalized_data["isbn_13"], '="9781250313195"')
         self.assertEqual(import_items[0].normalized_data["isbn_10"], '="1250313198"')
+        self.assertEqual(import_items[0].normalized_data["goodreads_key"], "42036538")
 
         self.assertEqual(import_items[1].index, 1)
         self.assertEqual(import_items[1].data["Book Id"], "52691223")
