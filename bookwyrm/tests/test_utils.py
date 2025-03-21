@@ -1,6 +1,8 @@
 """ test searching for books """
-from PIL import Image
+import os
 import re
+from PIL import Image
+
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.test import TestCase
 
