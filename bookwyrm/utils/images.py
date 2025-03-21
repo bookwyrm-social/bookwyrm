@@ -5,7 +5,7 @@ from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
-def remove_uploaded_image_exif(source: InMemoryUploadedFile):
+def remove_uploaded_image_exif(source: InMemoryUploadedFile) -> InMemoryUploadedFile:
     """Removes EXIF data from provided image and returns a sanitized copy"""
     io = BytesIO()
     with Image.open(source) as image:
