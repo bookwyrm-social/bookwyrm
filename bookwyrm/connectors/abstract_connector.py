@@ -5,7 +5,7 @@ from typing import Optional, TypedDict, Any, Callable, Union, Iterator
 from urllib.parse import quote_plus
 
 # pylint: disable-next=deprecated-module
-import imghdr  # Deprecated in 3.11 for removal in 3.13; no good alternative yet
+from PIL import Image, UnidentifiedImageError
 import logging
 import re
 import asyncio
@@ -370,12 +370,14 @@ def get_image(
         return None, None
 
     image_content = ContentFile(resp.content)
-    extension = imghdr.what(None, image_content.read())
-    if not extension:
+    try:
+        with Image.open(image_content) as im:
+            extension = str(im.format).lower()
+            return image_content, extension
+    except UnidentifiedImageError:
         logger.info("File requested was not an image: %s", url)
         return None, None
 
-    return image_content, extension
 
 
 class Mapping:
