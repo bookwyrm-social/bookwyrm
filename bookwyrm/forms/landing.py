@@ -64,6 +64,10 @@ class InviteRequestForm(CustomForm):
         if email and models.User.objects.filter(email=email).exists():
             self.add_error("email", _("A user with this email already exists."))
 
+        email_domain = email.split("@")[-1]
+        if email and models.EmailBlocklist.objects.filter(domain=email_domain).exists():
+            self.add_error("email", _("This email address cannot be registered."))
+
     class Meta:
         model = models.InviteRequest
         fields = ["email", "answer"]
