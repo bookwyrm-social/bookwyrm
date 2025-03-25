@@ -17,6 +17,7 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager, ConnectorException
 from bookwyrm.connectors.abstract_connector import get_image
 from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.utils.images import remove_uploaded_image_exif
 from bookwyrm.views.helpers import (
     is_api_request,
     maybe_redirect_local_path,
@@ -158,7 +159,7 @@ def upload_cover(request, book_id):
     if not form.is_valid() or not form.files.get("cover"):
         return redirect(book.local_path)
 
-    book.cover = form.files["cover"]
+    book.cover = remove_uploaded_image_exif(form.files["cover"])
     book.save()
 
     return redirect(book.local_path)
