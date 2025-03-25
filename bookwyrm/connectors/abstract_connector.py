@@ -4,11 +4,10 @@ from abc import ABC, abstractmethod
 from typing import Optional, TypedDict, Any, Callable, Union, Iterator
 from urllib.parse import quote_plus
 
-# pylint: disable-next=deprecated-module
-from PIL import Image, UnidentifiedImageError
 import logging
 import re
 import asyncio
+from PIL import Image, UnidentifiedImageError
 import requests
 from requests.exceptions import RequestException
 import aiohttp
@@ -377,7 +376,6 @@ def get_image(
     except UnidentifiedImageError:
         logger.info("File requested was not an image: %s", url)
         return None, None
-
 
 
 class Mapping:
