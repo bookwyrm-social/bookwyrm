@@ -7,3 +7,4 @@ from .goodreads_import import GoodreadsImporter
 from .librarything_import import LibrarythingImporter
 from .openlibrary_import import OpenLibraryImporter
 from .storygraph_import import StorygraphImporter
+from .openreads_import import OpenReadsImporter
