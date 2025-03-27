@@ -135,7 +135,8 @@ def ostatus_follow_request(request):
     """prepare an outgoing remote follow request"""
     uri = urllib.parse.unquote(request.GET.get("acct"))
     username_parts = re.search(
-        r"(?:^http(?:s?):\/\/)([\w\-\.]*)(?:.)*(?:(?:\/)([A-Za-z0-9\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=](?:[A-Za-z0-9\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=]|(?:%[0-9A-Fa-f]{2}))*))", uri
+        r"(?:^http(?:s?):\/\/)([\w\-\.]*)(?:.)*(?:(?:\/)([A-Za-z0-9\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=](?:[A-Za-z0-9\-\.\_\~\!\$\&\'\(\)\*\+\,\;\=]|(?:%[0-9A-Fa-f]{2}))*))",
+        uri,
     )
     account = f"{username_parts[2]}@{username_parts[1]}"
     user = handle_remote_webfinger(account)
