@@ -26,7 +26,12 @@ from .federated_server import FederatedServer
 from .group import Group, GroupMember, GroupMemberInvitation
 
 from .import_job import ImportJob, ImportItem
-from .bookwyrm_import_job import BookwyrmImportJob
+from .bookwyrm_import_job import (
+    BookwyrmImportJob,
+    UserImportBook,
+    UserImportPost,
+    import_book_task,
+)
 from .bookwyrm_export_job import BookwyrmExportJob
 
 from .move import MoveUser
