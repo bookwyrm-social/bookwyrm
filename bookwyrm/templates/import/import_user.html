@@ -29,10 +29,25 @@
     </div>
     {% elif next_available %}
         <div class="notification is-warning">
-            <p>{% blocktrans %}Currently you are allowed to import one user every {{ user_import_hours }} hours.{% endblocktrans %}</p>
-            <p>{% blocktrans %}You will next be able to import a user file at {{ next_available }}{% endblocktrans %}</p>
+            <p>{% blocktrans  with hours=next_available.1 %}Currently you are allowed to import one user every {{ hours }} hours.{% endblocktrans %}</p>
+            <p>{% blocktrans with next_time=next_available.0 %}You will next be able to import a user file at {{ next_time }}{% endblocktrans %}</p>
         </div>
     {% else %}
+    {% if recent_avg_hours or recent_avg_minutes %}
+    <div class="notification">
+        <p>
+        {% if recent_avg_hours %}
+            {% blocktrans trimmed with hours=recent_avg_hours|floatformat:0|intcomma %}
+                On average, recent imports have taken {{ hours }} hours.
+            {% endblocktrans %}
+        {% else %}
+            {% blocktrans trimmed with minutes=recent_avg_minutes|floatformat:0|intcomma %}
+                On average, recent imports have taken {{ minutes }} minutes.
+            {% endblocktrans %}
+        {% endif %}
+        </p>
+    </div>
+    {% endif %}
     <form class="box content" name="import-user" action="/user-import" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
@@ -186,10 +201,10 @@
             {% endif %}
             {% for job in jobs %}
             <tr>
+                <td><a href="{% url 'user-import-status' job.id %}">{{ job.created_date }}</a></td>
                 <td>
-                    <p>{{ job.created_date }}</p>
+                    <p>{{ job.updated_date }}</p>
                 </td>
-                <td>{{ job.updated_date }}</td>
                 <td>
                     <span
                         {% if job.status == "stopped" or job.status == "failed" %}
@@ -197,14 +212,13 @@
                         {% elif job.status == "pending" %}
                         class="tag is-warning"
                         {% elif job.complete %}
-                        class="tag"
-                        {% else %}
                         class="tag is-success"
+                        {% else %}
+                        class="tag"
                         {% endif %}
                     >
                         {% if job.status %}
-                        {{ job.status }}
-                            {{ job.status_display }}
+                            {{ job.get_status_display }}
                         {% elif job.complete %}
                             {% trans "Complete" %}
                         {% else %}
