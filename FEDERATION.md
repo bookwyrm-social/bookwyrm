@@ -321,6 +321,8 @@ Bookwyrm uses the [Webfinger](https://datatracker.ietf.org/doc/html/rfc7033) sta
 
 Bookwyrm uses and requires HTTP signatures for all `POST` requests. `GET` requests are not signed by default, but if Bookwyrm receives a `403` response to a `GET` it will re-send the request, signed by the default server user. This usually will have a user id of `https://example.net/user/bookwyrm.instance.actor`
 
+As of the first version to be released in 2025, all `GET` requests will be signed by the instance user instead of re-sending requests that are rejected.
+
 #### publicKey id
 
 In older versions of Bookwyrm the `publicKey.id` was incorrectly listed in request headers as `https://example.net/user/username#main-key`. As of v0.6.3 the id is now listed correctly, as `https://example.net/user/username/#main-key`. In most ActivityPub implementations this will make no difference as the URL will usually resolve to the same place.
