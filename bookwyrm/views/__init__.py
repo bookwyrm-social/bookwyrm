@@ -93,10 +93,17 @@ from .shelf.shelf import Shelf
 from .shelf.shelf_actions import create_shelf, delete_shelf
 from .shelf.shelf_actions import shelve, unshelve
 
-# csv import
-from .imports.import_data import Import, UserImport
-from .imports.import_status import ImportStatus, retry_item, stop_import
+# csv and user import
+from .imports.import_data import Import, UserImport, user_import_available
+from .imports.import_status import (
+    ImportStatus,
+    UserImportStatus,
+    retry_item,
+    stop_import,
+    stop_user_import,
+)
 from .imports.troubleshoot import ImportTroubleshoot
+from .imports.user_troubleshoot import UserImportTroubleshoot
 from .imports.manually_review import (
     ImportManualReview,
     approve_import_item,
