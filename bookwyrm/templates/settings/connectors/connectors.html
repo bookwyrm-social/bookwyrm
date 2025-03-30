@@ -1,0 +1,40 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Connector Settings" %}{% endblock %}
+
+{% block header %}{% trans "Connector Settings" %}{% endblock %}
+
+{% block panel %}
+<div class="columns mt-3">
+    <section class="column is-three-quarters">
+        {% blocktrans %}
+        <p class="mb-2">Connectors are sources of data about books and authors.</p>
+        <p class="mb-2">The priority determines the order in which search results appear. The highest priority is <code>1</code>. The default priority is <code>2</code>.</p>
+        {% endblocktrans %}
+        <p class="mb-2">
+            {% trans "Connector settings only determine whether a connector will be used to deliver search results. To manage more interactions with other federated servers, including domain blocks, see" %} <a href="{% url 'settings-federation' %}"> {% trans "Federated Instances" %}</a>.
+        </p>
+        <h4 class="title is-4 my-6">External Connectors</h4>
+        <ul class="ordered-list">
+        {% for connector in update_connectors %}
+            {% include "settings/connectors/update.html" %}
+        {% endfor %}
+        {% for connector in other_connectors %}
+            {% include "settings/connectors/connector.html" %}
+        {% endfor %}
+        {% if available_connectors %}
+            {% for connector in available_connectors %}
+                {% include "settings/connectors/available.html" %}
+            {% endfor %}
+        {% endif%}
+        </ul>
+        <h4 class="title is-4 my-6">BookWyrm Connectors</h4>
+        <ul class="ordered-list">
+            {% for connector in bookwyrm_connectors %}
+                {% include "settings/connectors/connector.html" %}
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+{% endblock %}

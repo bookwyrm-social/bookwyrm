@@ -206,3 +206,26 @@ def raise_not_valid_url(url: str) -> None:
 
     if models.FederatedServer.is_blocked(url):
         raise ConnectorException(f"Attempting to load data from blocked url: {url}")
+
+
+def create_finna_connector() -> None:
+    """create a Finna connector"""
+
+    models.Connector.objects.create(
+        identifier="api.finna.fi",
+        name="Finna API",
+        connector_file="finna",
+        base_url="https://www.finna.fi",
+        books_url="https://api.finna.fi/api/v1/record" "?id=",
+        covers_url="https://api.finna.fi",
+        search_url="https://api.finna.fi/api/v1/search?limit=20"
+        "&filter[]=format%3a%220%2fBook%2f%22"
+        "&field[]=title&field[]=recordPage&field[]=authors"
+        "&field[]=year&field[]=id&field[]=formats&field[]=images"
+        "&lookfor=",
+        isbn_search_url="https://api.finna.fi/api/v1/search?limit=1"
+        "&filter[]=format%3a%220%2fBook%2f%22"
+        "&field[]=title&field[]=recordPage&field[]=authors&field[]=year"
+        "&field[]=id&field[]=formats&field[]=images"
+        "&lookfor=isbn:",
+    )

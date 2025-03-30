@@ -5,6 +5,14 @@ from .admin.announcements import EditAnnouncement, delete_announcement
 from .admin.automod import AutoMod, automod_delete, run_automod
 from .admin.automod import schedule_automod_task, unschedule_automod_task
 from .admin.celery_status import CeleryStatus, celery_ping
+from .admin.connectors import (
+    ConnectorSettings,
+    deactivate_connector,
+    activate_connector,
+    set_connector_priority,
+    create_connector,
+    update_connector,
+)
 from .admin.schedule import ScheduledTasks
 from .admin.dashboard import Dashboard
 from .admin.federation import Federation, FederatedServer
