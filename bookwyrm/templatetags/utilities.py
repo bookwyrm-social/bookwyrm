@@ -116,7 +116,7 @@ def get_isni(existing, author, autoescape=True):
 
 
 @register.simple_tag(takes_context=False)
-def id_to_username(user_id):
+def id_to_username(user_id, return_empty=False):
     """given an arbitrary remote id, return the username"""
     if user_id:
         url = urlparse(user_id)
@@ -126,6 +126,10 @@ def id_to_username(user_id):
         value = f"{name}@{domain}"
 
         return value
+
+    if return_empty:
+        return ""
+
     return _("a new user account")
 
 
