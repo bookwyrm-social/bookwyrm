@@ -273,7 +273,9 @@ class Inventaire(TestCase):
             json={"extract": "hi hi"},
         )
 
-        extract = self.connector.get_description({"enwiki": "test_path"})
+        extract = self.connector.get_description(
+            {"enwiki": {"title": "test_path", "badges": "hello"}}
+        )
         self.assertEqual(extract, "hi hi")
 
     def test_remote_id_from_model(self):

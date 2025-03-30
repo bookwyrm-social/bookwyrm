@@ -52,6 +52,13 @@
             <dd>{{ book.goodreads_key }}</dd>
         </div>
     {% endif %}
+
+    {% if book.finna_key %}
+        <div class="is-flex is-flex-wrap-wrap">
+            <dt class="mr-1">{% trans "Finna ID:" %}</dt>
+            <dd>{{ book.finna_key}}</dd>
+        </div>
+    {% endif %}
 </dl>
 {% endif %}
 {% endspaceless %}

@@ -435,6 +435,11 @@ urlpatterns = [
     re_path(r"^import/?$", views.Import.as_view(), name="import"),
     re_path(r"^user-import/?$", views.UserImport.as_view(), name="user-import"),
     re_path(
+        r"^user-import/(?P<job_id>\d+)/?$",
+        views.UserImportStatus.as_view(),
+        name="user-import-status",
+    ),
+    re_path(
         r"^import/(?P<job_id>\d+)/?$",
         views.ImportStatus.as_view(),
         name="import-status",
@@ -445,6 +450,11 @@ urlpatterns = [
         name="import-stop",
     ),
     re_path(
+        r"^user-import/(?P<job_id>\d+)/stop/?$",
+        views.stop_user_import,
+        name="user-import-stop",
+    ),
+    re_path(
         r"^import/(?P<job_id>\d+)/retry/(?P<item_id>\d+)/?$",
         views.retry_item,
         name="import-item-retry",
@@ -453,6 +463,11 @@ urlpatterns = [
         r"^import/(?P<job_id>\d+)/failed/?$",
         views.ImportTroubleshoot.as_view(),
         name="import-troubleshoot",
+    ),
+    re_path(
+        r"^user-import/(?P<job_id>\d+)/failed/?$",
+        views.UserImportTroubleshoot.as_view(),
+        name="user-import-troubleshoot",
     ),
     re_path(
         r"^import/(?P<job_id>\d+)/review/?$",
