@@ -6,8 +6,6 @@
             <h4 class="m-3"><strong>
                 {% if connector == "finna" %}
                 Finna
-                {% elif connector == "awesome_connector" %}
-                Awesome connector
                 {% endif %}
             </strong></h4>
         </div>
@@ -15,20 +13,18 @@
             <p>
             {% if connector == "finna" %}
                 {% trans "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof." %}
-            {% elif connector == "awesome_connector" %}
-                This new connector is really good, you'll like it.
             {% endif %}
             </p>
         </div>
         <div class="card-footer is-stacked-mobile is-align-items-stretch">
             <form
-               name="create-connector"
+               name="create-connector-{{connector}}"
                method="post"
                action="{% url 'settings-create-connector' %}"
                class="card-footer-item m-2"
            >
                {% csrf_token %}
-               <input type="hidden" name="connector_file" value={{connector}}>
+               <input type="hidden" name="connector_file" value="{{connector}}">
                <button type="submit" class="button is-small is-info">{% trans "Create new connector" %}</button>
            </form>
         </div>

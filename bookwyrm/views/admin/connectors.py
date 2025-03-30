@@ -70,7 +70,6 @@ def deactivate_connector(request, connector_id):
 
     connector = get_object_or_404(Connector, id=connector_id)
     connector.deactivate(reason="manual")
-    # TODO: should we allow free text for a deactivation reason?
     return redirect("/settings/connectors/")
 
 
