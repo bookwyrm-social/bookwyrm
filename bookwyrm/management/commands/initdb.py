@@ -99,7 +99,7 @@ def init_connectors():
         covers_url="https://inventaire.io",
         search_url="https://inventaire.io/api/search?types=works&types=works&search=",
         isbn_search_url="https://inventaire.io/api/entities?action=by-uris&uris=isbn%3A",
-        priority=1,
+        priority=3,
     )
 
     models.Connector.objects.create(
@@ -111,7 +111,7 @@ def init_connectors():
         covers_url="https://covers.openlibrary.org",
         search_url="https://openlibrary.org/search?q=",
         isbn_search_url="https://openlibrary.org/api/books?jscmd=data&format=json&bibkeys=ISBN:",
-        priority=1,
+        priority=3,
     )
 
 

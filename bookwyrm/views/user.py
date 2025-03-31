@@ -8,6 +8,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views import View
 from django.views.decorators.http import require_POST
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
@@ -19,6 +20,7 @@ from .helpers import get_user_from_username, is_api_request
 class User(View):
     """user profile page"""
 
+    @vary_on_headers("Accept")
     def get(self, request, username):
         """profile page for a user"""
         user = get_user_from_username(request.user, username)

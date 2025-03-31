@@ -1,0 +1,91 @@
+{% extends 'import/user_import_status.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block title %}{% trans "User Import Troubleshooting" %}{% endblock %}
+
+{% block page_title %}
+{% trans "Failed items" %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<li class="is-active">
+    <a href="#" aria-current="page">{% trans "Troubleshooting" %}</a>
+</li>
+{% endblock %}
+
+{% block import_counts %}{% endblock %}
+
+{% block actions %}
+<div class="block">
+    <div class="notification content">
+        <p>
+            {% trans "Re-trying an import can fix missing items in cases such as:" %}
+        </p>
+        <ul>
+            <li>{% trans "Your account was not set as an alias of the original user account" %}</li>
+            <li>{% trans "A transient error or timeout caused the external data source to be unavailable." %}</li>
+            <li>{% trans "BookWyrm has been updated since this import with a bug fix" %}</li>
+        </ul>
+        <p>
+            {% trans "Re-trying an import will not work in cases such as:" %}
+        </p>
+        <ul>
+            <li>{% trans "A user, status, or BookWyrm server was deleted after your import file was created" %}</li>
+            <li>{% trans "Importing statuses when your old account has been deleted" %}</li>
+        </ul>
+        <p>
+        {% trans "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items." %}
+        </p>
+    </div>
+    {% if next_available %}
+        <div class="notification is-warning">
+            <p>{% blocktrans  with hours=next_available.1 %}Currently you are allowed to import or retry one user every {{ hours }} hours.{% endblocktrans %}</p>
+            <p>{% blocktrans with next_time=next_available.0 %}You will be able to retry this import at {{ next_time }}{% endblocktrans %}</p>
+        </div>
+    {% else %}
+    <form name="retry" method="post" action="{% url 'user-import-troubleshoot' job.id %}">
+        {% csrf_token %}
+        <button type="submit" class="button">Retry all</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
+{% block item_list %}
+<div class="table-container">
+    <table class="table is-striped is-fullwidth">
+        <tr>
+            <th>
+                {% trans "Book" %}
+            </th>
+            <th>
+                {% trans "Status" %}
+            </th>
+            <th>
+                {% trans "Relationship" %}
+            </th>
+            <th>
+                {% trans "Reason" %}
+            </th>
+        </tr>
+        {% for item in items %}
+        <tr>
+            <td class="is-italic">{{ item.userimportpost.book.title }}</td>
+            <td>{{ item.userimportpost.json.type }}</td>
+            <td>{% id_to_username item.userrelationshipimport.remote_id True %}</td>
+            <td>
+                {% if item.fail_reason == "unauthorized" %}
+                Not authorized to import statuses
+                {% elif item.fail_reason == "connection_error" %}
+                Could not connect to remote identity
+                {% elif item.fail_reason == "invalid_relationship" %}
+                Invalid relationship type - please log an issue
+                {% else %}
+                Unknown error
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
