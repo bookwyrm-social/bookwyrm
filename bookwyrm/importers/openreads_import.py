@@ -1,14 +1,17 @@
 """ handle reading a csv from openreads"""
+from datetime import datetime
 from typing import Any, Optional
 from bookwyrm.models import Shelf
-from datetime import date,datetime
 
 from . import Importer
 
-def parse_iso_timestamp(iso_date: str|None) -> None|str:
+
+def parse_iso_timestamp(iso_date: str | None) -> None | str:
+    """parse an iso date string into a datetime string"""
     if not iso_date:
         return iso_date
     return datetime.fromisoformat(iso_date).date().isoformat()
+
 
 class OpenReadsImporter(Importer):
     """csv downloads from OpenLibrary"""
@@ -30,12 +33,16 @@ class OpenReadsImporter(Importer):
 
         reading_list = value.split(";") if (value := entry.get("readings")) else []
         if reading_list:
-            if (reading_dates := reading_list[0].split("|")):
-                normalized["date_started"] = parse_iso_timestamp(reading_dates[0]) or None
-                normalized["date_finished"] = parse_iso_timestamp(reading_dates[1]) or None
-        if (date_added := normalized.get("date_added")):
+            if reading_dates := reading_list[0].split("|"):
+                normalized["date_started"] = (
+                    parse_iso_timestamp(reading_dates[0]) or None
+                )
+                normalized["date_finished"] = (
+                    parse_iso_timestamp(reading_dates[1]) or None
+                )
+        if date_added := normalized.get("date_added"):
             normalized["date_added"] = parse_iso_timestamp(date_added)
-        if (read_status:= entry.get("status")):
+        if read_status := entry.get("status"):
             match read_status:
                 case "finished":
                     normalized["shelf"] = Shelf.READ_FINISHED

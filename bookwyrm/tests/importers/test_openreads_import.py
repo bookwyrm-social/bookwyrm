@@ -24,7 +24,9 @@ class OpenReadsImport(TestCase):
     def setUp(self):
         """use a test tsv"""
         self.importer = OpenReadsImporter()
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/openreads-csv-example.csv")
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            "../data/openreads-csv-example.csv"
+        )
 
         # pylint: disable-next=consider-using-with
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
@@ -65,8 +67,10 @@ class OpenReadsImport(TestCase):
         self.assertEqual(len(import_items), 4)
         self.assertEqual(import_items[0].index, 0)
         self.assertEqual(import_items[0].normalized_data["isbn_13"], None)
-        self.assertEqual(import_items[0].normalized_data["isbn_10"], '')
-        self.assertEqual(import_items[0].normalized_data["title"], "Wild Flowers Electric Beasts")
+        self.assertEqual(import_items[0].normalized_data["isbn_10"], "")
+        self.assertEqual(
+            import_items[0].normalized_data["title"], "Wild Flowers Electric Beasts"
+        )
         self.assertEqual(import_items[0].normalized_data["authors"], "Alina Leonova")
         self.assertEqual(import_items[0].normalized_data["date_added"], "2024-03-01")
         self.assertEqual(import_items[0].normalized_data["date_started"], None)
