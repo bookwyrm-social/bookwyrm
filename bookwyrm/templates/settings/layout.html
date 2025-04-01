@@ -93,6 +93,10 @@
                 {% url 'settings-email-config' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Email Configuration" %}</a>
             </li>
+            <li>
+                {% url 'settings-connectors' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Connectors" %}</a>
+            </li>
         </ul>
         {% endif %}
         {% if perms.bookwyrm.edit_instance_settings %}

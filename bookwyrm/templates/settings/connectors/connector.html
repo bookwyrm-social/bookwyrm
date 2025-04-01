@@ -1,0 +1,66 @@
+{% load i18n %}
+
+<li class="block">
+    <div class="card">
+        <div class="card-header {% if connector.active %}has-background-success-light{%else%}has-background-danger-light{%endif%}">
+            <p class="m-2">
+                {% if connector.name %}<strong>{{connector.name}}</strong> - {% endif %}{{connector.identifier}}
+            </p>
+        </div>
+        <div class="card-footer is-stacked-mobile has-background-tertiary is-align-items-stretch">
+
+            {% if connector.active %}
+                <form
+                name="set-position-{{ connector.id }}"
+                method="post"
+                action="{% url 'settings-connector-priority' connector.id %}"
+                class="card-footer-item"
+                >
+                {% csrf_token %}
+                <div class="field has-addons mb-0">
+                    <div class="control">
+                        <label for="input-priority" class="button is-transparent is-small">{% trans "Priority" %}</label>
+                    </div>
+                    <div class="control">
+                        <input id="input_priority_{{ connector.id }}" class="input is-small" type="number" min="1" name="priority" value="{{connector.priority}}">
+                    </div>
+                    <div class="control">
+                        <button type="submit" class="button is-info is-small is-tablet">{% trans "Set" %}</button>
+                    </div>
+                </div>
+                </form>
+            {% else %}
+                <div class="card-footer-item">
+                    <div>
+                        <h3 class="menu-label">{% trans 'Deactivation reason:' %}</h3>
+                        <p>{{ connector.deactivation_reason }}</p>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if connector.active %}
+             <form
+                name="deactivate-{{ connector.id }}"
+                method="post"
+                action="{% url 'settings-deactivate-connector' connector.id %}"
+                class="card-footer-item m-2"
+            >
+                {% csrf_token %}
+                <input type="hidden" name="item" value="{{ connector.id }}">
+                <button type="submit" class="button is-small is-danger">{% trans "Deactivate" %}</button>
+             </form>
+             {% else %}
+             <form
+                name="activate-{{ connector.id }}"
+                method="post"
+                action="{% url 'settings-activate-connector' connector.id %}"
+                class="card-footer-item"
+            >
+                {% csrf_token %}
+                <input type="hidden" name="item" value="{{ connector.id }}">
+                <button type="submit" class="button is-small is-success">{% trans "Activate" %}</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</li>

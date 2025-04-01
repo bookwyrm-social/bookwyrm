@@ -140,6 +140,36 @@ urlpatterns = [
         name="settings-announcements-delete",
     ),
     re_path(
+        r"^settings/connectors/?$",
+        views.ConnectorSettings.as_view(),
+        name="settings-connectors",
+    ),
+    re_path(
+        r"^settings/connectors/(?P<connector_id>\d+)/deactivate?$",
+        views.deactivate_connector,
+        name="settings-deactivate-connector",
+    ),
+    re_path(
+        r"^settings/connectors/(?P<connector_id>\d+)/activate?$",
+        views.activate_connector,
+        name="settings-activate-connector",
+    ),
+    re_path(
+        r"^settings/connectors/(?P<connector_id>\d+)/priority?$",
+        views.set_connector_priority,
+        name="settings-connector-priority",
+    ),
+    re_path(
+        r"^settings/connectors/create?$",
+        views.create_connector,
+        name="settings-create-connector",
+    ),
+    re_path(
+        r"^settings/connectors/(?P<connector_id>\d+)/update?$",
+        views.update_connector,
+        name="settings-update-connector",
+    ),
+    re_path(
         r"^settings/email-preview/?$",
         views.admin.email_config.email_preview,
         name="settings-email-preview",

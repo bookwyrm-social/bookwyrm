@@ -1,0 +1,32 @@
+{% load i18n %}
+
+<li class="block">
+    <div class="card ">
+        <div class="card-header has-background-info-light">
+            <h4 class="m-3"><strong>
+                {% if connector == "finna" %}
+                Finna
+                {% endif %}
+            </strong></h4>
+        </div>
+        <div class="card-content">
+            <p>
+            {% if connector == "finna" %}
+                {% trans "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof." %}
+            {% endif %}
+            </p>
+        </div>
+        <div class="card-footer is-stacked-mobile is-align-items-stretch">
+            <form
+               name="create-connector-{{connector}}"
+               method="post"
+               action="{% url 'settings-create-connector' %}"
+               class="card-footer-item m-2"
+           >
+               {% csrf_token %}
+               <input type="hidden" name="connector_file" value="{{connector}}">
+               <button type="submit" class="button is-small is-info">{% trans "Create new connector" %}</button>
+           </form>
+        </div>
+    </div>
+</li>

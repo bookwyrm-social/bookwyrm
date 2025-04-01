@@ -80,3 +80,17 @@ class ConnectorManager(TestCase):
         """load a connector object from the database entry"""
         connector = connector_manager.load_connector(self.remote_connector)
         self.assertEqual(connector.identifier, "test_connector_remote")
+
+    def test_create_finna_connector(self):
+        """does the finna connector work?"""
+
+        self.assertEqual(
+            0, models.Connector.objects.filter(connector_file="finna").count()
+        )
+        connector_manager.create_finna_connector()
+        self.assertEqual(
+            1, models.Connector.objects.filter(connector_file="finna").count()
+        )
+
+        finna = models.Connector.objects.get(connector_file="finna")
+        self.assertEqual("https://www.finna.fi", finna.base_url)
