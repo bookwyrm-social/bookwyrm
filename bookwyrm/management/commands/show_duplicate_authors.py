@@ -23,7 +23,7 @@ def find_duplicate_author_names():
             .order_by("-num_books", "id")
         )
         print(
-            "you could check if following authors are actually same and can be merged, only checked based on name"
+            "You could check if the following authors are actually the same and can be merged, (only checked based on name)"
         )
         for obj in objs:
             born = obj.born.year if obj.born else ""
@@ -31,7 +31,9 @@ def find_duplicate_author_names():
             years = ""
             if born or died:
                 years = f" ({born}-{died})"
-            print(f"- {obj.remote_id}, {obj.name}{years} book editions found:{obj.num_books}")
+            print(
+                f"- {obj.remote_id}, {obj.name}{years} book editions found:{obj.num_books}"
+            )
 
 
 class Command(BaseCommand):
@@ -45,5 +47,5 @@ class Command(BaseCommand):
         find_duplicate_author_names()
         print("----------")
         print(
-            "You should manually check each author id if they are same author before thinking of merging"
+            "You should manually check each author id to determine if they are same author before thinking of merging"
         )
