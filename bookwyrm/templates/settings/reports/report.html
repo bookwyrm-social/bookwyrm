@@ -27,19 +27,23 @@
         </summary>
         <div class="box">
             {% trans "Update on your report:" as dm_template %}
-            {% include 'snippets/create_status/status.html' with type="direct" uuid=1 mention=report.reporter prepared_content=dm_template no_script=True %}
+            {% include 'snippets/create_status/status.html' with type="direct" uuid=1 mention=report.user prepared_content=dm_template no_script=True %}
         </div>
     </details>
 </div>
 
-{% if report.status %}
+{% if report.statuses.exists %}
 <div class="block">
-    <h3 class="title is-4">{% trans "Reported status" %}</h3>
-    {% if report.status.deleted %}
-    <em>{% trans "Status has been deleted" %}</em>
-    {% else %}
-    {% include 'snippets/status/status.html' with status=report.status|load_subclass moderation_mode=True %}
-    {% endif %}
+    <h3 class="title is-4">{% trans "Reported statuses" %}</h3>
+    {% for status in report.statuses.all %}
+    <div>
+        {% if status.deleted %}
+        <em>{% trans "Status has been deleted" %}</em>
+        {% else %}
+        {% include 'snippets/status/status.html' with status=status|load_subclass moderation_mode=True %}
+        {% endif %}
+    </div>
+    {% endfor %}
 </div>
 {% endif %}
 
@@ -56,10 +60,10 @@
 </div>
 {% endif %}
 
-{% if report.user %}
-{% include 'settings/users/user_info.html' with user=report.user %}
+{% if report.reported_user %}
+{% include 'settings/users/user_info.html' with user=report.reported_user %}
 
-{% include 'settings/users/user_moderation_actions.html' with user=report.user %}
+{% include 'settings/users/user_moderation_actions.html' with user=report.reported_user %}
 {% endif %}
 
 <div class="block content">
@@ -70,8 +74,8 @@
             <li class="mb-2">
                 <div class="is-flex">
                     <p class="mb-0 is-flex-grow-1">
-                        {% blocktrans trimmed with user=report.reporter|username user_link=report.reporter.local_path %}
-                        <a href="{{ user_link }}">{{ user}}</a> opened this report
+                        {% blocktrans trimmed with user=report.user|username user_link=report.user.local_path %}
+                        <a href="{{ user_link }}">{{ user }}</a> opened this report
                         {% endblocktrans %}
                     </p>
                     <span class="tag">{{ report.created_date }}</span>

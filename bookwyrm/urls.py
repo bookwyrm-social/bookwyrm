@@ -282,7 +282,7 @@ urlpatterns = [
         r"^settings/reports/?$", views.ReportsAdmin.as_view(), name="settings-reports"
     ),
     re_path(
-        r"^settings/reports/(?P<report_id>\d+)/?$",
+        r"^settings/reports/(?P<report_id>\d+)(.json)?/?$",
         views.ReportAdmin.as_view(),
         name="settings-report",
     ),
