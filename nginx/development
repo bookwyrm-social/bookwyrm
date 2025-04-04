@@ -3,6 +3,9 @@ include /etc/nginx/conf.d/server_config;
 upstream web {
     server web:8000;
 }
+upstream flower {
+    server flower:8888;
+}
 
 server {
     access_log /var/log/nginx/access.log cache_log;
@@ -85,7 +88,7 @@ server {
 
     # monitor the celery queues with flower, no caching enabled
     location /flower/ {
-       proxy_pass http://flower:8888;
+       proxy_pass http://flower;
        proxy_cache_bypass 1;
     }
 }
