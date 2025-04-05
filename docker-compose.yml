@@ -34,8 +34,6 @@ services:
       - redis_activity
     networks:
       - main
-    ports:
-      - "8000"
   redis_activity:
     image: redis:7.2.1
     command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD} --appendonly yes --port ${REDIS_ACTIVITY_PORT}
