@@ -45,11 +45,10 @@ services:
     networks:
       - main
   web:
+    image: bookwyrm
     build: .
     env_file: .env
-    command: gunicorn bookwyrm.wsgi:application
     volumes:
-      - .:/app
       - static_volume:/app/static
       - media_volume:/app/images
       - exports_volume:/app/exports
@@ -84,13 +83,12 @@ services:
       - main
     restart: on-failure
   celery_worker:
+    image: bookwyrm
     env_file: .env
-    build: .
     networks:
       - main
     command: celery -A celerywyrm worker -l info -Q high_priority,medium_priority,low_priority,streams,images,suggested_users,email,connectors,lists,inbox,imports,import_triggered,broadcast,misc
     volumes:
-      - .:/app
       - static_volume:/app/static
       - media_volume:/app/images
       - exports_volume:/app/exports
@@ -100,12 +98,11 @@ services:
     restart: on-failure
   celery_beat:
     env_file: .env
-    build: .
+    image: bookwyrm
     networks:
       - main
     command: celery -A celerywyrm beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
-      - .:/app
       - static_volume:/app/static
       - media_volume:/app/images
       - exports_volume:/app/exports
@@ -113,11 +110,10 @@ services:
       - celery_worker
     restart: on-failure
   flower:
-    build: .
+    image: bookwyrm
     command: celery -A celerywyrm flower --basic_auth=${FLOWER_USER}:${FLOWER_PASSWORD} --url_prefix=flower
     env_file: .env
     volumes:
-      - .:/app
       - static_volume:/app/static
     networks:
       - main
@@ -126,10 +122,10 @@ services:
       - redis_broker
     restart: on-failure
   dev-tools:
+    image: bookwyrm_dev
     build: dev-tools
     env_file: .env
     volumes:
-      - /app/dev-tools/
       - .:/app
     profiles:
       - tools
