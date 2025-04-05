@@ -127,6 +127,14 @@ services:
     env_file: .env
     volumes:
       - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+      celery_worker:
+        condition: service_started
+      redis_activity:
+        condition: service_started
     profiles:
       - tools
 volumes:
