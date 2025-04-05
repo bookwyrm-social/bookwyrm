@@ -8,8 +8,12 @@ services:
       - web
     networks:
       - main
+    environment:
+      - DOMAIN=${DOMAIN}
     volumes:
-      - ./nginx:/etc/nginx/conf.d
+      - ./nginx/locations:/etc/nginx/conf.d/locations
+      - ./nginx/server_config:/etc/nginx/conf.d/server_config
+      - ./nginx/${NGINX_SETUP:-production}:/etc/nginx/templates/default.conf.template
       - static_volume:/app/static
       - media_volume:/app/images
   db:
