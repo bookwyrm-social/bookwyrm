@@ -1,4 +1,4 @@
-FROM localhost/bookwyrm:latest
+FROM bookwyrm
 USER root
 WORKDIR /app/
 

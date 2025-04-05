@@ -34,12 +34,16 @@ function clean {
     $DOCKER_COMPOSE rm -f
 }
 
+function runweb_code {
+    $DOCKER_COMPOSE --profile tools run --user root --rm dev-tools "$@"
+}
+
 function runweb {
     $DOCKER_COMPOSE run --rm web "$@"
 }
 
 function execdb {
-    $DOCKER_COMPOSE exec db $@
+    $DOCKER_COMPOSE exec db "$@"
 }
 
 function execweb {
@@ -158,11 +162,11 @@ case "$CMD" in
         ;;
     pytest)
         prod_error
-        runweb pytest --no-cov-on-fail "$@"
+        runweb_code pytest --no-cov-on-fail "$@"
         ;;
     pytest_coverage_report)
         prod_error
-        runweb pytest -n 3 --cov-report term-missing "$@"
+        runweb_code pytest -n 3 --cov-report term-missing "$@"
         ;;
     compile_themes)
         runweb python manage.py compile_themes
@@ -172,17 +176,17 @@ case "$CMD" in
         ;;
     makemessages)
         prod_error
-        runweb django-admin makemessages --no-wrap --ignore=venv -l en_US $@
+        runweb_code django-admin makemessages --no-wrap --ignore=venv -l en_US $@
         ;;
     compilemessages)
-        runweb django-admin compilemessages --ignore venv $@
+        runweb_code django-admin compilemessages --ignore venv $@
         ;;
     update_locales)
         prod_error
         git fetch origin l10n_main:l10n_main
         git checkout l10n_main locale/
-        runweb django-admin makemessages --no-wrap --ignore=venv -l en_US $@
-        runweb django-admin compilemessages --ignore venv
+        runweb_code django-admin makemessages --no-wrap --ignore=venv -l en_US $@
+        runweb_code django-admin compilemessages --ignore venv
         ;;
     build)
         $DOCKER_COMPOSE build
@@ -193,38 +197,38 @@ case "$CMD" in
         ;;
     black)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools black celerywyrm bookwyrm
+        runweb_code black celerywyrm bookwyrm
         ;;
     pylint)
         prod_error
         # pylint depends on having the app dependencies in place, so we run it in the web container
-        runweb pylint bookwyrm/
+        runweb_code pylint bookwyrm/
         ;;
     prettier)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools prettier --write bookwyrm/static/js/*.js
+        runweb_code prettier --write bookwyrm/static/js/*.js
         ;;
     eslint)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools eslint bookwyrm/static --ext .js
+        runweb_code eslint bookwyrm/static --ext .js
         ;;
     stylelint)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools stylelint --fix bookwyrm/static/css \
+        runweb_code stylelint --fix bookwyrm/static/css \
             --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
         ;;
     formatters)
         prod_error
-        runweb pylint bookwyrm/
-        $DOCKER_COMPOSE run --rm dev-tools black celerywyrm bookwyrm
-        $DOCKER_COMPOSE run --rm dev-tools prettier --write bookwyrm/static/js/*.js
-        $DOCKER_COMPOSE run --rm dev-tools eslint bookwyrm/static --ext .js
-        $DOCKER_COMPOSE run --rm dev-tools stylelint --fix bookwyrm/static/css \
+        runweb_code pylint bookwyrm/
+        runweb_code black celerywyrm bookwyrm
+        runweb_code prettier --write bookwyrm/static/js/*.js
+        runweb_code eslint bookwyrm/static --ext .js
+        runweb_code stylelint --fix bookwyrm/static/css \
             --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
         ;;
     mypy)
         prod_error
-        runweb mypy celerywyrm bookwyrm
+        runweb_code mypy celerywyrm bookwyrm
         ;;
     create_secrets)
         create_secrets
