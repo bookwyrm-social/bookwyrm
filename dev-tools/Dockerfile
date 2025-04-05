@@ -1,18 +1,21 @@
-FROM python:3.11-bookworm
-WORKDIR /app/dev-tools
+FROM localhost/bookwyrm:latest
+USER root
+WORKDIR /app/
 
 ENV PATH="/app/dev-tools/node_modules/.bin:$PATH"
 ENV PYTHONUNBUFFERED=1
 ENV NPM_CONFIG_UPDATE_NOTIFIER=false
 ENV PIP_ROOT_USER_ACTION=ignore PIP_DISABLE_PIP_VERSION_CHECK=1
 
-COPY nodejs.pref /etc/apt/preferences.d/
-COPY nodejs.sources /etc/apt/sources.list.d/
-COPY package.json requirements.txt .stylelintrc.js .stylelintignore /app/dev-tools/
+COPY --from=node:18-slim /usr/local/bin /usr/local/bin
+COPY --from=node:18-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
+COPY package.json .stylelintrc.js .stylelintignore /app/dev-tools/
+COPY requirements.dev-tools /app/
 
-RUN apt-get update            && \
-    apt-get install -y nodejs && \
-    pip install -r requirements.txt && \
-    npm install .
+RUN pip install -r requirements.dev-tools
+WORKDIR /app/dev-tools
+RUN npm install .
+WORKDIR /app/
 
-WORKDIR /app
+ENTRYPOINT []
+CMD ["bash"]
