@@ -3,7 +3,8 @@ services:
     image: nginx:1.25.2
     restart: unless-stopped
     ports:
-      - "1333:80"
+      - "${PORT:-80}:80"
+      - "${PORT:-443:443}"
     depends_on:
       - web
     networks:
@@ -14,6 +15,8 @@ services:
       - ./nginx/locations:/etc/nginx/conf.d/locations
       - ./nginx/server_config:/etc/nginx/conf.d/server_config
       - ./nginx/${NGINX_SETUP:-production}:/etc/nginx/templates/default.conf.template
+      - ./certbot/conf:/etc/nginx/ssl
+      - ./certbot/data:/var/www/certbot
       - static_volume:/app/static
       - media_volume:/app/images
   db:
