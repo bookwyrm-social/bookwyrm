@@ -11,6 +11,7 @@ services:
     volumes:
       - ./nginx/locations:/etc/nginx/conf.d/locations
       - ./nginx/server_config:/etc/nginx/conf.d/server_config
+      - ./nginx/server_name:/etc/nginx/conf.d/server_name
       - ./nginx/ssl_bootstrap:/etc/nginx/templates/default.conf.template
       - ./certbot/conf:/etc/nginx/ssl
       - ./certbot/data:/var/www/certbot

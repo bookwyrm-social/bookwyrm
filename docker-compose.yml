@@ -12,9 +12,10 @@ services:
     environment:
       - DOMAIN=${DOMAIN}
     volumes:
+      - ./nginx/${NGINX_SETUP:-production}:/etc/nginx/templates/default.conf.template
       - ./nginx/locations:/etc/nginx/conf.d/locations
       - ./nginx/server_config:/etc/nginx/conf.d/server_config
-      - ./nginx/${NGINX_SETUP:-production}:/etc/nginx/templates/default.conf.template
+      - ./nginx/server_name:/etc/nginx/conf.d/server_name
       - ./certbot/conf:/etc/nginx/ssl
       - ./certbot/data:/var/www/certbot
       - static_volume:/app/static
