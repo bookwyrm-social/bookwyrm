@@ -13,7 +13,7 @@ server {
     listen [::]:8001;
     listen 8001;
 
-    server_name ${DOMAIN} www.${DOMAIN};
+    include /etc/nginx/conf.d/server_name;
 
     include /etc/nginx/conf.d/locations;
 }
