@@ -3,6 +3,7 @@ import datetime
 from typing import Any, Optional
 from dateutil.relativedelta import relativedelta
 from django import template
+from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime, naturalday
 from django.template.loader import select_template
 from django.utils import timezone
@@ -64,8 +65,8 @@ def get_published_date(date: datetime.datetime) -> str | None:
     delta = relativedelta(now, date)
     if delta.years:
         return naturalday(date)
-    if delta.days:
-        return naturalday(date, "M j")
+    if delta.days or delta.months:
+        return naturalday(date, settings.MONTH_DAY_FORMAT)
     return naturaltime(date)
 
 

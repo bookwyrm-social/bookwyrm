@@ -9,6 +9,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import activitystreams, forms, models
 from bookwyrm.models.user import FeedFilterChoices
@@ -130,6 +131,7 @@ class Status(View):
     """get posting"""
 
     # pylint: disable=unused-argument
+    @vary_on_headers("Accept")
     def get(self, request, username, status_id, slug=None):
         """display a particular status (and replies, etc)"""
         user = get_user_from_username(request.user, username)
@@ -217,6 +219,7 @@ class Status(View):
 class Replies(View):
     """replies page (a json view of status)"""
 
+    @vary_on_headers("Accept")
     def get(self, request, username, status_id):
         """ordered collection of replies to a status"""
         # the html view is the same as Status

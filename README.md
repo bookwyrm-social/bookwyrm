@@ -24,6 +24,8 @@ BookWyrm is built on [ActivityPub](http://activitypub.rocks/). With ActivityPub,
 
 Federation makes it possible to have small, self-determining communities, in contrast to the monolithic service you find on GoodReads or Twitter. An instance can be focused on a particular interest, be just for a group of friends, or anything else that brings people together. Each community can choose which other instances they want to federate with, and moderate and run their community autonomously. Check out https://runyourown.social/ to get a sense of the philosophy and logistics behind small, high-trust social networks.
 
+Developers of other ActivityPub software can find out more about BookWyrm's implementation at [`FEDERATION.md`](https://github.com/bookwyrm-social/bookwyrm/blob/main/FEDERATION.md).
+
 ## Features
 
 ### Post about books
@@ -61,3 +63,7 @@ Deployment
 
 ## Set up BookWyrm
 The [documentation website](https://docs.joinbookwyrm.com/) has instruction on how to set up BookWyrm in a [developer environment](https://docs.joinbookwyrm.com/install-dev.html) or [production](https://docs.joinbookwyrm.com/install-prod.html).
+
+## Contributing
+
+There are many ways you can contribute to the success and health of the BookWyrm project! You do not have to know how to write code and we are always keen to see more people get involved. Find out how you can join the project at [CONTRIBUTING.md](https://github.com/bookwyrm-social/bookwyrm/blob/main/CONTRIBUTING.md)

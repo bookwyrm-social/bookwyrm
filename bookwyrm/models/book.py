@@ -45,6 +45,9 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     openlibrary_key = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    finna_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
     inventaire_id = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )

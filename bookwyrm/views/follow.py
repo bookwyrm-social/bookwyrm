@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import models
 from bookwyrm.models.relationship import clear_cache
+from bookwyrm.utils import regex
 from .helpers import (
     get_user_from_username,
     handle_remote_webfinger,
@@ -135,7 +136,8 @@ def ostatus_follow_request(request):
     """prepare an outgoing remote follow request"""
     uri = urllib.parse.unquote(request.GET.get("acct"))
     username_parts = re.search(
-        r"(?:^http(?:s?):\/\/)([\w\-\.]*)(?:.)*(?:(?:\/)([\w]*))", uri
+        regex.REMOTE_USER_URL,
+        uri,
     )
     account = f"{username_parts[2]}@{username_parts[1]}"
     user = handle_remote_webfinger(account)

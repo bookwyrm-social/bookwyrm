@@ -120,6 +120,7 @@ class ActivityObject:
         save: bool = True,
         overwrite: bool = True,
         allow_external_connections: bool = True,
+        trigger=None,
     ) -> Optional[TBookWyrmModel]:
         """convert from an activity to a model instance. Args:
         model: the django model that this object is being converted to
@@ -133,6 +134,9 @@ class ActivityObject:
             only update blank fields if false
         allow_external_connections: look up missing data if true,
             throw an exception if false and an external connection is needed
+        trigger: the object that originally triggered this
+            self.to_model. e.g. if this is a Work being dereferenced from
+            an incoming Edition
         """
         model = model or get_model_from_type(self.type)
 
@@ -223,6 +227,8 @@ class ActivityObject:
             related_field_name = model_field.field.name
 
             for item in values:
+                if trigger and item == trigger.remote_id:
+                    continue
                 set_related_field.delay(
                     related_model.__name__,
                     instance.__class__.__name__,
@@ -369,17 +375,13 @@ def resolve_remote_id(
 
     # load the data and create the object
     try:
-        data = get_data(remote_id)
+        data = get_activitypub_data(remote_id)
     except ConnectionError:
         logger.info("Could not connect to host for remote_id: %s", remote_id)
         return None
     except requests.HTTPError as e:
-        if (e.response is not None) and e.response.status_code == 401:
-            # This most likely means it's a mastodon with secure fetch enabled.
-            data = get_activitypub_data(remote_id)
-        else:
-            logger.info("Could not connect to host for remote_id: %s", remote_id)
-            return None
+        logger.exception("HTTP error - remote_id: %s - error: %s", remote_id, e)
+        return None
     # determine the model implicitly, if not provided
     # or if it's a model with subclasses like Status, check again
     if not model or hasattr(model.objects, "select_subclasses"):

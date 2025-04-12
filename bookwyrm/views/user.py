@@ -8,6 +8,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views import View
 from django.views.decorators.http import require_POST
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
@@ -19,6 +20,7 @@ from .helpers import get_user_from_username, is_api_request
 class User(View):
     """user profile page"""
 
+    @vary_on_headers("Accept")
     def get(self, request, username):
         """profile page for a user"""
         user = get_user_from_username(request.user, username)
@@ -55,7 +57,9 @@ class User(View):
                 {
                     "name": user_shelf.name,
                     "local_path": user_shelf.local_path,
-                    "books": user_shelf.books.all()[:3],
+                    "books": user_shelf.books.order_by(
+                        "-shelfbook__shelved_date"
+                    ).all()[:3],
                     "size": user_shelf.books.count(),
                 }
             )

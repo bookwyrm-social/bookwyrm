@@ -9,6 +9,7 @@ from django.db.models.functions import Greatest
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.views import View
+from django.views.decorators.vary import vary_on_headers
 
 from csp.decorators import csp_update
 
@@ -26,6 +27,7 @@ class Search(View):
     """search users or books"""
 
     @csp_update(IMG_SRC="*")
+    @vary_on_headers("Accept")
     def get(self, request):
         """that search bar up top"""
         if is_api_request(request):
