@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-25 23:12+0000\n"
-"PO-Revision-Date: 2024-03-26 00:30\n"
+"POT-Creation-Date: 2024-10-17 21:56+0000\n"
+"PO-Revision-Date: 2025-01-12 15:11\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Esperanto\n"
 "Language: eo\n"
@@ -42,15 +42,15 @@ msgstr "{i} uzoj"
 msgid "Unlimited"
 msgstr "Senlima"
 
-#: bookwyrm/forms/edit_user.py:104
+#: bookwyrm/forms/edit_user.py:105
 msgid "Incorrect password"
 msgstr "Malĝusta pasvorto"
 
-#: bookwyrm/forms/edit_user.py:111 bookwyrm/forms/landing.py:90
+#: bookwyrm/forms/edit_user.py:112 bookwyrm/forms/landing.py:89
 msgid "Password does not match"
 msgstr "Pasvorto ne kongruas"
 
-#: bookwyrm/forms/edit_user.py:134
+#: bookwyrm/forms/edit_user.py:135
 msgid "Incorrect Password"
 msgstr "Malĝusta pasvorto"
 
@@ -70,19 +70,19 @@ msgstr "La dato de halto de legado ne povas esti en la estonteco."
 msgid "Reading finished date cannot be in the future."
 msgstr "La dato de fino de legado ne povas esti en la estonteco."
 
-#: bookwyrm/forms/landing.py:38
+#: bookwyrm/forms/landing.py:37
 msgid "Username or password are incorrect"
 msgstr "Uzantnomo aŭ pasvorto malĝustas"
 
-#: bookwyrm/forms/landing.py:57
+#: bookwyrm/forms/landing.py:56
 msgid "User with this username already exists"
 msgstr "Uzanto kun tiu ĉi uzantnomo jam ekzistas"
 
-#: bookwyrm/forms/landing.py:66
+#: bookwyrm/forms/landing.py:65
 msgid "A user with this email already exists."
 msgstr "Uzanto kun tiu ĉi retpoŝtadreso jam ekzistas."
 
-#: bookwyrm/forms/landing.py:124 bookwyrm/forms/landing.py:132
+#: bookwyrm/forms/landing.py:123 bookwyrm/forms/landing.py:131
 msgid "Incorrect code"
 msgstr "Malĝusta kodo"
 
@@ -145,8 +145,8 @@ msgstr "Danĝero"
 msgid "Automatically generated report"
 msgstr "Aŭtomate generita raporto"
 
-#: bookwyrm/models/base_model.py:18 bookwyrm/models/import_job.py:48
-#: bookwyrm/models/job.py:18 bookwyrm/models/link.py:72
+#: bookwyrm/models/base_model.py:18 bookwyrm/models/import_job.py:49
+#: bookwyrm/models/job.py:18 bookwyrm/models/link.py:76
 #: bookwyrm/templates/import/import_status.html:214
 #: bookwyrm/templates/settings/link_domains/link_domains.html:19
 msgid "Pending"
@@ -172,23 +172,23 @@ msgstr "Forigo fare de kontrolanto"
 msgid "Domain block"
 msgstr "Blokado de domajno"
 
-#: bookwyrm/models/book.py:324
+#: bookwyrm/models/book.py:440
 msgid "Audiobook"
 msgstr "Sonlibro"
 
-#: bookwyrm/models/book.py:325
+#: bookwyrm/models/book.py:441
 msgid "eBook"
 msgstr "Bitlibro"
 
-#: bookwyrm/models/book.py:326
+#: bookwyrm/models/book.py:442
 msgid "Graphic novel"
 msgstr "Grafika romano"
 
-#: bookwyrm/models/book.py:327
+#: bookwyrm/models/book.py:443
 msgid "Hardcover"
 msgstr "Rigidkovrila"
 
-#: bookwyrm/models/book.py:328
+#: bookwyrm/models/book.py:444
 msgid "Paperback"
 msgstr "Poŝlibro"
 
@@ -198,7 +198,7 @@ msgstr "Poŝlibro"
 msgid "Federated"
 msgstr "Federaciita"
 
-#: bookwyrm/models/federated_server.py:12 bookwyrm/models/link.py:71
+#: bookwyrm/models/federated_server.py:12 bookwyrm/models/link.py:75
 #: bookwyrm/templates/settings/federation/edit_instance.html:56
 #: bookwyrm/templates/settings/federation/instance.html:10
 #: bookwyrm/templates/settings/federation/instance_list.html:26
@@ -216,16 +216,16 @@ msgstr "%(value)s ne estas valida remote_id"
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s ne estas valida uzantnomo"
 
-#: bookwyrm/models/fields.py:198 bookwyrm/templates/layout.html:129
+#: bookwyrm/models/fields.py:197 bookwyrm/templates/layout.html:129
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "uzantnomo"
 
-#: bookwyrm/models/fields.py:203
+#: bookwyrm/models/fields.py:202
 msgid "A user with that username already exists."
 msgstr "Uzanto kun tiu uzantnomo jam ekzistas."
 
-#: bookwyrm/models/fields.py:222
+#: bookwyrm/models/fields.py:221
 #: bookwyrm/templates/snippets/privacy-icons.html:3
 #: bookwyrm/templates/snippets/privacy-icons.html:4
 #: bookwyrm/templates/snippets/privacy_select.html:11
@@ -233,7 +233,7 @@ msgstr "Uzanto kun tiu uzantnomo jam ekzistas."
 msgid "Public"
 msgstr "Publika"
 
-#: bookwyrm/models/fields.py:223
+#: bookwyrm/models/fields.py:222
 #: bookwyrm/templates/snippets/privacy-icons.html:7
 #: bookwyrm/templates/snippets/privacy-icons.html:8
 #: bookwyrm/templates/snippets/privacy_select.html:14
@@ -241,7 +241,7 @@ msgstr "Publika"
 msgid "Unlisted"
 msgstr "Nelistigita"
 
-#: bookwyrm/models/fields.py:224
+#: bookwyrm/models/fields.py:223
 #: bookwyrm/templates/snippets/privacy_select.html:17
 #: bookwyrm/templates/user/relationships/followers.html:6
 #: bookwyrm/templates/user/relationships/followers.html:11
@@ -250,7 +250,7 @@ msgstr "Nelistigita"
 msgid "Followers"
 msgstr "Sekvantoj"
 
-#: bookwyrm/models/fields.py:225
+#: bookwyrm/models/fields.py:224
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:6
 #: bookwyrm/templates/snippets/privacy-icons.html:15
 #: bookwyrm/templates/snippets/privacy-icons.html:16
@@ -259,8 +259,8 @@ msgstr "Sekvantoj"
 msgid "Private"
 msgstr "Privata"
 
-#: bookwyrm/models/import_job.py:49 bookwyrm/models/job.py:19
-#: bookwyrm/templates/import/import.html:173
+#: bookwyrm/models/import_job.py:50 bookwyrm/models/job.py:19
+#: bookwyrm/templates/import/import.html:181
 #: bookwyrm/templates/import/import_user.html:211
 #: bookwyrm/templates/preferences/export-user.html:121
 #: bookwyrm/templates/settings/imports/imports.html:180
@@ -269,26 +269,26 @@ msgstr "Privata"
 msgid "Active"
 msgstr "Aktiva"
 
-#: bookwyrm/models/import_job.py:50 bookwyrm/models/job.py:20
-#: bookwyrm/templates/import/import.html:171
+#: bookwyrm/models/import_job.py:51 bookwyrm/models/job.py:20
+#: bookwyrm/templates/import/import.html:179
 #: bookwyrm/templates/import/import_user.html:209
 #: bookwyrm/templates/preferences/export-user.html:119
 msgid "Complete"
 msgstr "Finita"
 
-#: bookwyrm/models/import_job.py:51 bookwyrm/models/job.py:21
+#: bookwyrm/models/import_job.py:52 bookwyrm/models/job.py:21
 msgid "Stopped"
 msgstr "Haltigita"
 
-#: bookwyrm/models/import_job.py:84 bookwyrm/models/import_job.py:92
+#: bookwyrm/models/import_job.py:86 bookwyrm/models/import_job.py:94
 msgid "Import stopped"
 msgstr "Importo haltigita"
 
-#: bookwyrm/models/import_job.py:356 bookwyrm/models/import_job.py:381
+#: bookwyrm/models/import_job.py:373 bookwyrm/models/import_job.py:398
 msgid "Error loading book"
 msgstr "Eraro dum la importo de la libro"
 
-#: bookwyrm/models/import_job.py:365
+#: bookwyrm/models/import_job.py:382
 msgid "Could not find a match for book"
 msgstr "Kongrua libro ne troviĝis"
 
@@ -296,19 +296,19 @@ msgstr "Kongrua libro ne troviĝis"
 msgid "Failed"
 msgstr "Malsukcesis"
 
-#: bookwyrm/models/link.py:51
+#: bookwyrm/models/link.py:55
 msgid "Free"
 msgstr "Senpaga"
 
-#: bookwyrm/models/link.py:52
+#: bookwyrm/models/link.py:56
 msgid "Purchasable"
 msgstr "Aĉetebla"
 
-#: bookwyrm/models/link.py:53
+#: bookwyrm/models/link.py:57
 msgid "Available for loan"
 msgstr "Pruntebla"
 
-#: bookwyrm/models/link.py:70
+#: bookwyrm/models/link.py:74
 #: bookwyrm/templates/settings/link_domains/link_domains.html:23
 msgid "Approved"
 msgstr "Aprobita"
@@ -363,46 +363,46 @@ msgstr "Aprobis la domajnon"
 msgid "Deleted item"
 msgstr "Forigis la eron"
 
-#: bookwyrm/models/status.py:186
+#: bookwyrm/models/status.py:192
 #, python-format
 msgid "%(display_name)s's status"
 msgstr ""
 
-#: bookwyrm/models/status.py:361
+#: bookwyrm/models/status.py:367
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
 msgstr ""
 
-#: bookwyrm/models/status.py:412
+#: bookwyrm/models/status.py:418
 #, python-format
 msgid "%(display_name)s's quote from %(book_title)s"
 msgstr ""
 
-#: bookwyrm/models/status.py:448
+#: bookwyrm/models/status.py:454
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
 msgstr ""
 
-#: bookwyrm/models/status.py:479
+#: bookwyrm/models/status.py:486
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
 msgstr[0] ""
 msgstr[1] ""
 
-#: bookwyrm/models/user.py:33 bookwyrm/templates/book/book.html:312
+#: bookwyrm/models/user.py:36 bookwyrm/templates/book/book.html:312
 msgid "Reviews"
 msgstr "Recenzoj"
 
-#: bookwyrm/models/user.py:34
+#: bookwyrm/models/user.py:37
 msgid "Comments"
 msgstr "Komentoj"
 
-#: bookwyrm/models/user.py:35 bookwyrm/templates/import/import_user.html:139
+#: bookwyrm/models/user.py:38 bookwyrm/templates/import/import_user.html:139
 msgid "Quotations"
 msgstr "Citaĵoj"
 
-#: bookwyrm/models/user.py:36
+#: bookwyrm/models/user.py:39
 msgid "Everything else"
 msgstr "Ĉio alia"
 
@@ -426,91 +426,91 @@ msgstr "Libra novaĵfluo"
 msgid "Books"
 msgstr "Libroj"
 
-#: bookwyrm/settings.py:317
+#: bookwyrm/settings.py:314
 msgid "English"
 msgstr "English (Angla)"
 
-#: bookwyrm/settings.py:318
+#: bookwyrm/settings.py:315
 msgid "Català (Catalan)"
 msgstr "Català (Kataluna)"
 
-#: bookwyrm/settings.py:319
+#: bookwyrm/settings.py:316
 msgid "Deutsch (German)"
 msgstr "Deutsch (Germana)"
 
-#: bookwyrm/settings.py:320
+#: bookwyrm/settings.py:317
 msgid "Esperanto (Esperanto)"
 msgstr "Esperanto (Esperanto)"
 
-#: bookwyrm/settings.py:321
+#: bookwyrm/settings.py:318
 msgid "Español (Spanish)"
 msgstr "Español (Hispana)"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:319
 msgid "Euskara (Basque)"
 msgstr "Euskara (Eŭska)"
 
-#: bookwyrm/settings.py:323
+#: bookwyrm/settings.py:320
 msgid "Galego (Galician)"
 msgstr "Galego (Galega)"
 
-#: bookwyrm/settings.py:324
+#: bookwyrm/settings.py:321
 msgid "Italiano (Italian)"
 msgstr "Italiano (Itala)"
 
-#: bookwyrm/settings.py:325
+#: bookwyrm/settings.py:322
 msgid "한국어 (Korean)"
 msgstr ""
 
-#: bookwyrm/settings.py:326
+#: bookwyrm/settings.py:323
 msgid "Suomi (Finnish)"
 msgstr "Suomi (Finna)"
 
-#: bookwyrm/settings.py:327
+#: bookwyrm/settings.py:324
 msgid "Français (French)"
 msgstr "Français (Franca)"
 
-#: bookwyrm/settings.py:328
+#: bookwyrm/settings.py:325
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (Litova)"
 
-#: bookwyrm/settings.py:329
+#: bookwyrm/settings.py:326
 msgid "Nederlands (Dutch)"
 msgstr "Nederlands (Nederlanda)"
 
-#: bookwyrm/settings.py:330
+#: bookwyrm/settings.py:327
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (Norvega)"
 
-#: bookwyrm/settings.py:331
+#: bookwyrm/settings.py:328
 msgid "Polski (Polish)"
 msgstr "Polski (Pola)"
 
-#: bookwyrm/settings.py:332
+#: bookwyrm/settings.py:329
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (Brazila portugala)"
 
-#: bookwyrm/settings.py:333
+#: bookwyrm/settings.py:330
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Eŭropa portugala)"
 
-#: bookwyrm/settings.py:334
+#: bookwyrm/settings.py:331
 msgid "Română (Romanian)"
 msgstr "Română (Rumana)"
 
-#: bookwyrm/settings.py:335
+#: bookwyrm/settings.py:332
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Sveda)"
 
-#: bookwyrm/settings.py:336
+#: bookwyrm/settings.py:333
 msgid "Українська (Ukrainian)"
 msgstr "Українська (la ukraina)"
 
-#: bookwyrm/settings.py:337
+#: bookwyrm/settings.py:334
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Simpligita ĉina)"
 
-#: bookwyrm/settings.py:338
+#: bookwyrm/settings.py:335
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Tradicia ĉina)"
 
@@ -977,7 +977,7 @@ msgstr "ISNI:"
 #: bookwyrm/templates/lists/bookmark_button.html:15
 #: bookwyrm/templates/lists/edit_item_form.html:15
 #: bookwyrm/templates/lists/form.html:130
-#: bookwyrm/templates/preferences/edit_user.html:140
+#: bookwyrm/templates/preferences/edit_user.html:146
 #: bookwyrm/templates/readthrough/readthrough_modal.html:81
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:120
 #: bookwyrm/templates/settings/federation/edit_instance.html:98
@@ -998,7 +998,7 @@ msgstr "Konservi"
 #: bookwyrm/templates/book/edit/edit_book.html:152
 #: bookwyrm/templates/book/edit/edit_book.html:155
 #: bookwyrm/templates/book/file_links/add_link_modal.html:59
-#: bookwyrm/templates/book/file_links/verification_modal.html:25
+#: bookwyrm/templates/book/file_links/verification_modal.html:26
 #: bookwyrm/templates/book/sync_modal.html:23
 #: bookwyrm/templates/groups/delete_group_modal.html:15
 #: bookwyrm/templates/lists/add_item_modal.html:36
@@ -1468,7 +1468,7 @@ msgid "Any"
 msgstr "Ĉiuj"
 
 #: bookwyrm/templates/book/editions/language_filter.html:6
-#: bookwyrm/templates/preferences/edit_user.html:95
+#: bookwyrm/templates/preferences/edit_user.html:101
 msgid "Language:"
 msgstr "Lingvo:"
 
@@ -1529,7 +1529,7 @@ msgid "Domain"
 msgstr "Domajno"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:36
-#: bookwyrm/templates/import/import.html:138
+#: bookwyrm/templates/import/import.html:146
 #: bookwyrm/templates/import/import_status.html:134
 #: bookwyrm/templates/import/import_user.html:177
 #: bookwyrm/templates/preferences/export-user.html:87
@@ -1593,7 +1593,7 @@ msgstr "Foriro de BookWyrm"
 msgid "This link is taking you to: <code>%(link_url)s</code>.<br> Is that where you'd like to go?"
 msgstr "Ĉi tiu ligilo direktas vin al: <code>%(link_url)s</code>.<br> Ĉu ja tien vi volas iri?"
 
-#: bookwyrm/templates/book/file_links/verification_modal.html:26
+#: bookwyrm/templates/book/file_links/verification_modal.html:27
 #: bookwyrm/templates/setup/config.html:139
 msgid "Continue"
 msgstr "Daŭrigi"
@@ -1650,7 +1650,19 @@ msgstr "Sennumera libro"
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this book which aren't present here. Existing metadata will not be overwritten."
 msgstr "La ŝarĝado konektos al <strong>%(source_name)s</strong> kaj kontrolos ĉu estas metadatumoj pri ĉi tiu libro kiuj ne jam ĉeestas ĉi tie. La ekzistantaj datumoj ne anstataŭiĝos."
 
-#: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
+#: bookwyrm/templates/compose.html:7 bookwyrm/templates/compose.html:21
+msgid "Edit review"
+msgstr ""
+
+#: bookwyrm/templates/compose.html:9 bookwyrm/templates/compose.html:23
+msgid "Edit quote"
+msgstr ""
+
+#: bookwyrm/templates/compose.html:11 bookwyrm/templates/compose.html:25
+msgid "Edit comment"
+msgstr ""
+
+#: bookwyrm/templates/compose.html:13 bookwyrm/templates/compose.html:27
 msgid "Edit status"
 msgstr "Modifi la afiŝon"
 
@@ -1759,12 +1771,12 @@ msgstr "Sugestita"
 
 #: bookwyrm/templates/directory/user_card.html:17
 #: bookwyrm/templates/directory/user_card.html:18
-#: bookwyrm/templates/ostatus/remote_follow.html:21
-#: bookwyrm/templates/ostatus/remote_follow.html:22
+#: bookwyrm/templates/ostatus/remote_follow.html:23
+#: bookwyrm/templates/ostatus/remote_follow.html:24
 #: bookwyrm/templates/ostatus/subscribe.html:41
 #: bookwyrm/templates/ostatus/subscribe.html:42
-#: bookwyrm/templates/ostatus/success.html:17
-#: bookwyrm/templates/ostatus/success.html:18
+#: bookwyrm/templates/ostatus/success.html:21
+#: bookwyrm/templates/ostatus/success.html:22
 #: bookwyrm/templates/user/moved.html:19 bookwyrm/templates/user/moved.html:20
 #: bookwyrm/templates/user/user_preview.html:16
 #: bookwyrm/templates/user/user_preview.html:17
@@ -1885,8 +1897,8 @@ msgstr "Saluton,"
 
 #: bookwyrm/templates/email/html_layout.html:21
 #, python-format
-msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a>"
-msgstr "BookWyrm gastigita ĉe <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a>"
+msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"%(base_url)s\">%(site_name)s</a>"
+msgstr ""
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
@@ -1904,8 +1916,8 @@ msgstr "Aliĝi nun"
 
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
-msgid "Learn more <a href=\"https://%(domain)s%(about_path)s\">about %(site_name)s</a>."
-msgstr "Pli da informo <a href=\"https://%(domain)s%(about_path)s\">pri %(site_name)s</a>."
+msgid "Learn more <a href=\"%(base_url)s%(about_path)s\">about %(site_name)s</a>."
+msgstr ""
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
@@ -2935,64 +2947,72 @@ msgstr "OpenLibrary (CSV)"
 msgid "Calibre (CSV)"
 msgstr "Calibre (CSV)"
 
-#: bookwyrm/templates/import/import.html:76
+#: bookwyrm/templates/import/import.html:73
+msgid "BookWyrm (CSV)"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:79
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
 msgstr "Vi povas elŝuti vian datumaron de Goodreads per <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">la paĝo Import/Export</a> de via konto ĉe Goodreads."
 
-#: bookwyrm/templates/import/import.html:85
+#: bookwyrm/templates/import/import.html:88
 #: bookwyrm/templates/import/import_user.html:49
 msgid "Data file:"
 msgstr "Datumdosiero:"
 
-#: bookwyrm/templates/import/import.html:93
+#: bookwyrm/templates/import/import.html:96
 msgid "Include reviews"
 msgstr "Inkluzivi recenzojn"
 
-#: bookwyrm/templates/import/import.html:98
-msgid "Privacy setting for imported reviews:"
-msgstr "Agordo de privateco por importitaj recenzoj:"
+#: bookwyrm/templates/import/import.html:101
+msgid "Create new shelves if they do not exist"
+msgstr ""
 
-#: bookwyrm/templates/import/import.html:105
-#: bookwyrm/templates/import/import.html:107
+#: bookwyrm/templates/import/import.html:106
+msgid "Privacy setting for imported reviews and shelves:"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:113
+#: bookwyrm/templates/import/import.html:115
 #: bookwyrm/templates/import/import_user.html:155
 #: bookwyrm/templates/import/import_user.html:157
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:78
 msgid "Import"
 msgstr "Importi"
 
-#: bookwyrm/templates/import/import.html:108
+#: bookwyrm/templates/import/import.html:116
 #: bookwyrm/templates/import/import_user.html:158
 msgid "You've reached the import limit."
 msgstr "Vi atingis la limon de importado."
 
-#: bookwyrm/templates/import/import.html:117
+#: bookwyrm/templates/import/import.html:125
 #: bookwyrm/templates/import/import_user.html:27
 msgid "Imports are temporarily disabled; thank you for your patience."
 msgstr "Oni provizore malŝaltis importadon; dankon pro via pacienco."
 
-#: bookwyrm/templates/import/import.html:124
+#: bookwyrm/templates/import/import.html:132
 #: bookwyrm/templates/import/import_user.html:166
 msgid "Recent Imports"
 msgstr "Lastatempaj importoj"
 
-#: bookwyrm/templates/import/import.html:129
+#: bookwyrm/templates/import/import.html:137
 #: bookwyrm/templates/import/import_user.html:171
 #: bookwyrm/templates/settings/imports/imports.html:202
 #: bookwyrm/templates/settings/imports/imports.html:292
 msgid "Date Created"
 msgstr "Dato de kreado"
 
-#: bookwyrm/templates/import/import.html:132
+#: bookwyrm/templates/import/import.html:140
 #: bookwyrm/templates/import/import_user.html:174
 msgid "Last Updated"
 msgstr "Lasta ĝisdatigo"
 
-#: bookwyrm/templates/import/import.html:135
+#: bookwyrm/templates/import/import.html:143
 #: bookwyrm/templates/settings/imports/imports.html:211
 msgid "Items"
 msgstr "Aĵoj"
 
-#: bookwyrm/templates/import/import.html:144
+#: bookwyrm/templates/import/import.html:152
 #: bookwyrm/templates/import/import_user.html:183
 #: bookwyrm/templates/preferences/export-user.html:96
 msgid "No recent imports"
@@ -3970,7 +3990,7 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> kaj %(other_user_
 #: bookwyrm/templates/notifications/items/link_domain.html:15
 #, python-format
 msgid "A new <a href=\"%(path)s\">link domain</a> needs review"
-msgid_plural "%(display_count)s new <a href=\"%(path)s\">link domains</a> need moderation"
+msgid_plural "%(display_count)s new <a href=\"%(path)s\">link domains</a> need review"
 msgstr[0] "Nova <a href=\"%(path)s\">domajno en ligilo</a> bezonas kontrolon"
 msgstr[1] "%(display_count)s novaj <a href=\"%(path)s\">domajnoj en ligiloj</a> bezonas kontrolon"
 
@@ -4141,21 +4161,21 @@ msgstr "Vi jam sekvas <strong>%(account)s</strong>"
 msgid "You have already requested to follow <strong>%(account)s</strong>"
 msgstr "Vi jam petis sekvi <strong>%(account)s</strong>"
 
-#: bookwyrm/templates/ostatus/remote_follow.html:6
+#: bookwyrm/templates/ostatus/remote_follow.html:7
 #, python-format
 msgid "Follow %(username)s on the fediverse"
 msgstr "Sekvu %(username)s en la fediverso"
 
-#: bookwyrm/templates/ostatus/remote_follow.html:33
+#: bookwyrm/templates/ostatus/remote_follow.html:35
 #, python-format
 msgid "Follow %(username)s from another Fediverse account like BookWyrm, Mastodon, or Pleroma."
 msgstr "Sekvu %(username)s per alia fediversa konto kiel BookWyrm, Mastodon aŭ Pleroma."
 
-#: bookwyrm/templates/ostatus/remote_follow.html:40
+#: bookwyrm/templates/ostatus/remote_follow.html:42
 msgid "User handle to follow from:"
 msgstr "Konto per kiu vi volas sekvi:"
 
-#: bookwyrm/templates/ostatus/remote_follow.html:42
+#: bookwyrm/templates/ostatus/remote_follow.html:44
 msgid "Follow!"
 msgstr "Sekvi!"
 
@@ -4196,7 +4216,8 @@ msgstr "Ni unue ensalutu..."
 msgid "Follow %(username)s"
 msgstr "Sekvi %(username)s"
 
-#: bookwyrm/templates/ostatus/success.html:28
+#: bookwyrm/templates/ostatus/success.html:6
+#: bookwyrm/templates/ostatus/success.html:32
 #, python-format
 msgid "You are now following %(display_name)s!"
 msgstr "Vi nun sekvas %(display_name)s!"
@@ -4403,7 +4424,7 @@ msgid "Display"
 msgstr "Afiŝado"
 
 #: bookwyrm/templates/preferences/edit_user.html:14
-#: bookwyrm/templates/preferences/edit_user.html:112
+#: bookwyrm/templates/preferences/edit_user.html:118
 msgid "Privacy"
 msgstr "Privateco"
 
@@ -4412,39 +4433,43 @@ msgid "Show reading goal prompt in feed"
 msgstr "Montri la demandon pri via legocelo en la fluo"
 
 #: bookwyrm/templates/preferences/edit_user.html:75
+msgid "Show ratings"
+msgstr ""
+
+#: bookwyrm/templates/preferences/edit_user.html:81
 msgid "Show suggested users"
 msgstr "Montri proponitajn uzantojn"
 
-#: bookwyrm/templates/preferences/edit_user.html:81
+#: bookwyrm/templates/preferences/edit_user.html:87
 msgid "Show this account in suggested users"
 msgstr "Montri ĉi tiun konton en la proponitaj uzantoj"
 
-#: bookwyrm/templates/preferences/edit_user.html:85
+#: bookwyrm/templates/preferences/edit_user.html:91
 #, python-format
 msgid "Your account will show up in the <a href=\"%(path)s\">directory</a>, and may be recommended to other BookWyrm users."
 msgstr "Via konto aperos en la <a href=\"%(path)s\">adresaro</a> kaj eble estos rekomendita al aliaj uzantoj de BookWyrm."
 
-#: bookwyrm/templates/preferences/edit_user.html:89
+#: bookwyrm/templates/preferences/edit_user.html:95
 msgid "Preferred Timezone: "
 msgstr "Preferata horzono: "
 
-#: bookwyrm/templates/preferences/edit_user.html:101
+#: bookwyrm/templates/preferences/edit_user.html:107
 msgid "Theme:"
 msgstr "Etoso:"
 
-#: bookwyrm/templates/preferences/edit_user.html:117
+#: bookwyrm/templates/preferences/edit_user.html:123
 msgid "Manually approve followers"
 msgstr "Permane aprobi sekvantojn"
 
-#: bookwyrm/templates/preferences/edit_user.html:123
+#: bookwyrm/templates/preferences/edit_user.html:129
 msgid "Hide followers and following on profile"
 msgstr "Kaŝi la sekvantojn kaj la sekvatojn ĉe via profilo"
 
-#: bookwyrm/templates/preferences/edit_user.html:128
+#: bookwyrm/templates/preferences/edit_user.html:134
 msgid "Default post privacy:"
 msgstr "Defaŭlta privateco de afiŝoj:"
 
-#: bookwyrm/templates/preferences/edit_user.html:136
+#: bookwyrm/templates/preferences/edit_user.html:142
 #, python-format
 msgid "Looking for shelf privacy? You can set a separate visibility level for each of your shelves. Go to <a href=\"%(path)s\">Your Books</a>, pick a shelf from the tab bar, and click \"Edit shelf.\""
 msgstr "Ĉu vi volas privatajn bretojn? Vi povas agordi apartan nivelon de videbleco por ĉiu breto. Iru al <a href=\"%(path)s\">Viaj libroj</a>, elektu breton per la langetoj, kaj alklaku «Modifi breton»."
@@ -4486,7 +4511,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export-user.html:34
 msgid "Direct messages"
-msgstr ""
+msgstr "Rektaj mesaĝoj"
 
 #: bookwyrm/templates/preferences/export-user.html:35
 msgid "Replies to your statuses"
@@ -4538,8 +4563,12 @@ msgstr "Dato"
 msgid "Size"
 msgstr "Grandeco"
 
-#: bookwyrm/templates/preferences/export-user.html:134
+#: bookwyrm/templates/preferences/export-user.html:135
 msgid "Download your export"
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:139
+msgid "Archive is no longer available"
 msgstr ""
 
 #: bookwyrm/templates/preferences/export.html:4
@@ -5565,7 +5594,7 @@ msgid "Users are currently unable to start new user exports. This is the default
 msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:161
-msgid "It is not currently possible to provide user exports when using s3 storage. The BookWyrm development team are working on a fix for this."
+msgid "It is not currently possible to provide user exports when using Azure storage."
 msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:167
@@ -6023,7 +6052,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/schedules.html:22
 msgid "Name"
-msgstr ""
+msgstr "Nomo"
 
 #: bookwyrm/templates/settings/schedules.html:25
 msgid "Celery task"
@@ -6753,7 +6782,7 @@ msgid "BookWyrm's source code is freely available. You can contribute or report 
 msgstr "La fontokodo de BookWyrm estas libere havebla. Vi povas kontribui aŭ raporti problemojn ĉe <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:20
-#: bookwyrm/templates/snippets/stars.html:23
+#: bookwyrm/templates/snippets/stars.html:35
 msgid "No rating"
 msgstr "Neniu takso"
 
@@ -6765,7 +6794,7 @@ msgstr[0] "%(half_rating)s stelo"
 msgstr[1] "%(half_rating)s steloj"
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:64
-#: bookwyrm/templates/snippets/stars.html:7
+#: bookwyrm/templates/snippets/stars.html:18
 #, python-format
 msgid "%(rating)s star"
 msgid_plural "%(rating)s stars"
@@ -6993,6 +7022,10 @@ msgstr "Halti legi"
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:40
 msgid "Finish reading"
 msgstr "Ĉesi legi"
+
+#: bookwyrm/templates/snippets/stars.html:10
+msgid "Show rating"
+msgstr ""
 
 #: bookwyrm/templates/snippets/status/content_status.html:69
 msgid "Show status"
