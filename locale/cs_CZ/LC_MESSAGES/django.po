@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-17 21:56+0000\n"
-"PO-Revision-Date: 2025-04-14 10:56\n"
+"PO-Revision-Date: 2025-04-14 12:42\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -341,11 +341,11 @@ msgstr "Pozastavený uživatel"
 
 #: bookwyrm/models/report.py:90
 msgid "Un-suspended user"
-msgstr ""
+msgstr "Od-pozastavený uživatel"
 
 #: bookwyrm/models/report.py:91
 msgid "Changed user permission level"
-msgstr ""
+msgstr "Změněna úroveň uživatelských oprávnění"
 
 #: bookwyrm/models/report.py:92
 msgid "Deleted user account"
@@ -366,7 +366,7 @@ msgstr "Položka byla smazána."
 #: bookwyrm/models/status.py:192
 #, python-format
 msgid "%(display_name)s's status"
-msgstr ""
+msgstr "Stav %(display_name)s"
 
 #: bookwyrm/models/status.py:367
 #, python-format
@@ -462,7 +462,7 @@ msgstr "Italiano (italština)"
 
 #: bookwyrm/settings.py:322
 msgid "한국어 (Korean)"
-msgstr ""
+msgstr "한국어 (Korejština)"
 
 #: bookwyrm/settings.py:323
 msgid "Suomi (Finnish)"
@@ -478,7 +478,7 @@ msgstr "Lietuvių (litevština)"
 
 #: bookwyrm/settings.py:326
 msgid "Nederlands (Dutch)"
-msgstr ""
+msgstr "Nederlands (Nizozemština)"
 
 #: bookwyrm/settings.py:327
 msgid "Norsk (Norwegian)"
@@ -506,7 +506,7 @@ msgstr "Svenska (švédština)"
 
 #: bookwyrm/settings.py:333
 msgid "Українська (Ukrainian)"
-msgstr ""
+msgstr "Українська (Ukrajinština)"
 
 #: bookwyrm/settings.py:334
 msgid "简体中文 (Simplified Chinese)"
@@ -527,11 +527,11 @@ msgstr "Povolení zamítnuto"
 #: bookwyrm/templates/403.html:11
 #, python-format
 msgid "You do not have permission to view this page or perform this action. Your user permission level is <code>%(level)s</code>."
-msgstr ""
+msgstr "Nemáte oprávnění k zobrazení této stránky nebo provedení této akce. Úroveň vašeho uživatelského oprávnění je <code>%(level)s</code>."
 
 #: bookwyrm/templates/403.html:15
 msgid "If you think you should have access, please speak to your BookWyrm server administrator."
-msgstr ""
+msgstr "Pokud si myslíte, že byste měli mít přístup, promluvte si se správcem vašeho BookWyrm serveru."
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
@@ -547,11 +547,11 @@ msgstr "Soubor je příliš velký"
 
 #: bookwyrm/templates/413.html:9
 msgid "The file you are uploading is too large."
-msgstr ""
+msgstr "Soubor, který nahráváte je příliš velký."
 
 #: bookwyrm/templates/413.html:11
 msgid "You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting."
-msgstr ""
+msgstr "Můžete zkusit použít menší soubor nebo požádat správce serveru BookWyrm, aby zvýšil*a nastavení <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code>."
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -1657,7 +1657,7 @@ msgstr "Kniha %(series_number)s"
 
 #: bookwyrm/templates/book/series.html:28
 msgid "Unsorted Book"
-msgstr ""
+msgstr "Nevytříděná kniha"
 
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
@@ -1670,7 +1670,7 @@ msgstr "Upravit recenzi"
 
 #: bookwyrm/templates/compose.html:9 bookwyrm/templates/compose.html:23
 msgid "Edit quote"
-msgstr ""
+msgstr "Editovat citát"
 
 #: bookwyrm/templates/compose.html:11 bookwyrm/templates/compose.html:25
 msgid "Edit comment"
@@ -1755,7 +1755,7 @@ msgstr "Udělejte svůj profil viditelný ostatním uživatelům BookWyrm."
 
 #: bookwyrm/templates/directory/directory.html:21
 msgid "Join Directory"
-msgstr ""
+msgstr "Připojit k adresáři"
 
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
@@ -1800,18 +1800,18 @@ msgstr "Uzamčený účet"
 #: bookwyrm/templates/directory/user_card.html:40
 msgid "follower you follow"
 msgid_plural "followers you follow"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "sledující, které sledujete"
+msgstr[0] "sledující, kterého sledujete"
+msgstr[1] "sledující, které sledujete"
+msgstr[2] "sledujících, které sledujete"
+msgstr[3] "sledujících, které sledujete"
 
 #: bookwyrm/templates/directory/user_card.html:47
 msgid "book on your shelves"
 msgid_plural "books on your shelves"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "knihy ve vaší poličce"
+msgstr[0] "kniha na vašich poličkách"
+msgstr[1] "knihy na vašich poličkách"
+msgstr[2] "knih na vašich poličkách"
+msgstr[3] "knih na vašich poličkách"
 
 #: bookwyrm/templates/directory/user_card.html:55
 msgid "posts"
@@ -1916,7 +1916,7 @@ msgstr "Nazdar,"
 #: bookwyrm/templates/email/html_layout.html:21
 #, python-format
 msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"%(base_url)s\">%(site_name)s</a>"
-msgstr ""
+msgstr "BookWyrm hostovaný na <a style=\"color: #3273dc;\" href=\"%(base_url)s\">%(site_name)s</a>"
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
@@ -1935,7 +1935,7 @@ msgstr "Přidej se teď"
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
 msgid "Learn more <a href=\"%(base_url)s%(about_path)s\">about %(site_name)s</a>."
-msgstr ""
+msgstr "Další informace o <a href=\"%(base_url)s%(about_path)s\">%(site_name)s</a>."
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
@@ -2154,7 +2154,7 @@ msgstr "Nenalezeny žádné knihy pro \"%(query)s\""
 #: bookwyrm/templates/get_started/books.html:11
 #, python-format
 msgid "You can add books when you start using %(site_name)s."
-msgstr ""
+msgstr "Můžete přidat knihy, jakmile začnete používat %(site_name)s."
 
 #: bookwyrm/templates/get_started/books.html:16
 #: bookwyrm/templates/get_started/books.html:17
@@ -2483,7 +2483,7 @@ msgstr "Jiná vydání"
 
 #: bookwyrm/templates/guided_tour/book.html:102
 msgid "You can post a review, comment, or quote here."
-msgstr ""
+msgstr "Zde můžete napsat recenzi, komentář nebo citát."
 
 #: bookwyrm/templates/guided_tour/book.html:103
 msgid "Share your thoughts"
@@ -2499,7 +2499,7 @@ msgstr "Zveřejnit hodnocení"
 
 #: bookwyrm/templates/guided_tour/book.html:151
 msgid "You can share your thoughts on this book generally with a simple comment"
-msgstr ""
+msgstr "Své celkové myšlenky na tuto knihu můžete sdílet s jednoduchým komentářem"
 
 #: bookwyrm/templates/guided_tour/book.html:152
 msgid "Post a comment"
@@ -2575,7 +2575,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/group.html:55
 msgid "Group members"
-msgstr ""
+msgstr "Členové skupiny"
 
 #: bookwyrm/templates/guided_tour/group.html:77
 msgid "As well as creating lists from the Lists page, you can create a group-curated list here on the group's homepage. Any member of the group can create a list curated by group members."
@@ -2583,25 +2583,25 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/group.html:78
 msgid "Group lists"
-msgstr ""
+msgstr "Seznamy skupiny"
 
 #: bookwyrm/templates/guided_tour/group.html:100
 msgid "Congratulations, you've finished the tour! Now you know the basics, but there is lots more to explore on your own. Happy reading!"
-msgstr ""
+msgstr "Gratulujeme, dokončili jste prohlídku! Teď už znáte základy, ale je tu spousta dalšího k prozkoumání na vlastní pěst. Šťastné čtení!"
 
 #: bookwyrm/templates/guided_tour/group.html:115
 msgid "End tour"
-msgstr ""
+msgstr "Ukončit prohlídku"
 
 #: bookwyrm/templates/guided_tour/home.html:16
 msgid "Welcome to Bookwyrm!<br><br>Would you like to take the guided tour to help you get started?"
-msgstr ""
+msgstr "Vítejte na Bookwyrm!<br><br> Chtěli byste podniknout komentovanou prohlídku, která vám pomůže začít?"
 
 #: bookwyrm/templates/guided_tour/home.html:17
 #: bookwyrm/templates/guided_tour/home.html:39
 #: bookwyrm/templates/snippets/footer.html:20
 msgid "Guided Tour"
-msgstr ""
+msgstr "Komentovaná prohlídka"
 
 #: bookwyrm/templates/guided_tour/home.html:25
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:36
@@ -2638,7 +2638,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:103
 msgid "Navigation Bar"
-msgstr ""
+msgstr "Navigační lišta"
 
 #: bookwyrm/templates/guided_tour/home.html:126
 msgid "Books on your reading status shelves will be shown here."
@@ -2674,7 +2674,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:201
 msgid "Profile and settings menu"
-msgstr ""
+msgstr "Menu profilu a nastavení"
 
 #: bookwyrm/templates/guided_tour/lists.html:13
 msgid "This is the lists page where you can discover book lists created by any user. A List is a collection of books, similar to a shelf."
@@ -2686,16 +2686,16 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/lists.html:34
 msgid "Let's see how to create a new list."
-msgstr ""
+msgstr "Podívejme se, jak vytvořit nový seznam."
 
 #: bookwyrm/templates/guided_tour/lists.html:34
 msgid "Click the <strong>Create List</strong> button, then <strong>Next</strong> to continue the tour"
-msgstr ""
+msgstr "Klikněte na tlačítko <strong>Vytvořit seznam</strong> a potom <strong>Další</strong> pro pokračování v prohlídce"
 
 #: bookwyrm/templates/guided_tour/lists.html:35
 #: bookwyrm/templates/guided_tour/lists.html:59
 msgid "Creating a new list"
-msgstr ""
+msgstr "Vytvořit nový seznam"
 
 #: bookwyrm/templates/guided_tour/lists.html:58
 msgid "You must give your list a name and can optionally give it a description to help other people understand what your list is about."
@@ -2707,7 +2707,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/lists.html:82
 msgid "List privacy"
-msgstr ""
+msgstr "Soukromí seznamu"
 
 #: bookwyrm/templates/guided_tour/lists.html:105
 msgid "You can also decide how your list is to be curated - only by you, by anyone, or by a group."
@@ -2727,7 +2727,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/lists.html:143
 msgid "Take me there"
-msgstr ""
+msgstr "Vezmi mě tam"
 
 #: bookwyrm/templates/guided_tour/search.html:16
 msgid "If the book you are looking for is available on a remote catalogue such as Open Library, click on <strong>Import book</strong>."
@@ -2736,7 +2736,7 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/search.html:17
 #: bookwyrm/templates/guided_tour/search.html:44
 msgid "Searching"
-msgstr ""
+msgstr "Vyhledávání"
 
 #: bookwyrm/templates/guided_tour/search.html:43
 msgid "If the book you are looking for is already on this Bookwyrm instance, you can click on the title to go to the book's page."
@@ -2748,11 +2748,11 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/search.html:72
 msgid "Load more records"
-msgstr ""
+msgstr "Načíst více záznamů"
 
 #: bookwyrm/templates/guided_tour/search.html:98
 msgid "If your book is not in the results, try adjusting your search terms."
-msgstr ""
+msgstr "Pokud vaše kniha není ve výsledcích, zkuste upravit hledané výrazy."
 
 #: bookwyrm/templates/guided_tour/search.html:99
 msgid "Search again"
@@ -2824,7 +2824,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/export-user.html:36
 #: bookwyrm/templates/user/groups.html:6 bookwyrm/templates/user/layout.html:95
 msgid "Groups"
-msgstr ""
+msgstr "Skupiny"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:31
 msgid "Let's create a new group!"
@@ -2836,40 +2836,40 @@ msgstr "Klikněte na tlačítko <strong>Vytvořit skupinu</strong> a potom <stro
 
 #: bookwyrm/templates/guided_tour/user_groups.html:55
 msgid "Give your group a name and describe what it is about. You can make user groups for any purpose - a reading group, a bunch of friends, whatever!"
-msgstr ""
+msgstr "Dejte své skupině název a popište, o čem je. Můžete vytvořit uživatelské skupiny pro jakýkoliv účel - čtecí skupinu, přátelé, cokoliv!"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:56
 msgid "Creating a group"
-msgstr ""
+msgstr "Vytváření skupiny"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:78
 msgid "Groups have privacy settings just like posts and lists, except that group privacy cannot be <strong>Followers</strong>."
-msgstr ""
+msgstr "Skupiny mají nastavení ochrany osobních údajů stejně jako příspěvky a seznamy, kromě toho, že soukromí skupiny nemůže být <strong>sledující</strong>."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:79
 msgid "Group visibility"
-msgstr ""
+msgstr "Viditelnost skupiny"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:102
 msgid "Once you're happy with how everything is set up, click the <strong>Save</strong> button to create your new group."
-msgstr ""
+msgstr "Jakmile jste spokojeni s tím, jak je vše nastaveno, klikněte na tlačítko <strong>Uložit</strong> pro vytvoření nové skupiny."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:102
 msgid "Create and save a group to continue the tour."
-msgstr ""
+msgstr "Vytvořte a uložte skupinu pro pokračování v prohlídce."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:103
 msgid "Save your group"
-msgstr ""
+msgstr "Uložte svou skupinu"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:10
 msgid "This is your user profile. All your latest activities will be listed here. Other Bookwyrm users can see parts of this page too - what they can see depends on your privacy settings."
-msgstr ""
+msgstr "Toto je váš uživatelský profil. Všechny vaše nejnovější aktivity zde budou uvedeny. Ostatní uživatelé Bookwyrmu mohou také vidět části této stránky - co vidí závisí na vašem nastavení soukromí."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:11
 #: bookwyrm/templates/user/layout.html:20 bookwyrm/templates/user/user.html:14
 msgid "User Profile"
-msgstr ""
+msgstr "Uživatelský profil"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:31
 msgid "This tab shows everything you have read towards your annual reading goal, or allows you to set one. You don't have to set a reading goal if that's not your thing!"
