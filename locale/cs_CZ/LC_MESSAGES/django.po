@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-17 21:56+0000\n"
-"PO-Revision-Date: 2025-04-14 12:42\n"
+"PO-Revision-Date: 2025-04-14 15:03\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -371,12 +371,12 @@ msgstr "Stav %(display_name)s"
 #: bookwyrm/models/status.py:367
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
-msgstr ""
+msgstr "Komentář %(display_name)s k %(book_title)s"
 
 #: bookwyrm/models/status.py:418
 #, python-format
 msgid "%(display_name)s's quote from %(book_title)s"
-msgstr ""
+msgstr "Citát %(display_name)s z %(book_title)s"
 
 #: bookwyrm/models/status.py:454
 #, python-format
@@ -2361,20 +2361,20 @@ msgstr "Přidat nové členy!"
 #, python-format
 msgid "%(mutuals)s follower you follow"
 msgid_plural "%(mutuals)s followers you follow"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(mutuals)s sledující, které sledujete"
+msgstr[0] "%(mutuals)s sledující, kterého sledujete"
+msgstr[1] "%(mutuals)s sledující, které sledujete"
+msgstr[2] "%(mutuals)s sledujících, které sledujete"
+msgstr[3] "%(mutuals)s sledujících, které sledujete"
 
 #: bookwyrm/templates/groups/suggested_users.html:27
 #: bookwyrm/templates/snippets/suggested_users.html:23
 #, python-format
 msgid "%(shared_books)s book on your shelves"
 msgid_plural "%(shared_books)s books on your shelves"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(shared_books)s knih ve vašich poličkách"
+msgstr[0] "%(shared_books)s kniha na vašich poličkách"
+msgstr[1] "%(shared_books)s knihy na vašich poličkách"
+msgstr[2] "%(shared_books)s knih na vašich poličkách"
+msgstr[3] "%(shared_books)s knih na vašich poličkách"
 
 #: bookwyrm/templates/groups/suggested_users.html:43
 #, python-format
@@ -2459,7 +2459,7 @@ msgstr "Další"
 
 #: bookwyrm/templates/guided_tour/book.html:31
 msgid "This is where you can set a reading status for this book. You can press the button to move to the next stage, or use the drop down button to select the reading status you want to set."
-msgstr ""
+msgstr "Zde můžete nastavit stav čtení pro tuto knihu. Můžete stisknout tlačítko pro přechod do další fáze nebo použijte tlačítko rozbalovací nabídky pro výběr stavu čtení, který chcete nastavit."
 
 #: bookwyrm/templates/guided_tour/book.html:32
 msgid "Reading status"
@@ -2467,15 +2467,15 @@ msgstr "Stav četby"
 
 #: bookwyrm/templates/guided_tour/book.html:55
 msgid "You can also manually add reading dates here. Unlike changing the reading status using the previous method, adding dates manually will not automatically add them to your <strong>Read</strong> or <strong>Reading</strong> shelves."
-msgstr ""
+msgstr "Můžete zde také ručně zadat data čtení. Na rozdíl od změny stavu čtení za pomocí předchozí metody, ruční přidání dat automaticky nepřidává knihy do poliček <strong>K přečtení</strong> nebo <strong>Čtu</strong>."
 
 #: bookwyrm/templates/guided_tour/book.html:55
 msgid "Got a favourite you re-read every year? We've got you covered - you can add multiple read dates for the same book 😀"
-msgstr ""
+msgstr "Máte oblíbenou knihu, kterou si každý rok znovu čtetete? Máte štěstí - můžete přidat více dat přečtení pro tutéž knihu 😀"
 
 #: bookwyrm/templates/guided_tour/book.html:79
 msgid "There can be multiple editions of a book, in various formats or languages. You can choose which edition you want to use."
-msgstr ""
+msgstr "Kniha může mít více verzí v různých formátech nebo jazycích. Můžete si vybrat, jakou verzi chcete použít."
 
 #: bookwyrm/templates/guided_tour/book.html:80
 msgid "Other editions"
@@ -2507,7 +2507,7 @@ msgstr "Okomentovat"
 
 #: bookwyrm/templates/guided_tour/book.html:175
 msgid "Just read some perfect prose? Let the world know by sharing a quote!"
-msgstr ""
+msgstr "Přečetli jste právě nějakou perfektní prózu? Dejte světu vědět sdílením citátu!"
 
 #: bookwyrm/templates/guided_tour/book.html:176
 msgid "Share a quote"
@@ -2618,7 +2618,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:62
 msgid "Search for books, users, or lists using this search box."
-msgstr ""
+msgstr "Vyhledávejte knihy, uživatele nebo seznamy pomocí tohoto vyhledávacího pole."
 
 #: bookwyrm/templates/guided_tour/home.html:63
 msgid "Search box"
@@ -2626,7 +2626,7 @@ msgstr "Vyhledávací pole"
 
 #: bookwyrm/templates/guided_tour/home.html:79
 msgid "Search book records by scanning an ISBN barcode using your device's camera - great when you're in the bookstore or library!"
-msgstr ""
+msgstr "Vyhledejte záznamy pomocí ISBN čárového kódu za použití fotoaparátu vašeho zařízení - hodí se, když jste v knihkupectví nebo knihovně!"
 
 #: bookwyrm/templates/guided_tour/home.html:80
 msgid "Barcode reader"
@@ -2642,7 +2642,7 @@ msgstr "Navigační lišta"
 
 #: bookwyrm/templates/guided_tour/home.html:126
 msgid "Books on your reading status shelves will be shown here."
-msgstr ""
+msgstr "Zde budou zobrazeny knihy na vašich poličkách stavu čtení."
 
 #: bookwyrm/templates/guided_tour/home.html:151
 msgid "Updates from people you are following will appear in your <strong>Home</strong> timeline.<br><br>The <strong>Books</strong> tab shows activity from anyone, related to your books."
@@ -2797,27 +2797,27 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_books.html:56
 msgid "Adding custom shelves."
-msgstr ""
+msgstr "Přidávání vlastních poliček."
 
 #: bookwyrm/templates/guided_tour/user_books.html:78
 msgid "If you have an export file from another service like Goodreads or LibraryThing, you can import it here."
-msgstr ""
+msgstr "Pokud máte exportovaný soubor z jiné služby, jako je Goodreads nebo LibraryThing, můžete jej importovat zde."
 
 #: bookwyrm/templates/guided_tour/user_books.html:79
 msgid "Import from another service"
-msgstr ""
+msgstr "Importovat z jiné služby"
 
 #: bookwyrm/templates/guided_tour/user_books.html:101
 msgid "Now that we've explored book shelves, let's take a look at a related concept: book lists!"
-msgstr ""
+msgstr "Teď, když jsme prozkoumali knihovny, podívejme se na související koncept: seznamy knih!"
 
 #: bookwyrm/templates/guided_tour/user_books.html:101
 msgid "Click on the <strong>Lists</strong> link here to continue the tour."
-msgstr ""
+msgstr "Klikněte na odkaz <strong>Seznamy</strong> pro pokračování v prohlídce."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:10
 msgid "You can create or join a group with other users. Groups can share group-curated book lists, and in future will be able to do other things."
-msgstr ""
+msgstr "Můžete vytvořit skupinu s ostatními uživateli nebo se k ní připojit. Skupiny mohou sdílet skupinově řízené seznamy knih a v budoucnu budou moci dělat další věci."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:11
 #: bookwyrm/templates/guided_tour/user_profile.html:55
