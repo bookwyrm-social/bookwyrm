@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-17 21:56+0000\n"
-"PO-Revision-Date: 2024-10-17 23:17\n"
+"POT-Creation-Date: 2025-04-12 17:02+0000\n"
+"PO-Revision-Date: 2025-04-15 19:00\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -46,7 +46,7 @@ msgstr "無制限"
 msgid "Incorrect password"
 msgstr "パスワードが間違っています"
 
-#: bookwyrm/forms/edit_user.py:112 bookwyrm/forms/landing.py:89
+#: bookwyrm/forms/edit_user.py:112 bookwyrm/forms/landing.py:93
 msgid "Password does not match"
 msgstr "パスワードが一致しません"
 
@@ -82,7 +82,11 @@ msgstr "このユーザー名のユーザーはすでに存在します"
 msgid "A user with this email already exists."
 msgstr "このメールのユーザーはすでに存在します。"
 
-#: bookwyrm/forms/landing.py:123 bookwyrm/forms/landing.py:131
+#: bookwyrm/forms/landing.py:69
+msgid "This email address cannot be registered."
+msgstr ""
+
+#: bookwyrm/forms/landing.py:127 bookwyrm/forms/landing.py:135
 msgid "Incorrect code"
 msgstr "コードが正しくありません"
 
@@ -102,8 +106,8 @@ msgstr "リスト順"
 msgid "Book Title"
 msgstr "本のタイトル"
 
-#: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:159
-#: bookwyrm/templates/shelf/shelf.html:191
+#: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:164
+#: bookwyrm/templates/shelf/shelf.html:196
 #: bookwyrm/templates/snippets/create_status/review.html:32
 msgid "Rating"
 msgstr "評価"
@@ -172,25 +176,73 @@ msgstr "モデレーターによる削除"
 msgid "Domain block"
 msgstr "ドメインブロック"
 
-#: bookwyrm/models/book.py:440
+#: bookwyrm/models/book.py:443
 msgid "Audiobook"
 msgstr "オーディオブック"
 
-#: bookwyrm/models/book.py:441
+#: bookwyrm/models/book.py:444
 msgid "eBook"
 msgstr "電子書籍"
 
-#: bookwyrm/models/book.py:442
+#: bookwyrm/models/book.py:445
 msgid "Graphic novel"
 msgstr "グラフィックノベル"
 
-#: bookwyrm/models/book.py:443
+#: bookwyrm/models/book.py:446
 msgid "Hardcover"
 msgstr "ハードカバー"
 
-#: bookwyrm/models/book.py:444
+#: bookwyrm/models/book.py:447
 msgid "Paperback"
 msgstr "ペーパーバック"
+
+#: bookwyrm/models/bookwyrm_import_job.py:109 bookwyrm/models/report.py:84
+#: bookwyrm/templates/settings/reports/report.html:115
+#: bookwyrm/templates/snippets/create_status.html:26
+msgid "Comment"
+msgstr "コメント"
+
+#: bookwyrm/models/bookwyrm_import_job.py:110
+#: bookwyrm/templates/import/import_status.html:127
+#: bookwyrm/templates/import/manual_review.html:13
+#: bookwyrm/templates/snippets/create_status.html:16
+msgid "Review"
+msgstr "レビュー"
+
+#: bookwyrm/models/bookwyrm_import_job.py:111
+msgid "Quotation"
+msgstr ""
+
+#: bookwyrm/models/bookwyrm_import_job.py:132
+#: bookwyrm/templates/snippets/follow_button.html:22
+msgid "Follow"
+msgstr "フォロー"
+
+#: bookwyrm/models/bookwyrm_import_job.py:133
+#: bookwyrm/templates/settings/federation/instance.html:116
+#: bookwyrm/templates/settings/link_domains/link_domains.html:87
+#: bookwyrm/templates/snippets/block_button.html:5
+msgid "Block"
+msgstr "ブロック"
+
+#: bookwyrm/models/bookwyrm_import_job.py:275
+#: bookwyrm/models/bookwyrm_import_job.py:379
+#: bookwyrm/models/bookwyrm_import_job.py:611
+msgid "unknown"
+msgstr ""
+
+#: bookwyrm/models/bookwyrm_import_job.py:373
+msgid "unauthorized"
+msgstr ""
+
+#: bookwyrm/models/bookwyrm_import_job.py:569
+#: bookwyrm/models/bookwyrm_import_job.py:595
+msgid "connection_error"
+msgstr ""
+
+#: bookwyrm/models/bookwyrm_import_job.py:605
+msgid "invalid_relationship"
+msgstr ""
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
@@ -216,16 +268,16 @@ msgstr "%(value)s は有効なリモートIDではありません"
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s は有効なユーザー名ではありません"
 
-#: bookwyrm/models/fields.py:197 bookwyrm/templates/layout.html:129
+#: bookwyrm/models/fields.py:201 bookwyrm/templates/layout.html:129
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "ユーザー名"
 
-#: bookwyrm/models/fields.py:202
+#: bookwyrm/models/fields.py:206
 msgid "A user with that username already exists."
 msgstr "このユーザー名のユーザーはすでに存在します。"
 
-#: bookwyrm/models/fields.py:221
+#: bookwyrm/models/fields.py:225
 #: bookwyrm/templates/snippets/privacy-icons.html:3
 #: bookwyrm/templates/snippets/privacy-icons.html:4
 #: bookwyrm/templates/snippets/privacy_select.html:11
@@ -233,7 +285,7 @@ msgstr "このユーザー名のユーザーはすでに存在します。"
 msgid "Public"
 msgstr "公開"
 
-#: bookwyrm/models/fields.py:222
+#: bookwyrm/models/fields.py:226
 #: bookwyrm/templates/snippets/privacy-icons.html:7
 #: bookwyrm/templates/snippets/privacy-icons.html:8
 #: bookwyrm/templates/snippets/privacy_select.html:14
@@ -241,7 +293,7 @@ msgstr "公開"
 msgid "Unlisted"
 msgstr "未収載"
 
-#: bookwyrm/models/fields.py:223
+#: bookwyrm/models/fields.py:227
 #: bookwyrm/templates/snippets/privacy_select.html:17
 #: bookwyrm/templates/user/relationships/followers.html:6
 #: bookwyrm/templates/user/relationships/followers.html:11
@@ -250,7 +302,7 @@ msgstr "未収載"
 msgid "Followers"
 msgstr "フォロワー"
 
-#: bookwyrm/models/fields.py:224
+#: bookwyrm/models/fields.py:228
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:6
 #: bookwyrm/templates/snippets/privacy-icons.html:15
 #: bookwyrm/templates/snippets/privacy-icons.html:16
@@ -260,9 +312,10 @@ msgid "Private"
 msgstr "非公開"
 
 #: bookwyrm/models/import_job.py:50 bookwyrm/models/job.py:19
-#: bookwyrm/templates/import/import.html:181
-#: bookwyrm/templates/import/import_user.html:211
-#: bookwyrm/templates/preferences/export-user.html:121
+#: bookwyrm/templates/import/import.html:184
+#: bookwyrm/templates/import/import_user.html:225
+#: bookwyrm/templates/import/user_import_status.html:56
+#: bookwyrm/templates/preferences/export-user.html:139
 #: bookwyrm/templates/settings/imports/imports.html:180
 #: bookwyrm/templates/settings/imports/imports.html:270
 #: bookwyrm/templates/snippets/user_active_tag.html:8
@@ -270,9 +323,10 @@ msgid "Active"
 msgstr "アクティブ"
 
 #: bookwyrm/models/import_job.py:51 bookwyrm/models/job.py:20
-#: bookwyrm/templates/import/import.html:179
-#: bookwyrm/templates/import/import_user.html:209
-#: bookwyrm/templates/preferences/export-user.html:119
+#: bookwyrm/templates/import/import.html:182
+#: bookwyrm/templates/import/import_user.html:223
+#: bookwyrm/templates/import/user_import_status.html:54
+#: bookwyrm/templates/preferences/export-user.html:137
 msgid "Complete"
 msgstr "完了"
 
@@ -293,6 +347,7 @@ msgid "Could not find a match for book"
 msgstr "該当する本が見つかりませんでした"
 
 #: bookwyrm/models/job.py:22
+#: bookwyrm/templates/import/user_import_status.html:69
 msgid "Failed"
 msgstr ""
 
@@ -312,12 +367,6 @@ msgstr "貸出可能"
 #: bookwyrm/templates/settings/link_domains/link_domains.html:23
 msgid "Approved"
 msgstr "承認済"
-
-#: bookwyrm/models/report.py:84
-#: bookwyrm/templates/settings/reports/report.html:115
-#: bookwyrm/templates/snippets/create_status.html:26
-msgid "Comment"
-msgstr "コメント"
 
 #: bookwyrm/models/report.py:85
 msgid "Resolved report"
@@ -397,7 +446,7 @@ msgstr "レビュー"
 msgid "Comments"
 msgstr "コメント"
 
-#: bookwyrm/models/user.py:38 bookwyrm/templates/import/import_user.html:139
+#: bookwyrm/models/user.py:38 bookwyrm/templates/import/import_user.html:154
 msgid "Quotations"
 msgstr "引用"
 
@@ -419,6 +468,7 @@ msgstr "本のタイムライン"
 
 #: bookwyrm/settings.py:237
 #: bookwyrm/templates/guided_tour/user_profile.html:101
+#: bookwyrm/templates/import/user_import_status.html:73
 #: bookwyrm/templates/search/layout.html:22
 #: bookwyrm/templates/search/layout.html:44
 #: bookwyrm/templates/user/layout.html:107
@@ -830,44 +880,48 @@ msgid "Wikipedia"
 msgstr "Wikipedia"
 
 #: bookwyrm/templates/author/author.html:79
+msgid "View on Wikidata"
+msgstr ""
+
+#: bookwyrm/templates/author/author.html:87
 msgid "Website"
 msgstr "ウェブサイト"
 
-#: bookwyrm/templates/author/author.html:87
+#: bookwyrm/templates/author/author.html:95
 msgid "View ISNI record"
 msgstr "ISNIレコードを表示"
 
-#: bookwyrm/templates/author/author.html:95
+#: bookwyrm/templates/author/author.html:103
 #: bookwyrm/templates/book/book.html:180
 msgid "View on ISFDB"
 msgstr "ISFDBで表示"
 
-#: bookwyrm/templates/author/author.html:100
+#: bookwyrm/templates/author/author.html:108
 #: bookwyrm/templates/author/sync_modal.html:5
 #: bookwyrm/templates/book/book.html:147
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
 msgstr "データを読み込む"
 
-#: bookwyrm/templates/author/author.html:104
+#: bookwyrm/templates/author/author.html:112
 #: bookwyrm/templates/book/book.html:151
 msgid "View on OpenLibrary"
 msgstr "OpenLibraryで表示"
 
-#: bookwyrm/templates/author/author.html:119
+#: bookwyrm/templates/author/author.html:127
 #: bookwyrm/templates/book/book.html:165
 msgid "View on Inventaire"
 msgstr "Inventaireで表示"
 
-#: bookwyrm/templates/author/author.html:135
+#: bookwyrm/templates/author/author.html:143
 msgid "View on LibraryThing"
 msgstr "LibraryThingで表示"
 
-#: bookwyrm/templates/author/author.html:143
+#: bookwyrm/templates/author/author.html:151
 msgid "View on Goodreads"
 msgstr "Goodreadsで表示"
 
-#: bookwyrm/templates/author/author.html:158
+#: bookwyrm/templates/author/author.html:166
 #, python-format
 msgid "Books by %(name)s"
 msgstr "%(name)s による本"
@@ -1154,27 +1208,37 @@ msgstr "ISBNをコピーしました！"
 
 #: bookwyrm/templates/book/book_identifiers.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:352
+#: bookwyrm/templates/rss/edition.html:6
 msgid "OCLC Number:"
 msgstr "OCLCナンバー:"
 
 #: bookwyrm/templates/book/book_identifiers.html:30
 #: bookwyrm/templates/book/edit/edit_book_form.html:361
+#: bookwyrm/templates/rss/edition.html:7
 msgid "ASIN:"
 msgstr "ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:37
 #: bookwyrm/templates/book/edit/edit_book_form.html:370
+#: bookwyrm/templates/rss/edition.html:8
 msgid "Audible ASIN:"
 msgstr "Audible ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:44
 #: bookwyrm/templates/book/edit/edit_book_form.html:379
+#: bookwyrm/templates/rss/edition.html:9
 msgid "ISFDB ID:"
 msgstr "ISFDB ID:"
 
 #: bookwyrm/templates/book/book_identifiers.html:51
+#: bookwyrm/templates/rss/edition.html:10
 msgid "Goodreads:"
 msgstr "Goodreads:"
+
+#: bookwyrm/templates/book/book_identifiers.html:58
+#: bookwyrm/templates/book/edit/edit_book_form.html:388
+msgid "Finna ID:"
+msgstr ""
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1366,6 +1430,7 @@ msgid "Published date:"
 msgstr "出版日:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:186
+#: bookwyrm/templates/import/user_import_status.html:155
 #: bookwyrm/templates/search/layout.html:23
 #: bookwyrm/templates/search/layout.html:47
 msgid "Authors"
@@ -1400,7 +1465,7 @@ msgid "Add Another Author"
 msgstr "別の著者を加える"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:231
-#: bookwyrm/templates/shelf/shelf.html:150
+#: bookwyrm/templates/shelf/shelf.html:155
 msgid "Cover"
 msgstr "カバー"
 
@@ -1426,6 +1491,7 @@ msgid "Book Identifiers"
 msgstr "書籍識別子"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:307
+#: bookwyrm/templates/rss/edition.html:5
 msgid "ISBN 13:"
 msgstr "ISBN 13:"
 
@@ -1522,10 +1588,12 @@ msgid "Domain"
 msgstr "ドメイン"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:36
-#: bookwyrm/templates/import/import.html:146
+#: bookwyrm/templates/import/import.html:149
 #: bookwyrm/templates/import/import_status.html:134
-#: bookwyrm/templates/import/import_user.html:177
-#: bookwyrm/templates/preferences/export-user.html:87
+#: bookwyrm/templates/import/import_user.html:192
+#: bookwyrm/templates/import/user_import_status.html:162
+#: bookwyrm/templates/import/user_troubleshoot.html:62
+#: bookwyrm/templates/preferences/export-user.html:106
 #: bookwyrm/templates/settings/announcements/announcements.html:37
 #: bookwyrm/templates/settings/imports/imports.html:304
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:48
@@ -2084,19 +2152,19 @@ msgid "Add to your books"
 msgstr "あなたの本に追加"
 
 #: bookwyrm/templates/get_started/book_preview.html:10
-#: bookwyrm/templates/shelf/shelf.html:88 bookwyrm/templates/user/user.html:37
+#: bookwyrm/templates/shelf/shelf.html:93 bookwyrm/templates/user/user.html:37
 #: bookwyrm/templatetags/shelf_tags.py:14
 msgid "To Read"
 msgstr "あとで読む"
 
 #: bookwyrm/templates/get_started/book_preview.html:11
-#: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:38
+#: bookwyrm/templates/shelf/shelf.html:94 bookwyrm/templates/user/user.html:38
 #: bookwyrm/templatetags/shelf_tags.py:15
 msgid "Currently Reading"
 msgstr "読書中"
 
 #: bookwyrm/templates/get_started/book_preview.html:12
-#: bookwyrm/templates/shelf/shelf.html:90
+#: bookwyrm/templates/shelf/shelf.html:95
 #: bookwyrm/templates/snippets/shelf_selector.html:46
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:24
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:12
@@ -2105,7 +2173,7 @@ msgid "Read"
 msgstr "読む"
 
 #: bookwyrm/templates/get_started/book_preview.html:13
-#: bookwyrm/templates/shelf/shelf.html:91 bookwyrm/templates/user/user.html:40
+#: bookwyrm/templates/shelf/shelf.html:96 bookwyrm/templates/user/user.html:40
 #: bookwyrm/templatetags/shelf_tags.py:17
 msgid "Stopped Reading"
 msgstr "読むのをやめた"
@@ -2788,7 +2856,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_groups.html:11
 #: bookwyrm/templates/guided_tour/user_profile.html:55
-#: bookwyrm/templates/preferences/export-user.html:36
+#: bookwyrm/templates/preferences/export-user.html:37
 #: bookwyrm/templates/user/groups.html:6 bookwyrm/templates/user/layout.html:95
 msgid "Groups"
 msgstr "グループ"
@@ -2902,11 +2970,13 @@ msgid "You have %(display_left)s left."
 msgstr ""
 
 #: bookwyrm/templates/import/import.html:33
+#: bookwyrm/templates/import/import_user.html:40
 #, python-format
 msgid "On average, recent imports have taken %(hours)s hours."
 msgstr "平均して、最近のインポートでは %(hours)s 時間かかっています。"
 
 #: bookwyrm/templates/import/import.html:37
+#: bookwyrm/templates/import/import_user.html:44
 #, python-format
 msgid "On average, recent imports have taken %(minutes)s minutes."
 msgstr ""
@@ -2932,77 +3002,81 @@ msgid "OpenLibrary (CSV)"
 msgstr "OpenLibrary (CSV)"
 
 #: bookwyrm/templates/import/import.html:70
+msgid "OpenReads (CSV)"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:73
 msgid "Calibre (CSV)"
 msgstr "Calibre (CSV)"
 
-#: bookwyrm/templates/import/import.html:73
+#: bookwyrm/templates/import/import.html:76
 msgid "BookWyrm (CSV)"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:79
+#: bookwyrm/templates/import/import.html:82
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
 msgstr "Goodreadsのデータは、あなたのGoodreadsアカウントの<a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">インポート/エクスポートのページ</a> からダウンロードできます。"
 
-#: bookwyrm/templates/import/import.html:88
-#: bookwyrm/templates/import/import_user.html:49
+#: bookwyrm/templates/import/import.html:91
+#: bookwyrm/templates/import/import_user.html:64
 msgid "Data file:"
 msgstr "データファイル:"
 
-#: bookwyrm/templates/import/import.html:96
+#: bookwyrm/templates/import/import.html:99
 msgid "Include reviews"
 msgstr "レビューを含める"
 
-#: bookwyrm/templates/import/import.html:101
+#: bookwyrm/templates/import/import.html:104
 msgid "Create new shelves if they do not exist"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:106
+#: bookwyrm/templates/import/import.html:109
 msgid "Privacy setting for imported reviews and shelves:"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:113
-#: bookwyrm/templates/import/import.html:115
-#: bookwyrm/templates/import/import_user.html:155
-#: bookwyrm/templates/import/import_user.html:157
+#: bookwyrm/templates/import/import.html:116
+#: bookwyrm/templates/import/import.html:118
+#: bookwyrm/templates/import/import_user.html:170
+#: bookwyrm/templates/import/import_user.html:172
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:78
 msgid "Import"
 msgstr "インポート"
 
-#: bookwyrm/templates/import/import.html:116
-#: bookwyrm/templates/import/import_user.html:158
+#: bookwyrm/templates/import/import.html:119
+#: bookwyrm/templates/import/import_user.html:173
 msgid "You've reached the import limit."
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:125
+#: bookwyrm/templates/import/import.html:128
 #: bookwyrm/templates/import/import_user.html:27
 msgid "Imports are temporarily disabled; thank you for your patience."
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:132
-#: bookwyrm/templates/import/import_user.html:166
+#: bookwyrm/templates/import/import.html:135
+#: bookwyrm/templates/import/import_user.html:181
 msgid "Recent Imports"
 msgstr "最近のインポート"
 
-#: bookwyrm/templates/import/import.html:137
-#: bookwyrm/templates/import/import_user.html:171
+#: bookwyrm/templates/import/import.html:140
+#: bookwyrm/templates/import/import_user.html:186
 #: bookwyrm/templates/settings/imports/imports.html:202
 #: bookwyrm/templates/settings/imports/imports.html:292
 msgid "Date Created"
 msgstr "作成日"
 
-#: bookwyrm/templates/import/import.html:140
-#: bookwyrm/templates/import/import_user.html:174
+#: bookwyrm/templates/import/import.html:143
+#: bookwyrm/templates/import/import_user.html:189
 msgid "Last Updated"
 msgstr "最終更新日"
 
-#: bookwyrm/templates/import/import.html:143
+#: bookwyrm/templates/import/import.html:146
 #: bookwyrm/templates/settings/imports/imports.html:211
 msgid "Items"
 msgstr "項目"
 
-#: bookwyrm/templates/import/import.html:152
-#: bookwyrm/templates/import/import_user.html:183
-#: bookwyrm/templates/preferences/export-user.html:96
+#: bookwyrm/templates/import/import.html:155
+#: bookwyrm/templates/import/import_user.html:198
+#: bookwyrm/templates/preferences/export-user.html:115
 msgid "No recent imports"
 msgstr "最近のインポートはありません"
 
@@ -3026,18 +3100,22 @@ msgid "Imports"
 msgstr "インポート"
 
 #: bookwyrm/templates/import/import_status.html:39
+#: bookwyrm/templates/import/user_import_status.html:35
 msgid "Import started:"
 msgstr "インポートを開始しました:"
 
 #: bookwyrm/templates/import/import_status.html:48
+#: bookwyrm/templates/import/user_import_status.html:99
 msgid "In progress"
 msgstr "処理中"
 
 #: bookwyrm/templates/import/import_status.html:50
+#: bookwyrm/templates/import/user_import_status.html:101
 msgid "Refresh"
 msgstr "更新"
 
 #: bookwyrm/templates/import/import_status.html:72
+#: bookwyrm/templates/import/user_import_status.html:123
 #: bookwyrm/templates/settings/imports/imports.html:243
 #: bookwyrm/templates/settings/imports/imports.html:320
 msgid "Stop import"
@@ -3055,12 +3133,14 @@ msgid "Review items"
 msgstr "項目をレビュー"
 
 #: bookwyrm/templates/import/import_status.html:89
+#: bookwyrm/templates/import/user_import_status.html:129
 #, python-format
 msgid "%(display_counter)s item failed to import."
 msgid_plural "%(display_counter)s items failed to import."
 msgstr[0] "%(display_counter)s 個のアイテムのインポートに失敗しました。"
 
 #: bookwyrm/templates/import/import_status.html:95
+#: bookwyrm/templates/import/user_import_status.html:135
 msgid "View and troubleshoot failed items"
 msgstr "失敗した項目の表示とトラブルシューティング"
 
@@ -3069,12 +3149,14 @@ msgid "Row"
 msgstr "列"
 
 #: bookwyrm/templates/import/import_status.html:110
-#: bookwyrm/templates/shelf/shelf.html:151
-#: bookwyrm/templates/shelf/shelf.html:173
+#: bookwyrm/templates/import/user_import_status.html:149
+#: bookwyrm/templates/shelf/shelf.html:156
+#: bookwyrm/templates/shelf/shelf.html:178
 msgid "Title"
 msgstr "タイトル"
 
 #: bookwyrm/templates/import/import_status.html:113
+#: bookwyrm/templates/import/user_import_status.html:152
 msgid "ISBN"
 msgstr "ISBN"
 
@@ -3083,8 +3165,8 @@ msgid "Openlibrary key"
 msgstr "Openlibraryのキー"
 
 #: bookwyrm/templates/import/import_status.html:121
-#: bookwyrm/templates/shelf/shelf.html:152
-#: bookwyrm/templates/shelf/shelf.html:176
+#: bookwyrm/templates/shelf/shelf.html:157
+#: bookwyrm/templates/shelf/shelf.html:181
 msgid "Author"
 msgstr "著者"
 
@@ -3092,13 +3174,9 @@ msgstr "著者"
 msgid "Shelf"
 msgstr "本棚"
 
-#: bookwyrm/templates/import/import_status.html:127
-#: bookwyrm/templates/import/manual_review.html:13
-#: bookwyrm/templates/snippets/create_status.html:16
-msgid "Review"
-msgstr "レビュー"
-
 #: bookwyrm/templates/import/import_status.html:131
+#: bookwyrm/templates/import/user_import_status.html:159
+#: bookwyrm/templates/import/user_troubleshoot.html:59
 #: bookwyrm/templates/settings/link_domains/link_table.html:9
 msgid "Book"
 msgstr "本"
@@ -3116,6 +3194,8 @@ msgid "View imported review"
 msgstr "インポートされたレビューを表示"
 
 #: bookwyrm/templates/import/import_status.html:200
+#: bookwyrm/templates/import/user_import_status.html:68
+#: bookwyrm/templates/import/user_import_status.html:191
 msgid "Imported"
 msgstr "インポートされました"
 
@@ -3151,119 +3231,119 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:32
 #, python-format
-msgid "Currently you are allowed to import one user every %(user_import_hours)s hours."
+msgid "Currently you are allowed to import one user every %(hours)s hours."
 msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:33
 #, python-format
-msgid "You will next be able to import a user file at %(next_available)s"
+msgid "You will next be able to import a user file at %(next_time)s"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:41
+#: bookwyrm/templates/import/import_user.html:56
 msgid "Step 1:"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:43
+#: bookwyrm/templates/import/import_user.html:58
 msgid "Select an export file generated from another BookWyrm account. The file format should be <code>.tar.gz</code>."
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:58
+#: bookwyrm/templates/import/import_user.html:73
 msgid "Step 2:"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:60
+#: bookwyrm/templates/import/import_user.html:75
 msgid "Deselect any checkboxes for data you do not wish to include in your import."
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:71
-#: bookwyrm/templates/preferences/export-user.html:20
-#: bookwyrm/templates/shelf/shelf.html:26
+#: bookwyrm/templates/import/import_user.html:86
+#: bookwyrm/templates/preferences/export-user.html:21
+#: bookwyrm/templates/shelf/shelf.html:31
 #: bookwyrm/templates/user/relationships/followers.html:18
 #: bookwyrm/templates/user/relationships/following.html:18
 msgid "User profile"
 msgstr "ユーザープロフィール"
 
-#: bookwyrm/templates/import/import_user.html:74
+#: bookwyrm/templates/import/import_user.html:89
 msgid "Overwrites display name, summary, and avatar"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:80
+#: bookwyrm/templates/import/import_user.html:95
 msgid "User settings"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:83
+#: bookwyrm/templates/import/import_user.html:98
 msgid "Overwrites:"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:86
+#: bookwyrm/templates/import/import_user.html:101
 msgid "Whether manual approval is required for other users to follow your account"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:89
+#: bookwyrm/templates/import/import_user.html:104
 msgid "Whether following/followers are shown on your profile"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:92
+#: bookwyrm/templates/import/import_user.html:107
 msgid "Whether your reading goal is shown on your profile"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:95
+#: bookwyrm/templates/import/import_user.html:110
 msgid "Whether you see user follow suggestions"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:98
+#: bookwyrm/templates/import/import_user.html:113
 msgid "Whether your account is suggested to others"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:101
+#: bookwyrm/templates/import/import_user.html:116
 msgid "Your timezone"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:104
+#: bookwyrm/templates/import/import_user.html:119
 msgid "Your default post privacy setting"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:112
+#: bookwyrm/templates/import/import_user.html:127
 msgid "Followers and following"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:116
+#: bookwyrm/templates/import/import_user.html:131
 msgid "User blocks"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:123
-#: bookwyrm/templates/preferences/export-user.html:22
+#: bookwyrm/templates/import/import_user.html:138
+#: bookwyrm/templates/preferences/export-user.html:23
 msgid "Reading goals"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:126
+#: bookwyrm/templates/import/import_user.html:141
 msgid "Overwrites reading goals for all years listed in the import file"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:130
-#: bookwyrm/templates/preferences/export-user.html:23
+#: bookwyrm/templates/import/import_user.html:145
+#: bookwyrm/templates/preferences/export-user.html:24
 msgid "Shelves"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:133
-#: bookwyrm/templates/preferences/export-user.html:24
+#: bookwyrm/templates/import/import_user.html:148
+#: bookwyrm/templates/preferences/export-user.html:25
 msgid "Reading history"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:136
-#: bookwyrm/templates/preferences/export-user.html:25
+#: bookwyrm/templates/import/import_user.html:151
+#: bookwyrm/templates/preferences/export-user.html:26
 msgid "Book reviews"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:142
+#: bookwyrm/templates/import/import_user.html:157
 msgid "Comments about books"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:145
+#: bookwyrm/templates/import/import_user.html:160
 msgid "Book lists"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:148
+#: bookwyrm/templates/import/import_user.html:163
 msgid "Saved lists"
 msgstr ""
 
@@ -3287,15 +3367,18 @@ msgid "Reject"
 msgstr "拒否する"
 
 #: bookwyrm/templates/import/troubleshoot.html:7
+#: bookwyrm/templates/import/user_troubleshoot.html:8
 #: bookwyrm/templates/settings/imports/imports.html:220
 msgid "Failed items"
 msgstr "失敗したアイテム"
 
 #: bookwyrm/templates/import/troubleshoot.html:12
+#: bookwyrm/templates/import/user_troubleshoot.html:13
 msgid "Troubleshooting"
 msgstr "トラブルシューティング"
 
 #: bookwyrm/templates/import/troubleshoot.html:20
+#: bookwyrm/templates/import/user_troubleshoot.html:23
 msgid "Re-trying an import can fix missing items in cases such as:"
 msgstr "インポートを再試行すると、以下のような場合に不足している項目を修正できます。"
 
@@ -3304,15 +3387,90 @@ msgid "The book has been added to the instance since this import"
 msgstr ""
 
 #: bookwyrm/templates/import/troubleshoot.html:24
+#: bookwyrm/templates/import/user_troubleshoot.html:27
 msgid "A transient error or timeout caused the external data source to be unavailable."
 msgstr ""
 
 #: bookwyrm/templates/import/troubleshoot.html:25
+#: bookwyrm/templates/import/user_troubleshoot.html:28
 msgid "BookWyrm has been updated since this import with a bug fix"
 msgstr ""
 
 #: bookwyrm/templates/import/troubleshoot.html:28
+#: bookwyrm/templates/import/user_troubleshoot.html:38
 msgid "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items."
+msgstr ""
+
+#: bookwyrm/templates/import/user_import_status.html:6
+#: bookwyrm/templates/import/user_import_status.html:15
+#: bookwyrm/templates/import/user_import_status.html:26
+msgid "User Import Status"
+msgstr ""
+
+#: bookwyrm/templates/import/user_import_status.html:13
+msgid "User Import Retry Status"
+msgstr ""
+
+#: bookwyrm/templates/import/user_import_status.html:22
+#: bookwyrm/templates/settings/imports/imports.html:264
+msgid "User Imports"
+msgstr ""
+
+#: bookwyrm/templates/import/user_import_status.html:70
+#: bookwyrm/templates/settings/dashboard/user_chart.html:11
+msgid "Total"
+msgstr "合計"
+
+#: bookwyrm/templates/import/user_import_status.html:79
+#: bookwyrm/templates/preferences/export-user.html:27
+#: bookwyrm/templates/settings/dashboard/dashboard.html:27
+msgid "Statuses"
+msgstr ""
+
+#: bookwyrm/templates/import/user_import_status.html:85
+msgid "Follows & Blocks"
+msgstr ""
+
+#: bookwyrm/templates/import/user_import_status.html:144
+msgid "Imported books"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:5
+msgid "User Import Troubleshooting"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:26
+msgid "Your account was not set as an alias of the original user account"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:31
+msgid "Re-trying an import will not work in cases such as:"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:34
+msgid "A user, status, or BookWyrm server was deleted after your import file was created"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:35
+msgid "Importing statuses when your old account has been deleted"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:43
+#, python-format
+msgid "Currently you are allowed to import or retry one user every %(hours)s hours."
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:44
+#, python-format
+msgid "You will be able to retry this import at %(next_time)s"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:65
+msgid "Relationship"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:68
+msgid "Reason"
 msgstr ""
 
 #: bookwyrm/templates/landing/invite.html:4
@@ -4455,100 +4613,105 @@ msgstr "デフォルトの投稿範囲:"
 msgid "Looking for shelf privacy? You can set a separate visibility level for each of your shelves. Go to <a href=\"%(path)s\">Your Books</a>, pick a shelf from the tab bar, and click \"Edit shelf.\""
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:5
-#: bookwyrm/templates/preferences/export-user.html:8
+#: bookwyrm/templates/preferences/export-user.html:6
+#: bookwyrm/templates/preferences/export-user.html:9
 #: bookwyrm/templates/preferences/layout.html:55
 msgid "Export BookWyrm Account"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:14
+#: bookwyrm/templates/preferences/export-user.html:15
 msgid "You can create an export file here. This will allow you to migrate your data to another BookWyrm account."
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:18
+#: bookwyrm/templates/preferences/export-user.html:19
 msgid "Your file will include:"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:21
+#: bookwyrm/templates/preferences/export-user.html:22
 msgid "Most user settings"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:26
-#: bookwyrm/templates/settings/dashboard/dashboard.html:27
-msgid "Statuses"
-msgstr ""
-
-#: bookwyrm/templates/preferences/export-user.html:27
+#: bookwyrm/templates/preferences/export-user.html:28
 msgid "Your own lists and saved lists"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:28
+#: bookwyrm/templates/preferences/export-user.html:29
 msgid "Which users you follow and block"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:32
+#: bookwyrm/templates/preferences/export-user.html:33
 msgid "Your file will not include:"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:34
+#: bookwyrm/templates/preferences/export-user.html:35
 msgid "Direct messages"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:35
+#: bookwyrm/templates/preferences/export-user.html:36
 msgid "Replies to your statuses"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:37
+#: bookwyrm/templates/preferences/export-user.html:38
 msgid "Favorites"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:41
+#: bookwyrm/templates/preferences/export-user.html:42
 msgid "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported."
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:44
+#: bookwyrm/templates/preferences/export-user.html:45
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set the account you are moving to as an <strong>alias</strong> of this one, or <strong>move</strong> this account to the new account, before you import your user data."
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:49
+#: bookwyrm/templates/preferences/export-user.html:50
 msgid "New user exports are currently disabled."
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:53
+#: bookwyrm/templates/preferences/export-user.html:54
 #, python-format
 msgid "User exports settings can be changed from <a href=\"%(url)s\">the Imports page</a> in the Admin dashboard."
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:60
+#: bookwyrm/templates/preferences/export-user.html:61
 #, python-format
 msgid "You will be able to create a new export file at %(next_available)s"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:69
-msgid "Create user export file"
+#: bookwyrm/templates/preferences/export-user.html:72
+#, python-format
+msgid "On average, recent exports have taken %(hours)s hours."
 msgstr ""
 
 #: bookwyrm/templates/preferences/export-user.html:76
+#, python-format
+msgid "On average, recent exports have taken %(minutes)s minutes."
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:88
+msgid "Create user export file"
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:95
 msgid "Recent Exports"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:78
+#: bookwyrm/templates/preferences/export-user.html:97
 msgid "User export files will show 'complete' once ready. This may take a little while. Click the link to download your file."
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:84
+#: bookwyrm/templates/preferences/export-user.html:103
 msgid "Date"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:90
+#: bookwyrm/templates/preferences/export-user.html:109
 msgid "Size"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:135
+#: bookwyrm/templates/preferences/export-user.html:153
 msgid "Download your export"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:139
+#: bookwyrm/templates/preferences/export-user.html:157
 msgid "Archive is no longer available"
 msgstr ""
 
@@ -5170,10 +5333,6 @@ msgstr ""
 msgid "Statuses posted"
 msgstr "投稿数:"
 
-#: bookwyrm/templates/settings/dashboard/user_chart.html:11
-msgid "Total"
-msgstr "合計"
-
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:12
 msgid "Would you like to automatically check for new BookWyrm releases? (recommended)"
 msgstr ""
@@ -5403,12 +5562,6 @@ msgstr "メモ"
 msgid "<em>No notes</em>"
 msgstr "<em>メモはありません</em>"
 
-#: bookwyrm/templates/settings/federation/instance.html:116
-#: bookwyrm/templates/settings/link_domains/link_domains.html:87
-#: bookwyrm/templates/snippets/block_button.html:5
-msgid "Block"
-msgstr "ブロック"
-
 #: bookwyrm/templates/settings/federation/instance.html:117
 msgid "All users from this instance will be deactivated."
 msgstr "このインスタンスのすべてのユーザーが無効化されます。"
@@ -5605,10 +5758,6 @@ msgstr ""
 #: bookwyrm/templates/settings/imports/imports.html:252
 #: bookwyrm/templates/settings/imports/imports.html:344
 msgid "No matching imports found."
-msgstr ""
-
-#: bookwyrm/templates/settings/imports/imports.html:264
-msgid "User Imports"
 msgstr ""
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:4
@@ -6471,7 +6620,7 @@ msgid "Need help?"
 msgstr "ヘルプが必要ですか？"
 
 #: bookwyrm/templates/shelf/create_shelf_form.html:5
-#: bookwyrm/templates/shelf/shelf.html:74
+#: bookwyrm/templates/shelf/shelf.html:79
 msgid "Create shelf"
 msgstr "本棚を作成"
 
@@ -6479,60 +6628,60 @@ msgstr "本棚を作成"
 msgid "Edit Shelf"
 msgstr "本棚を編集"
 
-#: bookwyrm/templates/shelf/shelf.html:41
-#: bookwyrm/templatetags/shelf_tags.py:13 bookwyrm/views/shelf/shelf.py:59
+#: bookwyrm/templates/shelf/shelf.html:46
+#: bookwyrm/templatetags/shelf_tags.py:13 bookwyrm/views/shelf/shelf.py:61
 msgid "All books"
 msgstr "全ての本"
 
-#: bookwyrm/templates/shelf/shelf.html:66
+#: bookwyrm/templates/shelf/shelf.html:71
 msgid "Import Books"
 msgstr "本をインポート"
 
-#: bookwyrm/templates/shelf/shelf.html:99
+#: bookwyrm/templates/shelf/shelf.html:104
 #, python-format
 msgid "%(formatted_count)s book"
 msgid_plural "%(formatted_count)s books"
 msgstr[0] ""
 
-#: bookwyrm/templates/shelf/shelf.html:105
+#: bookwyrm/templates/shelf/shelf.html:110
 #, python-format
 msgid "(showing %(start)s-%(end)s)"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:119
+#: bookwyrm/templates/shelf/shelf.html:124
 msgid "Edit shelf"
 msgstr "本棚を編集する"
 
-#: bookwyrm/templates/shelf/shelf.html:127
+#: bookwyrm/templates/shelf/shelf.html:132
 msgid "Delete shelf"
 msgstr "本棚を削除する"
 
-#: bookwyrm/templates/shelf/shelf.html:155
-#: bookwyrm/templates/shelf/shelf.html:181
+#: bookwyrm/templates/shelf/shelf.html:160
+#: bookwyrm/templates/shelf/shelf.html:186
 msgid "Shelved"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:156
-#: bookwyrm/templates/shelf/shelf.html:184
+#: bookwyrm/templates/shelf/shelf.html:161
+#: bookwyrm/templates/shelf/shelf.html:189
 msgid "Started"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:157
-#: bookwyrm/templates/shelf/shelf.html:187
+#: bookwyrm/templates/shelf/shelf.html:162
+#: bookwyrm/templates/shelf/shelf.html:192
 msgid "Finished"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:157
-#: bookwyrm/templates/shelf/shelf.html:187
+#: bookwyrm/templates/shelf/shelf.html:162
+#: bookwyrm/templates/shelf/shelf.html:192
 msgid "Until"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:216
+#: bookwyrm/templates/shelf/shelf.html:221
 #, python-format
 msgid "We couldn't find any books that matched %(shelves_filter_query)s"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:220
+#: bookwyrm/templates/shelf/shelf.html:225
 msgid "This shelf is empty."
 msgstr "この本棚は空です。"
 
@@ -6717,10 +6866,6 @@ msgstr "フィルターを適用"
 #, python-format
 msgid "Follow @%(username)s"
 msgstr "@%(username)s をフォロー"
-
-#: bookwyrm/templates/snippets/follow_button.html:22
-msgid "Follow"
-msgstr "フォロー"
 
 #: bookwyrm/templates/snippets/follow_button.html:31
 msgid "Undo follow request"
@@ -7366,28 +7511,43 @@ msgstr[0] ""
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s: %(subtitle)s"
 
-#: bookwyrm/templatetags/utilities.py:129
+#: bookwyrm/templatetags/utilities.py:133
 msgid "a new user account"
 msgstr ""
 
-#: bookwyrm/views/rss_feed.py:35
+#: bookwyrm/views/rss_feed.py:36
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
 msgstr "{obj.display_name} からのステータス更新"
 
-#: bookwyrm/views/rss_feed.py:80
+#: bookwyrm/views/rss_feed.py:81
 #, python-brace-format
 msgid "Reviews from {obj.display_name}"
 msgstr ""
 
-#: bookwyrm/views/rss_feed.py:122
+#: bookwyrm/views/rss_feed.py:123
 #, python-brace-format
 msgid "Quotes from {obj.display_name}"
 msgstr ""
 
-#: bookwyrm/views/rss_feed.py:164
+#: bookwyrm/views/rss_feed.py:165
 #, python-brace-format
 msgid "Comments from {obj.display_name}"
+msgstr ""
+
+#: bookwyrm/views/rss_feed.py:219
+#, python-brace-format
+msgid "{obj.user.display_name}’s {obj.name} shelf"
+msgstr ""
+
+#: bookwyrm/views/rss_feed.py:237
+#, python-brace-format
+msgid "{obj.user.display_name}’s {obj.name} shelf: {desc}"
+msgstr ""
+
+#: bookwyrm/views/rss_feed.py:238
+#, python-brace-format
+msgid "Books added to {obj.user.name}’s {obj.name} shelf"
 msgstr ""
 
 #: bookwyrm/views/updates.py:45
