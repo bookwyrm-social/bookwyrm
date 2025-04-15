@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-17 21:56+0000\n"
-"PO-Revision-Date: 2025-04-15 13:29\n"
+"PO-Revision-Date: 2025-04-15 14:45\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -731,7 +731,7 @@ msgstr "Bohužel %(display_name)s nedokončil žádné knihy v %(year)s"
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr[0] ""
+msgstr[0] "V roce %(year)s přečetli %(display_name)s %(books_total)s knihu<br /> s celkovým počtem %(pages_total)s stran!"
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] "V roce %(year)s přečetl %(display_name)s %(books_total)s knih<br /> s celkovým počtem %(pages_total)s stran!"
@@ -5516,7 +5516,7 @@ msgstr "Selhalo:"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:62
 msgid "Expects a json file in the format provided by FediBlock, with a list of entries that have <code>instance</code> and <code>url</code> fields. For example:"
-msgstr ""
+msgstr "Očekává soubor JSON ve formátu poskytovaném FediBlockem, se seznamem položek, které mají <code>instanci</code> a <code>URL</code>. Například:"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:36
 #: bookwyrm/templates/settings/users/server_filter.html:5
@@ -5534,7 +5534,7 @@ msgstr "Software"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:70
 msgid "No instances found"
-msgstr ""
+msgstr "Nebyly nalezeny žádné instance"
 
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:4
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:4
@@ -5547,7 +5547,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:19
 msgid "Disable starting new imports"
-msgstr ""
+msgstr "Zakázat zahájení nových importů"
 
 #: bookwyrm/templates/settings/imports/imports.html:30
 msgid "This is only intended to be used when things have gone very wrong with imports and you need to pause the feature while addressing issues."
@@ -5563,19 +5563,19 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:37
 msgid "Disable imports"
-msgstr ""
+msgstr "Vypnout importy"
 
 #: bookwyrm/templates/settings/imports/imports.html:51
 msgid "Users are currently unable to start new imports"
-msgstr ""
+msgstr "Uživatelé momentálně nemohou zahájit nové importy"
 
 #: bookwyrm/templates/settings/imports/imports.html:56
 msgid "Enable imports"
-msgstr ""
+msgstr "Zapnout importy"
 
 #: bookwyrm/templates/settings/imports/imports.html:64
 msgid "Limit the amount of imports"
-msgstr ""
+msgstr "Omezit množství importů"
 
 #: bookwyrm/templates/settings/imports/imports.html:75
 msgid "Some users might try to import a large number of books, which you want to limit."
@@ -5600,27 +5600,27 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:87
 msgid "Set limit"
-msgstr ""
+msgstr "Nastavit limit"
 
 #: bookwyrm/templates/settings/imports/imports.html:98
 msgid "Disable starting new user exports"
-msgstr ""
+msgstr "Zakázat zahájení nových uživatelských exportů"
 
 #: bookwyrm/templates/settings/imports/imports.html:109
 msgid "This is only intended to be used when things have gone very wrong with exports and you need to pause the feature while addressing issues."
-msgstr ""
+msgstr "Toto je určeno pouze pro použití v případě, že se věci s exportem velmi pokazily, a při řešení problémů je třeba tuto funkci pozastavit."
 
 #: bookwyrm/templates/settings/imports/imports.html:110
 msgid "While exports are disabled, users will not be allowed to start new user exports, but existing exports will not be affected."
-msgstr ""
+msgstr "Během zákazu exportů, uživatelé nebudou moci spouštět nové exporty účtů, ale stávající exporty nebudou ovlivněny."
 
 #: bookwyrm/templates/settings/imports/imports.html:115
 msgid "Disable user exports"
-msgstr ""
+msgstr "Zakázat uživatelské exporty"
 
 #: bookwyrm/templates/settings/imports/imports.html:123
 msgid "Limit how often users can import and export"
-msgstr ""
+msgstr "Omezit jak často mohou uživatelé importovat a exportovat"
 
 #: bookwyrm/templates/settings/imports/imports.html:134
 msgid "Some users might try to run user imports or exports very frequently, which you want to limit."
