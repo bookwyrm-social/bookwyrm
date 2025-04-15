@@ -10,6 +10,7 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
@@ -23,6 +24,7 @@ class Shelf(View):
     """shelf page"""
 
     # pylint: disable=R0914
+    @vary_on_headers("Accept")
     def get(self, request, username, shelf_identifier=None):
         """display a shelf"""
         user = get_user_from_username(request.user, username)
@@ -119,7 +121,6 @@ class Shelf(View):
         return TemplateResponse(request, "shelf/shelf.html", data)
 
     @method_decorator(login_required, name="dispatch")
-    # pylint: disable=unused-argument
     def post(self, request, username, shelf_identifier):
         """edit a shelf"""
         user = get_user_from_username(request.user, username)

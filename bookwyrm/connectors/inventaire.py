@@ -222,9 +222,10 @@ class Connector(AbstractConnector):
     def get_description(self, links: JsonDict) -> str:
         """grab an extracted excerpt from wikipedia"""
         link = links.get("enwiki")
-        if not link:
+        if not link or not link.get("title"):
             return ""
-        url = f"{self.base_url}/api/data?action=wp-extract&lang=en&title={link}"
+        title = link.get("title")
+        url = f"{self.base_url}/api/data?action=wp-extract&lang=en&title={title}"
         try:
             data = get_data(url)
         except ConnectorException:

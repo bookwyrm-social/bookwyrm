@@ -36,7 +36,6 @@ def search(
     ...
 
 
-# pylint: disable=arguments-differ
 def search(
     query: str,
     *,

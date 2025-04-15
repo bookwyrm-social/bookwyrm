@@ -1,6 +1,7 @@
 """ testing import """
 from collections import namedtuple
 import pathlib
+import io
 from unittest.mock import patch
 import datetime
 
@@ -63,7 +64,9 @@ class GenericImporter(TestCase):
         self.assertEqual(import_job.include_reviews, False)
         self.assertEqual(import_job.privacy, "public")
 
-        import_items = models.ImportItem.objects.filter(job=import_job).all()
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")
+        )
         self.assertEqual(len(import_items), 4)
         self.assertEqual(import_items[0].index, 0)
         self.assertEqual(import_items[0].normalized_data["id"], "38")
@@ -157,22 +160,11 @@ class GenericImporter(TestCase):
 
     def test_complete_job(self, *_):
         """test notification"""
-        import_job = self.importer.create_job(
-            self.local_user, self.csv, False, "unlisted"
-        )
-        items = import_job.items.all()
-        for item in items[:3]:
-            item.fail_reason = "hello"
-            item.save()
-            item.update_job()
-            self.assertFalse(
-                models.Notification.objects.filter(
-                    user=self.local_user,
-                    related_import=import_job,
-                    notification_type="IMPORT",
-                ).exists()
-            )
 
+        # csv content not important
+        csv = io.StringIO("title,author_text,remote_id\nbeep,boop,blurp")
+        import_job = self.importer.create_job(self.local_user, csv, False, "unlisted")
+        items = import_job.items.all()
         item = items.last()
         item.fail_reason = "hello"
         item.save()

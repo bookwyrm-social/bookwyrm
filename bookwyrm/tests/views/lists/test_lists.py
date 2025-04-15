@@ -11,7 +11,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
 
-# pylint: disable=unused-argument
+
 class ListViews(TestCase):
     """lists of lists"""
 
@@ -145,11 +145,21 @@ class ListViews(TestCase):
     def test_user_lists_page_logged_out(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.UserLists.as_view()
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+        ):
+            models.List.objects.create(name="Public list", user=self.local_user)
+            models.List.objects.create(
+                name="Private list", privacy="direct", user=self.local_user
+            )
         request = self.factory.get("")
         request.user = self.anonymous_user
 
         result = view(request, self.local_user.username)
-        self.assertEqual(result.status_code, 302)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
 
     def test_lists_create(self):
         """create list view"""

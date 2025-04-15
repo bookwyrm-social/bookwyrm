@@ -18,7 +18,7 @@ class ExportViews(TestCase):
     """viewing and creating statuses"""
 
     @classmethod
-    def setUpTestData(cls):  # pylint: disable=invalid-name
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
@@ -41,7 +41,6 @@ class ExportViews(TestCase):
             bnf_id="beep",
         )
 
-    # pylint: disable=invalid-name
     def setUp(self):
         """individual test setup"""
         self.factory = RequestFactory()
@@ -69,7 +68,7 @@ class ExportViews(TestCase):
         # pylint: disable=line-too-long
         self.assertEqual(
             export.content,
-            b"title,author_text,remote_id,openlibrary_key,inventaire_id,librarything_key,goodreads_key,bnf_id,viaf,wikidata,asin,aasin,isfdb,isbn_10,isbn_13,oclc_number,start_date,finish_date,stopped_date,rating,review_name,review_cw,review_content,review_published,shelf,shelf_name,shelf_date\r\n"
-            + b"Test Book,,%b,,,,,beep,,,,,,123456789X,9781234567890,,,,,,,,,,to-read,To Read,%b\r\n"
+            b"title,author_text,remote_id,openlibrary_key,finna_key,inventaire_id,librarything_key,goodreads_key,bnf_id,viaf,wikidata,asin,aasin,isfdb,isbn_10,isbn_13,oclc_number,start_date,finish_date,stopped_date,rating,review_name,review_cw,review_content,review_published,shelf,shelf_name,shelf_date\r\n"
+            + b"Test Book,,%b,,,,,,beep,,,,,,123456789X,9781234567890,,,,,,,,,,to-read,To Read,%b\r\n"
             % (self.book.remote_id.encode("utf-8"), book_date),
         )

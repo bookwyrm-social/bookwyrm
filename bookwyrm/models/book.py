@@ -41,6 +41,9 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     openlibrary_key = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    finna_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
     inventaire_id = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
@@ -133,7 +136,6 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         related_models = [
             (r.remote_field.name, r.related_model) for r in self._meta.related_objects
         ]
-        # pylint: disable=protected-access
         for related_field, related_model in related_models:
             # Skip the ManyToMany fields that aren’t auto-created. These
             # should have a corresponding OneToMany field in the model for

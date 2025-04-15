@@ -141,7 +141,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     hide_follows = fields.BooleanField(default=False)
 
     # migration fields
-
     moved_to = fields.RemoteIdField(
         null=True, unique=False, activitypub_field="movedTo", deduplication_field=False
     )
@@ -158,6 +157,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     show_suggested_users = models.BooleanField(default=True)
     discoverable = fields.BooleanField(default=False)
     show_guided_tour = models.BooleanField(default=True)
+    show_ratings = models.BooleanField(default=True)
 
     # feed options
     feed_status_types = DjangoArrayField(
@@ -409,7 +409,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def delete(self, *args, **kwargs):
         """We don't actually delete the database entry"""
-        # pylint: disable=attribute-defined-outside-init
         self.is_active = False
         self.allow_reactivation = False
         self.is_deleted = True
@@ -452,7 +451,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def deactivate(self):
         """Disable the user but allow them to reactivate"""
-        # pylint: disable=attribute-defined-outside-init
         self.is_active = False
         self.deactivation_reason = "self_deactivation"
         self.allow_reactivation = True
@@ -460,7 +458,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def reactivate(self):
         """Now you want to come back, huh?"""
-        # pylint: disable=attribute-defined-outside-init
         if not self.allow_reactivation:
             return
         self.is_active = True

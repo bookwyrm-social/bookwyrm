@@ -11,7 +11,6 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 
 
-# pylint: disable=too-many-public-methods
 class Inbox(TestCase):
     """readthrough tests"""
 

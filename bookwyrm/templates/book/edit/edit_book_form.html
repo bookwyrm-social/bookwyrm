@@ -382,6 +382,15 @@
 
                     {% include 'snippets/form_errors.html' with errors_list=form.isfdb.errors id="desc_isfdb" %}
                 </div>
+
+                <div class="field">
+                    <label class="label" for="id_finna_key">
+                        {% trans "Finna ID:" %}
+                    </label>
+                    {{ form.finna_key }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.finna_key.errors id="desc_finna_key" %}
+                </div>
             </div>
         </section>
     </div>

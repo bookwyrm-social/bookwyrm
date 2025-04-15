@@ -7,7 +7,6 @@ from django.test import TestCase
 from bookwyrm import models, views
 
 
-# pylint: disable=too-many-public-methods
 class InboxRelationships(TestCase):
     """inbox tests"""
 

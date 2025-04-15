@@ -1,6 +1,7 @@
 """ the good stuff! the books! """
 
 from re import sub, findall
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.db import transaction
@@ -12,6 +13,7 @@ from django.views.decorators.http import require_POST
 from django.views import View
 
 from bookwyrm import book_search, forms, models
+from bookwyrm.utils.images import remove_uploaded_image_exif
 
 # from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.utils.isni import (
@@ -71,6 +73,8 @@ class EditBook(View):
             image = set_cover_from_url(url)
             if image:
                 book.cover.save(*image, save=False)
+        elif "cover" in form.files:
+            book.cover = remove_uploaded_image_exif(form.files["cover"])
 
         book.save()
         return redirect(f"/book/{book.id}")
@@ -88,7 +92,6 @@ class CreateBook(View):
         data = {"form": forms.EditionForm()}
         return TemplateResponse(request, "book/edit/edit_book.html", data)
 
-    # pylint: disable=too-many-locals
     def post(self, request):
         """create a new book"""
         # returns None if no match is found
@@ -143,6 +146,8 @@ class CreateBook(View):
                 image = set_cover_from_url(url)
                 if image:
                     book.cover.save(*image, save=False)
+            elif "cover" in form.files:
+                book.cover = remove_uploaded_image_exif(form.files["cover"])
 
             book.save()
         return redirect(f"/book/{book.id}")
@@ -312,6 +317,8 @@ class ConfirmEditBook(View):
                 image = set_cover_from_url(url)
                 if image:
                     book.cover.save(*image, save=False)
+            elif "cover" in form.files:
+                book.cover = remove_uploaded_image_exif(form.files["cover"])
 
             # we don't tell the world when creating a book
             book.save(broadcast=False)

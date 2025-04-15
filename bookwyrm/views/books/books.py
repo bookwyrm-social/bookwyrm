@@ -10,12 +10,14 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.views import View
 from django.views.decorators.http import require_POST
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager, ConnectorException
 from bookwyrm.connectors.abstract_connector import get_image
 from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.utils.images import remove_uploaded_image_exif
 from bookwyrm.views.helpers import (
     is_api_request,
     maybe_redirect_local_path,
@@ -27,6 +29,7 @@ from bookwyrm.views.helpers import (
 class Book(View):
     """a book! this is the stuff"""
 
+    @vary_on_headers("Accept")
     def get(self, request, book_id, **kwargs):
         """info about a book"""
         if is_api_request(request):
@@ -156,7 +159,7 @@ def upload_cover(request, book_id):
     if not form.is_valid() or not form.files.get("cover"):
         return redirect(book.local_path)
 
-    book.cover = form.files["cover"]
+    book.cover = remove_uploaded_image_exif(form.files["cover"])
     book.save()
 
     return redirect(book.local_path)
@@ -204,7 +207,6 @@ def resolve_book(request):
 @login_required
 @require_POST
 @permission_required("bookwyrm.edit_book", raise_exception=True)
-# pylint: disable=unused-argument
 def update_book_from_remote(request, book_id, connector_identifier):
     """load the remote data for this book"""
     connector = connector_manager.load_connector(

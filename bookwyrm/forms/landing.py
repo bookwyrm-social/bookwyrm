@@ -34,7 +34,6 @@ class LoginForm(CustomForm):
 
     def add_invalid_password_error(self):
         """We don't want to be too specific about this"""
-        # pylint: disable=attribute-defined-outside-init
         self.non_field_errors = _("Username or password are incorrect")
 
 
@@ -64,6 +63,10 @@ class InviteRequestForm(CustomForm):
         email = cleaned_data.get("email")
         if email and models.User.objects.filter(email=email).exists():
             self.add_error("email", _("A user with this email already exists."))
+
+        email_domain = email.split("@")[-1]
+        if email and models.EmailBlocklist.objects.filter(domain=email_domain).exists():
+            self.add_error("email", _("This email address cannot be registered."))
 
     class Meta:
         model = models.InviteRequest

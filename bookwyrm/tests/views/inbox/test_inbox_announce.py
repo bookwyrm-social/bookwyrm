@@ -7,7 +7,6 @@ import responses
 from bookwyrm import models, views
 
 
-# pylint: disable=too-many-public-methods
 class InboxActivities(TestCase):
     """inbox tests"""
 

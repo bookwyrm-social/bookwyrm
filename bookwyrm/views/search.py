@@ -9,6 +9,7 @@ from django.db.models.functions import Greatest
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.views import View
+from django.views.decorators.vary import vary_on_headers
 
 from csp.decorators import csp_update
 
@@ -26,6 +27,7 @@ class Search(View):
     """search users or books"""
 
     @csp_update(IMG_SRC="*")
+    @vary_on_headers("Accept")
     def get(self, request):
         """that search bar up top"""
         if is_api_request(request):
@@ -53,7 +55,7 @@ class Search(View):
 
 def api_book_search(request):
     """Return books via API response"""
-    query = request.GET.get("q")
+    query = request.GET.get("q").strip()
     query = isbn_check_and_format(query)
     min_confidence = request.GET.get("min_confidence", 0)
     # only return local book results via json so we don't cascade
@@ -65,7 +67,7 @@ def api_book_search(request):
 
 def book_search(request):
     """the real business is elsewhere"""
-    query = request.GET.get("q")
+    query = request.GET.get("q").strip()
     # check if query is isbn
     query = isbn_check_and_format(query)
     min_confidence = request.GET.get("min_confidence", 0)
@@ -123,8 +125,7 @@ def author_search(request):
 def user_search(request):
     """user search: search for a user"""
     viewer = request.user
-    query = request.GET.get("q")
-    query = query.strip()
+    query = request.GET.get("q").strip()
     data = {"type": "user", "query": query}
 
     # use webfinger for mastodon style account@domain.com username to load the user if
@@ -162,7 +163,7 @@ def user_search(request):
 
 def list_search(request):
     """any relevent lists?"""
-    query = request.GET.get("q")
+    query = request.GET.get("q").strip()
     data = {"query": query, "type": "list"}
     results = (
         models.List.privacy_filter(

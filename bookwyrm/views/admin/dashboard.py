@@ -43,7 +43,6 @@ class Dashboard(View):
         ) or not re.match(regex.DOMAIN, settings.EMAIL_SENDER_DOMAIN)
 
         data["email_config_error"] = email_config_error
-        # pylint: disable=line-too-long
         data[
             "email_sender"
         ] = f"{settings.EMAIL_SENDER_NAME}@{settings.EMAIL_SENDER_DOMAIN}"
@@ -84,7 +83,7 @@ class Dashboard(View):
             schedule, _ = IntervalSchedule.objects.get_or_create(
                 **schedule_form.cleaned_data
             )
-            PeriodicTask.objects.get_or_create(
+            PeriodicTask.objects.update_or_create(
                 interval=schedule,
                 name="check-for-updates",
                 task="bookwyrm.models.site.check_for_updates_task",

@@ -13,6 +13,7 @@ class BookData(ActivityObject):
 
     openlibraryKey: Optional[str] = None
     inventaireId: Optional[str] = None
+    finnaKey: Optional[str] = None
     librarythingKey: Optional[str] = None
     goodreadsKey: Optional[str] = None
     bnfId: Optional[str] = None
@@ -67,7 +68,6 @@ class Edition(Book):
     type: str = "Edition"
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class Work(Book):
     """work instance of a book object"""
