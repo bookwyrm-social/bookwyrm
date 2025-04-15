@@ -93,6 +93,9 @@ case "$CMD" in
     initdb)
         initdb "$@"
         ;;
+    init_ssl)
+        $DOCKER_COMPOSE --file ./docker-compose-init_letsencrypt.yml up --exit-code-from=certbot
+        ;;
     resetdb)
         prod_error
         $DOCKER_COMPOSE rm -svf

@@ -1,0 +1,48 @@
+
+# tell the web container the address of the outside client
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header Host $host;
+proxy_redirect off;
+
+location ~ ^/(login[^-/]|password-reset|resend-link|2fa-check) {
+    limit_req zone=loginlimit;
+    proxy_pass http://web;
+}
+
+# do not log periodic polling requests from logged in users
+location /api/updates/ {
+    access_log off;
+    proxy_pass http://web;
+}
+
+location / {
+    proxy_pass http://web;
+}
+
+# directly serve static files from the
+# bookwyrm filesystem using sendfile.
+# make the logs quieter by not reporting these requests
+location /static/ {
+    root /app;
+    try_files $uri =404;
+    add_header X-Cache-Status STATIC;
+    access_log off;
+}
+
+# same with image files not in static folder
+location /images/ {
+    location ~ \.(bmp|ico|jpg|jpeg|png|svg|tif|tiff|webp)$ {
+        root /app;
+        try_files $uri =404;
+        add_header X-Cache-Status STATIC;
+        access_log off;
+    }
+    # block access to any non-image files from images
+    return 403;
+}
+
+# monitor the celery queues with flower, no caching enabled
+location /flower/ {
+   proxy_pass http://flower;
+   proxy_cache_bypass 1;
+}

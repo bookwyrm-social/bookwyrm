@@ -1,0 +1,11 @@
+server {
+    listen [::]:80;
+    listen 80;
+
+    include /etc/nginx/conf.d/server_name;
+
+    location ~ /.well-known/acme-challenge {
+        allow all;
+        root /var/www/certbot;
+    }
+}
