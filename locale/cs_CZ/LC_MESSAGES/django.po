@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-17 21:56+0000\n"
-"PO-Revision-Date: 2025-02-02 10:34\n"
+"POT-Creation-Date: 2025-04-12 17:02+0000\n"
+"PO-Revision-Date: 2025-04-15 18:59\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -46,7 +46,7 @@ msgstr "Neomezené"
 msgid "Incorrect password"
 msgstr "Neplatné heslo"
 
-#: bookwyrm/forms/edit_user.py:112 bookwyrm/forms/landing.py:89
+#: bookwyrm/forms/edit_user.py:112 bookwyrm/forms/landing.py:93
 msgid "Password does not match"
 msgstr "Heslo se neshoduje"
 
@@ -82,7 +82,11 @@ msgstr "Uživatel s tímto uživatelským jménem již existuje"
 msgid "A user with this email already exists."
 msgstr "Uživatel s tímto e-mailem již existuje."
 
-#: bookwyrm/forms/landing.py:123 bookwyrm/forms/landing.py:131
+#: bookwyrm/forms/landing.py:69
+msgid "This email address cannot be registered."
+msgstr ""
+
+#: bookwyrm/forms/landing.py:127 bookwyrm/forms/landing.py:135
 msgid "Incorrect code"
 msgstr "Neplatný kód"
 
@@ -102,8 +106,8 @@ msgstr "Pořadí seznamu"
 msgid "Book Title"
 msgstr "Název knihy"
 
-#: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:159
-#: bookwyrm/templates/shelf/shelf.html:191
+#: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:164
+#: bookwyrm/templates/shelf/shelf.html:196
 #: bookwyrm/templates/snippets/create_status/review.html:32
 msgid "Rating"
 msgstr "Hodnocení"
@@ -172,25 +176,73 @@ msgstr "Odstraněn moderátorem"
 msgid "Domain block"
 msgstr "Blokování domény"
 
-#: bookwyrm/models/book.py:440
+#: bookwyrm/models/book.py:443
 msgid "Audiobook"
 msgstr "Audiokniha"
 
-#: bookwyrm/models/book.py:441
+#: bookwyrm/models/book.py:444
 msgid "eBook"
 msgstr "Ekniha"
 
-#: bookwyrm/models/book.py:442
+#: bookwyrm/models/book.py:445
 msgid "Graphic novel"
 msgstr "Grafický román"
 
-#: bookwyrm/models/book.py:443
+#: bookwyrm/models/book.py:446
 msgid "Hardcover"
 msgstr "Pevná vazba"
 
-#: bookwyrm/models/book.py:444
+#: bookwyrm/models/book.py:447
 msgid "Paperback"
 msgstr "Měkká vazba"
+
+#: bookwyrm/models/bookwyrm_import_job.py:109 bookwyrm/models/report.py:84
+#: bookwyrm/templates/settings/reports/report.html:115
+#: bookwyrm/templates/snippets/create_status.html:26
+msgid "Comment"
+msgstr "Komentář"
+
+#: bookwyrm/models/bookwyrm_import_job.py:110
+#: bookwyrm/templates/import/import_status.html:127
+#: bookwyrm/templates/import/manual_review.html:13
+#: bookwyrm/templates/snippets/create_status.html:16
+msgid "Review"
+msgstr "Recenze"
+
+#: bookwyrm/models/bookwyrm_import_job.py:111
+msgid "Quotation"
+msgstr ""
+
+#: bookwyrm/models/bookwyrm_import_job.py:132
+#: bookwyrm/templates/snippets/follow_button.html:22
+msgid "Follow"
+msgstr ""
+
+#: bookwyrm/models/bookwyrm_import_job.py:133
+#: bookwyrm/templates/settings/federation/instance.html:116
+#: bookwyrm/templates/settings/link_domains/link_domains.html:87
+#: bookwyrm/templates/snippets/block_button.html:5
+msgid "Block"
+msgstr ""
+
+#: bookwyrm/models/bookwyrm_import_job.py:275
+#: bookwyrm/models/bookwyrm_import_job.py:379
+#: bookwyrm/models/bookwyrm_import_job.py:611
+msgid "unknown"
+msgstr ""
+
+#: bookwyrm/models/bookwyrm_import_job.py:373
+msgid "unauthorized"
+msgstr ""
+
+#: bookwyrm/models/bookwyrm_import_job.py:569
+#: bookwyrm/models/bookwyrm_import_job.py:595
+msgid "connection_error"
+msgstr ""
+
+#: bookwyrm/models/bookwyrm_import_job.py:605
+msgid "invalid_relationship"
+msgstr ""
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
@@ -216,16 +268,16 @@ msgstr "%(value)s není platný remote_id"
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s není platné uživatelské jméno"
 
-#: bookwyrm/models/fields.py:197 bookwyrm/templates/layout.html:129
+#: bookwyrm/models/fields.py:201 bookwyrm/templates/layout.html:129
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "uživatelské jméno"
 
-#: bookwyrm/models/fields.py:202
+#: bookwyrm/models/fields.py:206
 msgid "A user with that username already exists."
 msgstr "Uživatel s tímto uživatelským jménem již existuje."
 
-#: bookwyrm/models/fields.py:221
+#: bookwyrm/models/fields.py:225
 #: bookwyrm/templates/snippets/privacy-icons.html:3
 #: bookwyrm/templates/snippets/privacy-icons.html:4
 #: bookwyrm/templates/snippets/privacy_select.html:11
@@ -233,7 +285,7 @@ msgstr "Uživatel s tímto uživatelským jménem již existuje."
 msgid "Public"
 msgstr "Veřejný"
 
-#: bookwyrm/models/fields.py:222
+#: bookwyrm/models/fields.py:226
 #: bookwyrm/templates/snippets/privacy-icons.html:7
 #: bookwyrm/templates/snippets/privacy-icons.html:8
 #: bookwyrm/templates/snippets/privacy_select.html:14
@@ -241,7 +293,7 @@ msgstr "Veřejný"
 msgid "Unlisted"
 msgstr "Skryté"
 
-#: bookwyrm/models/fields.py:223
+#: bookwyrm/models/fields.py:227
 #: bookwyrm/templates/snippets/privacy_select.html:17
 #: bookwyrm/templates/user/relationships/followers.html:6
 #: bookwyrm/templates/user/relationships/followers.html:11
@@ -250,7 +302,7 @@ msgstr "Skryté"
 msgid "Followers"
 msgstr "Sledující"
 
-#: bookwyrm/models/fields.py:224
+#: bookwyrm/models/fields.py:228
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:6
 #: bookwyrm/templates/snippets/privacy-icons.html:15
 #: bookwyrm/templates/snippets/privacy-icons.html:16
@@ -260,9 +312,10 @@ msgid "Private"
 msgstr "Soukromý"
 
 #: bookwyrm/models/import_job.py:50 bookwyrm/models/job.py:19
-#: bookwyrm/templates/import/import.html:181
-#: bookwyrm/templates/import/import_user.html:211
-#: bookwyrm/templates/preferences/export-user.html:121
+#: bookwyrm/templates/import/import.html:184
+#: bookwyrm/templates/import/import_user.html:225
+#: bookwyrm/templates/import/user_import_status.html:56
+#: bookwyrm/templates/preferences/export-user.html:139
 #: bookwyrm/templates/settings/imports/imports.html:180
 #: bookwyrm/templates/settings/imports/imports.html:270
 #: bookwyrm/templates/snippets/user_active_tag.html:8
@@ -270,9 +323,10 @@ msgid "Active"
 msgstr "Aktivní"
 
 #: bookwyrm/models/import_job.py:51 bookwyrm/models/job.py:20
-#: bookwyrm/templates/import/import.html:179
-#: bookwyrm/templates/import/import_user.html:209
-#: bookwyrm/templates/preferences/export-user.html:119
+#: bookwyrm/templates/import/import.html:182
+#: bookwyrm/templates/import/import_user.html:223
+#: bookwyrm/templates/import/user_import_status.html:54
+#: bookwyrm/templates/preferences/export-user.html:137
 msgid "Complete"
 msgstr "Dokončeno"
 
@@ -293,6 +347,7 @@ msgid "Could not find a match for book"
 msgstr "Nelze najít hledanou knihu"
 
 #: bookwyrm/models/job.py:22
+#: bookwyrm/templates/import/user_import_status.html:69
 msgid "Failed"
 msgstr "Selhalo"
 
@@ -313,43 +368,37 @@ msgstr "Dostupné k zapůjčtení"
 msgid "Approved"
 msgstr "Schváleno"
 
-#: bookwyrm/models/report.py:84
-#: bookwyrm/templates/settings/reports/report.html:115
-#: bookwyrm/templates/snippets/create_status.html:26
-msgid "Comment"
-msgstr "Komentář"
-
 #: bookwyrm/models/report.py:85
 msgid "Resolved report"
-msgstr ""
+msgstr "Vyřešené hlášení"
 
 #: bookwyrm/models/report.py:86
 msgid "Re-opened report"
-msgstr ""
+msgstr "Znovu otevřené hlášení"
 
 #: bookwyrm/models/report.py:87
 msgid "Messaged reporter"
-msgstr ""
+msgstr "Zpráva poslána nahlásiteli"
 
 #: bookwyrm/models/report.py:88
 msgid "Messaged reported user"
-msgstr ""
+msgstr "Zpráva poslána nahlášenému"
 
 #: bookwyrm/models/report.py:89
 msgid "Suspended user"
-msgstr ""
+msgstr "Pozastavený uživatel"
 
 #: bookwyrm/models/report.py:90
 msgid "Un-suspended user"
-msgstr ""
+msgstr "Od-pozastavený uživatel"
 
 #: bookwyrm/models/report.py:91
 msgid "Changed user permission level"
-msgstr ""
+msgstr "Změněna úroveň uživatelských oprávnění"
 
 #: bookwyrm/models/report.py:92
 msgid "Deleted user account"
-msgstr ""
+msgstr "Smazaný uživatelský účet"
 
 #: bookwyrm/models/report.py:93
 msgid "Blocked domain"
@@ -366,17 +415,17 @@ msgstr "Položka byla smazána."
 #: bookwyrm/models/status.py:192
 #, python-format
 msgid "%(display_name)s's status"
-msgstr ""
+msgstr "Stav %(display_name)s"
 
 #: bookwyrm/models/status.py:367
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
-msgstr ""
+msgstr "Komentář %(display_name)s k %(book_title)s"
 
 #: bookwyrm/models/status.py:418
 #, python-format
 msgid "%(display_name)s's quote from %(book_title)s"
-msgstr ""
+msgstr "Citát %(display_name)s z %(book_title)s"
 
 #: bookwyrm/models/status.py:454
 #, python-format
@@ -400,7 +449,7 @@ msgstr "Hodnocení"
 msgid "Comments"
 msgstr "Komentáře"
 
-#: bookwyrm/models/user.py:38 bookwyrm/templates/import/import_user.html:139
+#: bookwyrm/models/user.py:38 bookwyrm/templates/import/import_user.html:154
 msgid "Quotations"
 msgstr "Citace"
 
@@ -422,6 +471,7 @@ msgstr "Zeď knih"
 
 #: bookwyrm/settings.py:237
 #: bookwyrm/templates/guided_tour/user_profile.html:101
+#: bookwyrm/templates/import/user_import_status.html:73
 #: bookwyrm/templates/search/layout.html:22
 #: bookwyrm/templates/search/layout.html:44
 #: bookwyrm/templates/user/layout.html:107
@@ -462,7 +512,7 @@ msgstr "Italiano (italština)"
 
 #: bookwyrm/settings.py:322
 msgid "한국어 (Korean)"
-msgstr ""
+msgstr "한국어 (Korejština)"
 
 #: bookwyrm/settings.py:323
 msgid "Suomi (Finnish)"
@@ -478,7 +528,7 @@ msgstr "Lietuvių (litevština)"
 
 #: bookwyrm/settings.py:326
 msgid "Nederlands (Dutch)"
-msgstr ""
+msgstr "Nederlands (Nizozemština)"
 
 #: bookwyrm/settings.py:327
 msgid "Norsk (Norwegian)"
@@ -506,7 +556,7 @@ msgstr "Svenska (švédština)"
 
 #: bookwyrm/settings.py:333
 msgid "Українська (Ukrainian)"
-msgstr ""
+msgstr "Українська (Ukrajinština)"
 
 #: bookwyrm/settings.py:334
 msgid "简体中文 (Simplified Chinese)"
@@ -527,11 +577,11 @@ msgstr "Povolení zamítnuto"
 #: bookwyrm/templates/403.html:11
 #, python-format
 msgid "You do not have permission to view this page or perform this action. Your user permission level is <code>%(level)s</code>."
-msgstr ""
+msgstr "Nemáte oprávnění k zobrazení této stránky nebo provedení této akce. Úroveň vašeho uživatelského oprávnění je <code>%(level)s</code>."
 
 #: bookwyrm/templates/403.html:15
 msgid "If you think you should have access, please speak to your BookWyrm server administrator."
-msgstr ""
+msgstr "Pokud si myslíte, že byste měli mít přístup, promluvte si se správcem vašeho BookWyrm serveru."
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
@@ -547,11 +597,11 @@ msgstr "Soubor je příliš velký"
 
 #: bookwyrm/templates/413.html:9
 msgid "The file you are uploading is too large."
-msgstr ""
+msgstr "Soubor, který nahráváte je příliš velký."
 
 #: bookwyrm/templates/413.html:11
 msgid "You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting."
-msgstr ""
+msgstr "Můžete zkusit použít menší soubor nebo požádat správce serveru BookWyrm, aby zvýšil*a nastavení <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code>."
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -731,10 +781,10 @@ msgstr "Bohužel %(display_name)s nedokončil žádné knihy v %(year)s"
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "V roce %(year)s přečetl %(display_name)s %(books_total)s knih<br /> s celkovým počtem %(pages_total)s stran!"
+msgstr[0] "V roce %(year)s přečetli %(display_name)s %(books_total)s knihu<br /> s celkovým počtem %(pages_total)s stran!"
+msgstr[1] "V roce %(year)s přečetli %(display_name)s %(books_total)s knihy<br /> s celkovým počtem %(pages_total)s stran!"
+msgstr[2] "V roce %(year)s přečetli %(display_name)s %(books_total)s knih<br /> s celkovým počtem %(pages_total)s stran!"
+msgstr[3] "V roce %(year)s jste přečetli %(display_name)s %(books_total)s knih<br /> s celkovým počtem %(pages_total)s stran!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
@@ -749,10 +799,10 @@ msgstr "To dělá v průměru %(pages)s stránek na knihu."
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "(Nebyla žádná dostupná data pro %(no_page_number)s knih)"
+msgstr[0] "(Nebyly nalezeny údaje o stránkách pro %(no_page_number)s knihu)"
+msgstr[1] "(Nebyly nalezeny údaje o stránkách pro %(no_page_number)s knihy)"
+msgstr[2] "(Nebyly nalezeny údaje o stránkách pro %(no_page_number)s knih)"
+msgstr[3] "(Nebyly nalezeny údaje o stránkách pro %(no_page_number)s knih)"
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -782,10 +832,10 @@ msgstr "…a nejdelší"
 #, python-format
 msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
-msgstr[0] "%(display_name)s si nastavil cíl přečíst %(goal)s knihu v %(year)s<br /> a dosáhl %(goal_percent)s%% tohoto cíle"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%(display_name)s si nastavili cíl přečíst %(goal)s knihu v roce %(year)s<br /> a dosáhli %(goal_percent)s%% tohoto cíle"
+msgstr[1] "%(display_name)s si nastavili cíl přečíst %(goal)s knihy v roce %(year)s<br /> a dosáhli %(goal_percent)s%% tohoto cíle"
+msgstr[2] "%(display_name)s si nastavili cíl přečíst %(goal)s knih v roce %(year)s<br /> a dosáhli %(goal_percent)s%% tohoto cíle"
+msgstr[3] "%(display_name)s si nastavili cíl přečíst %(goal)s knih v roce %(year)s<br /> a dosáhli %(goal_percent)s%% tohoto cíle"
 
 #: bookwyrm/templates/annual_summary/layout.html:211
 msgid "Way to go!"
@@ -795,10 +845,10 @@ msgstr "Jen tak dál!"
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(display_name)s zanechal %(ratings_total)s hodnocení, <br />jejich průměrné hodnocení je %(rating_average)s"
+msgstr[0] "%(display_name)s vytvořili %(ratings_total)s hodnocení, <br />jejich průměrné hodnocení je %(rating_average)s"
+msgstr[1] "%(display_name)s vytvořili %(ratings_total)s hodnocení, <br />jejich průměrné hodnocení je %(rating_average)s"
+msgstr[2] "%(display_name)s vytvořili %(ratings_total)s hodnocení, <br />jejich průměrné hodnocení je %(rating_average)s"
+msgstr[3] "%(display_name)s vytvořili %(ratings_total)s hodnocení, <br />jejich průměrné hodnocení je %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:240
 msgid "Their best rated review"
@@ -845,44 +895,48 @@ msgid "Wikipedia"
 msgstr "Wikipedie"
 
 #: bookwyrm/templates/author/author.html:79
+msgid "View on Wikidata"
+msgstr ""
+
+#: bookwyrm/templates/author/author.html:87
 msgid "Website"
 msgstr "Webová stránka"
 
-#: bookwyrm/templates/author/author.html:87
+#: bookwyrm/templates/author/author.html:95
 msgid "View ISNI record"
 msgstr "Zobrazit ISNI záznam"
 
-#: bookwyrm/templates/author/author.html:95
+#: bookwyrm/templates/author/author.html:103
 #: bookwyrm/templates/book/book.html:180
 msgid "View on ISFDB"
 msgstr "Prohlédnout na ISFDB"
 
-#: bookwyrm/templates/author/author.html:100
+#: bookwyrm/templates/author/author.html:108
 #: bookwyrm/templates/author/sync_modal.html:5
 #: bookwyrm/templates/book/book.html:147
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
 msgstr "Načíst data"
 
-#: bookwyrm/templates/author/author.html:104
+#: bookwyrm/templates/author/author.html:112
 #: bookwyrm/templates/book/book.html:151
 msgid "View on OpenLibrary"
 msgstr "Zobrazit na OpenLibrary"
 
-#: bookwyrm/templates/author/author.html:119
+#: bookwyrm/templates/author/author.html:127
 #: bookwyrm/templates/book/book.html:165
 msgid "View on Inventaire"
 msgstr "Zobrazit na Inventaire"
 
-#: bookwyrm/templates/author/author.html:135
+#: bookwyrm/templates/author/author.html:143
 msgid "View on LibraryThing"
 msgstr "Zobrazit na LibraryThing"
 
-#: bookwyrm/templates/author/author.html:143
+#: bookwyrm/templates/author/author.html:151
 msgid "View on Goodreads"
 msgstr "Zobrazit na Goodreads"
 
-#: bookwyrm/templates/author/author.html:158
+#: bookwyrm/templates/author/author.html:166
 #, python-format
 msgid "Books by %(name)s"
 msgstr "Knihy od %(name)s"
@@ -934,7 +988,7 @@ msgstr "Odkaz na Wikipedii:"
 
 #: bookwyrm/templates/author/edit_author.html:58
 msgid "Wikidata:"
-msgstr ""
+msgstr "Wikidata:"
 
 #: bookwyrm/templates/author/edit_author.html:62
 msgid "Website:"
@@ -1171,31 +1225,41 @@ msgstr "Kopírovat ISBN"
 
 #: bookwyrm/templates/book/book_identifiers.html:16
 msgid "Copied ISBN!"
-msgstr ""
+msgstr "ISBN zkopírováno!"
 
 #: bookwyrm/templates/book/book_identifiers.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:352
+#: bookwyrm/templates/rss/edition.html:6
 msgid "OCLC Number:"
 msgstr "OCLC číslo:"
 
 #: bookwyrm/templates/book/book_identifiers.html:30
 #: bookwyrm/templates/book/edit/edit_book_form.html:361
+#: bookwyrm/templates/rss/edition.html:7
 msgid "ASIN:"
 msgstr "ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:37
 #: bookwyrm/templates/book/edit/edit_book_form.html:370
+#: bookwyrm/templates/rss/edition.html:8
 msgid "Audible ASIN:"
 msgstr "Audible ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:44
 #: bookwyrm/templates/book/edit/edit_book_form.html:379
+#: bookwyrm/templates/rss/edition.html:9
 msgid "ISFDB ID:"
 msgstr "ISFDB ID:"
 
 #: bookwyrm/templates/book/book_identifiers.html:51
+#: bookwyrm/templates/rss/edition.html:10
 msgid "Goodreads:"
 msgstr "Goodreads:"
+
+#: bookwyrm/templates/book/book_identifiers.html:58
+#: bookwyrm/templates/book/edit/edit_book_form.html:388
+msgid "Finna ID:"
+msgstr ""
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1209,7 +1273,7 @@ msgstr "Nahrát obálku:"
 #: bookwyrm/templates/book/cover_add_modal.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:250
 msgid "Load cover from URL:"
-msgstr ""
+msgstr "Nahrát obal z URL:"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
 msgid "Book cover preview"
@@ -1387,6 +1451,7 @@ msgid "Published date:"
 msgstr "Datum vydání:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:186
+#: bookwyrm/templates/import/user_import_status.html:155
 #: bookwyrm/templates/search/layout.html:23
 #: bookwyrm/templates/search/layout.html:47
 msgid "Authors"
@@ -1421,7 +1486,7 @@ msgid "Add Another Author"
 msgstr "Přidat dalšího autora"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:231
-#: bookwyrm/templates/shelf/shelf.html:150
+#: bookwyrm/templates/shelf/shelf.html:155
 msgid "Cover"
 msgstr "Obálka"
 
@@ -1447,6 +1512,7 @@ msgid "Book Identifiers"
 msgstr "Identifikátory knih"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:307
+#: bookwyrm/templates/rss/edition.html:5
 msgid "ISBN 13:"
 msgstr "ISBN 13:"
 
@@ -1466,7 +1532,7 @@ msgstr "Editace %(book_title)s"
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
 msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
-msgstr ""
+msgstr "Edice <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
@@ -1543,10 +1609,12 @@ msgid "Domain"
 msgstr "Doména"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:36
-#: bookwyrm/templates/import/import.html:146
+#: bookwyrm/templates/import/import.html:149
 #: bookwyrm/templates/import/import_status.html:134
-#: bookwyrm/templates/import/import_user.html:177
-#: bookwyrm/templates/preferences/export-user.html:87
+#: bookwyrm/templates/import/import_user.html:192
+#: bookwyrm/templates/import/user_import_status.html:162
+#: bookwyrm/templates/import/user_troubleshoot.html:62
+#: bookwyrm/templates/preferences/export-user.html:106
 #: bookwyrm/templates/settings/announcements/announcements.html:37
 #: bookwyrm/templates/settings/imports/imports.html:304
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:48
@@ -1657,7 +1725,7 @@ msgstr "Kniha %(series_number)s"
 
 #: bookwyrm/templates/book/series.html:28
 msgid "Unsorted Book"
-msgstr ""
+msgstr "Nevytříděná kniha"
 
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
@@ -1670,7 +1738,7 @@ msgstr "Upravit recenzi"
 
 #: bookwyrm/templates/compose.html:9 bookwyrm/templates/compose.html:23
 msgid "Edit quote"
-msgstr ""
+msgstr "Editovat citát"
 
 #: bookwyrm/templates/compose.html:11 bookwyrm/templates/compose.html:25
 msgid "Edit comment"
@@ -1755,7 +1823,7 @@ msgstr "Udělejte svůj profil viditelný ostatním uživatelům BookWyrm."
 
 #: bookwyrm/templates/directory/directory.html:21
 msgid "Join Directory"
-msgstr ""
+msgstr "Připojit k adresáři"
 
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
@@ -1800,18 +1868,18 @@ msgstr "Uzamčený účet"
 #: bookwyrm/templates/directory/user_card.html:40
 msgid "follower you follow"
 msgid_plural "followers you follow"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "sledující, které sledujete"
+msgstr[0] "sledující, kterého sledujete"
+msgstr[1] "sledující, které sledujete"
+msgstr[2] "sledujících, které sledujete"
+msgstr[3] "sledujících, které sledujete"
 
 #: bookwyrm/templates/directory/user_card.html:47
 msgid "book on your shelves"
 msgid_plural "books on your shelves"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "knihy ve vaší poličce"
+msgstr[0] "kniha na vašich poličkách"
+msgstr[1] "knihy na vašich poličkách"
+msgstr[2] "knih na vašich poličkách"
+msgstr[3] "knih na vašich poličkách"
 
 #: bookwyrm/templates/directory/user_card.html:55
 msgid "posts"
@@ -1916,7 +1984,7 @@ msgstr "Nazdar,"
 #: bookwyrm/templates/email/html_layout.html:21
 #, python-format
 msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"%(base_url)s\">%(site_name)s</a>"
-msgstr ""
+msgstr "BookWyrm hostovaný na <a style=\"color: #3273dc;\" href=\"%(base_url)s\">%(site_name)s</a>"
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
@@ -1935,7 +2003,7 @@ msgstr "Přidej se teď"
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
 msgid "Learn more <a href=\"%(base_url)s%(about_path)s\">about %(site_name)s</a>."
-msgstr ""
+msgstr "Další informace o <a href=\"%(base_url)s%(about_path)s\">%(site_name)s</a>."
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
@@ -2055,7 +2123,7 @@ msgstr "%(year)s cíl pro čtení"
 #: bookwyrm/templates/feed/goal_card.html:18
 #, python-format
 msgid "You can set or change your reading goal any time from your <a href=\"%(path)s\">profile page</a>"
-msgstr ""
+msgstr "Cíl čtení můžete nastavit nebo změnit kdykoliv na vaší <a href=\"%(path)s\">profilové stránce</a>"
 
 #: bookwyrm/templates/feed/layout.html:4
 msgid "Updates"
@@ -2069,11 +2137,11 @@ msgstr "Vaše knihy"
 
 #: bookwyrm/templates/feed/suggested_books.html:10
 msgid "There are no books here right now! Try searching for a book to get started"
-msgstr ""
+msgstr "Momentálně zde nejsou žádné knihy! Zkuste pro začátek nějakou vyhledat"
 
 #: bookwyrm/templates/feed/suggested_books.html:13
 msgid "Do you have book data from another service like GoodReads?"
-msgstr ""
+msgstr "Máte k dispozici data z jiné služby, jako je GoodReads?"
 
 #: bookwyrm/templates/feed/suggested_books.html:16
 msgid "Import your reading history"
@@ -2094,7 +2162,7 @@ msgstr "Zobrazit adresář"
 
 #: bookwyrm/templates/feed/summary_card.html:21
 msgid "The end of the year is the best moment to take stock of all the books read during the last 12 months. How many pages have you read? Which book is your best-rated of the year? We compiled these stats, and more!"
-msgstr ""
+msgstr "Konec roku je tím nejlepším okamžikem na ohlednutí se za všemi knihy přečtenými za posledních 12 měsíců. Kolik stránek jste přečetli? Která kniha je vámi nejlépe hodnocená? Nashromáždili jsme tyto statistiky a další!"
 
 #: bookwyrm/templates/feed/summary_card.html:26
 #, python-format
@@ -2111,19 +2179,19 @@ msgid "Add to your books"
 msgstr "Přidat do vašich knih"
 
 #: bookwyrm/templates/get_started/book_preview.html:10
-#: bookwyrm/templates/shelf/shelf.html:88 bookwyrm/templates/user/user.html:37
+#: bookwyrm/templates/shelf/shelf.html:93 bookwyrm/templates/user/user.html:37
 #: bookwyrm/templatetags/shelf_tags.py:14
 msgid "To Read"
 msgstr "K přečtení"
 
 #: bookwyrm/templates/get_started/book_preview.html:11
-#: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:38
+#: bookwyrm/templates/shelf/shelf.html:94 bookwyrm/templates/user/user.html:38
 #: bookwyrm/templatetags/shelf_tags.py:15
 msgid "Currently Reading"
 msgstr "Rozečteno"
 
 #: bookwyrm/templates/get_started/book_preview.html:12
-#: bookwyrm/templates/shelf/shelf.html:90
+#: bookwyrm/templates/shelf/shelf.html:95
 #: bookwyrm/templates/snippets/shelf_selector.html:46
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:24
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:12
@@ -2132,7 +2200,7 @@ msgid "Read"
 msgstr "Přečteno"
 
 #: bookwyrm/templates/get_started/book_preview.html:13
-#: bookwyrm/templates/shelf/shelf.html:91 bookwyrm/templates/user/user.html:40
+#: bookwyrm/templates/shelf/shelf.html:96 bookwyrm/templates/user/user.html:40
 #: bookwyrm/templatetags/shelf_tags.py:17
 msgid "Stopped Reading"
 msgstr "Četba pozastavena"
@@ -2154,7 +2222,7 @@ msgstr "Nenalezeny žádné knihy pro \"%(query)s\""
 #: bookwyrm/templates/get_started/books.html:11
 #, python-format
 msgid "You can add books when you start using %(site_name)s."
-msgstr ""
+msgstr "Můžete přidat knihy, jakmile začnete používat %(site_name)s."
 
 #: bookwyrm/templates/get_started/books.html:16
 #: bookwyrm/templates/get_started/books.html:17
@@ -2361,20 +2429,20 @@ msgstr "Přidat nové členy!"
 #, python-format
 msgid "%(mutuals)s follower you follow"
 msgid_plural "%(mutuals)s followers you follow"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(mutuals)s sledující, které sledujete"
+msgstr[0] "%(mutuals)s sledující, kterého sledujete"
+msgstr[1] "%(mutuals)s sledující, které sledujete"
+msgstr[2] "%(mutuals)s sledujících, které sledujete"
+msgstr[3] "%(mutuals)s sledujících, které sledujete"
 
 #: bookwyrm/templates/groups/suggested_users.html:27
 #: bookwyrm/templates/snippets/suggested_users.html:23
 #, python-format
 msgid "%(shared_books)s book on your shelves"
 msgid_plural "%(shared_books)s books on your shelves"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(shared_books)s knih ve vašich poličkách"
+msgstr[0] "%(shared_books)s kniha na vašich poličkách"
+msgstr[1] "%(shared_books)s knihy na vašich poličkách"
+msgstr[2] "%(shared_books)s knih na vašich poličkách"
+msgstr[3] "%(shared_books)s knih na vašich poličkách"
 
 #: bookwyrm/templates/groups/suggested_users.html:43
 #, python-format
@@ -2387,7 +2455,7 @@ msgstr "Správce"
 
 #: bookwyrm/templates/groups/user_groups.html:35
 msgid "No groups found."
-msgstr ""
+msgstr "Nenalezena žádná skupina."
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
@@ -2459,23 +2527,23 @@ msgstr "Další"
 
 #: bookwyrm/templates/guided_tour/book.html:31
 msgid "This is where you can set a reading status for this book. You can press the button to move to the next stage, or use the drop down button to select the reading status you want to set."
-msgstr ""
+msgstr "Zde můžete nastavit stav čtení pro tuto knihu. Můžete stisknout tlačítko pro přechod do další fáze nebo použijte tlačítko rozbalovací nabídky pro výběr stavu čtení, který chcete nastavit."
 
 #: bookwyrm/templates/guided_tour/book.html:32
 msgid "Reading status"
-msgstr ""
+msgstr "Stav četby"
 
 #: bookwyrm/templates/guided_tour/book.html:55
 msgid "You can also manually add reading dates here. Unlike changing the reading status using the previous method, adding dates manually will not automatically add them to your <strong>Read</strong> or <strong>Reading</strong> shelves."
-msgstr ""
+msgstr "Můžete zde také ručně zadat data čtení. Na rozdíl od změny stavu čtení za pomocí předchozí metody, ruční přidání dat automaticky nepřidává knihy do poliček <strong>K přečtení</strong> nebo <strong>Čtu</strong>."
 
 #: bookwyrm/templates/guided_tour/book.html:55
 msgid "Got a favourite you re-read every year? We've got you covered - you can add multiple read dates for the same book 😀"
-msgstr ""
+msgstr "Máte oblíbenou knihu, kterou si každý rok znovu čtetete? Máte štěstí - můžete přidat více dat přečtení pro tutéž knihu 😀"
 
 #: bookwyrm/templates/guided_tour/book.html:79
 msgid "There can be multiple editions of a book, in various formats or languages. You can choose which edition you want to use."
-msgstr ""
+msgstr "Kniha může mít více verzí v různých formátech nebo jazycích. Můžete si vybrat, jakou verzi chcete použít."
 
 #: bookwyrm/templates/guided_tour/book.html:80
 msgid "Other editions"
@@ -2483,7 +2551,7 @@ msgstr "Jiná vydání"
 
 #: bookwyrm/templates/guided_tour/book.html:102
 msgid "You can post a review, comment, or quote here."
-msgstr ""
+msgstr "Zde můžete napsat recenzi, komentář nebo citát."
 
 #: bookwyrm/templates/guided_tour/book.html:103
 msgid "Share your thoughts"
@@ -2499,7 +2567,7 @@ msgstr "Zveřejnit hodnocení"
 
 #: bookwyrm/templates/guided_tour/book.html:151
 msgid "You can share your thoughts on this book generally with a simple comment"
-msgstr ""
+msgstr "Své celkové myšlenky na tuto knihu můžete sdílet s jednoduchým komentářem"
 
 #: bookwyrm/templates/guided_tour/book.html:152
 msgid "Post a comment"
@@ -2507,19 +2575,19 @@ msgstr "Okomentovat"
 
 #: bookwyrm/templates/guided_tour/book.html:175
 msgid "Just read some perfect prose? Let the world know by sharing a quote!"
-msgstr ""
+msgstr "Přečetli jste právě nějakou perfektní prózu? Dejte světu vědět sdílením citátu!"
 
 #: bookwyrm/templates/guided_tour/book.html:176
 msgid "Share a quote"
-msgstr ""
+msgstr "Zasdílet citát"
 
 #: bookwyrm/templates/guided_tour/book.html:199
 msgid "If your review or comment might ruin the book for someone who hasn't read it yet, you can hide your post behind a <strong>spoiler alert</strong>"
-msgstr ""
+msgstr "Pokud by vaše recenze nebo komentář mohl vyzradit překvapivý moment knihy pro někoho, kdo ji ještě nečetl, můžete skrýt váš příspěvek za <strong>upozornění na vyzrazení děje</strong>"
 
 #: bookwyrm/templates/guided_tour/book.html:200
 msgid "Spoiler alerts"
-msgstr ""
+msgstr "Vyzrazení děje"
 
 #: bookwyrm/templates/guided_tour/book.html:224
 msgid "Choose who can see your post here. Post privacy can be <strong>Public</strong> (everyone can see), <strong>Unlisted</strong> (everyone can see, but it doesn't appear in public feeds or discovery pages), <strong>Followers</strong> (only your followers can see), or <strong>Private</strong> (only you can see)"
@@ -2575,7 +2643,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/group.html:55
 msgid "Group members"
-msgstr ""
+msgstr "Členové skupiny"
 
 #: bookwyrm/templates/guided_tour/group.html:77
 msgid "As well as creating lists from the Lists page, you can create a group-curated list here on the group's homepage. Any member of the group can create a list curated by group members."
@@ -2583,25 +2651,25 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/group.html:78
 msgid "Group lists"
-msgstr ""
+msgstr "Seznamy skupiny"
 
 #: bookwyrm/templates/guided_tour/group.html:100
 msgid "Congratulations, you've finished the tour! Now you know the basics, but there is lots more to explore on your own. Happy reading!"
-msgstr ""
+msgstr "Gratulujeme, dokončili jste prohlídku! Teď už znáte základy, ale je tu spousta dalšího k prozkoumání na vlastní pěst. Šťastné čtení!"
 
 #: bookwyrm/templates/guided_tour/group.html:115
 msgid "End tour"
-msgstr ""
+msgstr "Ukončit prohlídku"
 
 #: bookwyrm/templates/guided_tour/home.html:16
 msgid "Welcome to Bookwyrm!<br><br>Would you like to take the guided tour to help you get started?"
-msgstr ""
+msgstr "Vítejte na Bookwyrm!<br><br> Chtěli byste podniknout komentovanou prohlídku, která vám pomůže začít?"
 
 #: bookwyrm/templates/guided_tour/home.html:17
 #: bookwyrm/templates/guided_tour/home.html:39
 #: bookwyrm/templates/snippets/footer.html:20
 msgid "Guided Tour"
-msgstr ""
+msgstr "Komentovaná prohlídka"
 
 #: bookwyrm/templates/guided_tour/home.html:25
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:36
@@ -2618,7 +2686,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:62
 msgid "Search for books, users, or lists using this search box."
-msgstr ""
+msgstr "Vyhledávejte knihy, uživatele nebo seznamy pomocí tohoto vyhledávacího pole."
 
 #: bookwyrm/templates/guided_tour/home.html:63
 msgid "Search box"
@@ -2626,7 +2694,7 @@ msgstr "Vyhledávací pole"
 
 #: bookwyrm/templates/guided_tour/home.html:79
 msgid "Search book records by scanning an ISBN barcode using your device's camera - great when you're in the bookstore or library!"
-msgstr ""
+msgstr "Vyhledejte záznamy pomocí ISBN čárového kódu za použití fotoaparátu vašeho zařízení - hodí se, když jste v knihkupectví nebo knihovně!"
 
 #: bookwyrm/templates/guided_tour/home.html:80
 msgid "Barcode reader"
@@ -2638,11 +2706,11 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:103
 msgid "Navigation Bar"
-msgstr ""
+msgstr "Navigační lišta"
 
 #: bookwyrm/templates/guided_tour/home.html:126
 msgid "Books on your reading status shelves will be shown here."
-msgstr ""
+msgstr "Zde budou zobrazeny knihy na vašich poličkách stavu čtení."
 
 #: bookwyrm/templates/guided_tour/home.html:151
 msgid "Updates from people you are following will appear in your <strong>Home</strong> timeline.<br><br>The <strong>Books</strong> tab shows activity from anyone, related to your books."
@@ -2654,7 +2722,7 @@ msgstr "Časové osy"
 
 #: bookwyrm/templates/guided_tour/home.html:176
 msgid "The bell will light up when you have a new notification. When it does, click on it to find out what exciting thing has happened!"
-msgstr ""
+msgstr "Zvoneček se rozsvítí, když máte nové oznámení. Když to udělá, klikněte na něj a zjistíte, co je nového!"
 
 #: bookwyrm/templates/guided_tour/home.html:177
 #: bookwyrm/templates/layout.html:77 bookwyrm/templates/layout.html:107
@@ -2674,7 +2742,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:201
 msgid "Profile and settings menu"
-msgstr ""
+msgstr "Menu profilu a nastavení"
 
 #: bookwyrm/templates/guided_tour/lists.html:13
 msgid "This is the lists page where you can discover book lists created by any user. A List is a collection of books, similar to a shelf."
@@ -2686,16 +2754,16 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/lists.html:34
 msgid "Let's see how to create a new list."
-msgstr ""
+msgstr "Podívejme se, jak vytvořit nový seznam."
 
 #: bookwyrm/templates/guided_tour/lists.html:34
 msgid "Click the <strong>Create List</strong> button, then <strong>Next</strong> to continue the tour"
-msgstr ""
+msgstr "Klikněte na tlačítko <strong>Vytvořit seznam</strong> a potom <strong>Další</strong> pro pokračování v prohlídce"
 
 #: bookwyrm/templates/guided_tour/lists.html:35
 #: bookwyrm/templates/guided_tour/lists.html:59
 msgid "Creating a new list"
-msgstr ""
+msgstr "Vytvořit nový seznam"
 
 #: bookwyrm/templates/guided_tour/lists.html:58
 msgid "You must give your list a name and can optionally give it a description to help other people understand what your list is about."
@@ -2707,7 +2775,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/lists.html:82
 msgid "List privacy"
-msgstr ""
+msgstr "Soukromí seznamu"
 
 #: bookwyrm/templates/guided_tour/lists.html:105
 msgid "You can also decide how your list is to be curated - only by you, by anyone, or by a group."
@@ -2719,15 +2787,15 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/lists.html:128
 msgid "Next in our tour we will explore Groups!"
-msgstr ""
+msgstr "Dále v naší prohlídce prozkoumáme Skupiny!"
 
 #: bookwyrm/templates/guided_tour/lists.html:129
 msgid "Next: Groups"
-msgstr ""
+msgstr "Další: Skupiny"
 
 #: bookwyrm/templates/guided_tour/lists.html:143
 msgid "Take me there"
-msgstr ""
+msgstr "Vezmi mě tam"
 
 #: bookwyrm/templates/guided_tour/search.html:16
 msgid "If the book you are looking for is available on a remote catalogue such as Open Library, click on <strong>Import book</strong>."
@@ -2736,7 +2804,7 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/search.html:17
 #: bookwyrm/templates/guided_tour/search.html:44
 msgid "Searching"
-msgstr ""
+msgstr "Vyhledávání"
 
 #: bookwyrm/templates/guided_tour/search.html:43
 msgid "If the book you are looking for is already on this Bookwyrm instance, you can click on the title to go to the book's page."
@@ -2748,35 +2816,35 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/search.html:72
 msgid "Load more records"
-msgstr ""
+msgstr "Načíst více záznamů"
 
 #: bookwyrm/templates/guided_tour/search.html:98
 msgid "If your book is not in the results, try adjusting your search terms."
-msgstr ""
+msgstr "Pokud vaše kniha není ve výsledcích, zkuste upravit hledané výrazy."
 
 #: bookwyrm/templates/guided_tour/search.html:99
 msgid "Search again"
-msgstr ""
+msgstr "Vyhledat znovu"
 
 #: bookwyrm/templates/guided_tour/search.html:121
 msgid "If you still can't find your book, you can add a record manually."
-msgstr ""
+msgstr "Pokud stále nemůžete najít svoji knihu, můžete přidat záznam ručně."
 
 #: bookwyrm/templates/guided_tour/search.html:122
 msgid "Add a record manually"
-msgstr ""
+msgstr "Přidat záznam ručně"
 
 #: bookwyrm/templates/guided_tour/search.html:147
 msgid "Import, manually add, or view an existing book to continue the tour."
-msgstr ""
+msgstr "Importovat, ručně přidat nebo zobrazit existující knihu pro pokračování v prohlídce."
 
 #: bookwyrm/templates/guided_tour/search.html:148
 msgid "Continue the tour"
-msgstr ""
+msgstr "Pokračovat v prohlídce"
 
 #: bookwyrm/templates/guided_tour/user_books.html:10
 msgid "This is the page where your books are listed, organised into shelves."
-msgstr ""
+msgstr "Toto je stránka, kde jsou uvedeny vaše knihy, uspořádány do policí."
 
 #: bookwyrm/templates/guided_tour/user_books.html:11
 #: bookwyrm/templates/user/books_header.html:4
@@ -2789,7 +2857,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_books.html:32
 msgid "Reading status shelves"
-msgstr ""
+msgstr "Poličky stavu čtení"
 
 #: bookwyrm/templates/guided_tour/user_books.html:55
 msgid "You can create additional custom shelves to organise your books. A book on a custom shelf can be on any number of other shelves simultaneously, including one of the default reading status shelves"
@@ -2797,34 +2865,34 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_books.html:56
 msgid "Adding custom shelves."
-msgstr ""
+msgstr "Přidávání vlastních poliček."
 
 #: bookwyrm/templates/guided_tour/user_books.html:78
 msgid "If you have an export file from another service like Goodreads or LibraryThing, you can import it here."
-msgstr ""
+msgstr "Pokud máte exportovaný soubor z jiné služby, jako je Goodreads nebo LibraryThing, můžete jej importovat zde."
 
 #: bookwyrm/templates/guided_tour/user_books.html:79
 msgid "Import from another service"
-msgstr ""
+msgstr "Importovat z jiné služby"
 
 #: bookwyrm/templates/guided_tour/user_books.html:101
 msgid "Now that we've explored book shelves, let's take a look at a related concept: book lists!"
-msgstr ""
+msgstr "Teď, když jsme prozkoumali knihovny, podívejme se na související koncept: seznamy knih!"
 
 #: bookwyrm/templates/guided_tour/user_books.html:101
 msgid "Click on the <strong>Lists</strong> link here to continue the tour."
-msgstr ""
+msgstr "Klikněte na odkaz <strong>Seznamy</strong> pro pokračování v prohlídce."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:10
 msgid "You can create or join a group with other users. Groups can share group-curated book lists, and in future will be able to do other things."
-msgstr ""
+msgstr "Můžete vytvořit skupinu s ostatními uživateli nebo se k ní připojit. Skupiny mohou sdílet skupinově řízené seznamy knih a v budoucnu budou moci dělat další věci."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:11
 #: bookwyrm/templates/guided_tour/user_profile.html:55
-#: bookwyrm/templates/preferences/export-user.html:36
+#: bookwyrm/templates/preferences/export-user.html:37
 #: bookwyrm/templates/user/groups.html:6 bookwyrm/templates/user/layout.html:95
 msgid "Groups"
-msgstr ""
+msgstr "Skupiny"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:31
 msgid "Let's create a new group!"
@@ -2836,40 +2904,40 @@ msgstr "Klikněte na tlačítko <strong>Vytvořit skupinu</strong> a potom <stro
 
 #: bookwyrm/templates/guided_tour/user_groups.html:55
 msgid "Give your group a name and describe what it is about. You can make user groups for any purpose - a reading group, a bunch of friends, whatever!"
-msgstr ""
+msgstr "Dejte své skupině název a popište, o čem je. Můžete vytvořit uživatelské skupiny pro jakýkoliv účel - čtecí skupinu, přátelé, cokoliv!"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:56
 msgid "Creating a group"
-msgstr ""
+msgstr "Vytváření skupiny"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:78
 msgid "Groups have privacy settings just like posts and lists, except that group privacy cannot be <strong>Followers</strong>."
-msgstr ""
+msgstr "Skupiny mají nastavení ochrany osobních údajů stejně jako příspěvky a seznamy, kromě toho, že soukromí skupiny nemůže být <strong>sledující</strong>."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:79
 msgid "Group visibility"
-msgstr ""
+msgstr "Viditelnost skupiny"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:102
 msgid "Once you're happy with how everything is set up, click the <strong>Save</strong> button to create your new group."
-msgstr ""
+msgstr "Jakmile jste spokojeni s tím, jak je vše nastaveno, klikněte na tlačítko <strong>Uložit</strong> pro vytvoření nové skupiny."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:102
 msgid "Create and save a group to continue the tour."
-msgstr ""
+msgstr "Vytvořte a uložte skupinu pro pokračování v prohlídce."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:103
 msgid "Save your group"
-msgstr ""
+msgstr "Uložte svou skupinu"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:10
 msgid "This is your user profile. All your latest activities will be listed here. Other Bookwyrm users can see parts of this page too - what they can see depends on your privacy settings."
-msgstr ""
+msgstr "Toto je váš uživatelský profil. Všechny vaše nejnovější aktivity zde budou uvedeny. Ostatní uživatelé Bookwyrmu mohou také vidět části této stránky - co vidí závisí na vašem nastavení soukromí."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:11
 #: bookwyrm/templates/user/layout.html:20 bookwyrm/templates/user/user.html:14
 msgid "User Profile"
-msgstr ""
+msgstr "Uživatelský profil"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:31
 msgid "This tab shows everything you have read towards your annual reading goal, or allows you to set one. You don't have to set a reading goal if that's not your thing!"
@@ -2878,7 +2946,7 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_profile.html:32
 #: bookwyrm/templates/user/goal.html:6 bookwyrm/templates/user/layout.html:89
 msgid "Reading Goal"
-msgstr ""
+msgstr "Cíl pro čtení"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:54
 msgid "Here you can see your groups, or create a new one. A group brings together Bookwyrm users and allows them to curate lists together."
@@ -2917,11 +2985,11 @@ msgstr ""
 #: bookwyrm/templates/import/import.html:6
 #: bookwyrm/templates/preferences/layout.html:43
 msgid "Import Book List"
-msgstr ""
+msgstr "Importovat seznam knih"
 
 #: bookwyrm/templates/import/import.html:12
 msgid "Not a valid CSV file"
-msgstr ""
+msgstr "Neplatný CSV soubor"
 
 #: bookwyrm/templates/import/import.html:20
 #, python-format
@@ -2935,17 +3003,19 @@ msgstr[3] ""
 #: bookwyrm/templates/import/import.html:26
 #, python-format
 msgid "You have %(display_left)s left."
-msgstr ""
+msgstr "Zbývá %(display_left)s."
 
 #: bookwyrm/templates/import/import.html:33
+#: bookwyrm/templates/import/import_user.html:40
 #, python-format
 msgid "On average, recent imports have taken %(hours)s hours."
-msgstr ""
+msgstr "V průměru, nedávné importy zabrali %(hours)s hodin."
 
 #: bookwyrm/templates/import/import.html:37
+#: bookwyrm/templates/import/import_user.html:44
 #, python-format
 msgid "On average, recent imports have taken %(minutes)s minutes."
-msgstr ""
+msgstr "V průměru, nedávné importy zabrali %(minutes)s minut."
 
 #: bookwyrm/templates/import/import.html:52
 msgid "Data source:"
@@ -2953,100 +3023,104 @@ msgstr "Zdroj dat:"
 
 #: bookwyrm/templates/import/import.html:58
 msgid "Goodreads (CSV)"
-msgstr ""
+msgstr "Goodreads (CSV)"
 
 #: bookwyrm/templates/import/import.html:61
 msgid "Storygraph (CSV)"
-msgstr ""
+msgstr "Storygraph (CSV)"
 
 #: bookwyrm/templates/import/import.html:64
 msgid "LibraryThing (TSV)"
-msgstr ""
+msgstr "LibraryThing (TSV)"
 
 #: bookwyrm/templates/import/import.html:67
 msgid "OpenLibrary (CSV)"
-msgstr ""
+msgstr "OpenLibrary (CSV)"
 
 #: bookwyrm/templates/import/import.html:70
-msgid "Calibre (CSV)"
+msgid "OpenReads (CSV)"
 msgstr ""
 
 #: bookwyrm/templates/import/import.html:73
+msgid "Calibre (CSV)"
+msgstr "Calibre (CSV)"
+
+#: bookwyrm/templates/import/import.html:76
 msgid "BookWyrm (CSV)"
-msgstr ""
+msgstr "BookWyrm (CSV)"
 
-#: bookwyrm/templates/import/import.html:79
+#: bookwyrm/templates/import/import.html:82
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
-msgstr ""
+msgstr "Můžete si stáhnout svá Goodreads data z <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export stránky</a> vašeho Goodreads účtu."
 
-#: bookwyrm/templates/import/import.html:88
-#: bookwyrm/templates/import/import_user.html:49
+#: bookwyrm/templates/import/import.html:91
+#: bookwyrm/templates/import/import_user.html:64
 msgid "Data file:"
-msgstr ""
+msgstr "Soubor dat:"
 
-#: bookwyrm/templates/import/import.html:96
+#: bookwyrm/templates/import/import.html:99
 msgid "Include reviews"
-msgstr ""
+msgstr "Zahrnout recenze"
 
-#: bookwyrm/templates/import/import.html:101
+#: bookwyrm/templates/import/import.html:104
 msgid "Create new shelves if they do not exist"
-msgstr ""
+msgstr "Vytvořte nové poličky, pokud neexistují"
 
-#: bookwyrm/templates/import/import.html:106
+#: bookwyrm/templates/import/import.html:109
 msgid "Privacy setting for imported reviews and shelves:"
-msgstr ""
-
-#: bookwyrm/templates/import/import.html:113
-#: bookwyrm/templates/import/import.html:115
-#: bookwyrm/templates/import/import_user.html:155
-#: bookwyrm/templates/import/import_user.html:157
-#: bookwyrm/templates/settings/federation/instance_blocklist.html:78
-msgid "Import"
-msgstr ""
+msgstr "Nastavení ochrany soukromí pro importované recenze a poličky:"
 
 #: bookwyrm/templates/import/import.html:116
-#: bookwyrm/templates/import/import_user.html:158
-msgid "You've reached the import limit."
-msgstr ""
+#: bookwyrm/templates/import/import.html:118
+#: bookwyrm/templates/import/import_user.html:170
+#: bookwyrm/templates/import/import_user.html:172
+#: bookwyrm/templates/settings/federation/instance_blocklist.html:78
+msgid "Import"
+msgstr "Importovat"
 
-#: bookwyrm/templates/import/import.html:125
+#: bookwyrm/templates/import/import.html:119
+#: bookwyrm/templates/import/import_user.html:173
+msgid "You've reached the import limit."
+msgstr "Dosáhli jste limitu importu."
+
+#: bookwyrm/templates/import/import.html:128
 #: bookwyrm/templates/import/import_user.html:27
 msgid "Imports are temporarily disabled; thank you for your patience."
-msgstr ""
+msgstr "Importy jsou dočasně vypnuty; děkujeme vám za trpělivost."
 
-#: bookwyrm/templates/import/import.html:132
-#: bookwyrm/templates/import/import_user.html:166
+#: bookwyrm/templates/import/import.html:135
+#: bookwyrm/templates/import/import_user.html:181
 msgid "Recent Imports"
-msgstr ""
+msgstr "Nedávné importy"
 
-#: bookwyrm/templates/import/import.html:137
-#: bookwyrm/templates/import/import_user.html:171
+#: bookwyrm/templates/import/import.html:140
+#: bookwyrm/templates/import/import_user.html:186
 #: bookwyrm/templates/settings/imports/imports.html:202
 #: bookwyrm/templates/settings/imports/imports.html:292
 msgid "Date Created"
-msgstr ""
-
-#: bookwyrm/templates/import/import.html:140
-#: bookwyrm/templates/import/import_user.html:174
-msgid "Last Updated"
-msgstr ""
+msgstr "Datum vytvoření"
 
 #: bookwyrm/templates/import/import.html:143
+#: bookwyrm/templates/import/import_user.html:189
+msgid "Last Updated"
+msgstr "Naposledy aktualizováno"
+
+#: bookwyrm/templates/import/import.html:146
 #: bookwyrm/templates/settings/imports/imports.html:211
 msgid "Items"
-msgstr ""
+msgstr "Položky"
 
-#: bookwyrm/templates/import/import.html:152
-#: bookwyrm/templates/import/import_user.html:183
-#: bookwyrm/templates/preferences/export-user.html:96
+#: bookwyrm/templates/import/import.html:155
+#: bookwyrm/templates/import/import_user.html:198
+#: bookwyrm/templates/preferences/export-user.html:115
 msgid "No recent imports"
-msgstr ""
+msgstr "Žádné nedávné importy"
 
 #: bookwyrm/templates/import/import_status.html:6
 #: bookwyrm/templates/import/import_status.html:15
 #: bookwyrm/templates/import/import_status.html:29
 msgid "Import Status"
-msgstr ""
+msgstr "Stav importu"
 
 #: bookwyrm/templates/import/import_status.html:13
 #: bookwyrm/templates/import/import_status.html:27
@@ -3059,25 +3133,29 @@ msgstr ""
 #: bookwyrm/templates/settings/imports/imports.html:9
 #: bookwyrm/templates/settings/layout.html:82
 msgid "Imports"
-msgstr ""
+msgstr "Importy"
 
 #: bookwyrm/templates/import/import_status.html:39
+#: bookwyrm/templates/import/user_import_status.html:35
 msgid "Import started:"
-msgstr ""
+msgstr "Import byl zahájen:"
 
 #: bookwyrm/templates/import/import_status.html:48
+#: bookwyrm/templates/import/user_import_status.html:99
 msgid "In progress"
-msgstr ""
+msgstr "Zpracovává se"
 
 #: bookwyrm/templates/import/import_status.html:50
+#: bookwyrm/templates/import/user_import_status.html:101
 msgid "Refresh"
-msgstr ""
+msgstr "Obnovit"
 
 #: bookwyrm/templates/import/import_status.html:72
+#: bookwyrm/templates/import/user_import_status.html:123
 #: bookwyrm/templates/settings/imports/imports.html:243
 #: bookwyrm/templates/settings/imports/imports.html:320
 msgid "Stop import"
-msgstr ""
+msgstr "Zastavit import"
 
 #: bookwyrm/templates/import/import_status.html:78
 #, python-format
@@ -3091,9 +3169,10 @@ msgstr[3] ""
 #: bookwyrm/templates/import/import_status.html:83
 #: bookwyrm/templates/import/manual_review.html:8
 msgid "Review items"
-msgstr ""
+msgstr "Zkontrolovat položky"
 
 #: bookwyrm/templates/import/import_status.html:89
+#: bookwyrm/templates/import/user_import_status.html:129
 #, python-format
 msgid "%(display_counter)s item failed to import."
 msgid_plural "%(display_counter)s items failed to import."
@@ -3103,20 +3182,23 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: bookwyrm/templates/import/import_status.html:95
+#: bookwyrm/templates/import/user_import_status.html:135
 msgid "View and troubleshoot failed items"
 msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:107
 msgid "Row"
-msgstr ""
+msgstr "Řada"
 
 #: bookwyrm/templates/import/import_status.html:110
-#: bookwyrm/templates/shelf/shelf.html:151
-#: bookwyrm/templates/shelf/shelf.html:173
+#: bookwyrm/templates/import/user_import_status.html:149
+#: bookwyrm/templates/shelf/shelf.html:156
+#: bookwyrm/templates/shelf/shelf.html:178
 msgid "Title"
-msgstr ""
+msgstr "Název"
 
 #: bookwyrm/templates/import/import_status.html:113
+#: bookwyrm/templates/import/user_import_status.html:152
 msgid "ISBN"
 msgstr "ISBN"
 
@@ -3125,45 +3207,43 @@ msgid "Openlibrary key"
 msgstr "Openlibrary klíč"
 
 #: bookwyrm/templates/import/import_status.html:121
-#: bookwyrm/templates/shelf/shelf.html:152
-#: bookwyrm/templates/shelf/shelf.html:176
+#: bookwyrm/templates/shelf/shelf.html:157
+#: bookwyrm/templates/shelf/shelf.html:181
 msgid "Author"
-msgstr ""
+msgstr "Autor"
 
 #: bookwyrm/templates/import/import_status.html:124
 msgid "Shelf"
-msgstr ""
-
-#: bookwyrm/templates/import/import_status.html:127
-#: bookwyrm/templates/import/manual_review.html:13
-#: bookwyrm/templates/snippets/create_status.html:16
-msgid "Review"
-msgstr "Recenze"
+msgstr "Polička"
 
 #: bookwyrm/templates/import/import_status.html:131
+#: bookwyrm/templates/import/user_import_status.html:159
+#: bookwyrm/templates/import/user_troubleshoot.html:59
 #: bookwyrm/templates/settings/link_domains/link_table.html:9
 msgid "Book"
-msgstr ""
+msgstr "Kniha"
 
 #: bookwyrm/templates/import/import_status.html:142
 msgid "Import preview unavailable."
-msgstr ""
+msgstr "Náhled importu není dostupný."
 
 #: bookwyrm/templates/import/import_status.html:150
 msgid "No items currently need review"
-msgstr ""
+msgstr "Zatím žádné položky nepotřebují kontrolu"
 
 #: bookwyrm/templates/import/import_status.html:186
 msgid "View imported review"
-msgstr ""
+msgstr "Zobrazit importovanou recenzi"
 
 #: bookwyrm/templates/import/import_status.html:200
+#: bookwyrm/templates/import/user_import_status.html:68
+#: bookwyrm/templates/import/user_import_status.html:191
 msgid "Imported"
-msgstr ""
+msgstr "Importováno"
 
 #: bookwyrm/templates/import/import_status.html:206
 msgid "Needs manual review"
-msgstr ""
+msgstr "Vyžaduje manuální kontrolu"
 
 #: bookwyrm/templates/import/import_status.html:219
 msgid "Retry"
@@ -3175,17 +3255,17 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:239
 msgid "Update import"
-msgstr ""
+msgstr "Aktualizovat import"
 
 #: bookwyrm/templates/import/import_user.html:5
 #: bookwyrm/templates/import/import_user.html:6
 #: bookwyrm/templates/preferences/layout.html:51
 msgid "Import BookWyrm Account"
-msgstr ""
+msgstr "Importovat BookWyrm účet"
 
 #: bookwyrm/templates/import/import_user.html:13
 msgid "Not a valid import file"
-msgstr ""
+msgstr "Neplatný import soubor"
 
 #: bookwyrm/templates/import/import_user.html:18
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set this account as an <strong>alias</strong> of the one you are migrating from, or <strong>move</strong> that account to this one, before you import your user data."
@@ -3193,151 +3273,154 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:32
 #, python-format
-msgid "Currently you are allowed to import one user every %(user_import_hours)s hours."
+msgid "Currently you are allowed to import one user every %(hours)s hours."
 msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:33
 #, python-format
-msgid "You will next be able to import a user file at %(next_available)s"
+msgid "You will next be able to import a user file at %(next_time)s"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:41
+#: bookwyrm/templates/import/import_user.html:56
 msgid "Step 1:"
-msgstr ""
+msgstr "Krok 1:"
 
-#: bookwyrm/templates/import/import_user.html:43
+#: bookwyrm/templates/import/import_user.html:58
 msgid "Select an export file generated from another BookWyrm account. The file format should be <code>.tar.gz</code>."
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:58
+#: bookwyrm/templates/import/import_user.html:73
 msgid "Step 2:"
-msgstr ""
+msgstr "Krok 2:"
 
-#: bookwyrm/templates/import/import_user.html:60
+#: bookwyrm/templates/import/import_user.html:75
 msgid "Deselect any checkboxes for data you do not wish to include in your import."
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:71
-#: bookwyrm/templates/preferences/export-user.html:20
-#: bookwyrm/templates/shelf/shelf.html:26
+#: bookwyrm/templates/import/import_user.html:86
+#: bookwyrm/templates/preferences/export-user.html:21
+#: bookwyrm/templates/shelf/shelf.html:31
 #: bookwyrm/templates/user/relationships/followers.html:18
 #: bookwyrm/templates/user/relationships/following.html:18
 msgid "User profile"
-msgstr ""
+msgstr "Uživatelský profil"
 
-#: bookwyrm/templates/import/import_user.html:74
+#: bookwyrm/templates/import/import_user.html:89
 msgid "Overwrites display name, summary, and avatar"
-msgstr ""
+msgstr "Přepíše zobrazované jméno, shrnutí a avatar"
 
-#: bookwyrm/templates/import/import_user.html:80
+#: bookwyrm/templates/import/import_user.html:95
 msgid "User settings"
-msgstr ""
+msgstr "Uživatelská nastavení"
 
-#: bookwyrm/templates/import/import_user.html:83
+#: bookwyrm/templates/import/import_user.html:98
 msgid "Overwrites:"
-msgstr ""
+msgstr "Přepíše:"
 
-#: bookwyrm/templates/import/import_user.html:86
+#: bookwyrm/templates/import/import_user.html:101
 msgid "Whether manual approval is required for other users to follow your account"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:89
+#: bookwyrm/templates/import/import_user.html:104
 msgid "Whether following/followers are shown on your profile"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:92
+#: bookwyrm/templates/import/import_user.html:107
 msgid "Whether your reading goal is shown on your profile"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:95
+#: bookwyrm/templates/import/import_user.html:110
 msgid "Whether you see user follow suggestions"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:98
+#: bookwyrm/templates/import/import_user.html:113
 msgid "Whether your account is suggested to others"
 msgstr ""
 
-#: bookwyrm/templates/import/import_user.html:101
-msgid "Your timezone"
-msgstr ""
-
-#: bookwyrm/templates/import/import_user.html:104
-msgid "Your default post privacy setting"
-msgstr ""
-
-#: bookwyrm/templates/import/import_user.html:112
-msgid "Followers and following"
-msgstr ""
-
 #: bookwyrm/templates/import/import_user.html:116
+msgid "Your timezone"
+msgstr "Vaše časové pásmo"
+
+#: bookwyrm/templates/import/import_user.html:119
+msgid "Your default post privacy setting"
+msgstr "Výchozí nastavení soukromí příspěvků"
+
+#: bookwyrm/templates/import/import_user.html:127
+msgid "Followers and following"
+msgstr "Sledující a sledovaní"
+
+#: bookwyrm/templates/import/import_user.html:131
 msgid "User blocks"
-msgstr ""
+msgstr "Uživatelské bloky"
 
-#: bookwyrm/templates/import/import_user.html:123
-#: bookwyrm/templates/preferences/export-user.html:22
-msgid "Reading goals"
-msgstr ""
-
-#: bookwyrm/templates/import/import_user.html:126
-msgid "Overwrites reading goals for all years listed in the import file"
-msgstr ""
-
-#: bookwyrm/templates/import/import_user.html:130
+#: bookwyrm/templates/import/import_user.html:138
 #: bookwyrm/templates/preferences/export-user.html:23
-msgid "Shelves"
-msgstr ""
+msgid "Reading goals"
+msgstr "Cíle pro čtení"
 
-#: bookwyrm/templates/import/import_user.html:133
-#: bookwyrm/templates/preferences/export-user.html:24
-msgid "Reading history"
-msgstr ""
-
-#: bookwyrm/templates/import/import_user.html:136
-#: bookwyrm/templates/preferences/export-user.html:25
-msgid "Book reviews"
-msgstr ""
-
-#: bookwyrm/templates/import/import_user.html:142
-msgid "Comments about books"
-msgstr ""
+#: bookwyrm/templates/import/import_user.html:141
+msgid "Overwrites reading goals for all years listed in the import file"
+msgstr "Přepíše cíle pro všechny roky uvedené v importovaném souboru"
 
 #: bookwyrm/templates/import/import_user.html:145
-msgid "Book lists"
-msgstr ""
+#: bookwyrm/templates/preferences/export-user.html:24
+msgid "Shelves"
+msgstr "Poličky"
 
 #: bookwyrm/templates/import/import_user.html:148
+#: bookwyrm/templates/preferences/export-user.html:25
+msgid "Reading history"
+msgstr "Historie čtení"
+
+#: bookwyrm/templates/import/import_user.html:151
+#: bookwyrm/templates/preferences/export-user.html:26
+msgid "Book reviews"
+msgstr "Recenze knih"
+
+#: bookwyrm/templates/import/import_user.html:157
+msgid "Comments about books"
+msgstr "Komentáře ke knihám"
+
+#: bookwyrm/templates/import/import_user.html:160
+msgid "Book lists"
+msgstr "Seznamy knih"
+
+#: bookwyrm/templates/import/import_user.html:163
 msgid "Saved lists"
-msgstr ""
+msgstr "Uložené seznamy"
 
 #: bookwyrm/templates/import/manual_review.html:5
 #: bookwyrm/templates/import/troubleshoot.html:4
 msgid "Import Troubleshooting"
-msgstr ""
+msgstr "Řešení problémů s importáváním"
 
 #: bookwyrm/templates/import/manual_review.html:21
 msgid "Approving a suggestion will permanently add the suggested book to your shelves and associate your reading dates, reviews, and ratings with that book."
-msgstr ""
+msgstr "Schválení návrhu natrvalo přidá navrhovanou knihu do vašich poliček a spojí vaše data čtení, recenze a hodnocení s touto knihou."
 
 #: bookwyrm/templates/import/manual_review.html:58
 #: bookwyrm/templates/lists/curate.html:71
 #: bookwyrm/templates/settings/link_domains/link_domains.html:76
 msgid "Approve"
-msgstr ""
+msgstr "Schválit"
 
 #: bookwyrm/templates/import/manual_review.html:66
 msgid "Reject"
-msgstr ""
+msgstr "Odmítnout"
 
 #: bookwyrm/templates/import/troubleshoot.html:7
+#: bookwyrm/templates/import/user_troubleshoot.html:8
 #: bookwyrm/templates/settings/imports/imports.html:220
 msgid "Failed items"
-msgstr ""
+msgstr "Neúspěšné položky"
 
 #: bookwyrm/templates/import/troubleshoot.html:12
+#: bookwyrm/templates/import/user_troubleshoot.html:13
 msgid "Troubleshooting"
-msgstr ""
+msgstr "Řešení problémů"
 
 #: bookwyrm/templates/import/troubleshoot.html:20
+#: bookwyrm/templates/import/user_troubleshoot.html:23
 msgid "Re-trying an import can fix missing items in cases such as:"
 msgstr ""
 
@@ -3346,15 +3429,90 @@ msgid "The book has been added to the instance since this import"
 msgstr ""
 
 #: bookwyrm/templates/import/troubleshoot.html:24
+#: bookwyrm/templates/import/user_troubleshoot.html:27
 msgid "A transient error or timeout caused the external data source to be unavailable."
 msgstr ""
 
 #: bookwyrm/templates/import/troubleshoot.html:25
+#: bookwyrm/templates/import/user_troubleshoot.html:28
 msgid "BookWyrm has been updated since this import with a bug fix"
 msgstr ""
 
 #: bookwyrm/templates/import/troubleshoot.html:28
+#: bookwyrm/templates/import/user_troubleshoot.html:38
 msgid "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items."
+msgstr ""
+
+#: bookwyrm/templates/import/user_import_status.html:6
+#: bookwyrm/templates/import/user_import_status.html:15
+#: bookwyrm/templates/import/user_import_status.html:26
+msgid "User Import Status"
+msgstr ""
+
+#: bookwyrm/templates/import/user_import_status.html:13
+msgid "User Import Retry Status"
+msgstr ""
+
+#: bookwyrm/templates/import/user_import_status.html:22
+#: bookwyrm/templates/settings/imports/imports.html:264
+msgid "User Imports"
+msgstr ""
+
+#: bookwyrm/templates/import/user_import_status.html:70
+#: bookwyrm/templates/settings/dashboard/user_chart.html:11
+msgid "Total"
+msgstr ""
+
+#: bookwyrm/templates/import/user_import_status.html:79
+#: bookwyrm/templates/preferences/export-user.html:27
+#: bookwyrm/templates/settings/dashboard/dashboard.html:27
+msgid "Statuses"
+msgstr ""
+
+#: bookwyrm/templates/import/user_import_status.html:85
+msgid "Follows & Blocks"
+msgstr ""
+
+#: bookwyrm/templates/import/user_import_status.html:144
+msgid "Imported books"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:5
+msgid "User Import Troubleshooting"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:26
+msgid "Your account was not set as an alias of the original user account"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:31
+msgid "Re-trying an import will not work in cases such as:"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:34
+msgid "A user, status, or BookWyrm server was deleted after your import file was created"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:35
+msgid "Importing statuses when your old account has been deleted"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:43
+#, python-format
+msgid "Currently you are allowed to import or retry one user every %(hours)s hours."
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:44
+#, python-format
+msgid "You will be able to retry this import at %(next_time)s"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:65
+msgid "Relationship"
+msgstr ""
+
+#: bookwyrm/templates/import/user_troubleshoot.html:68
+msgid "Reason"
 msgstr ""
 
 #: bookwyrm/templates/landing/invite.html:4
@@ -3374,58 +3532,58 @@ msgstr ""
 
 #: bookwyrm/templates/landing/layout.html:17
 msgid "Decentralized"
-msgstr ""
+msgstr "Decentralizovaný"
 
 #: bookwyrm/templates/landing/layout.html:23
 msgid "Friendly"
-msgstr ""
+msgstr "Přátelský"
 
 #: bookwyrm/templates/landing/layout.html:29
 msgid "Anti-Corporate"
-msgstr ""
+msgstr "Proti-korporátní"
 
 #: bookwyrm/templates/landing/layout.html:46
 #, python-format
 msgid "Join %(name)s"
-msgstr ""
+msgstr "Připojil se k %(name)s"
 
 #: bookwyrm/templates/landing/layout.html:48
 msgid "Request an Invitation"
-msgstr ""
+msgstr "Zažádat o připojení"
 
 #: bookwyrm/templates/landing/layout.html:50
 #, python-format
 msgid "%(name)s registration is closed"
-msgstr ""
+msgstr "Registrace na %(name)s jsou uzavřené"
 
 #: bookwyrm/templates/landing/layout.html:61
 msgid "Thank you! Your request has been received."
-msgstr ""
+msgstr "Děkujeme! Váš požadavek byl přijat."
 
 #: bookwyrm/templates/landing/layout.html:90
 msgid "Your Account"
-msgstr ""
+msgstr "Váš účet"
 
 #: bookwyrm/templates/landing/login.html:4
 msgid "Login"
-msgstr ""
+msgstr "Přihlásit se"
 
 #: bookwyrm/templates/landing/login.html:7
 #: bookwyrm/templates/landing/login.html:38 bookwyrm/templates/layout.html:142
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
-msgstr ""
+msgstr "Přihlásit se"
 
 #: bookwyrm/templates/landing/login.html:15
 msgid "Success! Email address confirmed."
-msgstr ""
+msgstr "Úspěch! E-mailová adresa byla potvrzena."
 
 #: bookwyrm/templates/landing/login.html:21
 #: bookwyrm/templates/landing/reactivate.html:17
 #: bookwyrm/templates/layout.html:128 bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
-msgstr ""
+msgstr "Uživatelské jméno:"
 
 #: bookwyrm/templates/landing/login.html:28
 #: bookwyrm/templates/landing/password_reset.html:26
@@ -3434,45 +3592,45 @@ msgstr ""
 #: bookwyrm/templates/preferences/2fa.html:91
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
-msgstr ""
+msgstr "Heslo:"
 
 #: bookwyrm/templates/landing/login.html:41 bookwyrm/templates/layout.html:139
 #: bookwyrm/templates/ostatus/error.html:34
 msgid "Forgot your password?"
-msgstr ""
+msgstr "Zapomněli jste heslo?"
 
 #: bookwyrm/templates/landing/login.html:63
 #: bookwyrm/templates/landing/reactivate.html:56
 msgid "More about this site"
-msgstr ""
+msgstr "Více o této stránce"
 
 #: bookwyrm/templates/landing/password_reset.html:43
 #: bookwyrm/templates/preferences/change_password.html:33
 #: bookwyrm/templates/preferences/delete_user.html:35
 msgid "Confirm password:"
-msgstr ""
+msgstr "Potvrďte své heslo:"
 
 #: bookwyrm/templates/landing/password_reset_request.html:14
 #, python-format
 msgid "A password reset link will be sent to <strong>%(email)s</strong> if there is an account using that email address."
-msgstr ""
+msgstr "Odkaz pro obnovení hesla bude odeslán na <strong>%(email)s</strong>, pokud existuje účet používající tuto e-mailovou adresu."
 
 #: bookwyrm/templates/landing/password_reset_request.html:20
 msgid "A link to reset your password will be sent to your email address"
-msgstr ""
+msgstr "Odkaz pro obnovení hesla bude odeslán na vaši e-mailovou adresu"
 
 #: bookwyrm/templates/landing/password_reset_request.html:34
 msgid "Reset password"
-msgstr ""
+msgstr "Obnovit heslo"
 
 #: bookwyrm/templates/landing/reactivate.html:4
 #: bookwyrm/templates/landing/reactivate.html:7
 msgid "Reactivate Account"
-msgstr ""
+msgstr "Znovu aktivovat účet"
 
 #: bookwyrm/templates/landing/reactivate.html:34
 msgid "Reactivate account"
-msgstr ""
+msgstr "Znovu aktivovat účet"
 
 #: bookwyrm/templates/layout.html:13
 #, python-format
@@ -3481,59 +3639,59 @@ msgstr ""
 
 #: bookwyrm/templates/layout.html:39
 msgid "Search for a book, author, user, or list"
-msgstr ""
+msgstr "Hledat knihu, autora, uživatele nebo seznam"
 
 #: bookwyrm/templates/layout.html:54 bookwyrm/templates/layout.html:55
 msgid "Scan Barcode"
-msgstr ""
+msgstr "Skenovat čarový kód"
 
 #: bookwyrm/templates/layout.html:69
 msgid "Main navigation menu"
-msgstr ""
+msgstr "Hlavní navigační menu"
 
 #: bookwyrm/templates/layout.html:134 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
-msgstr ""
+msgstr "heslo"
 
 #: bookwyrm/templates/layout.html:136
 msgid "Show/Hide password"
-msgstr ""
+msgstr "Zobrazit/Skrýt heslo"
 
 #: bookwyrm/templates/layout.html:150
 msgid "Join"
-msgstr ""
+msgstr "Připojit se"
 
 #: bookwyrm/templates/layout.html:196
 msgid "Successfully posted status"
-msgstr ""
+msgstr "Stav úspěšně odeslán"
 
 #: bookwyrm/templates/layout.html:197
 msgid "Error posting status"
-msgstr ""
+msgstr "Chyba při odesílání stavu"
 
 #: bookwyrm/templates/lists/add_item_modal.html:8
 #, python-format
 msgid "Add \"<em>%(title)s</em>\" to this list"
-msgstr ""
+msgstr "Přidat „<em>%(title)s</em>“ do tohoto seznamu"
 
 #: bookwyrm/templates/lists/add_item_modal.html:12
 #, python-format
 msgid "Suggest \"<em>%(title)s</em>\" for this list"
-msgstr ""
+msgstr "Navrhnout „<em>%(title)s</em>“ pro tento seznam"
 
 #: bookwyrm/templates/lists/add_item_modal.html:41
 #: bookwyrm/templates/lists/list.html:257
 msgid "Suggest"
-msgstr ""
+msgstr "Navrhnout"
 
 #: bookwyrm/templates/lists/bookmark_button.html:30
 msgid "Un-save"
-msgstr ""
+msgstr "Od-uložit"
 
 #: bookwyrm/templates/lists/created_text.html:5
 #, python-format
 msgid "Created by <a href=\"%(userpath)s\">%(username)s</a> and managed by <a href=\"%(grouppath)s\">%(groupname)s</a>"
-msgstr ""
+msgstr "Vytvořeno <a href=\"%(userpath)s\">%(username)s</a> a spravováno <a href=\"%(grouppath)s\">%(groupname)s</a>"
 
 #: bookwyrm/templates/lists/created_text.html:7
 #, python-format
@@ -3551,48 +3709,48 @@ msgstr ""
 
 #: bookwyrm/templates/lists/curate.html:21
 msgid "Pending Books"
-msgstr ""
+msgstr "Čekající knihy"
 
 #: bookwyrm/templates/lists/curate.html:24
 msgid "You're all set!"
-msgstr ""
+msgstr "Vše je nastaveno!"
 
 #: bookwyrm/templates/lists/curate.html:45
 #: bookwyrm/templates/lists/list.html:93
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> says:"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> říká:"
 
 #: bookwyrm/templates/lists/curate.html:55
 msgid "Suggested by"
-msgstr ""
+msgstr "Navrhnuto"
 
 #: bookwyrm/templates/lists/curate.html:77
 msgid "Discard"
-msgstr ""
+msgstr "Zahodit"
 
 #: bookwyrm/templates/lists/delete_list_modal.html:4
 msgid "Delete this list?"
-msgstr ""
+msgstr "Smazat tento seznam?"
 
 #: bookwyrm/templates/lists/edit_form.html:5
 #: bookwyrm/templates/lists/layout.html:23
 msgid "Edit List"
-msgstr ""
+msgstr "Upravit seznam"
 
 #: bookwyrm/templates/lists/embed-list.html:8
 #, python-format
 msgid "%(list_name)s, a list by %(owner)s"
-msgstr ""
+msgstr "%(list_name)s, seznam od %(owner)s"
 
 #: bookwyrm/templates/lists/embed-list.html:20
 #, python-format
 msgid "on <a href=\"/\">%(site_name)s</a>"
-msgstr ""
+msgstr "na <a href=\"/\">%(site_name)s</a>"
 
 #: bookwyrm/templates/lists/embed-list.html:29
 msgid "This list is currently empty"
-msgstr ""
+msgstr "Tento seznam je momentálně prázdný"
 
 #: bookwyrm/templates/lists/form.html:19
 msgid "List curation:"
@@ -3600,11 +3758,11 @@ msgstr ""
 
 #: bookwyrm/templates/lists/form.html:31
 msgid "Closed"
-msgstr ""
+msgstr "Uzavřené"
 
 #: bookwyrm/templates/lists/form.html:34
 msgid "Only you can add and remove books to this list"
-msgstr ""
+msgstr "Pouze vy můžete přidávat a odebírat knihy z tohoto seznamu"
 
 #: bookwyrm/templates/lists/form.html:48
 msgid "Curated"
@@ -3617,7 +3775,7 @@ msgstr ""
 #: bookwyrm/templates/lists/form.html:65
 msgctxt "curation type"
 msgid "Open"
-msgstr ""
+msgstr "Otevřené"
 
 #: bookwyrm/templates/lists/form.html:68
 msgid "Anyone can add books to this list"
@@ -3625,69 +3783,69 @@ msgstr ""
 
 #: bookwyrm/templates/lists/form.html:82
 msgid "Group"
-msgstr ""
+msgstr "Skupina"
 
 #: bookwyrm/templates/lists/form.html:85
 msgid "Group members can add to and remove from this list"
-msgstr ""
+msgstr "Členové skupiny mohou přidávat a odebírat z tohoto seznamu"
 
 #: bookwyrm/templates/lists/form.html:90
 msgid "Select Group"
-msgstr ""
+msgstr "Vybrat skupinu"
 
 #: bookwyrm/templates/lists/form.html:94
 msgid "Select a group"
-msgstr ""
+msgstr "Vyberte skupinu"
 
 #: bookwyrm/templates/lists/form.html:105
 msgid "You don't have any Groups yet!"
-msgstr ""
+msgstr "Zatím nemáte žádné skupiny!"
 
 #: bookwyrm/templates/lists/form.html:107
 msgid "Create a Group"
-msgstr ""
+msgstr "Vytvořit skupinu"
 
 #: bookwyrm/templates/lists/form.html:121
 msgid "Delete list"
-msgstr ""
+msgstr "Smazat seznam"
 
 #: bookwyrm/templates/lists/item_notes_field.html:7
 #: bookwyrm/templates/settings/federation/edit_instance.html:86
 msgid "Notes:"
-msgstr ""
+msgstr "Poznámky:"
 
 #: bookwyrm/templates/lists/item_notes_field.html:19
 msgid "An optional note that will be displayed with the book."
-msgstr ""
+msgstr "Volitelná poznámka, která bude zobrazena s knihou."
 
 #: bookwyrm/templates/lists/list.html:37
 msgid "That book is already on this list."
-msgstr ""
+msgstr "Tato kniha je již na tomto seznamu."
 
 #: bookwyrm/templates/lists/list.html:45
 msgid "You successfully suggested a book for this list!"
-msgstr ""
+msgstr "Úspěšně jste navrhli knihu pro tento seznam!"
 
 #: bookwyrm/templates/lists/list.html:47
 msgid "You successfully added a book to this list!"
-msgstr ""
+msgstr "Úspěšně jste přidali knihu do tohoto seznamu!"
 
 #: bookwyrm/templates/lists/list.html:54
 msgid "This list is currently empty."
-msgstr ""
+msgstr "Tento seznam je momentálně prázdný."
 
 #: bookwyrm/templates/lists/list.html:104
 msgid "Edit notes"
-msgstr ""
+msgstr "Upravit poznámky"
 
 #: bookwyrm/templates/lists/list.html:119
 msgid "Add notes"
-msgstr ""
+msgstr "Přidat poznámky"
 
 #: bookwyrm/templates/lists/list.html:131
 #, python-format
 msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
-msgstr ""
+msgstr "Přidáno <a href=\"%(user_path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/list.html:146
 msgid "List position"
@@ -3807,22 +3965,22 @@ msgstr ""
 #: bookwyrm/templates/notifications/items/add.html:39
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> navrhli přidat <em><a href=\"%(book_path)s\">%(book_title)s</a></em> do vašeho seznamu \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:47
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> and <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> přidali <em><a href=\"%(book_path)s\">%(book_title)s</a></em> a <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> do vašeho seznamu \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:54
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> and <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> navrhli přidání <em><a href=\"%(book_path)s\">%(book_title)s</a></em> a <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> do vašeho seznamu „<a href=\"%(list_curate_path)s\">%(list_name)s</a>“"
 
 #: bookwyrm/templates/notifications/items/add.html:66
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added a book to one of your lists"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> přidali knihu do jednoho z vašich seznamů"
 
 #: bookwyrm/templates/notifications/items/add.html:72
 #, python-format
@@ -4135,11 +4293,11 @@ msgstr ""
 
 #: bookwyrm/templates/notifications/notifications_page.html:31
 msgid "All"
-msgstr ""
+msgstr "Vše"
 
 #: bookwyrm/templates/notifications/notifications_page.html:35
 msgid "Mentions"
-msgstr ""
+msgstr "Zmínky"
 
 #: bookwyrm/templates/notifications/notifications_page.html:47
 msgid "You're all caught up!"
@@ -4148,56 +4306,56 @@ msgstr ""
 #: bookwyrm/templates/ostatus/error.html:7
 #, python-format
 msgid "<strong>%(account)s</strong> is not a valid username"
-msgstr ""
+msgstr "<strong>%(account)s</strong> není platné uživatelské jméno"
 
 #: bookwyrm/templates/ostatus/error.html:8
 #: bookwyrm/templates/ostatus/error.html:13
 msgid "Check you have the correct username before trying again"
-msgstr ""
+msgstr "Zkontrolujte, zda máte správné uživatelské jméno, než to zkusíte znovu"
 
 #: bookwyrm/templates/ostatus/error.html:12
 #, python-format
 msgid "<strong>%(account)s</strong> could not be found or <code>%(remote_domain)s</code> does not support identity discovery"
-msgstr ""
+msgstr "<strong>%(account)s</strong> nebyl nalezen nebo <code>%(remote_domain)s</code> nepodporuje zjišťování identit"
 
 #: bookwyrm/templates/ostatus/error.html:17
 #, python-format
 msgid "<strong>%(account)s</strong> was found but <code>%(remote_domain)s</code> does not support 'remote follow'"
-msgstr ""
+msgstr "<strong>%(account)s</strong> byl nalezen, ale <code>%(remote_domain)s</code> nepodporuje 'vzdálená sledování'"
 
 #: bookwyrm/templates/ostatus/error.html:18
 #, python-format
 msgid "Try searching for <strong>%(user)s</strong> on <code>%(remote_domain)s</code> instead"
-msgstr ""
+msgstr "Zkuste namísto toho vyhledat <strong>%(user)s</strong> na <code>%(remote_domain)s</code>"
 
 #: bookwyrm/templates/ostatus/error.html:46
 #, python-format
 msgid "Something went wrong trying to follow <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Něco se pokazilo při pokusu o sledování <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:47
 msgid "Check you have the correct username before trying again."
-msgstr ""
+msgstr "Zkontrolujte, zda máte správné uživatelské jméno, než to zkusíte znovu."
 
 #: bookwyrm/templates/ostatus/error.html:51
 #, python-format
 msgid "You have blocked <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Zablokovali jste <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:55
 #, python-format
 msgid "<strong>%(account)s</strong> has blocked you"
-msgstr ""
+msgstr "<strong>%(account)s</strong> vás zablokovali"
 
 #: bookwyrm/templates/ostatus/error.html:59
 #, python-format
 msgid "You are already following <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Již <strong>%(account)s</strong> sledujete"
 
 #: bookwyrm/templates/ostatus/error.html:63
 #, python-format
 msgid "You have already requested to follow <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Již jste <strong>%(account)s</strong> požádali o sledování"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:7
 #, python-format
@@ -4247,7 +4405,7 @@ msgstr ""
 
 #: bookwyrm/templates/ostatus/subscribe.html:20
 msgid "Let's log in first..."
-msgstr ""
+msgstr "Nejdříve se přihlaste..."
 
 #: bookwyrm/templates/ostatus/subscribe.html:51
 #, python-format
@@ -4286,7 +4444,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/disable-2fa.html:4
 #: bookwyrm/templates/preferences/disable-2fa.html:7
 msgid "Disable 2FA"
-msgstr ""
+msgstr "Vypnout 2FA"
 
 #: bookwyrm/templates/preferences/2fa.html:39
 msgid "You can generate backup codes to use in case you do not have access to your authentication app. If you generate new codes, any backup codes previously generated will no longer work."
@@ -4327,7 +4485,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/2fa.html:95
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:37
 msgid "Set up 2FA"
-msgstr ""
+msgstr "Nastavit 2FA"
 
 #: bookwyrm/templates/preferences/alias_user.html:4
 #: bookwyrm/templates/preferences/move_user.html:4
@@ -4410,7 +4568,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/delete_user.html:12
 msgid "Deactivate account"
-msgstr ""
+msgstr "Deaktivovat účet"
 
 #: bookwyrm/templates/preferences/delete_user.html:15
 msgid "Your account will be hidden. You can log back in at any time to re-activate your account."
@@ -4418,40 +4576,40 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Deactivate Account"
-msgstr ""
+msgstr "Deaktivovat účet"
 
 #: bookwyrm/templates/preferences/delete_user.html:26
 msgid "Permanently delete account"
-msgstr ""
+msgstr "Trvale odstranit účet"
 
 #: bookwyrm/templates/preferences/delete_user.html:29
 msgid "Deleting your account cannot be undone. The username will not be available to register in the future."
-msgstr ""
+msgstr "Odstranění vašeho účtu nelze vrátit zpět. Uživatelské jméno nebude k dispozici pro budoucí registraci."
 
 #: bookwyrm/templates/preferences/disable-2fa.html:12
 msgid "Disable Two Factor Authentication"
-msgstr ""
+msgstr "Vypnout dvoufázové ověření"
 
 #: bookwyrm/templates/preferences/disable-2fa.html:14
 msgid "Disabling 2FA will allow anyone with your username and password to log in to your account."
-msgstr ""
+msgstr "Zakázáním 2FA umožníte komukoliv s vaším uživatelským jménem a heslem se přihlásit k vašemu účtu."
 
 #: bookwyrm/templates/preferences/disable-2fa.html:20
 msgid "Turn off 2FA"
-msgstr ""
+msgstr "Vypnout 2FA"
 
 #: bookwyrm/templates/preferences/edit_user.html:4
 #: bookwyrm/templates/preferences/edit_user.html:7
 #: bookwyrm/templates/preferences/layout.html:15
 msgid "Edit Profile"
-msgstr ""
+msgstr "Upravit profil"
 
 #: bookwyrm/templates/preferences/edit_user.html:12
 #: bookwyrm/templates/preferences/edit_user.html:25
 #: bookwyrm/templates/settings/users/user_info.html:8
 #: bookwyrm/templates/user_menu.html:29
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: bookwyrm/templates/preferences/edit_user.html:13
 #: bookwyrm/templates/preferences/edit_user.html:64
@@ -4459,12 +4617,12 @@ msgstr ""
 #: bookwyrm/templates/settings/site.html:89
 #: bookwyrm/templates/setup/config.html:91
 msgid "Display"
-msgstr ""
+msgstr "Zobrazení"
 
 #: bookwyrm/templates/preferences/edit_user.html:14
 #: bookwyrm/templates/preferences/edit_user.html:118
 msgid "Privacy"
-msgstr ""
+msgstr "Soukromí"
 
 #: bookwyrm/templates/preferences/edit_user.html:69
 msgid "Show reading goal prompt in feed"
@@ -4489,7 +4647,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:95
 msgid "Preferred Timezone: "
-msgstr ""
+msgstr "Preferované časové pásmo: "
 
 #: bookwyrm/templates/preferences/edit_user.html:107
 msgid "Theme:"
@@ -4512,100 +4670,105 @@ msgstr ""
 msgid "Looking for shelf privacy? You can set a separate visibility level for each of your shelves. Go to <a href=\"%(path)s\">Your Books</a>, pick a shelf from the tab bar, and click \"Edit shelf.\""
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:5
-#: bookwyrm/templates/preferences/export-user.html:8
+#: bookwyrm/templates/preferences/export-user.html:6
+#: bookwyrm/templates/preferences/export-user.html:9
 #: bookwyrm/templates/preferences/layout.html:55
 msgid "Export BookWyrm Account"
-msgstr ""
+msgstr "Exportovat BookWyrm účet"
 
-#: bookwyrm/templates/preferences/export-user.html:14
+#: bookwyrm/templates/preferences/export-user.html:15
 msgid "You can create an export file here. This will allow you to migrate your data to another BookWyrm account."
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:18
+#: bookwyrm/templates/preferences/export-user.html:19
 msgid "Your file will include:"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:21
+#: bookwyrm/templates/preferences/export-user.html:22
 msgid "Most user settings"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:26
-#: bookwyrm/templates/settings/dashboard/dashboard.html:27
-msgid "Statuses"
-msgstr ""
-
-#: bookwyrm/templates/preferences/export-user.html:27
+#: bookwyrm/templates/preferences/export-user.html:28
 msgid "Your own lists and saved lists"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:28
+#: bookwyrm/templates/preferences/export-user.html:29
 msgid "Which users you follow and block"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:32
+#: bookwyrm/templates/preferences/export-user.html:33
 msgid "Your file will not include:"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:34
+#: bookwyrm/templates/preferences/export-user.html:35
 msgid "Direct messages"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:35
+#: bookwyrm/templates/preferences/export-user.html:36
 msgid "Replies to your statuses"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:37
+#: bookwyrm/templates/preferences/export-user.html:38
 msgid "Favorites"
-msgstr ""
+msgstr "Oblíbené"
 
-#: bookwyrm/templates/preferences/export-user.html:41
+#: bookwyrm/templates/preferences/export-user.html:42
 msgid "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported."
-msgstr ""
+msgstr "Ve vašem novém BookWyrm účtu si můžete vybrat, co budete chtít importovat: nebudete muset importovat vše, co je vyexportováno."
 
-#: bookwyrm/templates/preferences/export-user.html:44
+#: bookwyrm/templates/preferences/export-user.html:45
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set the account you are moving to as an <strong>alias</strong> of this one, or <strong>move</strong> this account to the new account, before you import your user data."
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:49
+#: bookwyrm/templates/preferences/export-user.html:50
 msgid "New user exports are currently disabled."
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:53
+#: bookwyrm/templates/preferences/export-user.html:54
 #, python-format
 msgid "User exports settings can be changed from <a href=\"%(url)s\">the Imports page</a> in the Admin dashboard."
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:60
+#: bookwyrm/templates/preferences/export-user.html:61
 #, python-format
 msgid "You will be able to create a new export file at %(next_available)s"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:69
-msgid "Create user export file"
+#: bookwyrm/templates/preferences/export-user.html:72
+#, python-format
+msgid "On average, recent exports have taken %(hours)s hours."
 msgstr ""
 
 #: bookwyrm/templates/preferences/export-user.html:76
+#, python-format
+msgid "On average, recent exports have taken %(minutes)s minutes."
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:88
+msgid "Create user export file"
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:95
 msgid "Recent Exports"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:78
+#: bookwyrm/templates/preferences/export-user.html:97
 msgid "User export files will show 'complete' once ready. This may take a little while. Click the link to download your file."
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:84
+#: bookwyrm/templates/preferences/export-user.html:103
 msgid "Date"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:90
+#: bookwyrm/templates/preferences/export-user.html:109
 msgid "Size"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:135
+#: bookwyrm/templates/preferences/export-user.html:153
 msgid "Download your export"
 msgstr ""
 
-#: bookwyrm/templates/preferences/export-user.html:139
+#: bookwyrm/templates/preferences/export-user.html:157
 msgid "Archive is no longer available"
 msgstr ""
 
@@ -4756,21 +4919,23 @@ msgstr ""
 #: bookwyrm/templates/report.html:5
 #: bookwyrm/templates/snippets/report_button.html:13
 msgid "Report"
-msgstr ""
+msgstr "Nahlásit"
 
 #: bookwyrm/templates/search/barcode_modal.html:5
 msgid "\n"
 "        Scan Barcode\n"
 "    "
-msgstr ""
+msgstr "\n"
+"        Skenovat čárový kód\n"
+"    "
 
 #: bookwyrm/templates/search/barcode_modal.html:21
 msgid "Requesting camera..."
-msgstr ""
+msgstr "Pořaduji přístup ke kameře..."
 
 #: bookwyrm/templates/search/barcode_modal.html:22
 msgid "Grant access to the camera to scan a book's barcode."
-msgstr ""
+msgstr "Udělte přístup k fotoaparátu pro naskenování čárového kódu knihy."
 
 #: bookwyrm/templates/search/barcode_modal.html:27
 msgid "Could not access camera"
@@ -4779,16 +4944,16 @@ msgstr ""
 #: bookwyrm/templates/search/barcode_modal.html:31
 msgctxt "barcode scanner"
 msgid "Scanning..."
-msgstr ""
+msgstr "Skenuji..."
 
 #: bookwyrm/templates/search/barcode_modal.html:32
 msgid "Align your book's barcode with the camera."
-msgstr ""
+msgstr "Zarovnejte čárový kód své knihy s kamerou."
 
 #: bookwyrm/templates/search/barcode_modal.html:36
 msgctxt "barcode scanner"
 msgid "ISBN scanned"
-msgstr ""
+msgstr "ISBN naskenováno"
 
 #: bookwyrm/templates/search/barcode_modal.html:37
 msgctxt "followed by ISBN"
@@ -4823,15 +4988,15 @@ msgstr ""
 
 #: bookwyrm/templates/search/book.html:117
 msgid "Manually add book"
-msgstr ""
+msgstr "Manuálně přidat knihu"
 
 #: bookwyrm/templates/search/book.html:122
 msgid "Log in to import or add books."
-msgstr ""
+msgstr "Přihlaste se pro import nebo přidání knih."
 
 #: bookwyrm/templates/search/layout.html:17
 msgid "Search query"
-msgstr ""
+msgstr "Vyhledávací dotaz"
 
 #: bookwyrm/templates/search/layout.html:20
 msgid "Search type"
@@ -5104,7 +5269,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:89
 msgid "Misc"
-msgstr ""
+msgstr "Různé"
 
 #: bookwyrm/templates/settings/celery.html:96
 msgid "Low priority"
@@ -5231,10 +5396,6 @@ msgstr ""
 msgid "Statuses posted"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/user_chart.html:11
-msgid "Total"
-msgstr ""
-
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:12
 msgid "Would you like to automatically check for new BookWyrm releases? (recommended)"
 msgstr ""
@@ -5295,11 +5456,11 @@ msgstr ""
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:10
 msgid "Add domain"
-msgstr ""
+msgstr "Přidat doménu"
 
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:11
 msgid "Domain:"
-msgstr ""
+msgstr "Doména:"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:7
@@ -5448,20 +5609,20 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance.html:59
 #: bookwyrm/templates/settings/federation/instance.html:65
 msgid "View all"
-msgstr ""
+msgstr "Zobrazit vše"
 
 #: bookwyrm/templates/settings/federation/instance.html:62
 #: bookwyrm/templates/settings/users/user_info.html:60
 msgid "Reports:"
-msgstr ""
+msgstr "Nahlášení:"
 
 #: bookwyrm/templates/settings/federation/instance.html:68
 msgid "Followed by us:"
-msgstr ""
+msgstr "Sledované námi:"
 
 #: bookwyrm/templates/settings/federation/instance.html:73
 msgid "Followed by them:"
-msgstr ""
+msgstr "Sledovaní jimi:"
 
 #: bookwyrm/templates/settings/federation/instance.html:78
 msgid "Blocked by us:"
@@ -5476,12 +5637,6 @@ msgstr ""
 msgid "<em>No notes</em>"
 msgstr ""
 
-#: bookwyrm/templates/settings/federation/instance.html:116
-#: bookwyrm/templates/settings/link_domains/link_domains.html:87
-#: bookwyrm/templates/snippets/block_button.html:5
-msgid "Block"
-msgstr ""
-
 #: bookwyrm/templates/settings/federation/instance.html:117
 msgid "All users from this instance will be deactivated."
 msgstr ""
@@ -5493,7 +5648,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/federation/instance.html:123
 msgid "All users from this instance will be re-activated."
-msgstr ""
+msgstr "Všichni uživatelé z této instance budou znovu aktivováni."
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:6
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:15
@@ -5502,42 +5657,42 @@ msgstr ""
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:38
 msgid "Success!"
-msgstr ""
+msgstr "Úspěšně dokončeno!"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:42
 msgid "Successfully blocked:"
-msgstr ""
+msgstr "Úspěšně zablokováno:"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:44
 msgid "Failed:"
-msgstr ""
+msgstr "Selhalo:"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:62
 msgid "Expects a json file in the format provided by FediBlock, with a list of entries that have <code>instance</code> and <code>url</code> fields. For example:"
-msgstr ""
+msgstr "Očekává soubor JSON ve formátu poskytovaném FediBlockem, se seznamem položek, které mají <code>instanci</code> a <code>URL</code>. Například:"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:36
 #: bookwyrm/templates/settings/users/server_filter.html:5
 msgid "Instance name"
-msgstr ""
+msgstr "Název instance"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:44
 msgid "Last updated"
-msgstr ""
+msgstr "Naposledy aktualizováno"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:48
 #: bookwyrm/templates/settings/federation/software_filter.html:5
 msgid "Software"
-msgstr ""
+msgstr "Software"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:70
 msgid "No instances found"
-msgstr ""
+msgstr "Nebyly nalezeny žádné instance"
 
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:4
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:4
 msgid "Stop import?"
-msgstr ""
+msgstr "Zastavit import?"
 
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:7
 msgid "This action will stop the user import before it is complete and cannot be un-done"
@@ -5545,7 +5700,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:19
 msgid "Disable starting new imports"
-msgstr ""
+msgstr "Zakázat zahájení nových importů"
 
 #: bookwyrm/templates/settings/imports/imports.html:30
 msgid "This is only intended to be used when things have gone very wrong with imports and you need to pause the feature while addressing issues."
@@ -5561,19 +5716,19 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:37
 msgid "Disable imports"
-msgstr ""
+msgstr "Vypnout importy"
 
 #: bookwyrm/templates/settings/imports/imports.html:51
 msgid "Users are currently unable to start new imports"
-msgstr ""
+msgstr "Uživatelé momentálně nemohou zahájit nové importy"
 
 #: bookwyrm/templates/settings/imports/imports.html:56
 msgid "Enable imports"
-msgstr ""
+msgstr "Zapnout importy"
 
 #: bookwyrm/templates/settings/imports/imports.html:64
 msgid "Limit the amount of imports"
-msgstr ""
+msgstr "Omezit množství importů"
 
 #: bookwyrm/templates/settings/imports/imports.html:75
 msgid "Some users might try to import a large number of books, which you want to limit."
@@ -5598,27 +5753,27 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:87
 msgid "Set limit"
-msgstr ""
+msgstr "Nastavit limit"
 
 #: bookwyrm/templates/settings/imports/imports.html:98
 msgid "Disable starting new user exports"
-msgstr ""
+msgstr "Zakázat zahájení nových uživatelských exportů"
 
 #: bookwyrm/templates/settings/imports/imports.html:109
 msgid "This is only intended to be used when things have gone very wrong with exports and you need to pause the feature while addressing issues."
-msgstr ""
+msgstr "Toto je určeno pouze pro použití v případě, že se věci s exportem velmi pokazily, a při řešení problémů je třeba tuto funkci pozastavit."
 
 #: bookwyrm/templates/settings/imports/imports.html:110
 msgid "While exports are disabled, users will not be allowed to start new user exports, but existing exports will not be affected."
-msgstr ""
+msgstr "Během zákazu exportů, uživatelé nebudou moci spouštět nové exporty účtů, ale stávající exporty nebudou ovlivněny."
 
 #: bookwyrm/templates/settings/imports/imports.html:115
 msgid "Disable user exports"
-msgstr ""
+msgstr "Zakázat uživatelské exporty"
 
 #: bookwyrm/templates/settings/imports/imports.html:123
 msgid "Limit how often users can import and export"
-msgstr ""
+msgstr "Omezit jak často mohou uživatelé importovat a exportovat"
 
 #: bookwyrm/templates/settings/imports/imports.html:134
 msgid "Some users might try to run user imports or exports very frequently, which you want to limit."
@@ -5678,10 +5833,6 @@ msgstr ""
 #: bookwyrm/templates/settings/imports/imports.html:252
 #: bookwyrm/templates/settings/imports/imports.html:344
 msgid "No matching imports found."
-msgstr ""
-
-#: bookwyrm/templates/settings/imports/imports.html:264
-msgid "User Imports"
 msgstr ""
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:4
@@ -6544,7 +6695,7 @@ msgid "Need help?"
 msgstr ""
 
 #: bookwyrm/templates/shelf/create_shelf_form.html:5
-#: bookwyrm/templates/shelf/shelf.html:74
+#: bookwyrm/templates/shelf/shelf.html:79
 msgid "Create shelf"
 msgstr ""
 
@@ -6552,16 +6703,16 @@ msgstr ""
 msgid "Edit Shelf"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:41
-#: bookwyrm/templatetags/shelf_tags.py:13 bookwyrm/views/shelf/shelf.py:59
+#: bookwyrm/templates/shelf/shelf.html:46
+#: bookwyrm/templatetags/shelf_tags.py:13 bookwyrm/views/shelf/shelf.py:61
 msgid "All books"
 msgstr "Všechny knihy"
 
-#: bookwyrm/templates/shelf/shelf.html:66
+#: bookwyrm/templates/shelf/shelf.html:71
 msgid "Import Books"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:99
+#: bookwyrm/templates/shelf/shelf.html:104
 #, python-format
 msgid "%(formatted_count)s book"
 msgid_plural "%(formatted_count)s books"
@@ -6570,45 +6721,45 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: bookwyrm/templates/shelf/shelf.html:105
+#: bookwyrm/templates/shelf/shelf.html:110
 #, python-format
 msgid "(showing %(start)s-%(end)s)"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:119
+#: bookwyrm/templates/shelf/shelf.html:124
 msgid "Edit shelf"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:127
+#: bookwyrm/templates/shelf/shelf.html:132
 msgid "Delete shelf"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:155
-#: bookwyrm/templates/shelf/shelf.html:181
+#: bookwyrm/templates/shelf/shelf.html:160
+#: bookwyrm/templates/shelf/shelf.html:186
 msgid "Shelved"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:156
-#: bookwyrm/templates/shelf/shelf.html:184
+#: bookwyrm/templates/shelf/shelf.html:161
+#: bookwyrm/templates/shelf/shelf.html:189
 msgid "Started"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:157
-#: bookwyrm/templates/shelf/shelf.html:187
+#: bookwyrm/templates/shelf/shelf.html:162
+#: bookwyrm/templates/shelf/shelf.html:192
 msgid "Finished"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:157
-#: bookwyrm/templates/shelf/shelf.html:187
+#: bookwyrm/templates/shelf/shelf.html:162
+#: bookwyrm/templates/shelf/shelf.html:192
 msgid "Until"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:216
+#: bookwyrm/templates/shelf/shelf.html:221
 #, python-format
 msgid "We couldn't find any books that matched %(shelves_filter_query)s"
 msgstr ""
 
-#: bookwyrm/templates/shelf/shelf.html:220
+#: bookwyrm/templates/shelf/shelf.html:225
 msgid "This shelf is empty."
 msgstr ""
 
@@ -6795,10 +6946,6 @@ msgstr ""
 #: bookwyrm/templates/snippets/follow_button.html:20
 #, python-format
 msgid "Follow @%(username)s"
-msgstr ""
-
-#: bookwyrm/templates/snippets/follow_button.html:22
-msgid "Follow"
 msgstr ""
 
 #: bookwyrm/templates/snippets/follow_button.html:31
@@ -7469,28 +7616,43 @@ msgstr[3] ""
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s: %(subtitle)s"
 
-#: bookwyrm/templatetags/utilities.py:129
+#: bookwyrm/templatetags/utilities.py:133
 msgid "a new user account"
 msgstr ""
 
-#: bookwyrm/views/rss_feed.py:35
+#: bookwyrm/views/rss_feed.py:36
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
 msgstr ""
 
-#: bookwyrm/views/rss_feed.py:80
+#: bookwyrm/views/rss_feed.py:81
 #, python-brace-format
 msgid "Reviews from {obj.display_name}"
 msgstr ""
 
-#: bookwyrm/views/rss_feed.py:122
+#: bookwyrm/views/rss_feed.py:123
 #, python-brace-format
 msgid "Quotes from {obj.display_name}"
 msgstr ""
 
-#: bookwyrm/views/rss_feed.py:164
+#: bookwyrm/views/rss_feed.py:165
 #, python-brace-format
 msgid "Comments from {obj.display_name}"
+msgstr ""
+
+#: bookwyrm/views/rss_feed.py:219
+#, python-brace-format
+msgid "{obj.user.display_name}’s {obj.name} shelf"
+msgstr ""
+
+#: bookwyrm/views/rss_feed.py:237
+#, python-brace-format
+msgid "{obj.user.display_name}’s {obj.name} shelf: {desc}"
+msgstr ""
+
+#: bookwyrm/views/rss_feed.py:238
+#, python-brace-format
+msgid "Books added to {obj.user.name}’s {obj.name} shelf"
 msgstr ""
 
 #: bookwyrm/views/updates.py:45
