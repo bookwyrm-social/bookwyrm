@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-17 21:56+0000\n"
-"PO-Revision-Date: 2025-04-15 09:15\n"
+"PO-Revision-Date: 2025-04-15 11:54\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -4168,36 +4168,36 @@ msgstr "<strong>%(account)s</strong> byl nalezen, ale <code>%(remote_domain)s</c
 #: bookwyrm/templates/ostatus/error.html:18
 #, python-format
 msgid "Try searching for <strong>%(user)s</strong> on <code>%(remote_domain)s</code> instead"
-msgstr ""
+msgstr "Zkuste namísto toho vyhledat <strong>%(user)s</strong> na <code>%(remote_domain)s</code>"
 
 #: bookwyrm/templates/ostatus/error.html:46
 #, python-format
 msgid "Something went wrong trying to follow <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Něco se pokazilo při pokusu o sledování <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:47
 msgid "Check you have the correct username before trying again."
-msgstr ""
+msgstr "Zkontrolujte, zda máte správné uživatelské jméno, než to zkusíte znovu."
 
 #: bookwyrm/templates/ostatus/error.html:51
 #, python-format
 msgid "You have blocked <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Zablokovali jste <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:55
 #, python-format
 msgid "<strong>%(account)s</strong> has blocked you"
-msgstr ""
+msgstr "<strong>%(account)s</strong> vás zablokovali"
 
 #: bookwyrm/templates/ostatus/error.html:59
 #, python-format
 msgid "You are already following <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Již <strong>%(account)s</strong> sledujete"
 
 #: bookwyrm/templates/ostatus/error.html:63
 #, python-format
 msgid "You have already requested to follow <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Již jste <strong>%(account)s</strong> požádali o sledování"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:7
 #, python-format
@@ -4247,7 +4247,7 @@ msgstr ""
 
 #: bookwyrm/templates/ostatus/subscribe.html:20
 msgid "Let's log in first..."
-msgstr ""
+msgstr "Nejdříve se přihlaste..."
 
 #: bookwyrm/templates/ostatus/subscribe.html:51
 #, python-format
@@ -4286,7 +4286,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/disable-2fa.html:4
 #: bookwyrm/templates/preferences/disable-2fa.html:7
 msgid "Disable 2FA"
-msgstr ""
+msgstr "Vypnout 2FA"
 
 #: bookwyrm/templates/preferences/2fa.html:39
 msgid "You can generate backup codes to use in case you do not have access to your authentication app. If you generate new codes, any backup codes previously generated will no longer work."
@@ -4327,7 +4327,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/2fa.html:95
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:37
 msgid "Set up 2FA"
-msgstr ""
+msgstr "Nastavit 2FA"
 
 #: bookwyrm/templates/preferences/alias_user.html:4
 #: bookwyrm/templates/preferences/move_user.html:4
@@ -4410,7 +4410,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/delete_user.html:12
 msgid "Deactivate account"
-msgstr ""
+msgstr "Deaktivovat účet"
 
 #: bookwyrm/templates/preferences/delete_user.html:15
 msgid "Your account will be hidden. You can log back in at any time to re-activate your account."
@@ -4418,40 +4418,40 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Deactivate Account"
-msgstr ""
+msgstr "Deaktivovat účet"
 
 #: bookwyrm/templates/preferences/delete_user.html:26
 msgid "Permanently delete account"
-msgstr ""
+msgstr "Trvale odstranit účet"
 
 #: bookwyrm/templates/preferences/delete_user.html:29
 msgid "Deleting your account cannot be undone. The username will not be available to register in the future."
-msgstr ""
+msgstr "Odstranění vašeho účtu nelze vrátit zpět. Uživatelské jméno nebude k dispozici pro budoucí registraci."
 
 #: bookwyrm/templates/preferences/disable-2fa.html:12
 msgid "Disable Two Factor Authentication"
-msgstr ""
+msgstr "Vypnout dvoufázové ověření"
 
 #: bookwyrm/templates/preferences/disable-2fa.html:14
 msgid "Disabling 2FA will allow anyone with your username and password to log in to your account."
-msgstr ""
+msgstr "Zakázáním 2FA umožníte komukoliv s vaším uživatelským jménem a heslem se přihlásit k vašemu účtu."
 
 #: bookwyrm/templates/preferences/disable-2fa.html:20
 msgid "Turn off 2FA"
-msgstr ""
+msgstr "Vypnout 2FA"
 
 #: bookwyrm/templates/preferences/edit_user.html:4
 #: bookwyrm/templates/preferences/edit_user.html:7
 #: bookwyrm/templates/preferences/layout.html:15
 msgid "Edit Profile"
-msgstr ""
+msgstr "Upravit profil"
 
 #: bookwyrm/templates/preferences/edit_user.html:12
 #: bookwyrm/templates/preferences/edit_user.html:25
 #: bookwyrm/templates/settings/users/user_info.html:8
 #: bookwyrm/templates/user_menu.html:29
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: bookwyrm/templates/preferences/edit_user.html:13
 #: bookwyrm/templates/preferences/edit_user.html:64
@@ -4459,12 +4459,12 @@ msgstr ""
 #: bookwyrm/templates/settings/site.html:89
 #: bookwyrm/templates/setup/config.html:91
 msgid "Display"
-msgstr ""
+msgstr "Zobrazení"
 
 #: bookwyrm/templates/preferences/edit_user.html:14
 #: bookwyrm/templates/preferences/edit_user.html:118
 msgid "Privacy"
-msgstr ""
+msgstr "Soukromí"
 
 #: bookwyrm/templates/preferences/edit_user.html:69
 msgid "Show reading goal prompt in feed"
@@ -4489,7 +4489,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:95
 msgid "Preferred Timezone: "
-msgstr ""
+msgstr "Preferované časové pásmo: "
 
 #: bookwyrm/templates/preferences/edit_user.html:107
 msgid "Theme:"
@@ -4516,7 +4516,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/export-user.html:8
 #: bookwyrm/templates/preferences/layout.html:55
 msgid "Export BookWyrm Account"
-msgstr ""
+msgstr "Exportovat BookWyrm účet"
 
 #: bookwyrm/templates/preferences/export-user.html:14
 msgid "You can create an export file here. This will allow you to migrate your data to another BookWyrm account."
@@ -4557,11 +4557,11 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export-user.html:37
 msgid "Favorites"
-msgstr ""
+msgstr "Oblíbené"
 
 #: bookwyrm/templates/preferences/export-user.html:41
 msgid "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported."
-msgstr ""
+msgstr "Ve vašem novém BookWyrm účtu si můžete vybrat, co budete chtít importovat: nebudete muset importovat vše, co je vyexportováno."
 
 #: bookwyrm/templates/preferences/export-user.html:44
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set the account you are moving to as an <strong>alias</strong> of this one, or <strong>move</strong> this account to the new account, before you import your user data."
@@ -4756,21 +4756,23 @@ msgstr ""
 #: bookwyrm/templates/report.html:5
 #: bookwyrm/templates/snippets/report_button.html:13
 msgid "Report"
-msgstr ""
+msgstr "Nahlásit"
 
 #: bookwyrm/templates/search/barcode_modal.html:5
 msgid "\n"
 "        Scan Barcode\n"
 "    "
-msgstr ""
+msgstr "\n"
+"        Skenovat čárový kód\n"
+"    "
 
 #: bookwyrm/templates/search/barcode_modal.html:21
 msgid "Requesting camera..."
-msgstr ""
+msgstr "Pořaduji přístup ke kameře..."
 
 #: bookwyrm/templates/search/barcode_modal.html:22
 msgid "Grant access to the camera to scan a book's barcode."
-msgstr ""
+msgstr "Udělte přístup k fotoaparátu pro naskenování čárového kódu knihy."
 
 #: bookwyrm/templates/search/barcode_modal.html:27
 msgid "Could not access camera"
@@ -4779,16 +4781,16 @@ msgstr ""
 #: bookwyrm/templates/search/barcode_modal.html:31
 msgctxt "barcode scanner"
 msgid "Scanning..."
-msgstr ""
+msgstr "Skenuji..."
 
 #: bookwyrm/templates/search/barcode_modal.html:32
 msgid "Align your book's barcode with the camera."
-msgstr ""
+msgstr "Zarovnejte čárový kód své knihy s kamerou."
 
 #: bookwyrm/templates/search/barcode_modal.html:36
 msgctxt "barcode scanner"
 msgid "ISBN scanned"
-msgstr ""
+msgstr "ISBN naskenováno"
 
 #: bookwyrm/templates/search/barcode_modal.html:37
 msgctxt "followed by ISBN"
@@ -4823,15 +4825,15 @@ msgstr ""
 
 #: bookwyrm/templates/search/book.html:117
 msgid "Manually add book"
-msgstr ""
+msgstr "Manuálně přidat knihu"
 
 #: bookwyrm/templates/search/book.html:122
 msgid "Log in to import or add books."
-msgstr ""
+msgstr "Přihlaste se pro import nebo přidání knih."
 
 #: bookwyrm/templates/search/layout.html:17
 msgid "Search query"
-msgstr ""
+msgstr "Vyhledávací dotaz"
 
 #: bookwyrm/templates/search/layout.html:20
 msgid "Search type"
@@ -5104,7 +5106,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:89
 msgid "Misc"
-msgstr ""
+msgstr "Různé"
 
 #: bookwyrm/templates/settings/celery.html:96
 msgid "Low priority"
@@ -5295,11 +5297,11 @@ msgstr ""
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:10
 msgid "Add domain"
-msgstr ""
+msgstr "Přidat doménu"
 
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:11
 msgid "Domain:"
-msgstr ""
+msgstr "Doména:"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:7
@@ -5448,20 +5450,20 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance.html:59
 #: bookwyrm/templates/settings/federation/instance.html:65
 msgid "View all"
-msgstr ""
+msgstr "Zobrazit vše"
 
 #: bookwyrm/templates/settings/federation/instance.html:62
 #: bookwyrm/templates/settings/users/user_info.html:60
 msgid "Reports:"
-msgstr ""
+msgstr "Nahlášení:"
 
 #: bookwyrm/templates/settings/federation/instance.html:68
 msgid "Followed by us:"
-msgstr ""
+msgstr "Sledované námi:"
 
 #: bookwyrm/templates/settings/federation/instance.html:73
 msgid "Followed by them:"
-msgstr ""
+msgstr "Sledovaní jimi:"
 
 #: bookwyrm/templates/settings/federation/instance.html:78
 msgid "Blocked by us:"
