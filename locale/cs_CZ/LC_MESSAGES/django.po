@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-17 21:56+0000\n"
-"PO-Revision-Date: 2025-04-15 15:54\n"
+"PO-Revision-Date: 2025-04-15 17:49\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -732,9 +732,9 @@ msgstr "Bohužel %(display_name)s nedokončil žádné knihy v %(year)s"
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
 msgstr[0] "V roce %(year)s přečetli %(display_name)s %(books_total)s knihu<br /> s celkovým počtem %(pages_total)s stran!"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "V roce %(year)s přečetl %(display_name)s %(books_total)s knih<br /> s celkovým počtem %(pages_total)s stran!"
+msgstr[1] "V roce %(year)s přečetli %(display_name)s %(books_total)s knihy<br /> s celkovým počtem %(pages_total)s stran!"
+msgstr[2] "V roce %(year)s přečetli %(display_name)s %(books_total)s knih<br /> s celkovým počtem %(pages_total)s stran!"
+msgstr[3] "V roce %(year)s jste přečetli %(display_name)s %(books_total)s knih<br /> s celkovým počtem %(pages_total)s stran!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
@@ -749,10 +749,10 @@ msgstr "To dělá v průměru %(pages)s stránek na knihu."
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "(Nebyla žádná dostupná data pro %(no_page_number)s knih)"
+msgstr[0] "(Nebyly nalezeny údaje o stránkách pro %(no_page_number)s knihu)"
+msgstr[1] "(Nebyly nalezeny údaje o stránkách pro %(no_page_number)s knihy)"
+msgstr[2] "(Nebyly nalezeny údaje o stránkách pro %(no_page_number)s knih)"
+msgstr[3] "(Nebyly nalezeny údaje o stránkách pro %(no_page_number)s knih)"
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -782,10 +782,10 @@ msgstr "…a nejdelší"
 #, python-format
 msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
-msgstr[0] "%(display_name)s si nastavil cíl přečíst %(goal)s knihu v %(year)s<br /> a dosáhl %(goal_percent)s%% tohoto cíle"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%(display_name)s si nastavili cíl přečíst %(goal)s knihu v roce %(year)s<br /> a dosáhli %(goal_percent)s%% tohoto cíle"
+msgstr[1] "%(display_name)s si nastavili cíl přečíst %(goal)s knihy v roce %(year)s<br /> a dosáhli %(goal_percent)s%% tohoto cíle"
+msgstr[2] "%(display_name)s si nastavili cíl přečíst %(goal)s knih v roce %(year)s<br /> a dosáhli %(goal_percent)s%% tohoto cíle"
+msgstr[3] "%(display_name)s si nastavili cíl přečíst %(goal)s knih v roce %(year)s<br /> a dosáhli %(goal_percent)s%% tohoto cíle"
 
 #: bookwyrm/templates/annual_summary/layout.html:211
 msgid "Way to go!"
@@ -795,10 +795,10 @@ msgstr "Jen tak dál!"
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(display_name)s zanechal %(ratings_total)s hodnocení, <br />jejich průměrné hodnocení je %(rating_average)s"
+msgstr[0] "%(display_name)s vytvořili %(ratings_total)s hodnocení, <br />jejich průměrné hodnocení je %(rating_average)s"
+msgstr[1] "%(display_name)s vytvořili %(ratings_total)s hodnocení, <br />jejich průměrné hodnocení je %(rating_average)s"
+msgstr[2] "%(display_name)s vytvořili %(ratings_total)s hodnocení, <br />jejich průměrné hodnocení je %(rating_average)s"
+msgstr[3] "%(display_name)s vytvořili %(ratings_total)s hodnocení, <br />jejich průměrné hodnocení je %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:240
 msgid "Their best rated review"
@@ -1466,7 +1466,7 @@ msgstr "Editace %(book_title)s"
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
 msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
-msgstr ""
+msgstr "Edice <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
@@ -2055,7 +2055,7 @@ msgstr "%(year)s cíl pro čtení"
 #: bookwyrm/templates/feed/goal_card.html:18
 #, python-format
 msgid "You can set or change your reading goal any time from your <a href=\"%(path)s\">profile page</a>"
-msgstr ""
+msgstr "Cíl čtení můžete nastavit nebo změnit kdykoliv na vaší <a href=\"%(path)s\">profilové stránce</a>"
 
 #: bookwyrm/templates/feed/layout.html:4
 msgid "Updates"
@@ -2654,7 +2654,7 @@ msgstr "Časové osy"
 
 #: bookwyrm/templates/guided_tour/home.html:176
 msgid "The bell will light up when you have a new notification. When it does, click on it to find out what exciting thing has happened!"
-msgstr ""
+msgstr "Zvoneček se rozsvítí, když máte nové oznámení. Když to udělá, klikněte na něj a zjistíte, co je nového!"
 
 #: bookwyrm/templates/guided_tour/home.html:177
 #: bookwyrm/templates/layout.html:77 bookwyrm/templates/layout.html:107
@@ -2789,7 +2789,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_books.html:32
 msgid "Reading status shelves"
-msgstr ""
+msgstr "Poličky stavu čtení"
 
 #: bookwyrm/templates/guided_tour/user_books.html:55
 msgid "You can create additional custom shelves to organise your books. A book on a custom shelf can be on any number of other shelves simultaneously, including one of the default reading status shelves"
@@ -3091,7 +3091,7 @@ msgstr[3] ""
 #: bookwyrm/templates/import/import_status.html:83
 #: bookwyrm/templates/import/manual_review.html:8
 msgid "Review items"
-msgstr ""
+msgstr "Zkontrolovat položky"
 
 #: bookwyrm/templates/import/import_status.html:89
 #, python-format
@@ -3108,7 +3108,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:107
 msgid "Row"
-msgstr ""
+msgstr "Řada"
 
 #: bookwyrm/templates/import/import_status.html:110
 #: bookwyrm/templates/shelf/shelf.html:151
