@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-12 17:02+0000\n"
-"PO-Revision-Date: 2025-04-17 15:36\n"
+"PO-Revision-Date: 2025-04-17 15:56\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -3443,7 +3443,7 @@ msgstr "Statuts"
 
 #: bookwyrm/templates/import/user_import_status.html:85
 msgid "Follows & Blocks"
-msgstr ""
+msgstr "Abonnements & Blocages"
 
 #: bookwyrm/templates/import/user_import_status.html:144
 msgid "Imported books"
@@ -3451,23 +3451,23 @@ msgstr "Livres importés"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:5
 msgid "User Import Troubleshooting"
-msgstr ""
+msgstr "Problèmes d'importation d'un utilisateur"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:26
 msgid "Your account was not set as an alias of the original user account"
-msgstr ""
+msgstr "Votre compte n'a pas été défini comme un alias du compte utilisateur d'origine"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:31
 msgid "Re-trying an import will not work in cases such as:"
-msgstr ""
+msgstr "Ré-essayer une importation ne fonctionnera pas dans ces cas :"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:34
 msgid "A user, status, or BookWyrm server was deleted after your import file was created"
-msgstr ""
+msgstr "Un utilisateur, statut ou serveur BookWyrm a été supprimé après la création de votre fichier d'importation"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:35
 msgid "Importing statuses when your old account has been deleted"
-msgstr ""
+msgstr "Importation des statuts lorsque votre ancien compte a été supprimé"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:43
 #, python-format
@@ -3477,11 +3477,11 @@ msgstr "Actuellement, vous êtes autorisé à importer un utilisateur toutes les
 #: bookwyrm/templates/import/user_troubleshoot.html:44
 #, python-format
 msgid "You will be able to retry this import at %(next_time)s"
-msgstr ""
+msgstr "Vous pourrez réessayer cette importation à %(next_time)s"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:65
 msgid "Relationship"
-msgstr ""
+msgstr "Type de relation"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:68
 msgid "Reason"
@@ -4699,12 +4699,12 @@ msgstr "Vous pourrez créer un nouveau fichier d'exportation à %(next_available
 #: bookwyrm/templates/preferences/export-user.html:72
 #, python-format
 msgid "On average, recent exports have taken %(hours)s hours."
-msgstr ""
+msgstr "En moyenne, les dernières exportations ont pris %(hours)s heures."
 
 #: bookwyrm/templates/preferences/export-user.html:76
 #, python-format
 msgid "On average, recent exports have taken %(minutes)s minutes."
-msgstr ""
+msgstr "En moyenne, les dernières exportations ont pris %(minutes)s minutes."
 
 #: bookwyrm/templates/preferences/export-user.html:88
 msgid "Create user export file"
@@ -7574,17 +7574,17 @@ msgstr "Commentaires de {obj.display_name}"
 #: bookwyrm/views/rss_feed.py:219
 #, python-brace-format
 msgid "{obj.user.display_name}’s {obj.name} shelf"
-msgstr ""
+msgstr "Étagère {obj.name} de {obj.user.display_name}"
 
 #: bookwyrm/views/rss_feed.py:237
 #, python-brace-format
 msgid "{obj.user.display_name}’s {obj.name} shelf: {desc}"
-msgstr ""
+msgstr "Étagère « {obj.name} » de {obj.user.display_name} : {desc}"
 
 #: bookwyrm/views/rss_feed.py:238
 #, python-brace-format
 msgid "Books added to {obj.user.name}’s {obj.name} shelf"
-msgstr ""
+msgstr "Livres ajoutés à l’étagère « {obj.name} » de {obj.user.name}"
 
 #: bookwyrm/views/updates.py:45
 #, python-format
