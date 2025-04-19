@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-12 17:02+0000\n"
-"PO-Revision-Date: 2025-04-18 20:18\n"
+"PO-Revision-Date: 2025-04-19 19:59\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Turkish\n"
 "Language: tr\n"
@@ -1127,7 +1127,7 @@ msgstr "Açıklama:"
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
-msgstr[0] ""
+msgstr[0] "%(count)s baskı"
 msgstr[1] ""
 
 #: bookwyrm/templates/book/book.html:251
@@ -1513,12 +1513,12 @@ msgstr "Openlibrary hesabı:"
 #: bookwyrm/templates/book/editions/editions.html:4
 #, python-format
 msgid "Editions of %(book_title)s"
-msgstr ""
+msgstr "%(book_title)s'ın Baskıları"
 
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
 msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
-msgstr ""
+msgstr "<a href=\"%(work_path)s\"><i>%(work_title)s</i></a>'ın Baskıları"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
@@ -1592,7 +1592,7 @@ msgstr "Dosya türü"
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:25
 #: bookwyrm/templates/settings/reports/report_links_table.html:5
 msgid "Domain"
-msgstr ""
+msgstr "Alan adı"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:36
 #: bookwyrm/templates/import/import.html:149
@@ -1609,7 +1609,7 @@ msgstr ""
 #: bookwyrm/templates/settings/users/user_admin.html:56
 #: bookwyrm/templates/settings/users/user_info.html:35
 msgid "Status"
-msgstr ""
+msgstr "Durum"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:37
 #: bookwyrm/templates/settings/announcements/announcements.html:41
@@ -1619,17 +1619,17 @@ msgstr ""
 #: bookwyrm/templates/settings/reports/report_links_table.html:6
 #: bookwyrm/templates/settings/themes.html:108
 msgid "Actions"
-msgstr ""
+msgstr "Eylemler"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:48
 #: bookwyrm/templates/settings/link_domains/link_table.html:21
 msgid "Unknown user"
-msgstr ""
+msgstr "Bilinmeyen kullanıcı"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:57
 #: bookwyrm/templates/book/file_links/verification_modal.html:22
 msgid "Report spam"
-msgstr ""
+msgstr "Spam bildir"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:102
 msgid "No links available for this book."
@@ -1659,7 +1659,7 @@ msgstr "BookWyrm'den ayrılıyor"
 #: bookwyrm/templates/book/file_links/verification_modal.html:11
 #, python-format
 msgid "This link is taking you to: <code>%(link_url)s</code>.<br> Is that where you'd like to go?"
-msgstr ""
+msgstr "Bu bağlantı sizi şuraya yönlendiriyor:<code>%(link_url)s</code>.<br>Onaylıyor musun?"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:27
 #: bookwyrm/templates/setup/config.html:139
@@ -1669,12 +1669,12 @@ msgstr "Devam et"
 #: bookwyrm/templates/book/publisher_info.html:23
 #, python-format
 msgid "%(format)s, %(pages)s pages"
-msgstr ""
+msgstr "%(format)s, %(pages)s sayfalar"
 
 #: bookwyrm/templates/book/publisher_info.html:25
 #, python-format
 msgid "%(pages)s pages"
-msgstr ""
+msgstr "%(pages)s sayfalar"
 
 #: bookwyrm/templates/book/publisher_info.html:38
 #, python-format
@@ -1684,7 +1684,7 @@ msgstr ""
 #: bookwyrm/templates/book/publisher_info.html:63
 #, python-format
 msgid "Published %(date)s by %(publisher)s."
-msgstr ""
+msgstr "%(publisher)s tarafından %(date)s'de yayınlanmıştır."
 
 #: bookwyrm/templates/book/publisher_info.html:65
 #, python-format
@@ -1702,12 +1702,12 @@ msgstr "oylandı"
 
 #: bookwyrm/templates/book/series.html:11
 msgid "Series by"
-msgstr ""
+msgstr "Seriler"
 
 #: bookwyrm/templates/book/series.html:28
 #, python-format
 msgid "Book %(series_number)s"
-msgstr ""
+msgstr "Kitap %(series_number)s"
 
 #: bookwyrm/templates/book/series.html:28
 msgid "Unsorted Book"
@@ -1744,7 +1744,7 @@ msgstr "E-posta adresini onayla"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:13
 msgid "A confirmation code has been sent to the email address you used to register your account."
-msgstr ""
+msgstr "Hesabınızı oluşturmak için e-posta adresinize bir onay kodu gönderilmiştir."
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:15
 msgid "Sorry! We couldn't find that code."
@@ -1886,87 +1886,87 @@ msgstr ""
 #: bookwyrm/templates/discover/card-header.html:8
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> wants to read <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a>okumak istiyor<a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:13
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> finished reading <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> okuma bitti <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:18
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> started reading <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> okumaya başladı <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:23
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> rated <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> oy verdi <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:27
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> reviewed <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> inceledi <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:31
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> yorum yaptı <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:35
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> quoted <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> alıntı yaptı <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
 #: bookwyrm/templates/layout.html:91
 msgid "Discover"
-msgstr ""
+msgstr "Keşfet"
 
 #: bookwyrm/templates/discover/discover.html:12
 #, python-format
 msgid "See what's new in the local %(site_name)s community"
-msgstr ""
+msgstr "Yerel %(site_name)s topluluğundaki yenilikleri görün"
 
 #: bookwyrm/templates/discover/large-book.html:52
 #: bookwyrm/templates/discover/small-book.html:36
 msgid "View status"
-msgstr ""
+msgstr "Durumu görüntüle"
 
 #: bookwyrm/templates/email/confirm/html_content.html:6
 #: bookwyrm/templates/email/confirm/text_content.html:4
 #, python-format
 msgid "One last step before you join %(site_name)s! Please confirm your email address by clicking the link below:"
-msgstr ""
+msgstr "%(site_name)s katılmadan önce son bir adım! Lütfen aşağıdaki bağlantıya tıklayarak e-posta adresinizi onaylayın:"
 
 #: bookwyrm/templates/email/confirm/html_content.html:11
 msgid "Confirm Email"
-msgstr ""
+msgstr "E-posta Adresini Doğrula"
 
 #: bookwyrm/templates/email/confirm/html_content.html:15
 #, python-format
 msgid "Or enter the code \"<code>%(confirmation_code)s</code>\" at login."
-msgstr ""
+msgstr "Veya girişteki <code>%(confirmation_code)s</code> konu girin."
 
 #: bookwyrm/templates/email/confirm/subject.html:2
 msgid "Please confirm your email"
-msgstr ""
+msgstr "E-posta adresini doğrula"
 
 #: bookwyrm/templates/email/confirm/text_content.html:10
 #, python-format
 msgid "Or enter the code \"%(confirmation_code)s\" at login."
-msgstr ""
+msgstr "Veya girişteki %(confirmation_code)s konu girin."
 
 #: bookwyrm/templates/email/html_layout.html:15
 #: bookwyrm/templates/email/text_layout.html:2
 msgid "Hi there,"
-msgstr ""
+msgstr "Merhaba,"
 
 #: bookwyrm/templates/email/html_layout.html:21
 #, python-format
 msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"%(base_url)s\">%(site_name)s</a>"
-msgstr ""
+msgstr "BookWyrm <a style=\"color: #3273dc;\" href=\"%(base_url)s\">%(site_name)s</a> üzerinde barındırılıyor"
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
@@ -1976,7 +1976,7 @@ msgstr "E-posta Tercihleri"
 #: bookwyrm/templates/email/invite/subject.html:2
 #, python-format
 msgid "You're invited to join %(site_name)s!"
-msgstr ""
+msgstr "%(site_name)s'ne katılmaya davet edildin!"
 
 #: bookwyrm/templates/email/invite/html_content.html:9
 msgid "Join Now"
@@ -1990,24 +1990,24 @@ msgstr ""
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
 msgid "You're invited to join %(site_name)s! Click the link below to create an account."
-msgstr ""
+msgstr "%(site_name)s'ne katılmaya davet edildin! Hesap oluşturmak için aşağıdaki bağlantıya tıklayın."
 
 #: bookwyrm/templates/email/invite/text_content.html:8
 #, python-format
 msgid "Learn more about %(site_name)s:"
-msgstr ""
+msgstr "%(site_name)s hakkında daha fazla bilgi edinin:"
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:8
 #: bookwyrm/templates/email/moderation_report/text_content.html:6
 #, python-format
 msgid "@%(reporter)s has flagged a link domain for moderation."
-msgstr ""
+msgstr "@%(reporter)s moderasyon için bir bağlantı alanını işaretledi."
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:14
 #: bookwyrm/templates/email/moderation_report/text_content.html:10
 #, python-format
 msgid "@%(reporter)s has flagged behavior by @%(reportee)s for moderation."
-msgstr ""
+msgstr "@%(reporter)s, @%(reportee)s tarafından yapılan davranışları moderasyon için işaretledi."
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:21
 #: bookwyrm/templates/email/moderation_report/text_content.html:15
@@ -2017,7 +2017,7 @@ msgstr "Raporu görüntüle"
 #: bookwyrm/templates/email/moderation_report/subject.html:2
 #, python-format
 msgid "New report for %(site_name)s"
-msgstr ""
+msgstr "%(site_name)s için yeni rapor"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:6
 #: bookwyrm/templates/email/password_reset/text_content.html:4
@@ -2609,7 +2609,7 @@ msgstr "Grubunuz"
 
 #: bookwyrm/templates/guided_tour/group.html:31
 msgid "Use this search box to find users to join your group. Currently users must be members of the same Bookwyrm instance and be invited by the group owner."
-msgstr ""
+msgstr "Grubunuza katılacak kullanıcıları bulmak için bu arama kutusunu kullanın. Şu anda kullanıcılar aynı Bookwyrm örneğinin üyesi olmalı ve grup sahibi tarafından davet edilmelidir."
 
 #: bookwyrm/templates/guided_tour/group.html:32
 msgid "Find users"
@@ -2617,7 +2617,7 @@ msgstr "Kullanıcıları bul"
 
 #: bookwyrm/templates/guided_tour/group.html:54
 msgid "Your group members will appear here. The group owner is marked with a star symbol."
-msgstr ""
+msgstr "Grup üyeleriniz burada görünecektir. Grup sahibi bir yıldız sembolü ile işaretlenmiştir."
 
 #: bookwyrm/templates/guided_tour/group.html:55
 msgid "Group members"
@@ -2625,7 +2625,7 @@ msgstr "Grup üyeleri"
 
 #: bookwyrm/templates/guided_tour/group.html:77
 msgid "As well as creating lists from the Lists page, you can create a group-curated list here on the group's homepage. Any member of the group can create a list curated by group members."
-msgstr ""
+msgstr "Listeler sayfasından liste oluşturmanın yanı sıra, burada grubun ana sayfasında, grup tarafından seçilmiş bir liste oluşturabilirsiniz. Grubun herhangi bir üyesi, grup üyeleri tarafından oluşturulan bir liste oluşturabilir."
 
 #: bookwyrm/templates/guided_tour/group.html:78
 msgid "Group lists"
@@ -2633,7 +2633,7 @@ msgstr "Grup listesi"
 
 #: bookwyrm/templates/guided_tour/group.html:100
 msgid "Congratulations, you've finished the tour! Now you know the basics, but there is lots more to explore on your own. Happy reading!"
-msgstr ""
+msgstr "Tebrikler, turu tamamladınız! Artık temel bilgileri biliyorsunuz, ancak kendi başınıza keşfedeceğiniz çok şey var. İyi okumalar!"
 
 #: bookwyrm/templates/guided_tour/group.html:115
 msgid "End tour"
@@ -2660,11 +2660,11 @@ msgstr "Evet, lütfen!"
 
 #: bookwyrm/templates/guided_tour/home.html:38
 msgid "If  you ever change your mind, just click on the Guided Tour link to start your tour"
-msgstr ""
+msgstr "Fikrinizi değiştirirseniz, turunuzu başlatmak için Rehberli Tur bağlantısına tıklamanız yeterlidir"
 
 #: bookwyrm/templates/guided_tour/home.html:62
 msgid "Search for books, users, or lists using this search box."
-msgstr ""
+msgstr "Bu arama kutusunu kullanarak kitapları, kullanıcıları veya listeleri arayın."
 
 #: bookwyrm/templates/guided_tour/home.html:63
 msgid "Search box"
@@ -2672,7 +2672,7 @@ msgstr "Arama kutusu"
 
 #: bookwyrm/templates/guided_tour/home.html:79
 msgid "Search book records by scanning an ISBN barcode using your device's camera - great when you're in the bookstore or library!"
-msgstr ""
+msgstr "Cihazınızın kamerasını kullanarak ISBN barkodunu tarayarak kitap kayıtlarında arama yapın - kitapçıda veya kütüphanedeyken harika!"
 
 #: bookwyrm/templates/guided_tour/home.html:80
 msgid "Barcode reader"
@@ -2680,7 +2680,7 @@ msgstr "Barkod okuyucu"
 
 #: bookwyrm/templates/guided_tour/home.html:102
 msgid "Use the <strong>Lists</strong>, <strong>Discover</strong>, and <strong>Your Books</strong> links to discover reading suggestions and the latest happenings on this server, or to see your catalogued books!"
-msgstr ""
+msgstr "Okuma önerilerini ve bu sunucudaki en son gelişmeleri keşfetmek için <strong>Listeler</strong>, <strong>Keşfet</strong> ve <strong>Kitaplarınız</strong> bağlantılarını kullanın, veya katalogdaki kitaplarınızı görmek için!"
 
 #: bookwyrm/templates/guided_tour/home.html:103
 msgid "Navigation Bar"
@@ -2692,7 +2692,7 @@ msgstr "Okuma durumu raflarınızdaki kitaplar burada gösterilecektir."
 
 #: bookwyrm/templates/guided_tour/home.html:151
 msgid "Updates from people you are following will appear in your <strong>Home</strong> timeline.<br><br>The <strong>Books</strong> tab shows activity from anyone, related to your books."
-msgstr ""
+msgstr "Takip ettiğiniz kişilerden gelen güncellemeler <strong>Ana Sayfa</strong> zaman akışınızda görünecektir.<br><br> <strong>Kitaplar</strong> sekmesi, kitaplarınızla ilgili herhangi bir kişiden gelen etkinlikleri gösterir."
 
 #: bookwyrm/templates/guided_tour/home.html:152
 msgid "Timelines"
@@ -2777,12 +2777,12 @@ msgstr "Beni oraya götür"
 
 #: bookwyrm/templates/guided_tour/search.html:16
 msgid "If the book you are looking for is available on a remote catalogue such as Open Library, click on <strong>Import book</strong>."
-msgstr ""
+msgstr "Aradığınız kitap Open Library gibi uzak bir katalogda mevcutsa, <strong>Kitabı içe aktar</strong> seçeneğine tıklayın."
 
 #: bookwyrm/templates/guided_tour/search.html:17
 #: bookwyrm/templates/guided_tour/search.html:44
 msgid "Searching"
-msgstr ""
+msgstr "Aranıyor"
 
 #: bookwyrm/templates/guided_tour/search.html:43
 msgid "If the book you are looking for is already on this Bookwyrm instance, you can click on the title to go to the book's page."
