@@ -1,4 +1,6 @@
 """ template filters """
+import datetime
+from typing import Any, Optional
 from dateutil.relativedelta import relativedelta
 from django import template
 from django.conf import settings
@@ -13,7 +15,7 @@ register = template.Library()
 
 
 @register.filter(name="mentions")
-def get_mentions(status, user):
+def get_mentions(status: models.Status, user: models.User) -> str:
     """people to @ in a reply: the parent and all mentions"""
     mentions = set([status.user] + list(status.mention_users.all()))
     return (
@@ -22,7 +24,7 @@ def get_mentions(status, user):
 
 
 @register.filter(name="replies")
-def get_replies(status):
+def get_replies(status: models.Status) -> Any:
     """get all direct replies to a status"""
     # TODO: this limit could cause problems
     return models.Status.objects.filter(
@@ -32,17 +34,19 @@ def get_replies(status):
 
 
 @register.filter(name="parent")
-def get_parent(status):
+def get_parent(status: models.Status) -> Any:
     """get the reply parent for a status"""
-    return (
-        models.Status.objects.filter(id=status.reply_parent_id)
-        .select_subclasses()
-        .first()
-    )
+    if status.reply_parent_id:
+        return (
+            models.Status.objects.filter(id=status.reply_parent_id)
+            .select_subclasses()
+            .first()
+        )
+    return None
 
 
 @register.filter(name="boosted_status")
-def get_boosted(boost):
+def get_boosted(boost: models.Boost) -> Any:
     """load a boosted status. have to do this or it won't get foreign keys"""
     return (
         models.Status.objects.select_subclasses()
@@ -53,7 +57,7 @@ def get_boosted(boost):
 
 
 @register.filter(name="published_date")
-def get_published_date(date):
+def get_published_date(date: datetime.datetime) -> str | None:
     """less verbose combo of humanize filters"""
     if not date:
         return ""
@@ -67,7 +71,7 @@ def get_published_date(date):
 
 
 @register.simple_tag()
-def get_header_template(status):
+def get_header_template(status: models.Status) -> Any:
     """get the path for the status template"""
     if isinstance(status, models.Boost):
         status = status.boosted_status
@@ -83,6 +87,6 @@ def get_header_template(status):
 
 
 @register.simple_tag(takes_context=False)
-def load_book(status):
+def load_book(status: models.Status) -> Optional[models.Book]:
     """how many users that you follow, follow them"""
     return status.book if hasattr(status, "book") else status.mention_books.first()
