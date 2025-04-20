@@ -38,6 +38,7 @@ class Views(TestCase):
             title="Test Book",
             remote_id="https://example.com/book/1",
             parent_work=cls.work,
+            subjects=["First keyword", "Second"],
         )
         models.SiteSettings.objects.create()
 
@@ -224,3 +225,32 @@ class Views(TestCase):
         self.assertIsInstance(response, TemplateResponse)
         validate_html(response.render())
         self.assertEqual(response.context_data["results"][0], booklist)
+
+    def test_search_keyword(self):
+        """searches book by keyword"""
+        view = views.Search.as_view()
+
+        connector = models.Connector.objects.create(
+            identifier="example.com",
+            connector_file="openlibrary",
+            base_url="https://example.com",
+            books_url="https://example.com/books",
+            covers_url="https://example.com/covers",
+            search_url="https://example.com/search?q=",
+        )
+        mock_result = SearchResult(title="Mock Book", connector=connector, key="hello")
+
+        request = self.factory.get("", {"q": "Second", "type": "subject"})
+        request.user = self.local_user
+        with patch("bookwyrm.views.search.is_api_request") as is_api:
+            is_api.return_value = False
+            with patch("bookwyrm.connectors.connector_manager.search") as remote_search:
+                remote_search.return_value = [
+                    {"results": [mock_result], "connector": connector}
+                ]
+                response = view(request)
+
+        self.assertIsInstance(response, TemplateResponse)
+
+        local_results = response.context_data["results"]
+        self.assertEqual(local_results[0].title, "Test Book")

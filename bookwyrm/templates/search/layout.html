@@ -25,6 +25,7 @@
                     <option value="user" {% if type == "user" %}selected{% endif %}>{% trans "Users" %}</option>
                     {% endif %}
                     <option value="list" {% if type == "list" %}selected{% endif %}>{% trans "Lists" %}</option>
+                    <option value="subject" {% if type == "subject" %}selected{% endif %}>{% trans "Subjects" %}</option>
                 </select>
             </div>
         </div>
@@ -53,6 +54,9 @@
         {% endif %}
         <li{% if type == "list" %} class="is-active"{% endif %}>
             <a href="{% url 'search' %}?q={{ query|urlencode }}&type=list">{% trans "Lists" %}</a>
+        </li>
+        <li{% if type == "subject" %} class="is-active"{% endif %}>
+            <a href="{% url 'search' %}?q={{ query|urlencode }}&type=subject">{% trans "Subjects" %}</a>
         </li>
     </ul>
 </nav>

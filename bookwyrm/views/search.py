@@ -1,10 +1,12 @@
 """ search views"""
 
 import re
+from functools import reduce
+import operator
 
 from django.contrib.postgres.search import TrigramSimilarity, SearchRank, SearchQuery
 from django.core.paginator import Paginator
-from django.db.models import F
+from django.db.models import F, Q
 from django.db.models.functions import Greatest
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
@@ -46,8 +48,9 @@ class Search(View):
             "author": author_search,
             "user": user_search,
             "list": list_search,
+            "subject": subject_search,
         }
-        if not search_type in endpoints:
+        if search_type not in endpoints:
             search_type = "book"
 
         return endpoints[search_type](request)
@@ -188,6 +191,27 @@ def list_search(request):
         page.number, on_each_side=2, on_ends=1
     )
     return TemplateResponse(request, "search/list.html", data)
+
+
+def subject_search(request):
+    """any relevent subject keywords"""
+    query = request.GET.get("q").strip()
+    data = {"query": query, "type": "subjects"}
+    filters = [
+        {f"{field_name}__contains": [query]}
+        for field_name in ["subjects", "subject_places"]
+    ]
+    results = models.Edition.objects.filter(
+        reduce(operator.or_, (Q(**f) for f in filters))
+    ).distinct()
+    results = results.distinct()
+    paginated = Paginator(results, PAGE_LENGTH)
+    page = paginated.get_page(request.GET.get("page"))
+    data["results"] = page
+    data["page_range"] = paginated.get_elided_page_range(
+        page.number, on_each_side=2, on_ends=1
+    )
+    return TemplateResponse(request, "search/book.html", data)
 
 
 def isbn_check_and_format(query):
