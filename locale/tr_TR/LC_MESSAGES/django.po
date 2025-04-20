@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-12 17:02+0000\n"
-"PO-Revision-Date: 2025-04-19 21:01\n"
+"PO-Revision-Date: 2025-04-20 13:00\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Turkish\n"
 "Language: tr\n"
@@ -1985,7 +1985,7 @@ msgstr "Şimdi Katıl"
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
 msgid "Learn more <a href=\"%(base_url)s%(about_path)s\">about %(site_name)s</a>."
-msgstr ""
+msgstr "<a href=\"%(base_url)s%(about_path)s\">hakkında%(site_name)s </a> daha fazla bilgi edinin."
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
@@ -2023,7 +2023,7 @@ msgstr "%(site_name)s için yeni rapor"
 #: bookwyrm/templates/email/password_reset/text_content.html:4
 #, python-format
 msgid "You requested to reset your %(site_name)s password. Click the link below to set a new password and log in to your account."
-msgstr ""
+msgstr "%(site_name)s şifrenizi sıfırlamayı talep ettiniz. Yeni bir şifre belirlemek ve hesabınıza giriş yapmak için aşağıdaki bağlantıya tıklayın."
 
 #: bookwyrm/templates/email/password_reset/html_content.html:9
 #: bookwyrm/templates/landing/password_reset.html:4
@@ -2041,7 +2041,7 @@ msgstr "Şifrenizi sıfırlamayı talep etmediyseniz, bu e-postayı yok sayabili
 #: bookwyrm/templates/email/password_reset/subject.html:2
 #, python-format
 msgid "Reset your %(site_name)s password"
-msgstr ""
+msgstr "%(site_name)s şifreyi sıfırla"
 
 #: bookwyrm/templates/email/test/html_content.html:6
 #: bookwyrm/templates/email/test/text_content.html:4
@@ -2058,7 +2058,7 @@ msgstr "Test e-postası"
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:18
 #, python-format
 msgid "%(site_name)s home page"
-msgstr ""
+msgstr "%(site_name)s ana sayfa"
 
 #: bookwyrm/templates/embed-layout.html:40
 #: bookwyrm/templates/snippets/footer.html:12
@@ -2072,7 +2072,7 @@ msgstr "BookWyrm'a Katıl"
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
 msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "<a href=\"%(path)s\">%(username)s</a> ile doğrudan mesajlar"
 
 #: bookwyrm/templates/feed/direct_messages.html:10
 #: bookwyrm/templates/user_menu.html:39
@@ -2100,12 +2100,12 @@ msgstr "Alternatif olarak, daha fazla durum türünü etkinleştirmeyi deneyebil
 #: bookwyrm/templates/user/goal_form.html:6
 #, python-format
 msgid "%(year)s Reading Goal"
-msgstr ""
+msgstr "%(year)s okuma hedefi"
 
 #: bookwyrm/templates/feed/goal_card.html:18
 #, python-format
 msgid "You can set or change your reading goal any time from your <a href=\"%(path)s\">profile page</a>"
-msgstr ""
+msgstr "Okuma hedefinizi<a href=\"%(path)s\">profil sayfanızdan</a> istediğiniz zaman belirleyebilir veya değiştirebilirsiniz"
 
 #: bookwyrm/templates/feed/layout.html:4
 msgid "Updates"
@@ -2149,12 +2149,12 @@ msgstr "Yıl sonu, son 12 ay boyunca okunan tüm kitapların envanterini çıkar
 #: bookwyrm/templates/feed/summary_card.html:26
 #, python-format
 msgid "Discover your stats for %(year)s!"
-msgstr ""
+msgstr "%(year)s göre istatistiklerinizi keşfedin!"
 
 #: bookwyrm/templates/get_started/book_preview.html:6
 #, python-format
 msgid "Have you read %(book_title)s?"
-msgstr ""
+msgstr "%(book_title)s'nı okudunuz mu?"
 
 #: bookwyrm/templates/get_started/book_preview.html:7
 msgid "Add to your books"
@@ -2199,7 +2199,7 @@ msgstr "Kitap ara"
 #: bookwyrm/templates/get_started/books.html:11
 #, python-format
 msgid "No books found for \"%(query)s\""
-msgstr ""
+msgstr "%(query)s için kitap bulunamadı"
 
 #: bookwyrm/templates/get_started/books.html:11
 #, python-format
