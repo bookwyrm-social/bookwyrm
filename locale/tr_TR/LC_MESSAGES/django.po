@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-12 17:02+0000\n"
-"PO-Revision-Date: 2025-04-20 13:00\n"
+"PO-Revision-Date: 2025-04-20 20:55\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Turkish\n"
 "Language: tr\n"
@@ -2311,12 +2311,12 @@ msgstr "Hesabınız dizinde görünecek ve diğer BookWyrm kullanıcılarına ö
 
 #: bookwyrm/templates/get_started/users.html:11
 msgid "Search for a user"
-msgstr ""
+msgstr "Kullanıcı ara"
 
 #: bookwyrm/templates/get_started/users.html:13
 #, python-format
 msgid "No users found for \"%(query)s\""
-msgstr ""
+msgstr "%(query)s için kullanıcı bulunamadı"
 
 #: bookwyrm/templates/groups/create_form.html:5
 #: bookwyrm/templates/guided_tour/user_groups.html:32
@@ -2327,7 +2327,7 @@ msgstr "Grup oluştur"
 #: bookwyrm/templates/groups/created_text.html:4
 #, python-format
 msgid "Managed by <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "<a href=\"%(path)s\">%(username)s</a> tarafından yönetilmektedir"
 
 #: bookwyrm/templates/groups/delete_group_modal.html:4
 msgid "Delete this group?"
@@ -2400,18 +2400,18 @@ msgstr "Gruptan ayrıl"
 #: bookwyrm/templates/user/user_preview.html:39
 #: bookwyrm/templates/user/user_preview.html:47
 msgid "Follows you"
-msgstr ""
+msgstr "Seni takip ediyor"
 
 #: bookwyrm/templates/groups/suggested_users.html:7
 msgid "Add new members!"
-msgstr ""
+msgstr "Yeni üyeler ekle!"
 
 #: bookwyrm/templates/groups/suggested_users.html:20
 #: bookwyrm/templates/snippets/suggested_users.html:16
 #, python-format
 msgid "%(mutuals)s follower you follow"
 msgid_plural "%(mutuals)s followers you follow"
-msgstr[0] ""
+msgstr[0] "%(mutuals)s takip ettiğin takipçiler"
 msgstr[1] ""
 
 #: bookwyrm/templates/groups/suggested_users.html:27
@@ -2419,29 +2419,29 @@ msgstr[1] ""
 #, python-format
 msgid "%(shared_books)s book on your shelves"
 msgid_plural "%(shared_books)s books on your shelves"
-msgstr[0] ""
+msgstr[0] "%(shared_books)s raflarındaki kitaplar"
 msgstr[1] ""
 
 #: bookwyrm/templates/groups/suggested_users.html:43
 #, python-format
 msgid "No potential members found for \"%(user_query)s\""
-msgstr ""
+msgstr "\"%(user_query)s\" için uygun üye bulunamadı"
 
 #: bookwyrm/templates/groups/user_groups.html:15
 msgid "Manager"
-msgstr ""
+msgstr "Yönetici"
 
 #: bookwyrm/templates/groups/user_groups.html:35
 msgid "No groups found."
-msgstr ""
+msgstr "Grup bulunamadı."
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
-msgstr ""
+msgstr "Bu bir kitabın ana sayfası. Bakalım buradayken neler yapabiliyorsun!"
 
 #: bookwyrm/templates/guided_tour/book.html:11
 msgid "Book page"
-msgstr ""
+msgstr "Kitap sayfası"
 
 #: bookwyrm/templates/guided_tour/book.html:19
 #: bookwyrm/templates/guided_tour/group.html:19
@@ -2452,7 +2452,7 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_groups.html:19
 #: bookwyrm/templates/guided_tour/user_profile.html:19
 msgid "End Tour"
-msgstr ""
+msgstr "Turu bitir"
 
 #: bookwyrm/templates/guided_tour/book.html:26
 #: bookwyrm/templates/guided_tour/book.html:50
@@ -2501,35 +2501,35 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_profile.html:118
 #: bookwyrm/templates/snippets/pagination.html:30
 msgid "Next"
-msgstr ""
+msgstr "Devam"
 
 #: bookwyrm/templates/guided_tour/book.html:31
 msgid "This is where you can set a reading status for this book. You can press the button to move to the next stage, or use the drop down button to select the reading status you want to set."
-msgstr ""
+msgstr "Burası kitap için bir okuma durumu ayarlayabileceğin yerdir. Bir sonraki aşamaya geçmek için düğmeye basabilir veya ayarlamak istediğiniz okuma durumunu seçmek için aşağı açılır düğmeyi kullanabilirsin."
 
 #: bookwyrm/templates/guided_tour/book.html:32
 msgid "Reading status"
-msgstr ""
+msgstr "Okunma Durumu"
 
 #: bookwyrm/templates/guided_tour/book.html:55
 msgid "You can also manually add reading dates here. Unlike changing the reading status using the previous method, adding dates manually will not automatically add them to your <strong>Read</strong> or <strong>Reading</strong> shelves."
-msgstr ""
+msgstr "Okuma tarihlerini buraya el ile olarak da ekleyebilirsin. Önceki yöntemi kullanarak okuma durumunu değiştirmenin aksine, tarihleri el ile olarak eklemek onları otomatik olarak <strong>Okundu</strong> veya <strong>Okunuyor</strong> raflarınıza eklemeyecektir."
 
 #: bookwyrm/templates/guided_tour/book.html:55
 msgid "Got a favourite you re-read every year? We've got you covered - you can add multiple read dates for the same book 😀"
-msgstr ""
+msgstr "Her yıl yeniden okuduğun bir favorin var mı? Biz her şeyi hallettik - aynı kitap için birden fazla okuma tarihi ekleyebilirsin 😀"
 
 #: bookwyrm/templates/guided_tour/book.html:79
 msgid "There can be multiple editions of a book, in various formats or languages. You can choose which edition you want to use."
-msgstr ""
+msgstr "Bir kitabın çeşitli formatlarda veya dillerde birden fazla baskısı olabilir. İstediğin baskıyı seçebilirsin."
 
 #: bookwyrm/templates/guided_tour/book.html:80
 msgid "Other editions"
-msgstr ""
+msgstr "Diğer baskılar"
 
 #: bookwyrm/templates/guided_tour/book.html:102
 msgid "You can post a review, comment, or quote here."
-msgstr ""
+msgstr "Buraya bir inceleme, yorum veya alıntı gönderebilirsin."
 
 #: bookwyrm/templates/guided_tour/book.html:103
 msgid "Share your thoughts"
@@ -2545,7 +2545,7 @@ msgstr "İnceleme gönder"
 
 #: bookwyrm/templates/guided_tour/book.html:151
 msgid "You can share your thoughts on this book generally with a simple comment"
-msgstr ""
+msgstr "Bu kitap hakkındaki düşüncelerini genel olarak basit bir yorumla paylaşabilirsin"
 
 #: bookwyrm/templates/guided_tour/book.html:152
 msgid "Post a comment"
@@ -2561,7 +2561,7 @@ msgstr "Alıntı paylaş"
 
 #: bookwyrm/templates/guided_tour/book.html:199
 msgid "If your review or comment might ruin the book for someone who hasn't read it yet, you can hide your post behind a <strong>spoiler alert</strong>"
-msgstr ""
+msgstr "İncelemen veya yorumun, kitabı henüz okumamış biri için kitabın keyfini bozacaksa, gönderini bir <strong>spoiler uyarısı</strong>nın ardına gizleyebilirsin"
 
 #: bookwyrm/templates/guided_tour/book.html:200
 msgid "Spoiler alerts"
