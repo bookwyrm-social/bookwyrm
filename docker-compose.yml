@@ -16,10 +16,22 @@ services:
       - ./nginx/locations:/etc/nginx/conf.d/locations
       - ./nginx/server_config:/etc/nginx/conf.d/server_config
       - ./nginx/server_name:/etc/nginx/conf.d/server_name
+      - ./nginx/99-autoreload.sh:/docker-entrypoint.d/99-autoreload.sh
       - ./certbot/conf:/etc/nginx/ssl
       - ./certbot/data:/var/www/certbot
       - static_volume:/app/static
       - media_volume:/app/images
+  certbot:
+    image: certbot/certbot:latest
+    entrypoint: /bin/sh -c "trap exit TERM; while [ "$USE_HTTPS" = "true" ];do certbot renew --webroot --webroot-path=/var/www/certbot; sleep 1d & wait $${!}; done"
+    environment:
+      - USE_HTTPS=${USE_HTTPS}
+    depends_on:
+      - nginx
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/logs:/var/log/letsencrypt
+      - ./certbot/data:/var/www/certbot
   db:
     image: postgres:13
     env_file: .env
