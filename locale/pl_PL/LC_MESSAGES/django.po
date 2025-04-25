@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-12 17:02+0000\n"
-"PO-Revision-Date: 2025-04-15 19:00\n"
+"PO-Revision-Date: 2025-04-19 18:58\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -84,7 +84,7 @@ msgstr "Ten e-mail jest już używany."
 
 #: bookwyrm/forms/landing.py:69
 msgid "This email address cannot be registered."
-msgstr ""
+msgstr "Nie można zarejestrować tego adresu e-mail."
 
 #: bookwyrm/forms/landing.py:127 bookwyrm/forms/landing.py:135
 msgid "Incorrect code"
@@ -211,7 +211,7 @@ msgstr "Recenzja"
 
 #: bookwyrm/models/bookwyrm_import_job.py:111
 msgid "Quotation"
-msgstr ""
+msgstr "Cytat"
 
 #: bookwyrm/models/bookwyrm_import_job.py:132
 #: bookwyrm/templates/snippets/follow_button.html:22
@@ -229,20 +229,20 @@ msgstr "Zablokuj"
 #: bookwyrm/models/bookwyrm_import_job.py:379
 #: bookwyrm/models/bookwyrm_import_job.py:611
 msgid "unknown"
-msgstr ""
+msgstr "nieznane"
 
 #: bookwyrm/models/bookwyrm_import_job.py:373
 msgid "unauthorized"
-msgstr ""
+msgstr "nieautoryzowane"
 
 #: bookwyrm/models/bookwyrm_import_job.py:569
 #: bookwyrm/models/bookwyrm_import_job.py:595
 msgid "connection_error"
-msgstr ""
+msgstr "błąd_połączenia"
 
 #: bookwyrm/models/bookwyrm_import_job.py:605
 msgid "invalid_relationship"
-msgstr ""
+msgstr "nieprawidłowa_relacja"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
@@ -896,7 +896,7 @@ msgstr "Wikipedia"
 
 #: bookwyrm/templates/author/author.html:79
 msgid "View on Wikidata"
-msgstr ""
+msgstr "Pokaż na Wikidata"
 
 #: bookwyrm/templates/author/author.html:87
 msgid "Website"
@@ -1259,7 +1259,7 @@ msgstr "Goodreads:"
 #: bookwyrm/templates/book/book_identifiers.html:58
 #: bookwyrm/templates/book/edit/edit_book_form.html:388
 msgid "Finna ID:"
-msgstr ""
+msgstr "ID Finna:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -3039,7 +3039,7 @@ msgstr "OpenLibrary (CSV)"
 
 #: bookwyrm/templates/import/import.html:70
 msgid "OpenReads (CSV)"
-msgstr ""
+msgstr "OpenReads (CSV)"
 
 #: bookwyrm/templates/import/import.html:73
 msgid "Calibre (CSV)"
@@ -3274,12 +3274,12 @@ msgstr "Jeśli chcesz przenieść jakiekolwiek statusy (komentarze, recenzje lub
 #: bookwyrm/templates/import/import_user.html:32
 #, python-format
 msgid "Currently you are allowed to import one user every %(hours)s hours."
-msgstr ""
+msgstr "Obecnie możesz importować jednego użytkownika co %(hours)s godzin."
 
 #: bookwyrm/templates/import/import_user.html:33
 #, python-format
 msgid "You will next be able to import a user file at %(next_time)s"
-msgstr ""
+msgstr "Możesz importować następny plik użytkownika o %(next_time)s"
 
 #: bookwyrm/templates/import/import_user.html:56
 msgid "Step 1:"
@@ -3447,11 +3447,11 @@ msgstr "Skontaktuj się ze swoim administratorem lub <a href='https://github.com
 #: bookwyrm/templates/import/user_import_status.html:15
 #: bookwyrm/templates/import/user_import_status.html:26
 msgid "User Import Status"
-msgstr ""
+msgstr "Status importu użytkownika"
 
 #: bookwyrm/templates/import/user_import_status.html:13
 msgid "User Import Retry Status"
-msgstr ""
+msgstr "Status ponownego importu użytkownika"
 
 #: bookwyrm/templates/import/user_import_status.html:22
 #: bookwyrm/templates/settings/imports/imports.html:264
@@ -3471,49 +3471,49 @@ msgstr "Statusów"
 
 #: bookwyrm/templates/import/user_import_status.html:85
 msgid "Follows & Blocks"
-msgstr ""
+msgstr "Obserwowani i blokowani"
 
 #: bookwyrm/templates/import/user_import_status.html:144
 msgid "Imported books"
-msgstr ""
+msgstr "Zaimportowane książki"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:5
 msgid "User Import Troubleshooting"
-msgstr ""
+msgstr "Rozwiązywanie problemów z importem użytkownika"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:26
 msgid "Your account was not set as an alias of the original user account"
-msgstr ""
+msgstr "Twoje konto nie zostało ustawione jako alias dla oryginalnego konta użytkownika"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:31
 msgid "Re-trying an import will not work in cases such as:"
-msgstr ""
+msgstr "Ponowienie importu użytkownika jest zbędne, gdy:"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:34
 msgid "A user, status, or BookWyrm server was deleted after your import file was created"
-msgstr ""
+msgstr "Użytkownik, status lub serwer BookWyrm został usunięty po utworzeniu pliku importu"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:35
 msgid "Importing statuses when your old account has been deleted"
-msgstr ""
+msgstr "Importujesz statusy po usunięciu starego konta"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:43
 #, python-format
 msgid "Currently you are allowed to import or retry one user every %(hours)s hours."
-msgstr ""
+msgstr "Obecnie możesz importować lub ponowić import jednego użytkownika co %(hours)s godzin."
 
 #: bookwyrm/templates/import/user_troubleshoot.html:44
 #, python-format
 msgid "You will be able to retry this import at %(next_time)s"
-msgstr ""
+msgstr "Możesz ponowić ten import o %(next_time)s"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:65
 msgid "Relationship"
-msgstr ""
+msgstr "Relacja"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:68
 msgid "Reason"
-msgstr ""
+msgstr "Powód"
 
 #: bookwyrm/templates/landing/invite.html:4
 #: bookwyrm/templates/landing/invite.html:8
@@ -4737,12 +4737,12 @@ msgstr ""
 #: bookwyrm/templates/preferences/export-user.html:72
 #, python-format
 msgid "On average, recent exports have taken %(hours)s hours."
-msgstr ""
+msgstr "Ostatnie eksporty zajęły średnio %(hours)s godzin."
 
 #: bookwyrm/templates/preferences/export-user.html:76
 #, python-format
 msgid "On average, recent exports have taken %(minutes)s minutes."
-msgstr ""
+msgstr "Ostatnie eksporty zajęły średnio %(minutes)s minut."
 
 #: bookwyrm/templates/preferences/export-user.html:88
 msgid "Create user export file"
@@ -7643,17 +7643,17 @@ msgstr "Komentarze od {obj.display_name}"
 #: bookwyrm/views/rss_feed.py:219
 #, python-brace-format
 msgid "{obj.user.display_name}’s {obj.name} shelf"
-msgstr ""
+msgstr "Półka {obj.name} od {obj.user.display_name}"
 
 #: bookwyrm/views/rss_feed.py:237
 #, python-brace-format
 msgid "{obj.user.display_name}’s {obj.name} shelf: {desc}"
-msgstr ""
+msgstr "Półka {obj.name} od {obj.user.display_name}: {desc}"
 
 #: bookwyrm/views/rss_feed.py:238
 #, python-brace-format
 msgid "Books added to {obj.user.name}’s {obj.name} shelf"
-msgstr ""
+msgstr "Książki dodane do półki {obj.name} od {obj.user.name}"
 
 #: bookwyrm/views/updates.py:45
 #, python-format

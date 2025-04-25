@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-12 17:02+0000\n"
-"PO-Revision-Date: 2025-04-15 19:00\n"
+"PO-Revision-Date: 2025-04-18 21:20\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Norwegian\n"
 "Language: no\n"
@@ -84,7 +84,7 @@ msgstr "Den e-postadressen er allerede registrert."
 
 #: bookwyrm/forms/landing.py:69
 msgid "This email address cannot be registered."
-msgstr ""
+msgstr "Denne e-postadressen kan ikke registreres."
 
 #: bookwyrm/forms/landing.py:127 bookwyrm/forms/landing.py:135
 msgid "Incorrect code"
@@ -211,7 +211,7 @@ msgstr "Omtale"
 
 #: bookwyrm/models/bookwyrm_import_job.py:111
 msgid "Quotation"
-msgstr ""
+msgstr "Sitat"
 
 #: bookwyrm/models/bookwyrm_import_job.py:132
 #: bookwyrm/templates/snippets/follow_button.html:22
@@ -229,20 +229,20 @@ msgstr "Blokkér"
 #: bookwyrm/models/bookwyrm_import_job.py:379
 #: bookwyrm/models/bookwyrm_import_job.py:611
 msgid "unknown"
-msgstr ""
+msgstr "ukjent"
 
 #: bookwyrm/models/bookwyrm_import_job.py:373
 msgid "unauthorized"
-msgstr ""
+msgstr "uautorisert"
 
 #: bookwyrm/models/bookwyrm_import_job.py:569
 #: bookwyrm/models/bookwyrm_import_job.py:595
 msgid "connection_error"
-msgstr ""
+msgstr "tilkobling_feil"
 
 #: bookwyrm/models/bookwyrm_import_job.py:605
 msgid "invalid_relationship"
-msgstr ""
+msgstr "ugyldig_forhold"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
@@ -886,7 +886,7 @@ msgstr "Wikipedia"
 
 #: bookwyrm/templates/author/author.html:79
 msgid "View on Wikidata"
-msgstr ""
+msgstr "Vis på Wikidata"
 
 #: bookwyrm/templates/author/author.html:87
 msgid "Website"
@@ -1245,7 +1245,7 @@ msgstr "Goodreads:"
 #: bookwyrm/templates/book/book_identifiers.html:58
 #: bookwyrm/templates/book/edit/edit_book_form.html:388
 msgid "Finna ID:"
-msgstr ""
+msgstr "Finna ID:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1724,11 +1724,11 @@ msgstr "Endre omtale"
 
 #: bookwyrm/templates/compose.html:9 bookwyrm/templates/compose.html:23
 msgid "Edit quote"
-msgstr ""
+msgstr "Rediger sitat"
 
 #: bookwyrm/templates/compose.html:11 bookwyrm/templates/compose.html:25
 msgid "Edit comment"
-msgstr ""
+msgstr "Rediger kommentar"
 
 #: bookwyrm/templates/compose.html:13 bookwyrm/templates/compose.html:27
 msgid "Edit status"
@@ -1966,7 +1966,7 @@ msgstr "Heisann,"
 #: bookwyrm/templates/email/html_layout.html:21
 #, python-format
 msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"%(base_url)s\">%(site_name)s</a>"
-msgstr ""
+msgstr "BookWyrm vert på <a style=\"color: #3273dc;\" href=\"%(base_url)s\">%(site_name)s</a>"
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
@@ -1985,7 +1985,7 @@ msgstr "Bli med nå"
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
 msgid "Learn more <a href=\"%(base_url)s%(about_path)s\">about %(site_name)s</a>."
-msgstr ""
+msgstr "Lær mer <a href=\"%(base_url)s%(about_path)s\">om %(site_name)s</a>."
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
@@ -3015,7 +3015,7 @@ msgstr "OpenLibrary (CSV)"
 
 #: bookwyrm/templates/import/import.html:70
 msgid "OpenReads (CSV)"
-msgstr ""
+msgstr "OpenReads (CSV)"
 
 #: bookwyrm/templates/import/import.html:73
 msgid "Calibre (CSV)"
@@ -3023,7 +3023,7 @@ msgstr "Calibre (CSV)"
 
 #: bookwyrm/templates/import/import.html:76
 msgid "BookWyrm (CSV)"
-msgstr ""
+msgstr "BookWyrm (CSV)"
 
 #: bookwyrm/templates/import/import.html:82
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
@@ -3040,11 +3040,11 @@ msgstr "Inkluder omtaler"
 
 #: bookwyrm/templates/import/import.html:104
 msgid "Create new shelves if they do not exist"
-msgstr ""
+msgstr "Oprett nye hyller om de ikke finnes"
 
 #: bookwyrm/templates/import/import.html:109
 msgid "Privacy setting for imported reviews and shelves:"
-msgstr ""
+msgstr "Personverninnstilling for importerte omtaler og hyller:"
 
 #: bookwyrm/templates/import/import.html:116
 #: bookwyrm/templates/import/import.html:118
@@ -3246,12 +3246,12 @@ msgstr "Hvis du ønsker å migrere enkelte statuser (kommentarer, omtaler, eller
 #: bookwyrm/templates/import/import_user.html:32
 #, python-format
 msgid "Currently you are allowed to import one user every %(hours)s hours."
-msgstr ""
+msgstr "For øyeblikket har du tilgang til å importere én bruker hver %(hours)s timer."
 
 #: bookwyrm/templates/import/import_user.html:33
 #, python-format
 msgid "You will next be able to import a user file at %(next_time)s"
-msgstr ""
+msgstr "Du vil kunne importere neste brukerfil %(next_time)s"
 
 #: bookwyrm/templates/import/import_user.html:56
 msgid "Step 1:"
@@ -3419,11 +3419,11 @@ msgstr "Kontakt systemansvarlig eller <a href='https://github.com/bookwyrm-socia
 #: bookwyrm/templates/import/user_import_status.html:15
 #: bookwyrm/templates/import/user_import_status.html:26
 msgid "User Import Status"
-msgstr ""
+msgstr "Bruker importstatus"
 
 #: bookwyrm/templates/import/user_import_status.html:13
 msgid "User Import Retry Status"
-msgstr ""
+msgstr "Bruker import returstatus"
 
 #: bookwyrm/templates/import/user_import_status.html:22
 #: bookwyrm/templates/settings/imports/imports.html:264
@@ -3443,49 +3443,49 @@ msgstr "Statuser"
 
 #: bookwyrm/templates/import/user_import_status.html:85
 msgid "Follows & Blocks"
-msgstr ""
+msgstr "Følgere og blokkeringer"
 
 #: bookwyrm/templates/import/user_import_status.html:144
 msgid "Imported books"
-msgstr ""
+msgstr "Importerte bøker"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:5
 msgid "User Import Troubleshooting"
-msgstr ""
+msgstr "Bruker import feilsøking"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:26
 msgid "Your account was not set as an alias of the original user account"
-msgstr ""
+msgstr "Kontoen din ble ikke angitt som et alias for den opprinnelige brukerkontoen"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:31
 msgid "Re-trying an import will not work in cases such as:"
-msgstr ""
+msgstr "Å prøve på nytt en import vil ikke fungere i slike tilfeller:"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:34
 msgid "A user, status, or BookWyrm server was deleted after your import file was created"
-msgstr ""
+msgstr "En bruker, status, eller BookWyrmserver ble slettet etter at importfilen ble opprettet"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:35
 msgid "Importing statuses when your old account has been deleted"
-msgstr ""
+msgstr "Importerer statuser når din gamle konto har blitt slettet"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:43
 #, python-format
 msgid "Currently you are allowed to import or retry one user every %(hours)s hours."
-msgstr ""
+msgstr "For øyeblikket har du tilgang til å importere, eller forsøke på nytt én bruker hver %(hours)s timer."
 
 #: bookwyrm/templates/import/user_troubleshoot.html:44
 #, python-format
 msgid "You will be able to retry this import at %(next_time)s"
-msgstr ""
+msgstr "Du vil kunne prøve denne importen på nytt %(next_time)s"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:65
 msgid "Relationship"
-msgstr ""
+msgstr "Forhold"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:68
 msgid "Reason"
-msgstr ""
+msgstr "Årsak"
 
 #: bookwyrm/templates/landing/invite.html:4
 #: bookwyrm/templates/landing/invite.html:8
@@ -4592,7 +4592,7 @@ msgstr "Vis lesemålsfelt i strømmen"
 
 #: bookwyrm/templates/preferences/edit_user.html:75
 msgid "Show ratings"
-msgstr ""
+msgstr "Vis vurderinger"
 
 #: bookwyrm/templates/preferences/edit_user.html:81
 msgid "Show suggested users"
@@ -4699,12 +4699,12 @@ msgstr "Du vil kunne opprette en ny eksportfil %(next_available)s"
 #: bookwyrm/templates/preferences/export-user.html:72
 #, python-format
 msgid "On average, recent exports have taken %(hours)s hours."
-msgstr ""
+msgstr "I gjennomsnitt har de siste eksportene tatt %(hours)s timer."
 
 #: bookwyrm/templates/preferences/export-user.html:76
 #, python-format
 msgid "On average, recent exports have taken %(minutes)s minutes."
-msgstr ""
+msgstr "I gjennomsnitt har de siste eksportene tatt %(minutes)s minutter."
 
 #: bookwyrm/templates/preferences/export-user.html:88
 msgid "Create user export file"
@@ -4732,7 +4732,7 @@ msgstr "Last ned eksporten din"
 
 #: bookwyrm/templates/preferences/export-user.html:157
 msgid "Archive is no longer available"
-msgstr ""
+msgstr "Arkivet er ikke lenger tilgjengelig"
 
 #: bookwyrm/templates/preferences/export.html:4
 #: bookwyrm/templates/preferences/export.html:7
@@ -5749,7 +5749,7 @@ msgstr "Brukere kan for øyeblikket ikke starte ny brukereksport. Dette er stand
 
 #: bookwyrm/templates/settings/imports/imports.html:161
 msgid "It is not currently possible to provide user exports when using Azure storage."
-msgstr ""
+msgstr "For øyeblikket er det ikke mulig å tilby brukereksport når du bruker Azure lagring."
 
 #: bookwyrm/templates/settings/imports/imports.html:167
 msgid "Enable user exports"
@@ -7171,7 +7171,7 @@ msgstr "Fullfør lesing"
 
 #: bookwyrm/templates/snippets/stars.html:10
 msgid "Show rating"
-msgstr ""
+msgstr "Vis vurdering"
 
 #: bookwyrm/templates/snippets/status/content_status.html:69
 msgid "Show status"
@@ -7575,17 +7575,17 @@ msgstr "Kommentarer fra {obj.display_name}"
 #: bookwyrm/views/rss_feed.py:219
 #, python-brace-format
 msgid "{obj.user.display_name}’s {obj.name} shelf"
-msgstr ""
+msgstr "{obj.user.display_name} sin {obj.name} hylle"
 
 #: bookwyrm/views/rss_feed.py:237
 #, python-brace-format
 msgid "{obj.user.display_name}’s {obj.name} shelf: {desc}"
-msgstr ""
+msgstr "{obj.user.display_name} sin {obj.name} hylle: {desc}"
 
 #: bookwyrm/views/rss_feed.py:238
 #, python-brace-format
 msgid "Books added to {obj.user.name}’s {obj.name} shelf"
-msgstr ""
+msgstr "Bøker lagt til {obj.user.name} sin {obj.name} hylle"
 
 #: bookwyrm/views/updates.py:45
 #, python-format
