@@ -103,7 +103,7 @@ def author_search(request):
 
     results = (
         models.Author.objects.filter(search_vector=search_query)
-        .annotate(rank=SearchRank(F("search_vector"), search_query))
+        .annotate(rank=SearchRank(F("search_vector"), search_query, normalization=32))
         .filter(rank__gt=min_confidence)
         .order_by("-rank")
     )

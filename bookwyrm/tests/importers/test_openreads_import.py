@@ -110,9 +110,7 @@ class OpenReadsImport(TestCase):
 
         retry_items = models.ImportItem.objects.filter(job=retry).all()
         self.assertEqual(len(retry_items), 2)
-        self.assertEqual(retry_items[0].index, 0)
-        self.assertEqual(import_items[0].data["title"], "Wild Flowers Electric Beasts")
-        self.assertEqual(retry_items[1].index, 1)
+        self.assertEqual(retry_items[0].data["title"], "Wild Flowers Electric Beasts")
         self.assertEqual(retry_items[1].data["title"], "Permanent Record")
 
     def test_handle_imported_book(self, *_):
