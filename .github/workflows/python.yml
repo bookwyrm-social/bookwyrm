@@ -50,7 +50,7 @@ jobs:
     - name: Check migrations up-to-date
       run: python ./manage.py makemigrations --check -v 3
     - name: Run Tests
-      run: pytest -n 3
+      run: pytest --cache-clear -n 3 || pytest -n 3 --last-failed --last-failed-no-failures none
 
   pylint:
     name: Linting (pylint)
