@@ -12,7 +12,7 @@ services:
     environment:
       - DOMAIN=${DOMAIN}
     volumes:
-      - ./nginx/${NGINX_SETUP:-production}:/etc/nginx/templates/default.conf.template
+      - ./nginx/${NGINX_SETUP:-https}.conf:/etc/nginx/templates/default.conf.template
       - ./nginx/locations:/etc/nginx/conf.d/locations
       - ./nginx/server_config:/etc/nginx/conf.d/server_config
       - ./nginx/server_name:/etc/nginx/conf.d/server_name
