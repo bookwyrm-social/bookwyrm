@@ -17,7 +17,7 @@ services:
       - ./certbot/data:/var/www/certbot
   certbot:
     image: certbot/certbot:latest
-    command: certonly --webroot --webroot-path=/var/www/certbot --keep-until-expiring --email ${EMAIL} --agree-tos --no-eff-email -d ${DOMAIN} -d www.${DOMAIN}
+    command: certonly --webroot --webroot-path=/var/www/certbot --keep-until-expiring --email ${EMAIL} --agree-tos --no-eff-email -d ${DOMAIN}
     depends_on:
       - nginx
     volumes:
