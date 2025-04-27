@@ -1,7 +1,6 @@
 """Import a user from another Bookwyrm instance"""
 
 import json
-import logging
 import math
 
 from django.db.models import (
@@ -23,8 +22,6 @@ from bookwyrm import models
 from bookwyrm.tasks import app, IMPORTS
 from bookwyrm.models.job import ParentJob, ChildJob, ParentTask, SubTask
 from bookwyrm.utils.tar import BookwyrmTarFile
-
-logger = logging.getLogger(__name__)
 
 
 class BookwyrmImportJob(ParentJob):

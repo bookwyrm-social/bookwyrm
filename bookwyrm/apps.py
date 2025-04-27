@@ -2,13 +2,10 @@
 
 import os
 import urllib
-import logging
 
 from django.apps import AppConfig
 
 from bookwyrm import settings
-
-logger = logging.getLogger(__name__)
 
 
 def download_file(url, destination):

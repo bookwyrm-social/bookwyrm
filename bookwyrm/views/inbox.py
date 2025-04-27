@@ -1,7 +1,6 @@
 """ incoming activities """
 import json
 import re
-import logging
 
 import requests
 
@@ -16,8 +15,6 @@ from bookwyrm import activitypub, models
 from bookwyrm.tasks import app, INBOX
 from bookwyrm.signatures import Signature
 from bookwyrm.utils import regex
-
-logger = logging.getLogger(__name__)
 
 
 @method_decorator(csrf_exempt, name="dispatch")

@@ -1,7 +1,6 @@
 """ what are we here for if not for posting """
 
 import re
-import logging
 
 from django.contrib.auth.decorators import login_required
 from django.core.validators import URLValidator
@@ -23,8 +22,6 @@ from bookwyrm.utils import regex, sanitizer
 from bookwyrm.views.helpers import get_mergeable_object_or_404
 from .helpers import handle_remote_webfinger, is_api_request
 from .helpers import load_date_in_user_tz_as_utc, redirect_to_referer
-
-logger = logging.getLogger(__name__)
 
 
 # pylint: disable= no-self-use

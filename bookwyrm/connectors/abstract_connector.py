@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 from typing import Optional, TypedDict, Any, Callable, Union, Iterator
 from urllib.parse import quote_plus
 
-import logging
 import re
 import asyncio
 from PIL import Image, UnidentifiedImageError
@@ -21,7 +20,6 @@ from .connector_manager import load_more_data, ConnectorException, raise_not_val
 from .format_mappings import format_mappings
 from ..book_search import SearchResult
 
-logger = logging.getLogger(__name__)
 
 JsonDict = dict[str, Any]
 

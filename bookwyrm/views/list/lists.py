@@ -10,9 +10,6 @@ from bookwyrm import forms, models
 from bookwyrm.lists_stream import ListsStream
 from bookwyrm.views.helpers import get_user_from_username
 
-import logging
-
-logger = logging.getLogger(__name__)
 
 # pylint: disable=no-self-use
 class Lists(View):

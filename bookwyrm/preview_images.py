@@ -5,7 +5,6 @@ import os
 import textwrap
 from io import BytesIO
 from uuid import uuid4
-import logging
 
 import colorsys
 from colorthief import ColorThief
@@ -19,7 +18,6 @@ from django.db.models import Avg
 from bookwyrm import models, settings
 from bookwyrm.tasks import app, IMAGES
 
-logger = logging.getLogger(__name__)
 
 IMG_WIDTH = settings.PREVIEW_IMG_WIDTH
 IMG_HEIGHT = settings.PREVIEW_IMG_HEIGHT

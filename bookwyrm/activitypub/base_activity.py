@@ -2,7 +2,6 @@
 from __future__ import annotations
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
-import logging
 from typing import Optional, Union, TypeVar, overload, Any
 
 import requests
@@ -18,7 +17,6 @@ from bookwyrm.signatures import make_signature
 from bookwyrm.settings import DOMAIN, INSTANCE_ACTOR_USERNAME
 from bookwyrm.tasks import app, MISC
 
-logger = logging.getLogger(__name__)
 
 # pylint: disable=invalid-name
 TBookWyrmModel = TypeVar("TBookWyrmModel", bound=base_model.BookWyrmModel)

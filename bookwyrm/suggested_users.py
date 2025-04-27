@@ -1,6 +1,5 @@
 """ store recommended follows in redis """
 import math
-import logging
 from django.dispatch import receiver
 from django.db import transaction
 from django.db.models import signals, Count, Q, Case, When, IntegerField
@@ -13,7 +12,6 @@ from bookwyrm.tasks import app, SUGGESTED_USERS
 from bookwyrm.telemetry import open_telemetry
 
 
-logger = logging.getLogger(__name__)
 tracer = open_telemetry.tracer()
 
 

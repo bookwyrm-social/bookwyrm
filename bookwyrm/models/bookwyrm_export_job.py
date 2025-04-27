@@ -1,6 +1,4 @@
 """Export user account to tar.gz file for import into another Bookwyrm instance"""
-
-import logging
 import os
 
 from boto3.session import Session as BotoSession
@@ -20,8 +18,6 @@ from bookwyrm.models import UserFollows, User, UserBlocks
 from bookwyrm.models.job import ParentJob, ParentTask
 from bookwyrm.tasks import app, IMPORTS
 from bookwyrm.utils.tar import BookwyrmTarFile
-
-logger = logging.getLogger(__name__)
 
 
 class BookwyrmAwsSession(BotoSession):

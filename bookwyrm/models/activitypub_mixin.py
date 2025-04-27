@@ -5,7 +5,6 @@ from collections import namedtuple
 from functools import reduce
 import json
 import operator
-import logging
 from typing import Any, Optional
 from uuid import uuid4
 from typing_extensions import Self
@@ -25,7 +24,6 @@ from bookwyrm.signatures import make_signature, make_digest
 from bookwyrm.tasks import app, BROADCAST
 from bookwyrm.models.fields import ImageField, ManyToManyField
 
-logger = logging.getLogger(__name__)
 # I tried to separate these classes into multiple files but I kept getting
 # circular import errors so I gave up. I'm sure it could be done though!
 

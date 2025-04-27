@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import importlib
 import ipaddress
-import logging
 from asyncio import Future
 from typing import Iterator, Any, Optional, Union, overload, Literal
 from urllib.parse import urlparse
@@ -19,8 +18,6 @@ from bookwyrm.book_search import SearchResult
 from bookwyrm.connectors import abstract_connector
 from bookwyrm.settings import SEARCH_TIMEOUT
 from bookwyrm.tasks import app, CONNECTORS
-
-logger = logging.getLogger(__name__)
 
 
 class ConnectorException(HTTPError):

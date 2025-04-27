@@ -1,6 +1,5 @@
 """ the good stuff! the books! """
 
-import logging
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.db import transaction
@@ -17,8 +16,6 @@ from bookwyrm.views.shelf.shelf_actions import unshelve
 from .status import CreateStatus
 from .helpers import get_edition, handle_reading_status, is_api_request
 from .helpers import load_date_in_user_tz_as_utc, redirect_to_referer
-
-logger = logging.getLogger(__name__)
 
 
 # pylint: disable=no-self-use
