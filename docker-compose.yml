@@ -15,6 +15,12 @@ services:
   db:
     image: postgres:13
     env_file: .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -29,9 +35,13 @@ services:
       - media_volume:/app/images
       - exports_volume:/app/exports
     depends_on:
-      - db
-      - celery_worker
-      - redis_activity
+      db:
+        condition: service_healthy
+        restart: true
+      celery_worker:
+        condition: service_started
+      redis_activity:
+        condition: service_started
     networks:
       - main
     ports:
