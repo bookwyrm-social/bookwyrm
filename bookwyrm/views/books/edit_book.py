@@ -189,7 +189,7 @@ def add_authors(request, data):
 
         author_matches = (
             models.Author.objects.annotate(search=vector)
-            .annotate(rank=SearchRank(vector, author))
+            .annotate(rank=SearchRank(vector, author, normalization=32))
             .filter(rank__gt=0.4)
             .order_by("-rank")[:5]
         )
