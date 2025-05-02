@@ -8,6 +8,7 @@ from typing_extensions import Self
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.cache import cache
+from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.db.models import Prefetch, ManyToManyField
 from django.dispatch import receiver
@@ -448,15 +449,59 @@ FormatChoices = [
 ]
 
 
+def validate_isbn10(maybe_isbn: str) -> None:
+    """Check if isbn10 mathes some expectations"""
+
+    # len should be 9 or 10
+    if len(maybe_isbn) not in [9, 10]:
+        raise ValidationError(
+            _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
+        )
+
+    # Last character can be X for checksum mark
+    if not maybe_isbn.upper()[:-1].isnumeric():
+        raise ValidationError(
+            _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
+        )
+
+
+def validate_isbn13(maybe_isbn: str) -> None:
+    """Check if isbn13 mathes some expectations"""
+
+    if maybe_isbn[:3] != "978":
+        raise ValidationError(
+            _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
+        )
+
+    isbn_13 = re.sub(r"[^0-9]", "", maybe_isbn)
+    if len(isbn_13) != 13:
+        raise ValidationError(
+            _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
+        )
+
+    if not isbn_13.isnumeric():
+        raise ValidationError(
+            _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
+        )
+
+
 class Edition(Book):
     """an edition of a book"""
 
     # these identifiers only apply to editions, not works
     isbn_10 = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        validators=[validate_isbn10],
     )
     isbn_13 = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        validators=[validate_isbn13],
     )
     oclc_number = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
