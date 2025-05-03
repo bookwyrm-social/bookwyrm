@@ -81,7 +81,7 @@ FONT_DIR = os.path.join(STATIC_ROOT, "fonts")
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DEBUG", True)
+DEBUG = env.bool("DEBUG", False)
 USE_HTTPS = env.bool("USE_HTTPS", not DEBUG)
 
 # SECURITY WARNING: keep the secret key used in production secret!
