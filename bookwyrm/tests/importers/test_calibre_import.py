@@ -52,7 +52,10 @@ class CalibreImport(TestCase):
         )
 
         import_items = (
-            models.ImportItem.objects.filter(job=import_job).order_by("index").all()
+            models.ImportItem.objects.filter(job=import_job)
+            .order_by("index")
+            .all()
+            .order_by("id")
         )
         self.assertEqual(len(import_items), 1)
         self.assertEqual(import_items[0].index, 0)
