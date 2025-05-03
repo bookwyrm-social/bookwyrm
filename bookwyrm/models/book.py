@@ -468,7 +468,7 @@ def validate_isbn10(maybe_isbn: str) -> None:
 def validate_isbn13(maybe_isbn: str) -> None:
     """Check if isbn13 mathes some expectations"""
 
-    if maybe_isbn[:3] != "978":
+    if maybe_isbn[:3] not in ["978", "979"]:
         raise ValidationError(
             _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
         )
