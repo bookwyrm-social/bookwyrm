@@ -35,7 +35,7 @@ function clean {
 }
 
 function runweb {
-    $DOCKER_COMPOSE run --rm web "$@"
+    $DOCKER_COMPOSE run --user root --rm web "$@"
 }
 
 function execdb {
