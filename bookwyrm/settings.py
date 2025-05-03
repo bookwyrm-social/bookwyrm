@@ -1,4 +1,5 @@
-""" bookwyrm settings and configuration """
+"""bookwyrm settings and configuration"""
+
 import os
 from typing import AnyStr
 
@@ -85,8 +86,11 @@ DEBUG = env.bool("DEBUG", False)
 USE_HTTPS = env.bool("USE_HTTPS", not DEBUG)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
-if not DEBUG and SECRET_KEY == "7(2w1sedok=aznpq)ta1mc4i%4h=xx@hxwx*o57ctsuml0x%fr":
+SECRET_KEY = env("SECRET_KEY", None)
+if not DEBUG and SECRET_KEY in [
+    None,
+    "7(2w1sedok=aznpq)ta1mc4i%4h=xx@hxwx*o57ctsuml0x%fr",
+]:
     raise ImproperlyConfigured("You must change the SECRET_KEY env variable")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ["*"])
