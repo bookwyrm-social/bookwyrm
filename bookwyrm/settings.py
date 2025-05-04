@@ -101,6 +101,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "rest_framework",
     "oauth2_provider",
     "file_resubmit",
     "sass_processor",
@@ -145,6 +146,22 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    "DEFAULT_PERMISSION_CLASSES": [
+        # Somehow it does not work with OAuth enabled
+        # 'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly",
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
+OAUTH2_PROVIDER = {
+    # this is the list of available scopes
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
+}
 
 LOG_LEVEL = env("LOG_LEVEL", "INFO").upper()
 # Override aspects of the default handler to our taste
