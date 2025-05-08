@@ -13,7 +13,8 @@
             <em>{% trans "Show rating" %} </em>
         </button>
 
-        {% else %}
+        {% endif %}
+
         <span class="{% if not request.user.show_ratings %}is-hidden{% endif %}" id="rating-{{ uuid }}">
             <span class="is-sr-only">
                 {% blocktranslate trimmed with rating=rating|floatformat:0 count counter=rating|floatformat:0|add:0 %}
@@ -32,7 +33,6 @@
                 ></span>
             {% endfor %}
         </span>
-        {% endif %}
 
     {% else %}
         <span class="no-rating">{% trans "No rating" %}</span>
