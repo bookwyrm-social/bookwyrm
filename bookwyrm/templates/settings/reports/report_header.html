@@ -1,16 +1,16 @@
 {% load i18n %}
 {% load utilities %}
 
-{% if report.status %}
+{% if report.statuses.exists %}
 
-{% blocktrans trimmed with report_id=report.id username=report.user|username %}
+{% blocktrans trimmed with report_id=report.id username=report.reported_user|username %}
 Report #{{ report_id }}: Status posted by @{{ username }}
 {% endblocktrans %}
 
 {% elif report.links.exists %}
 
-    {% if report.user %}
-    {% blocktrans trimmed with report_id=report.id username=report.user|username %}
+    {% if report.reported_user %}
+    {% blocktrans trimmed with report_id=report.id username=report.reported_user|username %}
     Report #{{ report_id }}: Link added by @{{ username }}
     {% endblocktrans %}
     {% else %}
@@ -21,7 +21,7 @@ Report #{{ report_id }}: Status posted by @{{ username }}
 
 {% else %}
 
-{% blocktrans trimmed with report_id=report.id username=report.user|username %}
+{% blocktrans trimmed with report_id=report.id username=report.reported_user|username %}
 Report #{{ report_id }}: User @{{ username }}
 {% endblocktrans %}
 
