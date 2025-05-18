@@ -90,15 +90,16 @@ class Book(TestCase):
         """ISBN10 validation"""
         invalid_isbn10 = [
             ("0123", "too short"),
+            ("97801X45", "too short, invalid char"),
             ("012345678999", "too long"),
             ("01234V6789", "invalid char"),
-            # ("0123456788", "invalid checksum"),
-            # ("012345678Y", "invalid checksum char"),
+            ("0123456788", "invalid checksum"),
+            ("012345678Y", "invalid checksum char"),
         ]
         validate_isbn10("123456789")
         validate_isbn10("0123456789")
         validate_isbn10("123456789X")
-        # validate_isbn10("0-201-53082-1")
+        validate_isbn10("0-201-53082-1")
 
         for isbn, _desc in invalid_isbn10:
             with self.subTest(isbn=isbn):
@@ -108,13 +109,16 @@ class Book(TestCase):
     def test_validate_isbn13(self):
         """ISBN13 validation"""
         invalid_isbn13 = [
-            # TODO(dato): fill with failure cases.
+            ("978-12-3456-789-X", "invalid char"),
+            ("9741234567897", "invalid prefix"),
+            ("978-84-17121-94-2", "invalid checksum")
         ]
         validate_isbn13("9781234567897")
         validate_isbn13("9781234567880")
+        validate_isbn13("9791234567880")
         validate_isbn13("978-84-17121-94-5")
 
-        for isbn, _desc in invalid_isbn10:
+        for isbn, _desc in invalid_isbn13:
             with self.subTest(isbn=isbn):
                 with self.assertRaises(ValidationError):
                     validate_isbn13(isbn)
