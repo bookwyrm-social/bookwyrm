@@ -452,16 +452,37 @@ FormatChoices = [
 def validate_isbn10(maybe_isbn: str) -> None:
     """Check if isbn10 mathes some expectations"""
 
-    # len should be 9 or 10
-    if len(maybe_isbn) not in [9, 10]:
+    if not (normalized_isbn := normalize_isbn(maybe_isbn)):
+        raise ValidationError(
+            _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
+        )
+
+    normalized_isbn = normalized_isbn.zfill(10)
+    # len should be 10 with poddible 0 in front
+    if len(normalized_isbn) != 10:
         raise ValidationError(
             _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
         )
 
     # Last character can be X for checksum mark
-    if not maybe_isbn.upper()[:-1].isnumeric():
+    if not normalized_isbn.upper()[:-1].isnumeric():
         raise ValidationError(
             _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
+        )
+
+    if (isbn13_version := isbn_10_to_13(normalized_isbn)) is None:
+        raise ValidationError(
+            _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
+        )
+
+    if (checksum_version := isbn_13_to_10(isbn13_version)) is None:
+        raise ValidationError(
+            _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
+        )
+
+    if (checksum_version != normalized_isbn):
+        raise ValidationError(
+            _("%(value)s doesn't look like isbn, we expected %(check_version)s"), params={"value": maybe_isbn, "check_version": checksum_version}
         )
 
 
@@ -473,16 +494,34 @@ def validate_isbn13(maybe_isbn: str) -> None:
             _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
         )
 
-    isbn_13 = re.sub(r"[^0-9]", "", maybe_isbn)
-    if len(isbn_13) != 13:
+    normalized_isbn = normalize_isbn(maybe_isbn)
+    if len(normalized_isbn) != 13:
         raise ValidationError(
             _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
         )
 
-    if not isbn_13.isnumeric():
+    if not normalized_isbn.isnumeric():
         raise ValidationError(
             _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
         )
+
+    if (isbn10_version := isbn_13_to_10(normalized_isbn)) is None:
+        raise ValidationError(
+            _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
+        )
+
+    if (checksum_version := isbn_10_to_13(isbn10_version)) is None:
+        raise ValidationError(
+            _("%(value)s doesn't look like isbn"), params={"value": maybe_isbn}
+        )
+
+    # We might have 978 or 979 prefix, so ignore that on comparing
+    if (checksum_version[3:] != normalized_isbn[3:]):
+        raise ValidationError(
+            _("%(value)s doesn't look like isbn, we expected %(check_version)s"), params={"value": maybe_isbn, "check_version": checksum_version[3:]}
+        )
+
+
 
 
 class Edition(Book):
@@ -664,7 +703,7 @@ def isbn_10_to_13(isbn_10):
 
 def isbn_13_to_10(isbn_13):
     """convert isbn 13 to 10, if possible"""
-    if isbn_13[:3] != "978":
+    if isbn_13[:3] not in ["978", "979"]:
         return None
 
     isbn_13 = re.sub(r"[^0-9X]", "", isbn_13)
