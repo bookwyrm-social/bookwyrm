@@ -4,11 +4,18 @@ import pathlib
 import pytest
 
 from dateutil.parser import parse
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
 
 from bookwyrm import models, settings
-from bookwyrm.models.book import isbn_10_to_13, isbn_13_to_10, normalize_isbn
+from bookwyrm.models.book import (
+    isbn_10_to_13,
+    isbn_13_to_10,
+    normalize_isbn,
+    validate_isbn10,
+    validate_isbn13,
+)
 from bookwyrm.settings import ENABLE_THUMBNAIL_GENERATION
 
 
@@ -60,6 +67,11 @@ class Book(TestCase):
         isbn_13 = isbn_10_to_13(isbn_10)
         self.assertEqual(isbn_13, "9781788161671")
 
+        # test checksum 0 case
+        isbn_10 = "1-788-16164-5"
+        isbn_13 = isbn_10_to_13(isbn_10)
+        self.assertEqual(isbn_13, "9781788161640")
+
     def test_isbn_13_to_10(self):
         """checksums and so on"""
         isbn_13 = "9781788161671"
@@ -73,6 +85,39 @@ class Book(TestCase):
     def test_normalize_isbn(self):
         """Remove misc characters from ISBNs"""
         self.assertEqual(normalize_isbn("978-0-4633461-1-2"), "9780463346112")
+
+    def test_validate_isbn10(self):
+        """ISBN10 validation"""
+        invalid_isbn10 = [
+            ("0123", "too short"),
+            ("012345678999", "too long"),
+            ("01234V6789", "invalid char"),
+            # ("0123456788", "invalid checksum"),
+            # ("012345678Y", "invalid checksum char"),
+        ]
+        validate_isbn10("123456789")
+        validate_isbn10("0123456789")
+        validate_isbn10("123456789X")
+        # validate_isbn10("0-201-53082-1")
+
+        for isbn, _desc in invalid_isbn10:
+            with self.subTest(isbn=isbn):
+                with self.assertRaises(ValidationError):
+                    validate_isbn10(isbn)
+
+    def test_validate_isbn13(self):
+        """ISBN13 validation"""
+        invalid_isbn13 = [
+            # TODO(dato): fill with failure cases.
+        ]
+        validate_isbn13("9781234567897")
+        validate_isbn13("9781234567880")
+        validate_isbn13("978-84-17121-94-5")
+
+        for isbn, _desc in invalid_isbn10:
+            with self.subTest(isbn=isbn):
+                with self.assertRaises(ValidationError):
+                    validate_isbn13(isbn)
 
     def test_get_edition_info(self):
         """text slug about an edition"""
