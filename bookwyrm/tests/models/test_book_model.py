@@ -111,7 +111,7 @@ class Book(TestCase):
         invalid_isbn13 = [
             ("978-12-3456-789-X", "invalid char"),
             ("9741234567897", "invalid prefix"),
-            ("978-84-17121-94-2", "invalid checksum")
+            ("978-84-17121-94-2", "invalid checksum"),
         ]
         validate_isbn13("9781234567897")
         validate_isbn13("9781234567880")
