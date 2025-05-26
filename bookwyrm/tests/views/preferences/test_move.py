@@ -94,6 +94,13 @@ class ViewsHelpers(TestCase):
             status=200,
         )
 
+        responses.add(
+            responses.GET,
+            "https://your.domain.here:4242/user/rat",
+            json=self.local_user.to_activity(),
+            status=200,
+        )
+
         view = views.MoveUser.as_view()
         form = forms.MoveUserForm()
         form.data["target"] = "mouse@example.com"

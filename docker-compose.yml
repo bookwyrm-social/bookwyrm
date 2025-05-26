@@ -24,8 +24,6 @@ services:
   certbot:
     image: certbot/certbot:latest
     entrypoint: /bin/sh -c "trap exit TERM; while [ "$NGINX_SETUP" = "https" ];do certbot renew --webroot --webroot-path=/var/www/certbot; sleep 1d & wait $${!}; done"
-    environment:
-      - USE_HTTPS=${USE_HTTPS}
     depends_on:
       - nginx
     volumes:
