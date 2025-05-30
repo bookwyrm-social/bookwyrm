@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-12 17:02+0000\n"
-"PO-Revision-Date: 2025-04-15 22:15\n"
+"PO-Revision-Date: 2025-05-03 21:46\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -238,11 +238,11 @@ msgstr "non autorizzato"
 #: bookwyrm/models/bookwyrm_import_job.py:569
 #: bookwyrm/models/bookwyrm_import_job.py:595
 msgid "connection_error"
-msgstr ""
+msgstr "connection_error"
 
 #: bookwyrm/models/bookwyrm_import_job.py:605
 msgid "invalid_relationship"
-msgstr ""
+msgstr "invalid_relationship"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
@@ -436,7 +436,7 @@ msgstr "Recensione di %(display_name)sdi %(book_title)s"
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
-msgstr[0] ""
+msgstr[0] "%(display_name)s ha valutato %(book_title)s: %(display_rating).1f stella"
 msgstr[1] "%(display_name)s ha valutato %(book_title)s: %(display_rating).1f stelle"
 
 #: bookwyrm/models/user.py:36 bookwyrm/templates/book/book.html:312
@@ -3246,12 +3246,12 @@ msgstr "Se si desidera migrare qualsiasi stato (commenti, recensioni, o preventi
 #: bookwyrm/templates/import/import_user.html:32
 #, python-format
 msgid "Currently you are allowed to import one user every %(hours)s hours."
-msgstr ""
+msgstr "Attualmente puoi importare un utente ogni %(hours)s ore."
 
 #: bookwyrm/templates/import/import_user.html:33
 #, python-format
 msgid "You will next be able to import a user file at %(next_time)s"
-msgstr ""
+msgstr "Potrai importare un altro file utente alle %(next_time)s"
 
 #: bookwyrm/templates/import/import_user.html:56
 msgid "Step 1:"
@@ -3419,11 +3419,11 @@ msgstr "Contatta il tuo amministratore o <a href='https://github.com/bookwyrm-so
 #: bookwyrm/templates/import/user_import_status.html:15
 #: bookwyrm/templates/import/user_import_status.html:26
 msgid "User Import Status"
-msgstr ""
+msgstr "Stato Importazione Utente"
 
 #: bookwyrm/templates/import/user_import_status.html:13
 msgid "User Import Retry Status"
-msgstr ""
+msgstr "Stato Nuovo Tentativo Importazione Utente"
 
 #: bookwyrm/templates/import/user_import_status.html:22
 #: bookwyrm/templates/settings/imports/imports.html:264
@@ -3443,11 +3443,11 @@ msgstr "Stati"
 
 #: bookwyrm/templates/import/user_import_status.html:85
 msgid "Follows & Blocks"
-msgstr ""
+msgstr "Segui & Bloccati"
 
 #: bookwyrm/templates/import/user_import_status.html:144
 msgid "Imported books"
-msgstr ""
+msgstr "Libri importati"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:5
 msgid "User Import Troubleshooting"
@@ -3455,37 +3455,37 @@ msgstr ""
 
 #: bookwyrm/templates/import/user_troubleshoot.html:26
 msgid "Your account was not set as an alias of the original user account"
-msgstr ""
+msgstr "Il tuo account non è stato impostato come alias dell'account utente originale"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:31
 msgid "Re-trying an import will not work in cases such as:"
-msgstr ""
+msgstr "Riprovare a importare non funziona in questi casi:"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:34
 msgid "A user, status, or BookWyrm server was deleted after your import file was created"
-msgstr ""
+msgstr "Un utente, stato o server BookWyrm è stato eliminato dopo la creazione del file di importazione"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:35
 msgid "Importing statuses when your old account has been deleted"
-msgstr ""
+msgstr "Quando si importano degli stati ma il tuo vecchio account è stato eliminato"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:43
 #, python-format
 msgid "Currently you are allowed to import or retry one user every %(hours)s hours."
-msgstr ""
+msgstr "Attualmente puoi importare un utente o riprovare ogni %(hours)s ore."
 
 #: bookwyrm/templates/import/user_troubleshoot.html:44
 #, python-format
 msgid "You will be able to retry this import at %(next_time)s"
-msgstr ""
+msgstr "Potrai riprovare questa importazione alle %(next_time)s"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:65
 msgid "Relationship"
-msgstr ""
+msgstr "Relazione"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:68
 msgid "Reason"
-msgstr ""
+msgstr "Motivo"
 
 #: bookwyrm/templates/landing/invite.html:4
 #: bookwyrm/templates/landing/invite.html:8
@@ -4699,12 +4699,12 @@ msgstr "Potrai creare un nuovo file di esportazione su %(next_available)s"
 #: bookwyrm/templates/preferences/export-user.html:72
 #, python-format
 msgid "On average, recent exports have taken %(hours)s hours."
-msgstr ""
+msgstr "In media, le esportazioni recenti hanno richiesto %(hours)s ore."
 
 #: bookwyrm/templates/preferences/export-user.html:76
 #, python-format
 msgid "On average, recent exports have taken %(minutes)s minutes."
-msgstr ""
+msgstr "In media, le esportazioni recenti hanno richiesto %(minutes)s minuti."
 
 #: bookwyrm/templates/preferences/export-user.html:88
 msgid "Create user export file"
