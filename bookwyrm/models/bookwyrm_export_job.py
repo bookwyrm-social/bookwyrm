@@ -279,14 +279,14 @@ def export_book(user: User, edition: Edition):
     for status in ["comments", "quotations", "reviews"]:
         data[status] = []
 
-    comments = Comment.objects.filter(user=user, book=edition).all()
+    comments = Comment.objects.filter(user=user, book=edition, deleted=False).all()
     for status in comments:
         obj = status.to_activity()
         obj["progress"] = status.progress
         obj["progress_mode"] = status.progress_mode
         data["comments"].append(obj)
 
-    quotes = Quotation.objects.filter(user=user, book=edition).all()
+    quotes = Quotation.objects.filter(user=user, book=edition, deleted=False).all()
     for status in quotes:
         obj = status.to_activity()
         obj["position"] = status.position
@@ -294,7 +294,7 @@ def export_book(user: User, edition: Edition):
         obj["position_mode"] = status.position_mode
         data["quotations"].append(obj)
 
-    reviews = Review.objects.filter(user=user, book=edition).all()
+    reviews = Review.objects.filter(user=user, book=edition, deleted=False).all()
     data["reviews"] = [status.to_activity() for status in reviews]
 
     # readthroughs can't be serialized to activity
@@ -320,10 +320,10 @@ def get_books_for_user(user):
     review_eds = Edition.objects.select_related("parent_work").filter(review__user=user)
     list_eds = Edition.objects.select_related("parent_work").filter(list__user=user)
     comment_eds = Edition.objects.select_related("parent_work").filter(
-        comment__user=user
+        comment__user=user, comment__deleted=False
     )
     quote_eds = Edition.objects.select_related("parent_work").filter(
-        quotation__user=user
+        quotation__user=user, quotation__deleted=False
     )
 
     editions = shelf_eds.union(rt_eds, review_eds, list_eds, comment_eds, quote_eds)

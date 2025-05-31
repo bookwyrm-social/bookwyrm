@@ -13,23 +13,31 @@ services:
     logging: *default-logging
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - "${PORT:-80}:80"
+      - "${PORT:-443:443}"
     depends_on:
       - web
     networks:
       - main
+    environment:
+      - DOMAIN=${DOMAIN}
     volumes:
-      - ./nginx:/etc/nginx/conf.d
+      - ./nginx/${NGINX_SETUP:-https}.conf:/etc/nginx/templates/default.conf.template
+      - ./nginx/locations:/etc/nginx/conf.d/locations
+      - ./nginx/server_config:/etc/nginx/conf.d/server_config
+      - ./nginx/server_name:/etc/nginx/conf.d/server_name
+      - ./nginx/99-autoreload.sh:/docker-entrypoint.d/99-autoreload.sh
       - ./certbot/conf:/etc/nginx/ssl
       - ./certbot/data:/var/www/certbot
       - static_volume:/app/static
       - media_volume:/app/images
   certbot:
     image: certbot/certbot:latest
-    command: certonly --webroot --webroot-path=/var/www/certbot --email ${EMAIL} --agree-tos --no-eff-email -d ${DOMAIN} -d www.${DOMAIN}
-    #command: renew --webroot --webroot-path /var/www/certbot
-    logging: *default-logging
+    entrypoint: /bin/sh -c "trap exit TERM; while [ "$NGINX_SETUP" = "https" ];do certbot renew --webroot --webroot-path=/var/www/certbot; sleep 1d & wait $${!}; done"
+    environment:
+      - USE_HTTPS=${USE_HTTPS}
+    depends_on:
+      - nginx
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/logs:/var/log/letsencrypt
@@ -37,8 +45,12 @@ services:
   db:
     build: postgres-docker
     env_file: .env
-    entrypoint: /bookwyrm-entrypoint.sh
-    command: cron postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
     volumes:
       - pgdata:/var/lib/postgresql/data
       - backups:/backups
@@ -47,21 +59,22 @@ services:
   web:
     build: .
     env_file: .env
-    command: gunicorn bookwyrm.wsgi:application --threads=8 --bind 0.0.0.0:8000
-    logging: *default-logging
+    command: gunicorn bookwyrm.wsgi:application
     volumes:
       - .:/app
       - static_volume:/app/static
       - media_volume:/app/images
       - exports_volume:/app/exports
     depends_on:
-      - db
-      - celery_worker
-      - redis_activity
+      db:
+        condition: service_healthy
+        restart: true
+      celery_worker:
+        condition: service_started
+      redis_activity:
+        condition: service_started
     networks:
       - main
-    ports:
-      - "8000"
   redis_activity:
     image: redis:7.2.1
     command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD} --appendonly yes --port ${REDIS_ACTIVITY_PORT}

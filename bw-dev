@@ -81,7 +81,7 @@ set -x
 
 case "$CMD" in
     up)
-        $DOCKER_COMPOSE up --build "$@"
+        $DOCKER_COMPOSE up "$@"
         ;;
     down)
         $DOCKER_COMPOSE down
@@ -92,6 +92,9 @@ case "$CMD" in
         ;;
     initdb)
         initdb "$@"
+        ;;
+    init_ssl)
+        $DOCKER_COMPOSE --file ./docker-compose-init_letsencrypt.yml up --exit-code-from=certbot
         ;;
     resetdb)
         prod_error

@@ -144,12 +144,28 @@ class BookwyrmExportJob(TestCase):
                 book=self.edition,
                 progress=15,
             )
+            # deleted comment
+            models.Comment.objects.create(
+                content="so far",
+                user=self.local_user,
+                book=self.edition,
+                progress=5,
+                deleted=True,
+            )
             # quote
             models.Quotation.objects.create(
                 content="check this out",
                 quote="A rose by any other name",
                 user=self.local_user,
                 book=self.edition,
+            )
+            # deleted quote
+            models.Quotation.objects.create(
+                content="check this out",
+                quote="A rose by any other name",
+                user=self.local_user,
+                book=self.edition,
+                deleted=True,
             )
 
             self.job = models.BookwyrmExportJob.objects.create(user=self.local_user)

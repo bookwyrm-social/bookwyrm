@@ -57,7 +57,7 @@ def api_book_search(request):
     """Return books via API response"""
     query = request.GET.get("q").strip()
     query = isbn_check_and_format(query)
-    min_confidence = request.GET.get("min_confidence", 0)
+    min_confidence = float(request.GET.get("min_confidence", 0.1))
     # only return local book results via json so we don't cascade
     book_results = search(query, min_confidence=min_confidence)
     return JsonResponse(
@@ -70,7 +70,7 @@ def book_search(request):
     query = request.GET.get("q").strip()
     # check if query is isbn
     query = isbn_check_and_format(query)
-    min_confidence = request.GET.get("min_confidence", 0)
+    min_confidence = float(request.GET.get("min_confidence", 0.1))
     search_remote = request.GET.get("remote", False) and request.user.is_authenticated
 
     # try a local-only search
@@ -103,7 +103,7 @@ def author_search(request):
 
     results = (
         models.Author.objects.filter(search_vector=search_query)
-        .annotate(rank=SearchRank(F("search_vector"), search_query))
+        .annotate(rank=SearchRank(F("search_vector"), search_query, normalization=32))
         .filter(rank__gt=min_confidence)
         .order_by("-rank")
     )

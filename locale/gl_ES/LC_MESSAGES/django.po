@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-12 17:02+0000\n"
-"PO-Revision-Date: 2025-04-15 18:59\n"
+"PO-Revision-Date: 2025-04-16 03:40\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -84,7 +84,7 @@ msgstr "Xa existe unha usuaria con este email."
 
 #: bookwyrm/forms/landing.py:69
 msgid "This email address cannot be registered."
-msgstr ""
+msgstr "Non se pode rexistrar este enderezo de correo."
 
 #: bookwyrm/forms/landing.py:127 bookwyrm/forms/landing.py:135
 msgid "Incorrect code"
@@ -211,7 +211,7 @@ msgstr "Recensión"
 
 #: bookwyrm/models/bookwyrm_import_job.py:111
 msgid "Quotation"
-msgstr ""
+msgstr "Cita"
 
 #: bookwyrm/models/bookwyrm_import_job.py:132
 #: bookwyrm/templates/snippets/follow_button.html:22
@@ -229,20 +229,20 @@ msgstr "Bloquear"
 #: bookwyrm/models/bookwyrm_import_job.py:379
 #: bookwyrm/models/bookwyrm_import_job.py:611
 msgid "unknown"
-msgstr ""
+msgstr "descoñecido"
 
 #: bookwyrm/models/bookwyrm_import_job.py:373
 msgid "unauthorized"
-msgstr ""
+msgstr "non autorizado"
 
 #: bookwyrm/models/bookwyrm_import_job.py:569
 #: bookwyrm/models/bookwyrm_import_job.py:595
 msgid "connection_error"
-msgstr ""
+msgstr "erro_na_conexión"
 
 #: bookwyrm/models/bookwyrm_import_job.py:605
 msgid "invalid_relationship"
-msgstr ""
+msgstr "realación_non_válida"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
@@ -886,7 +886,7 @@ msgstr "Wikipedia"
 
 #: bookwyrm/templates/author/author.html:79
 msgid "View on Wikidata"
-msgstr ""
+msgstr "Ver en Wikidata"
 
 #: bookwyrm/templates/author/author.html:87
 msgid "Website"
@@ -1245,7 +1245,7 @@ msgstr "Goodreads:"
 #: bookwyrm/templates/book/book_identifiers.html:58
 #: bookwyrm/templates/book/edit/edit_book_form.html:388
 msgid "Finna ID:"
-msgstr ""
+msgstr "ID en Finna:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -3015,7 +3015,7 @@ msgstr "OpenLibrary (CSV)"
 
 #: bookwyrm/templates/import/import.html:70
 msgid "OpenReads (CSV)"
-msgstr ""
+msgstr "OpenReads (CSV)"
 
 #: bookwyrm/templates/import/import.html:73
 msgid "Calibre (CSV)"
@@ -3246,12 +3246,12 @@ msgstr "Se queres migrar estados (comentarios, recensións ou citas) debes ou be
 #: bookwyrm/templates/import/import_user.html:32
 #, python-format
 msgid "Currently you are allowed to import one user every %(hours)s hours."
-msgstr ""
+msgstr "Actualmente podes importar unha conta cada %(hours)s horas."
 
 #: bookwyrm/templates/import/import_user.html:33
 #, python-format
 msgid "You will next be able to import a user file at %(next_time)s"
-msgstr ""
+msgstr "Poderás volver a importar un ficheiro con datos da conta en %(next_time)s"
 
 #: bookwyrm/templates/import/import_user.html:56
 msgid "Step 1:"
@@ -3419,11 +3419,11 @@ msgstr "Contacta coa administración ou <a href='https://github.com/bookwyrm-soc
 #: bookwyrm/templates/import/user_import_status.html:15
 #: bookwyrm/templates/import/user_import_status.html:26
 msgid "User Import Status"
-msgstr ""
+msgstr "Estado da Importación de contas"
 
 #: bookwyrm/templates/import/user_import_status.html:13
 msgid "User Import Retry Status"
-msgstr ""
+msgstr "Estado do reintento de importación de contas"
 
 #: bookwyrm/templates/import/user_import_status.html:22
 #: bookwyrm/templates/settings/imports/imports.html:264
@@ -3443,49 +3443,49 @@ msgstr "Estados"
 
 #: bookwyrm/templates/import/user_import_status.html:85
 msgid "Follows & Blocks"
-msgstr ""
+msgstr "Seguimentos e Bloqueos"
 
 #: bookwyrm/templates/import/user_import_status.html:144
 msgid "Imported books"
-msgstr ""
+msgstr "Libros importados"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:5
 msgid "User Import Troubleshooting"
-msgstr ""
+msgstr "Resolución de problemas coa importación"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:26
 msgid "Your account was not set as an alias of the original user account"
-msgstr ""
+msgstr "Non estableceches a conta como un alias da conta da usuaria orixinal"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:31
 msgid "Re-trying an import will not work in cases such as:"
-msgstr ""
+msgstr "O reintento da importación non funcionará en casos como:"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:34
 msgid "A user, status, or BookWyrm server was deleted after your import file was created"
-msgstr ""
+msgstr "A usuaria, estado, ou servidor Bookwyrm foron eliminados despois da creación do ficheiro de importación"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:35
 msgid "Importing statuses when your old account has been deleted"
-msgstr ""
+msgstr "A importación de estados cando a túa antiga conta foi eliminada"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:43
 #, python-format
 msgid "Currently you are allowed to import or retry one user every %(hours)s hours."
-msgstr ""
+msgstr "Actualmente tes permiso para importar ou reintentar unha conta cada %(hours)s horas."
 
 #: bookwyrm/templates/import/user_troubleshoot.html:44
 #, python-format
 msgid "You will be able to retry this import at %(next_time)s"
-msgstr ""
+msgstr "Poderás volver a intentar esta importación en %(next_time)s"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:65
 msgid "Relationship"
-msgstr ""
+msgstr "Relación"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:68
 msgid "Reason"
-msgstr ""
+msgstr "Motivo"
 
 #: bookwyrm/templates/landing/invite.html:4
 #: bookwyrm/templates/landing/invite.html:8
@@ -4699,12 +4699,12 @@ msgstr "Poderás crear un novo ficheiro de exportación en %(next_available)s"
 #: bookwyrm/templates/preferences/export-user.html:72
 #, python-format
 msgid "On average, recent exports have taken %(hours)s hours."
-msgstr ""
+msgstr "De media, ás exportacións recentes levoulles %(hours)s horas."
 
 #: bookwyrm/templates/preferences/export-user.html:76
 #, python-format
 msgid "On average, recent exports have taken %(minutes)s minutes."
-msgstr ""
+msgstr "De media, ás exportacións recentes levoulles %(minutes)s minutos."
 
 #: bookwyrm/templates/preferences/export-user.html:88
 msgid "Create user export file"
@@ -7575,17 +7575,17 @@ msgstr "Comentarios sobre {obj.display_name}"
 #: bookwyrm/views/rss_feed.py:219
 #, python-brace-format
 msgid "{obj.user.display_name}’s {obj.name} shelf"
-msgstr ""
+msgstr "Estante {obj.name} de {obj.user.display_name}"
 
 #: bookwyrm/views/rss_feed.py:237
 #, python-brace-format
 msgid "{obj.user.display_name}’s {obj.name} shelf: {desc}"
-msgstr ""
+msgstr "Estante {obj.name} de {obj.user.display_name}: {desc}"
 
 #: bookwyrm/views/rss_feed.py:238
 #, python-brace-format
 msgid "Books added to {obj.user.name}’s {obj.name} shelf"
-msgstr ""
+msgstr "Libros engadidos ao estante {obj.name} de {obj.user.name}"
 
 #: bookwyrm/views/updates.py:45
 #, python-format
