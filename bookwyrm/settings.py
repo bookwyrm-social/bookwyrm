@@ -420,7 +420,7 @@ if USE_S3:
         "exports": {
             "BACKEND": "storages.backends.s3.S3Storage",
             "OPTIONS": {
-                "location": "images",
+                "location": "exports",
                 "default_acl": None,
                 "file_overwrite": False,
             },
