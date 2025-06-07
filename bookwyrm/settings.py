@@ -82,7 +82,6 @@ FONT_DIR = os.path.join(STATIC_ROOT, "fonts")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", False)
-USE_HTTPS = env.bool("USE_HTTPS", not DEBUG)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
@@ -353,24 +352,23 @@ IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "bookwyrm.thumbnail_generation.Strategy"
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 CSP_ADDITIONAL_HOSTS = env.list("CSP_ADDITIONAL_HOSTS", [])
+PORT = env.int("PORT", 80)
 
-PROTOCOL = "http"
-if USE_HTTPS:
+if DOMAIN == "localhost":
+    # only run insecurely when testing on localhost
+    PROTOCOL = "http"
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+    NETLOC = f"{DOMAIN}:{PORT}"
+else:
+    # if we are not running on localhost, everything should be using https
+    # PORT should only be used to pass traffic to a reverse-proxy, not exposed externally
+    # so we don't need it here
     PROTOCOL = "https"
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-
-PORT = env.int("PORT", 443 if USE_HTTPS else 80)
-
-# If we are behind reverse_proxy, we can assume that protocol://domain should point to correct webserver that routes to our nginx
-if (
-    (USE_HTTPS and PORT == 443)
-    or (not USE_HTTPS and PORT == 80)
-    or (env("NGINX_SETUP", "https") == "reverse_proxy")
-):
     NETLOC = DOMAIN
-else:
-    NETLOC = f"{DOMAIN}:{PORT}"
+
 BASE_URL = f"{PROTOCOL}://{NETLOC}"
 CSRF_TRUSTED_ORIGINS = [BASE_URL]
 

@@ -29,16 +29,19 @@ class InstanceConfig(View):
         # check for possible problems with the instance configuration
         warnings = {}
         warnings["debug"] = settings.DEBUG
-        warnings["invalid_domain"] = not re.match(rf"^{regex.DOMAIN}$", settings.DOMAIN)
-        warnings["protocol"] = not settings.DEBUG and not settings.USE_HTTPS
+        warnings["invalid_domain"] = not (
+            re.match(rf"^{regex.DOMAIN}$", settings.DOMAIN)
+            or (settings.DOMAIN == "localhost")
+        )
+        warnings["localhost"] = settings.DOMAIN == "localhost"
 
         # pylint: disable=line-too-long
         data = {
             "warnings": warnings,
             "info": {
                 "domain": settings.DOMAIN,
+                "base_url": settings.BASE_URL,
                 "version": settings.VERSION,
-                "use_https": settings.USE_HTTPS,
                 "language": settings.LANGUAGE_CODE,
                 "use_s3": settings.USE_S3,
                 "email_sender": f"{settings.EMAIL_SENDER_NAME}@{settings.EMAIL_SENDER_DOMAIN}",
