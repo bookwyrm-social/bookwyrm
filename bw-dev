@@ -87,17 +87,11 @@ function create_secrets {
             echo -e "generating random secret in ${env_variable}"
             generated_secret=$(eval "${SECRETS_COMMAND}")
 
-            sed -i'' -e "/^#[[:blank:]]*${env_variable}=.*/{  # check if we find commented out variable in .env
-            h
-            s/#[[:blank:]]*${env_variable}=.*/${env_variable}=\"${generated_secret}\"/ # if found, replace it with non-commented out line and add generated secret
-            }
-            \${ # if not found, add non-commented out variable-line at the end of the file
-                x
-                /^$/{s//${env_variable}=\"${generated_secret}\"/
-                H
-            }
-            x}" .env
-
+            if grep -q -qi "^#[[:blank:]]*$env_variable" .env; then
+                sed -i.bak -e "s/#[[:blank:]]*${env_variable}=.*/${env_variable}=\"${generated_secret}\"/" .env
+            else
+                echo "${env_variable}=\"${generated_secret}\"" >>.env
+            fi
         fi
     done
     set -x
