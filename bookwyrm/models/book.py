@@ -483,7 +483,8 @@ def validate_isbn10(maybe_isbn: str) -> None:
     if checksum_version != normalized_isbn:
         raise ValidationError(
             _(
-                "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
+                "%(value)s doesn't have correct ISBN checksum, "
+                "we expected %(check_version)s"
             ),
             params={"value": maybe_isbn, "check_version": checksum_version},
         )
@@ -522,7 +523,8 @@ def validate_isbn13(maybe_isbn: str) -> None:
     if checksum_version[3:] != normalized_isbn[3:]:
         raise ValidationError(
             _(
-                "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
+                "%(value)s doesn't have correct ISBN checksum, "
+                "we expected %(check_version)s"
             ),
             params={
                 "value": maybe_isbn,
