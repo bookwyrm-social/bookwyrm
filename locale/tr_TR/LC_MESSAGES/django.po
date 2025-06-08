@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-12 17:02+0000\n"
-"PO-Revision-Date: 2025-04-20 21:56\n"
+"PO-Revision-Date: 2025-05-06 19:30\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Turkish\n"
 "Language: tr\n"
@@ -147,7 +147,7 @@ msgstr "Tehlike"
 
 #: bookwyrm/models/antispam.py:113 bookwyrm/models/antispam.py:147
 msgid "Automatically generated report"
-msgstr "Otomatik oluşturmuş rapor"
+msgstr "Otomatik oluşturulmuş rapor"
 
 #: bookwyrm/models/base_model.py:18 bookwyrm/models/import_job.py:49
 #: bookwyrm/models/job.py:18 bookwyrm/models/link.py:76
@@ -182,7 +182,7 @@ msgstr "Sesli kitap"
 
 #: bookwyrm/models/book.py:444
 msgid "eBook"
-msgstr "e-kitap"
+msgstr "e-Kitap"
 
 #: bookwyrm/models/book.py:445
 msgid "Graphic novel"
@@ -233,7 +233,7 @@ msgstr "bilinmiyor"
 
 #: bookwyrm/models/bookwyrm_import_job.py:373
 msgid "unauthorized"
-msgstr "i̇zin yok"
+msgstr "yetkisiz"
 
 #: bookwyrm/models/bookwyrm_import_job.py:569
 #: bookwyrm/models/bookwyrm_import_job.py:595
@@ -291,7 +291,7 @@ msgstr "Herkese Açık"
 #: bookwyrm/templates/snippets/privacy_select.html:14
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:14
 msgid "Unlisted"
-msgstr "Listelenmiyor"
+msgstr "Liste dışı"
 
 #: bookwyrm/models/fields.py:227
 #: bookwyrm/templates/snippets/privacy_select.html:17
@@ -374,7 +374,7 @@ msgstr "Çözülen şikayet"
 
 #: bookwyrm/models/report.py:86
 msgid "Re-opened report"
-msgstr "Tekrar bakılan şikayet"
+msgstr "Yeniden açılmış rapor"
 
 #: bookwyrm/models/report.py:87
 msgid "Messaged reporter"
@@ -697,7 +697,7 @@ msgstr "Paylaşım sayısı:"
 #: bookwyrm/templates/about/layout.html:19
 #: bookwyrm/templates/setup/config.html:74
 msgid "Software version:"
-msgstr "Sürüm:"
+msgstr "Yazılım sürümü:"
 
 #: bookwyrm/templates/about/layout.html:30
 #: bookwyrm/templates/embed-layout.html:34
@@ -1111,7 +1111,7 @@ msgstr "Büyütmek için tıkla"
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "(%(review_count)s incelemeler)"
 
 #: bookwyrm/templates/book/book.html:214
 msgid "Add Description"
@@ -1128,7 +1128,7 @@ msgstr "Açıklama:"
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
 msgstr[0] "%(count)s baskı"
-msgstr[1] ""
+msgstr[1] "%(count)s baskılar"
 
 #: bookwyrm/templates/book/book.html:251
 msgid "You have shelved this edition in:"
@@ -1158,7 +1158,7 @@ msgstr "Değerlendirmelerin"
 
 #: bookwyrm/templates/book/book.html:323
 msgid "Your comments"
-msgstr "Yorumlarınız"
+msgstr "Yorumların"
 
 #: bookwyrm/templates/book/book.html:329
 msgid "Your quotes"
@@ -1522,7 +1522,7 @@ msgstr "<a href=\"%(work_path)s\"><i>%(work_title)s</i></a>'ın Baskıları"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
-msgstr "Aradığınız baskıyı bulamıyor musunuz?"
+msgstr "Aradığın baskıyı bulamıyor musun?"
 
 #: bookwyrm/templates/book/editions/editions.html:76
 msgid "Add another edition"
@@ -1764,7 +1764,7 @@ msgstr "Gönder"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:38
 msgid "Can't find your code?"
-msgstr "Kodunuzu bulamıyor musunuz?"
+msgstr "Kodunu bulamıyor musun?"
 
 #: bookwyrm/templates/confirm_email/resend.html:5
 #: bookwyrm/templates/confirm_email/resend_modal.html:5
@@ -1814,7 +1814,7 @@ msgstr "Dizine Katıl"
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
 msgid "You can opt-out at any time in your <a href=\"%(path)s\">profile settings.</a>"
-msgstr ""
+msgstr "<a href=\"%(path)s\">Profil ayarları</a>ndan istediğin zaman vazgeçebilirsin"
 
 #: bookwyrm/templates/directory/directory.html:29
 #: bookwyrm/templates/directory/directory.html:31
@@ -2063,7 +2063,7 @@ msgstr "%(site_name)s ana sayfa"
 #: bookwyrm/templates/embed-layout.html:40
 #: bookwyrm/templates/snippets/footer.html:12
 msgid "Contact site admin"
-msgstr "Site yöneticisiyle iletişime geçin"
+msgstr "Site yöneticisiyle iletişime geç"
 
 #: bookwyrm/templates/embed-layout.html:46
 msgid "Join BookWyrm"
@@ -2204,7 +2204,7 @@ msgstr "%(query)s için kitap bulunamadı"
 #: bookwyrm/templates/get_started/books.html:11
 #, python-format
 msgid "You can add books when you start using %(site_name)s."
-msgstr ""
+msgstr "Kitapları %(site_name)s'i kullanmaya başladığında ekleyebilirsin."
 
 #: bookwyrm/templates/get_started/books.html:16
 #: bookwyrm/templates/get_started/books.html:17
@@ -2307,7 +2307,7 @@ msgstr "Hesabınız dizinde görünecek ve diğer BookWyrm kullanıcılarına ö
 
 #: bookwyrm/templates/get_started/users.html:8
 msgid "You can follow users on other BookWyrm instances and federated services like Mastodon."
-msgstr "Hesabınız dizinde görünecek ve diğer BookWyrm kullanıcılarına önerilebilecektir."
+msgstr "Kullanıcıları diğer BookWyrm sunucularında ve Mastodon gibi federe servislerde takip edebilirsin."
 
 #: bookwyrm/templates/get_started/users.html:11
 msgid "Search for a user"
@@ -2420,7 +2420,7 @@ msgstr[1] ""
 msgid "%(shared_books)s book on your shelves"
 msgid_plural "%(shared_books)s books on your shelves"
 msgstr[0] "%(shared_books)s raflarındaki kitaplar"
-msgstr[1] ""
+msgstr[1] "%(shared_books)s raflarındaki kitaplar"
 
 #: bookwyrm/templates/groups/suggested_users.html:43
 #, python-format
@@ -2625,7 +2625,7 @@ msgstr "Grup üyeleri"
 
 #: bookwyrm/templates/guided_tour/group.html:77
 msgid "As well as creating lists from the Lists page, you can create a group-curated list here on the group's homepage. Any member of the group can create a list curated by group members."
-msgstr "Listeler sayfasından liste oluşturmanın yanı sıra, burada grubun ana sayfasında, grup tarafından seçilmiş bir liste oluşturabilirsiniz. Grubun herhangi bir üyesi, grup üyeleri tarafından oluşturulan bir liste oluşturabilir."
+msgstr "Listeler sayfasından liste oluşturmanın yanı sıra, burada grubun ana sayfasında, grup tarafından seçilmiş bir liste oluşturabilirsin. Grubun herhangi bir üyesi, grup üyeleri tarafından oluşturulan bir liste oluşturabilir."
 
 #: bookwyrm/templates/guided_tour/group.html:78
 msgid "Group lists"
@@ -2919,7 +2919,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_profile.html:31
 msgid "This tab shows everything you have read towards your annual reading goal, or allows you to set one. You don't have to set a reading goal if that's not your thing!"
-msgstr ""
+msgstr "Bu sekme, yıllık okuma hedefin doğrultusunda okuduğun her şeyi gösterir veya bir hedef belirlemene olanak tanır. Eğer sana göre değilse okuma hedefi belirlemek zorunda değilsin!"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:32
 #: bookwyrm/templates/user/goal.html:6 bookwyrm/templates/user/layout.html:89
@@ -2957,7 +2957,7 @@ msgstr ""
 
 #: bookwyrm/templates/hashtag.html:25
 msgid "No activities for this hashtag yet!"
-msgstr ""
+msgstr "Bu etiket için henüz bir etkinlik yok!"
 
 #: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:6
@@ -3040,11 +3040,11 @@ msgstr ""
 
 #: bookwyrm/templates/import/import.html:104
 msgid "Create new shelves if they do not exist"
-msgstr ""
+msgstr "Mevcut değillerse yeni raflar oluştur"
 
 #: bookwyrm/templates/import/import.html:109
 msgid "Privacy setting for imported reviews and shelves:"
-msgstr ""
+msgstr "İçe aktarılan incelemeler ve raflar için gizlilik ayarı:"
 
 #: bookwyrm/templates/import/import.html:116
 #: bookwyrm/templates/import/import.html:118
@@ -3074,7 +3074,7 @@ msgstr ""
 #: bookwyrm/templates/settings/imports/imports.html:202
 #: bookwyrm/templates/settings/imports/imports.html:292
 msgid "Date Created"
-msgstr ""
+msgstr "Oluşturma Tarihi"
 
 #: bookwyrm/templates/import/import.html:143
 #: bookwyrm/templates/import/import_user.html:189
@@ -3223,7 +3223,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:237
 msgid "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format."
-msgstr ""
+msgstr "Bu içe aktarma artık desteklenmeyen eski bir formattadır. Bu içe aktarmadaki eksik ögelerle ilgili sorun gidermek istersen, içe aktarma biçimini güncellemek için aşağıdaki butona tıkla."
 
 #: bookwyrm/templates/import/import_status.html:239
 msgid "Update import"
@@ -3237,11 +3237,11 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:13
 msgid "Not a valid import file"
-msgstr ""
+msgstr "Geçerli bir içe aktarma dosyası değil"
 
 #: bookwyrm/templates/import/import_user.html:18
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set this account as an <strong>alias</strong> of the one you are migrating from, or <strong>move</strong> that account to this one, before you import your user data."
-msgstr ""
+msgstr "Herhangi bir durumu (yorumlar, incelemler, veya alıntılar) taşımak istiyorsan, kullanıcı verilerini içe aktarmadan önce bu hesabı taşıdığın hesabın <strong>takma adı</strong> olarak ayarlaman veya o hesabı bu hesaba <strong>taşıman</strong> gerekir."
 
 #: bookwyrm/templates/import/import_user.html:32
 #, python-format
@@ -3283,11 +3283,11 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:95
 msgid "User settings"
-msgstr ""
+msgstr "Kullanıcı ayarları"
 
 #: bookwyrm/templates/import/import_user.html:98
 msgid "Overwrites:"
-msgstr ""
+msgstr "Üzerine yaz:"
 
 #: bookwyrm/templates/import/import_user.html:101
 msgid "Whether manual approval is required for other users to follow your account"
@@ -3319,7 +3319,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:127
 msgid "Followers and following"
-msgstr ""
+msgstr "Takipçiler ve takip edilenler"
 
 #: bookwyrm/templates/import/import_user.html:131
 msgid "User blocks"
@@ -3332,12 +3332,12 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:141
 msgid "Overwrites reading goals for all years listed in the import file"
-msgstr ""
+msgstr "İçe aktarma dosyasında listelenen tüm yıllar için okuma hedeflerinin üzerine yazar"
 
 #: bookwyrm/templates/import/import_user.html:145
 #: bookwyrm/templates/preferences/export-user.html:24
 msgid "Shelves"
-msgstr ""
+msgstr "Raflar"
 
 #: bookwyrm/templates/import/import_user.html:148
 #: bookwyrm/templates/preferences/export-user.html:25
@@ -3408,7 +3408,7 @@ msgstr ""
 #: bookwyrm/templates/import/troubleshoot.html:25
 #: bookwyrm/templates/import/user_troubleshoot.html:28
 msgid "BookWyrm has been updated since this import with a bug fix"
-msgstr ""
+msgstr "BookWyrm bu içe aktarma işleminden sonra bir hata düzeltmesi ile güncellendi"
 
 #: bookwyrm/templates/import/troubleshoot.html:28
 #: bookwyrm/templates/import/user_troubleshoot.html:38
@@ -3564,7 +3564,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/2fa.html:91
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
-msgstr ""
+msgstr "Şifre:"
 
 #: bookwyrm/templates/landing/login.html:41 bookwyrm/templates/layout.html:139
 #: bookwyrm/templates/ostatus/error.html:34
@@ -3585,7 +3585,7 @@ msgstr ""
 #: bookwyrm/templates/landing/password_reset_request.html:14
 #, python-format
 msgid "A password reset link will be sent to <strong>%(email)s</strong> if there is an account using that email address."
-msgstr ""
+msgstr "Bu e-posta adresini kullanan bir hesap varsa <strong>%(email)s</strong>'a bir şifre sıfırlama bağlantısı gönderilecektir."
 
 #: bookwyrm/templates/landing/password_reset_request.html:20
 msgid "A link to reset your password will be sent to your email address"
@@ -3593,7 +3593,7 @@ msgstr ""
 
 #: bookwyrm/templates/landing/password_reset_request.html:34
 msgid "Reset password"
-msgstr ""
+msgstr "Şifreyi Sıfırla"
 
 #: bookwyrm/templates/landing/reactivate.html:4
 #: bookwyrm/templates/landing/reactivate.html:7
@@ -3619,7 +3619,7 @@ msgstr ""
 
 #: bookwyrm/templates/layout.html:69
 msgid "Main navigation menu"
-msgstr ""
+msgstr "Ana gezinme menüsü"
 
 #: bookwyrm/templates/layout.html:134 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
@@ -3627,7 +3627,7 @@ msgstr ""
 
 #: bookwyrm/templates/layout.html:136
 msgid "Show/Hide password"
-msgstr ""
+msgstr "Parolayı Göster/Gizle"
 
 #: bookwyrm/templates/layout.html:150
 msgid "Join"
@@ -3821,7 +3821,7 @@ msgstr ""
 
 #: bookwyrm/templates/lists/list.html:146
 msgid "List position"
-msgstr ""
+msgstr "Liste konumu"
 
 #: bookwyrm/templates/lists/list.html:152
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:23
@@ -3841,7 +3841,7 @@ msgstr ""
 
 #: bookwyrm/templates/lists/list.html:191
 msgid "Direction"
-msgstr ""
+msgstr "Yön"
 
 #: bookwyrm/templates/lists/list.html:205
 msgid "Add Books"
@@ -3849,7 +3849,7 @@ msgstr ""
 
 #: bookwyrm/templates/lists/list.html:207
 msgid "Suggest Books"
-msgstr ""
+msgstr "Kitap Öner"
 
 #: bookwyrm/templates/lists/list.html:218
 msgid "search"
@@ -3959,7 +3959,7 @@ msgstr ""
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other book to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other books to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "<a href=\"%(related_user_link)s\">%(related_user)s</a> ekledi<em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, ve%(display_count)s listene başka kitapları \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:88
 #, python-format
@@ -4111,7 +4111,7 @@ msgstr ""
 #: bookwyrm/templates/notifications/items/import.html:14
 #, python-format
 msgid "Your <a href=\"%(url)s\">import</a> completed."
-msgstr ""
+msgstr "<a href=\"%(url)s\">İçe aktarman</a> tamamlandı."
 
 #: bookwyrm/templates/notifications/items/invite.html:16
 #, python-format
@@ -4348,7 +4348,7 @@ msgstr ""
 #: bookwyrm/templates/ostatus/subscribe.html:8
 #, python-format
 msgid "Log in to %(sitename)s"
-msgstr ""
+msgstr "%(sitename)s' giriş yap"
 
 #: bookwyrm/templates/ostatus/subscribe.html:10
 #, python-format
@@ -4363,16 +4363,16 @@ msgstr ""
 
 #: bookwyrm/templates/ostatus/subscribe.html:18
 msgid "Uh oh..."
-msgstr ""
+msgstr "Vah vah..."
 
 #: bookwyrm/templates/ostatus/subscribe.html:20
 msgid "Let's log in first..."
-msgstr ""
+msgstr "..."
 
 #: bookwyrm/templates/ostatus/subscribe.html:51
 #, python-format
 msgid "Follow %(username)s"
-msgstr ""
+msgstr "%(username)s takip et"
 
 #: bookwyrm/templates/ostatus/success.html:6
 #: bookwyrm/templates/ostatus/success.html:32
@@ -4414,7 +4414,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/2fa.html:40
 msgid "Generate backup codes"
-msgstr ""
+msgstr "Yedek kodları oluştur"
 
 #: bookwyrm/templates/preferences/2fa.html:45
 msgid "Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up."
@@ -4434,7 +4434,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/2fa.html:73
 msgid "Enter the code from your app:"
-msgstr ""
+msgstr "Kodu uygulamadan gir:"
 
 #: bookwyrm/templates/preferences/2fa.html:83
 msgid "You can make your account more secure by using Two Factor Authentication (2FA). This will require you to enter a one-time code using a phone app like <em>Authy</em>, <em>Google Authenticator</em> or <em>Microsoft Authenticator</em> each time you log in."
@@ -4518,7 +4518,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/change_password.html:28
 msgid "New password:"
-msgstr ""
+msgstr "Yeni şifre:"
 
 #: bookwyrm/templates/preferences/delete_user.html:4
 #: bookwyrm/templates/preferences/delete_user.html:7
@@ -4530,7 +4530,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/delete_user.html:12
 msgid "Deactivate account"
-msgstr ""
+msgstr "Hesabı devre dışı bırak"
 
 #: bookwyrm/templates/preferences/delete_user.html:15
 msgid "Your account will be hidden. You can log back in at any time to re-activate your account."
@@ -4621,11 +4621,11 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:129
 msgid "Hide followers and following on profile"
-msgstr ""
+msgstr "Profilde takipçileri ve takip edilenleri sakla"
 
 #: bookwyrm/templates/preferences/edit_user.html:134
 msgid "Default post privacy:"
-msgstr ""
+msgstr "Varsayılan ileti gizliliği:"
 
 #: bookwyrm/templates/preferences/edit_user.html:142
 #, python-format
@@ -4636,7 +4636,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/export-user.html:9
 #: bookwyrm/templates/preferences/layout.html:55
 msgid "Export BookWyrm Account"
-msgstr ""
+msgstr "BookWyrm Hesabını Dışa Aktar"
 
 #: bookwyrm/templates/preferences/export-user.html:15
 msgid "You can create an export file here. This will allow you to migrate your data to another BookWyrm account."
@@ -4644,7 +4644,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export-user.html:19
 msgid "Your file will include:"
-msgstr ""
+msgstr "Dosyan şunları içerecektir:"
 
 #: bookwyrm/templates/preferences/export-user.html:22
 msgid "Most user settings"
@@ -4699,12 +4699,12 @@ msgstr ""
 #: bookwyrm/templates/preferences/export-user.html:72
 #, python-format
 msgid "On average, recent exports have taken %(hours)s hours."
-msgstr ""
+msgstr "Ortalama olarak, son dışa aktarmalar%(saat) saat sürmüştür."
 
 #: bookwyrm/templates/preferences/export-user.html:76
 #, python-format
 msgid "On average, recent exports have taken %(minutes)s minutes."
-msgstr ""
+msgstr "."
 
 #: bookwyrm/templates/preferences/export-user.html:88
 msgid "Create user export file"
