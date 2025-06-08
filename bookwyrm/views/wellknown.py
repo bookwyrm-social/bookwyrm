@@ -141,5 +141,5 @@ def opensearch(request):
     site = models.SiteSettings.get()
     image = site.favicon_url
     return TemplateResponse(
-        request, "opensearch.xml", {"image": image, "DOMAIN": DOMAIN}
+        request, "opensearch.xml", {"image": image, "BASE_URL": BASE_URL}
     )
