@@ -86,7 +86,7 @@ function create_secrets {
         else
             echo -e "generating random secret in ${env_variable}"
             generated_secret=$(eval "${SECRETS_COMMAND}")
-            sed -i -e "s/^#${env_variable}=.*/${env_variable}=\"${generated_secret}\"/" .env
+            sed -i'' -e "/^#[[:blank:]]*${env_variable}=.*/{h;s/#[[:blank:]]*${env_variable}=.*/${env_variable}=\"${generated_secret}\"/};\${x;/^$/{s//${env_variable}=\"${generated_secret}\"/;H};x}" .env
         fi
     done
     set -x
