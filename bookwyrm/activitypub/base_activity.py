@@ -380,7 +380,20 @@ def resolve_remote_id(
         logger.info("Could not connect to host for remote_id: %s", remote_id)
         return None
     except requests.HTTPError as e:
-        logger.exception("HTTP error - remote_id: %s - error: %s", remote_id, e)
+        try:
+            assert e.response.status_code == 410
+            # only log a warning for "gone" since there is not much we can do
+            logger.warning(
+                "request for object dropped because it is gone (410) - remote_id: %s",
+                remote_id,
+            )
+            # check whether the remote_id is a user and already in our DB
+            existing = models.User.find_existing_by_remote_id(remote_id)
+            # ensure deleted remote users are also deleted in our DB
+            if existing and not existing.deleted:
+                existing.delete()
+        except:  # pylint: disable=bare-except
+            logger.exception("HTTP error - remote_id: %s - error: %s", remote_id, e)
         return None
     # determine the model implicitly, if not provided
     # or if it's a model with subclasses like Status, check again

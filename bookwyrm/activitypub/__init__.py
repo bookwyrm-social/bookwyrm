@@ -2,6 +2,8 @@
 import inspect
 import sys
 
+from requests import HTTPError
+
 from .base_activity import ActivityEncoder, Signature, naive_parse
 from .base_activity import Link, Mention, Hashtag
 from .base_activity import (
@@ -34,3 +36,10 @@ activity_objects = {c[0]: c[1] for c in cls_members if hasattr(c[1], "to_model")
 def parse(activity_json):
     """figure out what activity this is and parse it"""
     return naive_parse(activity_objects, activity_json)
+
+
+# pylint: disable=unnecessary-pass
+class UserIsGoneError(HTTPError):
+    """error class for when a user is banned or deleted"""
+
+    pass
