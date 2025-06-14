@@ -205,6 +205,9 @@ case "$CMD" in
         prod_error
         npm run --prefix dev-tools watch:static
         ;;
+    fix_volume_permissions)
+        runweb_code chown -R bookwyrm:bookwyrm images static exports
+        ;;
     update)
         git pull
         $DOCKER_COMPOSE build
@@ -297,6 +300,7 @@ case "$CMD" in
         echo "    bash"
         echo "    shell"
         echo "    dbshell"
+        echo "    fix_volume_permissions"
         echo "    restart_celery"
         echo "    pytest [path]"
         echo "    compile_themes"
