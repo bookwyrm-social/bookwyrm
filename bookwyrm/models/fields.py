@@ -293,7 +293,10 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
             activity["cc"] = []
 
 
-class ForeignKey(ActivitypubRelatedFieldMixin, models.ForeignKey):
+class ForeignKey(  # pylint: disable=abstract-method
+    ActivitypubRelatedFieldMixin,
+    models.ForeignKey,
+):
     """activitypub-aware foreign key field"""
 
     def field_to_activity(self, value):
@@ -302,7 +305,9 @@ class ForeignKey(ActivitypubRelatedFieldMixin, models.ForeignKey):
         return value.remote_id
 
 
-class OneToOneField(ActivitypubRelatedFieldMixin, models.OneToOneField):
+class OneToOneField(  # pylint: disable=abstract-method
+    ActivitypubRelatedFieldMixin, models.OneToOneField
+):
     """activitypub-aware foreign key field"""
 
     def field_to_activity(self, value):
@@ -311,7 +316,9 @@ class OneToOneField(ActivitypubRelatedFieldMixin, models.OneToOneField):
         return value.to_activity()
 
 
-class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
+class ManyToManyField(  # pylint: disable=abstract-method
+    ActivitypubFieldMixin, models.ManyToManyField
+):
     """activitypub-aware many to many field"""
 
     def __init__(self, *args, link_only=False, **kwargs):
@@ -362,7 +369,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         return items
 
 
-class TagField(ManyToManyField):
+class TagField(ManyToManyField):  # pylint: disable=abstract-method
     """special case of many to many that uses Tags"""
 
     def __init__(self, *args, **kwargs):
