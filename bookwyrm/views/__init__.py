@@ -68,6 +68,8 @@ from .books.books import (
     upload_cover,
     add_description,
     resolve_book,
+    create_suggestion_list,
+    book_add_suggestion,
 )
 from .books.series import BookSeriesBy
 from .books.books import update_book_from_remote
