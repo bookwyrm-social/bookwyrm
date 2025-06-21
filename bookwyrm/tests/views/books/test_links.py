@@ -103,6 +103,39 @@ class LinkViews(TestCase):
         self.book.refresh_from_db()
         self.assertEqual(self.book.file_links.first(), link)
 
+    def test_add_second_link_post(self, *_):
+        """Test that we get error if we try to submit same url again"""
+        link = models.FileLink.objects.create(
+            book=self.book,
+            added_by=None,
+            url="https://www.hello.com",
+            filetype="HTML",
+            availability="loan",
+        )
+
+        link.refresh_from_db()
+        self.assertEqual(link.filetype, "HTML")
+        self.assertEqual(link.availability, "loan")
+
+        view = views.AddFileLink.as_view()
+        data = {}
+        data["url"] = "https://www.hello.com"
+        data["filetype"] = "HTML"
+        data["book"] = self.book.id
+        data["added_by"] = self.local_user.id
+        data["availability"] = "loan"
+
+        request = self.factory.post("", data=data)
+        request.user = self.local_user
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            result = view(request, self.book.id)
+            # link is duplicate and we get form page again with error
+            self.assertContains(
+                result,
+                "This link with file type has already been added for this book",
+            )
+            self.assertEqual(result.status_code, 200)
+
     def test_book_links(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.BookFileLinks.as_view()
