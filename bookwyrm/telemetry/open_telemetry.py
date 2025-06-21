@@ -23,9 +23,9 @@ def instrumentDjango() -> None:
 
 
 def instrumentPostgres() -> None:
-    from opentelemetry.instrumentation.psycopg2 import Psycopg2Instrumentor
+    from opentelemetry.instrumentation.psycopg import PsycopgInstrumentor
 
-    Psycopg2Instrumentor().instrument()
+    PsycopgInstrumentor().instrument()
 
 
 def instrumentCelery() -> None:
