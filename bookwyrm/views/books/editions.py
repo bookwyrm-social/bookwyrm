@@ -74,7 +74,9 @@ class Editions(View):
             "work_form": forms.EditionFromWorkForm(instance=work),
             "languages": languages,
             "formats": set(
-                e.physical_format.lower() for e in editions if e.physical_format
+                e.get_physical_format_display().lower()
+                for e in editions
+                if e.physical_format
             ),
         }
         return TemplateResponse(request, "book/editions/editions.html", data)
