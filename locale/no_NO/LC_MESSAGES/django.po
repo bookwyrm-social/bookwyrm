@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-23 23:50+0000\n"
-"PO-Revision-Date: 2025-06-24 00:31\n"
+"PO-Revision-Date: 2025-06-24 07:22\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Norwegian\n"
 "Language: no\n"
@@ -203,12 +203,12 @@ msgstr "Paperback"
 #: bookwyrm/models/book.py:514 bookwyrm/models/book.py:519
 #, python-format
 msgid "%(value)s doesn't look like an ISBN"
-msgstr ""
+msgstr "%(value)s ser ikke ut som en ISBN"
 
 #: bookwyrm/models/book.py:486 bookwyrm/models/book.py:526
 #, python-format
 msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
-msgstr ""
+msgstr "%(value)s har ikke riktig ISBN sjekksum, vi forventet %(check_version)s"
 
 #: bookwyrm/models/bookwyrm_import_job.py:109 bookwyrm/models/report.py:84
 #: bookwyrm/templates/settings/reports/report.html:115
@@ -5320,11 +5320,11 @@ msgstr "Feil"
 
 #: bookwyrm/templates/settings/connectors/available.html:15
 msgid "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof."
-msgstr ""
+msgstr "Finna.fi er en søketjeneste som samler inn materiale fra hundrevis av finske organisasjoner under ett tak."
 
 #: bookwyrm/templates/settings/connectors/available.html:28
 msgid "Create new connector"
-msgstr ""
+msgstr "Opprett ny kobling"
 
 #: bookwyrm/templates/settings/connectors/connector.html:35
 #: bookwyrm/templates/settings/connectors/update.html:33
@@ -5335,29 +5335,29 @@ msgstr "Deaktiveringsgrunn:"
 #: bookwyrm/templates/settings/connectors/connector.html:50
 #: bookwyrm/templates/settings/connectors/update.html:47
 msgid "Deactivate"
-msgstr ""
+msgstr "Deaktiver"
 
 #: bookwyrm/templates/settings/connectors/connector.html:61
 #: bookwyrm/templates/settings/connectors/update.html:58
 msgid "Activate"
-msgstr ""
+msgstr "Aktiver"
 
 #: bookwyrm/templates/settings/connectors/connectors.html:4
 #: bookwyrm/templates/settings/connectors/connectors.html:6
 msgid "Connector Settings"
-msgstr ""
+msgstr "Tilkoblingsinnstillinger"
 
 #: bookwyrm/templates/settings/connectors/connectors.html:11
 msgid "Connectors are sources of data about books and authors."
-msgstr ""
+msgstr "Tilkoblinger er kilder til data om bøker og forfattere."
 
 #: bookwyrm/templates/settings/connectors/connectors.html:12
 msgid "The priority determines the order in which search results appear. The highest priority is <code>1</code>. The default priority is <code>2</code>."
-msgstr ""
+msgstr "Søkeresultater vises i prioritert rekkefølge. Høyest prioritet er <code>1</code>. Standard prioritet er <code>2</code>."
 
 #: bookwyrm/templates/settings/connectors/connectors.html:14
 msgid "Connector settings only determine whether a connector will be used to deliver search results. To manage more interactions with other federated servers, including domain blocks, see"
-msgstr ""
+msgstr "Tilkoblingsinnstillingene bestemmer bare om en kobling brukes til å levere søkeresultatene. For å håndtere flere interaksjoner med andre fødererte servere, inkludert domene-blokker, se"
 
 #: bookwyrm/templates/settings/connectors/connectors.html:14
 #: bookwyrm/templates/settings/federation/edit_instance.html:12
@@ -5371,7 +5371,7 @@ msgstr "Føderte instanser"
 
 #: bookwyrm/templates/settings/connectors/update.html:66
 msgid "should be updated. Check recent release notes for more information."
-msgstr ""
+msgstr "bør oppdateres. Sjekk nylige utgivelsesnotater for mer informasjon."
 
 #: bookwyrm/templates/settings/connectors/update.html:76
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:19
@@ -6654,7 +6654,7 @@ msgstr "Domenet ditt ser ut til å være feilkonfigurert. Det skal ikke innehold
 
 #: bookwyrm/templates/setup/config.html:42
 msgid "You are running BookWyrm with <code>localhost</code>. This should <strong>never</strong> be used in a production environment."
-msgstr ""
+msgstr "Du kjører BookWyrm i <code>debug</code>-modus. Dette skal <strong>aldri</strong> brukes i et produksjonsmiljø."
 
 #: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:44
 msgid "Settings"
@@ -6666,7 +6666,7 @@ msgstr "Instans-domene:"
 
 #: bookwyrm/templates/setup/config.html:62
 msgid "Instance base URL:"
-msgstr ""
+msgstr "Instansens base URL:"
 
 #: bookwyrm/templates/setup/config.html:75
 msgid "Using S3:"
