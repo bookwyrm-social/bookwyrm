@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-23 23:50+0000\n"
-"PO-Revision-Date: 2025-06-24 00:32\n"
+"PO-Revision-Date: 2025-06-24 03:59\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -203,12 +203,12 @@ msgstr "Libro de bolso"
 #: bookwyrm/models/book.py:514 bookwyrm/models/book.py:519
 #, python-format
 msgid "%(value)s doesn't look like an ISBN"
-msgstr ""
+msgstr "%(value)s non semella ser un ISBN"
 
 #: bookwyrm/models/book.py:486 bookwyrm/models/book.py:526
 #, python-format
 msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
-msgstr ""
+msgstr "%(value)s non ten a suma de comprobación ISBN correcta, agardábase %(check_version)s"
 
 #: bookwyrm/models/bookwyrm_import_job.py:109 bookwyrm/models/report.py:84
 #: bookwyrm/templates/settings/reports/report.html:115
@@ -5214,7 +5214,7 @@ msgstr "Transmisións"
 
 #: bookwyrm/templates/settings/celery.html:32
 msgid "Broadcast"
-msgstr ""
+msgstr "Difusión"
 
 #: bookwyrm/templates/settings/celery.html:38
 msgid "Inbox"
@@ -5320,11 +5320,11 @@ msgstr "Erros"
 
 #: bookwyrm/templates/settings/connectors/available.html:15
 msgid "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof."
-msgstr ""
+msgstr "Finna.fi é un servizo de busca que obtén datos de centos de organizacións finesas nun único lugar."
 
 #: bookwyrm/templates/settings/connectors/available.html:28
 msgid "Create new connector"
-msgstr ""
+msgstr "Crear un novo conector"
 
 #: bookwyrm/templates/settings/connectors/connector.html:35
 #: bookwyrm/templates/settings/connectors/update.html:33
@@ -5335,29 +5335,29 @@ msgstr "Razón da desactivación:"
 #: bookwyrm/templates/settings/connectors/connector.html:50
 #: bookwyrm/templates/settings/connectors/update.html:47
 msgid "Deactivate"
-msgstr ""
+msgstr "Desactivar"
 
 #: bookwyrm/templates/settings/connectors/connector.html:61
 #: bookwyrm/templates/settings/connectors/update.html:58
 msgid "Activate"
-msgstr ""
+msgstr "Activar"
 
 #: bookwyrm/templates/settings/connectors/connectors.html:4
 #: bookwyrm/templates/settings/connectors/connectors.html:6
 msgid "Connector Settings"
-msgstr ""
+msgstr "Axustes do conector"
 
 #: bookwyrm/templates/settings/connectors/connectors.html:11
 msgid "Connectors are sources of data about books and authors."
-msgstr ""
+msgstr "Os Conectores son orixes de datos para autorías e libros."
 
 #: bookwyrm/templates/settings/connectors/connectors.html:12
 msgid "The priority determines the order in which search results appear. The highest priority is <code>1</code>. The default priority is <code>2</code>."
-msgstr ""
+msgstr "A prioridade determina a orde na que aparecen os resultados. A prioridade máis alta é <code>1</code>. A prioridade por defecto é <code>2</code>."
 
 #: bookwyrm/templates/settings/connectors/connectors.html:14
 msgid "Connector settings only determine whether a connector will be used to deliver search results. To manage more interactions with other federated servers, including domain blocks, see"
-msgstr ""
+msgstr "Os axustes do conector só determinan se o conector será utilizado para obter resultados de busca. Para xestionar máis interaccións con outros servidores federados, incluíndo bloqueos de dominios, lee"
 
 #: bookwyrm/templates/settings/connectors/connectors.html:14
 #: bookwyrm/templates/settings/federation/edit_instance.html:12
@@ -5371,7 +5371,7 @@ msgstr "Instancias federadas"
 
 #: bookwyrm/templates/settings/connectors/update.html:66
 msgid "should be updated. Check recent release notes for more information."
-msgstr ""
+msgstr "debería actualizarse. Comproba as notas da publicación recentes para máis información."
 
 #: bookwyrm/templates/settings/connectors/update.html:76
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:19
@@ -6542,7 +6542,7 @@ msgstr "(Ver denuncias)"
 
 #: bookwyrm/templates/settings/users/user_info.html:71
 msgid "Blocked by count:"
-msgstr ""
+msgstr "Bloqueada por:"
 
 #: bookwyrm/templates/settings/users/user_info.html:74
 msgid "Date added:"
@@ -6654,7 +6654,7 @@ msgstr "Semella non está ben configurado o dominio. Non debería incluír o pro
 
 #: bookwyrm/templates/setup/config.html:42
 msgid "You are running BookWyrm with <code>localhost</code>. This should <strong>never</strong> be used in a production environment."
-msgstr ""
+msgstr "Estás a usar BookWyrm con <code>localhost</code>. Isto non debería usarse <strong>nunca</strong> nun entorno de produción."
 
 #: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:44
 msgid "Settings"
@@ -6666,7 +6666,7 @@ msgstr "Dominio da instancia:"
 
 #: bookwyrm/templates/setup/config.html:62
 msgid "Instance base URL:"
-msgstr ""
+msgstr "URL base da instancia:"
 
 #: bookwyrm/templates/setup/config.html:75
 msgid "Using S3:"
