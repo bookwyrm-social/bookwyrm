@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="notification",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     (
                         "notification_type__in",
                         [

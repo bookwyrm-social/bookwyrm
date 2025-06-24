@@ -104,7 +104,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="report",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     _negated=True, reporter=django.db.models.expressions.F("user")
                 ),
                 name="self_report",

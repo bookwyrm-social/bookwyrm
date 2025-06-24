@@ -1,0 +1,14 @@
+services:
+  db_update:
+    image: docker.io/pgautoupgrade/pgautoupgrade:17-bookworm@sha256:ead773b5ace405c8ea92375c63216d7677a618f6bef8708f8c52ac92427b23cf
+    env_file: .env
+    environment:
+      PGAUTO_ONESHOT=yes
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - main
+volumes:
+  pgdata:
+networks:
+  main:
