@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import models
 from bookwyrm.models.user import FeedFilterChoices
+from bookwyrm.models.fields import ClearableFileInputWithWarning
 from .custom_form import CustomForm
 
 # pylint: disable=missing-class-docstring
@@ -22,11 +23,11 @@ class FeedStatusTypesForm(CustomForm):
 
 
 class ImportForm(forms.Form):
-    csv_file = forms.FileField()
+    csv_file = forms.FileField(widget=ClearableFileInputWithWarning)
 
 
 class ImportUserForm(forms.Form):
-    archive_file = forms.FileField()
+    archive_file = forms.FileField(widget=ClearableFileInputWithWarning)
 
 
 class ShelfForm(CustomForm):
