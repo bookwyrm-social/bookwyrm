@@ -1,4 +1,4 @@
-client_max_body_size 10m;
+client_max_body_size ${MAX_UPLOAD_MiB}m;
 limit_req_zone $binary_remote_addr zone=loginlimit:10m rate=1r/s;
 
 # include the cache status in the log message
