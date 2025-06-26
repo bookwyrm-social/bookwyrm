@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-23 23:50+0000\n"
-"PO-Revision-Date: 2025-06-24 00:31\n"
+"PO-Revision-Date: 2025-06-26 17:25\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Portuguese\n"
 "Language: pt\n"
@@ -203,12 +203,12 @@ msgstr "Capa mole"
 #: bookwyrm/models/book.py:514 bookwyrm/models/book.py:519
 #, python-format
 msgid "%(value)s doesn't look like an ISBN"
-msgstr ""
+msgstr "%(value)s não parece ser um ISBN"
 
 #: bookwyrm/models/book.py:486 bookwyrm/models/book.py:526
 #, python-format
 msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
-msgstr ""
+msgstr "%(value)s Não tem a verificação do ISBN correta%(check_version)s"
 
 #: bookwyrm/models/bookwyrm_import_job.py:109 bookwyrm/models/report.py:84
 #: bookwyrm/templates/settings/reports/report.html:115
@@ -225,7 +225,7 @@ msgstr "Critica"
 
 #: bookwyrm/models/bookwyrm_import_job.py:111
 msgid "Quotation"
-msgstr ""
+msgstr "Citação"
 
 #: bookwyrm/models/bookwyrm_import_job.py:132
 #: bookwyrm/templates/snippets/follow_button.html:22
@@ -243,11 +243,11 @@ msgstr "Bloquear"
 #: bookwyrm/models/bookwyrm_import_job.py:379
 #: bookwyrm/models/bookwyrm_import_job.py:611
 msgid "unknown"
-msgstr ""
+msgstr "desconhecido"
 
 #: bookwyrm/models/bookwyrm_import_job.py:373
 msgid "unauthorized"
-msgstr ""
+msgstr "não autorizado"
 
 #: bookwyrm/models/bookwyrm_import_job.py:569
 #: bookwyrm/models/bookwyrm_import_job.py:595
@@ -256,7 +256,7 @@ msgstr ""
 
 #: bookwyrm/models/bookwyrm_import_job.py:605
 msgid "invalid_relationship"
-msgstr ""
+msgstr "relação_inválida"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
@@ -363,7 +363,7 @@ msgstr "Não foi possível encontrar um resultado para o livro pedido"
 #: bookwyrm/models/job.py:22
 #: bookwyrm/templates/import/user_import_status.html:69
 msgid "Failed"
-msgstr ""
+msgstr "Falhou"
 
 #: bookwyrm/models/link.py:55
 msgid "Free"
@@ -384,11 +384,11 @@ msgstr "Aprovado"
 
 #: bookwyrm/models/report.py:85
 msgid "Resolved report"
-msgstr ""
+msgstr "Relatório resolvido"
 
 #: bookwyrm/models/report.py:86
 msgid "Re-opened report"
-msgstr ""
+msgstr "Relatório reaberto"
 
 #: bookwyrm/models/report.py:87
 msgid "Messaged reporter"
@@ -400,11 +400,11 @@ msgstr ""
 
 #: bookwyrm/models/report.py:89
 msgid "Suspended user"
-msgstr ""
+msgstr "Utilizador suspenso"
 
 #: bookwyrm/models/report.py:90
 msgid "Un-suspended user"
-msgstr ""
+msgstr "Removia a suspensão do utilizador"
 
 #: bookwyrm/models/report.py:91
 msgid "Changed user permission level"
@@ -412,19 +412,19 @@ msgstr ""
 
 #: bookwyrm/models/report.py:92
 msgid "Deleted user account"
-msgstr ""
+msgstr "Conta de utilizador removida"
 
 #: bookwyrm/models/report.py:93
 msgid "Blocked domain"
-msgstr ""
+msgstr "Domínio bloqueado"
 
 #: bookwyrm/models/report.py:94
 msgid "Approved domain"
-msgstr ""
+msgstr "Domínio aprovado"
 
 #: bookwyrm/models/report.py:95
 msgid "Deleted item"
-msgstr ""
+msgstr "“Item” removido"
 
 #: bookwyrm/models/status.py:192
 #, python-format
@@ -434,7 +434,7 @@ msgstr ""
 #: bookwyrm/models/status.py:367
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
-msgstr ""
+msgstr "%(display_name)s comentou em %(book_title)s"
 
 #: bookwyrm/models/status.py:418
 #, python-format
@@ -540,7 +540,7 @@ msgstr "Lietuvių (lituano)"
 
 #: bookwyrm/settings.py:325
 msgid "Nederlands (Dutch)"
-msgstr ""
+msgstr "Holanda (Holanda)"
 
 #: bookwyrm/settings.py:326
 msgid "Norsk (Norwegian)"
@@ -568,7 +568,7 @@ msgstr "Svenska (sueco)"
 
 #: bookwyrm/settings.py:332
 msgid "Українська (Ukrainian)"
-msgstr ""
+msgstr "Українська (ucraniano)"
 
 #: bookwyrm/settings.py:333
 msgid "简体中文 (Simplified Chinese)"
@@ -580,7 +580,7 @@ msgstr "繁體中文 (Chinês tradicional)"
 
 #: bookwyrm/templates/403.html:5
 msgid "Oh no!"
-msgstr ""
+msgstr "Oh não!"
 
 #: bookwyrm/templates/403.html:9 bookwyrm/templates/landing/invite.html:21
 msgid "Permission Denied"
@@ -589,7 +589,7 @@ msgstr "Permissão negada"
 #: bookwyrm/templates/403.html:11
 #, python-format
 msgid "You do not have permission to view this page or perform this action. Your user permission level is <code>%(level)s</code>."
-msgstr ""
+msgstr "Não tem permissão para visualizar esta página ou executar esta ação. O seu nível de permissão é <code>%(level)s</code>."
 
 #: bookwyrm/templates/403.html:15
 msgid "If you think you should have access, please speak to your BookWyrm server administrator."
@@ -609,7 +609,7 @@ msgstr ""
 
 #: bookwyrm/templates/413.html:9
 msgid "The file you are uploading is too large."
-msgstr ""
+msgstr "O arquivo enviado é muito grande."
 
 #: bookwyrm/templates/413.html:11
 msgid "You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting."
@@ -900,7 +900,7 @@ msgstr "Wikipédia"
 
 #: bookwyrm/templates/author/author.html:79
 msgid "View on Wikidata"
-msgstr ""
+msgstr "Ver no Wikidata"
 
 #: bookwyrm/templates/author/author.html:87
 msgid "Website"
@@ -992,7 +992,7 @@ msgstr "Link da Wikipédia:"
 
 #: bookwyrm/templates/author/edit_author.html:58
 msgid "Wikidata:"
-msgstr ""
+msgstr "Wikidata:"
 
 #: bookwyrm/templates/author/edit_author.html:62
 msgid "Website:"
@@ -1738,11 +1738,11 @@ msgstr ""
 
 #: bookwyrm/templates/compose.html:9 bookwyrm/templates/compose.html:23
 msgid "Edit quote"
-msgstr ""
+msgstr "Editar citação"
 
 #: bookwyrm/templates/compose.html:11 bookwyrm/templates/compose.html:25
 msgid "Edit comment"
-msgstr ""
+msgstr "Editar comentário"
 
 #: bookwyrm/templates/compose.html:13 bookwyrm/templates/compose.html:27
 msgid "Edit status"
@@ -2447,7 +2447,7 @@ msgstr "Gestor"
 
 #: bookwyrm/templates/groups/user_groups.html:35
 msgid "No groups found."
-msgstr ""
+msgstr "Nenhum grupo encontrado."
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
@@ -2977,7 +2977,7 @@ msgstr "Ainda não há atividades para esta hashtag!"
 #: bookwyrm/templates/import/import.html:6
 #: bookwyrm/templates/preferences/layout.html:43
 msgid "Import Book List"
-msgstr ""
+msgstr "Importar Lista de Livros"
 
 #: bookwyrm/templates/import/import.html:12
 msgid "Not a valid CSV file"
@@ -3058,7 +3058,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import.html:109
 msgid "Privacy setting for imported reviews and shelves:"
-msgstr ""
+msgstr "Configuração de privacidade para revisões e prateleiras importadas:"
 
 #: bookwyrm/templates/import/import.html:116
 #: bookwyrm/templates/import/import.html:118
