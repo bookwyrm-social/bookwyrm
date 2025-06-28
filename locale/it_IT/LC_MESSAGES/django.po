@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-23 23:50+0000\n"
-"PO-Revision-Date: 2025-06-24 00:31\n"
+"PO-Revision-Date: 2025-06-28 12:04\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -203,12 +203,12 @@ msgstr "Brossura"
 #: bookwyrm/models/book.py:514 bookwyrm/models/book.py:519
 #, python-format
 msgid "%(value)s doesn't look like an ISBN"
-msgstr ""
+msgstr "“%(value)s” non rispetta il formato previsto per un ISBN"
 
 #: bookwyrm/models/book.py:486 bookwyrm/models/book.py:526
 #, python-format
 msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
-msgstr ""
+msgstr "“%(value)s” non ha un codice di controllo ISBN corretto; valore atteso: %(check_version)s"
 
 #: bookwyrm/models/bookwyrm_import_job.py:109 bookwyrm/models/report.py:84
 #: bookwyrm/templates/settings/reports/report.html:115
@@ -225,7 +225,7 @@ msgstr "Recensione"
 
 #: bookwyrm/models/bookwyrm_import_job.py:111
 msgid "Quotation"
-msgstr ""
+msgstr "Citazione"
 
 #: bookwyrm/models/bookwyrm_import_job.py:132
 #: bookwyrm/templates/snippets/follow_button.html:22
@@ -3465,7 +3465,7 @@ msgstr "Libri importati"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:5
 msgid "User Import Troubleshooting"
-msgstr ""
+msgstr "Gestione errori importazione utenti"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:26
 msgid "Your account was not set as an alias of the original user account"
@@ -5320,7 +5320,7 @@ msgstr "Errori"
 
 #: bookwyrm/templates/settings/connectors/available.html:15
 msgid "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof."
-msgstr ""
+msgstr "Finna.fi è un servizio di ricerca che raccoglie materiali da centinaia di organizzazioni finlandesi in un unico portale."
 
 #: bookwyrm/templates/settings/connectors/available.html:28
 msgid "Create new connector"
