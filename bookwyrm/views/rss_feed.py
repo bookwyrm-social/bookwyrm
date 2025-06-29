@@ -228,7 +228,7 @@ class RssShelfFeed(Feed):
 
     def item_pubdate(self, item):
         """publication date of the item"""
-        return item.published_date
+        return item.shelfbook_set.first().shelved_date
 
     def description(self, obj):
         """description of the shelf including the shelf name and user."""
