@@ -8,10 +8,8 @@
 {% block panel %}
 <div class="columns mt-3">
     <section class="column is-three-quarters">
-        {% blocktrans %}
-        <p class="mb-2">Connectors are sources of data about books and authors.</p>
-        <p class="mb-2">The priority determines the order in which search results appear. The highest priority is <code>1</code>. The default priority is <code>2</code>.</p>
-        {% endblocktrans %}
+        <p class="mb-2">{% trans "Connectors are sources of data about books and authors." %}</p>
+        <p class="mb-2">{% trans "The priority determines the order in which search results appear. The highest priority is <code>1</code>. The default priority is <code>2</code>." %}</p>
         <p class="mb-2">
             {% trans "Connector settings only determine whether a connector will be used to deliver search results. To manage more interactions with other federated servers, including domain blocks, see" %} <a href="{% url 'settings-federation' %}"> {% trans "Federated Instances" %}</a>.
         </p>
