@@ -277,7 +277,7 @@ else:
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": env("POSTGRES_DB", "bookwyrm"),
         "USER": env("POSTGRES_USER", "bookwyrm"),
         "PASSWORD": env("POSTGRES_PASSWORD", "bookwyrm"),
