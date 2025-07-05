@@ -4,6 +4,7 @@ from django import forms
 from file_resubmit.widgets import ResubmitImageWidget
 
 from bookwyrm import models
+from bookwyrm.settings import DATA_UPLOAD_MAX_MEMORY_SIZE
 from .custom_form import CustomForm
 from .widgets import ArrayWidget, SelectDateWidget, Select
 
@@ -14,6 +15,22 @@ class CoverForm(CustomForm):
         model = models.Book
         fields = ["cover"]
         help_texts = {f: None for f in fields}
+
+
+class ResubmitImageWidgetWithWarning(ResubmitImageWidget):
+    """Define template to use that shows warning on too big image"""
+
+    template_name = "widgets/clearable_file_input_with_warning.html"
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["widget"]["attrs"].update(
+            {
+                "data-max-upload": DATA_UPLOAD_MAX_MEMORY_SIZE,
+                "max_mb": DATA_UPLOAD_MAX_MEMORY_SIZE >> 20,
+            }
+        )
+        return context
 
 
 class EditionForm(CustomForm):
@@ -72,7 +89,9 @@ class EditionForm(CustomForm):
             "published_date": SelectDateWidget(
                 attrs={"aria-describedby": "desc_published_date"}
             ),
-            "cover": ResubmitImageWidget(attrs={"aria-describedby": "desc_cover"}),
+            "cover": ResubmitImageWidgetWithWarning(
+                attrs={"aria-describedby": "desc_cover"}
+            ),
             "physical_format": Select(
                 attrs={"aria-describedby": "desc_physical_format"}
             ),
