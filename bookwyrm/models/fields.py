@@ -25,7 +25,7 @@ from bookwyrm.utils.partial_date import (
     PartialDateModel,
     from_partial_isoformat,
 )
-from bookwyrm.settings import MEDIA_FULL_URL
+from bookwyrm.settings import MEDIA_FULL_URL, DATA_UPLOAD_MAX_MEMORY_SIZE
 
 
 def validate_remote_id(value):
@@ -430,6 +430,16 @@ class ClearableFileInputWithWarning(ClearableFileInput):
     """max file size warning"""
 
     template_name = "widgets/clearable_file_input_with_warning.html"
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["widget"]["attrs"].update(
+            {
+                "data-max-upload": DATA_UPLOAD_MAX_MEMORY_SIZE,
+                "max_mb": DATA_UPLOAD_MAX_MEMORY_SIZE >> 20,
+            }
+        )
+        return context
 
 
 class CustomImageField(DjangoImageField):
