@@ -87,6 +87,16 @@ class GroupViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
+    def test_usergroups_get_anonymous(self, _):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.UserGroups.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        result = view(request, username="mouse@local.com")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
     @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
     def test_findusers_get(self, *_):
         """there are so many views, this just makes sure it LOADS"""
