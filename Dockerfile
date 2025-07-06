@@ -13,8 +13,8 @@ WORKDIR /app
 
 
 RUN python -mvenv /venv
-COPY requirements.txt /app/
-RUN pip install -r requirements.txt --no-cache-dir
+COPY pyproject.toml /app/
+RUN pip install "pip>=25.1.0" && pip install --group main . --no-cache-dir
 
 
 FROM python:3.11-slim
