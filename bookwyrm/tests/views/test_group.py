@@ -11,7 +11,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
 
-
+# pylint: disable=too-many-public-methods
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class GroupViews(TestCase):
     """view group and edit details"""
