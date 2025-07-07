@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-CANARY=/app/static/.dbinit_done
+CANARY=/app/static/.dbmigration_timestamp
 
 info() { echo >&2 "$*"; }
 die() {
@@ -10,6 +10,8 @@ die() {
 }
 
 trap exit TERM
+
+WANTED_TIMESTAMP=$(</build_timestamp)
 
 if [ "$1" = "gunicorn" ]; then
     info "**** Checking needed migrations"
@@ -31,13 +33,14 @@ if [ "$1" = "gunicorn" ]; then
         info "**** Done with initial setup"
     fi
 
-    info "**** Marking migrations handled"
-    touch "$CANARY"
+    info "**** Marking migrations handled with timestamp ${WANTED_TIMESTAMP}"
+    echo "$WANTED_TIMESTAMP" >"$CANARY"
 else
-    while [ ! -r "$CANARY" ]; do
+    while [ "$(grep -s -e "$WANTED_TIMESTAMP" "$CANARY")x" = "x" ]; do
         info "**** Waiting for database and migrations to finish"
         sleep 3
     done
+    info "**** Migrations handled, starting service"
 fi
 
 exec gosu bookwyrm "$@"

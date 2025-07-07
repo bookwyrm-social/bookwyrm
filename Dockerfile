@@ -34,6 +34,7 @@ COPY celerywyrm /app/celerywyrm
 COPY locale /app/locale
 COPY bookwyrm /app/bookwyrm
 COPY entrypoint.sh /entrypoint.sh
+RUN date +%s > /build_timestamp
 
 EXPOSE 8000
 VOLUME ["/app/exports", "/app/images", "/app/static"]
