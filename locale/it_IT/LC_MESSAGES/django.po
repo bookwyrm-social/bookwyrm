@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-23 23:50+0000\n"
-"PO-Revision-Date: 2025-06-28 14:16\n"
+"PO-Revision-Date: 2025-07-09 12:21\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -7641,17 +7641,17 @@ msgstr "Commenti di {obj.display_name}"
 #: bookwyrm/views/rss_feed.py:219
 #, python-brace-format
 msgid "{obj.user.display_name}’s {obj.name} shelf"
-msgstr ""
+msgstr "{obj.name} raccolta di {obj.user.display_name}"
 
 #: bookwyrm/views/rss_feed.py:237
 #, python-brace-format
 msgid "{obj.user.display_name}’s {obj.name} shelf: {desc}"
-msgstr ""
+msgstr "{obj.name} raccolta di {obj.user.display_name}: {desc}"
 
 #: bookwyrm/views/rss_feed.py:238
 #, python-brace-format
 msgid "Books added to {obj.user.name}’s {obj.name} shelf"
-msgstr ""
+msgstr "Libri aggiunti alla raccolta {obj.name} di {obj.user.name}"
 
 #: bookwyrm/views/updates.py:45
 #, python-format
