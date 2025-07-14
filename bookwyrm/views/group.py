@@ -83,7 +83,6 @@ class Group(View):
         return redirect("group", user_group.id)
 
 
-@method_decorator(login_required, name="dispatch")
 class UserGroups(View):
     """a user's groups page"""
 

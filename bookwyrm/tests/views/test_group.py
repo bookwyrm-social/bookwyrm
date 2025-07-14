@@ -11,7 +11,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
 
-
+# pylint: disable=too-many-public-methods
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class GroupViews(TestCase):
     """view group and edit details"""
@@ -82,6 +82,16 @@ class GroupViews(TestCase):
         view = views.UserGroups.as_view()
         request = self.factory.get("")
         request.user = self.local_user
+        result = view(request, username="mouse@local.com")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_usergroups_get_anonymous(self, _):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.UserGroups.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
         result = view(request, username="mouse@local.com")
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
