@@ -113,6 +113,9 @@ case "$CMD" in
     up)
         $DOCKER_COMPOSE up "$@"
         ;;
+    dev)
+        $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml up "$@"
+        ;;
     down)
         $DOCKER_COMPOSE down
         ;;
@@ -320,6 +323,7 @@ case "$CMD" in
         echo "Unrecognised command. Try:"
         echo "    setup"
         echo "    up [container]"
+        echo "    dev [container]"
         echo "    down"
         echo "    service_ports_web"
         echo "    upgrade_db_version"
