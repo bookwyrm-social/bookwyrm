@@ -95,6 +95,11 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         """generate the url from the isfdb id"""
         return f"https://www.isfdb.org/cgi-bin/title.cgi?{self.isfdb}"
 
+    @property
+    def finna_link(self):
+        """generate the url from the finna key"""
+        return f"http://finna.fi/Record/{self.finna_key}"
+
     class Meta:
         """can't initialize this model, that wouldn't make sense"""
 
