@@ -42,6 +42,15 @@ class BookList(OrderedCollectionPrivate):
     type: str = "BookList"
 
 
+@dataclass(init=False)
+class SuggestionList(OrderedCollectionPrivate):
+    """structure of an ordered collection activity"""
+
+    summary: str = None
+    book: str = None
+    type: str = "SuggestionList"
+
+
 # pylint: disable=invalid-name
 @dataclass(init=False)
 class OrderedCollectionPage(ActivityObject):
