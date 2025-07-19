@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:13
+        image: postgres:17
         env: # does not inherit from jobs.build.env
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: hunter2

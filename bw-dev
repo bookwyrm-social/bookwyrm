@@ -122,6 +122,9 @@ case "$CMD" in
     init_ssl)
         $DOCKER_COMPOSE --file ./docker-compose-init_letsencrypt.yml up --exit-code-from=certbot
         ;;
+    upgrade_db_version)
+        $DOCKER_COMPOSE --file docker-compose-upgrade-db.yml up --exit-code-from=db_update
+        ;;
     resetdb)
         prod_error
         $DOCKER_COMPOSE rm -svf
@@ -315,6 +318,7 @@ case "$CMD" in
         echo "    up [container]"
         echo "    down"
         echo "    service_ports_web"
+        echo "    upgrade_db_version"
         echo "    initdb"
         echo "    resetdb"
         echo "    makemigrations [migration]"
