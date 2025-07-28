@@ -104,8 +104,7 @@ class BookwyrmImportJob(ParentJob):
         super().complete_job()
 
         # delete the import file
-        self.archive_file.delete()
-        self.save(update_fields=["archive_file"])
+        self.archive_file.delete(save=True)
 
     def notify_child_job_complete(self):
         """let the job know when the items get work done"""
@@ -364,7 +363,9 @@ def import_book_task(**kwargs):  # pylint: disable=too-many-branches
 
             if kwargs["origin_is_ok"]:
                 # try importing from the instance the user is coming from
-                book = connector_manager.get_or_create_book(remote_id=edition.get("id"))
+                remote_id = edition.get("id")
+                connector = connector_manager.get_or_create_connector(remote_id)
+                book = connector.get_or_create_book(remote_id)
 
             if not book:
                 # import directly from the import JSON
@@ -390,7 +391,7 @@ def import_book_task(**kwargs):  # pylint: disable=too-many-branches
         logger.error(
             "Book Import Task %s for Job %s Failed with error: %s", task.id, job.id, err
         )
-        task.fail_reason = _("unknown")
+        task.fail_reason = _("Unknown error importing book")
         task.save(update_fields=["fail_reason"])
         task.set_status("failed")
 
@@ -494,7 +495,7 @@ def upsert_status_task(**kwargs):
 
     except Exception as err:  # pylint: disable=broad-except
         logger.error("User Status Import Task %s Failed with error: %s", task.id, err)
-        task.fail_reason = _("unknown")
+        task.fail_reason = _("Unknown error importing book status")
         task.save(update_fields=["fail_reason"])
         task.set_status("failed")
 
@@ -553,12 +554,14 @@ def upsert_lists(
         item = models.ListItem.objects.filter(book=book, book_list=booklist).exists()
         if not item:
             count = booklist.books.count()
+            notes = blist["list_item"].get("notes", "")
+            approved = blist["list_item"].get("approved", False)
             models.ListItem.objects.create(
                 book=book,
                 book_list=booklist,
                 user=user,
-                notes=blist["list_item"]["notes"],
-                approved=blist["list_item"]["approved"],
+                notes=notes,
+                approved=approved,
                 order=count + 1,
             )
 
@@ -730,7 +733,7 @@ def import_user_relationship_task(**kwargs):
         logger.error(
             "User Import Relationship Task %s Failed with error: %s", task.id, err
         )
-        task.fail_reason = _("unknown")
+        task.fail_reason = _("Unkown error importing relationship")
         task.save(update_fields=["fail_reason"])
         task.set_status("failed")
 
