@@ -194,7 +194,10 @@
                 >
                     <meta itemprop="ratingValue" content="{{ rating|floatformat }}">
                     <meta itemprop="reviewCount" content="{{ review_count }}">
-
+                    
+                    {% if review_count > 0 %}
+                    <a href="#reviews" class="has-text-link">
+                    {% endif %}
                     <span>
                         {% include 'snippets/stars.html' with rating=rating %}
 
@@ -204,6 +207,9 @@
                             ({{ review_count }} reviews)
                         {% endblocktrans %}
                     </span>
+                    {% if review_count > 0 %}
+                    </a>
+                    {% endif %}
                 </div>
 
                 {% with full=book|book_description itemprop='abstract' %}
