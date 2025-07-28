@@ -27,7 +27,7 @@ from bookwyrm import activitypub
 from bookwyrm import models, settings
 from bookwyrm.connectors import connector_manager
 from bookwyrm.tasks import app, IMPORTS
-from bookwyrm.models.job import ParentJob, ChildJob, ParentTask, SubTask
+from bookwyrm.models.job import Job, ParentJob, ChildJob, ParentTask, SubTask
 from bookwyrm.utils.tar import BookwyrmTarFile
 
 logger = logging.getLogger(__name__)
@@ -115,7 +115,7 @@ class BookwyrmImportJob(ParentJob):
         self.updated_date = timezone.now()
         self.save(update_fields=["updated_date"])
 
-        if self.has_completed:
+        if not self.complete and self.has_completed:
             self.complete_job()
 
 
@@ -137,15 +137,7 @@ class UserImportBook(ChildJob):
         Do not use super() here because the parent class will
         complete the job over the top of us and then you will be sad."""
 
-        if self.complete:
-            return
-
-        self.status = self.Status.COMPLETE
-        self.complete = True
-        self.updated_date = timezone.now()
-
-        self.save(update_fields=["status", "complete", "updated_date"])
-
+        Job.complete_job(self)  # don't notify ParentJob
         parent = BookwyrmImportJob.objects.get(id=self.parent_job.id)
         parent.notify_child_job_complete()
 
@@ -175,7 +167,7 @@ class UserImportPost(ChildJob):
     def complete_job(self):
         """Report to BookwyrmImportJob that the job has completed."""
 
-        super().complete_job()
+        Job.complete_job(self)  # don't notify ParentJob
         parent = BookwyrmImportJob.objects.get(id=self.parent_job.id)
         parent.notify_child_job_complete()
 
@@ -203,7 +195,7 @@ class UserImportRelationship(ChildJob):
     def complete_job(self):
         """Report to BookwyrmImportJob that the job has completed."""
 
-        super().complete_job()
+        Job.complete_job(self)  # don't notify ParentJob
         parent = BookwyrmImportJob.objects.get(id=self.parent_job.id)
         parent.notify_child_job_complete()
 
