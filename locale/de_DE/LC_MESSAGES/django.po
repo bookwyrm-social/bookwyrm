@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-23 23:50+0000\n"
-"PO-Revision-Date: 2025-07-31 18:33\n"
+"PO-Revision-Date: 2025-07-31 19:42\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -208,7 +208,7 @@ msgstr "%(value)s sieht nicht wie eine ISBN aus"
 #: bookwyrm/models/book.py:486 bookwyrm/models/book.py:526
 #, python-format
 msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
-msgstr ""
+msgstr "%(value)s hat keine korrekte ISBN-Prüfsumme, wir erwarteten %(check_version)s"
 
 #: bookwyrm/models/bookwyrm_import_job.py:109 bookwyrm/models/report.py:84
 #: bookwyrm/templates/settings/reports/report.html:115
@@ -1259,7 +1259,7 @@ msgstr "Goodreads:"
 #: bookwyrm/templates/book/book_identifiers.html:58
 #: bookwyrm/templates/book/edit/edit_book_form.html:388
 msgid "Finna ID:"
-msgstr ""
+msgstr "Finna-ID:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -5324,7 +5324,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/connectors/available.html:28
 msgid "Create new connector"
-msgstr ""
+msgstr "Neuen Connector erstellen"
 
 #: bookwyrm/templates/settings/connectors/connector.html:35
 #: bookwyrm/templates/settings/connectors/update.html:33
@@ -5335,21 +5335,21 @@ msgstr "Grund der Deaktivierung:"
 #: bookwyrm/templates/settings/connectors/connector.html:50
 #: bookwyrm/templates/settings/connectors/update.html:47
 msgid "Deactivate"
-msgstr ""
+msgstr "Deaktivieren"
 
 #: bookwyrm/templates/settings/connectors/connector.html:61
 #: bookwyrm/templates/settings/connectors/update.html:58
 msgid "Activate"
-msgstr ""
+msgstr "Aktivieren"
 
 #: bookwyrm/templates/settings/connectors/connectors.html:4
 #: bookwyrm/templates/settings/connectors/connectors.html:6
 msgid "Connector Settings"
-msgstr ""
+msgstr "Connector-Einstellungen"
 
 #: bookwyrm/templates/settings/connectors/connectors.html:11
 msgid "Connectors are sources of data about books and authors."
-msgstr ""
+msgstr "Connectoren sind Datenquellen für Bücher und Autoren."
 
 #: bookwyrm/templates/settings/connectors/connectors.html:12
 msgid "The priority determines the order in which search results appear. The highest priority is <code>1</code>. The default priority is <code>2</code>."
@@ -5357,7 +5357,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/connectors/connectors.html:14
 msgid "Connector settings only determine whether a connector will be used to deliver search results. To manage more interactions with other federated servers, including domain blocks, see"
-msgstr ""
+msgstr "Connector-Einstellungen bestimmen nur, ob ein Connector verwendet wird, um Suchergebnisse zu liefern. Um Interaktionen mit anderen föderierten Servern, einschließlich Domainblöcken, zu verwalten, siehe"
 
 #: bookwyrm/templates/settings/connectors/connectors.html:14
 #: bookwyrm/templates/settings/federation/edit_instance.html:12
@@ -6654,7 +6654,7 @@ msgstr "Deine Domain scheint falsch konfiguriert zu sein. Es sollte kein Protoko
 
 #: bookwyrm/templates/setup/config.html:42
 msgid "You are running BookWyrm with <code>localhost</code>. This should <strong>never</strong> be used in a production environment."
-msgstr ""
+msgstr "Du verwendest BookWyrm auf <code>localhost</code>. Dies sollte <strong>niemals</strong> in einer Produktionsumgebung verwendet werden."
 
 #: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:44
 msgid "Settings"
@@ -6666,7 +6666,7 @@ msgstr "Instanz Domain:"
 
 #: bookwyrm/templates/setup/config.html:62
 msgid "Instance base URL:"
-msgstr ""
+msgstr "Basis-URL der Instanz:"
 
 #: bookwyrm/templates/setup/config.html:75
 msgid "Using S3:"
