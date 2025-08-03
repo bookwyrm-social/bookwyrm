@@ -98,7 +98,7 @@ class TestCleanUpExportFiles(TestCase):
 
         self.assertEqual(models.CleanUpUserExportFilesJob.objects.count(), 1)
 
-        start_export_deletions(user=self.user)
+        start_export_deletions(user=self.user.id)
 
         self.assertEqual(models.CleanUpUserExportFilesJob.objects.count(), 2)
         self.assertNotEqual(
