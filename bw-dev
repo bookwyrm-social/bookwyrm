@@ -35,7 +35,7 @@ function clean {
 }
 
 function runweb_code {
-    $DOCKER_COMPOSE --profile tools run --user root --rm dev-tools "$@"
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml --profile tools run --user root --rm dev-tools "$@"
 }
 
 function runweb {
