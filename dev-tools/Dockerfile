@@ -1,4 +1,4 @@
-FROM bookwyrm
+FROM ghcr.io/bookwyrm/bookwyrm:main
 USER root
 WORKDIR /app/
 
