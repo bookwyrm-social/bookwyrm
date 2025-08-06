@@ -45,6 +45,8 @@ class Connector(AbstractConnector):
                 "subjectPlaces", remote_field="wdt:P840", formatter=self.resolve_keys
             ),
             Mapping("subjects", remote_field="wdt:P921", formatter=self.resolve_keys),
+            Mapping("series", remote_field="wdt:P179", formatter=self.resolve_keys),
+            Mapping("seriesNumber", remote_field="wdt:P1545", formatter=get_first),
             Mapping("asin", remote_field="wdt:P5749", formatter=get_first),
         ] + shared_mappings
         # TODO: P136: genre, P674 characters, P950 bne
