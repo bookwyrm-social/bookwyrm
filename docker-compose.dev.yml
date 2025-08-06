@@ -8,3 +8,27 @@ services:
       - ./locale:/app/locale
       - ./manage.py:/app/manage.py
       - ./entrypoint.sh:/entrypoint.sh
+  dev-tools:
+    image: bookwyrm:dev
+    build: dev-tools
+    env_file: .env
+    volumes:
+      - ./bookwyrm:/app/bookwyrm
+      - ./celerywyrm:/app/celerywyrm
+      - ./locale:/app/locale
+      - ./manage.py:/app/manage.py
+      - ./.prettierignore:/app/.prettierignore
+      - ./.prettierrc:/app/.prettierrc
+      - ./.eslintrc.js:/app/.eslintrc.js
+      - ./.eslintignore:/app/.eslintignore
+      - ./pyproject.toml:/app/pyproject.toml
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+      celery_worker:
+        condition: service_started
+      redis_activity:
+        condition: service_started
+    profiles:
+      - tools
