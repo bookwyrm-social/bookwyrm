@@ -31,8 +31,12 @@ class Connector(AbstractConnector):
             Mapping("subtitle"),
             Mapping("description", formatter=get_description),
             Mapping("languages", formatter=get_languages),
-            Mapping("series", formatter=get_first),
-            Mapping("seriesNumber", remote_field="series_number"),
+            Mapping("series", formatter=parse_series),
+            Mapping(
+                "seriesNumber",
+                remote_field="series",
+                formatter=parse_series_number,
+            ),
             Mapping("subjects"),
             Mapping("subjectPlaces", remote_field="subject_places"),
             Mapping("isbn13", remote_field="isbn_13", formatter=get_first),
@@ -323,3 +327,24 @@ def pick_default_edition(options: list[JsonDict]) -> Optional[JsonDict]:
     options = [e for e in options if e.get("isbn_13")] or options
     options = [e for e in options if e.get("ocaid")] or options
     return options[0]
+
+
+def parse_series(data: list[str]) -> str | None:
+    """try to parse series name from 'series name, #1' style info"""
+    if not data:
+        return None
+    series_title = data[0]
+    if (series_match := re.search(r"(.+)(?:, ?#\d+)$", series_title)) is None:
+        return series_title
+    series_name = series_match.group(1).strip()
+    return series_name
+
+
+def parse_series_number(data: list[str]) -> str | None:
+    """try to parse series number from 'series name, #1' style info"""
+    if not data:
+        return None
+    series_title = data[0]
+    if (series_match := re.search(r"(.+)#(\d+)$", series_title)) is None:
+        return None
+    return series_match.group(2)
