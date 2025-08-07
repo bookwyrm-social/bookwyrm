@@ -3,7 +3,12 @@
 import json
 import logging
 import math
+from urllib.parse import urlparse
 
+from botocore.exceptions import EndpointConnectionError
+import requests
+
+from django.apps import apps
 from django.db.models import (
     BooleanField,
     ForeignKey,
@@ -13,24 +18,30 @@ from django.db.models import (
     PROTECT,
     SET_NULL,
 )
+from django.core.files.storage import storages
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 
-from bookwyrm import activitypub
-from bookwyrm import models
+from bookwyrm import activitypub, models, settings
+from bookwyrm.connectors import connector_manager
 from bookwyrm.tasks import app, IMPORTS
-from bookwyrm.models.job import ParentJob, ChildJob, ParentTask, SubTask
+from bookwyrm.models.job import Job, ParentJob, ChildJob, ParentTask, SubTask
 from bookwyrm.utils.tar import BookwyrmTarFile
 
 logger = logging.getLogger(__name__)
 
 
+def select_exports_storage():
+    """callable to allow for dependency on runtime configuration"""
+    return storages["exports"]
+
+
 class BookwyrmImportJob(ParentJob):
     """entry for a specific request for importing a bookwyrm user backup"""
 
-    archive_file = FileField(null=True, blank=True)
+    archive_file = FileField(null=True, blank=True, storage=select_exports_storage)
     import_data = JSONField(null=True)
     required = DjangoArrayField(
         models.fields.CharField(max_length=50, blank=True), blank=True
@@ -54,7 +65,7 @@ class BookwyrmImportJob(ParentJob):
     @property
     def relationship_tasks(self):
         """How many import relationship tasks are there?"""
-        return UserRelationshipImport.objects.filter(parent_job=self).all()
+        return UserImportRelationship.objects.filter(parent_job=self).all()
 
     @property
     def item_count(self):
@@ -87,6 +98,26 @@ class BookwyrmImportJob(ParentJob):
             return 0
         return math.floor((item_count - self.pending_item_count) / item_count * 100)
 
+    def complete_job(self):
+        """Report that the job has completed and stop pending children."""
+
+        super().complete_job()
+
+        # delete the import file
+        self.archive_file.delete(save=True)
+
+    def notify_child_job_complete(self):
+        """let the job know when the items get work done"""
+
+        if self.complete:
+            return
+
+        self.updated_date = timezone.now()
+        self.save(update_fields=["updated_date"])
+
+        if not self.complete and self.has_completed:
+            self.complete_job()
+
 
 class UserImportBook(ChildJob):
     """ChildJob to import each book.
@@ -95,9 +126,20 @@ class UserImportBook(ChildJob):
     book = ForeignKey(models.Book, on_delete=SET_NULL, null=True, blank=True)
     book_data = JSONField(null=False)
 
-    def start_job(self):
+    def start_job(self, origin_is_ok=False):
         """Start the job"""
-        import_book_task.delay(child_id=self.id)
+        import_book_task.delay(
+            child_id=self.id, origin_is_ok=origin_is_ok, job_type="UserImportBook"
+        )
+
+    def complete_job(self):
+        """Report to BookwyrmImportJob that the job has completed.
+        Do not use super() here because the parent class will
+        complete the job over the top of us and then you will be sad."""
+
+        Job.complete_job(self)  # don't notify ParentJob
+        parent = BookwyrmImportJob.objects.get(id=self.parent_job.id)
+        parent.notify_child_job_complete()
 
 
 class UserImportPost(ChildJob):
@@ -120,10 +162,17 @@ class UserImportPost(ChildJob):
 
     def start_job(self):
         """Start the job"""
-        upsert_status_task.delay(child_id=self.id)
+        upsert_status_task.delay(child_id=self.id, job_type="UserImportPost")
+
+    def complete_job(self):
+        """Report to BookwyrmImportJob that the job has completed."""
+
+        Job.complete_job(self)  # don't notify ParentJob
+        parent = BookwyrmImportJob.objects.get(id=self.parent_job.id)
+        parent.notify_child_job_complete()
 
 
-class UserRelationshipImport(ChildJob):
+class UserImportRelationship(ChildJob):
     """ChildJob for follows and blocks"""
 
     class RelationshipType(TextChoices):
@@ -139,10 +188,52 @@ class UserRelationshipImport(ChildJob):
 
     def start_job(self):
         """Start the job"""
-        import_user_relationship_task.delay(child_id=self.id)
+        import_user_relationship_task.delay(
+            child_id=self.id, job_type="UserImportRelationship"
+        )
+
+    def complete_job(self):
+        """Report to BookwyrmImportJob that the job has completed."""
+
+        Job.complete_job(self)  # don't notify ParentJob
+        parent = BookwyrmImportJob.objects.get(id=self.parent_job.id)
+        parent.notify_child_job_complete()
 
 
-@app.task(queue=IMPORTS, base=ParentTask)
+class ImportUserTask(ParentTask):
+    """A task for a user import job"""
+
+    def before_start(self, task_id, args, kwargs):
+        """Handler called before the task starts."""
+        job = BookwyrmImportJob.objects.get(id=kwargs["job_id"])
+        job.task_id = task_id
+        job.save(update_fields=["task_id"])
+
+
+class UserImportSubTask(SubTask):
+    """Makes sure we refer to the correct child job and call
+    subclass methods instead of methods on ChildJob & ParentJob"""
+
+    def before_start(self, task_id, args, kwargs):
+        """Handler called before the task starts."""
+
+        model = apps.get_model(f'bookwyrm.{kwargs["job_type"]}', require_ready=True)
+        child_job = model.objects.get(id=kwargs["child_id"])
+        child_job.task_id = task_id
+        child_job.save(update_fields=["task_id"])
+        child_job.set_status(ChildJob.Status.ACTIVE)
+
+    def on_success(self, retval, task_id, args, kwargs):
+        """Run by the worker if the task executes successfully"""
+
+        # we want to complete our own UserImportBook job, not ChildJob
+        model = apps.get_model(f'bookwyrm.{kwargs["job_type"]}', require_ready=True)
+        subtask = model.objects.get(id=kwargs["child_id"])
+        subtask.complete_job()
+
+
+# pylint: disable=too-many-branches
+@app.task(queue=IMPORTS, base=ImportUserTask)
 def start_import_task(**kwargs):
     """trigger the child import tasks for each user data
     We always import the books even if not assigning
@@ -174,37 +265,96 @@ def start_import_task(**kwargs):
                 upsert_saved_lists(job.user, job.import_data.get("saved_lists", []))
             if "include_follows" in job.required:
                 for remote_id in job.import_data.get("follows", []):
-                    UserRelationshipImport.objects.create(
+                    UserImportRelationship.objects.create(
                         parent_job=job, remote_id=remote_id, relationship="follow"
                     )
             if "include_blocks" in job.required:
                 for remote_id in job.import_data.get("blocks", []):
-                    UserRelationshipImport.objects.create(
+                    UserImportRelationship.objects.create(
                         parent_job=job, remote_id=remote_id, relationship="block"
                     )
 
-            for item in UserRelationshipImport.objects.filter(parent_job=job).all():
+            for item in UserImportRelationship.objects.filter(parent_job=job).all():
                 item.start_job()
+
+            try:
+                url_parts = urlparse(job.import_data.get("id"))
+                url = f"{url_parts.scheme}://{url_parts.netloc}"
+                # Check https://example.com to see if the instance is still online
+                # If not, we don't bother trying to pull book data from it.
+                resp = requests.head(
+                    url,
+                    headers={
+                        "User-Agent": settings.USER_AGENT,
+                    },
+                    timeout=settings.QUERY_TIMEOUT,
+                )
+
+                origin_is_ok = resp.ok
+
+            except (
+                EndpointConnectionError,
+                requests.exceptions.ConnectionError,
+                ConnectionRefusedError,
+            ):
+
+                origin_is_ok = False
 
             for data in job.import_data.get("books"):
                 book_job = UserImportBook.objects.create(parent_job=job, book_data=data)
-                book_job.start_job()
+                book_job.start_job(origin_is_ok=origin_is_ok)
 
         archive_file.close()
 
     except Exception as err:  # pylint: disable=broad-except
-        logger.exception("User Import Job %s Failed with error: %s", job.id, err)
+        logger.error(
+            "User Import Job %s Failed with error: %s", job.id, err, exc_info=True
+        )
         job.set_status("failed")
 
 
-@app.task(queue=IMPORTS, base=SubTask)
-def import_book_task(**kwargs):  # pylint: disable=too-many-locals,too-many-branches
+def create_book_from_json(book_data):
+    """create a book from the JSON in the import file
+    as a last resort if we can't find the book
+    in this instance or in the source instance"""
+
+    edition = book_data.get("edition")
+    work = book_data.get("work")
+    # make sure we have the authors in the local DB
+    # replace the old author ids in the edition JSON
+    edition["authors"] = []
+    work["authors"] = []
+    for author in book_data.get("authors"):
+        instance = activitypub.parse(author).to_model(
+            model=models.Author, save=True, overwrite=False
+        )
+
+        edition["authors"].append(instance.remote_id)
+        work["authors"].append(instance.remote_id)
+
+    # first we need the parent work to exist
+    work["editions"] = []
+    work_instance = activitypub.parse(work).to_model(
+        model=models.Work, save=True, overwrite=False
+    )
+
+    # now we have a work we can add it to the edition
+    # and create the edition model instance
+    edition["work"] = work_instance.remote_id
+    book = activitypub.parse(edition).to_model(
+        model=models.Edition, save=True, overwrite=False
+    )
+
+    return book
+
+
+@app.task(queue=IMPORTS, base=UserImportSubTask)
+def import_book_task(**kwargs):  # pylint: disable=too-many-branches
     """Take work and edition data,
     find or create the edition and work in the database"""
 
     task = UserImportBook.objects.get(id=kwargs["child_id"])
     job = task.parent_job
-    archive_file = job.bookwyrmimportjob.archive_file
     book_data = task.book_data
 
     if task.complete or job.status == "stopped":
@@ -212,46 +362,19 @@ def import_book_task(**kwargs):  # pylint: disable=too-many-locals,too-many-bran
 
     try:
         edition = book_data.get("edition")
-        work = book_data.get("work")
         book = models.Edition.find_existing(edition)
         if not book:
-            # make sure we have the authors in the local DB
-            # replace the old author ids in the edition JSON
-            edition["authors"] = []
-            work["authors"] = []
-            for author in book_data.get("authors"):
-                instance = activitypub.parse(author).to_model(
-                    model=models.Author, save=True, overwrite=False
-                )
 
-                edition["authors"].append(instance.remote_id)
-                work["authors"].append(instance.remote_id)
+            if kwargs["origin_is_ok"]:
+                # try importing from the instance the user is coming from
+                remote_id = edition.get("id")
+                connector = connector_manager.get_or_create_connector(remote_id)
+                book = connector.get_or_create_book(remote_id)
 
-            # we will add the cover later from the tar
-            # don't try to load it from the old server
-            cover = edition.get("cover", {})
-            cover_path = cover.get("url", None)
-            edition["cover"] = {}
-
-            # first we need the parent work to exist
-            work["editions"] = []
-            work_instance = activitypub.parse(work).to_model(
-                model=models.Work, save=True, overwrite=False
-            )
-
-            # now we have a work we can add it to the edition
-            # and create the edition model instance
-            edition["work"] = work_instance.remote_id
-            book = activitypub.parse(edition).to_model(
-                model=models.Edition, save=True, overwrite=False
-            )
-
-            # set the cover image from the tar
-            if cover_path:
-                archive_file.open("rb")
-                with BookwyrmTarFile.open(mode="r:gz", fileobj=archive_file) as tar:
-                    tar.write_image_to_file(cover_path, book.cover)
-                archive_file.close()
+            if not book:
+                # import directly from the import JSON
+                # this will not create a cover image
+                book = create_book_from_json(book_data)
 
         task.book = book
         task.save(update_fields=["book"])
@@ -269,10 +392,10 @@ def import_book_task(**kwargs):  # pylint: disable=too-many-locals,too-many-bran
             upsert_lists(task.parent_job.user, book.id, book_data.get("lists"))
 
     except Exception as err:  # pylint: disable=broad-except
-        logger.exception(
+        logger.error(
             "Book Import Task %s for Job %s Failed with error: %s", task.id, job.id, err
         )
-        task.fail_reason = _("unknown")
+        task.fail_reason = _("Unknown error importing book")
         task.save(update_fields=["fail_reason"])
         task.set_status("failed")
 
@@ -311,7 +434,7 @@ def import_book_task(**kwargs):  # pylint: disable=too-many-locals,too-many-bran
     task.complete_job()
 
 
-@app.task(queue=IMPORTS, base=SubTask)
+@app.task(queue=IMPORTS, base=UserImportSubTask)
 def upsert_status_task(**kwargs):
     """Find or create book statuses"""
 
@@ -375,8 +498,8 @@ def upsert_status_task(**kwargs):
             task.set_status("failed")
 
     except Exception as err:  # pylint: disable=broad-except
-        logger.exception("User Import Task %s Failed with error: %s", task.id, err)
-        task.fail_reason = _("unknown")
+        logger.error("User Status Import Task %s Failed with error: %s", task.id, err)
+        task.fail_reason = _("Unknown error importing book status")
         task.save(update_fields=["fail_reason"])
         task.set_status("failed")
 
@@ -435,12 +558,14 @@ def upsert_lists(
         item = models.ListItem.objects.filter(book=book, book_list=booklist).exists()
         if not item:
             count = booklist.books.count()
+            notes = blist["list_item"].get("notes", "")
+            approved = blist["list_item"].get("approved", False)
             models.ListItem.objects.create(
                 book=book,
                 book_list=booklist,
                 user=user,
-                notes=blist["list_item"]["notes"],
-                approved=blist["list_item"]["approved"],
+                notes=notes,
+                approved=approved,
                 order=count + 1,
             )
 
@@ -535,11 +660,11 @@ def upsert_saved_lists(user, values):
             user.saved_lists.add(book_list)
 
 
-@app.task(queue=IMPORTS, base=SubTask)
+@app.task(queue=IMPORTS, base=UserImportSubTask)
 def import_user_relationship_task(**kwargs):
     """import a user follow or block from an import file"""
 
-    task = UserRelationshipImport.objects.get(id=kwargs["child_id"])
+    task = UserImportRelationship.objects.get(id=kwargs["child_id"])
     job = task.parent_job
 
     try:
@@ -563,8 +688,10 @@ def import_user_relationship_task(**kwargs):
                 task.complete_job()
 
             else:
-                logger.exception(
-                    "Could not resolve user %s task %s", task.remote_id, task.id
+                logger.error(
+                    "Could not resolve import user %s follow task %s",
+                    task.remote_id,
+                    task.id,
                 )
                 task.fail_reason = _("connection_error")
                 task.save(update_fields=["fail_reason"])
@@ -589,16 +716,16 @@ def import_user_relationship_task(**kwargs):
                 task.complete_job()
 
             else:
-                logger.exception(
-                    "Could not resolve user %s task %s", task.remote_id, task.id
+                logger.error(
+                    "Could not resolve user %s block task %s", task.remote_id, task.id
                 )
                 task.fail_reason = _("connection_error")
                 task.save(update_fields=["fail_reason"])
                 task.set_status("failed")
 
         else:
-            logger.exception(
-                "Invalid relationship %s type specified in task %s",
+            logger.error(
+                "Invalid relationship type %s specified in user import task %s",
                 task.relationship,
                 task.id,
             )
@@ -607,8 +734,10 @@ def import_user_relationship_task(**kwargs):
             task.set_status("failed")
 
     except Exception as err:  # pylint: disable=broad-except
-        logger.exception("User Import Task %s Failed with error: %s", task.id, err)
-        task.fail_reason = _("unknown")
+        logger.error(
+            "User Import Relationship Task %s Failed with error: %s", task.id, err
+        )
+        task.fail_reason = _("Unkown error importing relationship")
         task.save(update_fields=["fail_reason"])
         task.set_status("failed")
 
