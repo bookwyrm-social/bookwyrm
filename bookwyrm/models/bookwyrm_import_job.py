@@ -5,6 +5,7 @@ import logging
 import math
 from urllib.parse import urlparse
 
+from botocore.exceptions import EndpointConnectionError
 import requests
 
 from django.apps import apps
@@ -23,8 +24,7 @@ from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 
-from bookwyrm import activitypub
-from bookwyrm import models, settings
+from bookwyrm import activitypub, models, settings
 from bookwyrm.connectors import connector_manager
 from bookwyrm.tasks import app, IMPORTS
 from bookwyrm.models.job import Job, ParentJob, ChildJob, ParentTask, SubTask
@@ -232,6 +232,7 @@ class UserImportSubTask(SubTask):
         subtask.complete_job()
 
 
+# pylint: disable=too-many-branches
 @app.task(queue=IMPORTS, base=ImportUserTask)
 def start_import_task(**kwargs):
     """trigger the child import tasks for each user data
@@ -276,21 +277,32 @@ def start_import_task(**kwargs):
             for item in UserImportRelationship.objects.filter(parent_job=job).all():
                 item.start_job()
 
-            url_parts = urlparse(job.import_data.get("id"))
-            url = f"{url_parts.scheme}://{url_parts.netloc}"
-            # Check https://example.com to see if the instance is still online
-            # If not, we don't bother trying to pull book data from it.
-            resp = requests.get(
-                url,
-                headers={
-                    "User-Agent": settings.USER_AGENT,
-                },
-                timeout=10,
-            )
+            try:
+                url_parts = urlparse(job.import_data.get("id"))
+                url = f"{url_parts.scheme}://{url_parts.netloc}"
+                # Check https://example.com to see if the instance is still online
+                # If not, we don't bother trying to pull book data from it.
+                resp = requests.head(
+                    url,
+                    headers={
+                        "User-Agent": settings.USER_AGENT,
+                    },
+                    timeout=settings.QUERY_TIMEOUT,
+                )
+
+                origin_is_ok = resp.ok
+
+            except (
+                EndpointConnectionError,
+                requests.exceptions.ConnectionError,
+                ConnectionRefusedError,
+            ):
+
+                origin_is_ok = False
 
             for data in job.import_data.get("books"):
                 book_job = UserImportBook.objects.create(parent_job=job, book_data=data)
-                book_job.start_job(origin_is_ok=resp.ok)
+                book_job.start_job(origin_is_ok=origin_is_ok)
 
         archive_file.close()
 
