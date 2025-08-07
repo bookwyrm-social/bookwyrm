@@ -112,7 +112,6 @@ def create_archive_task(**kwargs):
         archive_filename = f"{export_task_id}.tar.gz"
         export_json_bytes = DjangoJSONEncoder().encode(job.export_json).encode("utf-8")
         user = job.user
-        editions = get_books_for_user(user)
 
         if settings.USE_S3:
             # Storage for writing temporary files
@@ -135,17 +134,11 @@ def create_archive_task(**kwargs):
                 os.path.join(exports_storage.location, export_json_tmp_file)
             )
 
-            # Add images to TAR
+            # Add avatar to TAR
             images_storage = storages["default"]
 
             if user.avatar:
                 add_file_to_s3_tar(s3_tar, images_storage, user.avatar)
-
-            for edition in editions:
-                if edition.cover:
-                    add_file_to_s3_tar(
-                        s3_tar, images_storage, edition.cover, directory="images"
-                    )
 
             # Create archive and store file name
             s3_tar.tar()
@@ -166,9 +159,6 @@ def create_archive_task(**kwargs):
                     if user.avatar:
                         tar.add_image(user.avatar)
 
-                    for edition in editions:
-                        if edition.cover:
-                            tar.add_image(edition.cover, directory="images")
             job.save(update_fields=["export_data"])
 
         job.complete_job()
