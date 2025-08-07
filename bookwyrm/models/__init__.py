@@ -25,6 +25,8 @@ from .federated_server import FederatedServer
 
 from .group import Group, GroupMember, GroupMemberInvitation
 
+from .housekeeping import CleanUpUserExportFilesJob, start_export_deletions
+
 from .import_job import ImportJob, ImportItem
 from .bookwyrm_import_job import (
     BookwyrmImportJob,
