@@ -54,7 +54,7 @@ class ManageInvites(View):
 
         invite = form.save(request, commit=False)
         invite.user = request.user
-        invite.save(request)
+        invite.save()
 
         paginated = Paginator(
             models.SiteInvite.objects.filter(user=request.user).order_by(
