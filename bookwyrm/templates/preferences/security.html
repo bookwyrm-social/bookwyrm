@@ -113,9 +113,10 @@
         <p>{% trans "Some legacy sessions may not be displayed." %}</p>
     </div>
     {% if sessions %}
-    <p>
-        {% trans "You are logged in to the following sessions:" %}
-    </p>
+    <div class="block">
+        <p>
+            {% trans "You are logged in to the following sessions:" %}
+        </p>
     </div>
     <div class="block">
         <table class="table">
@@ -154,9 +155,11 @@
         </table>
     </div>
     {% else %}
-    <p>
-        {% trans "Currently your logged-in sessions are unable to be displayed." %}
-    </p>
+    <div class="block">
+        <p>
+            {% trans "Currently your logged-in sessions are unable to be displayed." %}
+        </p>
+    </div>
     {% endif %}
-
+</div>
 {% endblock %}
