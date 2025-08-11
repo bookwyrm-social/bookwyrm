@@ -1,5 +1,6 @@
 """ database schema for user data """
 import datetime
+from importlib import import_module
 import re
 import zoneinfo
 from typing import Optional, Iterable
@@ -7,6 +8,7 @@ from urllib.parse import urlparse
 from uuid import uuid4
 
 from django.apps import apps
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
@@ -31,6 +33,7 @@ from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .federated_server import FederatedServer
 from . import fields
 
+SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 FeedFilterChoices = [
     ("review", _("Reviews")),
@@ -508,6 +511,15 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         if self == viewer or viewer.has_perm("bookwyrm.moderate_user"):
             return
         raise PermissionDenied()
+
+    def refresh_user_sessions(self):
+        """Check sessions still exist
+        We delete them on logout but not when sessions expire"""
+
+        for sess in self.sessions.all():
+            cache_session = SessionStore()
+            if not cache_session.exists(session_key=sess.session_key):
+                sess.delete()
 
 
 class KeyPair(ActivitypubMixin, BookWyrmModel):
