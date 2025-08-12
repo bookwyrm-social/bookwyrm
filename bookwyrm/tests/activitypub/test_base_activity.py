@@ -5,7 +5,9 @@ from unittest.mock import patch
 
 from dataclasses import dataclass
 from django.test import TestCase
+from requests.exceptions import HTTPError
 import responses
+
 
 from bookwyrm import activitypub
 from bookwyrm.activitypub.base_activity import (
@@ -13,6 +15,7 @@ from bookwyrm.activitypub.base_activity import (
     resolve_remote_id,
     set_related_field,
     get_representative,
+    get_activitypub_data,
 )
 from bookwyrm.activitypub import ActivitySerializerError
 from bookwyrm import models
@@ -315,3 +318,36 @@ class BaseActivity(TestCase):
 
         self.assertIsInstance(status.attachments.first(), models.Image)
         self.assertIsNotNone(status.attachments.first().image)
+
+    @responses.activate
+    def test_do_not_raise_error_on_410(self, *_):
+        """test that 410 errors are merely logged as a warning"""
+
+        # mock a 410 response
+        responses.add(
+            responses.GET,
+            "https://example.com/user/mouse",
+            json=self.userdata,
+            status=410,
+        )
+
+        # let's check that we actually do get an error in the underlying function
+        with self.assertRaises(HTTPError):
+            get_activitypub_data("https://example.com/user/mouse")
+
+        # should log a warning
+        with self.assertLogs(level="DEBUG") as logger:
+            resolved = resolve_remote_id("https://example.com/user/mouse")
+            self.assertEqual(
+                logger.output,
+                [
+                    "WARNING:bookwyrm.activitypub.base_activity:request for object dropped because it is gone (410) - remote_id: https://example.com/user/mouse"  # pylint: disable=line-too-long
+                ],
+            )
+
+            # should not raise an exception
+            self.assertEqual(resolved, None)
+
+        # should log nothing if we only want to log errors
+        with self.assertNoLogs(logger=None, level="ERROR") as logger:
+            resolved = resolve_remote_id("https://example.com/user/mouse")
