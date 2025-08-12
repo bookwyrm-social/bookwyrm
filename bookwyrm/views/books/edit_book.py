@@ -38,7 +38,7 @@ class EditBook(View):
         book = get_edition(book_id)
         # This doesn't update the sort title, just pre-populates it in the form
         if book.sort_title in ["", None]:
-            book.sort_title = book.guess_sort_title()
+            book.sort_title = book.guess_sort_title(user=request.user)
         if not book.description:
             book.description = book.parent_work.description
         data = {"book": book, "form": forms.EditionForm(instance=book)}
@@ -319,6 +319,10 @@ class ConfirmEditBook(View):
                     book.cover.save(*image, save=False)
             elif "cover" in form.files:
                 book.cover = remove_uploaded_image_exif(form.files["cover"])
+
+            # add a sort title if we don't have one
+            if book.sort_title in ["", None]:
+                book.sort_title = book.guess_sort_title(user=request.user)
 
             # we don't tell the world when creating a book
             book.save(broadcast=False)

@@ -342,11 +342,35 @@ class Book(BookDataModel):
         """editions and works both use "book" instead of model_name"""
         return f"{BASE_URL}/book/{self.id}"
 
-    def guess_sort_title(self):
+    def guess_sort_title(self, user=None):
         """Get a best-guess sort title for the current book"""
+
+        if self.languages not in ([], None):
+            lang_codes = set(
+                k
+                for (k, v) in LANGUAGE_ARTICLES.items()
+                for language in tuple(self.languages)
+                if language.lower() in v["variants"]
+            )
+
+        elif user and user.preferred_language:
+            lang_codes = set(
+                k
+                for (k, v) in LANGUAGE_ARTICLES.items()
+                if user.preferred_language.lower() in v["variants"]
+            )
+
+        else:
+            lang_codes = set(
+                k
+                for (k, v) in LANGUAGE_ARTICLES.items()
+                if DEFAULT_LANGUAGE.lower() in v["variants"]
+            )
+
         articles = chain(
-            *(LANGUAGE_ARTICLES.get(language, ()) for language in tuple(self.languages))
+            *(LANGUAGE_ARTICLES[language].get("articles") for language in lang_codes)
         )
+
         return re.sub(f'^{" |^".join(articles)} ', "", str(self.title).lower())
 
     def __repr__(self):
