@@ -197,6 +197,7 @@ class Book(TestCase):
         self.assertIsNotNone(book.cover_bw_book_xxlarge_webp.url)
         self.assertIsNotNone(book.cover_bw_book_xxlarge_jpg.url)
 
+    # pylint: disable=unused-variable
     def test_populate_sort_title(self):
         """The sort title should remove the initial article on save"""
         books = []
