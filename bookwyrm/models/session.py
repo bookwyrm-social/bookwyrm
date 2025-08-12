@@ -12,7 +12,7 @@ class UserSession(models.Model):
     a logged-in session when the user first logs in, so users can remove sessions
     e.g. for devices they have lost."""
 
-    user = models.ForeignKey("User", on_delete=models.PROTECT, related_name="sessions")
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sessions")
     session_key = models.CharField(max_length=40)
     created_date = models.DateTimeField(auto_now_add=True)
     operating_system = models.CharField(max_length=50)
