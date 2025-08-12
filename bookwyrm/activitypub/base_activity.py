@@ -390,11 +390,6 @@ def resolve_remote_id(
                 "request for object dropped because it is gone (410) - remote_id: %s",
                 remote_id,
             )
-            # check whether the remote_id is a user and already in our DB
-            existing = models.User.find_existing_by_remote_id(remote_id)
-            # ensure deleted remote users are also deleted in our DB
-            if existing and not existing.deleted:
-                existing.delete()
         else:
             logger.exception("HTTP error - remote_id: %s - error: %s", remote_id, e)
         return None

@@ -20,6 +20,11 @@ from bookwyrm.utils import regex
 logger = logging.getLogger(__name__)
 
 
+# pylint: disable=unnecessary-pass
+class UserIsGoneError(Exception):
+    """error class for when a user is banned or deleted"""
+
+
 @method_decorator(csrf_exempt, name="dispatch")
 # pylint: disable=no-self-use
 class Inbox(View):
@@ -43,7 +48,7 @@ class Inbox(View):
         try:
             # let's be extra sure we didn't block this domain
             raise_is_blocked_activity(activity_json)
-        except activitypub.UserIsGoneError:
+        except UserIsGoneError:
             # banned or deleted users are not allowed to send us Activities
             return HttpResponseForbidden()
 
@@ -94,7 +99,7 @@ def raise_is_blocked_activity(activity_json):
     existing = models.User.find_existing_by_remote_id(actor)
     if existing and existing.deleted:
         logger.debug("%s is banned/deleted, denying request based on actor", actor)
-        raise activitypub.UserIsGoneError()
+        raise UserIsGoneError()
 
     # check if we have blocked the whole server
     if models.FederatedServer.is_blocked(actor):

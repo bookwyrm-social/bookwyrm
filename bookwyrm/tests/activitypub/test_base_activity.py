@@ -351,21 +351,3 @@ class BaseActivity(TestCase):
         # should log nothing if we only want to log errors
         with self.assertNoLogs(logger=None, level="ERROR") as logger:
             resolved = resolve_remote_id("https://example.com/user/mouse")
-
-    @responses.activate
-    def test_delete_user_if_gone(self, *_):
-        """test that users are deleted when their remote id returns a 410"""
-
-        responses.add(
-            responses.GET,
-            self.user.remote_id,
-            json=self.userdata,
-            status=410,
-        )
-
-        self.assertFalse(self.user.deleted)
-
-        resolve_remote_id(self.user.remote_id)
-
-        self.user.refresh_from_db()
-        self.assertTrue(self.user.deleted)
