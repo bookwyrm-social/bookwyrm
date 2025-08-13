@@ -30,9 +30,7 @@ RELEASE_API = env(
 
 PAGE_LENGTH = env.int("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
-# TODO: extend maximum age to 1 year once termination of active sessions
-# is implemented (see bookwyrm-social#2278, bookwyrm-social#3082).
-SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE", 3600 * 24 * 30)  # 1 month
+SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE", 3600 * 24 * 365)  # One year ...ish
 
 JS_CACHE = "8a89cad7"
 
