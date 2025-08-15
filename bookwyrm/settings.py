@@ -405,7 +405,7 @@ if USE_S3:
             "BACKEND": "storages.backends.s3.S3Storage",
             "OPTIONS": {
                 "location": "images",
-                "default_acl": "public-read",
+                "default_acl": AWS_DEFAULT_ACL,
                 "file_overwrite": False,
             },
         },
@@ -413,14 +413,14 @@ if USE_S3:
             "BACKEND": "storages.backends.s3.S3Storage",
             "OPTIONS": {
                 "location": "static",
-                "default_acl": "public-read",
+                "default_acl": AWS_DEFAULT_ACL,
             },
         },
         "sass_processor": {
             "BACKEND": "storages.backends.s3.S3Storage",
             "OPTIONS": {
                 "location": "static",
-                "default_acl": "public-read",
+                "default_acl": AWS_DEFAULT_ACL,
             },
         },
     }
