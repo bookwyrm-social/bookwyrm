@@ -12,7 +12,9 @@ from bookwyrm.connectors.openlibrary import Connector
 from bookwyrm.connectors.openlibrary import ignore_edition
 from bookwyrm.connectors.openlibrary import get_languages, get_description
 from bookwyrm.connectors.openlibrary import pick_default_edition, get_openlibrary_key
+from bookwyrm.connectors.openlibrary import parse_series, parse_series_number
 from bookwyrm.connectors.connector_manager import ConnectorException
+
 
 # pylint: disable=too-many-public-methods
 class Openlibrary(TestCase):
@@ -141,6 +143,20 @@ class Openlibrary(TestCase):
         self.assertEqual(result.author, "Amal El-Mohtar, Max Gladstone")
         self.assertEqual(result.year, 2019)
         self.assertEqual(result.connector, self.connector)
+
+    def test_parse_series_info(self):
+        """test parsing of series-name and number from series-info"""
+        series_info = ["The Murderbot Diaries, #1"]
+        series_name = parse_series(series_info)
+        series_number = parse_series_number(series_info)
+        self.assertEqual(series_name, "The Murderbot Diaries")
+        self.assertEqual(series_number, "1")
+
+        series_info = ["Series name without number"]
+        series_name = parse_series(series_info)
+        series_number = parse_series_number(series_info)
+        self.assertEqual(series_name, "Series name without number")
+        self.assertEqual(series_number, None)
 
     def test_parse_isbn_search_result(self):
         """extract the results from the search json response"""
