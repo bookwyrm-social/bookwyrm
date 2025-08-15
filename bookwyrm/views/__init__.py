@@ -21,8 +21,12 @@ from .admin.federation import block_server, unblock_server, refresh_server
 from .admin.files_maintenance import (
     FilesMaintenance,
     run_export_deletions,
+    run_missing_covers,
+    run_wrong_cover_paths,
     schedule_export_delete_task,
-    unschedule_export_delete_task,
+    schedule_run_missing_covers_job,
+    unschedule_file_maintenance_task,
+    cancel_covers_job,
     set_export_expiry_age,
 )
 from .admin.email_blocklist import EmailBlocklist
