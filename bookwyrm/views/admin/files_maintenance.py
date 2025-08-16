@@ -66,6 +66,17 @@ def run_export_deletions(request):
     return redirect("settings-files")
 
 
+# pylint: disable=unused-argument
+@require_POST
+@permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
+def cancel_export_delete_job(request, job_id):
+    """unscheduler"""
+    get_object_or_404(
+        models.housekeeping.CleanUpUserExportFilesJob, id=job_id
+    ).stop_job()
+    return redirect("settings-files")
+
+
 @require_POST
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
 def set_export_expiry_age(request):
@@ -146,6 +157,9 @@ def files_maintenance_data():
         find_covers_task = None
 
     site = models.SiteSettings.objects.get()
+    delete_jobs = models.housekeeping.CleanUpUserExportFilesJob.objects.all().order_by(
+        "-created_date"
+    )[:5]
 
     covers_jobs = models.housekeeping.FindMissingCoversJob.objects.all().order_by(
         "-created_date"
@@ -155,6 +169,7 @@ def files_maintenance_data():
         "delete_task": delete_task,
         "find_covers_task": find_covers_task,
         "covers_jobs": covers_jobs,
+        "delete_jobs": delete_jobs,
         "task_form": forms.IntervalScheduleForm(),
         "expiry_form": forms.ExportFileExpiryForm(),
         "covers_form": forms.IntervalScheduleForm(auto_id="covers_%s"),

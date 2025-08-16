@@ -28,6 +28,7 @@ from .admin.files_maintenance import (
     unschedule_file_maintenance_task,
     cancel_covers_job,
     set_export_expiry_age,
+    cancel_export_delete_job,
 )
 from .admin.email_blocklist import EmailBlocklist
 from .admin.email_config import EmailConfig

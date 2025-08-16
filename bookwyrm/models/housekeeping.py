@@ -1,5 +1,8 @@
 """ cleanup tasks """
+import math
 from datetime import datetime, timedelta, timezone
+
+from django.db.models import DateTimeField, IntegerField
 
 from django.db.models import (
     CharField,
@@ -23,6 +26,15 @@ class CleanUpUserExportFilesJob(ParentJob):
 
     expiry_date = DateTimeField()
     tasks = IntegerField(default=0)
+    completed_tasks = IntegerField(default=0)
+
+    @property
+    def percent_complete(self):
+        """How far along?"""
+
+        if not self.tasks:
+            return 0
+        return math.floor(self.completed_tasks / self.tasks * 100)
 
     def start_job(self):
         """schedule the tasks"""
@@ -39,25 +51,36 @@ class CleanUpUserExportFilesJob(ParentJob):
 
         for export in export_jobs:
             if export.export_data.name:
-                self.delete_export_file(export_id=export.id)
+                self.tasks += 1
+                self.save(update_fields=["tasks"])
+                delete_user_export_file_task.delay(job_id=self.id, export_id=export.id)
 
         for job in import_jobs:
             if job.archive_file.name:
-                self.delete_export_file(import_id=job.id)
+                self.tasks += 1
+                self.save(update_fields=["tasks"])
+                delete_user_export_file_task.delay(job_id=self.id, import_id=job.id)
 
-        self.complete_job()
-
-    def delete_export_file(self, export_id=None, import_id=None):
-        """update the number of jobs to check and queue task"""
-
-        self.tasks += 1
-        self.save(update_fields=["tasks"])
-        delete_user_export_file_task.delay(
-            job_id=self.id, export_id=export_id, import_id=import_id
-        )
+        if self.tasks == 0:
+            self.complete_job()
 
 
-@app.task(queue=MISC, base=ParentTask)
+class CleanUpExportsTask(ParentTask):
+    """Task to delete expired user export files"""
+
+    # pylint: disable=too-many-arguments, unused-argument, no-self-use
+    def after_return(self, status, retval, task_id, args, kwargs, einfo):
+        """Handler called after the task returns"""
+
+        job = CleanUpUserExportFilesJob.objects.get(id=kwargs["job_id"])
+        job.completed_tasks += 1
+        job.save(update_fields=["completed_tasks"])
+
+        if job.completed_tasks == job.tasks:
+            job.complete_job()
+
+
+@app.task(queue=MISC, base=CleanUpExportsTask)
 def delete_user_export_file_task(**kwargs):
     """A task to delete a specific export/import file"""
 
