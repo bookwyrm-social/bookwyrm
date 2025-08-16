@@ -126,7 +126,7 @@ class TestCleanUpExportFiles(TestCase):
         for filename in listdir("exports"):
 
             if "zzz_testfile.tar" in filename:
-                pathlib.Path.unlink(f"exports/{filename}")
+                pathlib.Path(f"exports/{filename}").unlink(missing_ok=True)
 
 
 class Covers(TestCase):
@@ -187,39 +187,37 @@ class Covers(TestCase):
             "cover": {"url": "https://example.com/images/covers/test_image.jpeg"},
         }
 
+        cls.image_one = ContentFile(b"..", name="test_image.jpeg")
+        cls.image_two = ContentFile(b"..", name="test_image2.jpeg")
+        cls.image_three = ContentFile(b"..", name="test_image3.jpeg")
+
     def test_get_cover_from_identifer(self):
         """Get missing cover from remote source"""
 
-        with tempfile.NamedTemporaryFile(delete_on_close=False) as image:
-            image.write(b"..")
+        responses.add(
+            responses.GET,
+            "https://example.com/images/covers/test_image.jpeg",
+            self.image_one,
+        )
 
-            responses.add(
-                responses.GET,
-                "https://example.com/images/covers/test_image.jpeg",
-                image,
-            )
+        self.assertEqual(self.first_edition.cover, None)
 
-            self.assertEqual(self.first_edition.cover, None)
+        with patch(
+            "bookwyrm.models.housekeeping.search", return_value=self.query_response
+        ), patch(
+            "bookwyrm.models.housekeeping.get_data", return_value=self.book_json
+        ), patch(
+            "bookwyrm.models.housekeeping.set_cover_from_url",
+            return_value=["test_image.jpeg", self.image_one],
+        ):
+            get_cover_from_identifiers(self.first_edition)
 
-            with patch(
-                "bookwyrm.models.housekeeping.search", return_value=self.query_response
-            ), patch(
-                "bookwyrm.models.housekeeping.get_data", return_value=self.book_json
-            ), patch(
-                "bookwyrm.models.housekeeping.set_cover_from_url",
-                return_value=["test_image.jpeg", image],
-            ):
-                get_cover_from_identifiers(self.first_edition)
-
-            self.assertNotEqual(self.first_edition.cover, None)
+        self.assertNotEqual(self.first_edition.cover, None)
 
     def test_get_covers_with_incorrect_filepaths(self):
         """does get_coverless_books return books with wrong cover filepaths?"""
 
-        with tempfile.NamedTemporaryFile(delete_on_close=False) as image:
-            image.write(b"..")
-
-            self.second_edition.cover.save("test_image2.jpeg", image)
+        self.second_edition.cover.save("test_image2.jpeg", self.image_two)
 
         self.assertNotEqual(self.second_edition.cover, None)
 
@@ -245,10 +243,7 @@ class Covers(TestCase):
     def test_trigger_job_for_wrong_filepath(self):
         """create a job and add editions with incorrect cover paths to it"""
 
-        with tempfile.NamedTemporaryFile(delete_on_close=False) as image:
-            image.write(b"..")
-            self.second_edition.cover.save("test_image3.jpeg", image)
-
+        self.second_edition.cover.save("test_image3.jpeg", self.image_three)
         self.second_edition.cover.name = "wrong/name.png"
         self.second_edition.save(update_fields=["cover"])
 
@@ -260,3 +255,10 @@ class Covers(TestCase):
         self.assertEqual(FindMissingCoversJob.objects.count(), 1)
         edition = FindMissingCoversJob.objects.first().editions.first()
         self.assertEqual(edition.isbn_13, "9781784708276")
+
+    def tearDown(self):
+        """clean up files"""
+
+        for filename in ["test_image.jpeg", "test_image2.jpeg", "test_image3.jpeg"]:
+
+            pathlib.Path(f"covers/{filename}").unlink(missing_ok=True)
