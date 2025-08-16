@@ -70,9 +70,15 @@
         </tr>
         {% for item in items %}
         <tr>
-            <td class="is-italic">{{ item.userimportpost.book.title }}</td>
-            <td>{{ item.userimportpost.json.type }}</td>
-            <td>{% id_to_username item.userrelationshipimport.remote_id True %}</td>
+            <td class="is-italic">{% if item.userimportbook %}{{ item.userimportbook.book.title }}{% else %} {{ item.userimportpost.book.title }}{% endif %}</td>
+            <td>
+                <strong>{{ item.userimportpost.json.type }}<br></strong>
+                {% if item.userimportpost.json.quote %}
+                <div class="m-4 is-italic">{{ item.userimportpost.json.quote|safe }}</div>
+                {% endif %}
+                {{ item.userimportpost.json.content|safe }}
+            </td>
+            <td>{% id_to_username item.userimportrelationship.remote_id True %}</td>
             <td>
                 {% if item.fail_reason == "unauthorized" %}
                 Not authorized to import statuses

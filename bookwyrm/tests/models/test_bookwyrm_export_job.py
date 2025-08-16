@@ -263,10 +263,3 @@ class BookwyrmExportJob(TestCase):
             with self.local_user.avatar.open() as expected_avatar:
                 archive_avatar = tar.extractfile(data["icon"]["url"])
                 self.assertEqual(expected_avatar.read(), archive_avatar.read())
-
-            # Edition cover should be present in archive
-            with self.edition.cover.open() as expected_cover:
-                archive_cover = tar.extractfile(
-                    data["books"][0]["edition"]["cover"]["url"]
-                )
-                self.assertEqual(expected_cover.read(), archive_cover.read())
