@@ -193,6 +193,11 @@ urlpatterns = [
         name="settings-delete-exports-run",
     ),
     re_path(
+        r"^settings/delete-exports/cancel/(?P<job_id>\d+)/?$",
+        views.cancel_export_delete_job,
+        name="settings-delete-exports-cancel",
+    ),
+    re_path(
         r"^settings/email-preview/?$",
         views.admin.email_config.email_preview,
         name="settings-email-preview",

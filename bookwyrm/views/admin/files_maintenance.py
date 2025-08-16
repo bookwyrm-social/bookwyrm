@@ -58,12 +58,22 @@ def unschedule_export_delete_task(request, task_id):
     return redirect("settings-files")
 
 
-# pylint: disable=unused-argument
 @require_POST
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
 def run_export_deletions(request):
     """run scan"""
     models.start_export_deletions.delay(user=request.user.id)
+    return redirect("settings-files")
+
+
+# pylint: disable=unused-argument
+@require_POST
+@permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
+def cancel_export_delete_job(request, job_id):
+    """unscheduler"""
+    get_object_or_404(
+        models.housekeeping.CleanUpUserExportFilesJob, id=job_id
+    ).stop_job()
     return redirect("settings-files")
 
 
@@ -94,9 +104,13 @@ def files_maintenance_data():
         delete_task = None
 
     site = models.SiteSettings.objects.get()
+    delete_jobs = models.housekeeping.CleanUpUserExportFilesJob.objects.all().order_by(
+        "-created_date"
+    )[:5]
 
     return {
         "delete_task": delete_task,
+        "delete_jobs": delete_jobs,
         "task_form": forms.IntervalScheduleForm(),
         "expiry_form": forms.ExportFileExpiryForm(),
         "max_hours": site.export_files_lifetime_hours,
