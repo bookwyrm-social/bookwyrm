@@ -2,6 +2,7 @@
 
 import logging
 from io import BytesIO
+from typing import Any
 from uuid import uuid4
 
 from PIL import Image, UnidentifiedImageError
@@ -48,13 +49,13 @@ def remove_uploaded_image_exif(source: UploadedFile) -> UploadedFile:
     return source
 
 
-def set_cover_from_url(url):
+def set_cover_from_url(url: str) -> None | list[Any]:
     """load cover image from a url"""
     try:
         image_content, extension = get_image(url)
     except:  # pylint: disable=bare-except
         return None
-    if not image_content:
+    if not image_content or not extension:
         return None
     image_name = str(uuid4()) + "." + extension
     return [image_name, image_content]
