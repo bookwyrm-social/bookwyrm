@@ -1,7 +1,5 @@
 """ the good stuff! the books! """
 
-from uuid import uuid4
-
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
 from django.db.models import Avg, Q
@@ -15,9 +13,8 @@ from django.views.decorators.vary import vary_on_headers
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager, ConnectorException
-from bookwyrm.connectors.abstract_connector import get_image
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.utils.images import remove_uploaded_image_exif
+from bookwyrm.utils.images import remove_uploaded_image_exif, set_cover_from_url
 from bookwyrm.views.helpers import (
     is_api_request,
     maybe_redirect_local_path,
@@ -163,18 +160,6 @@ def upload_cover(request, book_id):
     book.save()
 
     return redirect(book.local_path)
-
-
-def set_cover_from_url(url):
-    """load it from a url"""
-    try:
-        image_content, extension = get_image(url)
-    except:  # pylint: disable=bare-except
-        return None
-    if not image_content:
-        return None
-    image_name = str(uuid4()) + "." + extension
-    return [image_name, image_content]
 
 
 @login_required
