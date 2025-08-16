@@ -2,8 +2,6 @@
 import math
 from datetime import datetime, timedelta, timezone
 
-from django.db.models import DateTimeField, IntegerField
-
 from django.db.models import (
     CharField,
     DateTimeField,
@@ -139,6 +137,10 @@ class FindMissingCoversJob(ParentJob):
 
         for edition in self.editions.all():
             get_missing_cover_task.delay(job_id=self.id, edition_id=edition.id)
+
+        if self.editions.count() == 0:
+
+            self.complete_job()
 
 
 class MissingCoverTask(ParentTask):

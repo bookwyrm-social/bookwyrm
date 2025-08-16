@@ -14,49 +14,6 @@
 {% block panel %}
 
 <div class="box block">
-    {% if delete_task %}
-    <dl class="block">
-        <dt class="is-pulled-left mr-5 has-text-weight-bold">
-            {% trans "Schedule:" %}
-        </dt>
-        <dd>
-            {{ delete_task.schedule }}
-        </dd>
-
-        <dt class="is-pulled-left mr-5 has-text-weight-bold">
-            {% trans "Last run:" %}
-        </dt>
-        <dd>
-            {{ delete_task.last_run_at|naturaltime }}
-        </dd>
-
-        <dt class="is-pulled-left mr-5 has-text-weight-bold">
-            {% trans "Total run count:" %}
-        </dt>
-        <dd>
-            {{ delete_task.total_run_count }}
-        </dd>
-
-        <dt class="is-pulled-left mr-5 has-text-weight-bold">
-            {% trans "Enabled:" %}
-        </dt>
-        <dd>
-            <span class="tag {% if delete_task.enabled %}is-success{% else %}is-danger{% endif %}">
-                {{ delete_task.enabled|yesno }}
-            </span>
-        </dd>
-    </dl>
-
-    <div class="is-flex is-justify-content-space-between block">
-        <form name="unschedule-delete-exports-scan" method="POST" action="{% url 'settings-file-maintenance-unschedule' delete_task.id %}">
-            {% csrf_token %}
-            <button class="button is-danger">{% trans "Delete schedule" %}</button>
-        </form>
-        <form name="run-scan" method="POST" action="{% url 'settings-delete-exports-run' %}">
-            {% csrf_token %}
-            <button class="button">{% trans "Run now" %}</button>
-            <p class="help">{% trans "Last run date will not be updated" %}</p>
-        </form>
     <h2 class="title is-4">{% trans "Schedule file deletion" %}</h2>
     <div class="content notification">
         <p>
@@ -98,7 +55,7 @@
         </dl>
 
         <div class="is-flex is-justify-content-space-between block">
-            <form name="unschedule-delete-exports-scan" method="POST" action="{% url 'settings-delete-exports-unschedule' delete_task.id %}">
+            <form name="unschedule-delete-exports-scan" method="POST" action="{% url 'settings-file-maintenance-unschedule' delete_task.id %}">
                 {% csrf_token %}
                 <button class="button is-danger">{% trans "Delete schedule" %}</button>
             </form>
@@ -242,17 +199,17 @@
     {% endif %}
 </div>
 
-<h2 class="title is-4">{% trans "Find book covers from connectors" %}</h2>
-<div class="content notification">
-    <p>
-        {% trans "These jobs find cover images where they are missing or have incorrect filepaths." %}
-    </p>
-</div>
 <div class="box block">
+    <h2 class="title is-4">{% trans "Find book covers from connectors" %}</h2>
+    <div class="content notification">
+        <p>
+            {% trans "These jobs find cover images where they are missing or have incorrect filepaths." %}
+        </p>
+    </div>
     <h3 class="title is-5">{% trans "Find missing covers" %}</h3>
     <div class="block">
         <p>
-            {% trans "Schedule a regular scan to find cover images for editions without them. This can be resource intensive so the recommended schedule is no more often than once per week." %}
+            {% trans "Schedule a regular scan to find cover images for editions without them. This can be resource intensive so the recommended schedule is no less than every seven days." %}
         </p>
     </div>
     {% if find_covers_task %}

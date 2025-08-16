@@ -211,6 +211,8 @@ urlpatterns = [
         r"^settings/file-maintenance/cancel-covers/(?P<job_id>\d+)/?$",
         views.cancel_covers_job,
         name="cancel-covers-job",
+    ),
+    re_path(
         r"^settings/delete-exports/cancel/(?P<job_id>\d+)/?$",
         views.cancel_export_delete_job,
         name="settings-delete-exports-cancel",
