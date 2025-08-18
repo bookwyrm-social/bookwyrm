@@ -1,5 +1,6 @@
 """ book list views"""
 from typing import Optional
+from urllib.parse import urlparse, urlunparse
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -57,6 +58,9 @@ class List(View):
         embed_key = str(book_list.embed_key.hex)
         embed_url = reverse("embed-list", args=[book_list.id, embed_key])
         embed_url = request.build_absolute_uri(embed_url)
+        # NOTE: this forces https even on localhost
+        https_url = urlparse(embed_url)._replace(scheme="https")
+        embed_url = urlunparse(https_url)
 
         if request.GET:
             embed_url = f"{embed_url}?{request.GET.urlencode()}"
