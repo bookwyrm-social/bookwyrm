@@ -15,7 +15,8 @@ from bookwyrm.utils.tar import BookwyrmTarFile
 class BookwyrmExportJob(TestCase):
     """testing user export functions"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """lots of stuff to set up for a user export"""
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
