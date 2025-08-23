@@ -1,6 +1,5 @@
 """ test session functions """
 from importlib import import_module
-from unittest.mock import patch
 
 from django.conf import settings
 from django.test import TestCase
@@ -17,14 +16,9 @@ class Session(TestCase):
     def setUp(self):
         """need a user and some pre-existing sessions"""
 
-        with (
-            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
-            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
-            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
-        ):
-            self.user = models.User.objects.create_user(
-                "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
-            )
+        self.user = models.User.objects.create_user(
+            "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
+        )
 
         self.session = SessionStore()
         self.session["_auth_user_id"] = self.user.id

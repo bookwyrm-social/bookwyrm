@@ -516,8 +516,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         """Check sessions still exist
         We delete them on logout but not when sessions expire"""
 
+        cache_session = SessionStore()
         for sess in self.sessions.all():
-            cache_session = SessionStore()
             if not cache_session.exists(session_key=sess.session_key):
                 sess.delete()
 

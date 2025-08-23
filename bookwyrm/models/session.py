@@ -1,10 +1,14 @@
 """ functions for managing user sessions """
+from importlib import import_module
 import ua_parser
 
-from django.contrib.sessions.backends.db import SessionStore
+from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from bookwyrm.models import User
+
+SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 
 class UserSession(models.Model):
@@ -35,8 +39,9 @@ def create_user_session(
 
     user = User.objects.get(id=user_id)
     parsed = ua_parser.parse(agent_string)
-    system = getattr(parsed.os, "family", "Unknown")
-    browser = getattr(parsed.user_agent, "family", "Unknown")
+    unknown = _("Unknown")
+    system = getattr(parsed.os, "family", str(unknown))
+    browser = getattr(parsed.user_agent, "family", str(unknown))
 
     sess = UserSession(
         user=user,
