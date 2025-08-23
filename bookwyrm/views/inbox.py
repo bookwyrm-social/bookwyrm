@@ -20,7 +20,6 @@ from bookwyrm.utils import regex
 logger = logging.getLogger(__name__)
 
 
-# pylint: disable=unnecessary-pass
 class UserIsGoneError(Exception):
     """error class for when a user is banned or deleted"""
 
