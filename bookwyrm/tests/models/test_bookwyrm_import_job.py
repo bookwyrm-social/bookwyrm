@@ -18,7 +18,8 @@ from bookwyrm.models import bookwyrm_import_job
 class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
     """testing user import functions"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """setting stuff up"""
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
