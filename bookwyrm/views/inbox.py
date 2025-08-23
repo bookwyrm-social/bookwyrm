@@ -5,7 +5,7 @@ import logging
 
 import requests
 
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, HttpResponseForbidden, Http404
 from django.core.exceptions import BadRequest, PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
@@ -18,6 +18,10 @@ from bookwyrm.signatures import Signature
 from bookwyrm.utils import regex
 
 logger = logging.getLogger(__name__)
+
+
+class UserIsGoneError(Exception):
+    """error class for when a user is banned or deleted"""
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -40,8 +44,12 @@ class Inbox(View):
         except json.decoder.JSONDecodeError:
             raise BadRequest()
 
-        # let's be extra sure we didn't block this domain
-        raise_is_blocked_activity(activity_json)
+        try:
+            # let's be extra sure we didn't block this domain
+            raise_is_blocked_activity(activity_json)
+        except UserIsGoneError:
+            # banned or deleted users are not allowed to send us Activities
+            return HttpResponseForbidden()
 
         if (
             not "object" in activity_json
@@ -86,12 +94,13 @@ def raise_is_blocked_activity(activity_json):
         # well I guess it's not even a valid activity so who knows
         return
 
-    # check if the user is banned/deleted
+    # check if the user is banned/deleted in our database
     existing = models.User.find_existing_by_remote_id(actor)
     if existing and existing.deleted:
         logger.debug("%s is banned/deleted, denying request based on actor", actor)
-        raise PermissionDenied()
+        raise UserIsGoneError()
 
+    # check if we have blocked the whole server
     if models.FederatedServer.is_blocked(actor):
         logger.debug("%s is blocked, denying request based on actor", actor)
         raise PermissionDenied()
