@@ -53,7 +53,9 @@ from .preferences.export import Export, ExportUser, ExportArchive
 from .preferences.move_user import MoveUser, AliasUser, remove_alias, unmove
 from .preferences.delete_user import DeleteUser, DeactivateUser, ReactivateUser
 from .preferences.block import Block, unblock
-from .preferences.two_factor_auth import (
+from .preferences.security import (
+    UserSecurity,
+    logout_session,
     Edit2FA,
     Confirm2FA,
     Disable2FA,
