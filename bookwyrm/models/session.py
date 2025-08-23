@@ -34,10 +34,9 @@ def create_user_session(
     """create a session object"""
 
     user = User.objects.get(id=user_id)
-    os = ua_parser.parse_os(agent_string)
-    user_agent = ua_parser.parse_user_agent(agent_string)
-    system = getattr(os, "family", "Unknown")
-    browser = getattr(user_agent, "family", "Unknown")
+    parsed = ua_parser.parse(agent_string)
+    system = getattr(parsed.os, "family", "Unknown")
+    browser = getattr(parsed.user_agent, "family", "Unknown")
 
     sess = UserSession(
         user=user,
