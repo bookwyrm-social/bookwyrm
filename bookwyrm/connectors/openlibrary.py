@@ -190,11 +190,14 @@ class Connector(AbstractConnector):
             key = self.books_url + search_result["key"]
             authors = search_result.get("authors") or [{"name": "Unknown"}]
             author_names = [author.get("name") for author in authors]
+            cover_obj = search_result.get("cover")
+            cover = cover_obj.get("medium") if cover_obj else ""
             yield SearchResult(
                 title=search_result.get("title"),
                 key=key,
                 author=", ".join(author_names),
                 connector=self,
+                cover=cover,
                 year=search_result.get("publish_date"),
             )
 
