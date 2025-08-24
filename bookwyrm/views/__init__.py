@@ -18,6 +18,18 @@ from .admin.dashboard import Dashboard
 from .admin.federation import Federation, FederatedServer
 from .admin.federation import AddFederatedServer, ImportServerBlocklist
 from .admin.federation import block_server, unblock_server, refresh_server
+from .admin.files_maintenance import (
+    FilesMaintenance,
+    run_export_deletions,
+    run_missing_covers,
+    run_wrong_cover_paths,
+    schedule_export_delete_task,
+    schedule_run_missing_covers_job,
+    unschedule_file_maintenance_task,
+    cancel_covers_job,
+    set_export_expiry_age,
+    cancel_export_delete_job,
+)
 from .admin.email_blocklist import EmailBlocklist
 from .admin.email_config import EmailConfig
 from .admin.imports import (
