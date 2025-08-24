@@ -30,14 +30,16 @@
                     {% include 'snippets/form_errors.html' with errors_list=form.title.errors id="desc_title" %}
                 </div>
 
+                {% if form.sort_title.value %}
                 <div class="field">
                     <label class="label" for="id_sort_title">
                         {% trans "Sort Title:" %}
                     </label>
-                    <input type="text" name="sort_title" value="{{ form.sort_title.value|default:'' }}" maxlength="255" class="input" required="" id="id_sort_title" aria-describedby="desc_sort_title">
+                    <input type="text" name="sort_title" value="{{ form.sort_title.value|default:'' }}" maxlength="255" class="input" id="id_sort_title" aria-describedby="desc_sort_title">
 
                     {% include 'snippets/form_errors.html' with errors_list=form.sort_title.errors id="desc_sort_title" %}
                 </div>
+                {% endif%}
 
                 <div class="field">
                     <label class="label" for="id_subtitle">
