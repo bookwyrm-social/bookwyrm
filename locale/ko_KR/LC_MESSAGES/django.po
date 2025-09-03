@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-23 23:50+0000\n"
-"PO-Revision-Date: 2025-07-08 01:12\n"
+"PO-Revision-Date: 2025-09-03 02:36\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -1911,17 +1911,17 @@ msgstr ""
 #: bookwyrm/templates/discover/card-header.html:27
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> reviewed <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 독자의 <a href=\"%(book_path)s\">%(book_title)s</a> 서평"
 
 #: bookwyrm/templates/discover/card-header.html:31
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "<a href=\"%(user_path)s\">%(username)s</a> 님의 <a href=\"%(book_path)s\">%(book_title)s</a> 코멘트"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 독자의 <a href=\"%(book_path)s\">%(book_title)s</a> 주석"
 
 #: bookwyrm/templates/discover/card-header.html:35
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> quoted <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "<a href=\"%(user_path)s\">%(username)s</a> 님의 <a href=\"%(book_path)s\">%(book_title)s</a> 인용"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 독자의 <a href=\"%(book_path)s\">%(book_title)s</a> 인용"
 
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
@@ -4589,7 +4589,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:75
 msgid "Show ratings"
-msgstr ""
+msgstr "별점 보기"
 
 #: bookwyrm/templates/preferences/edit_user.html:81
 msgid "Show suggested users"
@@ -6775,7 +6775,7 @@ msgstr "@%(username)s 제거"
 #: bookwyrm/templates/snippets/announcement.html:28
 #, python-format
 msgid "Posted by <a href=\"%(user_path)s\">%(username)s</a>"
-msgstr "<a href=\"%(user_path)s\">%(username)s</a> 님의 게시물"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 독자의 게시물"
 
 #: bookwyrm/templates/snippets/authors.html:22
 #: bookwyrm/templates/snippets/trimmed_list.html:14
@@ -7199,7 +7199,7 @@ msgstr "읽기 마침"
 
 #: bookwyrm/templates/snippets/stars.html:13
 msgid "Show rating"
-msgstr ""
+msgstr "별점 보기"
 
 #: bookwyrm/templates/snippets/status/content_status.html:69
 msgid "Show status"
@@ -7251,7 +7251,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/note.html:8
 #, python-format
 msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
-msgstr ""
+msgstr "독자가 <a href=\"%(user_path)s\">%(username)s</a>'독자의 <a href=\"%(status_path)s\">게시물</a>에 회신"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:8
 #, python-format
@@ -7261,7 +7261,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/quotation.html:15
 #, python-format
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "<a href=\"%(book_path)s\">%(book)s</a> 인용"
 
 #: bookwyrm/templates/snippets/status/headers/rating.html:3
 #, python-format
@@ -7296,7 +7296,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/review.html:15
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr "님이 서평한 <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
 #, python-format
@@ -7384,7 +7384,7 @@ msgstr "인증기 앱의 코드를 입력:"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:41
 msgid "Confirm and Log In"
-msgstr ""
+msgstr "확인 및 로그인"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:29
 msgid "2FA is available"
