@@ -1,0 +1,215 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% load humanize %}
+{% load utilities %}
+
+{% block title %}
+{% trans "Files maintenance" %}
+{% endblock %}
+
+{% block header %}
+{% trans "Files maintenance" %}
+{% endblock %}
+
+{% block panel %}
+
+<div class="block">
+    <h2 class="title is-4">{% trans "Schedule file deletion" %}</h2>
+    <div class="box">
+        <div class="content notification">
+            <p>
+                {% trans "This job deletes uploaded user export and import files that have reached the expiry age." %}
+            </p>
+        </div>
+        <div class="block">
+            {% if delete_task %}
+            <dl class="block">
+                <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                    {% trans "Schedule:" %}
+                </dt>
+                <dd>
+                    {{ delete_task.schedule }}
+                </dd>
+
+                <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                    {% trans "Last run:" %}
+                </dt>
+                <dd>
+                    {{ delete_task.last_run_at|naturaltime }}
+                </dd>
+
+                <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                    {% trans "Total run count:" %}
+                </dt>
+                <dd>
+                    {{ delete_task.total_run_count }}
+                </dd>
+
+                <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                    {% trans "Enabled:" %}
+                </dt>
+                <dd>
+                    <span class="tag {% if delete_task.enabled %}is-success{% else %}is-danger{% endif %}">
+                        {{ delete_task.enabled|yesno }}
+                    </span>
+                </dd>
+            </dl>
+
+            <div class="is-flex is-justify-content-space-between block">
+                <form name="unschedule-delete-exports-scan" method="POST" action="{% url 'settings-delete-exports-unschedule' delete_task.id %}">
+                    {% csrf_token %}
+                    <button class="button is-danger">{% trans "Delete schedule" %}</button>
+                </form>
+                <form name="run-scan" method="POST" action="{% url 'settings-delete-exports-run' %}">
+                    {% csrf_token %}
+                    <button class="button">{% trans "Run now" %}</button>
+                    <p class="help">{% trans "Last run date will not be updated" %}</p>
+                </form>
+            </div>
+            {% else %}
+            <form name="schedule-delete-exports" method="POST" action="{% url 'settings-delete-exports-schedule' %}">
+                {% csrf_token %}
+                <div class="field">
+                    <label class="label" for="id_every">
+                        {{ task_form.every.label }}
+                    </label>
+                    <div class="columns">
+                        <div class="column is-one-fifth">
+                            {{ task_form.every }}
+                        </div>
+                    </div>
+                    <p class="help" id="desc_every">
+                        {{ task_form.every.help_text }}
+                    </p>
+                </div>
+                <div class="field">
+                    <label class="label" for="id_period">
+                    {{ task_form.period.label }}
+                    </label>
+                    <div class="select">
+                        {{ task_form.period }}
+                    </div>
+                    <p class="help" id="desc_period">
+                        {{ task_form.period.help_text }}
+                    </p>
+                </div>
+                <button class="button is-primary">{% trans "Schedule scan" %}</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <h2 class="title is-4">{% trans "Export file expiration" %}</h2>
+    <div class="box">
+        <div>
+            <form class="form" name="set-delete-exports-age" method="POST" action="{% url 'settings-delete-exports-set-age' %}">
+                {% csrf_token %}
+                <div class="field">
+                    <label class="label" for="id_hours">
+                        {% trans "Maximum age of export files, in hours" %}
+                    </label>
+                    {% if expiry_form.hours.errors %}
+                    <div class="help is-danger">
+                        <span>{{ expiry_form.hours.errors }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="columns">
+                        <div class="column is-one-fifth">
+                            <input name="hours" id="id_hours" class="input" type="number" value="{{ max_hours }}" aria-describedby="desc_hours">
+                        </div>
+                    </div>
+                    <p class="help" id="desc_hours">
+                        {% trans "Files older than this will be deleted." %}
+                    </p>
+                </div>
+                <button class="button is-primary">{% trans "Set expiry hours" %}</button>
+            </form>
+        </div>
+    </div>
+
+    {% if delete_jobs %}
+    <div class="block">
+        <h3 class="title is-5">Recent jobs</h3>
+        <div class="table-container">
+            <table class="table is-striped is-fullwidth">
+                <tr>
+                    <th class="has-text-centered">{% trans "Date" %}</th>
+                    <th class="has-text-centered">{% trans "Status" %}</th>
+                    <th class="has-text-centered">{% trans "Expired files" %}</th>
+                    <th class="has-text-centered">{% trans "Progress" %}</th>
+                    <th></th>
+                </tr>
+                {% for job in delete_jobs %}
+                <tr>
+                    <td class="has-text-centered">{{ job.updated_date }}</td>
+                    <td class="has-text-centered">
+                        <span
+                            {% if job.status == "stopped" or job.status == "failed" %}
+                            class="tag is-danger"
+                            {% elif job.status == "pending" %}
+                            class="tag is-warning"
+                            {% elif job.complete %}
+                            class="tag is-success"
+                            {% else %}
+                            class="tag"
+                            {% endif %}
+                        >
+                            {% if job.status %}
+                                {{ job.get_status_display }}
+                            {% elif job.complete %}
+                                {% trans "Complete" %}
+                            {% else %}
+                                {% trans "Active" %}
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td class="has-text-centered">{{ job.tasks }}</td>
+                    <td class="has-text-centered">
+                        {% if not job.complete %}
+                        <div class="is-flex">
+                            <progress
+                                class="progress is-success is-medium mr-2"
+                                role="progressbar"
+                                aria-min="0"
+                                value="{{ job.completed_tasks }}"
+                                aria-valuenow="{{ job.completed_tasks  }}"
+                                max="{{ job.tasks }}"
+                                aria-valuemax="{{ job.tasks }}">
+                                {{ job.percent_complete }} %
+                            </progress>
+                            <span>{{ job.percent_complete }}%</span>
+                        </div>
+                        {% endif %}
+                        {% if job.status == "stopped" or job.status == "failed" %}
+                        <span class="tag is-danger">{{ job.get_status_display }}</span>
+                        {% else %}
+                        <span class="tag is-success">{% trans 'Completed' %}</span>
+                        {% endif %}
+                    </td>
+                    <td class="has-text-centered">
+                        {% if not job.complete %}
+                        <form name="cancel-job-{{ job.id }}" method="POST" action="{% url 'settings-delete-exports-cancel' job.id %}">
+                            {% csrf_token %}
+                            <button class="button is-small is-danger">{% trans "Cancel" %}</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+
+{% if success %}
+<div class="notification is-success is-light">
+    <span class="icon icon-check" aria-hidden="true"></span>
+    <span>
+        {% trans "Successfully updated expiry time" %}
+    </span>
+</div>
+{% endif %}
+
+{% endblock %}

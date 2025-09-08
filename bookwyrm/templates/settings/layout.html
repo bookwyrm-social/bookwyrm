@@ -58,7 +58,7 @@
             </li>
             <li>
                 {% url 'settings-automod' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Auto-moderation rules" %}</a>
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Auto-Moderation Rules" %}</a>
             </li>
             <li>
                 {% url 'settings-email-blocks' as url %}
@@ -83,11 +83,11 @@
             </li>
             <li>
                 {% url 'settings-celery' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Celery status" %}</a>
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Celery Status" %}</a>
             </li>
             <li>
                 {% url 'settings-schedules' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Scheduled tasks" %}</a>
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Scheduled Tasks" %}</a>
             </li>
             <li>
                 {% url 'settings-email-config' as url %}
@@ -96,6 +96,10 @@
             <li>
                 {% url 'settings-connectors' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Connectors" %}</a>
+            </li>
+            <li>
+                {% url 'settings-files' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Files Maintenance" %}</a>
             </li>
         </ul>
         {% endif %}

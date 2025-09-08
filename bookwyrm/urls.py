@@ -170,6 +170,34 @@ urlpatterns = [
         name="settings-update-connector",
     ),
     re_path(
+        r"^settings/files/?$", views.FilesMaintenance.as_view(), name="settings-files"
+    ),
+    re_path(
+        r"^settings/delete-exports/set-age/?$",
+        views.set_export_expiry_age,
+        name="settings-delete-exports-set-age",
+    ),
+    re_path(
+        r"^settings/delete-exports/schedule/?$",
+        views.schedule_export_delete_task,
+        name="settings-delete-exports-schedule",
+    ),
+    re_path(
+        r"^settings/delete-exports/unschedule/(?P<task_id>\d+)/?$",
+        views.unschedule_export_delete_task,
+        name="settings-delete-exports-unschedule",
+    ),
+    re_path(
+        r"^settings/delete-exports/run/?$",
+        views.run_export_deletions,
+        name="settings-delete-exports-run",
+    ),
+    re_path(
+        r"^settings/delete-exports/cancel/(?P<job_id>\d+)/?$",
+        views.cancel_export_delete_job,
+        name="settings-delete-exports-cancel",
+    ),
+    re_path(
         r"^settings/email-preview/?$",
         views.admin.email_config.email_preview,
         name="settings-email-preview",
