@@ -337,8 +337,14 @@ LANGUAGES = [
 ]
 
 LANGUAGE_ARTICLES = {
-    "English": {"the", "a", "an"},
-    "Español (Spanish)": {"un", "una", "unos", "unas", "el", "la", "los", "las"},
+    "en-us": {
+        "variants": ["english", "anglais", "inglés", "englanti"],
+        "articles": {"the", "a", "an"},
+    },
+    "es-es": {
+        "variants": ["spanish", "español", "espagnol", "espanja"],
+        "articles": {"un", "una", "unos", "unas", "el", "la", "los", "las"},
+    },
 }
 
 TIME_ZONE = "UTC"
