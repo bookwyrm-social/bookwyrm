@@ -1,7 +1,7 @@
 {% if errors_list %}
 <div id="{{ id }}">
     {% for error in errors_list %}
-    <p class="help is-danger">
+    <p class="notification is-danger is-light px-4 py-1">
         {{ error | escape }}
     </p>
     {% endfor %}
