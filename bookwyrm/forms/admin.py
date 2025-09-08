@@ -199,3 +199,8 @@ class IntervalScheduleForm(StyledForm):
         if not request.user.has_perm("bookwyrm.moderate_user"):
             raise PermissionDenied()
         return super().save(*args, **kwargs)
+
+
+class ExportFileExpiryForm(forms.Form):
+
+    hours = forms.IntegerField(min_value=1)

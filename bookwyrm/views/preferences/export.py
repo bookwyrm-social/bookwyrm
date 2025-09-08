@@ -19,9 +19,8 @@ from django.shortcuts import redirect
 
 from storages.backends.s3 import S3Storage
 
-from bookwyrm import models
+from bookwyrm import models, settings
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
-from bookwyrm import settings
 from bookwyrm.utils.cache import get_or_set
 
 # pylint: disable=no-self-use,too-many-locals
@@ -186,17 +185,19 @@ class ExportUser(View):
                 try:
                     export["size"] = job.export_data.size
                     export["url"] = reverse("prefs-export-file", args=[job.task_id])
-                except FileNotFoundError:
-                    # file no longer exists locally
-                    export["unavailable"] = True
-                except Exception:  # pylint: disable=broad-except
-                    # file no longer exists on storage backend
-                    export["unavailable"] = True
+                # pylint: disable=broad-exception-caught
+                except (
+                    FileNotFoundError,
+                    Exception,
+                ):
+                    # file no longer exists
+                    export["url"] = None
 
             exports.append(export)
 
         next_available = self.new_export_blocked_until()
         paginated = Paginator(exports, settings.PAGE_LENGTH)
+        site = models.SiteSettings.objects.get()
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "jobs": page,
@@ -204,6 +205,7 @@ class ExportUser(View):
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
+            "expiry_hours": site.export_files_lifetime_hours,
         }
 
         seconds = get_or_set(
