@@ -308,9 +308,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         return self.to_ordered_collection(
             self.following.order_by("-updated_date").all(),
             remote_id=remote_id,
+            collection_only=True,
             id_only=True,
             **kwargs,
-        )
+        ).serialize()
 
     def to_followers_activity(self, **kwargs):
         """activitypub followers list"""
@@ -318,9 +319,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         return self.to_ordered_collection(
             self.followers.order_by("-updated_date").all(),
             remote_id=remote_id,
+            collection_only=True,
             id_only=True,
             **kwargs,
-        )
+        ).serialize()
 
     def to_activity(self, **kwargs):
         """override default AP serializer to add context object
