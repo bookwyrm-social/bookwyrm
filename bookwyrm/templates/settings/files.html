@@ -56,7 +56,7 @@
             </dl>
 
             <div class="is-flex is-justify-content-space-between block">
-                <form name="unschedule-delete-exports-scan" method="POST" action="{% url 'settings-delete-exports-unschedule' delete_task.id %}">
+                <form name="unschedule-delete-exports-scan" method="POST" action="{% url 'settings-file-maintenance-unschedule' delete_task.id %}">
                     {% csrf_token %}
                     <button class="button is-danger">{% trans "Delete schedule" %}</button>
                 </form>
