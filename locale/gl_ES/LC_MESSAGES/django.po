@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-08 19:19+0000\n"
-"PO-Revision-Date: 2025-09-08 19:59\n"
+"PO-Revision-Date: 2025-09-09 04:44\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -236,7 +236,7 @@ msgstr "Bloquear"
 
 #: bookwyrm/models/bookwyrm_import_job.py:398
 msgid "Unknown error importing book"
-msgstr ""
+msgstr "Erro descoñecido ao importar o libro"
 
 #: bookwyrm/models/bookwyrm_import_job.py:496
 msgid "unauthorized"
@@ -244,7 +244,7 @@ msgstr "non autorizado"
 
 #: bookwyrm/models/bookwyrm_import_job.py:502
 msgid "Unknown error importing book status"
-msgstr ""
+msgstr "Erro descoñecido ao importar o estado do libro"
 
 #: bookwyrm/models/bookwyrm_import_job.py:696
 #: bookwyrm/models/bookwyrm_import_job.py:722
@@ -257,7 +257,7 @@ msgstr "realación_non_válida"
 
 #: bookwyrm/models/bookwyrm_import_job.py:740
 msgid "Unkown error importing relationship"
-msgstr ""
+msgstr "Erro descoñecido ao importar a relación"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
@@ -431,7 +431,7 @@ msgstr "Elemento eliminado"
 
 #: bookwyrm/models/session.py:42
 msgid "Unknown"
-msgstr ""
+msgstr "Descoñecido"
 
 #: bookwyrm/models/status.py:192
 #, python-format
@@ -1130,7 +1130,7 @@ msgstr "Preme para agrandar"
 
 #: bookwyrm/templates/book/book.html:187
 msgid "View on Finna"
-msgstr ""
+msgstr "Ver en Finna"
 
 #: bookwyrm/templates/book/book.html:219
 #, python-format
@@ -4688,8 +4688,8 @@ msgstr "Os ficheiros de exportación mostrará 'completo' cando estean preparado
 #, python-format
 msgid "Export files will be deleted after %(expiry_hours)s hour."
 msgid_plural "Export files will be deleted after %(expiry_hours)s hours."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Os ficheiros de exportación vanse eliminar en %(expiry_hours)s hora."
+msgstr[1] "Os ficheiros de exportación vanse eliminar en %(expiry_hours)s horas."
 
 #: bookwyrm/templates/preferences/export-user.html:110
 #: bookwyrm/templates/preferences/security.html:126
@@ -4729,7 +4729,7 @@ msgstr "Conta"
 
 #: bookwyrm/templates/preferences/layout.html:24
 msgid "Security Settings"
-msgstr ""
+msgstr "Configuración da seguridade"
 
 #: bookwyrm/templates/preferences/layout.html:32
 msgid "Move  Account"
@@ -4771,7 +4771,7 @@ msgstr "Escribe o identificador da conta á cal queres migrar, ex. <em>usuaria@e
 #: bookwyrm/templates/preferences/security.html:4
 #: bookwyrm/templates/preferences/security.html:7
 msgid "Account Security"
-msgstr ""
+msgstr "Seguridade da conta"
 
 #: bookwyrm/templates/preferences/security.html:13
 msgid "Two Factor Authentication"
@@ -4836,55 +4836,55 @@ msgstr "Configurar 2FA"
 
 #: bookwyrm/templates/preferences/security.html:111
 msgid "Sessions"
-msgstr ""
+msgstr "Sesións"
 
 #: bookwyrm/templates/preferences/security.html:114
 msgid "Some legacy sessions may not be displayed."
-msgstr ""
+msgstr "Poderían non mostrarse algunhas sesións antigas."
 
 #: bookwyrm/templates/preferences/security.html:119
 msgid "You are logged in to the following sessions:"
-msgstr ""
+msgstr "Non tes sesión iniciada nas seguintes sesións:"
 
 #: bookwyrm/templates/preferences/security.html:126
 msgid "Date first logged in"
-msgstr ""
+msgstr "Data do primeiro acceso"
 
 #: bookwyrm/templates/preferences/security.html:127
 msgid "IP address"
-msgstr ""
+msgstr "Enderezo IP"
 
 #: bookwyrm/templates/preferences/security.html:127
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
 #: bookwyrm/templates/preferences/security.html:128
 msgid "Operating System"
-msgstr ""
+msgstr "Sistema operativo"
 
 #: bookwyrm/templates/preferences/security.html:128
 msgid "OS"
-msgstr ""
+msgstr "SO"
 
 #: bookwyrm/templates/preferences/security.html:129
 msgid "Web Browser"
-msgstr ""
+msgstr "Navegador web"
 
 #: bookwyrm/templates/preferences/security.html:129
 msgid "Browser"
-msgstr ""
+msgstr "Navegador"
 
 #: bookwyrm/templates/preferences/security.html:143
 msgid "You"
-msgstr ""
+msgstr "Ti"
 
 #: bookwyrm/templates/preferences/security.html:147
 msgid "Log Out"
-msgstr ""
+msgstr "Fechar sesión"
 
 #: bookwyrm/templates/preferences/security.html:161
 msgid "Currently your logged-in sessions are unable to be displayed."
-msgstr ""
+msgstr "Non podemos mostrar as sesións iniciadas."
 
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
@@ -5804,35 +5804,35 @@ msgstr "Non hai instancias"
 #: bookwyrm/templates/settings/files.html:7
 #: bookwyrm/templates/settings/files.html:11
 msgid "Files maintenance"
-msgstr ""
+msgstr "Mantemento de ficheiros"
 
 #: bookwyrm/templates/settings/files.html:17
 msgid "Schedule file deletion"
-msgstr ""
+msgstr "Programar eliminación de ficheiros"
 
 #: bookwyrm/templates/settings/files.html:21
 msgid "This job deletes uploaded user export and import files that have reached the expiry age."
-msgstr ""
+msgstr "Esta tarefa elimina a exportación subida pola usuaria e ficheiros de importación que xa caducaron."
 
 #: bookwyrm/templates/settings/files.html:102
 msgid "Export file expiration"
-msgstr ""
+msgstr "Caducidade dos ficheiros de exportación"
 
 #: bookwyrm/templates/settings/files.html:109
 msgid "Maximum age of export files, in hours"
-msgstr ""
+msgstr "Período máximo para ficheiros de exportación, en horas"
 
 #: bookwyrm/templates/settings/files.html:122
 msgid "Files older than this will be deleted."
-msgstr ""
+msgstr "Os ficheiros máis antigos serán eliminados."
 
 #: bookwyrm/templates/settings/files.html:125
 msgid "Set expiry hours"
-msgstr ""
+msgstr "Establecer horas para caducidade"
 
 #: bookwyrm/templates/settings/files.html:138
 msgid "Expired files"
-msgstr ""
+msgstr "Ficheiros caducados"
 
 #: bookwyrm/templates/settings/files.html:186
 #: bookwyrm/templates/settings/imports/imports.html:184
@@ -5842,7 +5842,7 @@ msgstr "Completada"
 
 #: bookwyrm/templates/settings/files.html:210
 msgid "Successfully updated expiry time"
-msgstr ""
+msgstr "Actualizouse correctamente a caducidade"
 
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:4
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:4
@@ -6150,7 +6150,7 @@ msgstr "Denuncias"
 
 #: bookwyrm/templates/settings/layout.html:61
 msgid "Auto-Moderation Rules"
-msgstr ""
+msgstr "Regras para Moderación Automática"
 
 #: bookwyrm/templates/settings/layout.html:73
 #: bookwyrm/templates/settings/link_domains/link_domains.html:5
@@ -6164,11 +6164,11 @@ msgstr "Sistema"
 
 #: bookwyrm/templates/settings/layout.html:90
 msgid "Scheduled Tasks"
-msgstr ""
+msgstr "Tarefas programadas"
 
 #: bookwyrm/templates/settings/layout.html:102
 msgid "Files Maintenance"
-msgstr ""
+msgstr "Mantemento de ficheiros"
 
 #: bookwyrm/templates/settings/layout.html:107
 msgid "Instance Settings"
@@ -7727,7 +7727,7 @@ msgstr "Ver perfil e máis"
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
 #, python-format
 msgid "File exceeds maximum size: %(max_size)sMB"
-msgstr ""
+msgstr "O ficheiro excede o tamaño máximo: %(max_size)sMB"
 
 #: bookwyrm/templatetags/list_page_tags.py:14
 #, python-format
