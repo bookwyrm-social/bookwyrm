@@ -53,10 +53,16 @@ let XhrFiles = new (class {
             }
             console.log(e);
         });
-        xhr.open('post', '/your-sever-url', true);
+        xhr.open('post', '/upload', true);
         var fd = new FormData();
         fd.append("filename", file.name);
         fd.append("file", file);
+        fd.append("csrfmiddlewaretoken", this.csrfToken());
+
         xhr.send(fd);
+    }
+
+    csrfToken() {
+        return document.querySelector('[name=csrfmiddlewaretoken]').value;
     }
 })();

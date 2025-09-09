@@ -819,6 +819,8 @@ urlpatterns = [
         views.DeleteStatus.as_view(),
         name="delete-status",
     ),
+    # upload
+    re_path(r"^upload/?$", views.CreateUserUpload.as_view(), name="user-upload"),
     # interact
     re_path(r"^favorite/(?P<status_id>\d+)/?$", views.Favorite.as_view(), name="fav"),
     re_path(
