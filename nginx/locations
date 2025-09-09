@@ -1,6 +1,9 @@
 
 # tell the web container the address of the outside client
 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+# We tell that client should be behind https regardless if nginx is in reverse-proxy mode or https
+# mode
+proxy_set_header X-Forwarded-Proto https;
 proxy_set_header Host $host;
 proxy_redirect off;
 

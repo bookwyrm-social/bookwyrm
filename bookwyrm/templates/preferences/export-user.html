@@ -97,8 +97,10 @@
     {% trans "User export files will show 'complete' once ready. This may take a little while. Click the link to download your file." %}
     </p>
     <p class="content">
-        {% blocktrans %}
-        Export files will be deleted after {{ expiry_hours }} hour{{ expiry_hours|pluralize}}.
+        {% blocktrans trimmed count counter=expiry_hours %}
+        Export files will be deleted after {{ expiry_hours }} hour.
+        {% plural %}
+        Export files will be deleted after {{ expiry_hours }} hours.
         {% endblocktrans %}
         </p>
     <div class="table-container">

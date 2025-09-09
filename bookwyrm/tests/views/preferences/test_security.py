@@ -1,8 +1,10 @@
 """ test for app two factor auth functionality """
+from importlib import import_module
 from unittest.mock import patch
 import time
 import pyotp
 
+from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.template.response import TemplateResponse
@@ -10,6 +12,8 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
+
+SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -43,18 +47,23 @@ class TwoFactorViews(TestCase):
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
 
-    def test_get_edit_2fa(self, *_):
-        """there are so many views, this just makes sure it LOADS"""
-        view = views.Edit2FA.as_view()
+    def test_get_security_as_view(self, *_):
+        """does the page load?"""
+
+        view = views.UserSecurity.as_view()
         request = self.factory.get("")
         request.user = self.local_user
+
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         self.assertEqual(result.status_code, 200)
 
-    def test_get_edit_2fa_logged_out(self, *_):
+    def test_get_security_logged_out(self, *_):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Edit2FA.as_view()
+        view = views.UserSecurity.as_view()
         request = self.factory.get("")
         request.user = self.anonymous_user
         result = view(request)
@@ -68,7 +77,7 @@ class TwoFactorViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.views.preferences.two_factor_auth.Edit2FA"):
+        with patch("bookwyrm.views.preferences.security.Edit2FA"):
             result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         self.assertEqual(result.status_code, 200)
@@ -82,7 +91,7 @@ class TwoFactorViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.views.preferences.two_factor_auth.Confirm2FA"):
+        with patch("bookwyrm.views.preferences.security.Confirm2FA"):
             result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         self.assertEqual(result.status_code, 200)
@@ -102,7 +111,7 @@ class TwoFactorViews(TestCase):
         request = self.factory.post("")
         request.user = self.local_user
 
-        with patch("bookwyrm.views.preferences.two_factor_auth.Disable2FA"):
+        with patch("bookwyrm.views.preferences.security.Disable2FA"):
             result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         self.assertEqual(result.status_code, 200)
@@ -133,8 +142,8 @@ class TwoFactorViews(TestCase):
         request.session.save()
 
         with (
-            patch("bookwyrm.views.preferences.two_factor_auth.LoginWith2FA"),
-            patch("bookwyrm.views.preferences.two_factor_auth.login"),
+            patch("bookwyrm.views.preferences.security.LoginWith2FA"),
+            patch("bookwyrm.views.preferences.security.login"),
         ):
             result = view(request)
         self.assertEqual(result.url, "/")
@@ -155,7 +164,7 @@ class TwoFactorViews(TestCase):
         request.session["2fa_user"] = self.local_user.username
         request.session.save()
 
-        with patch("bookwyrm.views.preferences.two_factor_auth.LoginWith2FA"):
+        with patch("bookwyrm.views.preferences.security.LoginWith2FA"):
             result = view(request)
         self.assertEqual(result.status_code, 200)
         self.assertEqual(
@@ -178,7 +187,7 @@ class TwoFactorViews(TestCase):
         request.session["2fa_user"] = self.local_user.username
         request.session["2fa_auth_time"] = "1663977030"
 
-        with patch("bookwyrm.views.preferences.two_factor_auth.LoginWith2FA"):
+        with patch("bookwyrm.views.preferences.security.LoginWith2FA"):
             result = view(request)
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
@@ -200,3 +209,29 @@ class TwoFactorViews(TestCase):
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         self.assertEqual(result.status_code, 200)
+
+    def test_logout_session(self, *_):
+        """does logout_session work?"""
+
+        cache_session = SessionStore()
+        cache_session["_auth_user_id"] = self.local_user.id
+        cache_session.create()
+        session_key = cache_session.session_key
+        models.UserSession.objects.create(
+            user=self.local_user,
+            session_key=session_key,
+            operating_system="CSIRAC",
+            browser_type="Lynx",
+        )
+
+        self.assertEqual(models.UserSession.objects.count(), 1)
+        self.assertTrue(cache_session.exists(session_key=session_key))
+
+        view = views.logout_session
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        view(request, session_key)
+
+        self.assertFalse(cache_session.exists(session_key=session_key))
+        self.assertEqual(models.UserSession.objects.count(), 0)

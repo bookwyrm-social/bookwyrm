@@ -1,5 +1,6 @@
 """ database schema for user data """
 import datetime
+from importlib import import_module
 import re
 import zoneinfo
 from typing import Optional, Iterable
@@ -7,6 +8,7 @@ from urllib.parse import urlparse
 from uuid import uuid4
 
 from django.apps import apps
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
@@ -31,6 +33,7 @@ from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .federated_server import FederatedServer
 from . import fields
 
+SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 FeedFilterChoices = [
     ("review", _("Reviews")),
@@ -305,9 +308,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         return self.to_ordered_collection(
             self.following.order_by("-updated_date").all(),
             remote_id=remote_id,
+            collection_only=True,
             id_only=True,
             **kwargs,
-        )
+        ).serialize()
 
     def to_followers_activity(self, **kwargs):
         """activitypub followers list"""
@@ -315,9 +319,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         return self.to_ordered_collection(
             self.followers.order_by("-updated_date").all(),
             remote_id=remote_id,
+            collection_only=True,
             id_only=True,
             **kwargs,
-        )
+        ).serialize()
 
     def to_activity(self, **kwargs):
         """override default AP serializer to add context object
@@ -508,6 +513,15 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         if self == viewer or viewer.has_perm("bookwyrm.moderate_user"):
             return
         raise PermissionDenied()
+
+    def refresh_user_sessions(self):
+        """Check sessions still exist
+        We delete them on logout but not when sessions expire"""
+
+        cache_session = SessionStore()
+        for sess in self.sessions.all():
+            if not cache_session.exists(session_key=sess.session_key):
+                sess.delete()
 
 
 class KeyPair(ActivitypubMixin, BookWyrmModel):

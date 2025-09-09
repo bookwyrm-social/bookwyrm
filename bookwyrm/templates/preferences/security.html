@@ -1,14 +1,17 @@
 {% extends 'preferences/layout.html' %}
 {% load i18n %}
 
-{% block title %}{% trans "Two Factor Authentication" %}{% endblock %}
+{% block title %}{% trans "Account Security" %}{% endblock %}
 
 {% block header %}
-{% trans "Two Factor Authentication" %}
+{% trans "Account Security" %}
 {% endblock %}
 
 {% block panel %}
 <div class="block">
+    <h2 class="title is-4">
+        {% trans "Two Factor Authentication" %}
+    </h2>
     {% if success %}
     <div class="notification is-success is-light">
         <span class="icon icon-check" aria-hidden="true"></span>
@@ -98,4 +101,67 @@
     </div>
     {% endif %}
 </div>
+
+<div class="block">
+
+</div>
+{% if this_session %}
+<div class="block">
+    <h2 class="title is-4">
+        {% trans "Sessions" %}
+    </h2>
+    <div class="notification is-warning">
+        <p>{% trans "Some legacy sessions may not be displayed." %}</p>
+    </div>
+    {% if sessions %}
+    <div class="block">
+        <p>
+            {% trans "You are logged in to the following sessions:" %}
+        </p>
+    </div>
+    <div class="block">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><abbr title="{% trans 'Date first logged in' %}">{% trans "Date" %}</abbr></th>
+                    <th><abbr title="{% trans 'IP address' %}">{% trans "IP" %}</abbr></th>
+                    <th><abbr title="{% trans 'Operating System' %}">{% trans "OS" %}</abbr></th>
+                    <th><abbr title="{% trans 'Web Browser' %}">{% trans "Browser" %}</abbr></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in sessions.all %}
+                <tr>
+                    <td>{{s.created_date}}</td>
+                    <td>{{s.ip_address}}</td>
+                    <td>{{s.operating_system}}</td>
+                    <td>{{s.browser_type}}</td>
+                    <td>
+                        {% with s.session_key as session_key %}
+                            {% if session_key == this_session %}
+                            <span>{% trans 'You' %}</span><span class="icon icon-graphic-heart"></span>
+                            {% else %}
+                            <form name="logout-session" action="{% url 'prefs-logout-session' session_key %}" method="post">
+                                {% csrf_token %}
+                                <button class="button is-small is-danger" type="submit">{% trans "Log Out" %}</button>
+                            </form>
+                            {% endif %}
+                        {% endwith %}
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="block">
+        <p>
+            {% trans "Currently your logged-in sessions are unable to be displayed." %}
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
 {% endblock %}

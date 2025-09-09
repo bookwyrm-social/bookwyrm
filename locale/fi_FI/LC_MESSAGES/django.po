@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-23 23:50+0000\n"
-"PO-Revision-Date: 2025-06-24 00:31\n"
+"PO-Revision-Date: 2025-08-14 11:46\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Finnish\n"
 "Language: fi\n"
@@ -84,7 +84,7 @@ msgstr "Sähköpostiosoite on jo jonkun käyttäjän käytössä."
 
 #: bookwyrm/forms/landing.py:69
 msgid "This email address cannot be registered."
-msgstr ""
+msgstr "Tätä sähköpostiosoitetta ei voida rekisteröidä."
 
 #: bookwyrm/forms/landing.py:127 bookwyrm/forms/landing.py:135
 msgid "Incorrect code"
@@ -203,12 +203,12 @@ msgstr "Pehmeäkantinen"
 #: bookwyrm/models/book.py:514 bookwyrm/models/book.py:519
 #, python-format
 msgid "%(value)s doesn't look like an ISBN"
-msgstr ""
+msgstr "%(value)s ei näytä olevan ISBN"
 
 #: bookwyrm/models/book.py:486 bookwyrm/models/book.py:526
 #, python-format
 msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
-msgstr ""
+msgstr "%(value)s ei sisällä oikein olevaa ISBN-tarkistussummaa, odotimme %(check_version)s"
 
 #: bookwyrm/models/bookwyrm_import_job.py:109 bookwyrm/models/report.py:84
 #: bookwyrm/templates/settings/reports/report.html:115
@@ -225,7 +225,7 @@ msgstr "Arvio"
 
 #: bookwyrm/models/bookwyrm_import_job.py:111
 msgid "Quotation"
-msgstr ""
+msgstr "Lainaus"
 
 #: bookwyrm/models/bookwyrm_import_job.py:132
 #: bookwyrm/templates/snippets/follow_button.html:22
@@ -243,7 +243,7 @@ msgstr "Estä"
 #: bookwyrm/models/bookwyrm_import_job.py:379
 #: bookwyrm/models/bookwyrm_import_job.py:611
 msgid "unknown"
-msgstr ""
+msgstr "tuntematon"
 
 #: bookwyrm/models/bookwyrm_import_job.py:373
 msgid "unauthorized"
@@ -1259,7 +1259,7 @@ msgstr "Goodreads:"
 #: bookwyrm/templates/book/book_identifiers.html:58
 #: bookwyrm/templates/book/edit/edit_book_form.html:388
 msgid "Finna ID:"
-msgstr ""
+msgstr "Finna-tunniste:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1999,7 +1999,7 @@ msgstr "Liity nyt"
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
 msgid "Learn more <a href=\"%(base_url)s%(about_path)s\">about %(site_name)s</a>."
-msgstr ""
+msgstr "Lue lisää <a href=\"%(base_url)s%(about_path)s\">%(site_name)s-yhteisöstä</a>."
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
@@ -3029,7 +3029,7 @@ msgstr "OpenLibrary (CSV)"
 
 #: bookwyrm/templates/import/import.html:70
 msgid "OpenReads (CSV)"
-msgstr ""
+msgstr "OpenReads (CSV)"
 
 #: bookwyrm/templates/import/import.html:73
 msgid "Calibre (CSV)"
@@ -3251,7 +3251,7 @@ msgstr "Tuo BookWyrm-tili"
 
 #: bookwyrm/templates/import/import_user.html:13
 msgid "Not a valid import file"
-msgstr ""
+msgstr "Epäkelpo tuontitiedosto"
 
 #: bookwyrm/templates/import/import_user.html:18
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set this account as an <strong>alias</strong> of the one you are migrating from, or <strong>move</strong> that account to this one, before you import your user data."
@@ -3369,11 +3369,11 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:160
 msgid "Book lists"
-msgstr ""
+msgstr "Kirjalistat"
 
 #: bookwyrm/templates/import/import_user.html:163
 msgid "Saved lists"
-msgstr ""
+msgstr "Tallennettut listat"
 
 #: bookwyrm/templates/import/manual_review.html:5
 #: bookwyrm/templates/import/troubleshoot.html:4
@@ -4487,7 +4487,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/alias_user.html:19
 msgid "This is a reversable action and will not change the functionality of this account."
-msgstr ""
+msgstr "Tämä on peruutettava toiminto eikä muuta tämän tilin toiminnallisuutta."
 
 #: bookwyrm/templates/preferences/alias_user.html:25
 msgid "Enter the username for the account you want to add as an alias e.g. <em>user@example.com </em>:"
@@ -4608,7 +4608,7 @@ msgstr "Näytä lukutavoitekehote syötteen joukossa"
 
 #: bookwyrm/templates/preferences/edit_user.html:75
 msgid "Show ratings"
-msgstr ""
+msgstr "Näytä arviot"
 
 #: bookwyrm/templates/preferences/edit_user.html:81
 msgid "Show suggested users"
@@ -4656,7 +4656,7 @@ msgstr "Vie BookWyrm -tili"
 
 #: bookwyrm/templates/preferences/export-user.html:15
 msgid "You can create an export file here. This will allow you to migrate your data to another BookWyrm account."
-msgstr ""
+msgstr "Voit luoda vientitiedoston täällä. Tämän avulla voit siirtää tietosi toiseen BookWyrm-tiliin."
 
 #: bookwyrm/templates/preferences/export-user.html:19
 msgid "Your file will include:"
@@ -5318,7 +5318,7 @@ msgstr "Virheitä"
 
 #: bookwyrm/templates/settings/connectors/available.html:15
 msgid "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof."
-msgstr ""
+msgstr "Finna.fi on hakupalvelu, joka kokoaa satojen kotimaisten toimijoiden aineistot saman katon alle."
 
 #: bookwyrm/templates/settings/connectors/available.html:28
 msgid "Create new connector"
@@ -5797,15 +5797,15 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:134
 msgid "Some users might try to run user imports or exports very frequently, which you want to limit."
-msgstr ""
+msgstr "Jotkut käyttäjät saattavat yrittää tehdä käyttäjätuonteja tai -vientejä hyvin usein, joita haluat rajoittaa."
 
 #: bookwyrm/templates/settings/imports/imports.html:138
 msgid "Limit how often users can import and export user data"
-msgstr ""
+msgstr "Rajoita kuinka usein käyttäjät voivat tuoda ja viedä käyttäjätietoja"
 
 #: bookwyrm/templates/settings/imports/imports.html:140
 msgid "hours"
-msgstr ""
+msgstr "tuntia"
 
 #: bookwyrm/templates/settings/imports/imports.html:144
 msgid "Change limit"
@@ -6455,7 +6455,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/themes.html:143
 msgid "Broken theme"
-msgstr ""
+msgstr "Rikkinäinen teema"
 
 #: bookwyrm/templates/settings/themes.html:152
 msgid "Loaded successfully"
@@ -7086,7 +7086,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/moved_user_notice.html:7
 #, python-format
 msgid "<em>%(user)s</em> has moved to <a href=\"%(moved_to_link)s\">%(moved_to_name)s</a>"
-msgstr ""
+msgstr "<em>%(user)s</em> on muuttanut osoitteeseen <a href=\"%(moved_to_link)s\">%(moved_to_name)s</a>"
 
 #: bookwyrm/templates/snippets/page_text.html:8
 #, python-format
@@ -7231,7 +7231,7 @@ msgstr "Luettu kokonaan"
 
 #: bookwyrm/templates/snippets/stars.html:13
 msgid "Show rating"
-msgstr ""
+msgstr "Näytä arvio"
 
 #: bookwyrm/templates/snippets/status/content_status.html:69
 msgid "Show status"
@@ -7396,7 +7396,7 @@ msgstr "Näytä vähemmän"
 
 #: bookwyrm/templates/snippets/user_active_tag.html:5
 msgid "Moved"
-msgstr ""
+msgstr "Siirretty"
 
 #: bookwyrm/templates/snippets/user_active_tag.html:12
 msgid "Deleted"
@@ -7610,7 +7610,7 @@ msgstr "%(title)s: %(subtitle)s"
 
 #: bookwyrm/templatetags/utilities.py:133
 msgid "a new user account"
-msgstr ""
+msgstr "uusi käyttäjätili"
 
 #: bookwyrm/views/rss_feed.py:36
 #, python-brace-format
@@ -7635,17 +7635,17 @@ msgstr "Kommentit — {obj.display_name}"
 #: bookwyrm/views/rss_feed.py:219
 #, python-brace-format
 msgid "{obj.user.display_name}’s {obj.name} shelf"
-msgstr ""
+msgstr "Käyttäjän {obj.user.display_name} {obj.name}-hylly"
 
 #: bookwyrm/views/rss_feed.py:237
 #, python-brace-format
 msgid "{obj.user.display_name}’s {obj.name} shelf: {desc}"
-msgstr ""
+msgstr "Käyttäjän {obj.user.display_name} {obj.name}-hylly: {desc}"
 
 #: bookwyrm/views/rss_feed.py:238
 #, python-brace-format
 msgid "Books added to {obj.user.name}’s {obj.name} shelf"
-msgstr ""
+msgstr "Kirjoja lisätty käyttäjän {obj.user.name} {obj.name}-hyllyyn"
 
 #: bookwyrm/views/updates.py:45
 #, python-format

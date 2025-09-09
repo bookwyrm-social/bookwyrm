@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-23 23:50+0000\n"
-"PO-Revision-Date: 2025-06-24 00:31\n"
+"PO-Revision-Date: 2025-08-11 19:24\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Turkish\n"
 "Language: tr\n"
@@ -208,7 +208,7 @@ msgstr ""
 #: bookwyrm/models/book.py:486 bookwyrm/models/book.py:526
 #, python-format
 msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
-msgstr ""
+msgstr "%(value)s geçerli bir ISBN kontrol toplamına sahip değil, beklenen: %(check_version)s"
 
 #: bookwyrm/models/bookwyrm_import_job.py:109 bookwyrm/models/report.py:84
 #: bookwyrm/templates/settings/reports/report.html:115
@@ -4007,7 +4007,7 @@ msgstr ""
 #: bookwyrm/templates/notifications/items/boost.html:50
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ve <a href=\"%(second_user_link)s\">%(second_user)s</a>, <a href=\"%(related_path)s\"><em>%(book_title)s</em> hakkındaki yorumunu</a> paylaştı"
 
 #: bookwyrm/templates/notifications/items/boost.html:59
 #, python-format
@@ -4454,7 +4454,7 @@ msgstr "Kodu uygulamadan gir:"
 
 #: bookwyrm/templates/preferences/2fa.html:83
 msgid "You can make your account more secure by using Two Factor Authentication (2FA). This will require you to enter a one-time code using a phone app like <em>Authy</em>, <em>Google Authenticator</em> or <em>Microsoft Authenticator</em> each time you log in."
-msgstr ""
+msgstr "Hesabınızı daha güvenli hale getirmek için İki Aşamalı Doğrulama (2FA) kullanabilirsiniz. Bu özellik, her giriş yaptığınızda <em>Authy</em>, <em>Google Authenticator</em> veya <em>Proton Authenticator</em> gibi bir telefon uygulamasıyla oluşturulan tek kullanımlık bir kod girmenizi gerektirecektir."
 
 #: bookwyrm/templates/preferences/2fa.html:85
 msgid "Confirm your password to begin setting up 2FA."
@@ -4621,7 +4621,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/edit_user.html:91
 #, python-format
 msgid "Your account will show up in the <a href=\"%(path)s\">directory</a>, and may be recommended to other BookWyrm users."
-msgstr ""
+msgstr "Hesabınız <a href=\"%(path)s\">dizin</a> içinde görünecek ve diğer BookWyrm kullanıcılarına önerilebilir."
 
 #: bookwyrm/templates/preferences/edit_user.html:95
 msgid "Preferred Timezone: "
@@ -4646,7 +4646,7 @@ msgstr "Varsayılan ileti gizliliği:"
 #: bookwyrm/templates/preferences/edit_user.html:142
 #, python-format
 msgid "Looking for shelf privacy? You can set a separate visibility level for each of your shelves. Go to <a href=\"%(path)s\">Your Books</a>, pick a shelf from the tab bar, and click \"Edit shelf.\""
-msgstr ""
+msgstr "..."
 
 #: bookwyrm/templates/preferences/export-user.html:6
 #: bookwyrm/templates/preferences/export-user.html:9
@@ -4664,7 +4664,7 @@ msgstr "Dosyan şunları içerecektir:"
 
 #: bookwyrm/templates/preferences/export-user.html:22
 msgid "Most user settings"
-msgstr ""
+msgstr "Kullanıcı ayarlarının çoğu"
 
 #: bookwyrm/templates/preferences/export-user.html:28
 msgid "Your own lists and saved lists"
@@ -4786,7 +4786,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/move_user.html:16
 msgid "Moving your account will notify all your followers and direct them to follow the new account."
-msgstr ""
+msgstr "Hesabınızı taşımak, tüm takipçilerinize bildirim gönderecek ve onları yeni hesabınızı takip etmeye yönlendirecektir."
 
 #: bookwyrm/templates/preferences/move_user.html:19
 #, python-format
@@ -4797,7 +4797,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/move_user.html:25
 msgid "Remember to add this user as an alias of the target account before you try to move."
-msgstr ""
+msgstr "Taşıma işleminden önce, bu kullanıcıyı hedef hesabın takma adı olarak eklemeyi unutmayın."
 
 #: bookwyrm/templates/preferences/move_user.html:30
 msgid "Enter the username for the account you want to move to e.g. <em>user@example.com </em>:"
@@ -4825,7 +4825,7 @@ msgstr ""
 
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:4
 msgid "Delete these read dates?"
-msgstr ""
+msgstr "Bu okuma tarihleri silinsin mi?"
 
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:8
 #, python-format
@@ -4859,7 +4859,7 @@ msgstr ""
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:9
 msgid "Progress Updates:"
-msgstr ""
+msgstr "İlerleme Güncellemeleri:::"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:14
 msgid "finished"
@@ -4915,12 +4915,12 @@ msgstr ""
 
 #: bookwyrm/templates/search/barcode_modal.html:27
 msgid "Could not access camera"
-msgstr ""
+msgstr "Kameraya erişilemedi"
 
 #: bookwyrm/templates/search/barcode_modal.html:31
 msgctxt "barcode scanner"
 msgid "Scanning..."
-msgstr ""
+msgstr "Taranıyor..."
 
 #: bookwyrm/templates/search/barcode_modal.html:32
 msgid "Align your book's barcode with the camera."
@@ -5181,7 +5181,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:147
 msgid "Current Rules"
-msgstr ""
+msgstr "Geçerli Kurallar"
 
 #: bookwyrm/templates/settings/automod/rules.html:151
 msgid "Show rules"
@@ -5409,11 +5409,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:101
 msgid "Weeks"
-msgstr ""
+msgstr "Haftalar"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:119
 msgid "User signup activity"
-msgstr ""
+msgstr "Kullanıcı kayıt etkinliği"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:125
 msgid "Status activity"
@@ -5444,7 +5444,7 @@ msgstr ""
 msgid "%(display_count)s domain needs review"
 msgid_plural "%(display_count)s domains need review"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%(display_count)s alan adlarının incelenmesi gerekiyor"
 
 #: bookwyrm/templates/settings/dashboard/warnings/email_config.html:8
 #, python-format
@@ -5460,7 +5460,7 @@ msgstr ""
 msgid "%(display_count)s invite request"
 msgid_plural "%(display_count)s invite requests"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%(display_count)s davet istekleri"
 
 #: bookwyrm/templates/settings/dashboard/warnings/missing_conduct.html:8
 msgid "Your instance is missing a code of conduct."
@@ -5495,11 +5495,11 @@ msgstr ""
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:7
 #: bookwyrm/templates/settings/layout.html:65
 msgid "Email Blocklist"
-msgstr ""
+msgstr "E-posta Engelleme Listesi"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:18
 msgid "When someone tries to register with an email from this domain, no account will be created. The registration process will appear to have worked."
-msgstr ""
+msgstr "Bu alan adına ait bir e-posta ile kayıt olunmaya çalışıldığında hesap oluşturulmayacak, ancak kayıt işlemi başarılı gibi görünecektir."
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:29
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:27
@@ -5511,7 +5511,7 @@ msgstr ""
 msgid "%(display_count)s user"
 msgid_plural "%(display_count)s users"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%(display_count)s kullanıcılar"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:59
 msgid "No email domains currently blocked"
@@ -5870,7 +5870,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:23
 msgid "Ignored Invite Requests"
-msgstr ""
+msgstr "Yok Sayılan Davet İstekleri"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:36
 msgid "Date requested"
@@ -6117,7 +6117,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/registration.html:61
 msgid "Require users to confirm email address"
-msgstr ""
+msgstr "Kullanıcıların e-posta adreslerini doğrulamasını zorunlu kıl"
 
 #: bookwyrm/templates/settings/registration.html:63
 msgid "(Recommended if registration is open)"
@@ -6339,11 +6339,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/site.html:59
 msgid "Used when the instance is previewed on joinbookwyrm.com. Does not support HTML or Markdown."
-msgstr ""
+msgstr "Bu örnek joinbookwyrm.com'da önizlenirken kullanılır. HTML veya Markdown desteklenmez."
 
 #: bookwyrm/templates/settings/site.html:63
 msgid "Code of conduct:"
-msgstr ""
+msgstr "Topluluk Kuralları:"
 
 #: bookwyrm/templates/settings/site.html:67
 msgid "Privacy Policy:"
@@ -6550,11 +6550,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:80
 msgid "Manually approved followers:"
-msgstr ""
+msgstr "Manuel onaylı takipçiler:"
 
 #: bookwyrm/templates/settings/users/user_info.html:83
 msgid "Discoverable:"
-msgstr ""
+msgstr "Keşfedilebilirlik:"
 
 #: bookwyrm/templates/settings/users/user_info.html:102
 msgid "Instance details"
@@ -6698,7 +6698,7 @@ msgstr ""
 
 #: bookwyrm/templates/setup/layout.html:5
 msgid "Instance Setup"
-msgstr ""
+msgstr "Sunucu Kurulumu"
 
 #: bookwyrm/templates/setup/layout.html:21
 msgid "Installing BookWyrm"

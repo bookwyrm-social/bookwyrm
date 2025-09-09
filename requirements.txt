@@ -27,7 +27,7 @@ opentelemetry-instrumentation-celery==0.45b0
 opentelemetry-instrumentation-django==0.45b0
 opentelemetry-instrumentation-psycopg==0.45b0
 opentelemetry-sdk==1.24.0
-Pillow==10.3.0
+Pillow==11.3.0
 pilkit>=3.0 # dependency of django-imagekit, 2.0 is incompatible with Pillow>=10
 psycopg[binary]==3.2.9
 pycryptodome==3.20.0
@@ -39,6 +39,7 @@ requests==2.32.4
 responses==0.25.0
 s3-tar==0.1.13
 sqlparse==0.5.1
+ua-parser[regex]==1.0.1
 
 # Indirect dependencies with version constraints for security fixes
 grpcio>=1.57.0

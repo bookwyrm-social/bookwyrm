@@ -704,6 +704,16 @@ urlpatterns = [
         name="prefs-password",
     ),
     re_path(
+        r"^preferences/security/?$",
+        views.UserSecurity.as_view(),
+        name="prefs-security",
+    ),
+    re_path(
+        r"^preferences/security/logout/(?P<session_key>\w+)/?$",
+        views.logout_session,
+        name="prefs-logout-session",
+    ),
+    re_path(
         r"^preferences/2fa/?$",
         views.Edit2FA.as_view(),
         name="prefs-2fa",

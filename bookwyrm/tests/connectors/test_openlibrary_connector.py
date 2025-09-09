@@ -12,7 +12,9 @@ from bookwyrm.connectors.openlibrary import Connector
 from bookwyrm.connectors.openlibrary import ignore_edition
 from bookwyrm.connectors.openlibrary import get_languages, get_description
 from bookwyrm.connectors.openlibrary import pick_default_edition, get_openlibrary_key
+from bookwyrm.connectors.openlibrary import parse_series, parse_series_number
 from bookwyrm.connectors.connector_manager import ConnectorException
+
 
 # pylint: disable=too-many-public-methods
 class Openlibrary(TestCase):
@@ -141,6 +143,71 @@ class Openlibrary(TestCase):
         self.assertEqual(result.author, "Amal El-Mohtar, Max Gladstone")
         self.assertEqual(result.year, 2019)
         self.assertEqual(result.connector, self.connector)
+
+    def test_parse_series_info(self):
+        """test parsing of series-name and number from series-info"""
+        test_cases_for_series = [
+            (
+                "title, #number",
+                "The Murderbot Diaries, #1",
+                "The Murderbot Diaries",
+                "1",
+            ),
+            (
+                "title only",
+                "Series name without number",
+                "Series name without number",
+                None,
+            ),
+            (
+                "title only",
+                "Series name without number, but something",
+                "Series name without number, but something",
+                None,
+            ),
+            (
+                "title only",
+                "Series name 3, and birds",
+                "Series name 3, and birds",
+                None,
+            ),
+            (
+                "title only",
+                "Series name, Book of things",
+                "Series name, Book of things",
+                None,
+            ),
+            (
+                "title -- number ",
+                "Discworld -- 13",
+                "Discworld",
+                "13",
+            ),
+            (
+                "title, Book number ",
+                "Discworld, Book 13",
+                "Discworld",
+                "13",
+            ),
+            (
+                "title (number)",
+                "Discworld (13)",
+                "Discworld",
+                "13",
+            ),
+        ]
+
+        for (
+            desc,
+            series_info,
+            expected_series,
+            expected_series_number,
+        ) in test_cases_for_series:
+            with self.subTest(desc):
+                series_name = parse_series([series_info])
+                series_number = parse_series_number([series_info])
+                self.assertEqual(series_name, expected_series)
+                self.assertEqual(series_number, expected_series_number)
 
     def test_parse_isbn_search_result(self):
         """extract the results from the search json response"""
