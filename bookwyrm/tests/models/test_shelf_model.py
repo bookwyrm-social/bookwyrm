@@ -108,3 +108,28 @@ class Shelf(TestCase):
         self.assertEqual(activity["object"]["id"], shelf_book.remote_id)
         self.assertEqual(activity["target"], shelf.remote_id)
         self.assertFalse(shelf.books.exists())
+
+    def test_shelfbook_delete_with_broadcast_parameter(self, *_):
+        """ShelfBook delete method should support broadcast parameter"""
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            shelf = models.Shelf.objects.create(
+                name="Test Shelf", identifier="test-shelf", user=self.local_user
+            )
+            shelf_book = models.ShelfBook.objects.create(
+                shelf=shelf, user=self.local_user, book=self.book
+            )
+
+        # Test that delete method accepts broadcast parameter without raising TypeError
+        # The main issue we're fixing is that it should accept broadcast=False
+        try:
+            shelf_book.delete(broadcast=False)
+            # If we get here, the method accepted the broadcast parameter
+            test_passed = True
+        except TypeError as e:
+            if "broadcast" in str(e):
+                test_passed = False
+            else:
+                # Re-raise if it's a different TypeError
+                raise
+        
+        self.assertTrue(test_passed, "ShelfBook.delete() should accept broadcast parameter")

@@ -126,7 +126,7 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
                 ]
             )
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args, broadcast=True, **kwargs):
         if self.id and self.user.local:
             cache.delete_many(
                 [
@@ -136,7 +136,7 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
                     )
                 ]
             )
-        super().delete(*args, **kwargs)
+        super().delete(*args, broadcast=broadcast, **kwargs)
 
     class Meta:
         """an opinionated constraint!

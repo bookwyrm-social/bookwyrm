@@ -187,7 +187,7 @@ class Reject(Verb):
 class Add(Verb):
     """Add activity"""
 
-    target: ActivityObject
+    target: ActivityObject = None
     object: CollectionItem
     type: str = "Add"
 

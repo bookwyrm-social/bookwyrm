@@ -205,3 +205,37 @@ class BookViews(TestCase):
         )
         with self.assertRaises(models.Review.DoesNotExist):
             models.Review.objects.get(user=self.local_user, book=edition1)
+
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+    @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
+    def test_switch_edition_activitypub_success(self, *_):
+        """test that edition switching succeeds without ActivitySerializerError after our fix"""
+        work = models.Work.objects.create(title="test work")
+        edition1 = models.Edition.objects.create(title="first ed", parent_work=work)
+        edition2 = models.Edition.objects.create(title="second ed", parent_work=work)
+        
+        # Create a shelf and add the first edition
+        shelf = models.Shelf.objects.create(name="Test Shelf", user=self.local_user)
+        models.ShelfBook.objects.create(
+            book=edition1,
+            user=self.local_user,
+            shelf=shelf,
+        )
+
+        # Verify the book is on the shelf
+        self.assertEqual(models.ShelfBook.objects.get().book, edition1)
+        
+        # Attempt to switch edition - this should now succeed without ActivitySerializerError
+        # due to our fix allowing Add activity target field to be None
+        request = self.factory.post("", {"edition": edition2.id})
+        request.user = self.local_user
+        
+        # This should not raise any exceptions
+        try:
+            views.switch_edition(request)
+            # Verify the book was switched to the new edition
+            shelf_book = models.ShelfBook.objects.get()
+            self.assertEqual(shelf_book.book, edition2)
+        except Exception as e:
+            self.fail(f"Edition switching should succeed but raised: {e}")
