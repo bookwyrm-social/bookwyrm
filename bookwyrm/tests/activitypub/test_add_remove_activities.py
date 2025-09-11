@@ -33,7 +33,9 @@ class AddRemoveActivitiesTest(TestCase):
             parent_work=work,
         )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            cls.shelf = models.Shelf.objects.create(name="Test Shelf", user=cls.local_user)
+            cls.shelf = models.Shelf.objects.create(
+                name="Test Shelf", user=cls.local_user
+            )
             cls.shelf_book = models.ShelfBook.objects.create(
                 book=cls.book,
                 user=cls.local_user,
@@ -49,7 +51,7 @@ class AddRemoveActivitiesTest(TestCase):
             add_activity = Add(
                 actor=self.local_user.remote_id,
                 object=self.shelf_book,
-                target=None  # This should cause serialization to fail
+                target=None,  # This should cause serialization to fail
             )
             # Try to serialize to JSON - should raise ActivitySerializerError
             json.dumps(add_activity.to_activity())
@@ -61,7 +63,7 @@ class AddRemoveActivitiesTest(TestCase):
             remove_activity = Remove(
                 actor=self.local_user.remote_id,
                 object=self.shelf_book,
-                target=None  # This should cause serialization to fail
+                target=None,  # This should cause serialization to fail
             )
             # Try to serialize to JSON - should raise ActivitySerializerError
             json.dumps(remove_activity.to_activity())
@@ -73,7 +75,7 @@ class AddRemoveActivitiesTest(TestCase):
             id="https://example.com/activities/1",
             actor=self.local_user.remote_id,
             object=self.shelf_book,
-            target=self.shelf.remote_id
+            target=self.shelf.remote_id,
         )
         # Should not raise an exception
         activity_dict = add_activity.to_activity()
@@ -87,7 +89,7 @@ class AddRemoveActivitiesTest(TestCase):
             id="https://example.com/activities/2",
             actor=self.local_user.remote_id,
             object=self.shelf_book,
-            target=self.shelf.remote_id
+            target=self.shelf.remote_id,
         )
         # Should not raise an exception
         activity_dict = remove_activity.to_activity()

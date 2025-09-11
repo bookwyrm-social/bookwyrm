@@ -131,5 +131,7 @@ class Shelf(TestCase):
             else:
                 # Re-raise if it's a different TypeError
                 raise
-        
-        self.assertTrue(test_passed, "ShelfBook.delete() should accept broadcast parameter")
+
+        self.assertTrue(
+            test_passed, "ShelfBook.delete() should accept broadcast parameter"
+        )
