@@ -1,10 +1,11 @@
 """ Test Unicode slug generation and URL routing """
-import json
+import re
 from unittest.mock import patch
 from django.test import TestCase
 from django.utils.text import slugify
 
 from bookwyrm import models
+from bookwyrm.utils.regex import SLUG
 
 
 class UnicodeSlugTest(TestCase):
@@ -19,7 +20,11 @@ class UnicodeSlugTest(TestCase):
             patch("bookwyrm.lists_stream.populate_lists_task.delay"),
         ):
             cls.local_user = models.User.objects.create_user(
-                "testuser", "test@example.com", "password", local=True, localname="testuser"
+                "testuser",
+                "test@example.com",
+                "password",
+                local=True,
+                localname="testuser",
             )
         models.SiteSettings.objects.create()
 
@@ -37,11 +42,17 @@ class UnicodeSlugTest(TestCase):
             with self.subTest(name=name):
                 # Test Django's slugify with allow_unicode=True
                 actual_slug = slugify(name, allow_unicode=True)
-                self.assertEqual(actual_slug, expected_slug,
-                    f"Failed for '{name}': expected '{expected_slug}', got '{actual_slug}'")
+                self.assertEqual(
+                    actual_slug,
+                    expected_slug,
+                    (
+                        f"Failed for '{name}': expected "
+                        f"'{expected_slug}', got '{actual_slug}'"
+                    ),
+                )
 
     def test_serbian_cyrillic_characters(self):
-        """Test Serbian Cyrillic character support - the primary reason for this Unicode change"""
+        """Test Serbian Cyrillic character support"""
         serbian_test_cases = [
             ("Иво Андрић", "иво-андрић"),  # Ivo Andrić (Nobel Prize winner)
             ("Милош Црњански", "милош-црњански"),  # Miloš Crnjanski
@@ -57,8 +68,15 @@ class UnicodeSlugTest(TestCase):
         for name, expected_slug in serbian_test_cases:
             with self.subTest(name=name):
                 actual_slug = slugify(name, allow_unicode=True)
-                self.assertEqual(actual_slug, expected_slug,
-                    f"Serbian Cyrillic failed for '{name}': expected '{expected_slug}', got '{actual_slug}'")
+                self.assertEqual(
+                    actual_slug,
+                    expected_slug,
+                    (
+                        f"Serbian Cyrillic failed for '{name}': "
+                        f"expected '{expected_slug}', "
+                        f"got '{actual_slug}'"
+                    ),
+                )
 
     def test_model_local_path_with_unicode(self):
         """Test that model local_path generates Unicode slugs correctly"""
@@ -67,7 +85,9 @@ class UnicodeSlugTest(TestCase):
 
         # Check that local_path includes Unicode slug
         local_path = author.local_path
-        self.assertIn("josé-garcía", local_path)  # Unicode preserved, space becomes hyphen
+        self.assertIn(
+            "josé-garcía", local_path
+        )  # Unicode preserved, space becomes hyphen
         self.assertIn("/s/", local_path)
 
     def test_serbian_author_model_integration(self):
@@ -81,9 +101,6 @@ class UnicodeSlugTest(TestCase):
 
     def test_unicode_regex_pattern_matching(self):
         """Test that the SLUG regex pattern matches Unicode characters"""
-        from bookwyrm.utils.regex import SLUG
-        import re
-
         test_slugs = [
             "/s/café-literature",
             "/s/北京-book",
@@ -97,9 +114,12 @@ class UnicodeSlugTest(TestCase):
             with self.subTest(slug_path=slug_path):
                 match = pattern.search(slug_path)
                 self.assertIsNotNone(match, f"Pattern should match '{slug_path}'")
-                extracted_slug = match.group('slug')
-                expected = slug_path.replace('/s/', '')
-                self.assertEqual(extracted_slug, expected)
+                extracted_slug = match.group("slug")
+                expected = slug_path.replace("/s/", "")
+                self.assertEqual(
+                    extracted_slug,
+                    expected,
+                )
 
     def test_mixed_unicode_ascii_slugs(self):
         """Test edge cases with mixed Unicode and ASCII characters"""
@@ -107,7 +127,7 @@ class UnicodeSlugTest(TestCase):
             "Book café 2024",
             "Test-北京-Book",
             "Иво Андрић (Ivo Andrić)",  # Serbian bilingual
-            "café-book-test"
+            "café-book-test",
         ]
 
         for name in test_cases:
@@ -116,7 +136,7 @@ class UnicodeSlugTest(TestCase):
                 # Should not be empty and should preserve Unicode
                 self.assertTrue(len(slug) > 0)
                 # Should not contain spaces (replaced with hyphens)
-                self.assertNotIn(' ', slug)
+                self.assertNotIn(" ", slug)
 
     def test_backward_compatibility_with_ascii(self):
         """Ensure ASCII slugs continue to work as before"""
@@ -125,7 +145,7 @@ class UnicodeSlugTest(TestCase):
             "Simple Title",
             "Book-With-Hyphens",
             "Book_With_Underscores",
-            "CAPS BOOK"
+            "CAPS BOOK",
         ]
 
         for name in ascii_names:
@@ -148,7 +168,11 @@ class UnicodeSlugTest(TestCase):
         new_slug = slugify(serbian_name, allow_unicode=True)
 
         # Old approach would strip Serbian Cyrillic characters
-        self.assertEqual(old_slug, "", "Old slugify should strip all Cyrillic characters")
+        self.assertEqual(
+            old_slug, "", "Old slugify should strip all Cyrillic characters"
+        )
 
         # New approach preserves them
-        self.assertEqual(new_slug, "иво-андрић", "New slugify should preserve Cyrillic characters")
+        self.assertEqual(
+            new_slug, "иво-андрић", "New slugify should preserve Cyrillic characters"
+        )
