@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-08 19:19+0000\n"
-"PO-Revision-Date: 2025-09-13 10:40\n"
+"PO-Revision-Date: 2025-09-13 17:05\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -4655,7 +4655,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/export-user.html:54
 #, python-format
 msgid "User exports settings can be changed from <a href=\"%(url)s\">the Imports page</a> in the Admin dashboard."
-msgstr ""
+msgstr "La configuració de les exportacions de l'usuari es pot canviar des de <a href=\"%(url)s\">la pàgina d'importacions</a> al tauler d'administració."
 
 #: bookwyrm/templates/preferences/export-user.html:61
 #, python-format
@@ -4665,12 +4665,12 @@ msgstr "Podreu crear un fitxer d'exportació nou a %(next_available)s"
 #: bookwyrm/templates/preferences/export-user.html:72
 #, python-format
 msgid "On average, recent exports have taken %(hours)s hours."
-msgstr ""
+msgstr "Les importacions recents han durat %(hours)s de mitjana."
 
 #: bookwyrm/templates/preferences/export-user.html:76
 #, python-format
 msgid "On average, recent exports have taken %(minutes)s minutes."
-msgstr ""
+msgstr "Les importacions recents han durat %(minutes)s de mitjana."
 
 #: bookwyrm/templates/preferences/export-user.html:88
 msgid "Create user export file"
@@ -4689,7 +4689,7 @@ msgstr "Els fitxers d'exportació de l'usuari es mostraran \"complets\" un cop e
 msgid "Export files will be deleted after %(expiry_hours)s hour."
 msgid_plural "Export files will be deleted after %(expiry_hours)s hours."
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Els fitxers d'exportació s'eliminaran després de %(expiry_hours)s hores."
 
 #: bookwyrm/templates/preferences/export-user.html:110
 #: bookwyrm/templates/preferences/security.html:126
@@ -4840,11 +4840,11 @@ msgstr "Sessions"
 
 #: bookwyrm/templates/preferences/security.html:114
 msgid "Some legacy sessions may not be displayed."
-msgstr ""
+msgstr "És possible que no es mostrin algunes sessions heretades."
 
 #: bookwyrm/templates/preferences/security.html:119
 msgid "You are logged in to the following sessions:"
-msgstr ""
+msgstr "Heu iniciat la sessió a les sessions següents:"
 
 #: bookwyrm/templates/preferences/security.html:126
 msgid "Date first logged in"
@@ -4884,7 +4884,7 @@ msgstr "Tanca la sessió"
 
 #: bookwyrm/templates/preferences/security.html:161
 msgid "Currently your logged-in sessions are unable to be displayed."
-msgstr ""
+msgstr "Actualment no es poden mostrar les vostres sessions iniciades."
 
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
@@ -5410,11 +5410,11 @@ msgstr "Errors"
 
 #: bookwyrm/templates/settings/connectors/available.html:15
 msgid "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof."
-msgstr ""
+msgstr "Finna.fi és un servei de cerca que recull material de centenars d'organitzacions finlandeses sota un mateix sostre."
 
 #: bookwyrm/templates/settings/connectors/available.html:28
 msgid "Create new connector"
-msgstr ""
+msgstr "Crea un nou connector"
 
 #: bookwyrm/templates/settings/connectors/connector.html:35
 #: bookwyrm/templates/settings/connectors/update.html:33
@@ -5435,19 +5435,19 @@ msgstr "Activitat"
 #: bookwyrm/templates/settings/connectors/connectors.html:4
 #: bookwyrm/templates/settings/connectors/connectors.html:6
 msgid "Connector Settings"
-msgstr ""
+msgstr "Preferències del connector"
 
 #: bookwyrm/templates/settings/connectors/connectors.html:11
 msgid "Connectors are sources of data about books and authors."
-msgstr ""
+msgstr "Els connectors són fonts de dades sobre llibres i autors."
 
 #: bookwyrm/templates/settings/connectors/connectors.html:12
 msgid "The priority determines the order in which search results appear. The highest priority is <code>1</code>. The default priority is <code>2</code>."
-msgstr ""
+msgstr "La prioritat determina l'ordre en què apareixen els resultats de la cerca. La prioritat més alta és <code>1</code>. La prioritat per defecte és <code>2</code>."
 
 #: bookwyrm/templates/settings/connectors/connectors.html:14
 msgid "Connector settings only determine whether a connector will be used to deliver search results. To manage more interactions with other federated servers, including domain blocks, see"
-msgstr ""
+msgstr "La configuració del connector només determina si s'utilitzarà un connector per a oferir resultats de cerca. Per gestionar més interaccions amb altres servidors federats, inclosos els blocs de domini, vegeu"
 
 #: bookwyrm/templates/settings/connectors/connectors.html:14
 #: bookwyrm/templates/settings/federation/edit_instance.html:12
@@ -5461,7 +5461,7 @@ msgstr "Instàncies federades"
 
 #: bookwyrm/templates/settings/connectors/update.html:66
 msgid "should be updated. Check recent release notes for more information."
-msgstr ""
+msgstr "s'ha d'actualitzar. Comprova les notes de llançament recents per a més informació."
 
 #: bookwyrm/templates/settings/connectors/update.html:76
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:19
@@ -5527,7 +5527,7 @@ msgstr "Estats publicats"
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:12
 msgid "Would you like to automatically check for new BookWyrm releases? (recommended)"
-msgstr ""
+msgstr "Voleu comprovar automàticament si hi ha noves versions de BookWyrm? (recomanat)"
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:20
 msgid "Schedule checks"
@@ -5812,11 +5812,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/files.html:21
 msgid "This job deletes uploaded user export and import files that have reached the expiry age."
-msgstr ""
+msgstr "Aquesta tasca elimina els fitxers d'exportació i importació d'usuaris que han arribat a la data de caducitat."
 
 #: bookwyrm/templates/settings/files.html:102
 msgid "Export file expiration"
-msgstr ""
+msgstr "Caducitat de l'arxiu d'exportació"
 
 #: bookwyrm/templates/settings/files.html:109
 msgid "Maximum age of export files, in hours"
@@ -5824,15 +5824,15 @@ msgstr ""
 
 #: bookwyrm/templates/settings/files.html:122
 msgid "Files older than this will be deleted."
-msgstr ""
+msgstr "S'eliminaran els fitxers més antics."
 
 #: bookwyrm/templates/settings/files.html:125
 msgid "Set expiry hours"
-msgstr ""
+msgstr "Estableix les hores per caducar"
 
 #: bookwyrm/templates/settings/files.html:138
 msgid "Expired files"
-msgstr ""
+msgstr "Arxius caducats"
 
 #: bookwyrm/templates/settings/files.html:186
 #: bookwyrm/templates/settings/imports/imports.html:184
@@ -5842,7 +5842,7 @@ msgstr "Completat"
 
 #: bookwyrm/templates/settings/files.html:210
 msgid "Successfully updated expiry time"
-msgstr ""
+msgstr "El temps de venciment s'ha actualitzat correctament"
 
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:4
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:4
@@ -5912,15 +5912,15 @@ msgstr "Estableix el límit"
 
 #: bookwyrm/templates/settings/imports/imports.html:98
 msgid "Disable starting new user exports"
-msgstr ""
+msgstr "Deshabilita iniciar noves importacions"
 
 #: bookwyrm/templates/settings/imports/imports.html:109
 msgid "This is only intended to be used when things have gone very wrong with exports and you need to pause the feature while addressing issues."
-msgstr ""
+msgstr "Aquesta acció només està indicada pe a quan les coses han anat molt malament amb les importacions i és necessari aturar la funcionalitat mentre es resol la incidència."
 
 #: bookwyrm/templates/settings/imports/imports.html:110
 msgid "While exports are disabled, users will not be allowed to start new user exports, but existing exports will not be affected."
-msgstr ""
+msgstr "Mentre les importacions es troben deshabilitades, els usuaris no podran iniciar noves importacions, però les que es troben en curs no es veuran afectades."
 
 #: bookwyrm/templates/settings/imports/imports.html:115
 msgid "Disable user exports"
@@ -6150,7 +6150,7 @@ msgstr "Informes"
 
 #: bookwyrm/templates/settings/layout.html:61
 msgid "Auto-Moderation Rules"
-msgstr ""
+msgstr "Normes d'auto-moderació"
 
 #: bookwyrm/templates/settings/layout.html:73
 #: bookwyrm/templates/settings/link_domains/link_domains.html:5
@@ -6789,7 +6789,7 @@ msgstr "El vostre domini sembla que no està ben configurat. No hauria d'inclour
 
 #: bookwyrm/templates/setup/config.html:42
 msgid "You are running BookWyrm with <code>localhost</code>. This should <strong>never</strong> be used in a production environment."
-msgstr ""
+msgstr "Esteu executant BookWyrm en mode <code>debug</code>. Això no s'hauria de fer <strong>mai</strong> a producció."
 
 #: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:44
 msgid "Settings"
@@ -7727,7 +7727,7 @@ msgstr "Mostra el perfil i més"
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
 #, python-format
 msgid "File exceeds maximum size: %(max_size)sMB"
-msgstr ""
+msgstr "El fitxer sobrepassa la mida màxima: %(max_size)sMB"
 
 #: bookwyrm/templatetags/list_page_tags.py:14
 #, python-format
@@ -7748,7 +7748,7 @@ msgstr "%(title)s: %(subtitle)s"
 
 #: bookwyrm/templatetags/utilities.py:133
 msgid "a new user account"
-msgstr ""
+msgstr "compte d'usuari nou"
 
 #: bookwyrm/views/updates.py:45
 #, python-format
