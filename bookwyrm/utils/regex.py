@@ -8,7 +8,7 @@ USERNAME = rf"{LOCALNAME}(@{DOMAIN})?"
 STRICT_USERNAME = rf"(\B{STRICT_LOCALNAME}(@{DOMAIN})?\b)"
 FULL_USERNAME = rf"{LOCALNAME}@{DOMAIN}\b"
 REMOTE_USER_URL = rf"(?:^http(?:s?):\/\/)([\w\-\.]*)(?:.)*(?:(?:\/)({REMOTENAME}))"
-SLUG = r"/s/(?P<slug>[-_a-z0-9]*)"
+SLUG = r"/s/(?P<slug>[-_\w]*)"
 HASHTAG = r"(#[^!@#$%^&*(),.?\":{}|<>\s]+)"
 # should match (BookWyrm/1.0.0; or (BookWyrm/99.1.2;
 BOOKWYRM_USER_AGENT = r"\(BookWyrm/[0-9]+\.[0-9]+\.[0-9]+;"
