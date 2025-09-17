@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-08 19:19+0000\n"
-"PO-Revision-Date: 2025-09-08 20:00\n"
+"PO-Revision-Date: 2025-09-17 17:19\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -236,7 +236,7 @@ msgstr "Blokkeren"
 
 #: bookwyrm/models/bookwyrm_import_job.py:398
 msgid "Unknown error importing book"
-msgstr ""
+msgstr "Onbekende fout bij importeren boek"
 
 #: bookwyrm/models/bookwyrm_import_job.py:496
 msgid "unauthorized"
@@ -431,7 +431,7 @@ msgstr "Item verwijderd"
 
 #: bookwyrm/models/session.py:42
 msgid "Unknown"
-msgstr ""
+msgstr "Onbekend"
 
 #: bookwyrm/models/status.py:192
 #, python-format
@@ -4688,8 +4688,8 @@ msgstr "Exportbestanden van gebruikers worden als 'voltooid' weergegeven zodra z
 #, python-format
 msgid "Export files will be deleted after %(expiry_hours)s hour."
 msgid_plural "Export files will be deleted after %(expiry_hours)s hours."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Exportbestanden worden verwijderd na %(expiry_hours)s uur."
+msgstr[1] "Exportbestanden worden verwijderd na %(expiry_hours)s uur."
 
 #: bookwyrm/templates/preferences/export-user.html:110
 #: bookwyrm/templates/preferences/security.html:126
@@ -4729,7 +4729,7 @@ msgstr "Account"
 
 #: bookwyrm/templates/preferences/layout.html:24
 msgid "Security Settings"
-msgstr ""
+msgstr "Beveiligingsinstellingen"
 
 #: bookwyrm/templates/preferences/layout.html:32
 msgid "Move  Account"
@@ -4771,7 +4771,7 @@ msgstr "Voer de gebruikersnaam in voor het account waar je naartoe wilt verhuize
 #: bookwyrm/templates/preferences/security.html:4
 #: bookwyrm/templates/preferences/security.html:7
 msgid "Account Security"
-msgstr ""
+msgstr "Accountbeveiliging"
 
 #: bookwyrm/templates/preferences/security.html:13
 msgid "Two Factor Authentication"
@@ -4836,11 +4836,11 @@ msgstr "Tweestapsverificatie instellen"
 
 #: bookwyrm/templates/preferences/security.html:111
 msgid "Sessions"
-msgstr ""
+msgstr "Sessies"
 
 #: bookwyrm/templates/preferences/security.html:114
 msgid "Some legacy sessions may not be displayed."
-msgstr ""
+msgstr "Sommige oudere sessies worden mogelijk niet getoond."
 
 #: bookwyrm/templates/preferences/security.html:119
 msgid "You are logged in to the following sessions:"
@@ -4852,7 +4852,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/security.html:127
 msgid "IP address"
-msgstr ""
+msgstr "IP-adres"
 
 #: bookwyrm/templates/preferences/security.html:127
 msgid "IP"
@@ -4860,27 +4860,27 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/security.html:128
 msgid "Operating System"
-msgstr ""
+msgstr "Besturingssysteem"
 
 #: bookwyrm/templates/preferences/security.html:128
 msgid "OS"
-msgstr ""
+msgstr "OS"
 
 #: bookwyrm/templates/preferences/security.html:129
 msgid "Web Browser"
-msgstr ""
+msgstr "Webbrowser"
 
 #: bookwyrm/templates/preferences/security.html:129
 msgid "Browser"
-msgstr ""
+msgstr "Browser"
 
 #: bookwyrm/templates/preferences/security.html:143
 msgid "You"
-msgstr ""
+msgstr "Jij"
 
 #: bookwyrm/templates/preferences/security.html:147
 msgid "Log Out"
-msgstr ""
+msgstr "Uitloggen"
 
 #: bookwyrm/templates/preferences/security.html:161
 msgid "Currently your logged-in sessions are unable to be displayed."
@@ -5804,7 +5804,7 @@ msgstr "Geen instances gevonden"
 #: bookwyrm/templates/settings/files.html:7
 #: bookwyrm/templates/settings/files.html:11
 msgid "Files maintenance"
-msgstr ""
+msgstr "Onderhoud van bestanden"
 
 #: bookwyrm/templates/settings/files.html:17
 msgid "Schedule file deletion"
@@ -5820,19 +5820,19 @@ msgstr ""
 
 #: bookwyrm/templates/settings/files.html:109
 msgid "Maximum age of export files, in hours"
-msgstr ""
+msgstr "Maximale leeftijd van exportbestanden, in uren"
 
 #: bookwyrm/templates/settings/files.html:122
 msgid "Files older than this will be deleted."
-msgstr ""
+msgstr "Bestanden ouder dan dit zullen worden verwijderd."
 
 #: bookwyrm/templates/settings/files.html:125
 msgid "Set expiry hours"
-msgstr ""
+msgstr "Stel vervaltijd in"
 
 #: bookwyrm/templates/settings/files.html:138
 msgid "Expired files"
-msgstr ""
+msgstr "Verlopen bestanden"
 
 #: bookwyrm/templates/settings/files.html:186
 #: bookwyrm/templates/settings/imports/imports.html:184
@@ -5842,7 +5842,7 @@ msgstr "Voltooid"
 
 #: bookwyrm/templates/settings/files.html:210
 msgid "Successfully updated expiry time"
-msgstr ""
+msgstr "De vervaltijd is succesvol bijgewerkt"
 
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:4
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:4
@@ -6164,7 +6164,7 @@ msgstr "Systeem"
 
 #: bookwyrm/templates/settings/layout.html:90
 msgid "Scheduled Tasks"
-msgstr ""
+msgstr "Geplande taken"
 
 #: bookwyrm/templates/settings/layout.html:102
 msgid "Files Maintenance"
@@ -7727,7 +7727,7 @@ msgstr "Bekijk profiel en meer"
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
 #, python-format
 msgid "File exceeds maximum size: %(max_size)sMB"
-msgstr ""
+msgstr "Het bestand overschrijdt de maximale grootte: %(max_size)sMB"
 
 #: bookwyrm/templatetags/list_page_tags.py:14
 #, python-format
