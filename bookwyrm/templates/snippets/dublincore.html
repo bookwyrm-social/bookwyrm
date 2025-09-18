@@ -16,6 +16,9 @@
 {% endif %}
 <meta name="DC.Type" content="Book" />
 <meta name="DC.Title" content="{{ book.title }}" />
+{% if book.subtitle %}
+<meta name="DC.Alternative" content="{{ book.subtitle }}" />
+{% endif %}
 {% if book.publishers %}
 {% for publisher in book.publishers %}
 <meta name="DC.Publisher" content="{{ publisher }}" />
@@ -24,8 +27,8 @@
 {% if book.published_date or book.first_published_date %}
 <meta name="DC.Date" content="{{ book.first_published_date|default:book.published_date|date:'Y-m-d' }}" />
 {% endif %}
-<meta name="DC.Description" content="{{ book|book_description }}" />
+<meta name="DC.Description" content="{{ book|book_description|striptags }}" />
 {% for author in book.authors.all %}
-<meta name="DC.Creator" content="{{ author.name }}" />"
+<meta name="DC.Creator" content="{{ author.name }}" />
 {% endfor %}
 {% endspaceless %}
