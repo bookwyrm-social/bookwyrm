@@ -13,6 +13,9 @@
     {% include 'snippets/opengraph.html' with title=book.title description=book|book_description image=book_image %}
 {% endblock %}
 
+{% block head_links %}
+    {% include 'snippets/dublincore.html' with book=book %}
+{% endblock %}
 {% block content %}
 {% if update_error %}
 <div class="notification is-danger is-light">
