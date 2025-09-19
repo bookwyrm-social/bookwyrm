@@ -1,4 +1,4 @@
-FROM python:3.11-bookworm
+FROM bookwyrm_web
 WORKDIR /app/dev-tools
 
 ENV PATH="/app/dev-tools/node_modules/.bin:$PATH"
@@ -9,9 +9,8 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 
 COPY --from=node:18-slim /usr/local/bin /usr/local/bin
 COPY --from=node:18-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
-COPY package.json requirements.txt .stylelintrc.js .stylelintignore /app/dev-tools/
+COPY package.json .stylelintrc.js .stylelintignore /app/dev-tools/
 
-RUN pip install --no-cache-dir -r requirements.txt && \
-    npm install .
+RUN npm install .
 
 WORKDIR /app
