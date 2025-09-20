@@ -396,7 +396,7 @@ if USE_S3:
     AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN", None)
     AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME", "")
     AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL", None)
-    AWS_DEFAULT_ACL = "public-read"
+    AWS_DEFAULT_ACL = env("AWS_DEFAULT_ACL", "public-read")
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
     AWS_S3_URL_PROTOCOL = env("AWS_S3_URL_PROTOCOL", f"{PROTOCOL}:")
     # Storages
@@ -405,7 +405,7 @@ if USE_S3:
             "BACKEND": "storages.backends.s3.S3Storage",
             "OPTIONS": {
                 "location": "images",
-                "default_acl": "public-read",
+                "default_acl": AWS_DEFAULT_ACL,
                 "file_overwrite": False,
             },
         },
@@ -413,14 +413,14 @@ if USE_S3:
             "BACKEND": "storages.backends.s3.S3Storage",
             "OPTIONS": {
                 "location": "static",
-                "default_acl": "public-read",
+                "default_acl": AWS_DEFAULT_ACL,
             },
         },
         "sass_processor": {
             "BACKEND": "storages.backends.s3.S3Storage",
             "OPTIONS": {
                 "location": "static",
-                "default_acl": "public-read",
+                "default_acl": AWS_DEFAULT_ACL,
             },
         },
     }
