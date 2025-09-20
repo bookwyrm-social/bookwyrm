@@ -94,14 +94,16 @@ def switch_edition(request):
     )
     for shelfbook in shelfbooks.all():
         with transaction.atomic():
-            models.ShelfBook.objects.create(
+            # Create new ShelfBook without triggering ActivityPub activities
+            new_shelfbook = models.ShelfBook(
                 created_date=shelfbook.created_date,
                 user=shelfbook.user,
                 shelf=shelfbook.shelf,
                 book=new_edition,
                 shelved_date=shelfbook.shelved_date,
             )
-            shelfbook.delete()
+            new_shelfbook.save(broadcast=False)
+            shelfbook.delete(broadcast=False)
 
     readthroughs = models.ReadThrough.objects.filter(
         book__parent_work=new_edition.parent_work, user=request.user
@@ -124,6 +126,6 @@ def switch_edition(request):
         # because ratings are a subclass of reviews,
         # this will pick up both ratings and reviews
         review.book = new_edition
-        review.save()
+        review.save(broadcast=False)
 
     return redirect(f"/book/{new_edition.id}")
