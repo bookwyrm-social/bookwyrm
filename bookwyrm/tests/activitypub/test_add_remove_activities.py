@@ -54,7 +54,7 @@ class AddRemoveActivitiesTest(TestCase):
                 target=None,  # This should cause serialization to fail
             )
             # Try to serialize to JSON - should raise ActivitySerializerError
-            json.dumps(add_activity.to_activity())
+            json.dumps(add_activity.serialize())
 
     def test_remove_activity_with_none_target_fails(self):
         """Remove activity should fail serialization when target is None"""
@@ -66,7 +66,7 @@ class AddRemoveActivitiesTest(TestCase):
                 target=None,  # This should cause serialization to fail
             )
             # Try to serialize to JSON - should raise ActivitySerializerError
-            json.dumps(remove_activity.to_activity())
+            json.dumps(remove_activity.serialize())
 
     def test_add_activity_with_valid_target_succeeds(self):
         """Add activity should succeed when target is provided"""
@@ -78,7 +78,7 @@ class AddRemoveActivitiesTest(TestCase):
             target=self.shelf.remote_id,
         )
         # Should not raise an exception
-        activity_dict = add_activity.to_activity()
+        activity_dict = add_activity.serialize()
         self.assertEqual(activity_dict["type"], "Add")
         self.assertEqual(activity_dict["target"], self.shelf.remote_id)
 
@@ -92,6 +92,6 @@ class AddRemoveActivitiesTest(TestCase):
             target=self.shelf.remote_id,
         )
         # Should not raise an exception
-        activity_dict = remove_activity.to_activity()
+        activity_dict = remove_activity.serialize()
         self.assertEqual(activity_dict["type"], "Remove")
         self.assertEqual(activity_dict["target"], self.shelf.remote_id)
