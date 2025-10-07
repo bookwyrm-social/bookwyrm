@@ -380,7 +380,18 @@ def resolve_remote_id(
         logger.info("Could not connect to host for remote_id: %s", remote_id)
         return None
     except requests.HTTPError as e:
-        logger.exception("HTTP error - remote_id: %s - error: %s", remote_id, e)
+        if (
+            hasattr(e, "response")
+            and hasattr(e.response, "status_code")
+            and e.response.status_code == 410
+        ):
+            # only log a warning for "gone" since there is not much we can do
+            logger.warning(
+                "request for object dropped because it is gone (410) - remote_id: %s",
+                remote_id,
+            )
+        else:
+            logger.exception("HTTP error - remote_id: %s - error: %s", remote_id, e)
         return None
     # determine the model implicitly, if not provided
     # or if it's a model with subclasses like Status, check again

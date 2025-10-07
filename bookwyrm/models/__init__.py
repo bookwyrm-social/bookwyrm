@@ -25,6 +25,8 @@ from .federated_server import FederatedServer
 
 from .group import Group, GroupMember, GroupMemberInvitation
 
+from .housekeeping import CleanUpUserExportFilesJob, start_export_deletions
+
 from .import_job import ImportJob, ImportItem
 from .bookwyrm_import_job import (
     BookwyrmImportJob,
@@ -44,6 +46,8 @@ from .antispam import EmailBlocklist, IPBlocklist, AutoMod, automod_task
 from .notification import Notification, NotificationType
 
 from .hashtag import Hashtag
+
+from .session import UserSession, create_user_session
 
 cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 activity_models = {

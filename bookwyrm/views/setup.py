@@ -98,6 +98,21 @@ class CreateAdmin(View):
             pass
 
         login(request, user)
+
+        # record session
+        forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        if forwarded_for:
+            ip_address = forwarded_for.split(",")[0]
+        else:
+            ip_address = request.META.get("REMOTE_ADDR", "")
+        agent_string = request.META.get("HTTP_USER_AGENT", "")
+        models.create_user_session(
+            user_id=user.id,
+            session_key=request.session.session_key,
+            ip_address=ip_address,
+            agent_string=agent_string,
+        )
+
         site.install_mode = False
         site.save()
         get_representative()  # create the instance user

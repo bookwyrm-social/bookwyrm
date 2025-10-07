@@ -1,9 +1,11 @@
 """ class views for 2FA management """
 from datetime import datetime, timedelta
+from importlib import import_module
 import pyotp
 import qrcode
 import qrcode.image.svg
 
+from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -13,20 +15,56 @@ from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.debug import sensitive_post_parameters
+from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.settings import DOMAIN, TWO_FACTOR_LOGIN_MAX_SECONDS
 from bookwyrm.views.helpers import set_language
 
+SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
+
+# pylint: disable= no-self-use
+@method_decorator(login_required, name="dispatch")
+class UserSecurity(View):
+    """change security settings as logged in user"""
+
+    def get(self, request):
+        """User Security page"""
+
+        request.user.refresh_user_sessions()
+
+        data = {
+            "form": forms.ConfirmPasswordForm(),
+            "sessions": request.user.sessions
+            if request.user.sessions.count() > 0
+            else False,
+            "this_session": request.session.session_key,
+        }
+        return TemplateResponse(request, "preferences/security.html", data)
+
+
+@login_required
+@require_POST
+# pylint: disable= unused-argument
+def logout_session(request, session_key: str = None):
+    """log out session"""
+
+    if session_key:
+        # logout the user session
+        session = models.UserSession.objects.get(session_key=session_key)
+        session.logout()
+        # log out the cached session if it still exists
+        cache_session = SessionStore()
+        if cache_session.exists(session_key=session_key):
+            cache_session.delete(session_key=session_key)
+
+    return redirect("/preferences/security")
+
+
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Edit2FA(View):
     """change 2FA settings as logged in user"""
-
-    def get(self, request):
-        """Two Factor auth page"""
-        data = {"form": forms.ConfirmPasswordForm()}
-        return TemplateResponse(request, "preferences/2fa.html", data)
 
     @method_decorator(sensitive_post_parameters("password"))
     def post(self, request):
@@ -34,7 +72,7 @@ class Edit2FA(View):
         form = forms.ConfirmPasswordForm(request.POST, instance=request.user)
         if not form.is_valid():
             data = {"form": form}
-            return TemplateResponse(request, "preferences/2fa.html", data)
+            return TemplateResponse(request, "preferences/security.html", data)
         data = self.create_qr_code(request.user)
         qr_form = forms.Confirm2FAForm()
         data = {
@@ -43,7 +81,7 @@ class Edit2FA(View):
             "code": data[1],
             "form": qr_form,
         }
-        return TemplateResponse(request, "preferences/2fa.html", data)
+        return TemplateResponse(request, "preferences/security.html", data)
 
     def create_qr_code(self, user):
         """generate and save a qr code for 2FA"""
@@ -79,13 +117,13 @@ class Confirm2FA(View):
                 "qrcode": Edit2FA.create_qr_code(self, request.user),
                 "form": form,
             }
-            return TemplateResponse(request, "preferences/2fa.html", data)
+            return TemplateResponse(request, "preferences/security.html", data)
 
         # set the user's 2FA setting on
         request.user.two_factor_auth = True
         request.user.save(broadcast=False, update_fields=["two_factor_auth"])
         data = {"form": form, "success": True}
-        return TemplateResponse(request, "preferences/2fa.html", data)
+        return TemplateResponse(request, "preferences/security.html", data)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -101,7 +139,7 @@ class Disable2FA(View):
         request.user.two_factor_auth = False
         request.user.save(broadcast=False, update_fields=["two_factor_auth"])
         data = {"form": forms.ConfirmPasswordForm(), "success": True}
-        return TemplateResponse(request, "preferences/2fa.html", data)
+        return TemplateResponse(request, "preferences/security.html", data)
 
 
 class LoginWith2FA(View):
@@ -144,6 +182,20 @@ class LoginWith2FA(View):
         # log the user in - we are bypassing standard login
         login(request, user)
         user.update_active_date()
+
+        # record session
+        forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        if forwarded_for:
+            ip_address = forwarded_for.split(",")[0]
+        else:
+            ip_address = request.META.get("REMOTE_ADDR", "")
+        agent_string = request.META.get("HTTP_USER_AGENT", "")
+        models.create_user_session(
+            user_id=user.id,
+            session_key=request.session.session_key,
+            ip_address=ip_address,
+            agent_string=agent_string,
+        )
         return set_language(user, redirect("/"))
 
 
@@ -154,7 +206,7 @@ class GenerateBackupCodes(View):
     def get(self, request):
         """Generate and display backup 2FA codes"""
         data = {"backup_codes": self.generate_backup_codes(request.user)}
-        return TemplateResponse(request, "preferences/2fa.html", data)
+        return TemplateResponse(request, "preferences/security.html", data)
 
     def generate_backup_codes(self, user):
         """generate fresh backup codes for 2FA"""

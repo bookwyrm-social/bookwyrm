@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-12 17:02+0000\n"
-"PO-Revision-Date: 2025-04-15 18:59\n"
+"POT-Creation-Date: 2025-06-23 23:50+0000\n"
+"PO-Revision-Date: 2025-09-03 10:29\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -176,25 +176,39 @@ msgstr "중재자가 삭제"
 msgid "Domain block"
 msgstr "도메인 차단"
 
-#: bookwyrm/models/book.py:443
+#: bookwyrm/models/book.py:444
 msgid "Audiobook"
 msgstr "오디오북"
 
-#: bookwyrm/models/book.py:444
+#: bookwyrm/models/book.py:445
 msgid "eBook"
 msgstr "전자책"
 
-#: bookwyrm/models/book.py:445
+#: bookwyrm/models/book.py:446
 msgid "Graphic novel"
 msgstr "만화"
 
-#: bookwyrm/models/book.py:446
+#: bookwyrm/models/book.py:447
 msgid "Hardcover"
 msgstr "양장제본"
 
-#: bookwyrm/models/book.py:447
+#: bookwyrm/models/book.py:448
 msgid "Paperback"
 msgstr "무선제본"
+
+#: bookwyrm/models/book.py:457 bookwyrm/models/book.py:464
+#: bookwyrm/models/book.py:470 bookwyrm/models/book.py:475
+#: bookwyrm/models/book.py:480 bookwyrm/models/book.py:498
+#: bookwyrm/models/book.py:504 bookwyrm/models/book.py:509
+#: bookwyrm/models/book.py:514 bookwyrm/models/book.py:519
+#, python-format
+msgid "%(value)s doesn't look like an ISBN"
+msgstr ""
+
+#: bookwyrm/models/book.py:486 bookwyrm/models/book.py:526
+#, python-format
+msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
+msgstr ""
 
 #: bookwyrm/models/bookwyrm_import_job.py:109 bookwyrm/models/report.py:84
 #: bookwyrm/templates/settings/reports/report.html:115
@@ -211,7 +225,7 @@ msgstr "서평"
 
 #: bookwyrm/models/bookwyrm_import_job.py:111
 msgid "Quotation"
-msgstr ""
+msgstr "인용"
 
 #: bookwyrm/models/bookwyrm_import_job.py:132
 #: bookwyrm/templates/snippets/follow_button.html:22
@@ -229,7 +243,7 @@ msgstr "차단하기"
 #: bookwyrm/models/bookwyrm_import_job.py:379
 #: bookwyrm/models/bookwyrm_import_job.py:611
 msgid "unknown"
-msgstr ""
+msgstr "알 수 없음"
 
 #: bookwyrm/models/bookwyrm_import_job.py:373
 msgid "unauthorized"
@@ -454,19 +468,19 @@ msgstr "인용구"
 msgid "Everything else"
 msgstr "그 밖의 것들"
 
-#: bookwyrm/settings.py:236
+#: bookwyrm/settings.py:235
 msgid "Home Timeline"
 msgstr "홈 타임라인"
 
-#: bookwyrm/settings.py:236
+#: bookwyrm/settings.py:235
 msgid "Home"
 msgstr "홈"
 
-#: bookwyrm/settings.py:237
+#: bookwyrm/settings.py:236
 msgid "Books Timeline"
 msgstr "도서 타임라임"
 
-#: bookwyrm/settings.py:237
+#: bookwyrm/settings.py:236
 #: bookwyrm/templates/guided_tour/user_profile.html:101
 #: bookwyrm/templates/import/user_import_status.html:73
 #: bookwyrm/templates/search/layout.html:22
@@ -475,91 +489,91 @@ msgstr "도서 타임라임"
 msgid "Books"
 msgstr "도서"
 
-#: bookwyrm/settings.py:314
+#: bookwyrm/settings.py:313
 msgid "English"
 msgstr "English"
 
-#: bookwyrm/settings.py:315
+#: bookwyrm/settings.py:314
 msgid "Català (Catalan)"
 msgstr "Català (Catalan)"
 
-#: bookwyrm/settings.py:316
+#: bookwyrm/settings.py:315
 msgid "Deutsch (German)"
 msgstr "Deutsch (German)"
 
-#: bookwyrm/settings.py:317
+#: bookwyrm/settings.py:316
 msgid "Esperanto (Esperanto)"
 msgstr "Esperanto (Esperanto)"
 
-#: bookwyrm/settings.py:318
+#: bookwyrm/settings.py:317
 msgid "Español (Spanish)"
 msgstr "Español (Spanish)"
 
-#: bookwyrm/settings.py:319
+#: bookwyrm/settings.py:318
 msgid "Euskara (Basque)"
 msgstr "Euskara (Basque)"
 
-#: bookwyrm/settings.py:320
+#: bookwyrm/settings.py:319
 msgid "Galego (Galician)"
 msgstr "Galego (Galician)"
 
-#: bookwyrm/settings.py:321
+#: bookwyrm/settings.py:320
 msgid "Italiano (Italian)"
 msgstr "Italiano (Italian)"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:321
 msgid "한국어 (Korean)"
 msgstr "한국어 (Korean)"
 
-#: bookwyrm/settings.py:323
+#: bookwyrm/settings.py:322
 msgid "Suomi (Finnish)"
 msgstr "Suomi (Finnish)"
 
-#: bookwyrm/settings.py:324
+#: bookwyrm/settings.py:323
 msgid "Français (French)"
 msgstr "Français (French)"
 
-#: bookwyrm/settings.py:325
+#: bookwyrm/settings.py:324
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (Lithuanian)"
 
-#: bookwyrm/settings.py:326
+#: bookwyrm/settings.py:325
 msgid "Nederlands (Dutch)"
 msgstr "네덜란드 (Dutch)"
 
-#: bookwyrm/settings.py:327
+#: bookwyrm/settings.py:326
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (Norwegian)"
 
-#: bookwyrm/settings.py:328
+#: bookwyrm/settings.py:327
 msgid "Polski (Polish)"
 msgstr "Polski (Polish)"
 
-#: bookwyrm/settings.py:329
+#: bookwyrm/settings.py:328
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (Brazilian Portuguese)"
 
-#: bookwyrm/settings.py:330
+#: bookwyrm/settings.py:329
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (European Portuguese)"
 
-#: bookwyrm/settings.py:331
+#: bookwyrm/settings.py:330
 msgid "Română (Romanian)"
 msgstr "Română (Romanian)"
 
-#: bookwyrm/settings.py:332
+#: bookwyrm/settings.py:331
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Swedish)"
 
-#: bookwyrm/settings.py:333
+#: bookwyrm/settings.py:332
 msgid "Українська (Ukrainian)"
 msgstr "Українська (우크라이나)"
 
-#: bookwyrm/settings.py:334
+#: bookwyrm/settings.py:333
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Simplified Chinese)"
 
-#: bookwyrm/settings.py:335
+#: bookwyrm/settings.py:334
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Traditional Chinese)"
 
@@ -694,7 +708,7 @@ msgid "Statuses posted:"
 msgstr "게시한 기록:"
 
 #: bookwyrm/templates/about/layout.html:19
-#: bookwyrm/templates/setup/config.html:74
+#: bookwyrm/templates/setup/config.html:68
 msgid "Software version:"
 msgstr "소프트웨어 버전:"
 
@@ -1655,7 +1669,7 @@ msgid "This link is taking you to: <code>%(link_url)s</code>.<br> Is that where 
 msgstr ""
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:27
-#: bookwyrm/templates/setup/config.html:139
+#: bookwyrm/templates/setup/config.html:134
 msgid "Continue"
 msgstr "계속"
 
@@ -1897,17 +1911,17 @@ msgstr ""
 #: bookwyrm/templates/discover/card-header.html:27
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> reviewed <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 독자의 <a href=\"%(book_path)s\">%(book_title)s</a> 서평"
 
 #: bookwyrm/templates/discover/card-header.html:31
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "<a href=\"%(user_path)s\">%(username)s</a> 님의 <a href=\"%(book_path)s\">%(book_title)s</a> 코멘트"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 독자의 <a href=\"%(book_path)s\">%(book_title)s</a> 주석"
 
 #: bookwyrm/templates/discover/card-header.html:35
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> quoted <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "<a href=\"%(user_path)s\">%(username)s</a> 님의 <a href=\"%(book_path)s\">%(book_title)s</a> 인용"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 독자의 <a href=\"%(book_path)s\">%(book_title)s</a> 인용"
 
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
@@ -3810,6 +3824,8 @@ msgid "List position"
 msgstr "목록 위치"
 
 #: bookwyrm/templates/lists/list.html:152
+#: bookwyrm/templates/settings/connectors/connector.html:28
+#: bookwyrm/templates/settings/connectors/update.html:27
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:23
 msgid "Set"
 msgstr "설정"
@@ -4558,7 +4574,7 @@ msgstr "프로필"
 #: bookwyrm/templates/preferences/edit_user.html:64
 #: bookwyrm/templates/settings/site.html:11
 #: bookwyrm/templates/settings/site.html:89
-#: bookwyrm/templates/setup/config.html:91
+#: bookwyrm/templates/setup/config.html:85
 msgid "Display"
 msgstr "표시"
 
@@ -4573,7 +4589,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:75
 msgid "Show ratings"
-msgstr ""
+msgstr "별점 보기"
 
 #: bookwyrm/templates/preferences/edit_user.html:81
 msgid "Show suggested users"
@@ -4979,7 +4995,7 @@ msgstr "편집"
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:103
+#: bookwyrm/templates/settings/layout.html:107
 msgid "Announcements"
 msgstr "공지사항"
 
@@ -5186,6 +5202,7 @@ msgid "Import triggered"
 msgstr "가져오기 트리거함"
 
 #: bookwyrm/templates/settings/celery.html:57
+#: bookwyrm/templates/settings/layout.html:98
 msgid "Connectors"
 msgstr "커넥터"
 
@@ -5244,6 +5261,8 @@ msgid "Run time"
 msgstr "실행 시간"
 
 #: bookwyrm/templates/settings/celery.html:134
+#: bookwyrm/templates/settings/connectors/connector.html:22
+#: bookwyrm/templates/settings/connectors/update.html:21
 msgid "Priority"
 msgstr "우선도"
 
@@ -5275,6 +5294,66 @@ msgstr ""
 #: bookwyrm/templates/settings/celery.html:208
 msgid "Errors"
 msgstr ""
+
+#: bookwyrm/templates/settings/connectors/available.html:15
+msgid "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof."
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/available.html:28
+msgid "Create new connector"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connector.html:35
+#: bookwyrm/templates/settings/connectors/update.html:33
+#: bookwyrm/templates/settings/users/user_info.html:87
+msgid "Deactivation reason:"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connector.html:50
+#: bookwyrm/templates/settings/connectors/update.html:47
+msgid "Deactivate"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connector.html:61
+#: bookwyrm/templates/settings/connectors/update.html:58
+msgid "Activate"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connectors.html:4
+#: bookwyrm/templates/settings/connectors/connectors.html:6
+msgid "Connector Settings"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connectors.html:11
+msgid "Connectors are sources of data about books and authors."
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connectors.html:12
+msgid "The priority determines the order in which search results appear. The highest priority is <code>1</code>. The default priority is <code>2</code>."
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connectors.html:14
+msgid "Connector settings only determine whether a connector will be used to deliver search results. To manage more interactions with other federated servers, including domain blocks, see"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connectors.html:14
+#: bookwyrm/templates/settings/federation/edit_instance.html:12
+#: bookwyrm/templates/settings/federation/instance.html:24
+#: bookwyrm/templates/settings/federation/instance_blocklist.html:12
+#: bookwyrm/templates/settings/federation/instance_list.html:3
+#: bookwyrm/templates/settings/federation/instance_list.html:5
+#: bookwyrm/templates/settings/layout.html:47
+msgid "Federated Instances"
+msgstr "연합한 인스턴스"
+
+#: bookwyrm/templates/settings/connectors/update.html:66
+msgid "should be updated. Check recent release notes for more information."
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/update.html:76
+#: bookwyrm/templates/snippets/create_status/post_options_block.html:19
+msgid "Update"
+msgstr "업데이트"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
@@ -5430,7 +5509,7 @@ msgid "Successfully sent test email."
 msgstr ""
 
 #: bookwyrm/templates/settings/email_config.html:32
-#: bookwyrm/templates/setup/config.html:102
+#: bookwyrm/templates/setup/config.html:96
 msgid "Email sender:"
 msgstr ""
 
@@ -5477,15 +5556,6 @@ msgstr "시험용 이메일 보내기"
 #: bookwyrm/templates/settings/federation/instance_list.html:10
 msgid "Add instance"
 msgstr ""
-
-#: bookwyrm/templates/settings/federation/edit_instance.html:12
-#: bookwyrm/templates/settings/federation/instance.html:24
-#: bookwyrm/templates/settings/federation/instance_blocklist.html:12
-#: bookwyrm/templates/settings/federation/instance_list.html:3
-#: bookwyrm/templates/settings/federation/instance_list.html:5
-#: bookwyrm/templates/settings/layout.html:47
-msgid "Federated Instances"
-msgstr "연합한 인스턴스"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:28
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:28
@@ -5943,18 +6013,18 @@ msgstr ""
 msgid "Scheduled tasks"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:99
+#: bookwyrm/templates/settings/layout.html:103
 msgid "Instance Settings"
 msgstr "인스턴스 설정"
 
-#: bookwyrm/templates/settings/layout.html:107
+#: bookwyrm/templates/settings/layout.html:111
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr "사이트 설정"
 
-#: bookwyrm/templates/settings/layout.html:113
-#: bookwyrm/templates/settings/layout.html:116
+#: bookwyrm/templates/settings/layout.html:117
+#: bookwyrm/templates/settings/layout.html:120
 #: bookwyrm/templates/settings/registration.html:4
 #: bookwyrm/templates/settings/registration.html:6
 #: bookwyrm/templates/settings/registration_limited.html:4
@@ -5962,7 +6032,7 @@ msgstr "사이트 설정"
 msgid "Registration"
 msgstr "등록"
 
-#: bookwyrm/templates/settings/layout.html:122
+#: bookwyrm/templates/settings/layout.html:126
 #: bookwyrm/templates/settings/site.html:107
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
@@ -6463,10 +6533,6 @@ msgstr "수동으로 팔로워 승인:"
 msgid "Discoverable:"
 msgstr ""
 
-#: bookwyrm/templates/settings/users/user_info.html:87
-msgid "Deactivation reason:"
-msgstr ""
-
 #: bookwyrm/templates/settings/users/user_info.html:102
 msgid "Instance details"
 msgstr "인스턴스 상세:"
@@ -6560,7 +6626,7 @@ msgid "Your domain appears to be misconfigured. It should not include protocol o
 msgstr ""
 
 #: bookwyrm/templates/setup/config.html:42
-msgid "You are running BookWyrm in production mode without https. <strong>USE_HTTPS</strong> should be enabled in production."
+msgid "You are running BookWyrm with <code>localhost</code>. This should <strong>never</strong> be used in a production environment."
 msgstr ""
 
 #: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:44
@@ -6571,39 +6637,39 @@ msgstr "설정"
 msgid "Instance domain:"
 msgstr "인스턴스 도메인:"
 
-#: bookwyrm/templates/setup/config.html:63
-msgid "Protocol:"
-msgstr "프로토콜:"
+#: bookwyrm/templates/setup/config.html:62
+msgid "Instance base URL:"
+msgstr ""
 
-#: bookwyrm/templates/setup/config.html:81
+#: bookwyrm/templates/setup/config.html:75
 msgid "Using S3:"
 msgstr "S3 사용:"
 
-#: bookwyrm/templates/setup/config.html:95
+#: bookwyrm/templates/setup/config.html:89
 msgid "Default interface language:"
 msgstr "기본 인터페이스 언어:"
 
-#: bookwyrm/templates/setup/config.html:109
+#: bookwyrm/templates/setup/config.html:103
 msgid "Enable preview images:"
 msgstr "미리보기 이미지 활성화:"
 
-#: bookwyrm/templates/setup/config.html:116
+#: bookwyrm/templates/setup/config.html:110
 msgid "Enable image thumbnails:"
 msgstr "이미지 섬네일 활성화:"
 
-#: bookwyrm/templates/setup/config.html:128
+#: bookwyrm/templates/setup/config.html:122
 msgid "Does everything look right?"
 msgstr ""
 
-#: bookwyrm/templates/setup/config.html:130
+#: bookwyrm/templates/setup/config.html:125
 msgid "This is your last chance to set your domain and protocol."
 msgstr ""
 
-#: bookwyrm/templates/setup/config.html:144
+#: bookwyrm/templates/setup/config.html:139
 msgid "You can change your instance settings in the <code>.env</code> file on your server."
 msgstr ""
 
-#: bookwyrm/templates/setup/config.html:148
+#: bookwyrm/templates/setup/config.html:143
 msgid "View installation instructions"
 msgstr "설치 과정 설명 보기"
 
@@ -6709,7 +6775,7 @@ msgstr "@%(username)s 제거"
 #: bookwyrm/templates/snippets/announcement.html:28
 #, python-format
 msgid "Posted by <a href=\"%(user_path)s\">%(username)s</a>"
-msgstr "<a href=\"%(user_path)s\">%(username)s</a> 님의 게시물"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 독자의 게시물"
 
 #: bookwyrm/templates/snippets/authors.html:22
 #: bookwyrm/templates/snippets/trimmed_list.html:14
@@ -6792,10 +6858,6 @@ msgstr "스포일러 있음!"
 #: bookwyrm/templates/snippets/reading_modals/form.html:7
 msgid "Comment:"
 msgstr "코멘트:"
-
-#: bookwyrm/templates/snippets/create_status/post_options_block.html:19
-msgid "Update"
-msgstr "업데이트"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:21
 msgid "Post"
@@ -6899,7 +6961,7 @@ msgid "BookWyrm's source code is freely available. You can contribute or report 
 msgstr "BookWyrm의 소스 코드는 자유롭게 사용할 수 있습니다. <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>에서 기여하거나 이슈를 제보할 수 있습니다."
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:20
-#: bookwyrm/templates/snippets/stars.html:35
+#: bookwyrm/templates/snippets/stars.html:38
 msgid "No rating"
 msgstr "별점 없음"
 
@@ -6910,7 +6972,7 @@ msgid_plural "%(half_rating)s stars"
 msgstr[0] ""
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:64
-#: bookwyrm/templates/snippets/stars.html:18
+#: bookwyrm/templates/snippets/stars.html:20
 #, python-format
 msgid "%(rating)s star"
 msgid_plural "%(rating)s stars"
@@ -7135,9 +7197,9 @@ msgstr "읽기 멈춤"
 msgid "Finish reading"
 msgstr "읽기 마침"
 
-#: bookwyrm/templates/snippets/stars.html:10
+#: bookwyrm/templates/snippets/stars.html:13
 msgid "Show rating"
-msgstr ""
+msgstr "별점 보기"
 
 #: bookwyrm/templates/snippets/status/content_status.html:69
 msgid "Show status"
@@ -7189,17 +7251,17 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/note.html:8
 #, python-format
 msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
-msgstr ""
+msgstr "독자가 <a href=\"%(user_path)s\">%(username)s</a>'독자의 <a href=\"%(status_path)s\">게시물</a>에 회신"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:8
 #, python-format
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "독자가 인용한 <a href=\"%(author_path)s\">%(author_name)s</a> 의 <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:15
 #, python-format
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "<a href=\"%(book_path)s\">%(book)s</a> 인용"
 
 #: bookwyrm/templates/snippets/status/headers/rating.html:3
 #, python-format
@@ -7224,7 +7286,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/reading.html:17
 #, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "독자가 읽기 시작한 <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/review.html:8
 #, python-format
@@ -7234,7 +7296,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/review.html:15
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr "님이 서평한 <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
 #, python-format
@@ -7273,7 +7335,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/status/status.html:10
 msgid "boosted"
-msgstr "님의 부스트"
+msgstr "독자의 부스트"
 
 #: bookwyrm/templates/snippets/status/status_options.html:7
 #: bookwyrm/templates/snippets/user_options.html:7
@@ -7322,7 +7384,7 @@ msgstr "인증기 앱의 코드를 입력:"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:41
 msgid "Confirm and Log In"
-msgstr ""
+msgstr "확인 및 로그인"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:29
 msgid "2FA is available"

@@ -15,7 +15,8 @@ from bookwyrm.utils.tar import BookwyrmTarFile
 class BookwyrmExportJob(TestCase):
     """testing user export functions"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """lots of stuff to set up for a user export"""
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
@@ -263,10 +264,3 @@ class BookwyrmExportJob(TestCase):
             with self.local_user.avatar.open() as expected_avatar:
                 archive_avatar = tar.extractfile(data["icon"]["url"])
                 self.assertEqual(expected_avatar.read(), archive_avatar.read())
-
-            # Edition cover should be present in archive
-            with self.edition.cover.open() as expected_cover:
-                archive_cover = tar.extractfile(
-                    data["books"][0]["edition"]["cover"]["url"]
-                )
-                self.assertEqual(expected_cover.read(), archive_cover.read())

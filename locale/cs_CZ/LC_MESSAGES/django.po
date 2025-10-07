@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-12 17:02+0000\n"
-"PO-Revision-Date: 2025-04-21 13:42\n"
+"POT-Creation-Date: 2025-06-23 23:50+0000\n"
+"PO-Revision-Date: 2025-06-26 15:50\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -176,25 +176,39 @@ msgstr "Odstraněn moderátorem"
 msgid "Domain block"
 msgstr "Blokování domény"
 
-#: bookwyrm/models/book.py:443
+#: bookwyrm/models/book.py:444
 msgid "Audiobook"
 msgstr "Audiokniha"
 
-#: bookwyrm/models/book.py:444
+#: bookwyrm/models/book.py:445
 msgid "eBook"
 msgstr "Ekniha"
 
-#: bookwyrm/models/book.py:445
+#: bookwyrm/models/book.py:446
 msgid "Graphic novel"
 msgstr "Grafický román"
 
-#: bookwyrm/models/book.py:446
+#: bookwyrm/models/book.py:447
 msgid "Hardcover"
 msgstr "Pevná vazba"
 
-#: bookwyrm/models/book.py:447
+#: bookwyrm/models/book.py:448
 msgid "Paperback"
 msgstr "Měkká vazba"
+
+#: bookwyrm/models/book.py:457 bookwyrm/models/book.py:464
+#: bookwyrm/models/book.py:470 bookwyrm/models/book.py:475
+#: bookwyrm/models/book.py:480 bookwyrm/models/book.py:498
+#: bookwyrm/models/book.py:504 bookwyrm/models/book.py:509
+#: bookwyrm/models/book.py:514 bookwyrm/models/book.py:519
+#, python-format
+msgid "%(value)s doesn't look like an ISBN"
+msgstr "%(value)s nevypadá jako ISBN"
+
+#: bookwyrm/models/book.py:486 bookwyrm/models/book.py:526
+#, python-format
+msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
+msgstr "%(value)s nemá správný kontrolní součet ISBN, očekávali jsme %(check_version)s"
 
 #: bookwyrm/models/bookwyrm_import_job.py:109 bookwyrm/models/report.py:84
 #: bookwyrm/templates/settings/reports/report.html:115
@@ -457,19 +471,19 @@ msgstr "Citace"
 msgid "Everything else"
 msgstr "Vše ostatní"
 
-#: bookwyrm/settings.py:236
+#: bookwyrm/settings.py:235
 msgid "Home Timeline"
 msgstr "Domovská časová osa"
 
-#: bookwyrm/settings.py:236
+#: bookwyrm/settings.py:235
 msgid "Home"
 msgstr "Domov"
 
-#: bookwyrm/settings.py:237
+#: bookwyrm/settings.py:236
 msgid "Books Timeline"
 msgstr "Zeď knih"
 
-#: bookwyrm/settings.py:237
+#: bookwyrm/settings.py:236
 #: bookwyrm/templates/guided_tour/user_profile.html:101
 #: bookwyrm/templates/import/user_import_status.html:73
 #: bookwyrm/templates/search/layout.html:22
@@ -478,91 +492,91 @@ msgstr "Zeď knih"
 msgid "Books"
 msgstr "Knihy"
 
-#: bookwyrm/settings.py:314
+#: bookwyrm/settings.py:313
 msgid "English"
 msgstr "Anglicky"
 
-#: bookwyrm/settings.py:315
+#: bookwyrm/settings.py:314
 msgid "Català (Catalan)"
 msgstr "Català (katalánština)"
 
-#: bookwyrm/settings.py:316
+#: bookwyrm/settings.py:315
 msgid "Deutsch (German)"
 msgstr "Deutsch (němčina)"
 
-#: bookwyrm/settings.py:317
+#: bookwyrm/settings.py:316
 msgid "Esperanto (Esperanto)"
 msgstr "Esperanto (Esperanto)"
 
-#: bookwyrm/settings.py:318
+#: bookwyrm/settings.py:317
 msgid "Español (Spanish)"
 msgstr "Español (španělština)"
 
-#: bookwyrm/settings.py:319
+#: bookwyrm/settings.py:318
 msgid "Euskara (Basque)"
 msgstr "Euskara (Basque)"
 
-#: bookwyrm/settings.py:320
+#: bookwyrm/settings.py:319
 msgid "Galego (Galician)"
 msgstr "Galego (galicijština)"
 
-#: bookwyrm/settings.py:321
+#: bookwyrm/settings.py:320
 msgid "Italiano (Italian)"
 msgstr "Italiano (italština)"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:321
 msgid "한국어 (Korean)"
 msgstr "한국어 (Korejština)"
 
-#: bookwyrm/settings.py:323
+#: bookwyrm/settings.py:322
 msgid "Suomi (Finnish)"
 msgstr "Suomi (finština)"
 
-#: bookwyrm/settings.py:324
+#: bookwyrm/settings.py:323
 msgid "Français (French)"
 msgstr "Français (francouzština)"
 
-#: bookwyrm/settings.py:325
+#: bookwyrm/settings.py:324
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (litevština)"
 
-#: bookwyrm/settings.py:326
+#: bookwyrm/settings.py:325
 msgid "Nederlands (Dutch)"
 msgstr "Nederlands (Nizozemština)"
 
-#: bookwyrm/settings.py:327
+#: bookwyrm/settings.py:326
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (norština)"
 
-#: bookwyrm/settings.py:328
+#: bookwyrm/settings.py:327
 msgid "Polski (Polish)"
 msgstr "Polski (polština)"
 
-#: bookwyrm/settings.py:329
+#: bookwyrm/settings.py:328
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (portugalština (Brazílie))"
 
-#: bookwyrm/settings.py:330
+#: bookwyrm/settings.py:329
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (portugalština (Evropa))"
 
-#: bookwyrm/settings.py:331
+#: bookwyrm/settings.py:330
 msgid "Română (Romanian)"
 msgstr "Română (rumunština)"
 
-#: bookwyrm/settings.py:332
+#: bookwyrm/settings.py:331
 msgid "Svenska (Swedish)"
 msgstr "Svenska (švédština)"
 
-#: bookwyrm/settings.py:333
+#: bookwyrm/settings.py:332
 msgid "Українська (Ukrainian)"
 msgstr "Українська (Ukrajinština)"
 
-#: bookwyrm/settings.py:334
+#: bookwyrm/settings.py:333
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (zjednodušená čínština)"
 
-#: bookwyrm/settings.py:335
+#: bookwyrm/settings.py:334
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (tradiční čínština)"
 
@@ -697,7 +711,7 @@ msgid "Statuses posted:"
 msgstr "Publikované statusy:"
 
 #: bookwyrm/templates/about/layout.html:19
-#: bookwyrm/templates/setup/config.html:74
+#: bookwyrm/templates/setup/config.html:68
 msgid "Software version:"
 msgstr "Verze softwaru:"
 
@@ -1259,7 +1273,7 @@ msgstr "Goodreads:"
 #: bookwyrm/templates/book/book_identifiers.html:58
 #: bookwyrm/templates/book/edit/edit_book_form.html:388
 msgid "Finna ID:"
-msgstr ""
+msgstr "Finna ID:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1676,7 +1690,7 @@ msgid "This link is taking you to: <code>%(link_url)s</code>.<br> Is that where 
 msgstr "Tento odkaz vás pošle na: <code>%(link_url)s</code>.<br> Chcete tam pokračovat?"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:27
-#: bookwyrm/templates/setup/config.html:139
+#: bookwyrm/templates/setup/config.html:134
 msgid "Continue"
 msgstr "Pokračovat"
 
@@ -3456,18 +3470,18 @@ msgstr ""
 #: bookwyrm/templates/import/user_import_status.html:22
 #: bookwyrm/templates/settings/imports/imports.html:264
 msgid "User Imports"
-msgstr ""
+msgstr "Uživatelské importy"
 
 #: bookwyrm/templates/import/user_import_status.html:70
 #: bookwyrm/templates/settings/dashboard/user_chart.html:11
 msgid "Total"
-msgstr ""
+msgstr "Celkem"
 
 #: bookwyrm/templates/import/user_import_status.html:79
 #: bookwyrm/templates/preferences/export-user.html:27
 #: bookwyrm/templates/settings/dashboard/dashboard.html:27
 msgid "Statuses"
-msgstr ""
+msgstr "Statusy"
 
 #: bookwyrm/templates/import/user_import_status.html:85
 msgid "Follows & Blocks"
@@ -3479,7 +3493,7 @@ msgstr "Importované knihy"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:5
 msgid "User Import Troubleshooting"
-msgstr ""
+msgstr "Řešení problémů s importáváním"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:26
 msgid "Your account was not set as an alias of the original user account"
@@ -3779,7 +3793,7 @@ msgstr "Otevřené"
 
 #: bookwyrm/templates/lists/form.html:68
 msgid "Anyone can add books to this list"
-msgstr ""
+msgstr "Kdokoli může přidat knihy do tohoto seznamu"
 
 #: bookwyrm/templates/lists/form.html:82
 msgid "Group"
@@ -3849,9 +3863,11 @@ msgstr "Přidáno <a href=\"%(user_path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/list.html:146
 msgid "List position"
-msgstr ""
+msgstr "Umístění seznamu"
 
 #: bookwyrm/templates/lists/list.html:152
+#: bookwyrm/templates/settings/connectors/connector.html:28
+#: bookwyrm/templates/settings/connectors/update.html:27
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:23
 msgid "Set"
 msgstr ""
@@ -4615,7 +4631,7 @@ msgstr "Profil"
 #: bookwyrm/templates/preferences/edit_user.html:64
 #: bookwyrm/templates/settings/site.html:11
 #: bookwyrm/templates/settings/site.html:89
-#: bookwyrm/templates/setup/config.html:91
+#: bookwyrm/templates/setup/config.html:85
 msgid "Display"
 msgstr "Zobrazení"
 
@@ -5042,7 +5058,7 @@ msgstr ""
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:103
+#: bookwyrm/templates/settings/layout.html:107
 msgid "Announcements"
 msgstr ""
 
@@ -5249,6 +5265,7 @@ msgid "Import triggered"
 msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:57
+#: bookwyrm/templates/settings/layout.html:98
 msgid "Connectors"
 msgstr ""
 
@@ -5307,6 +5324,8 @@ msgid "Run time"
 msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:134
+#: bookwyrm/templates/settings/connectors/connector.html:22
+#: bookwyrm/templates/settings/connectors/update.html:21
 msgid "Priority"
 msgstr ""
 
@@ -5337,6 +5356,66 @@ msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:208
 msgid "Errors"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/available.html:15
+msgid "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof."
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/available.html:28
+msgid "Create new connector"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connector.html:35
+#: bookwyrm/templates/settings/connectors/update.html:33
+#: bookwyrm/templates/settings/users/user_info.html:87
+msgid "Deactivation reason:"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connector.html:50
+#: bookwyrm/templates/settings/connectors/update.html:47
+msgid "Deactivate"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connector.html:61
+#: bookwyrm/templates/settings/connectors/update.html:58
+msgid "Activate"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connectors.html:4
+#: bookwyrm/templates/settings/connectors/connectors.html:6
+msgid "Connector Settings"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connectors.html:11
+msgid "Connectors are sources of data about books and authors."
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connectors.html:12
+msgid "The priority determines the order in which search results appear. The highest priority is <code>1</code>. The default priority is <code>2</code>."
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connectors.html:14
+msgid "Connector settings only determine whether a connector will be used to deliver search results. To manage more interactions with other federated servers, including domain blocks, see"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connectors.html:14
+#: bookwyrm/templates/settings/federation/edit_instance.html:12
+#: bookwyrm/templates/settings/federation/instance.html:24
+#: bookwyrm/templates/settings/federation/instance_blocklist.html:12
+#: bookwyrm/templates/settings/federation/instance_list.html:3
+#: bookwyrm/templates/settings/federation/instance_list.html:5
+#: bookwyrm/templates/settings/layout.html:47
+msgid "Federated Instances"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/update.html:66
+msgid "should be updated. Check recent release notes for more information."
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/update.html:76
+#: bookwyrm/templates/snippets/create_status/post_options_block.html:19
+msgid "Update"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
@@ -5505,7 +5584,7 @@ msgid "Successfully sent test email."
 msgstr ""
 
 #: bookwyrm/templates/settings/email_config.html:32
-#: bookwyrm/templates/setup/config.html:102
+#: bookwyrm/templates/setup/config.html:96
 msgid "Email sender:"
 msgstr ""
 
@@ -5551,15 +5630,6 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance_list.html:9
 #: bookwyrm/templates/settings/federation/instance_list.html:10
 msgid "Add instance"
-msgstr ""
-
-#: bookwyrm/templates/settings/federation/edit_instance.html:12
-#: bookwyrm/templates/settings/federation/instance.html:24
-#: bookwyrm/templates/settings/federation/instance_blocklist.html:12
-#: bookwyrm/templates/settings/federation/instance_list.html:3
-#: bookwyrm/templates/settings/federation/instance_list.html:5
-#: bookwyrm/templates/settings/layout.html:47
-msgid "Federated Instances"
 msgstr ""
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:28
@@ -6018,18 +6088,18 @@ msgstr ""
 msgid "Scheduled tasks"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:99
+#: bookwyrm/templates/settings/layout.html:103
 msgid "Instance Settings"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:107
+#: bookwyrm/templates/settings/layout.html:111
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:113
-#: bookwyrm/templates/settings/layout.html:116
+#: bookwyrm/templates/settings/layout.html:117
+#: bookwyrm/templates/settings/layout.html:120
 #: bookwyrm/templates/settings/registration.html:4
 #: bookwyrm/templates/settings/registration.html:6
 #: bookwyrm/templates/settings/registration_limited.html:4
@@ -6037,7 +6107,7 @@ msgstr ""
 msgid "Registration"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:122
+#: bookwyrm/templates/settings/layout.html:126
 #: bookwyrm/templates/settings/site.html:107
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
@@ -6538,10 +6608,6 @@ msgstr ""
 msgid "Discoverable:"
 msgstr ""
 
-#: bookwyrm/templates/settings/users/user_info.html:87
-msgid "Deactivation reason:"
-msgstr ""
-
 #: bookwyrm/templates/settings/users/user_info.html:102
 msgid "Instance details"
 msgstr ""
@@ -6635,7 +6701,7 @@ msgid "Your domain appears to be misconfigured. It should not include protocol o
 msgstr ""
 
 #: bookwyrm/templates/setup/config.html:42
-msgid "You are running BookWyrm in production mode without https. <strong>USE_HTTPS</strong> should be enabled in production."
+msgid "You are running BookWyrm with <code>localhost</code>. This should <strong>never</strong> be used in a production environment."
 msgstr ""
 
 #: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:44
@@ -6646,39 +6712,39 @@ msgstr ""
 msgid "Instance domain:"
 msgstr ""
 
-#: bookwyrm/templates/setup/config.html:63
-msgid "Protocol:"
+#: bookwyrm/templates/setup/config.html:62
+msgid "Instance base URL:"
 msgstr ""
 
-#: bookwyrm/templates/setup/config.html:81
+#: bookwyrm/templates/setup/config.html:75
 msgid "Using S3:"
 msgstr ""
 
-#: bookwyrm/templates/setup/config.html:95
+#: bookwyrm/templates/setup/config.html:89
 msgid "Default interface language:"
 msgstr ""
 
-#: bookwyrm/templates/setup/config.html:109
+#: bookwyrm/templates/setup/config.html:103
 msgid "Enable preview images:"
 msgstr ""
 
-#: bookwyrm/templates/setup/config.html:116
+#: bookwyrm/templates/setup/config.html:110
 msgid "Enable image thumbnails:"
 msgstr ""
 
-#: bookwyrm/templates/setup/config.html:128
+#: bookwyrm/templates/setup/config.html:122
 msgid "Does everything look right?"
 msgstr ""
 
-#: bookwyrm/templates/setup/config.html:130
+#: bookwyrm/templates/setup/config.html:125
 msgid "This is your last chance to set your domain and protocol."
 msgstr ""
 
-#: bookwyrm/templates/setup/config.html:144
+#: bookwyrm/templates/setup/config.html:139
 msgid "You can change your instance settings in the <code>.env</code> file on your server."
 msgstr ""
 
-#: bookwyrm/templates/setup/config.html:148
+#: bookwyrm/templates/setup/config.html:143
 msgid "View installation instructions"
 msgstr ""
 
@@ -6874,10 +6940,6 @@ msgstr ""
 msgid "Comment:"
 msgstr ""
 
-#: bookwyrm/templates/snippets/create_status/post_options_block.html:19
-msgid "Update"
-msgstr ""
-
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:21
 msgid "Post"
 msgstr ""
@@ -6980,7 +7042,7 @@ msgid "BookWyrm's source code is freely available. You can contribute or report 
 msgstr ""
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:20
-#: bookwyrm/templates/snippets/stars.html:35
+#: bookwyrm/templates/snippets/stars.html:38
 msgid "No rating"
 msgstr ""
 
@@ -6994,7 +7056,7 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:64
-#: bookwyrm/templates/snippets/stars.html:18
+#: bookwyrm/templates/snippets/stars.html:20
 #, python-format
 msgid "%(rating)s star"
 msgid_plural "%(rating)s stars"
@@ -7231,7 +7293,7 @@ msgstr "Přestat číst"
 msgid "Finish reading"
 msgstr "Přečteno"
 
-#: bookwyrm/templates/snippets/stars.html:10
+#: bookwyrm/templates/snippets/stars.html:13
 msgid "Show rating"
 msgstr ""
 

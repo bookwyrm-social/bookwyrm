@@ -96,6 +96,13 @@
     <p class="content">
     {% trans "User export files will show 'complete' once ready. This may take a little while. Click the link to download your file." %}
     </p>
+    <p class="content">
+        {% blocktrans trimmed count counter=expiry_hours %}
+        Export files will be deleted after {{ expiry_hours }} hour.
+        {% plural %}
+        Export files will be deleted after {{ expiry_hours }} hours.
+        {% endblocktrans %}
+        </p>
     <div class="table-container">
         <table class="table is-striped is-fullwidth">
             <tr>
@@ -153,7 +160,7 @@
                             {% trans "Download your export" %}
                         </span>
                     </a>
-                    {% elif export.unavailable %}
+                    {% else %}
                     {% trans "Archive is no longer available" %}
                     {% endif %}
                 </td>
