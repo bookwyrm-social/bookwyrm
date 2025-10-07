@@ -238,6 +238,4 @@ class BookViews(TestCase):
             shelf_book = models.ShelfBook.objects.get()
             self.assertEqual(shelf_book.book, edition2)
         except RuntimeError as e:
-            self.fail(
-                f"Edition switching should succeed but raised: {e}"
-            )
+            self.fail(f"Edition switching should succeed but raised: {e}")
