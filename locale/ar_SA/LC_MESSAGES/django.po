@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-08 19:19+0000\n"
-"PO-Revision-Date: 2025-10-11 08:40\n"
+"PO-Revision-Date: 2025-10-11 09:51\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Arabic\n"
 "Language: ar\n"
@@ -121,11 +121,11 @@ msgstr "ترتيب تنازلي"
 
 #: bookwyrm/models/announcement.py:11
 msgid "Primary"
-msgstr ""
+msgstr "أساسي"
 
 #: bookwyrm/models/announcement.py:12
 msgid "Success"
-msgstr ""
+msgstr "تم بنجاح"
 
 #: bookwyrm/models/announcement.py:13
 #: bookwyrm/templates/settings/invites/manage_invites.html:47
@@ -157,11 +157,11 @@ msgstr "حذف ذاتي"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Self deactivation"
-msgstr ""
+msgstr "تعطيل ذاتي"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Moderator suspension"
-msgstr ""
+msgstr "إيقاف المشرف"
 
 #: bookwyrm/models/base_model.py:22
 msgid "Moderator deletion"
@@ -169,7 +169,7 @@ msgstr "حذف المراقب"
 
 #: bookwyrm/models/base_model.py:23
 msgid "Domain block"
-msgstr ""
+msgstr "حجب النطاق"
 
 #: bookwyrm/models/book.py:473
 msgid "Audiobook"
@@ -181,15 +181,15 @@ msgstr "كتاب الكتروني"
 
 #: bookwyrm/models/book.py:475
 msgid "Graphic novel"
-msgstr ""
+msgstr "الرواية الرسومية"
 
 #: bookwyrm/models/book.py:476
 msgid "Hardcover"
-msgstr ""
+msgstr "غلاف صُلْب"
 
 #: bookwyrm/models/book.py:477
 msgid "Paperback"
-msgstr ""
+msgstr "غلاف ورقي"
 
 #: bookwyrm/models/book.py:486 bookwyrm/models/book.py:493
 #: bookwyrm/models/book.py:499 bookwyrm/models/book.py:504
@@ -198,7 +198,7 @@ msgstr ""
 #: bookwyrm/models/book.py:543 bookwyrm/models/book.py:548
 #, python-format
 msgid "%(value)s doesn't look like an ISBN"
-msgstr ""
+msgstr "%(value)s لا يبدو مثل ISBN"
 
 #: bookwyrm/models/book.py:515 bookwyrm/models/book.py:555
 #, python-format
@@ -209,18 +209,18 @@ msgstr "%(value)s ليس لديه صيغة ISBN الصحيح، توقعنا %(ch
 #: bookwyrm/templates/settings/reports/report.html:115
 #: bookwyrm/templates/snippets/create_status.html:26
 msgid "Comment"
-msgstr ""
+msgstr "تعليق"
 
 #: bookwyrm/models/bookwyrm_import_job.py:152
 #: bookwyrm/templates/import/import_status.html:127
 #: bookwyrm/templates/import/manual_review.html:13
 #: bookwyrm/templates/snippets/create_status.html:16
 msgid "Review"
-msgstr ""
+msgstr "مراجعة"
 
 #: bookwyrm/models/bookwyrm_import_job.py:153
 msgid "Quotation"
-msgstr ""
+msgstr "اقتباس"
 
 #: bookwyrm/models/bookwyrm_import_job.py:181
 #: bookwyrm/templates/snippets/follow_button.html:22
@@ -232,7 +232,7 @@ msgstr "تابع"
 #: bookwyrm/templates/settings/link_domains/link_domains.html:87
 #: bookwyrm/templates/snippets/block_button.html:5
 msgid "Block"
-msgstr ""
+msgstr "حجب"
 
 #: bookwyrm/models/bookwyrm_import_job.py:398
 msgid "Unknown error importing book"
@@ -240,20 +240,20 @@ msgstr "خطأ غير معروف في استيراد الكتاب"
 
 #: bookwyrm/models/bookwyrm_import_job.py:496
 msgid "unauthorized"
-msgstr ""
+msgstr "غير مصرح"
 
 #: bookwyrm/models/bookwyrm_import_job.py:502
 msgid "Unknown error importing book status"
-msgstr ""
+msgstr "خطأ غير معروف في استيراد الكتاب"
 
 #: bookwyrm/models/bookwyrm_import_job.py:696
 #: bookwyrm/models/bookwyrm_import_job.py:722
 msgid "connection_error"
-msgstr ""
+msgstr "خطأ في التصحيح"
 
 #: bookwyrm/models/bookwyrm_import_job.py:732
 msgid "invalid_relationship"
-msgstr ""
+msgstr "عَلاقة غير صالح"
 
 #: bookwyrm/models/bookwyrm_import_job.py:740
 msgid "Unkown error importing relationship"
@@ -298,7 +298,7 @@ msgstr "يوجد مستخدم بهذا الاسم."
 #: bookwyrm/templates/snippets/privacy_select.html:11
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:11
 msgid "Public"
-msgstr ""
+msgstr "عام"
 
 #: bookwyrm/models/fields.py:226
 #: bookwyrm/templates/snippets/privacy-icons.html:7
@@ -306,7 +306,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/privacy_select.html:14
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:14
 msgid "Unlisted"
-msgstr ""
+msgstr "غير مدرج"
 
 #: bookwyrm/models/fields.py:227
 #: bookwyrm/templates/snippets/privacy_select.html:17
@@ -324,7 +324,7 @@ msgstr "المتابِعون"
 #: bookwyrm/templates/snippets/privacy_select.html:20
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:17
 msgid "Private"
-msgstr ""
+msgstr "خاص"
 
 #: bookwyrm/models/import_job.py:50 bookwyrm/models/job.py:19
 #: bookwyrm/templates/import/import.html:184
@@ -336,7 +336,7 @@ msgstr ""
 #: bookwyrm/templates/settings/imports/imports.html:270
 #: bookwyrm/templates/snippets/user_active_tag.html:8
 msgid "Active"
-msgstr ""
+msgstr "نشيطٌ"
 
 #: bookwyrm/models/import_job.py:51 bookwyrm/models/job.py:20
 #: bookwyrm/templates/import/import.html:182
@@ -345,7 +345,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/export-user.html:144
 #: bookwyrm/templates/settings/files.html:160
 msgid "Complete"
-msgstr ""
+msgstr "مكتمل"
 
 #: bookwyrm/models/import_job.py:52 bookwyrm/models/job.py:21
 msgid "Stopped"
@@ -366,7 +366,7 @@ msgstr ""
 #: bookwyrm/models/job.py:22
 #: bookwyrm/templates/import/user_import_status.html:69
 msgid "Failed"
-msgstr ""
+msgstr "فشل"
 
 #: bookwyrm/models/link.py:55
 msgid "Free"
@@ -374,7 +374,7 @@ msgstr "مجاني"
 
 #: bookwyrm/models/link.py:56
 msgid "Purchasable"
-msgstr ""
+msgstr "يمكن شراؤها"
 
 #: bookwyrm/models/link.py:57
 msgid "Available for loan"
@@ -595,7 +595,7 @@ msgstr ""
 
 #: bookwyrm/templates/403.html:9 bookwyrm/templates/landing/invite.html:21
 msgid "Permission Denied"
-msgstr ""
+msgstr "تم رفض الإذن"
 
 #: bookwyrm/templates/403.html:11
 #, python-format
@@ -1142,7 +1142,7 @@ msgstr "انقر لإضافة غلاف"
 
 #: bookwyrm/templates/book/book.html:113
 msgid "Failed to load cover"
-msgstr ""
+msgstr "إخفاق في تحميل الغلاف"
 
 #: bookwyrm/templates/book/book.html:124
 msgid "Click to enlarge"
@@ -1484,7 +1484,7 @@ msgstr ""
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:169
 msgid "First published date:"
-msgstr ""
+msgstr "تاريخ النشر الأول:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:177
 msgid "Published date:"
@@ -1505,7 +1505,7 @@ msgstr ""
 #: bookwyrm/templates/book/edit/edit_book_form.html:202
 #, python-format
 msgid "Author page for %(name)s"
-msgstr ""
+msgstr "صفحة المؤلف ل %(name)s"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:210
 msgid "Add Authors:"
@@ -1739,7 +1739,7 @@ msgstr "%(languages)s لغات"
 #: bookwyrm/templates/book/publisher_info.html:63
 #, python-format
 msgid "Published %(date)s by %(publisher)s."
-msgstr ""
+msgstr "نشر في %(date)s بواسطة %(publisher)s."
 
 #: bookwyrm/templates/book/publisher_info.html:65
 #, python-format
@@ -1775,7 +1775,7 @@ msgstr ""
 
 #: bookwyrm/templates/compose.html:7 bookwyrm/templates/compose.html:21
 msgid "Edit review"
-msgstr ""
+msgstr "تعديل التقييم"
 
 #: bookwyrm/templates/compose.html:9 bookwyrm/templates/compose.html:23
 msgid "Edit quote"
@@ -1803,7 +1803,7 @@ msgstr ""
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:15
 msgid "Sorry! We couldn't find that code."
-msgstr ""
+msgstr "عذراً! لم نتمكن من العثور على هذه ألتعليمه البرمجية."
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:19
 #: bookwyrm/templates/settings/users/user_info.html:92
@@ -1824,7 +1824,7 @@ msgstr ""
 #: bookwyrm/templates/confirm_email/resend.html:5
 #: bookwyrm/templates/confirm_email/resend_modal.html:5
 msgid "Resend confirmation link"
-msgstr ""
+msgstr "إعادة إرسال الرابط الخاص بالتأكيد"
 
 #: bookwyrm/templates/confirm_email/resend_modal.html:15
 #: bookwyrm/templates/landing/layout.html:68
@@ -2075,7 +2075,7 @@ msgstr ""
 #: bookwyrm/templates/email/moderation_report/html_content.html:21
 #: bookwyrm/templates/email/moderation_report/text_content.html:15
 msgid "View report"
-msgstr ""
+msgstr "عرض التقرير"
 
 #: bookwyrm/templates/email/moderation_report/subject.html:2
 #, python-format
@@ -2094,7 +2094,7 @@ msgstr ""
 #: bookwyrm/templates/landing/password_reset_request.html:4
 #: bookwyrm/templates/landing/password_reset_request.html:10
 msgid "Reset Password"
-msgstr ""
+msgstr "إعادة تعيين كلمة المرور"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:13
 #: bookwyrm/templates/email/password_reset/text_content.html:8
