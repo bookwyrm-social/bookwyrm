@@ -36,7 +36,6 @@ COPY bookwyrm /app/bookwyrm
 COPY entrypoint.sh /entrypoint.sh
 RUN sha512sum bookwyrm/migrations/*py|sha512sum|cut -f 1 -d" " > /build_migration_hash
 
-EXPOSE 8000
 VOLUME ["/app/exports", "/app/images", "/app/static"]
 
 ENTRYPOINT [ "/entrypoint.sh" ]
