@@ -26,6 +26,7 @@ if [ "$1" = "gunicorn" ]; then
     # after each update of assets, we run collectstatic, if it is already done, it is quick command
     # to check
     info "**** Checking static asset collection"
+    python manage.py compile_themes || die "failed to compile themes"
     python manage.py collectstatic --no-input || die "failed to collect static"
     info "**** Static assets collected"
 
