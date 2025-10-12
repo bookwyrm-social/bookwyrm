@@ -6,7 +6,8 @@ services:
       - "${PORT:-80}:80"
       - "${PORT:-443:443}"
     depends_on:
-      - web
+      web:
+        condition: service_healthy
     networks:
       - main
     environment:
@@ -52,12 +53,16 @@ services:
       - static_volume:/app/static
       - media_volume:/app/images
       - exports_volume:/app/exports
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000"]
+      interval: 10s
+      timeout: 10s
+      start_period: 10s
+      retries: 6
     depends_on:
       db:
         condition: service_healthy
         restart: true
-      celery_worker:
-        condition: service_started
       redis_activity:
         condition: service_started
     networks:
@@ -88,13 +93,23 @@ services:
     networks:
       - main
     command: celery -A celerywyrm worker -l info -Q high_priority,medium_priority,low_priority,streams,images,suggested_users,email,connectors,lists,inbox,imports,import_triggered,broadcast,misc
+    healthcheck:
+      test: celery -A celerywyrm status
+      interval: 10s
+      timeout: 10s
+      retries: 6
     volumes:
       - static_volume:/app/static
       - media_volume:/app/images
       - exports_volume:/app/exports
+    restart: always
     depends_on:
-      - db
-      - redis_broker
+      web:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      redis_broker:
+        condition: service_started
     restart: on-failure
   celery_beat:
     env_file: .env
@@ -102,24 +117,40 @@ services:
     networks:
       - main
     command: celery -A celerywyrm beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    healthcheck:
+      test: celery -A celerywyrm status
+      interval: 10s
+      timeout: 10s
+      retries: 6
     volumes:
       - static_volume:/app/static
       - media_volume:/app/images
       - exports_volume:/app/exports
+    restart: always
     depends_on:
       - celery_worker
     restart: on-failure
   flower:
     image: ghcr.io/bookwyrm/bookwyrm:main
     command: celery -A celerywyrm flower --basic_auth=${FLOWER_USER}:${FLOWER_PASSWORD} --url_prefix=flower
+    healthcheck:
+      test: celery -A celerywyrm status
+      interval: 10s
+      timeout: 10s
+      retries: 6
     env_file: .env
     volumes:
       - static_volume:/app/static
     networks:
       - main
+    restart: always
     depends_on:
-      - db
-      - redis_broker
+      db:
+        condition: service_healthy
+      redis_broker:
+        condition: service_started
+      web:
+        condition: service_healthy
     restart: on-failure
 volumes:
   pgdata:

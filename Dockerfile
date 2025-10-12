@@ -34,9 +34,9 @@ COPY celerywyrm /app/celerywyrm
 COPY locale /app/locale
 COPY bookwyrm /app/bookwyrm
 COPY entrypoint.sh /entrypoint.sh
-RUN sha512sum bookwyrm/migrations/*py|sha512sum|cut -f 1 -d" " > /build_migration_hash
 
 VOLUME ["/app/exports", "/app/images", "/app/static"]
 
+# Entrypoint script is used to do database migrations and collectstatic and init-db if needed
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD ["gunicorn", "bookwyrm.wsgi:application"]
