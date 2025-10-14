@@ -59,7 +59,7 @@ class ReadThrough(BookWyrmModel):
 
         constraints = [
             models.CheckConstraint(
-                check=Q(finish_date__gte=F("start_date")), name="chronology"
+                condition=Q(finish_date__gte=F("start_date")), name="chronology"
             )
         ]
         ordering = ("-start_date",)

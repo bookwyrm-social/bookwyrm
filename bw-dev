@@ -69,7 +69,33 @@ function awscommand {
         amazon/aws-cli $2
 }
 
+function create_secrets {
 
+    set +x
+    if python3 -c 'import secrets' &>/dev/null; then
+        SECRETS_COMMAND="python3 -c 'import secrets; print(secrets.token_urlsafe(50))'"
+    elif openssl &>null; then
+        SECRETS_COMMAND="openssl rand -hex 50"
+    else
+        echo "you need either python or openssl executable to generate secrets with this script"
+        exit 1
+    fi
+    for env_variable in SECRET_KEY POSTGRES_PASSWORD REDIS_ACTIVITY_PASSWORD REDIS_BROKER_PASSWORD FLOWER_PASSWORD; do
+        if grep -q -qi "^$env_variable" .env; then
+            echo -e "${env_variable} already configured, skipping"
+        else
+            echo -e "generating random secret in ${env_variable}"
+            generated_secret=$(eval "${SECRETS_COMMAND}")
+
+            if grep -q -qi "^#[[:blank:]]*$env_variable" .env; then
+                sed -i.bak -e "s/#[[:blank:]]*${env_variable}=.*/${env_variable}=\"${generated_secret}\"/" .env
+            else
+                echo "${env_variable}=\"${generated_secret}\"" >>.env
+            fi
+        fi
+    done
+    set -x
+}
 
 CMD=$1
 if [ -n "$CMD" ]; then
@@ -95,6 +121,9 @@ case "$CMD" in
         ;;
     init_ssl)
         $DOCKER_COMPOSE --file ./docker-compose-init_letsencrypt.yml up --exit-code-from=certbot
+        ;;
+    upgrade_db_version)
+        $DOCKER_COMPOSE --file docker-compose-upgrade-db.yml run --rm db_update
         ;;
     resetdb)
         prod_error
@@ -197,6 +226,9 @@ case "$CMD" in
         prod_error
         runweb mypy celerywyrm bookwyrm
         ;;
+    create_secrets)
+        create_secrets
+        ;;
     collectstatic_watch)
         prod_error
         npm run --prefix dev-tools watch:static
@@ -286,10 +318,13 @@ case "$CMD" in
         echo "    up [container]"
         echo "    down"
         echo "    service_ports_web"
+        echo "    upgrade_db_version"
         echo "    initdb"
         echo "    resetdb"
+        echo "    init_ssl"
         echo "    makemigrations [migration]"
         echo "    migrate [migration]"
+        echo "    create_secrets"
         echo "    bash"
         echo "    shell"
         echo "    dbshell"

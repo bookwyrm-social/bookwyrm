@@ -77,7 +77,7 @@ def init_permissions():
 
 def init_connectors():
     """access book data sources"""
-    models.Connector.objects.create(
+    models.Connector.objects.get_or_create(
         identifier="bookwyrm.social",
         name="Bookwyrm.social",
         connector_file="bookwyrm_connector",
@@ -90,7 +90,7 @@ def init_connectors():
     )
 
     # pylint: disable=line-too-long
-    models.Connector.objects.create(
+    models.Connector.objects.get_or_create(
         identifier="inventaire.io",
         name="Inventaire",
         connector_file="inventaire",
@@ -102,7 +102,7 @@ def init_connectors():
         priority=3,
     )
 
-    models.Connector.objects.create(
+    models.Connector.objects.get_or_create(
         identifier="openlibrary.org",
         name="OpenLibrary",
         connector_file="openlibrary",
@@ -118,12 +118,13 @@ def init_connectors():
 def init_settings():
     """info about the instance"""
     group_editor = Group.objects.filter(name="editor").first()
-    models.SiteSettings.objects.create(
-        support_link="https://www.patreon.com/bookwyrm",
-        support_title="Patreon",
-        install_mode=True,
-        default_user_auth_group=group_editor,
-    )
+    if not models.SiteSettings.objects.all().first():
+        models.SiteSettings.objects.create(
+            support_link="https://www.patreon.com/bookwyrm",
+            support_title="Patreon",
+            install_mode=True,
+            default_user_auth_group=group_editor,
+        )
 
 
 def init_link_domains():
@@ -136,7 +137,7 @@ def init_link_domains():
         ("theanarchistlibrary.org", "The Anarchist Library"),
     ]
     for domain, name in domains:
-        models.LinkDomain.objects.create(
+        models.LinkDomain.objects.get_or_create(
             domain=domain,
             name=name,
             status="approved",

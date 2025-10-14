@@ -1,9 +1,11 @@
 """ test searching for books """
 import os
 import re
+from io import BytesIO
 from PIL import Image
 
-from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files import temp as tempfile
+from django.core.files.uploadedfile import InMemoryUploadedFile, TemporaryUploadedFile
 from django.test import TestCase
 
 from bookwyrm.settings import BASE_URL
@@ -30,17 +32,36 @@ class TestUtils(TestCase):
             validate_url_domain("https://up-to-no-good.tld/bad-actor.exe")
         )
 
-    def test_remove_uploaded_image_exif(self):
+    def test_remove_uploaded_image_inmemory_exif(self):
         """Check that EXIF data is removed from image"""
         image_path = "bookwyrm/tests/data/default_avi_exif.jpg"
         with open(image_path, "rb") as image_file:
             source = InMemoryUploadedFile(
-                image_file,
+                BytesIO(image_file.read()),
                 "cover",
                 "default_avi_exif.jpg",
                 "image/jpeg",
                 os.fstat(image_file.fileno()).st_size,
                 None,
             )
-            sanitized_image = Image.open(remove_uploaded_image_exif(source).open())
-            self.assertNotIn("exif", sanitized_image.info)
+        result = remove_uploaded_image_exif(source)
+        with Image.open(result) as image:
+            self.assertNotIn("exif", image.info)
+
+    def test_remove_uploaded_image_temporary_exif(self):
+        """Check that EXIF data is removed from image"""
+        image_path = "bookwyrm/tests/data/default_avi_exif.jpg"
+        temporary_file = tempfile.NamedTemporaryFile(mode="w+b", suffix=".jpg")
+        with open(image_path, "rb") as image_file:
+            temporary_file.write(image_file.read())
+            temporary_file.seek(0)
+        source = TemporaryUploadedFile(
+            temporary_file.name,
+            "image/jpeg",
+            os.fstat(temporary_file.fileno()).st_size,
+            None,
+        )
+        source.file = temporary_file
+        result = remove_uploaded_image_exif(source)
+        with Image.open(result) as image:
+            self.assertNotIn("exif", image.info)

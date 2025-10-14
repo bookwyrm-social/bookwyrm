@@ -18,7 +18,8 @@ from bookwyrm.models import bookwyrm_import_job
 class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
     """testing user import functions"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """setting stuff up"""
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
@@ -207,7 +208,7 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
     def test_follow_relationship(self):
         """Test take a remote ID and create a follow"""
 
-        task = bookwyrm_import_job.UserRelationshipImport.objects.create(
+        task = bookwyrm_import_job.UserImportRelationship.objects.create(
             parent_job=self.job,
             relationship="follow",
             remote_id="https://blah.blah/user/rat",
@@ -256,7 +257,9 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         self.assertEqual(models.Edition.objects.count(), 1)
 
         # run the task
-        bookwyrm_import_job.import_book_task(child_id=task.id)
+        bookwyrm_import_job.import_book_task(
+            child_id=task.id, origin_is_ok=False, job_type="UserImportBook"
+        )
 
         self.assertTrue(models.Edition.objects.filter(isbn_13="9780300070163").exists())
         self.assertEqual(models.Edition.objects.count(), 2)
@@ -281,7 +284,9 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         self.assertTrue(models.Edition.objects.filter(isbn_13="9780062975645").exists())
 
         # run the task
-        bookwyrm_import_job.import_book_task(child_id=task.id)
+        bookwyrm_import_job.import_book_task(
+            child_id=task.id, origin_is_ok=False, job_type="UserImportBook"
+        )
 
         # Check the existing Edition did not get overwritten
         self.assertEqual(models.Edition.objects.count(), 1)
@@ -300,7 +305,9 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         self.assertEqual(models.Work.objects.count(), 1)
 
         # run the task
-        bookwyrm_import_job.import_book_task(child_id=task.id)
+        bookwyrm_import_job.import_book_task(
+            child_id=task.id, origin_is_ok=False, job_type="UserImportBook"
+        )
 
         # Check the existing Work did not get overwritten
         self.assertEqual(models.Work.objects.count(), 1)
@@ -322,7 +329,9 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         self.assertEqual(models.Edition.objects.count(), 1)
 
         # run the task
-        bookwyrm_import_job.import_book_task(child_id=task.id)
+        bookwyrm_import_job.import_book_task(
+            child_id=task.id, origin_is_ok=False, job_type="UserImportBook"
+        )
 
         self.assertTrue(models.Edition.objects.filter(isbn_13="9780300070163").exists())
         self.assertEqual(models.Edition.objects.count(), 2)
@@ -349,7 +358,9 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         )
 
         # run the task
-        bookwyrm_import_job.import_book_task(child_id=task.id)
+        bookwyrm_import_job.import_book_task(
+            child_id=task.id, origin_is_ok=False, job_type="UserImportBook"
+        )
 
         # Check the Edition was added
         self.assertEqual(models.Edition.objects.count(), 2)
@@ -370,7 +381,9 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         self.assertEqual(models.Work.objects.count(), 1)
 
         # run the task
-        bookwyrm_import_job.import_book_task(child_id=task.id)
+        bookwyrm_import_job.import_book_task(
+            child_id=task.id, origin_is_ok=False, job_type="UserImportBook"
+        )
 
         # Check the Work was added
         self.assertEqual(models.Work.objects.count(), 2)
@@ -380,7 +393,7 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
     def test_block_relationship(self):
         """test adding blocks for users"""
 
-        task = bookwyrm_import_job.UserRelationshipImport.objects.create(
+        task = bookwyrm_import_job.UserImportRelationship.objects.create(
             parent_job=self.job,
             relationship="block",
             remote_id="https://blah.blah/user/badger",
@@ -423,7 +436,9 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
 
         self.assertEqual(models.Edition.objects.count(), 1)
 
-        bookwyrm_import_job.import_book_task(child_id=task.id)
+        bookwyrm_import_job.import_book_task(
+            child_id=task.id, origin_is_ok=False, job_type="UserImportBook"
+        )
 
         self.assertEqual(models.Edition.objects.count(), 1)
 
@@ -436,7 +451,9 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         )
 
         self.assertEqual(models.Edition.objects.count(), 1)
-        bookwyrm_import_job.import_book_task(child_id=task.id)
+        bookwyrm_import_job.import_book_task(
+            child_id=task.id, origin_is_ok=False, job_type="UserImportBook"
+        )
         self.assertTrue(models.Edition.objects.filter(isbn_13="9780300070163").exists())
         self.assertEqual(models.Edition.objects.count(), 2)
 
@@ -768,3 +785,31 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         )
 
         self.assertTrue(exists_two)
+
+    def test_import_file_is_deleted(self):
+        """Test file is deleted after import"""
+
+        with open(self.archive_file_path, "rb") as fileobj:
+            self.job.archive_file = File(fileobj)
+            self.job.save()
+
+        self.assertNotEqual(self.job.archive_file, None)
+
+        self.job.complete_job()
+
+        self.assertEqual(self.job.archive_file, None)
+
+    def test_create_book_from_json(self):
+        """Can we create a book from JSON?"""
+
+        self.assertEqual(
+            models.Edition.objects.filter(title="Seeing Like A State").count(), 0
+        )
+
+        book_data = self.json_data.get("books")[0]
+        book = bookwyrm_import_job.create_book_from_json(book_data)
+
+        self.assertEqual(book.title, "Seeing Like A State")
+        self.assertEqual(
+            models.Edition.objects.filter(title="Seeing Like A State").count(), 1
+        )

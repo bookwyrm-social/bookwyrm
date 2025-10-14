@@ -87,8 +87,8 @@ class Connector(AbstractConnector):
     ) -> Iterator[SearchResult]:
         best_score = None
         for search_result in data.get("results", []):
-            images = search_result.get("image")
-            cover = f"{self.covers_url}/img/entities/{images[0]}" if images else None
+            image = search_result.get("image")
+            cover = f"{self.covers_url}{image}" if image else None
             # a deeply messy translation of inventaire's scores
             confidence = float(search_result.get("_score", 0.1))
             if best_score is None:

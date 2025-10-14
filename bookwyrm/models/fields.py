@@ -25,7 +25,7 @@ from bookwyrm.utils.partial_date import (
     PartialDateModel,
     from_partial_isoformat,
 )
-from bookwyrm.settings import MEDIA_FULL_URL
+from bookwyrm.settings import MEDIA_FULL_URL, DATA_UPLOAD_MAX_MEMORY_SIZE
 
 
 def validate_remote_id(value):
@@ -293,7 +293,10 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
             activity["cc"] = []
 
 
-class ForeignKey(ActivitypubRelatedFieldMixin, models.ForeignKey):
+class ForeignKey(  # pylint: disable=abstract-method
+    ActivitypubRelatedFieldMixin,
+    models.ForeignKey,
+):
     """activitypub-aware foreign key field"""
 
     def field_to_activity(self, value):
@@ -302,7 +305,9 @@ class ForeignKey(ActivitypubRelatedFieldMixin, models.ForeignKey):
         return value.remote_id
 
 
-class OneToOneField(ActivitypubRelatedFieldMixin, models.OneToOneField):
+class OneToOneField(  # pylint: disable=abstract-method
+    ActivitypubRelatedFieldMixin, models.OneToOneField
+):
     """activitypub-aware foreign key field"""
 
     def field_to_activity(self, value):
@@ -311,7 +316,9 @@ class OneToOneField(ActivitypubRelatedFieldMixin, models.OneToOneField):
         return value.to_activity()
 
 
-class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
+class ManyToManyField(  # pylint: disable=abstract-method
+    ActivitypubFieldMixin, models.ManyToManyField
+):
     """activitypub-aware many to many field"""
 
     def __init__(self, *args, link_only=False, **kwargs):
@@ -362,7 +369,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         return items
 
 
-class TagField(ManyToManyField):
+class TagField(ManyToManyField):  # pylint: disable=abstract-method
     """special case of many to many that uses Tags"""
 
     def __init__(self, *args, **kwargs):
@@ -430,6 +437,16 @@ class ClearableFileInputWithWarning(ClearableFileInput):
     """max file size warning"""
 
     template_name = "widgets/clearable_file_input_with_warning.html"
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["widget"]["attrs"].update(
+            {
+                "data-max-upload": DATA_UPLOAD_MAX_MEMORY_SIZE,
+                "max_mb": DATA_UPLOAD_MAX_MEMORY_SIZE >> 20,
+            }
+        )
+        return context
 
 
 class CustomImageField(DjangoImageField):
