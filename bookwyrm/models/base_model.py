@@ -62,7 +62,7 @@ class BookWyrmModel(models.Model):
             name = self.name
 
         if name:
-            slug = slugify(name)
+            slug = slugify(name, allow_unicode=True)
             local = f"{local}/s/{slug}"
 
         return local

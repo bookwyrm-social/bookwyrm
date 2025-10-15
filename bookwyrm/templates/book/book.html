@@ -13,6 +13,9 @@
     {% include 'snippets/opengraph.html' with title=book.title description=book|book_description image=book_image %}
 {% endblock %}
 
+{% block head_links %}
+    {% include 'snippets/dublincore.html' with book=book %}
+{% endblock %}
 {% block content %}
 {% if update_error %}
 <div class="notification is-danger is-light">
@@ -181,6 +184,21 @@
                     </a>
                 </p>
                 {% endif %}
+                {% if book.finna_key %}
+                <p>
+                    <a href="{{ book.finna_link }}" target="_blank" rel="nofollow noopener noreferrer">
+                        {% trans "View on Finna" %}
+                    </a>
+
+                    {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+                    <button class="button is-small button-paragraph" type="button" data-modal-open="finna_sync">
+                        <span class="icon icon-download" title="{{ button_text }}"></span>
+                        <span class="is-sr-only-mobile">{{ button_text }}</span>
+                    </button>
+                    {% include "book/sync_modal.html" with source="api.finna.fi" source_name="Finna" id="finna_sync" %}
+                    {% endif %}
+                </p>
+                {% endif %}
             </section>
         </div>
 
@@ -194,7 +212,10 @@
                 >
                     <meta itemprop="ratingValue" content="{{ rating|floatformat }}">
                     <meta itemprop="reviewCount" content="{{ review_count }}">
-
+                    
+                    {% if review_count > 0 %}
+                    <a href="#reviews" class="has-text-link">
+                    {% endif %}
                     <span>
                         {% include 'snippets/stars.html' with rating=rating %}
 
@@ -204,6 +225,9 @@
                             ({{ review_count }} reviews)
                         {% endblocktrans %}
                     </span>
+                    {% if review_count > 0 %}
+                    </a>
+                    {% endif %}
                 </div>
 
                 {% with full=book|book_description itemprop='abstract' %}

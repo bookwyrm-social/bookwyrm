@@ -83,7 +83,7 @@ class Dashboard(View):
             schedule, _ = IntervalSchedule.objects.get_or_create(
                 **schedule_form.cleaned_data
             )
-            PeriodicTask.objects.get_or_create(
+            PeriodicTask.objects.update_or_create(
                 interval=schedule,
                 name="check-for-updates",
                 task="bookwyrm.models.site.check_for_updates_task",

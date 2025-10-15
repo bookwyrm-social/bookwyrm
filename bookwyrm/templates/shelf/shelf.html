@@ -12,6 +12,11 @@
     {% include 'snippets/opengraph.html' with image=user.preview_image %}
 {% endblock %}
 
+
+{% block head_links %}
+    <link rel="alternate" type="application/rss+xml" href="{{ request.get_full_path }}/rss" title="{{ user.display_name }} - {{ shelf.name }}" />
+{% endblock %}
+
 {% block content %}
 <header class="block">
     <h1 class="title">

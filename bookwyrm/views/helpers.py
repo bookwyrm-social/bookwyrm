@@ -156,8 +156,7 @@ def handle_reading_status(user, shelf, book, privacy):
         # it's a non-standard shelf, don't worry about it
         return
 
-    status = create_generated_note(user, message, mention_books=[book], privacy=privacy)
-    status.save()
+    create_generated_note(user, message, mention_books=[book], privacy=privacy)
 
 
 def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:

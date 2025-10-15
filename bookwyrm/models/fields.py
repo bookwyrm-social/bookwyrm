@@ -25,7 +25,7 @@ from bookwyrm.utils.partial_date import (
     PartialDateModel,
     from_partial_isoformat,
 )
-from bookwyrm.settings import MEDIA_FULL_URL
+from bookwyrm.settings import MEDIA_FULL_URL, DATA_UPLOAD_MAX_MEMORY_SIZE
 
 
 def validate_remote_id(value):
@@ -86,7 +86,9 @@ class ActivitypubFieldMixin:
                 raise
             value = getattr(data, "actor")
         formatted = self.field_from_activity(
-            value, allow_external_connections=allow_external_connections
+            value,
+            allow_external_connections=allow_external_connections,
+            trigger=instance,
         )
         if formatted is None or formatted is MISSING or formatted == {}:
             return False
@@ -128,7 +130,7 @@ class ActivitypubFieldMixin:
         return value
 
     # pylint: disable=unused-argument
-    def field_from_activity(self, value, allow_external_connections=True):
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
         """formatter to convert activitypub into a model value"""
         if value and hasattr(self, "activitypub_wrapper"):
             value = value.get(self.activitypub_wrapper)
@@ -150,7 +152,9 @@ class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
         self.load_remote = load_remote
         super().__init__(*args, **kwargs)
 
-    def field_from_activity(self, value, allow_external_connections=True):
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
+        """trigger: the object that triggered this deserialization.
+        For example the Edition for which self is the parent Work"""
         if not value:
             return None
 
@@ -160,7 +164,7 @@ class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
                 # only look in the local database
                 return related_model.find_existing(value.serialize())
             # this is an activitypub object, which we can deserialize
-            return value.to_model(model=related_model)
+            return value.to_model(model=related_model, trigger=trigger)
         try:
             # make sure the value looks like a remote id
             validate_remote_id(value)
@@ -289,7 +293,10 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
             activity["cc"] = []
 
 
-class ForeignKey(ActivitypubRelatedFieldMixin, models.ForeignKey):
+class ForeignKey(  # pylint: disable=abstract-method
+    ActivitypubRelatedFieldMixin,
+    models.ForeignKey,
+):
     """activitypub-aware foreign key field"""
 
     def field_to_activity(self, value):
@@ -298,7 +305,9 @@ class ForeignKey(ActivitypubRelatedFieldMixin, models.ForeignKey):
         return value.remote_id
 
 
-class OneToOneField(ActivitypubRelatedFieldMixin, models.OneToOneField):
+class OneToOneField(  # pylint: disable=abstract-method
+    ActivitypubRelatedFieldMixin, models.OneToOneField
+):
     """activitypub-aware one to one field"""
 
     def field_to_activity(self, value):
@@ -307,7 +316,9 @@ class OneToOneField(ActivitypubRelatedFieldMixin, models.OneToOneField):
         return value.to_activity()
 
 
-class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
+class ManyToManyField(  # pylint: disable=abstract-method
+    ActivitypubFieldMixin, models.ManyToManyField
+):
     """activitypub-aware many to many field"""
 
     def __init__(self, *args, link_only=False, **kwargs):
@@ -336,7 +347,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
             return f"{value.instance.remote_id}/{self.name}"
         return [i.remote_id for i in value.all()]
 
-    def field_from_activity(self, value, allow_external_connections=True):
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
         if value is None or value is MISSING:
             return None
         if not isinstance(value, list):
@@ -358,7 +369,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         return items
 
 
-class TagField(ManyToManyField):
+class TagField(ManyToManyField):  # pylint: disable=abstract-method
     """special case of many to many that uses Tags"""
 
     def __init__(self, *args, **kwargs):
@@ -386,7 +397,7 @@ class TagField(ManyToManyField):
             )
         return tags
 
-    def field_from_activity(self, value, allow_external_connections=True):
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
         if not isinstance(value, list):
             # GoToSocial DMs and single-user mentions are
             # sent as objects, not as an array of objects
@@ -426,6 +437,16 @@ class ClearableFileInputWithWarning(ClearableFileInput):
     """max file size warning"""
 
     template_name = "widgets/clearable_file_input_with_warning.html"
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["widget"]["attrs"].update(
+            {
+                "data-max-upload": DATA_UPLOAD_MAX_MEMORY_SIZE,
+                "max_mb": DATA_UPLOAD_MAX_MEMORY_SIZE >> 20,
+            }
+        )
+        return context
 
 
 class CustomImageField(DjangoImageField):
@@ -481,7 +502,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
 
         return activitypub.Image(url=url, name=alt)
 
-    def field_from_activity(self, value, allow_external_connections=True):
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
         image_slug = value
         # when it's an inline image (User avatar/icon, Book cover), it's a json
         # blob, but when it's an attached image, it's just a url
@@ -538,7 +559,7 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
             return None
         return value.isoformat()
 
-    def field_from_activity(self, value, allow_external_connections=True):
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
         missing_fields = datetime(1970, 1, 1)  # "2022-10" => "2022-10-01"
         try:
             date_value = dateutil.parser.parse(value, default=missing_fields)
@@ -556,7 +577,7 @@ class PartialDateField(ActivitypubFieldMixin, PartialDateModel):
     def field_to_activity(self, value) -> str:
         return value.partial_isoformat() if value else None
 
-    def field_from_activity(self, value, allow_external_connections=True):
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
         # pylint: disable=no-else-return
         try:
             return from_partial_isoformat(value)
@@ -584,7 +605,7 @@ class PartialDateField(ActivitypubFieldMixin, PartialDateModel):
 class HtmlField(ActivitypubFieldMixin, models.TextField):
     """a text field for storing html"""
 
-    def field_from_activity(self, value, allow_external_connections=True):
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
         if not value or value == MISSING:
             return None
         return clean(value)

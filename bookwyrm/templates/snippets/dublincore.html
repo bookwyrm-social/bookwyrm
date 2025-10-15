@@ -1,0 +1,34 @@
+{% spaceless %}
+{% load static %}
+{% load book_display_tags %}
+
+{% if book.isbn_13 %}<meta name="DC.Identifier" content="URN:ISBN:{{ book.isbn_13 }}" />{% endif %}
+{% if book.oclc_number %}<meta name="DC.Identifier" content="URN:OCLC:{{ book.oclc_number }}" />{% endif %}
+{% if book.asin %}<meta name="DC.Identifier" content="URN:ASIN:{{ book.asin }}" />{% endif %}
+{% if book.aasin %}<meta name="DC.Identifier" content="URN:AASIN:{{ book.aasin }}" />{% endif %}
+{% if book.isfdb %}<meta name="DC.Identifier" content="URN:ISFDB:{{ book.isfdb }}" />{% endif %}
+{% if book.goodreads_key %}<meta name="DC.Identifier" content="URN:Goodreads:{{ book.goodreads_key }}" />{% endif %}
+{% if book.finna_key %}<meta name="DC.Identifier" content="URN:Finna:{{ book.finna_key }}" />{% endif %}
+{% if book.languages %}
+{% for language in book.languages %}
+<meta name="DC.Language" content="{{ language }}" />
+{% endfor %}
+{% endif %}
+<meta name="DC.Type" content="Book" />
+<meta name="DC.Title" content="{{ book.title }}" />
+{% if book.subtitle %}
+<meta name="DC.Alternative" content="{{ book.subtitle }}" />
+{% endif %}
+{% if book.publishers %}
+{% for publisher in book.publishers %}
+<meta name="DC.Publisher" content="{{ publisher }}" />
+{% endfor %}
+{% endif %}
+{% if book.published_date or book.first_published_date %}
+<meta name="DC.Date" content="{{ book.first_published_date|default:book.published_date|date:'Y-m-d' }}" />
+{% endif %}
+<meta name="DC.Description" content="{{ book|book_description|striptags }}" />
+{% for author in book.authors.all %}
+<meta name="DC.Creator" content="{{ author.name }}" />
+{% endfor %}
+{% endspaceless %}

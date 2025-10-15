@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
@@ -29,6 +30,7 @@ from bookwyrm.views.helpers import (
 class List(View):
     """book list page"""
 
+    @vary_on_headers("Accept")
     def get(self, request, list_id, **kwargs):
         """display a book list"""
         add_failed = kwargs.get("add_failed", False)

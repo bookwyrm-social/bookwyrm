@@ -140,6 +140,64 @@ urlpatterns = [
         name="settings-announcements-delete",
     ),
     re_path(
+        r"^settings/connectors/?$",
+        views.ConnectorSettings.as_view(),
+        name="settings-connectors",
+    ),
+    re_path(
+        r"^settings/connectors/(?P<connector_id>\d+)/deactivate?$",
+        views.deactivate_connector,
+        name="settings-deactivate-connector",
+    ),
+    re_path(
+        r"^settings/connectors/(?P<connector_id>\d+)/activate?$",
+        views.activate_connector,
+        name="settings-activate-connector",
+    ),
+    re_path(
+        r"^settings/connectors/(?P<connector_id>\d+)/priority?$",
+        views.set_connector_priority,
+        name="settings-connector-priority",
+    ),
+    re_path(
+        r"^settings/connectors/create?$",
+        views.create_connector,
+        name="settings-create-connector",
+    ),
+    re_path(
+        r"^settings/connectors/(?P<connector_id>\d+)/update?$",
+        views.update_connector,
+        name="settings-update-connector",
+    ),
+    re_path(
+        r"^settings/files/?$", views.FilesMaintenance.as_view(), name="settings-files"
+    ),
+    re_path(
+        r"^settings/delete-exports/set-age/?$",
+        views.set_export_expiry_age,
+        name="settings-delete-exports-set-age",
+    ),
+    re_path(
+        r"^settings/delete-exports/schedule/?$",
+        views.schedule_export_delete_task,
+        name="settings-delete-exports-schedule",
+    ),
+    re_path(
+        r"^settings/delete-exports/unschedule/(?P<task_id>\d+)/?$",
+        views.unschedule_export_delete_task,
+        name="settings-delete-exports-unschedule",
+    ),
+    re_path(
+        r"^settings/delete-exports/run/?$",
+        views.run_export_deletions,
+        name="settings-delete-exports-run",
+    ),
+    re_path(
+        r"^settings/delete-exports/cancel/(?P<job_id>\d+)/?$",
+        views.cancel_export_delete_job,
+        name="settings-delete-exports-cancel",
+    ),
+    re_path(
         r"^settings/email-preview/?$",
         views.admin.email_config.email_preview,
         name="settings-email-preview",
@@ -435,6 +493,11 @@ urlpatterns = [
     re_path(r"^import/?$", views.Import.as_view(), name="import"),
     re_path(r"^user-import/?$", views.UserImport.as_view(), name="user-import"),
     re_path(
+        r"^user-import/(?P<job_id>\d+)/?$",
+        views.UserImportStatus.as_view(),
+        name="user-import-status",
+    ),
+    re_path(
         r"^import/(?P<job_id>\d+)/?$",
         views.ImportStatus.as_view(),
         name="import-status",
@@ -445,6 +508,11 @@ urlpatterns = [
         name="import-stop",
     ),
     re_path(
+        r"^user-import/(?P<job_id>\d+)/stop/?$",
+        views.stop_user_import,
+        name="user-import-stop",
+    ),
+    re_path(
         r"^import/(?P<job_id>\d+)/retry/(?P<item_id>\d+)/?$",
         views.retry_item,
         name="import-item-retry",
@@ -453,6 +521,11 @@ urlpatterns = [
         r"^import/(?P<job_id>\d+)/failed/?$",
         views.ImportTroubleshoot.as_view(),
         name="import-troubleshoot",
+    ),
+    re_path(
+        r"^user-import/(?P<job_id>\d+)/failed/?$",
+        views.UserImportTroubleshoot.as_view(),
+        name="user-import-troubleshoot",
     ),
     re_path(
         r"^import/(?P<job_id>\d+)/review/?$",
@@ -578,9 +651,19 @@ urlpatterns = [
         name="shelf",
     ),
     re_path(
+        rf"^{USER_PATH}/(shelf|books)/(?P<shelf_identifier>[\w-]+)/rss/?$",
+        views.rss_feed.RssShelfFeed(),
+        name="shelf-rss",
+    ),
+    re_path(
         rf"^{LOCAL_USER_PATH}/(books|shelf)/(?P<shelf_identifier>[\w-]+)(.json)?/?$",
         views.Shelf.as_view(),
         name="shelf",
+    ),
+    re_path(
+        rf"^{LOCAL_USER_PATH}/(books|shelf)/(?P<shelf_identifier>[\w-]+)/rss/?$",
+        views.rss_feed.RssShelfFeed(),
+        name="shelf-rss",
     ),
     re_path(r"^create-shelf/?$", views.create_shelf, name="shelf-create"),
     re_path(r"^delete-shelf/(?P<shelf_id>\d+)/?$", views.delete_shelf),
@@ -599,6 +682,16 @@ urlpatterns = [
         r"^preferences/password/?$",
         views.ChangePassword.as_view(),
         name="prefs-password",
+    ),
+    re_path(
+        r"^preferences/security/?$",
+        views.UserSecurity.as_view(),
+        name="prefs-security",
+    ),
+    re_path(
+        r"^preferences/security/logout/(?P<session_key>\w+)/?$",
+        views.logout_session,
+        name="prefs-logout-session",
     ),
     re_path(
         r"^preferences/2fa/?$",

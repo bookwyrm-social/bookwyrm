@@ -3,6 +3,7 @@ import time
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -55,6 +56,21 @@ class Login(View):
             # otherwise, successful login
             login(request, user)
             user.update_active_date()
+
+            # record session
+            forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+            if forwarded_for:
+                ip_address = forwarded_for.split(",")[0]
+            else:
+                ip_address = request.META.get("REMOTE_ADDR", "")
+            agent_string = request.META.get("HTTP_USER_AGENT", "")
+            models.create_user_session(
+                user_id=user.id,
+                session_key=request.session.session_key,
+                ip_address=ip_address,
+                agent_string=agent_string,
+            )
+
             if request.POST.get("first_login"):
                 return set_language(user, redirect("get-started-profile"))
 
@@ -95,5 +111,12 @@ class Logout(View):
 
     def post(self, request):
         """done with this place! outa here!"""
+        session_key = request.session.get("session_key")
         logout(request)
+        try:
+            sess = models.UserSession.objects.get(session_key=session_key)
+            sess.delete()
+        except ObjectDoesNotExist:
+            pass
+
         return redirect("/")

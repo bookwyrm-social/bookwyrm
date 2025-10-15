@@ -142,7 +142,7 @@ def search_title_author(
     query = SearchQuery(query, config="simple") | SearchQuery(query, config="english")
     results = (
         books.filter(*filters, search_vector=query)
-        .annotate(rank=SearchRank(F("search_vector"), query))
+        .annotate(rank=SearchRank(F("search_vector"), query, normalization=32))
         .filter(rank__gt=min_confidence)
         .order_by("-rank")
     )
