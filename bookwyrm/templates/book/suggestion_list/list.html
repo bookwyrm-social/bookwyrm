@@ -4,7 +4,7 @@
 {% if request.user.is_authenticated or suggestion_list %}
 <h2 class="title is-4" id="suggestions-section">
     {% trans "Suggestions" %}
-    {% if suggestion_list and items.length > 0 %}
+    {% if suggestion_list and items|length > 0 %}
     <a class="help has-text-weight-normal" href="{% url 'suggestion-list' book_id=work.id %}">
         {% trans "View all suggestions" %}
     </a>
