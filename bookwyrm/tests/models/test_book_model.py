@@ -115,8 +115,9 @@ class Book(TestCase):
         ]
         validate_isbn13("9781234567897")
         validate_isbn13("9781234567880")
-        validate_isbn13("9791234567880")
+        validate_isbn13("9791234567889")
         validate_isbn13("978-84-17121-94-5")
+        validate_isbn13("9791038704022")
 
         for isbn, _desc in invalid_isbn13:
             with self.subTest(isbn=isbn):

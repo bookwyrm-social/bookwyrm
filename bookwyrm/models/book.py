@@ -538,18 +538,18 @@ def validate_isbn13(maybe_isbn: str) -> None:
             _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
         )
 
-    if (isbn10_version := isbn_13_to_10(normalized_isbn)) is None:
-        raise ValidationError(
-            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
-        )
+    # calculate checksum version
+    checksum_version = normalized_isbn[:-1]
+    checksum = sum(int(i) for i in checksum_version[::2]) + sum(
+        int(i) * 3 for i in checksum_version[1::2]
+    )
+    checkdigit = checksum % 10
+    if checkdigit != 0:
+        checkdigit = 10 - checkdigit
+    checksum_version += str(checkdigit)
 
-    if (checksum_version := isbn_10_to_13(isbn10_version)) is None:
-        raise ValidationError(
-            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
-        )
-
-    # We might have 978 or 979 prefix, so ignore that on comparing
-    if checksum_version[3:] != normalized_isbn[3:]:
+    # Check if we got same checksum
+    if checksum_version != normalized_isbn:
         raise ValidationError(
             _(
                 "%(value)s doesn't have correct ISBN checksum, "
@@ -741,7 +741,7 @@ def isbn_10_to_13(isbn_10):
 
 def isbn_13_to_10(isbn_13):
     """convert isbn 13 to 10, if possible"""
-    if isbn_13[:3] not in ["978", "979"]:
+    if isbn_13[:3] not in ["978"]:
         return None
 
     isbn_13 = re.sub(r"[^0-9X]", "", isbn_13)
