@@ -140,6 +140,7 @@ class InboxAdd(TestCase):
         self.assertEqual(listitem.remote_id, "https://example.com/listbook/6189")
         self.assertEqual(listitem.notes, "hi hello")
 
+    # pylint: disable=line-too-long
     @responses.activate
     def test_handle_add_book_to_suggestion_list(self):
         """listing a book"""
