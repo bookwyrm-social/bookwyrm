@@ -6,7 +6,7 @@
     {% trans "Suggestions" %}
     {% if suggestion_list and items|length > 0 %}
     <a class="help has-text-weight-normal" href="{% url 'suggestion-list' book_id=work.id %}">
-        {% trans "View all suggestions" %}
+        {% trans "View all suggestions" %} ({{ items|length }})
     </a>
     {% endif %}
 </h2>
