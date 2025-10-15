@@ -280,3 +280,4 @@ class SuggestionListItem(AbstractListItem):
 
     book_list = models.ForeignKey("SuggestionList", on_delete=models.CASCADE)
     endorsement = models.ManyToManyField("User", related_name="suggestion_endorsers")
+    activity_serializer = activitypub.SuggestionListItem

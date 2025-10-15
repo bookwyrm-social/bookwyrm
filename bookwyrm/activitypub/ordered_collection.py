@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from typing import List
 
 from .base_activity import ActivityObject
+from .book import Work
 
 
 # pylint: disable=invalid-name
@@ -47,7 +48,7 @@ class SuggestionList(OrderedCollectionPrivate):
     """structure of an ordered collection activity"""
 
     summary: str = None
-    book: str = None
+    book: Work = None
     type: str = "SuggestionList"
 
 
@@ -80,6 +81,15 @@ class ListItem(CollectionItem):
     approved: bool = True
     order: int = None
     type: str = "ListItem"
+
+
+@dataclass(init=False)
+class SuggestionListItem(CollectionItem):
+    """a book on a list"""
+
+    book: str
+    notes: str = None
+    type: str = "SuggestionListItem"
 
 
 @dataclass(init=False)
