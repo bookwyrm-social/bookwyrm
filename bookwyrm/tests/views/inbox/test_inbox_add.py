@@ -176,7 +176,7 @@ class InboxAdd(TestCase):
                 "actor": self.remote_user.remote_id,
                 "type": "SuggestionListItem",
                 "book": self.book.remote_id,
-                "id": f"https://example.com/list/suggestion/item",
+                "id": "https://example.com/list/suggestion/item",
                 "notes": "hi hello",
                 "order": 1,
             },
