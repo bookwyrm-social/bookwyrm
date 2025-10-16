@@ -755,7 +755,9 @@ def isbn_13_to_10(isbn_13):
     except ValueError:
         return None
     checkdigit = checksum % 11
-    checkdigit = 11 - checkdigit
+    checkdigit = (
+        11 - checkdigit
+    ) % 11  # we calculate checkdigit to make the whole sum % 11 == 0
     if checkdigit == 10:
         checkdigit = "X"
     return converted + str(checkdigit)
