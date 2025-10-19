@@ -190,7 +190,7 @@ def add_authors(request, data):
         author_matches = (
             models.Author.objects.annotate(search=vector)
             .annotate(rank=SearchRank(vector, author, normalization=32))
-            .filter(rank__gt=0.4)
+            .filter(rank__gt=0.19)  # short alias names like XY get rank around 0.1956
             .order_by("-rank")[:5]
         )
 
