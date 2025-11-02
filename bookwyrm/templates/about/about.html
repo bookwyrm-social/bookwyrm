@@ -11,6 +11,7 @@
 
 {% block about_content %}
 {% get_current_language as LANGUAGE_CODE %}
+
 {# seven day cache #}
 {% cache 604800 about_page_superlatives LANGUAGE_CODE %}
 
@@ -31,6 +32,7 @@
         </p>
     </div>
 
+    <!--
     <div class="columns is-multiline">
         {% if superlatives.top_rated %}
         {% with book=superlatives.top_rated.default_edition rating=superlatives.top_rated.rating %}
@@ -89,7 +91,7 @@
         {% endwith %}
         {% endif %}
     </div>
-
+-->
     <p>
     {% blocktrans trimmed %}
     Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal.
