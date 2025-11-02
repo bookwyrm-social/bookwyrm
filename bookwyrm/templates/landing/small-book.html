@@ -13,7 +13,7 @@
             <a href="{{ book.local_path }}">{{ book.title }}</a>
         </h3>
 
-        {% if book.authors %}
+        {% if book.authors.exists %}
             <p class="subtitle is-6">
                 {% trans "by" %}
                 {% include 'snippets/authors.html' with limit=3 %}

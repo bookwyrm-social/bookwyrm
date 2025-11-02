@@ -4,11 +4,10 @@ from itertools import chain
 import re
 from typing import Any, Dict, Optional, Iterable
 from typing_extensions import Self
-
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.cache import cache
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import models, transaction
 from django.db.models import Prefetch, ManyToManyField
 from django.dispatch import receiver
@@ -30,7 +29,12 @@ from bookwyrm.settings import (
 )
 from bookwyrm.utils.db import format_trigger, add_update_fields
 
-from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
+from .activitypub_mixin import (
+    OrderedCollectionPageMixin,
+    OrderedCollectionMixin,
+    ObjectMixin,
+    CollectionItemMixin,
+)
 from .base_model import BookWyrmModel
 from . import fields
 
@@ -99,6 +103,11 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     def finna_link(self):
         """generate the url from the finna key"""
         return f"http://finna.fi/Record/{self.finna_key}"
+
+    @property
+    def wikidata_link(self):
+        """generate the url from the isfdb id"""
+        return f"https://www.wikidata.org/wiki/{self.wikidata}"
 
     class Meta:
         """can't initialize this model, that wouldn't make sense"""
@@ -227,6 +236,14 @@ class MergedAuthor(MergedBookDataModel):
     )
 
 
+class MergedSeries(MergedBookDataModel):
+    """an Series that has been merged into another one"""
+
+    merged_into = models.ForeignKey(
+        "Series", on_delete=models.PROTECT, related_name="absorbed"
+    )
+
+
 class Book(BookDataModel):
     """a generic book, which can mean either an edition or a work"""
 
@@ -242,8 +259,15 @@ class Book(BookDataModel):
     languages = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
+
+    # We track series as a separate model Series through SeriesBooks
+    series_ids = fields.ManyToManyField(
+        "Series", through="SeriesBook", related_name="books", blank=True
+    )
+    # These legacy fields are still used for editing and as a fallback:
     series = fields.TextField(max_length=255, blank=True, null=True)
     series_number = fields.CharField(max_length=255, blank=True, null=True)
+
     subjects = fields.ArrayField(
         models.CharField(max_length=255), blank=True, null=True, default=list
     )
@@ -782,3 +806,63 @@ def preview_image(instance, *args, **kwargs):
         transaction.on_commit(
             lambda: generate_edition_preview_image_task.delay(instance.id)
         )
+
+
+class Series(OrderedCollectionMixin, BookDataModel):
+    """a series of books"""
+
+    title = fields.TextField(max_length=255)
+    alternative_titles = fields.ArrayField(
+        models.CharField(max_length=255), blank=True, default=list
+    )  # like aliases on an author
+    user = fields.ForeignKey(
+        "User", on_delete=models.PROTECT, activitypub_field="actor", related_name="+"
+    )  # for broadcast, should always be instance user but we can't set that here
+
+    activity_serializer = activitypub.Series
+
+    def get_remote_id(self):
+        """series need a remote id"""
+        return f"{BASE_URL}/series/{self.id}"
+
+    @property
+    def collection_queryset(self):
+        """list of books for this series, overrides OrderedCollectionMixin"""
+        return SeriesBook.objects.filter(series=self).order_by("-series_number")
+
+    def raise_not_editable(self, viewer):
+        if viewer.has_perm("bookwyrm.edit_book"):
+            return
+        raise PermissionDenied()
+
+
+class SeriesBook(CollectionItemMixin, BookWyrmModel):
+    """connect a book to a series"""
+
+    series = fields.ForeignKey(
+        "Series", on_delete=models.CASCADE, related_name="seriesbooks"
+    )
+    book = fields.ForeignKey(
+        "Book", on_delete=models.CASCADE, related_name="seriesbooks"
+    )
+    series_number = fields.CharField(max_length=255, blank=True, null=True)
+    user = fields.ForeignKey(
+        "User", on_delete=models.PROTECT, activitypub_field="actor", related_name="+"
+    )  # for broadcast, should always be instance user but we can't set that here
+
+    activity_serializer = activitypub.SeriesBook
+    collection_field = "series"
+
+    def get_remote_id(self):
+        """need a remote id to provide the URI for series"""
+        return f"{BASE_URL}/seriesbook/{self.id}"
+
+    def raise_not_editable(self, viewer):
+        if viewer.has_perm("bookwyrm.edit_book"):
+            return
+        raise PermissionDenied()
+
+    class Meta:
+        """an ordered list needs ordering"""
+
+        ordering = ("-series_number", "-created_date", "-updated_date")

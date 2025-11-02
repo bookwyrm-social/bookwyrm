@@ -830,11 +830,6 @@ urlpatterns = [
     re_path(rf"{BOOK_PATH}(.json)?/?$", views.Book.as_view(), name="book"),
     re_path(rf"{BOOK_PATH}{regex.SLUG}/?$", views.Book.as_view(), name="book"),
     re_path(
-        r"^series/by/(?P<author_id>\d+)/?$",
-        views.BookSeriesBy.as_view(),
-        name="book-series-by",
-    ),
-    re_path(
         rf"{BOOK_PATH}/(?P<user_statuses>review|comment|quote)/?$",
         views.Book.as_view(),
         name="book-user-statuses",
@@ -908,6 +903,20 @@ urlpatterns = [
         r"^author/(?P<author_id>\d+)/edit/?$",
         views.EditAuthor.as_view(),
         name="edit-author",
+    ),
+    # series
+    re_path(
+        r"^series/(?P<series_id>\d+)(.json)?/?$", views.Series.as_view(), name="series"
+    ),
+    re_path(
+        r"^series/(?P<series_id>\d+)/edit/?$",
+        views.EditSeries.as_view(),
+        name="edit-series",
+    ),
+    re_path(
+        r"^seriesbook/(?P<seriesbook_id>\d+)(.json)?/?$",
+        views.SeriesBook.as_view(),
+        name="seriesbook",
     ),
     # reading progress
     re_path(r"^edit-readthrough/?$", views.edit_readthrough, name="edit-readthrough"),

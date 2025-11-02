@@ -1,79 +1,126 @@
-""" books belonging to the same series """
+"""book series"""
 
-from sys import float_info
-from django.views import View
+from django.core.paginator import Paginator
+from django.http import Http404
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.views import View
 from django.views.decorators.vary import vary_on_headers
 
-from bookwyrm.views.helpers import is_api_request, get_mergeable_object_or_404
+from bookwyrm.forms import SeriesForm
 from bookwyrm import models
+from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.views.helpers import (
+    is_api_request,
+    get_mergeable_object_or_404,
+)
 
 
-def sort_by_series(book):
-    """sort books using their series number"""
-    try:
-        return float(book.series_number)
-    except ValueError:
-        return float_info.max
+class Series(View):
+    """a series of books"""
 
-
-# pylint: disable=no-self-use
-class BookSeriesBy(View):
-    """book series by author"""
-
+    # pylint: disable=unused-argument,no-self-use
     @vary_on_headers("Accept")
-    def get(self, request, author_id):
-        """lists all books in a series"""
-        series_name = request.GET.get("series_name")
+    def get(self, request, series_id, slug=None):
+        """landing page for a series"""
+        series = get_mergeable_object_or_404(models.Series, id=series_id)
 
         if is_api_request(request):
-            pass
+            return ActivitypubResponse(series.to_activity(**request.GET))
 
-        author = get_mergeable_object_or_404(models.Author, id=author_id)
-
-        results = models.Edition.objects.filter(authors=author, series=series_name)
-
-        # when there are multiple editions of the same work
-        # pick the one with a series number or closest
-        work_ids = results.values_list("parent_work__id", flat=True).distinct()
-
-        # filter out multiple editions of the same work
-        numbered_books = []
-        dated_books = []
-        unsortable_books = []
-        for work_id in set(work_ids):
-            result = (
-                results.filter(parent_work=work_id)
-                .order_by("series_number", "-edition_rank")
-                .first()
-            )
-            if result.series_number:
-                numbered_books.append(result)
-            elif result.first_published_date or result.published_date:
-                dated_books.append(result)
-            else:
-                unsortable_books.append(result)
-
-        list_results = (
-            sorted(numbered_books, key=sort_by_series)
-            + sorted(
-                dated_books,
-                key=lambda book: (
-                    book.first_published_date
-                    if book.first_published_date
-                    else book.published_date
-                ),
-            )
-            + sorted(
-                unsortable_books,
-                key=lambda book: book.sort_title if book.sort_title else book.title,
-            )
+        authors = models.Author.objects.none()
+        books = []
+        items = (
+            series.seriesbooks.filter(series=series.id)
+            .prefetch_related("book", "book__authors")
+            .order_by("series_number")
         )
+        for item in items:
+
+            book = (
+                item.book.edition
+                if hasattr(item.book, "edition")
+                else item.book.work.default_edition
+            )
+
+            book_data = {"book": book, "series_number": item.series_number}
+            books.append(book_data)
+
+            authors = authors.union(item.book.authors.all())
+
+        paginated = Paginator(items, PAGE_LENGTH)
+        page = paginated.get_page(request.GET.get("page"))
 
         data = {
-            "series_name": series_name,
-            "author": author,
-            "books": list_results,
+            "series": series,
+            "books": page,
+            "series_authors": {"authors": authors},
         }
 
         return TemplateResponse(request, "book/series.html", data)
+
+
+class EditSeries(View):
+    """Edit information about series and seriesbooks"""
+
+    # pylint: disable=no-self-use
+    def get(self, request, series_id=None):
+        """edit page for series"""
+
+        series = models.Series.objects.filter(id=series_id).first()
+        seriesbooks = models.SeriesBook.objects.filter(series=series)
+        data = {
+            "series": series,
+            "books": seriesbooks,
+            "form": SeriesForm(instance=series),
+        }
+
+        return TemplateResponse(request, "book/edit/edit_series.html", data)
+
+    # pylint: disable=no-self-use
+    def post(self, request, series_id):
+        """submit the series edit form"""
+
+        form = SeriesForm(request.POST)
+        data = {"form": form}
+
+        if not form.is_valid():
+            # TODO do we need to persist seriesbook data also?
+            print("not valid")
+            print(form.errors)
+            return TemplateResponse(request, "book/edit/edit_series.html", data)
+
+        instance = models.Series.objects.get(id=series_id)
+        form = SeriesForm(request.POST, instance=instance)
+        series = form.save(request)
+        alt_titles = []
+        for title in request.POST.getlist("alternative_titles"):
+            if title != "":
+                alt_titles.append(title)
+        series.alternative_titles = alt_titles
+        series.save(update_fields=["alternative_titles"])
+
+        # update seriesbooks as needed
+        for book in series.seriesbooks.all():
+            value = request.POST[f"series_number-{book.id}"]
+            book.series_number = value
+            # save the series_number as the value
+            book.save(update_fields=["series_number"])
+
+        return redirect("series", series_id)
+
+
+class SeriesBook(View):
+    """a book in a series"""
+
+    # pylint: disable=no-self-use
+    @vary_on_headers("Accept")
+    def get(self, request, seriesbook_id):
+        """we just need this for resolving AP requests"""
+        seriesbook = get_mergeable_object_or_404(models.SeriesBook, id=seriesbook_id)
+
+        if is_api_request(request):
+            return ActivitypubResponse(seriesbook.to_activity())
+
+        raise Http404()

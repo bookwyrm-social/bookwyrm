@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.db import transaction
 from django.http import HttpResponseBadRequest
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -13,6 +14,8 @@ from django.views.decorators.http import require_POST
 from django.views import View
 
 from bookwyrm import book_search, forms, models
+
+from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
 from bookwyrm.utils.images import remove_uploaded_image_exif, set_cover_from_url
 
 # from bookwyrm.activitypub.base_activity import ActivityObject
@@ -56,14 +59,23 @@ class EditBook(View):
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         data = add_authors(request, data)
+        data = add_series(request, data)
 
-        # either of the above cases requires additional confirmation
-        if data.get("add_author"):
+        # adding authors or series requires additional confirmation
+        if data.get("add_author") or data["form"]["series"]:
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         remove_authors = request.POST.getlist("remove_authors")
         for author_id in remove_authors:
             book.authors.remove(author_id)
+
+        for series_id in request.POST.getlist("remove_series"):
+            # remove seriesbook and, if it was the only one in the series, delete series
+            seriesbook = models.SeriesBook.objects.get(id=series_id)
+            series = seriesbook.series
+            seriesbook.delete()
+            if series.seriesbooks.count() == 0:
+                series.delete()
 
         book = form.save(request, commit=False)
 
@@ -119,6 +131,7 @@ class CreateBook(View):
         # which only exists after we validate the form
         ensure_transient_values_persist(request, data, form=form)
         data = add_authors(request, data)
+        data = add_series(request, data)
 
         # check if this is an edition of an existing work
         author_text = ", ".join(data.get("add_author", []))
@@ -128,7 +141,7 @@ class CreateBook(View):
         )[:5]
 
         # go to confirm mode
-        if not parent_work_id or data.get("add_author"):
+        if not parent_work_id or data.get("add_author") or data["form"]["series"]:
             data["confirm_mode"] = True
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
@@ -158,6 +171,7 @@ def ensure_transient_values_persist(request, data, **kwargs):
     if kwargs and kwargs.get("form"):
         data["book"] = data.get("book") or {}
         data["book"]["subjects"] = kwargs["form"].cleaned_data["subjects"]
+        data["book"]["series_ids"] = kwargs["form"].cleaned_data.get("series_ids")
         data["add_author"] = request.POST.getlist("add_author")
     elif kwargs and kwargs.get("add_author") is True:
         data["add_author"] = request.POST.getlist("add_author")
@@ -220,6 +234,32 @@ def add_authors(request, data):
     return data
 
 
+def add_series(request, data):
+    """helper for adding series"""
+
+    # need to retain this
+    data["remove_series"] = request.POST.getlist("remove_series")
+    # creating or matching a series needs another step
+    data["confirm_mode"] = True
+
+    # check for existing series
+    vector = SearchVector("title", weight="A") + SearchVector(
+        "alternative_titles", weight="B"
+    )
+    series = data["form"]["series"].value()
+
+    matches = (
+        models.Series.objects.annotate(search=vector)
+        .annotate(rank=SearchRank(vector, series, normalization=32))
+        .filter(rank__gt=0.015)
+        .order_by("-rank")[:5]
+    )
+
+    data["series_matches"] = matches
+
+    return data
+
+
 @require_POST
 @permission_required("bookwyrm.edit_book", raise_exception=True)
 def create_book_from_data(request):
@@ -242,8 +282,8 @@ def create_book_from_data(request):
 class ConfirmEditBook(View):
     """confirm edits to a book"""
 
-    # pylint: disable=too-many-locals
-    # pylint: disable=too-many-branches
+    # pylint: disable=undefined-variable,too-many-branches
+    # pylint: disable=too-many-locals,too-many-statements
     def post(self, request, book_id=None):
         """edit a book cool"""
         # returns None if no match is found
@@ -310,6 +350,88 @@ class ConfirmEditBook(View):
             for author_id in request.POST.getlist("remove_authors"):
                 book.authors.remove(author_id)
 
+            user = models.User.objects.get(localname=INSTANCE_ACTOR_USERNAME)
+
+            if series_match := request.POST.get("series_match"):
+                # add known series
+                if series_match != "0":
+                    series = models.Series.objects.get(id=int(series_match))
+
+                    if not models.SeriesBook.objects.filter(
+                        series=series, book=book, user=user
+                    ).exists():  # don't create a dupe!
+
+                        models.SeriesBook.objects.create(
+                            series=series,
+                            book=book,
+                            series_number=book.series_number,
+                            user=user,
+                        )
+                else:
+
+                    if maybe_series := models.Series.objects.filter(
+                        Q(title=book__series)
+                        | Q(alternative_titles__contains(book__series))
+                    ):
+                        # is there a SeriesBook already despite what the user claims?
+                        maybe_seriesbooks = models.SeriesBook.filter(
+                            series__in=maybe_series
+                        )
+                        matches = maybe_seriesbooks.filter(book=book)
+
+                        if not matches:
+                            # Can we find a seriesbook with common name and author?
+                            if author_match := maybe_seriesbooks.authors.intersection(
+                                book.authors
+                            ).first():
+                                series = maybe_seriesbooks.filter(
+                                    authors__includes=author_match.first()
+                                ).first()
+                            else:
+                                series = models.Series.objects.create(
+                                    title=book.series, user=user
+                                )
+
+                        models.SeriesBook.objects.create(
+                            series=series,
+                            book=book,
+                            series_number=book.series_number,
+                            user=user,
+                        )
+
+                    else:
+                        # Ok it really is a new series
+                        series = models.Series.objects.create(
+                            title=book.series, user=user
+                        )
+                        models.SeriesBook.objects.create(
+                            series=series,
+                            book=book,
+                            series_number=book.series_number,
+                            user=user,
+                        )
+
+            elif book.series:
+                # It's a new series
+                series = models.Series.objects.create(title=book.series, user=user)
+                models.SeriesBook.objects.create(
+                    series=series,
+                    book=book,
+                    series_number=book.series_number,
+                    user=user,
+                )
+
+            for series_id in request.POST.getlist("remove_series"):
+                # remove seriesbook
+                if seriesbook := models.SeriesBook.objects.get(
+                    series__id=series_id, book=book
+                ):
+                    seriesbook.delete()
+                    series = models.Series.objects.get(id=series_id)
+                    # if it was the only book in the series, delete series
+                    if series.seriesbooks.count() == 0:
+                        series.delete()
+
             # import cover, if requested
             url = request.POST.get("cover-url")
             if url:
@@ -325,5 +447,10 @@ class ConfirmEditBook(View):
 
             # we don't tell the world when creating a book
             book.save(broadcast=False)
+
+            # clear the series and series_number fields
+            book.series = None
+            book.series_number = None
+            book.save(update_fields=["series", "series_number"], broadcast=False)
 
         return redirect(f"/book/{book.id}")

@@ -2,33 +2,87 @@
 {% load i18n %}
 {% load book_display_tags %}
 
-{% block title %}{{ series_name }}{% endblock %}
-
+{% block title %}{{ series.title }}{% endblock %}
 {% block content %}
-<div class="block" itemscope itemtype="https://schema.org/BookSeries">
-	<h1 class="title" itemprop="name">{{ series_name }}</h1>
-	<div class="subtitle" dir="auto">
-		{% trans "Series by" %} <a
-			href="{{ author.local_path }}"
-			class="author {{ link_class }}"
-			itemprop="creator"
-			itemscope
-			itemtype="https://schema.org/Person"
-			><span
-					itemprop="name"
-					>{{ author.name }}</span></a>
+
+
+<div class="content">
+	{% with user_authenticated=request.user.is_authenticated can_edit_book=perms.bookwyrm.edit_book %}
+	{% if user_authenticated and can_edit_book %}
+	<div class="is-pulled-right">
+		<a href="{% url 'edit-series' series.id %}">
+			<span class="icon icon-pencil" title="{% trans "Edit Series" %}" aria-hidden=True></span>
+			<span class="is-hidden-mobile">{% trans "Edit Series" %}</span>
+		</a>
 	</div>
+	{% endif %}
+	<div class="content" itemscope itemtype="https://schema.org/BookSeries">
+		<h1 class="title is-1" itemprop="name">{{ series.title }}</h1>
+        {% if series_authors %}
+            <p class="subtitle is-6">
+                {% trans "by" %}
+                {% include 'snippets/authors.html' with book=series_authors limit=5 %}
+            </p>
+        {% endif %}
+		{% endwith %}
+		<div class="columns is-8">
+			<div class="column is-three-quarters">
+				{% if series.alternative_titles%}
+				<div class="box">
+					<h4 class="title is-4">{% trans "Alternative titles" %}</h4>
+					<div class="content" dir="auto">
+						{% for title in series.alternative_titles %}
+						<span class="mx-4" itemprop="alternativeName">{{title}}</span>
+						{% endfor %}
+					</div>
+				</div>
+				{% endif %}
+			</div>
+			<div class="column is-one-quarter">
+				{% if series.inventaire_id or series.wikidata or series.isfdb %}
+				<div class="box">
+					<h4 class="title is-4">{% trans "Identifiers" %}</h4>
+					{% if series.inventaire_id%}
+					<div class="content">
+						<a href="{{series.inventaire_link}}">Inventaire</a>
+					</div>
+					{% endif %}
+
+					<!-- TODO -->
+					{% if series.viaf %}
+					<div class="content">
+						<a href="{{series.viaf_link}}">VIAF</a>
+					</div>
+					{% endif %}
+
+					{% if series.wikidata %}
+					<div class="content">
+						<a href="{{series.wikidata_link}}">Wikidata</a>
+					</div>
+					{% endif %}
+
+					{% if series.isfdb%}
+					<div class="content">
+						<a href="{{series.isfdb_link}}">ISFDB</a>
+					</div>
+					{% endif %}
+				</div>
+				{% endif %}
+			</div>
+		</div>
+		</div>
 
 	<div class="columns is-multiline is-mobile">
 	{% for book in books %}
 	{% with book=book %}
-			{# @todo Set `hasPart` property in some meaningful way #}
-			<div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column">
-				<div class="is-flex-grow-1 mb-3">
-					<span class="subtitle">{% if book.series_number %}{% blocktrans with series_number=book.series_number %}Book {{ series_number }}{% endblocktrans %}{% else %}{% trans 'Unsorted Book' %}{% endif %}</span>
-					{% include 'landing/small-book.html' with book=book %}
-				</div>
+		<div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column" itemscope itemtype="https://schema.org/CreativeWork">
+			<div class="is-flex-grow-1 mb-3">
+				<meta itemprop="isPartOf" content="{{series.title}}">
+				<meta itemprop="name" content="{{book.title}}">
+				<span class="subtitle">{% if book.series_number %}{% blocktrans with series_number=book.series_number %}Book #{{ series_number }}{% endblocktrans %}{% endif %}</span>
+				{% include 'landing/small-book.html' with book=book.book %}
 			</div>
+		</div>
 	{% endwith %}
 	{% endfor %}
 	</div>

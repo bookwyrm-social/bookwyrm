@@ -71,7 +71,7 @@
             <div class="columns mb-4">
                 {% if author_matches %}
                 <input type="hidden" name="author-match-count" value="{{ author_matches|length }}">
-                <div class="column is-half">
+                <div class="column is-one-third">
                     {% for author in author_matches %}
                     <fieldset class="block">
                         <legend class="title is-5 mb-1">
@@ -112,12 +112,13 @@
                     {% endfor %}
                 </div>
                 {% elif add_author %}
-                <p class="column is-half">{% blocktrans with name=add_author %}Creating a new author: {{ name }}{% endblocktrans %}</p>
+                <p class="column is-one-third">{% blocktrans with name=add_author %}Creating a new author: {{ name }}{% endblocktrans %}</p>
                 {% endif %}
 
                 {% if not book.parent_work %}
-                <div class="column is-half">
+                <div class="column is-one-third">
                     <fieldset>
+                        {% if book_matches%}
                         <legend class="title is-5 mb-1">
                             {% trans "Is this an edition of an existing work?" %}
                         </legend>
@@ -129,7 +130,43 @@
                         <label class="label mt-2">
                             <input type="radio" name="parent_work" value="0" required> {% trans "This is a new work" %}
                         </label>
+                        {% else %}
+                        <legend class="title is-5">
+                            {% trans "Creating a new work" %}:
+                        </legend>
+                        <p class="is-italic">{{ form.title.value }}</p>
+                        {% endif %}
                     </fieldset>
+                </div>
+                {% endif %}
+                {% if form.series %}
+                <div class="column is-one-third">
+                <fieldset>
+                    {% if series_matches %}
+                        <legend class="title is-5 mb-1">
+                            {% trans "Is this book part of one of these series?" %}
+                        </legend>
+                    {% for series in series_matches %}
+                        <label class="label">
+                            <input type="radio" name="series_match" value="{{ series.id }}"> {{ series.title }}
+                            <p class="help ml-5 mb-0 mt-0">
+                                <!-- TODO: what if there is no author? work out how to put logic in blocktrans maybe a filter? -->
+                                {% blocktrans with book=series.seriesbooks.first.book.title author=series.seriesbooks.first.book.authors.first.name bookpath=series.seriesbook_set.first.book.local_path trimmed %}
+                                <em>includes <a href="{{ bookpath }}" target="_blank" rel="nofollow noopener noreferrer">"{{book}}"</a>by {{author}}</em>
+                                {% endblocktrans %}
+                            </p>
+                        </label>
+                    {% endfor %}
+                        <label class="label mt-2">
+                            <input type="radio" name="series_match" id="series_match" value="0" required> {% trans "This is a new series" %}
+                        </label>
+                    {% else %}
+                        <legend class="title is-5">
+                            {% trans "Creating a new series" %}:
+                        </legend>
+                        <p class="is-italic">{{ form.series.value }}</p>
+                        </fieldset>
+                    {% endif %}
                 </div>
                 {% endif %}
             </div>

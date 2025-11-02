@@ -34,7 +34,7 @@
                 {{ book.title }}
             </h1>
 
-            {% if book.subtitle or book.series %}
+            {% if book.subtitle or book.parent_work.series_ids %}
                 <p class="subtitle title is-5">
                     {% if book.subtitle %}
                         <meta
@@ -49,21 +49,39 @@
 
                     {% if book.series %}
                         {% spaceless %}
-                        <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
-                        {% if book.authors.exists %}
-                            <a href="{% url 'book-series-by' book.authors.first.id %}?series_name={{ book.series | urlencode }}"
-                               itemprop="url">
-                        {% endif %}
-                        <span itemprop="name">{{ book.series }}</span>
-                        {% if book.authors.exists %}
-                            </a>
-                        {% endif %}
-                        </span>
-                        {% if book.series_number %}
-                            <span>, #</span>
-                            <span itemprop="position">{{ book.series_number }}</span>
-                        {% endif %}
+                        <div columns>
+                            <div class="notification is-info is-light column is-half">
+                                {% blocktrans with series=book.series %}
+                                This book might be part of the <em>{{series}}</em> series.
+                                {% endblocktrans %}
+                                {% if user_authenticated and can_edit_book %}
+                                Edit it to confirm.
+                                {% endif %}
+                            </div>
+                        </div>
                         {% endspaceless %}
+                    {% endif %}
+
+                    {% if book.parent_work.seriesbooks %}
+                        {% for sbook in book.parent_work.seriesbooks.all %}
+                        <div>
+                            {% spaceless %}
+                            {% if sbook.series_number %}
+                            {% blocktrans with title=sbook.series.title path=sbook.series.local_path number=sbook.series_number %}
+                            <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
+                                Book <span itemprop="position">{{ number }}</span> in <em><a href="{{ path }}">{{ title }}</a></em>
+                            </span>
+                            {% endblocktrans %}
+                            {% else %}
+                            {% blocktrans with title=sbook.series.title path=sbook.series.local_path %}
+                            <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
+                                Part of <em><a href="{{ path }}">{{ title }}</a></em>
+                            </span>
+                            {% endblocktrans %}
+                            {% endif %}
+                            {% endspaceless %}
+                        </div>
+                        {% endfor%}
                     {% endif %}
                 </p>
             {% endif %}
@@ -212,7 +230,7 @@
                 >
                     <meta itemprop="ratingValue" content="{{ rating|floatformat }}">
                     <meta itemprop="reviewCount" content="{{ review_count }}">
-                    
+
                     {% if review_count > 0 %}
                     <a href="#reviews" class="has-text-link">
                     {% endif %}

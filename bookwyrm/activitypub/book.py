@@ -4,6 +4,7 @@ from typing import Optional
 
 from .base_activity import ActivityObject
 from .image import Document
+from .ordered_collection import CollectionItem, OrderedCollection
 
 
 # pylint: disable=invalid-name
@@ -35,8 +36,10 @@ class Book(BookData):
     subtitle: str = None
     description: str = ""
     languages: list[str] = field(default_factory=list)
-    series: str = ""
-    seriesNumber: str = ""
+    series: str = ""  # legacy, now deprecated
+    seriesNumber: str = ""  # legacy, now deprecated
+    seriesBooks: list[str] = field(default_factory=list)
+    seriesIds: list[str] = field(default_factory=list)
     subjects: list[str] = field(default_factory=list)
     subjectPlaces: list[str] = field(default_factory=list)
 
@@ -93,3 +96,22 @@ class Author(BookData):
     wikipediaLink: str = ""
     type: str = "Author"
     website: str = ""
+
+
+@dataclass(init=False)
+class Series(OrderedCollection, BookData):
+    """serializes a book series"""
+
+    title: str = ""
+    alternative_titles: list[str] = field(default_factory=list)
+    type: str = "Series"
+
+
+@dataclass(init=False)
+class SeriesBook(CollectionItem):
+    """a book in a series"""
+
+    book: str
+    series: str
+    series_number: str = ""
+    type: str = "SeriesBook"

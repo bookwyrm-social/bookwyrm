@@ -59,29 +59,6 @@
                     {% include 'snippets/form_errors.html' with errors_list=form.description.errors id="desc_description" %}
                 </div>
 
-                <div class="columns">
-                    <div class="column is-two-thirds">
-                        <div class="field">
-                            <label class="label" for="id_series">
-                                {% trans "Series:" %}
-                            </label>
-                            <input type="text" class="input" name="series" id="id_series" value="{{ form.series.value|default:'' }}" aria-describedby="desc_series">
-
-                            {% include 'snippets/form_errors.html' with errors_list=form.series.errors id="desc_series" %}
-                        </div>
-                    </div>
-                    <div class="column is-one-third">
-                        <div class="field">
-                            <label class="label" for="id_series_number">
-                                {% trans "Series number:" %}
-                            </label>
-                            {{ form.series_number }}
-
-                            {% include 'snippets/form_errors.html' with errors_list=form.series_number.errors id="desc_series_number" %}
-                        </div>
-                    </div>
-                </div>
-
                 <div class="field">
                     <label class="label" for="id_languages">
                         {% trans "Languages:" %}
@@ -146,6 +123,56 @@
                 </span>
             </div>
         </section>
+
+
+        <section class="box">
+            <h2 class="title is-4">
+                {% trans "Series" %}
+            </h2>
+
+                <div class="content">
+                    <div class="field">
+                        {% if book.series_ids.exists %}
+                        <label class="label" for="id_series_ids">
+                            {% trans "Remove Series:" %}
+                        </label>
+                        {# preserve series if the book is unsaved #}
+                        <input type="hidden" name="series_ids" value="{% for series in book.series_ids.all %}{{ series.id }},{% endfor %}">
+                        <fieldset>
+                            {% for series in book.series_ids.all %}
+                            <div class="">
+                                <label class="label mb-2" for="remove_series">
+                                    <span class="tag is-link is-light is-medium">
+                                        <a href="{{ series.local_path }}">{{ series.title }}</a>
+                                        <input class="ml-4" type="checkbox" name="remove_series" id="id_remove_series_{{series.id}}" value="{{ series.id }}" {% if series.id|stringformat:"i" in remove_series %}checked{% endif %} aria-describedby="desc_remove_series_{{series.id}}">
+                                      </span>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </fieldset>
+                        {% endif %}
+
+                        <h3 class="title is-5">
+                            {% trans "Add Series" %}
+                        </h3>
+                    <label class="label" for="id_series">
+                        {% trans "Series name:" %}
+                    </label>
+                    <input type="text" class="input" name="series" id="id_series" value="{{ form.series.value|default:'' }}" aria-describedby="desc_series" {% if confirm_mode %}readonly{% endif %}>
+                    {% include 'snippets/form_errors.html' with errors_list=form.series.errors id="desc_series" %}
+                </div>
+                <div class="field">
+                    <label class="label" for="id_series_number">
+                        {% trans "Series number:" %}
+                    </label>
+                    {{ form.series_number }}
+                    {% include 'snippets/form_errors.html' with errors_list=form.series_number.errors id="desc_series_number" %}
+                </div>
+        </section>
+
+
+
+
 
         <section class="block">
             <h2 class="title is-4">
