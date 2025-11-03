@@ -6,7 +6,7 @@ import responses
 from bookwyrm import models
 from bookwyrm.connectors import abstract_connector, ConnectorException
 from bookwyrm.connectors.abstract_connector import Mapping, get_data
-from bookwyrm.settings import BASE_URL
+from bookwyrm.settings import BASE_URL, INSTANCE_ACTOR_USERNAME
 
 
 class AbstractConnector(TestCase):
@@ -27,6 +27,13 @@ class AbstractConnector(TestCase):
             title="Test Book",
             remote_id="https://example.com/book/1234",
             openlibrary_key="OL1234M",
+        )
+
+        cls.local_user = models.User.objects.create_user(
+            "instance@local.com",
+            local=True,
+            localname=INSTANCE_ACTOR_USERNAME,
+            remote_id="https://example.com/users/instance_actor",
         )
 
     def setUp(self):

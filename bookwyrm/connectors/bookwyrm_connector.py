@@ -15,7 +15,18 @@ class Connector(AbstractMinimalConnector):
         super().__init__(identifier)
 
     def get_or_create_book(self, remote_id: str) -> models.Edition:
-        return activitypub.resolve_remote_id(remote_id, model=models.Edition)
+
+        edition = activitypub.resolve_remote_id(remote_id, model=models.Edition)
+
+        if edition.series:
+            self.get_or_create_seriesbook_from_data(
+                work=edition.parent_work, instance=edition
+            )
+            edition.parent_work.series = None
+            edition.parent_work.series_number = None
+            edition.parent_work.save(update_fields=["series", "series_number"])
+
+        return edition
 
     def parse_search_data(
         self, data: list[dict[str, Any]], min_confidence: float

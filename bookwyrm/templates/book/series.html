@@ -42,22 +42,10 @@
 				{% if series.inventaire_id or series.wikidata or series.isfdb %}
 				<div class="box">
 					<h4 class="title is-4">{% trans "Identifiers" %}</h4>
+
 					{% if series.inventaire_id%}
 					<div class="content">
 						<a href="{{series.inventaire_link}}">Inventaire</a>
-					</div>
-					{% endif %}
-
-					<!-- TODO -->
-					{% if series.viaf %}
-					<div class="content">
-						<a href="{{series.viaf_link}}">VIAF</a>
-					</div>
-					{% endif %}
-
-					{% if series.wikidata %}
-					<div class="content">
-						<a href="{{series.wikidata_link}}">Wikidata</a>
 					</div>
 					{% endif %}
 
@@ -65,6 +53,13 @@
 					<div class="content">
 						<a href="{{series.isfdb_link}}">ISFDB</a>
 					</div>
+
+					{% if series.wikidata %}
+					<div class="content">
+						<a href="{{series.wikidata_link}}">Wikidata</a>
+					</div>
+					{% endif %}
+
 					{% endif %}
 				</div>
 				{% endif %}

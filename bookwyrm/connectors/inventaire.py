@@ -27,6 +27,7 @@ class Connector(AbstractConnector):
             Mapping("title", remote_field="wdt:P1476", formatter=get_first),
             Mapping("title", remote_field="labels", formatter=get_language_code),
             Mapping("subtitle", remote_field="wdt:P1680", formatter=get_first),
+            Mapping("series", remote_field="wdt:P179", formatter=get_series_data),
             Mapping("inventaireId", remote_field="uri"),
             Mapping(
                 "description", remote_field="sitelinks", formatter=self.get_description
@@ -248,3 +249,36 @@ def get_language_code(options: JsonDict, code: str = "en") -> Any:
         return result
     values = list(options.values())
     return values[0] if values else None
+
+
+def get_series_data(self, keys: Iterable[str]) -> list[dict]:
+    """create a list of series data dicts"""
+
+    series_list = []
+    for uri in keys:
+        try:
+            series_data = self.get_book_data(self.get_remote_id(uri))
+        except ConnectorException:
+            continue
+
+        series = {"alternative_titles": []}
+        try:
+            original_lang = series_data.get("originalLang").split("-")[0]
+        except IndexError:
+            original_lang = "en"
+        for k, v in series_data["labels"]:
+            if k == original_lang:
+                series["title"] = v
+            else:
+                alternative_titles.append(v)
+        series["wikidata"] = series_data.get("wdId")
+        if series_data.get("P6947"):
+            series["goodreads_key"] = series_data.get("P6947")[0]
+        if series_data.get("P1235"):
+            series["isfdb"] = series_data.get("P1235")[0]
+        if series_data.get("P8513"):
+            series["librarything_key"] = series_data.get("P8513")[0]
+
+        series_list.append(series)
+
+    return series_list

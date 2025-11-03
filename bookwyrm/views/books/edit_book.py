@@ -62,7 +62,8 @@ class EditBook(View):
         data = add_series(request, data)
 
         # adding authors or series requires additional confirmation
-        if data.get("add_author") or data["form"]["series"]:
+        clean = form.cleaned_data
+        if data.get("add_author") or clean["series"]:
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         remove_authors = request.POST.getlist("remove_authors")
@@ -141,7 +142,8 @@ class CreateBook(View):
         )[:5]
 
         # go to confirm mode
-        if not parent_work_id or data.get("add_author") or data["form"]["series"]:
+        clean = form.cleaned_data
+        if not parent_work_id or data.get("add_author") or clean["series"]:
             data["confirm_mode"] = True
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
@@ -260,6 +262,14 @@ def add_series(request, data):
     return data
 
 
+def clear_series(book):
+    """clear the series data from the book"""
+
+    book.series = None
+    book.series_number = None
+    return book
+
+
 @require_POST
 @permission_required("bookwyrm.edit_book", raise_exception=True)
 def create_book_from_data(request):
@@ -358,15 +368,18 @@ class ConfirmEditBook(View):
                     series = models.Series.objects.get(id=int(series_match))
 
                     if not models.SeriesBook.objects.filter(
-                        series=series, book=book, user=user
+                        series=series, book=book.parent_work, user=user
                     ).exists():  # don't create a dupe!
 
                         models.SeriesBook.objects.create(
                             series=series,
-                            book=book,
+                            book=book.parent_work,
                             series_number=book.series_number,
                             user=user,
                         )
+
+                    book = clear_series(book)
+
                 else:
 
                     if maybe_series := models.Series.objects.filter(
@@ -381,23 +394,23 @@ class ConfirmEditBook(View):
 
                         if not matches:
                             # Can we find a seriesbook with common name and author?
+                            # If we can, make a new seriesbook
+                            # If we can't do nothing and let a human work it out later
                             if author_match := maybe_seriesbooks.authors.intersection(
                                 book.authors
                             ).first():
                                 series = maybe_seriesbooks.filter(
                                     authors__includes=author_match.first()
                                 ).first()
-                            else:
-                                series = models.Series.objects.create(
-                                    title=book.series, user=user
+
+                                models.SeriesBook.objects.create(
+                                    series=series,
+                                    book=book.parent_work,
+                                    series_number=book.series_number,
+                                    user=user,
                                 )
 
-                        models.SeriesBook.objects.create(
-                            series=series,
-                            book=book,
-                            series_number=book.series_number,
-                            user=user,
-                        )
+                                book = clear_series(book)
 
                     else:
                         # Ok it really is a new series
@@ -406,20 +419,24 @@ class ConfirmEditBook(View):
                         )
                         models.SeriesBook.objects.create(
                             series=series,
-                            book=book,
+                            book=book.parent_work,
                             series_number=book.series_number,
                             user=user,
                         )
+
+                        book = clear_series(book)
 
             elif book.series:
                 # It's a new series
                 series = models.Series.objects.create(title=book.series, user=user)
                 models.SeriesBook.objects.create(
                     series=series,
-                    book=book,
+                    book=book.parent_work,
                     series_number=book.series_number,
                     user=user,
                 )
+
+                book = clear_series(book)
 
             for series_id in request.POST.getlist("remove_series"):
                 # remove seriesbook
@@ -447,10 +464,5 @@ class ConfirmEditBook(View):
 
             # we don't tell the world when creating a book
             book.save(broadcast=False)
-
-            # clear the series and series_number fields
-            book.series = None
-            book.series_number = None
-            book.save(update_fields=["series", "series_number"], broadcast=False)
 
         return redirect(f"/book/{book.id}")

@@ -14,9 +14,10 @@ import aiohttp
 
 from django.core.files.base import ContentFile
 from django.db import transaction
+from django.db.models import Q
 
 from bookwyrm import activitypub, models, settings
-from bookwyrm.settings import USER_AGENT
+from bookwyrm.settings import USER_AGENT, INSTANCE_ACTOR_USERNAME
 from .connector_manager import load_more_data, ConnectorException, raise_not_valid_url
 from .format_mappings import format_mappings
 from ..book_search import SearchResult
@@ -110,6 +111,46 @@ class AbstractMinimalConnector(ABC):
             logger.info(err)
         return None
 
+    def get_or_create_seriesbook_from_data(  # pylint: disable=no-self-use
+        self,
+        work: models.Work,
+        instance: models.Edition,
+        edition_data: Union[str, JsonDict] = None,
+    ) -> None:
+        """series may be a a string or an obj"""
+
+        user = models.User.objects.get(localname=INSTANCE_ACTOR_USERNAME)
+        series_data = edition_data and edition_data.get("series")
+        # Inventaire gives us an enriched object
+        if series_data and isinstance(series_data, list):
+            # series is a list of dicts
+            for series_obj in series_data:
+                activitydata_to_seriesbook(
+                    series_obj, user.remote_id, work.remote_id, instance.series_number
+                )
+
+        # otherwise it's just a name as a string
+        # all legacy BookWyrm data is like this
+        elif instance.series:
+            possible_series = models.SeriesBook.objects.filter(
+                Q(series__title__iexact=series_data)
+                | Q(series__alternative_titles__icontains=series_data)
+            )
+
+            if possible_series.exists():
+                if book_in_series := possible_series.filter(
+                    book__authors__in=work.authors.all()
+                ).first():
+                    # we already have a series with same title
+                    # and author, let's feel lucky
+                    series_obj = book_in_series.series.to_activity()
+                else:
+                    series_obj = {"user": user, "title": instance.series}
+
+            activitydata_to_seriesbook(
+                series_obj, user.remote_id, work.remote_id, instance.series_number
+            )
+
     @abstractmethod
     def get_or_create_book(self, remote_id: str) -> Optional[models.Book]:
         """pull up a book record by whatever means possible"""
@@ -185,12 +226,26 @@ class AbstractConnector(AbstractMinimalConnector):
                 work.authors.add(author)
 
             edition = self.create_edition_from_data(work, edition_data)
+
+        self.get_or_create_seriesbook_from_data(work, edition, edition_data)
+
+        # clear these fields once we have a seriesbook
+        edition.series = None
+        edition.series_number = None
+        edition.save(update_fields=["series", "series_number"])
+
         load_more_data.delay(self.connector.id, work.id)
         return edition
 
     def get_book_data(self, remote_id: str) -> JsonDict:  # pylint: disable=no-self-use
         """this allows connectors to override the default behavior"""
         return get_data(remote_id, is_activitypub=False)
+
+    def get_series_data(  # pylint: disable=no-self-use
+        self, remote_id: str
+    ) -> JsonDict:
+        """this allows connectors to override the default behavior"""
+        return get_data(remote_id)
 
     def create_edition_from_data(
         self,
@@ -442,3 +497,22 @@ def maybe_isbn(query: str) -> bool:
         10,
         13,
     ]  # ISBN10 or ISBN13, or maybe ISBN10 missing a leading zero
+
+
+def activitydata_to_seriesbook(
+    series_obj: Union[str, JsonDict],
+    user: str,
+    work: str,
+    number: str,
+) -> None:
+    """make a series & seriesbook from incoming data"""
+
+    series_obj["user"] = user.remote_id
+    series = series_obj.to_model(model=models.Series, overwrite=False)
+    seriesbook_data = {
+        "user": user,
+        "book": work,
+        "series": series.remote_id,
+        "series_number": number,
+    }
+    seriesbook_data.to_model(model=models.SeriesBook, overwrite=False)
