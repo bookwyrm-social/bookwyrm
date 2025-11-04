@@ -130,11 +130,6 @@
                         <label class="label mt-2">
                             <input type="radio" name="parent_work" value="0" required> {% trans "This is a new work" %}
                         </label>
-                        {% else %}
-                        <legend class="title is-5">
-                            {% trans "Creating a new work" %}:
-                        </legend>
-                        <p class="is-italic">{{ form.title.value }}</p>
                         {% endif %}
                     </fieldset>
                 </div>

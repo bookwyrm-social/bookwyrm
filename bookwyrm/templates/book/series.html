@@ -49,17 +49,16 @@
 					</div>
 					{% endif %}
 
-					{% if series.isfdb%}
+					{% if series.isfdb %}
 					<div class="content">
 						<a href="{{series.isfdb_link}}">ISFDB</a>
 					</div>
+					{% endif %}
 
 					{% if series.wikidata %}
 					<div class="content">
 						<a href="{{series.wikidata_link}}">Wikidata</a>
 					</div>
-					{% endif %}
-
 					{% endif %}
 				</div>
 				{% endif %}
@@ -69,7 +68,6 @@
 
 	<div class="columns is-multiline is-mobile">
 	{% for book in books %}
-	{% with book=book %}
 		<div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column" itemscope itemtype="https://schema.org/CreativeWork">
 			<div class="is-flex-grow-1 mb-3">
 				<meta itemprop="isPartOf" content="{{series.title}}">
@@ -78,7 +76,6 @@
 				{% include 'landing/small-book.html' with book=book.book %}
 			</div>
 		</div>
-	{% endwith %}
 	{% endfor %}
 	</div>
 </div>

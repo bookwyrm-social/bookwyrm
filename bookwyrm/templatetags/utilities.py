@@ -105,7 +105,7 @@ def possible_series_hint(seriesbook):
     title = seriesbook.book.title
     path = seriesbook.series.local_path
     author = seriesbook.book.authors.first().name
-
+    # pylint: disable=line-too-long
     hint = f'Includes <a href="{path}" target="_blank" rel="nofollow noopener noreferrer">"{title}"</a>'
     if author:
         hint += f" by {author}"

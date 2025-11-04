@@ -20,11 +20,8 @@ class Connector(AbstractMinimalConnector):
 
         if edition.series:
             self.get_or_create_seriesbook_from_data(
-                work=edition.parent_work, instance=edition
+                work=edition.parent_work, edition=edition
             )
-            edition.parent_work.series = None
-            edition.parent_work.series_number = None
-            edition.parent_work.save(update_fields=["series", "series_number"])
 
         return edition
 

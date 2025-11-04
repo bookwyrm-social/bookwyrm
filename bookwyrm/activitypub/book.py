@@ -103,7 +103,7 @@ class Series(OrderedCollection, BookData):
     """serializes a book series"""
 
     title: str = ""
-    alternative_titles: list[str] = field(default_factory=list)
+    alternativeTitles: list[str] = field(default_factory=list)
     type: str = "Series"
 
 
@@ -113,5 +113,5 @@ class SeriesBook(CollectionItem):
 
     book: str
     series: str
-    series_number: str = ""
+    seriesNumber: str = ""
     type: str = "SeriesBook"

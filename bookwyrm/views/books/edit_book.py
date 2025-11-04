@@ -173,7 +173,6 @@ def ensure_transient_values_persist(request, data, **kwargs):
     if kwargs and kwargs.get("form"):
         data["book"] = data.get("book") or {}
         data["book"]["subjects"] = kwargs["form"].cleaned_data["subjects"]
-        data["book"]["series_ids"] = kwargs["form"].cleaned_data.get("series_ids")
         data["add_author"] = request.POST.getlist("add_author")
     elif kwargs and kwargs.get("add_author") is True:
         data["add_author"] = request.POST.getlist("add_author")

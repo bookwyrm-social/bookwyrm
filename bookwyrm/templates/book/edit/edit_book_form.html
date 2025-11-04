@@ -134,11 +134,9 @@
                     <div class="field">
                         {% with seriesbooks=book.parent_work.seriesbooks %}
                         {% if seriesbooks.exists %}
-                        <label class="label" for="id_series_ids">
+                        <label class="label">
                             {% trans "Remove Series:" %}
                         </label>
-                        {# preserve series if the book is unsaved #}
-                        <input type="hidden" name="series_ids" value="{% for sb in seriesbooks.all %}{{ sb.series.id }}{% endfor %}">
                         <fieldset>
                             {% for sb in seriesbooks.all %}
                             <div class="">

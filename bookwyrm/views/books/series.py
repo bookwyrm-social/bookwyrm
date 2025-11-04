@@ -33,23 +33,16 @@ class Series(View):
         books = []
         items = (
             series.seriesbooks.filter(series=series.id)
-            .prefetch_related("book", "book__authors")
+            .prefetch_related("book__work", "book__authors")
             .order_by("series_number")
         )
         for item in items:
-
-            book = (
-                item.book.edition
-                if hasattr(item.book, "edition")
-                else item.book.work.default_edition
-            )
-
+            book = item.book.work.default_edition
             book_data = {"book": book, "series_number": item.series_number}
             books.append(book_data)
-
             authors = authors.union(item.book.authors.all())
 
-        paginated = Paginator(items, PAGE_LENGTH)
+        paginated = Paginator(books, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
 
         data = {

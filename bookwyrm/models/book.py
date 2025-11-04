@@ -260,10 +260,6 @@ class Book(BookDataModel):
         models.CharField(max_length=255), blank=True, default=list
     )
 
-    # We track series as a separate model Series through SeriesBooks
-    series_ids = fields.ManyToManyField(
-        "Series", through="SeriesBook", related_name="books", blank=True
-    )
     # These legacy fields are still used for editing and as a fallback:
     series = fields.TextField(max_length=255, blank=True, null=True)
     series_number = fields.CharField(max_length=255, blank=True, null=True)
@@ -834,6 +830,11 @@ class Series(OrderedCollectionMixin, BookDataModel):
         if viewer.has_perm("bookwyrm.edit_book"):
             return
         raise PermissionDenied()
+
+    @property
+    def isfdb_link(self):
+        """generate the url from the isfdb id"""
+        return f"https://www.isfdb.org/cgi-bin/pe.cgi?{self.isfdb}"
 
 
 class SeriesBook(CollectionItemMixin, BookWyrmModel):

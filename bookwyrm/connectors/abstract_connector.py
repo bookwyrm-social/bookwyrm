@@ -114,27 +114,26 @@ class AbstractMinimalConnector(ABC):
     def get_or_create_seriesbook_from_data(  # pylint: disable=no-self-use
         self,
         work: models.Work,
-        instance: models.Edition,
-        edition_data: Union[str, JsonDict] = None,
+        edition: models.Edition,
     ) -> None:
         """series may be a a string or an obj"""
-
         user = models.User.objects.get(localname=INSTANCE_ACTOR_USERNAME)
-        series_data = edition_data and edition_data.get("series")
-        # Inventaire gives us an enriched object
-        if series_data and isinstance(series_data, list):
-            # series is a list of dicts
-            for series_obj in series_data:
-                activitydata_to_seriesbook(
-                    series_obj, user.remote_id, work.remote_id, instance.series_number
-                )
+        series_to_process = []
+        # Inventaire series will be objects
+        if work.series:
+            for series_obj in work.series:
+                series_to_process.append(series_obj)
+        elif edition.series:
+            # otherwise it's just a a string
+            series_to_process.append({"title": edition.series})
+            work.series_number = edition.series_number
 
-        # otherwise it's just a name as a string
-        # all legacy BookWyrm data is like this
-        elif instance.series:
+        for obj in series_to_process:
+            instance = None
             possible_series = models.SeriesBook.objects.filter(
-                Q(series__title__iexact=series_data)
-                | Q(series__alternative_titles__icontains=series_data)
+                Q(series__title__iexact=obj["title"])
+                | Q(series__alternative_titles__icontains=obj["title"])
+                | Q(series__alternative_titles__in=obj["alternative_titles"])
             )
 
             if possible_series.exists():
@@ -143,13 +142,24 @@ class AbstractMinimalConnector(ABC):
                 ).first():
                     # we already have a series with same title
                     # and author, let's feel lucky
-                    series_obj = book_in_series.series.to_activity()
-                else:
-                    series_obj = {"user": user, "title": instance.series}
+                    instance = book_in_series.series
 
-            activitydata_to_seriesbook(
-                series_obj, user.remote_id, work.remote_id, instance.series_number
-            )
+                else:
+                    # leave it for the user to work out
+                    if work.series:
+                        edition.series = work.series
+                        edition.series_number = work.series_number
+                        edition.save()
+
+                    return
+
+            activitydata_to_seriesbook(user, work, obj, instance)
+
+        # now clear all the series fields
+        for book in [work, edition]:
+            book.series = (None,)
+            book.series_number = (None,)
+            book.save(update_fields=["series", "series_number"])
 
     @abstractmethod
     def get_or_create_book(self, remote_id: str) -> Optional[models.Book]:
@@ -227,12 +237,7 @@ class AbstractConnector(AbstractMinimalConnector):
 
             edition = self.create_edition_from_data(work, edition_data)
 
-        self.get_or_create_seriesbook_from_data(work, edition, edition_data)
-
-        # clear these fields once we have a seriesbook
-        edition.series = None
-        edition.series_number = None
-        edition.save(update_fields=["series", "series_number"])
+        self.get_or_create_seriesbook_from_data(work, edition)
 
         load_more_data.delay(self.connector.id, work.id)
         return edition
@@ -500,19 +505,39 @@ def maybe_isbn(query: str) -> bool:
 
 
 def activitydata_to_seriesbook(
-    series_obj: Union[str, JsonDict],
-    user: str,
-    work: str,
-    number: str,
+    user: models.User,
+    work: models.Work,
+    series_obj: dict[str],
+    series: Optional[models.Series],
 ) -> None:
     """make a series & seriesbook from incoming data"""
 
-    series_obj["user"] = user.remote_id
-    series = series_obj.to_model(model=models.Series, overwrite=False)
-    seriesbook_data = {
-        "user": user,
-        "book": work,
-        "series": series.remote_id,
-        "series_number": number,
-    }
-    seriesbook_data.to_model(model=models.SeriesBook, overwrite=False)
+    temp = series_obj.to_model(models.Series, save=False)
+
+    if series:
+        for field in [
+            "inventaire_id",
+            "librarything_key",
+            "goodreads_key",
+            "wikidata",
+            "isfdb",
+            "title",
+        ]:
+            if not getattr(series, field) and getattr(temp, field):
+                setattr(series, field, getattr(temp, field))
+
+        for name in temp.alternative_titles:
+            if name not in series.alternative_titles and name != series.title:
+                series.alternative_titles.append(name)
+        series.save()
+    else:
+        series = temp.user = user
+        series.save()
+
+    if not models.SeriesBook.objects.filter(book=work, series=series).exists():
+
+        # using the work.series_number for every series is safe because
+        # Inventaire doesn't record series ordinal when more than one series
+        models.SeriesBook.objects.create(
+            user=user, book=work, series=series, series_number=work.series_number
+        )
