@@ -43,7 +43,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install --group main --group dev pyproject.toml
         pip install pytest-github-actions-annotate-failures
     - name: Set up .env
       run: cp .env.example .env
@@ -65,7 +65,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install --group main --group dev pyproject.toml
     - name: Analyse code with pylint
       run: pylint bookwyrm/
 
@@ -82,7 +82,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install --group main --group dev pyproject.toml
     - name: Set up .env
       run: cp .env.example .env
     - name: Analyse code with mypy
