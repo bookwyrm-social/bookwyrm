@@ -150,8 +150,8 @@ class SeriesForm(CustomForm):
         model = models.Series
         fields = [
             "user",
-            "title",
-            "alternative_titles",
+            "name",
+            "alternative_names",
             "inventaire_id",
             "wikidata",
             "isfdb",

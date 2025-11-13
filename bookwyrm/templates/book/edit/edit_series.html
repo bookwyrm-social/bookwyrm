@@ -6,7 +6,7 @@
 
 
 {% block title %}
-    {% blocktrans with title=series.title %}Edit "{{ title }}"{% endblocktrans %}
+    {% blocktrans with title=series.name %}Edit "{{ title }}"{% endblocktrans %}
 {% endblock %}
 
 {% block content %}
@@ -17,7 +17,7 @@
 </div>
 {% endif %}
 
-<h1 class="title">{% blocktrans with title=series.title %}Edit "{{ title }}"{% endblocktrans %}</h1>
+<h1 class="title">{% blocktrans with title=series.name %}Edit "{{ title }}"{% endblocktrans %}</h1>
 
 <form method="post" action="{% url 'edit-series' series.id %}">
     {% csrf_token %}
@@ -32,12 +32,12 @@
                     <label class="label">
                         {% trans "Alternative Titles" %}
                     </label>
-                    {% for alt in series.alternative_titles %}
+                    {% for alt in series.alternative_names %}
                     <label class="label is-sr-only" for="id_add_alt_title-{{ forloop.counter }}">{% trans "Add Alternative Title:" %}</label>
-                    <input class="input" type="text" name="alternative_titles" id="id_add_alt_title-{{ forloop.counter }}" value="{{alt}}">
+                    <input class="input" type="text" name="alternative_names" id="id_add_alt_title-{{ forloop.counter }}" value="{{alt}}">
                     {% endfor %}
                     <label class="label is-sr-only" for="id_add_alt_title">{% trans "Add Alternative Title:" %}</label>
-                    <input class="input" type="text" name="alternative_titles" id="id_add_alt_title" value="">
+                    <input class="input" type="text" name="alternative_names" id="id_add_alt_title" value="">
                 </div>
                 <span class="help">
                     <button class="button is-small" type="button" data-duplicate="id_add_alt_title" id="another_title_field">
@@ -64,7 +64,7 @@
         {% with book=book %}
             <div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column" itemscope itemtype="https://schema.org/CreativeWork">
                 <div class="is-flex-grow-1 mb-3">
-                    <meta itemprop="isPartOf" content="{{series.title}}">
+                    <meta itemprop="isPartOf" content="{{series.name}}">
                     <meta itemprop="name" content="{{book.title}}">
                     <span class="subtitle"></span>
                     {% include 'landing/small-book.html' with book=book.book %}

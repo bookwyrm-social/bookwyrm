@@ -65,13 +65,13 @@
                 <div>
                     {% spaceless %}
                     {% if sbook.series_number %}
-                    {% blocktrans with title=sbook.series.title path=sbook.series.local_path number=sbook.series_number %}
+                    {% blocktrans with title=sbook.series.name path=sbook.series.local_path number=sbook.series_number %}
                     <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
                         Book <span itemprop="position">{{ number }}</span> in <em><a href="{{ path }}">{{ title }}</a></em>
                     </span>
                     {% endblocktrans %}
                     {% else %}
-                    {% blocktrans with title=sbook.series.title path=sbook.series.local_path %}
+                    {% blocktrans with title=sbook.series.name path=sbook.series.local_path %}
                     <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
                         Part of <em><a href="{{ path }}">{{ title }}</a></em>
                     </span>

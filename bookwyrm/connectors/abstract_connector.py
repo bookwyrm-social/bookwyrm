@@ -125,22 +125,22 @@ class AbstractMinimalConnector(ABC):
                 series_to_process.append(series_obj)
         elif edition.series:
             # otherwise it's just a a string
-            series_to_process.append({"title": edition.series})
+            series_to_process.append({"name": edition.series})
             work.series_number = edition.series_number
 
         for obj in series_to_process:
             instance = None
             possible_series = models.SeriesBook.objects.filter(
-                Q(series__title__iexact=obj["title"])
-                | Q(series__alternative_titles__icontains=obj["title"])
-                | Q(series__alternative_titles__in=obj["alternative_titles"])
+                Q(series__title__iexact=obj["name"])
+                | Q(series__alternative_titles__icontains=obj["name"])
+                | Q(series__alternative_titles__in=obj["alternative_names"])
             )
 
             if possible_series.exists():
                 if book_in_series := possible_series.filter(
                     book__authors__in=work.authors.all()
                 ).first():
-                    # we already have a series with same title
+                    # we already have a series with same name
                     # and author, let's feel lucky
                     instance = book_in_series.series
 
@@ -151,9 +151,9 @@ class AbstractMinimalConnector(ABC):
                         edition.series_number = work.series_number
                         edition.save()
 
-                    return
+                    continue
 
-            activitydata_to_seriesbook(user, work, obj, instance)
+            return activitydata_to_seriesbook(user, work, obj, instance)
 
         # now clear all the series fields
         for book in [work, edition]:
@@ -521,23 +521,23 @@ def activitydata_to_seriesbook(
             "goodreads_key",
             "wikidata",
             "isfdb",
-            "title",
+            "name",
         ]:
             if not getattr(series, field) and getattr(temp, field):
                 setattr(series, field, getattr(temp, field))
 
-        for name in temp.alternative_titles:
-            if name not in series.alternative_titles and name != series.title:
-                series.alternative_titles.append(name)
+        for name in temp.alternative_names:
+            if name not in series.alternative_names and name != series.name:
+                series.alternative_names.append(name)
         series.save()
     else:
-        series = temp.user = user
-        series.save()
+        temp.user = user
+        series = temp.save()
 
     if not models.SeriesBook.objects.filter(book=work, series=series).exists():
 
         # using the work.series_number for every series is safe because
-        # Inventaire doesn't record series ordinal when more than one series
+        # Inventaire doesn't supply series ordinal when more than one series
         models.SeriesBook.objects.create(
             user=user, book=work, series=series, series_number=work.series_number
         )

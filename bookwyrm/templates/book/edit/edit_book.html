@@ -143,7 +143,7 @@
                         </legend>
                         {% for series in series_matches %}
                         <label class="label">
-                            <input type="radio" name="series_match" value="{{ series.id }}"> {{ series.title }}
+                            <input type="radio" name="series_match" value="{{ series.id }}"> {{ series.name }}
                             <p class="help ml-5 mb-0 mt-0">
                                 <em>
                                 {% with book=series.seriesbooks.first %}

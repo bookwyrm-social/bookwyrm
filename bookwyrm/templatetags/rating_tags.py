@@ -13,7 +13,7 @@ register = template.Library()
 def get_rating(book, user):
     """get the overall rating of a book"""
     # this shouldn't happen, but it CAN
-    if not hasattr(book, "parent_work"):
+    if not book.parent_work:
         return None
 
     return cache.get_or_set(

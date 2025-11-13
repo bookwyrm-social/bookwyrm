@@ -142,7 +142,7 @@
                             <div class="">
                                 <label class="label mb-2" for="remove_series">
                                     <span class="tag is-link is-light is-medium">
-                                        <a href="{{ sb.series.local_path }}">{{ sb.series.title }}</a>
+                                        <a href="{{ sb.series.local_path }}">{{ sb.series.name }}</a>
                                         <input class="ml-4" type="checkbox" name="remove_series" id="id_remove_series_{{sb.series.id}}" value="{{ sb.series.id }}" {% if sb.series.id|stringformat:"i" in remove_series %}checked{% endif %} aria-describedby="desc_remove_series_{{sb.series.id}}">
                                       </span>
                                 </label>

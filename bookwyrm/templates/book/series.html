@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load book_display_tags %}
 
-{% block title %}{{ series.title }}{% endblock %}
+{% block title %}{{ series.name }}{% endblock %}
 {% block content %}
 
 
@@ -17,7 +17,7 @@
 	</div>
 	{% endif %}
 	<div class="content" itemscope itemtype="https://schema.org/BookSeries">
-		<h1 class="title is-1" itemprop="name">{{ series.title }}</h1>
+		<h1 class="title is-1" itemprop="name">{{ series.name }}</h1>
         {% if series_authors %}
             <p class="subtitle is-6">
                 {% trans "by" %}
@@ -27,11 +27,11 @@
 		{% endwith %}
 		<div class="columns is-8">
 			<div class="column is-three-quarters">
-				{% if series.alternative_titles%}
+				{% if series.alternative_names%}
 				<div class="box">
-					<h4 class="title is-4">{% trans "Alternative titles" %}</h4>
+					<h4 class="title is-4">{% trans "Alternative names" %}</h4>
 					<div class="content" dir="auto">
-						{% for title in series.alternative_titles %}
+						{% for title in series.alternative_names %}
 						<span class="mx-4" itemprop="alternativeName">{{title}}</span>
 						{% endfor %}
 					</div>
@@ -70,7 +70,7 @@
 	{% for book in books %}
 		<div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column" itemscope itemtype="https://schema.org/CreativeWork">
 			<div class="is-flex-grow-1 mb-3">
-				<meta itemprop="isPartOf" content="{{series.title}}">
+				<meta itemprop="isPartOf" content="{{series.name}}">
 				<meta itemprop="name" content="{{book.title}}">
 				<span class="subtitle">{% if book.series_number %}{% blocktrans with series_number=book.series_number %}Book #{{ series_number }}{% endblocktrans %}{% endif %}</span>
 				{% include 'landing/small-book.html' with book=book.book %}

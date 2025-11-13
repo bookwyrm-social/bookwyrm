@@ -31,9 +31,7 @@ from bookwyrm.utils.db import format_trigger, add_update_fields
 
 from .activitypub_mixin import (
     OrderedCollectionPageMixin,
-    OrderedCollectionMixin,
     ObjectMixin,
-    CollectionItemMixin,
 )
 from .base_model import BookWyrmModel
 from . import fields
@@ -260,9 +258,13 @@ class Book(BookDataModel):
         models.CharField(max_length=255), blank=True, default=list
     )
 
-    # These legacy fields are still used for editing and as a fallback:
+    # these legacy fields are still used for editing and as a fallback:
     series = fields.TextField(max_length=255, blank=True, null=True)
     series_number = fields.CharField(max_length=255, blank=True, null=True)
+    # this is the newer field
+    book_series = fields.ManyToManyField(
+        "Series", related_name="books", activitypub_field="bookSeries"
+    )
 
     subjects = fields.ArrayField(
         models.CharField(max_length=255), blank=True, null=True, default=list
@@ -804,11 +806,11 @@ def preview_image(instance, *args, **kwargs):
         )
 
 
-class Series(OrderedCollectionMixin, BookDataModel):
+class Series(BookDataModel):
     """a series of books"""
 
-    title = fields.TextField(max_length=255)
-    alternative_titles = fields.ArrayField(
+    name = fields.TextField(max_length=255)
+    alternative_names = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )  # like aliases on an author
     user = fields.ForeignKey(
@@ -816,6 +818,8 @@ class Series(OrderedCollectionMixin, BookDataModel):
     )  # for broadcast, should always be instance user but we can't set that here
 
     activity_serializer = activitypub.Series
+    serialize_reverse_fields = [("seriesbooks", "seriesBooks", "-created_date")]
+    deserialize_reverse_fields = [("seriesbooks", "seriesBooks")]
 
     def get_remote_id(self):
         """series need a remote id"""
@@ -837,8 +841,8 @@ class Series(OrderedCollectionMixin, BookDataModel):
         return f"https://www.isfdb.org/cgi-bin/pe.cgi?{self.isfdb}"
 
 
-class SeriesBook(CollectionItemMixin, BookWyrmModel):
-    """connect a book to a series"""
+class SeriesBook(ObjectMixin, BookWyrmModel):
+    """connect a book to a series with a series number"""
 
     series = fields.ForeignKey(
         "Series", on_delete=models.CASCADE, related_name="seriesbooks"

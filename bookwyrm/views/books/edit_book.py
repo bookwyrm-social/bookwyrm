@@ -244,8 +244,8 @@ def add_series(request, data):
     data["confirm_mode"] = True
 
     # check for existing series
-    vector = SearchVector("title", weight="A") + SearchVector(
-        "alternative_titles", weight="B"
+    vector = SearchVector("name", weight="A") + SearchVector(
+        "alternative_names", weight="B"
     )
     series = data["form"]["series"].value()
 
@@ -414,7 +414,7 @@ class ConfirmEditBook(View):
                     else:
                         # Ok it really is a new series
                         series = models.Series.objects.create(
-                            title=book.series, user=user
+                            name=book.series, user=user
                         )
                         models.SeriesBook.objects.create(
                             series=series,
@@ -427,7 +427,7 @@ class ConfirmEditBook(View):
 
             elif book.series:
                 # It's a new series
-                series = models.Series.objects.create(title=book.series, user=user)
+                series = models.Series.objects.create(name=book.series, user=user)
                 models.SeriesBook.objects.create(
                     series=series,
                     book=book.parent_work,

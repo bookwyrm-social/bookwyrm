@@ -253,7 +253,7 @@ class Connector(AbstractConnector):
             except ConnectorException:
                 continue
 
-            alternative_titles = set()
+            alternative_names = set()
             series = {}
             original_lang = series_data.get("originalLang")
             if original_lang:
@@ -263,11 +263,11 @@ class Connector(AbstractConnector):
 
             for k, v in series_data["labels"].items():
                 if k == original_lang:
-                    series["title"] = v
+                    series["name"] = v
                 else:
-                    alternative_titles.add(v)
+                    alternative_names.add(v)
 
-            series["alternativeTitles"] = list(alternative_titles)
+            series["alternativeNames"] = list(alternative_names)
             series["inventaireId"] = uri
             series["wikidata"] = uri.split("wd:")[1]
             if series_data.get("wdt:P6947"):

@@ -88,11 +88,11 @@ class EditSeries(View):
         form = SeriesForm(request.POST, instance=instance)
         series = form.save(request)
         alt_titles = []
-        for title in request.POST.getlist("alternative_titles"):
+        for title in request.POST.getlist("alternative_names"):
             if title != "":
                 alt_titles.append(title)
-        series.alternative_titles = alt_titles
-        series.save(update_fields=["alternative_titles"])
+        series.alternative_names = alt_titles
+        series.save(update_fields=["alternative_names"])
 
         # update seriesbooks as needed
         for book in series.seriesbooks.all():
