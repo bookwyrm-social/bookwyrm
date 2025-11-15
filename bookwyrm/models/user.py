@@ -55,6 +55,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     username = fields.UsernameField()
     email = models.EmailField(unique=True, null=True)
     is_deleted = models.BooleanField(default=False)
+    force_password_reset = models.BooleanField(default=False)
 
     key_pair = fields.OneToOneField(
         "KeyPair",
