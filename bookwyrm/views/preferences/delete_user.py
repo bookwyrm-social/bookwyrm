@@ -19,25 +19,17 @@ class DeleteUser(View):
     def get(self, request):
         """delete page for a user"""
         data = {
-            "form": forms.DeleteUserForm(),
             "user": request.user,
         }
         return TemplateResponse(request, "preferences/delete_user.html", data)
 
     def post(self, request):
         """There's no going back from this"""
-        form = forms.DeleteUserForm(request.POST, instance=request.user)
-        # idk why but I couldn't get check_password to work on request.user
         user = models.User.objects.get(id=request.user.id)
-        if form.is_valid() and user.check_password(form.cleaned_data["password"]):
-            user.deactivation_reason = "self_deletion"
-            user.delete()
-            logout(request)
-            return redirect("/")
-
-        form.errors["password"] = ["Invalid password"]
-        data = {"form": form, "user": request.user}
-        return TemplateResponse(request, "preferences/delete_user.html", data)
+        user.deactivation_reason = "self_deletion"
+        user.delete()
+        logout(request)
+        return redirect("/")
 
 
 @method_decorator(login_required, name="dispatch")

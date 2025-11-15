@@ -10,14 +10,14 @@
     {% csrf_token %}
     <p>
         {% blocktrans trimmed with username=user.localname %}
-        Are you sure you want to delete <strong>{{username}}</strong>'s account? This action cannot be undone. To proceed, please enter your password to confirm deletion.
+        Are you sure you want to delete <strong>{{username}}</strong>'s account? This action cannot be undone.
         {% endblocktrans %}
     </p>
     <div class="field">
-        <label class="label" for="id_password">{% trans "Your password:" %}</label>
-        <input class="input {% if form.password.errors %}is-danger{% endif %}" type="password" name="password" id="id_password" required aria-describedby="desc_password">
-
-        {% include 'snippets/form_errors.html' with errors_list=form.password.errors id="desc_password" %}
+        <label class="checkbox label" for="id_confirm">
+            {% trans "I understand that this is a permanent action:" %}
+            <input class="checkbox" type="checkbox" name="confirm" id="id_confirm" required>
+        </label>
     </div>
     <button type="submit" class="button is-danger">{% trans "Delete Account" %}</button>
 </form>
