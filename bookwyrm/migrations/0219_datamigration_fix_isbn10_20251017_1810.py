@@ -6,14 +6,17 @@ from django.db.models.functions import Length
 
 def fix_isbn10_entries(apps, schema_editor):
     Edition = apps.get_model("bookwyrm", "Edition")
-    editions_to_fix = Edition.objects.annotate(isbn_10_length=Length("isbn_10")).filter(
-        isbn_10_length__gt=10
+    db_alias = schema_editor.connection.alias
+    editions_to_fix = (
+        Edition.objects.using(db_alias)
+        .annotate(isbn_10_length=Length("isbn_10"))
+        .filter(isbn_10_length__gt=10)
+        .filter(isbn_10__endswith="11")
     )
 
     for edition_to_fix in editions_to_fix:
-        if edition_to_fix.isbn_10.endswith("11"):
-            edition_to_fix.isbn_10 = edition_to_fix.isbn_10[:9] + "0"
-            edition_to_fix.save(broadcast=False)
+        edition_to_fix.isbn_10 = edition_to_fix.isbn_10[:9] + "0"
+        edition_to_fix.save(update_fields=["isbn_10"])
 
 
 class Migration(migrations.Migration):
