@@ -417,6 +417,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         self.is_active = False
         self.allow_reactivation = False
         self.is_deleted = True
+        self.set_unusable_password()
 
         self.erase_user_data()
         self.erase_user_statuses()
