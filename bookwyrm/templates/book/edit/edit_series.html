@@ -17,64 +17,64 @@
 </div>
 {% endif %}
 
-<h1 class="title">{% blocktrans with title=series.name %}Edit "{{ title }}"{% endblocktrans %}</h1>
+<h1 class="title">{% blocktrans with name=series.name %}Edit "{{ name }}"{% endblocktrans %}</h1>
 
 <form method="post" action="{% url 'edit-series' series.id %}">
     {% csrf_token %}
     <input type="hidden" id="id_user" name="user" value="{{series.user.id}}">
     <div class="columns">
         <div class="column is-one-half">
-            <label class="label" for="id_title">{% trans "Title" %}</label>
-            <input type="text" name="title" id="id_title" value="{{ form.title.value|default:'' }}" maxlength="255" class="input" required="" id="id_title" aria-describedby="desc_title">
+            <label class="label" for="id_name">{% trans "Name" %}</label>
+            <input type="text" name="name" id="id_name" value="{{ form.name.value|default:'' }}" maxlength="255" class="input" required="" aria-describedby="desc_name">
 
             <div>
                 <div class="field">
                     <label class="label">
-                        {% trans "Alternative Titles" %}
+                        {% trans "Alternative names" %}
                     </label>
                     {% for alt in series.alternative_names %}
-                    <label class="label is-sr-only" for="id_add_alt_title-{{ forloop.counter }}">{% trans "Add Alternative Title:" %}</label>
-                    <input class="input" type="text" name="alternative_names" id="id_add_alt_title-{{ forloop.counter }}" value="{{alt}}">
+                    <label class="label is-sr-only" for="id_add_alt_title-{{ forloop.counter }}">{% trans "Add Alternative name:" %}</label>
+                    <input class="input" type="text" name="alternative_names" id="id_add_alt_name-{{ forloop.counter }}" value="{{alt}}">
                     {% endfor %}
-                    <label class="label is-sr-only" for="id_add_alt_title">{% trans "Add Alternative Title:" %}</label>
-                    <input class="input" type="text" name="alternative_names" id="id_add_alt_title" value="">
+                    <label class="label is-sr-only" for="id_add_alt_name">{% trans "Add Alternative name:" %}</label>
+                    <input class="input" type="text" name="alternative_names" id="id_add_alt_name" value="">
                 </div>
                 <span class="help">
-                    <button class="button is-small" type="button" data-duplicate="id_add_alt_title" id="another_title_field">
+                    <button class="button is-small" type="button" data-duplicate="id_add_alt_name" id="another_name_field">
                         <span class="icon icon-plus" aria-hidden="true"></span>
-                        <span>{% trans "Add an Alternative Title" %}</span>
+                        <span>{% trans "Add an Alternative name" %}</span>
                     </button>
                 </span>
             </div>
         </div>
         <div class="column is-one-half">
             <label class="label" for="id_add_alt_title">Inventaire ID:</label>
-            <input type="text" name="inventaire_id" value="{{ form.inventaire_id.value|default:'' }}" maxlength="255" class="input" id="id_title" aria-describedby="desc_title">
+            <input type="text" name="inventaire_id" value="{{ form.inventaire_id.value|default:'' }}" maxlength="255" class="input" id="id_inventaire_id" aria-describedby="desc_title">
 
             <label class="label" for="id_add_alt_title">Wikidata ID:</label>
-            <input type="text" name="wikidata" value="{{ form.wikidata.value|default:'' }}" maxlength="255" class="input" id="id_title" aria-describedby="desc_title">
+            <input type="text" name="wikidata" value="{{ form.wikidata.value|default:'' }}" maxlength="255" class="input" id="id_wikidata" aria-describedby="desc_title">
 
             <label class="label" for="id_add_alt_title">ISFDB ID:</label>
-            <input type="text" name="isfdb" value="{{ form.isfdb.value|default:'' }}" maxlength="255" class="input" id="id_title" aria-describedby="desc_title">
+            <input type="text" name="isfdb" value="{{ form.isfdb.value|default:'' }}" maxlength="255" class="input" id="id_isfdb" aria-describedby="desc_title">
         </div>
     </div>
 
     <div class="columns is-multiline is-mobile">
         {% for book in books %}
-        {% with book=book %}
             <div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column" itemscope itemtype="https://schema.org/CreativeWork">
                 <div class="is-flex-grow-1 mb-3">
                     <meta itemprop="isPartOf" content="{{series.name}}">
                     <meta itemprop="name" content="{{book.title}}">
                     <span class="subtitle"></span>
-                    {% include 'landing/small-book.html' with book=book.book %}
+                    {% include 'landing/small-book.html' with book=book.edition %}
                 </div>
                 <div class="columns mx-2">
+                    {% with book=book %}
                     <label class="label column is-half" for="id_series_number">{% trans "Series #:" %}</label>
-                    <input class="input column is-half" type="text" name="series_number-{{book.id}}" id="id_series_number" value={{book.series_number}}>
+                    <input class="input column is-half" type="text" name="series_number-{{book.id}}" id="id_series_number" value={{book.number}}>
+                    {% endwith %}
                 </div>
             </div>
-        {% endwith %}
         {% endfor %}
     </div>
     <button class="button is-primary" type="submit">{% trans "Confirm" %}</button>

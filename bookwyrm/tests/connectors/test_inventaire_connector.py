@@ -285,3 +285,15 @@ class Inventaire(TestCase):
             self.connector.get_remote_id_from_model(obj),
             "https://inventaire.io?action=by-uris&uris=123",
         )
+
+
+    def test_format_series(self):
+        """make an activitypub object from Inventaire JSON-LD"""
+
+        pass
+
+
+    def test_get_or_create_seriesbook_from_data(self):
+        """create a seriesbook from activityjson"""
+
+        pass

@@ -261,10 +261,6 @@ class Book(BookDataModel):
     # these legacy fields are still used for editing and as a fallback:
     series = fields.TextField(max_length=255, blank=True, null=True)
     series_number = fields.CharField(max_length=255, blank=True, null=True)
-    # this is the newer field
-    book_series = fields.ManyToManyField(
-        "Series", related_name="books", activitypub_field="bookSeries"
-    )
 
     subjects = fields.ArrayField(
         models.CharField(max_length=255), blank=True, null=True, default=list
@@ -395,6 +391,13 @@ class Book(BookDataModel):
 
         return re.sub(f'^{" |^".join(articles)} ', "", str(self.title).lower())
 
+    def book_series(self):
+        """get the series this book is in"""
+        series = set()
+        for sb in self.seriesbooks.all():
+            series.add(sb.series)
+        return list(series)
+
     def __repr__(self):
         # pylint: disable=consider-using-f-string
         return "<{} key={!r} title={!r}>".format(
@@ -486,8 +489,10 @@ class Work(OrderedCollectionPageMixin, Book):
     serialize_reverse_fields = [
         ("editions", "editions", "-edition_rank"),
         ("file_links", "fileLinks", "-created_date"),
+        ("seriesbooks", "seriesBooks", "-created_date")
     ]
-    deserialize_reverse_fields = [("editions", "editions"), ("file_links", "fileLinks")]
+    deserialize_reverse_fields = [("editions", "editions"), ("file_links", "fileLinks"), ("seriesbooks", "seriesBooks")]
+
 
 
 # https://schema.org/BookFormatType
@@ -856,7 +861,6 @@ class SeriesBook(ObjectMixin, BookWyrmModel):
     )  # for broadcast, should always be instance user but we can't set that here
 
     activity_serializer = activitypub.SeriesBook
-    collection_field = "series"
 
     def get_remote_id(self):
         """need a remote id to provide the URI for series"""
@@ -866,8 +870,3 @@ class SeriesBook(ObjectMixin, BookWyrmModel):
         if viewer.has_perm("bookwyrm.edit_book"):
             return
         raise PermissionDenied()
-
-    class Meta:
-        """an ordered list needs ordering"""
-
-        ordering = ("-series_number", "-created_date", "-updated_date")

@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Optional, TypedDict, Any, Callable, Union, Iterator
 from urllib.parse import quote_plus
 
+import json
 import logging
 import re
 import asyncio
@@ -119,47 +120,47 @@ class AbstractMinimalConnector(ABC):
         """series may be a a string or an obj"""
         user = models.User.objects.get(localname=INSTANCE_ACTOR_USERNAME)
         series_to_process = []
-        # Inventaire series will be objects
+        authors = work.authors.all().union(edition.authors.all())
+
+        # Inventaire series will be a list of activity strings
         if work.series:
-            for series_obj in work.series:
-                series_to_process.append(series_obj)
+            for data in json.loads(work.series):
+                series_data = models.Series(**data)
+                series_to_process.append(series_data)
         elif edition.series:
-            # otherwise it's just a a string
-            series_to_process.append({"name": edition.series})
+            # otherwise it's just a a name
+            series_to_process.append(models.Series(name=edition.series))
             work.series_number = edition.series_number
 
-        for obj in series_to_process:
+        for series in series_to_process:
             instance = None
             possible_series = models.SeriesBook.objects.filter(
-                Q(series__title__iexact=obj["name"])
-                | Q(series__alternative_titles__icontains=obj["name"])
-                | Q(series__alternative_titles__in=obj["alternative_names"])
+                Q(series__name__iexact=series.name)
+                | Q(series__alternative_names__icontains=series.name)
+                | Q(series__alternative_names__in=series.alternative_names)
             )
 
             if possible_series.exists():
-                if book_in_series := possible_series.filter(
-                    book__authors__in=work.authors.all()
-                ).first():
-                    # we already have a series with same name
-                    # and author, let's feel lucky
-                    instance = book_in_series.series
+                # there is probably a more efficient way to do this...
+                for seriesbook in possible_series.all():
+                    for author in seriesbook.book.authors.all():
+                        if author in authors.all():
+                            # we already have a series with same name
+                            # and author, let's feel lucky
+                            instance = seriesbook.series
+                            break
 
-                else:
+                if not instance:
                     # leave it for the user to work out
                     if work.series:
-                        edition.series = work.series
-                        edition.series_number = work.series_number
+                        edition.series = series.name
+                        edition.series_number = json.loads(work.series)[0].get("seriesNumber", "")
                         edition.save()
 
                     continue
 
-            return activitydata_to_seriesbook(user, work, obj, instance)
+            activitydata_to_seriesbook(user=user, work=work, new=series, instance=instance)
 
-        # now clear all the series fields
-        for book in [work, edition]:
-            book.series = (None,)
-            book.series_number = (None,)
-            book.save(update_fields=["series", "series_number"])
 
     @abstractmethod
     def get_or_create_book(self, remote_id: str) -> Optional[models.Book]:
@@ -246,11 +247,6 @@ class AbstractConnector(AbstractMinimalConnector):
         """this allows connectors to override the default behavior"""
         return get_data(remote_id, is_activitypub=False)
 
-    def get_series_data(  # pylint: disable=no-self-use
-        self, remote_id: str
-    ) -> JsonDict:
-        """this allows connectors to override the default behavior"""
-        return get_data(remote_id)
 
     def create_edition_from_data(
         self,
@@ -507,14 +503,12 @@ def maybe_isbn(query: str) -> bool:
 def activitydata_to_seriesbook(
     user: models.User,
     work: models.Work,
-    series_obj: dict[str],
-    series: Optional[models.Series],
+    new: models.Series,
+    instance: Optional[models.Series],
 ) -> None:
     """make a series & seriesbook from incoming data"""
 
-    temp = series_obj.to_model(models.Series, save=False)
-
-    if series:
+    if instance:
         for field in [
             "inventaire_id",
             "librarything_key",
@@ -523,19 +517,20 @@ def activitydata_to_seriesbook(
             "isfdb",
             "name",
         ]:
-            if not getattr(series, field) and getattr(temp, field):
-                setattr(series, field, getattr(temp, field))
+            if not getattr(instance, field) and getattr(new, field):
+                setattr(instance, field, getattr(new, field))
 
-        for name in temp.alternative_names:
-            if name not in series.alternative_names and name != series.name:
-                series.alternative_names.append(name)
+        for name in new.alternative_names:
+            if name not in instance.alternative_names and name != instance.name:
+                instance.alternative_names.append(name)
+        series = instance
         series.save()
     else:
-        temp.user = user
-        series = temp.save()
+        new.user = user
+        series = new
+        series.save()
 
     if not models.SeriesBook.objects.filter(book=work, series=series).exists():
-
         # using the work.series_number for every series is safe because
         # Inventaire doesn't supply series ordinal when more than one series
         models.SeriesBook.objects.create(

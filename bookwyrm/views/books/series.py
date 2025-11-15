@@ -61,11 +61,21 @@ class EditSeries(View):
     def get(self, request, series_id=None):
         """edit page for series"""
 
-        series = models.Series.objects.filter(id=series_id).first()
+        series = models.Series.objects.get(id=series_id)
         seriesbooks = models.SeriesBook.objects.filter(series=series)
+        books = []
+        for item in seriesbooks:
+            edition = item.book.work.default_edition
+            number = item.series_number or ""
+            books.append({"edition": edition, "number": number, "id": item.book.work.id})
+            print({"edition": edition, "number": number, "id": item.book.work.id})
+
+        paginated = Paginator(books, PAGE_LENGTH)
+        page = paginated.get_page(request.GET.get("page"))
+
         data = {
             "series": series,
-            "books": seriesbooks,
+            "books": page,
             "form": SeriesForm(instance=series),
         }
 
@@ -96,12 +106,12 @@ class EditSeries(View):
 
         # update seriesbooks as needed
         for book in series.seriesbooks.all():
-            value = request.POST[f"series_number-{book.id}"]
+            value = request.POST[f"series_number-{book.book.id}"]
             book.series_number = value
             # save the series_number as the value
             book.save(update_fields=["series_number"])
 
-        return redirect("series", series_id)
+        return redirect(series.local_path)
 
 
 class SeriesBook(View):

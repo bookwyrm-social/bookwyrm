@@ -36,7 +36,7 @@ class Book(BookData):
     languages: list[str] = field(default_factory=list)
     series: str = ""  # legacy, now deprecated
     seriesNumber: str = ""  # legacy, now deprecated
-    bookSeries: list[str] = field(default_factory=list)
+    seriesBooks: list[str] = field(default_factory=list)
     subjects: list[str] = field(default_factory=list)
     subjectPlaces: list[str] = field(default_factory=list)
 
@@ -112,6 +112,6 @@ class SeriesBook(ActivityObject):
 
     actor: str
     book: str
-    series: str = ""
+    series: str
     seriesNumber: str = ""
     type: str = "SeriesBook"
