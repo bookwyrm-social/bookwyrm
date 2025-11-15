@@ -67,7 +67,9 @@ class EditSeries(View):
         for item in seriesbooks:
             edition = item.book.work.default_edition
             number = item.series_number or ""
-            books.append({"edition": edition, "number": number, "id": item.book.work.id})
+            books.append(
+                {"edition": edition, "number": number, "id": item.book.work.id}
+            )
             print({"edition": edition, "number": number, "id": item.book.work.id})
 
         paginated = Paginator(books, PAGE_LENGTH)

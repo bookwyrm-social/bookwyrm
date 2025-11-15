@@ -6,7 +6,11 @@ import responses
 
 from bookwyrm import models
 from bookwyrm.connectors import abstract_connector, ConnectorException
-from bookwyrm.connectors.abstract_connector import Mapping, get_data, activitydata_to_seriesbook
+from bookwyrm.connectors.abstract_connector import (
+    Mapping,
+    get_data,
+    activitydata_to_seriesbook,
+)
 from bookwyrm.settings import BASE_URL, INSTANCE_ACTOR_USERNAME
 
 
@@ -174,7 +178,6 @@ class AbstractConnector(TestCase):
         with self.assertRaises(ConnectorException):
             get_data("http://127.0.0.1/image/jpg")
 
-
     def test_get_or_create_seriesbook_from_data(self):
         """do we make a seriesbook?"""
 
@@ -194,8 +197,12 @@ class AbstractConnector(TestCase):
         """do we get a seriesbook with existing series?"""
 
         author = models.Author.objects.create(name="Sammy")
-        series = models.Series.objects.create(name="Test Series 1", user=self.local_user)
-        models.SeriesBook.objects.create(user=self.local_user, book=self.book, series=series)
+        series = models.Series.objects.create(
+            name="Test Series 1", user=self.local_user
+        )
+        models.SeriesBook.objects.create(
+            user=self.local_user, book=self.book, series=series
+        )
 
         work = models.Work.objects.create(title="Test Book")
         work.series = json.dumps([{"name": "Test Series 1"}])
@@ -214,8 +221,12 @@ class AbstractConnector(TestCase):
         """do we get series info in the book when we can't match author?"""
 
         author = models.Author.objects.create(name="Sammy")
-        series = models.Series.objects.create(name="Test Series 1", user=self.local_user)
-        models.SeriesBook.objects.create(user=self.local_user, book=self.book, series=series)
+        series = models.Series.objects.create(
+            name="Test Series 1", user=self.local_user
+        )
+        models.SeriesBook.objects.create(
+            user=self.local_user, book=self.book, series=series
+        )
 
         work = models.Work.objects.create(title="Test Book 2")
         work.series = json.dumps([{"name": "Test Series 1"}])
@@ -232,7 +243,7 @@ class AbstractConnector(TestCase):
         self.assertEqual(edition.series, "Test Series 1")
 
     def test_activitydata_to_seriesbook(self):
-        """ do we get a seriesbook?"""
+        """do we get a seriesbook?"""
 
         work = models.Work.objects.create(title="Test Book 2")
         new = models.Series(name="Test Series A")
@@ -240,36 +251,46 @@ class AbstractConnector(TestCase):
         self.assertEqual(models.Series.objects.count(), 0)
         self.assertEqual(models.SeriesBook.objects.count(), 0)
 
-        activitydata_to_seriesbook(user=self.local_user, work=work, new=new, instance=None)
+        activitydata_to_seriesbook(
+            user=self.local_user, work=work, new=new, instance=None
+        )
 
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.SeriesBook.objects.count(), 1)
 
     def test_activitydata_to_seriesbook_with_existing_series(self):
-        """ do we get a seriesbook but not a duplicate series?"""
+        """do we get a seriesbook but not a duplicate series?"""
 
         work = models.Work.objects.create(title="Test Book 2")
-        series = models.Series.objects.create(name="Test Series A", user=self.local_user)
+        series = models.Series.objects.create(
+            name="Test Series A", user=self.local_user
+        )
 
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.SeriesBook.objects.count(), 0)
 
-        activitydata_to_seriesbook(user=self.local_user, work=work, new=series, instance=series)
+        activitydata_to_seriesbook(
+            user=self.local_user, work=work, new=series, instance=series
+        )
 
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.SeriesBook.objects.count(), 1)
 
     def test_activitydata_to_seriesbook_with_existing_seriesbook(self):
-        """ do we reuse the existing series and seriesbook?"""
+        """do we reuse the existing series and seriesbook?"""
 
         work = models.Work.objects.create(title="Test Book 2")
-        series = models.Series.objects.create(name="Test Series A", user=self.local_user)
+        series = models.Series.objects.create(
+            name="Test Series A", user=self.local_user
+        )
         models.SeriesBook.objects.create(user=self.local_user, book=work, series=series)
 
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.SeriesBook.objects.count(), 1)
 
-        activitydata_to_seriesbook(user=self.local_user, work=work, new=series, instance=None)
+        activitydata_to_seriesbook(
+            user=self.local_user, work=work, new=series, instance=None
+        )
 
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.SeriesBook.objects.count(), 1)

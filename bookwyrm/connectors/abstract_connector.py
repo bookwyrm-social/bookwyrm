@@ -154,13 +154,16 @@ class AbstractMinimalConnector(ABC):
                     # leave it for the user to work out
                     if work.series:
                         edition.series = series.name
-                        edition.series_number = json.loads(work.series)[0].get("seriesNumber", "")
+                        edition.series_number = json.loads(work.series)[0].get(
+                            "seriesNumber", ""
+                        )
                         edition.save()
 
                     continue
 
-            activitydata_to_seriesbook(user=user, work=work, new=series, instance=instance)
-
+            activitydata_to_seriesbook(
+                user=user, work=work, new=series, instance=instance
+            )
 
     @abstractmethod
     def get_or_create_book(self, remote_id: str) -> Optional[models.Book]:
@@ -246,7 +249,6 @@ class AbstractConnector(AbstractMinimalConnector):
     def get_book_data(self, remote_id: str) -> JsonDict:  # pylint: disable=no-self-use
         """this allows connectors to override the default behavior"""
         return get_data(remote_id, is_activitypub=False)
-
 
     def create_edition_from_data(
         self,

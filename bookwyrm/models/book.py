@@ -489,10 +489,13 @@ class Work(OrderedCollectionPageMixin, Book):
     serialize_reverse_fields = [
         ("editions", "editions", "-edition_rank"),
         ("file_links", "fileLinks", "-created_date"),
-        ("seriesbooks", "seriesBooks", "-created_date")
+        ("seriesbooks", "seriesBooks", "-created_date"),
     ]
-    deserialize_reverse_fields = [("editions", "editions"), ("file_links", "fileLinks"), ("seriesbooks", "seriesBooks")]
-
+    deserialize_reverse_fields = [
+        ("editions", "editions"),
+        ("file_links", "fileLinks"),
+        ("seriesbooks", "seriesBooks"),
+    ]
 
 
 # https://schema.org/BookFormatType

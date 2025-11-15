@@ -6,6 +6,7 @@ from django.test import TestCase
 
 from bookwyrm import models, settings
 
+
 class TestSeriesModel(TestCase):
     """testing series"""
 
@@ -21,19 +22,27 @@ class TestSeriesModel(TestCase):
         )
 
         cls.work = models.Work.objects.create(title="Test Book")
-        cls.edition = models.Edition.objects.create(title="Test Book", parent_work=cls.work)
-        cls.series = models.Series.objects.create(name="Test series", user=cls.instance_user)
+        cls.edition = models.Edition.objects.create(
+            title="Test Book", parent_work=cls.work
+        )
+        cls.series = models.Series.objects.create(
+            name="Test series", user=cls.instance_user
+        )
 
     def test_seriesbook(self):
 
         self.assertEqual(models.SeriesBook.objects.count(), 0)
-        models.SeriesBook.objects.create(series=self.series, book=self.work, user=self.instance_user)
+        models.SeriesBook.objects.create(
+            series=self.series, book=self.work, user=self.instance_user
+        )
         self.assertEqual(models.SeriesBook.objects.count(), 1)
 
     def test_seriesbook_fields(self):
 
         self.assertEqual(models.SeriesBook.objects.count(), 0)
-        seriesbook = models.SeriesBook.objects.create(series=self.series, book=self.work, user=self.instance_user)
+        seriesbook = models.SeriesBook.objects.create(
+            series=self.series, book=self.work, user=self.instance_user
+        )
 
         self.assertEqual(models.SeriesBook.objects.count(), 1)
         self.assertEqual(self.work.seriesbooks.first(), seriesbook)

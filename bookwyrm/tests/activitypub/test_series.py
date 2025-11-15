@@ -113,7 +113,6 @@ class TestSeries(TestCase):
         self.assertEqual(activity["book"], self.book.remote_id)
         self.assertEqual(activity["series"], self.series.remote_id)
 
-
     @responses.activate
     def test_deserialize_book_with_series(self):
         """check that new style series are deserialised"""
@@ -138,7 +137,6 @@ class TestSeries(TestCase):
             json=self.user.to_activity(),
             status=200,
         )
-
 
         # TODO:
         # set_related_field.delay is in play here, we need to mock it so the seriesbook is unfurled
