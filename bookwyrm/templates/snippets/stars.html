@@ -4,33 +4,36 @@
 
 {% with 0|uuid as uuid %}
 <span class="stars tag">
-    {% if not request.user.show_ratings %}
-
-    <button type="button" data-controls="rating-{{ uuid }}" id="rating-button-{{ uuid }}" aria-pressed="false" data-disappear>
-        <em>{% trans "Show rating" %} </em>
-    </button>
-
-    {% endif %}
 
     {% if rating %}
-    <span class="{% if not request.user.show_ratings %}is-hidden{% endif %}" id="rating-{{ uuid }}">
-        <span class="is-sr-only">
-            {% blocktranslate trimmed with rating=rating|floatformat:0 count counter=rating|floatformat:0|add:0 %}
-                {{ rating }} star
-            {% plural %}
-                {{ rating }} stars
-            {% endblocktranslate %}
+
+        {% if not request.user.show_ratings %}
+
+        <button type="button" data-controls="rating-{{ uuid }}" id="rating-button-{{ uuid }}" aria-pressed="false" data-disappear>
+            <em>{% trans "Show rating" %} </em>
+        </button>
+
+        {% endif %}
+
+        <span class="{% if not request.user.show_ratings %}is-hidden{% endif %}" id="rating-{{ uuid }}">
+            <span class="is-sr-only">
+                {% blocktranslate trimmed with rating=rating|floatformat:0 count counter=rating|floatformat:0|add:0 %}
+                    {{ rating }} star
+                {% plural %}
+                    {{ rating }} stars
+                {% endblocktranslate %}
+            </span>
+            {% for i in '12345'|make_list %}
+                <span
+                    class="
+                        icon is-small mr-1
+                        icon-star-{% if rating >= forloop.counter %}full{% elif rating|floatformat:0 >= forloop.counter|floatformat:0 %}half{% else %}empty{% endif %}
+                    "
+                    aria-hidden="true"
+                ></span>
+            {% endfor %}
         </span>
-        {% for i in '12345'|make_list %}
-            <span
-                class="
-                    icon is-small mr-1
-                    icon-star-{% if rating >= forloop.counter %}full{% elif rating|floatformat:0 >= forloop.counter|floatformat:0 %}half{% else %}empty{% endif %}
-                "
-                aria-hidden="true"
-            ></span>
-        {% endfor %}
-    </span>
+
     {% else %}
         <span class="no-rating">{% trans "No rating" %}</span>
     {% endif %}

@@ -1,6 +1,7 @@
 """ the good stuff! the books! """
 
 from re import sub, findall
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.db import transaction
@@ -12,6 +13,7 @@ from django.views.decorators.http import require_POST
 from django.views import View
 
 from bookwyrm import book_search, forms, models
+from bookwyrm.utils.images import remove_uploaded_image_exif
 
 # from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.utils.isni import (
@@ -36,7 +38,7 @@ class EditBook(View):
         book = get_edition(book_id)
         # This doesn't update the sort title, just pre-populates it in the form
         if book.sort_title in ["", None]:
-            book.sort_title = book.guess_sort_title()
+            book.sort_title = book.guess_sort_title(user=request.user)
         if not book.description:
             book.description = book.parent_work.description
         data = {"book": book, "form": forms.EditionForm(instance=book)}
@@ -71,6 +73,8 @@ class EditBook(View):
             image = set_cover_from_url(url)
             if image:
                 book.cover.save(*image, save=False)
+        elif "cover" in form.files:
+            book.cover = remove_uploaded_image_exif(form.files["cover"])
 
         book.save()
         return redirect(f"/book/{book.id}")
@@ -142,6 +146,8 @@ class CreateBook(View):
                 image = set_cover_from_url(url)
                 if image:
                     book.cover.save(*image, save=False)
+            elif "cover" in form.files:
+                book.cover = remove_uploaded_image_exif(form.files["cover"])
 
             book.save()
         return redirect(f"/book/{book.id}")
@@ -183,8 +189,8 @@ def add_authors(request, data):
 
         author_matches = (
             models.Author.objects.annotate(search=vector)
-            .annotate(rank=SearchRank(vector, author))
-            .filter(rank__gt=0.4)
+            .annotate(rank=SearchRank(vector, author, normalization=32))
+            .filter(rank__gt=0.19)  # short alias names like XY get rank around 0.1956
             .order_by("-rank")[:5]
         )
 
@@ -311,6 +317,12 @@ class ConfirmEditBook(View):
                 image = set_cover_from_url(url)
                 if image:
                     book.cover.save(*image, save=False)
+            elif "cover" in form.files:
+                book.cover = remove_uploaded_image_exif(form.files["cover"])
+
+            # add a sort title if we don't have one
+            if book.sort_title in ["", None]:
+                book.sort_title = book.guess_sort_title(user=request.user)
 
             # we don't tell the world when creating a book
             book.save(broadcast=False)

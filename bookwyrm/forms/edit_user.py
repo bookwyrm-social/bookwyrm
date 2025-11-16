@@ -65,12 +65,6 @@ class LimitedEditUserForm(CustomForm):
         }
 
 
-class DeleteUserForm(CustomForm):
-    class Meta:
-        model = models.User
-        fields = ["password"]
-
-
 class MoveUserForm(CustomForm):
     target = forms.CharField(widget=forms.TextInput)
 

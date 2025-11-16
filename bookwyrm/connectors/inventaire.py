@@ -85,12 +85,15 @@ class Connector(AbstractConnector):
     def parse_search_data(
         self, data: JsonDict, min_confidence: float
     ) -> Iterator[SearchResult]:
+        best_score = None
         for search_result in data.get("results", []):
-            images = search_result.get("image")
-            cover = f"{self.covers_url}/img/entities/{images[0]}" if images else None
+            image = search_result.get("image")
+            cover = f"{self.covers_url}{image}" if image else None
             # a deeply messy translation of inventaire's scores
             confidence = float(search_result.get("_score", 0.1))
-            confidence = 0.1 if confidence < 150 else 0.999
+            if best_score is None:
+                best_score = confidence
+            confidence = (confidence / best_score) - 0.001
             if confidence < min_confidence:
                 continue
             yield SearchResult(
@@ -222,9 +225,10 @@ class Connector(AbstractConnector):
     def get_description(self, links: JsonDict) -> str:
         """grab an extracted excerpt from wikipedia"""
         link = links.get("enwiki")
-        if not link:
+        if not link or not link.get("title"):
             return ""
-        url = f"{self.base_url}/api/data?action=wp-extract&lang=en&title={link}"
+        title = link.get("title")
+        url = f"{self.base_url}/api/data?action=wp-extract&lang=en&title={title}"
         try:
             data = get_data(url, is_activitypub=False)
         except ConnectorException:

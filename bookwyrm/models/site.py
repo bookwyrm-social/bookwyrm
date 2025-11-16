@@ -106,6 +106,7 @@ class SiteSettings(SiteModel):
     user_exports_enabled = models.BooleanField(default=False)
     user_import_time_limit = models.IntegerField(default=48)
     disable_federation = models.BooleanField(default=False)
+    export_files_lifetime_hours = models.IntegerField(default=72)
 
     field_tracker = FieldTracker(fields=["name", "instance_tagline", "logo"])
 

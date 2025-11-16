@@ -64,6 +64,10 @@ class InviteRequestForm(CustomForm):
         if email and models.User.objects.filter(email=email).exists():
             self.add_error("email", _("A user with this email already exists."))
 
+        email_domain = email.split("@")[-1]
+        if email and models.EmailBlocklist.objects.filter(domain=email_domain).exists():
+            self.add_error("email", _("This email address cannot be registered."))
+
     class Meta:
         model = models.InviteRequest
         fields = ["email", "answer"]
@@ -92,6 +96,24 @@ class PasswordResetForm(CustomForm):
             validate_password(new_password)
         except ValidationError as err:
             self.add_error("password", err)
+        return cleaned_data
+
+
+class ForcePasswordResetForm(PasswordResetForm):
+    current_password = forms.CharField(widget=forms.PasswordInput)
+
+    def clean(self):
+        """Make sure we aren't re-using the same password"""
+        cleaned_data = super().clean()
+        current_password = cleaned_data.get("current_password")
+        new_password = cleaned_data.get("password")
+
+        if current_password == new_password:
+            self.add_error(
+                "password",
+                _("Password cannot be the same as your current password"),
+            )
+        return cleaned_data
 
 
 class Confirm2FAForm(CustomForm):

@@ -35,7 +35,8 @@ class Dashboard(View):
     )
     def get(self, request):
         """list of users"""
-        data = get_charts_and_stats(request)
+        data = get_stats()
+        # data |= get_charts(request)
 
         # Make sure email looks properly configured
         email_config_error = re.findall(
@@ -83,7 +84,7 @@ class Dashboard(View):
             schedule, _ = IntervalSchedule.objects.get_or_create(
                 **schedule_form.cleaned_data
             )
-            PeriodicTask.objects.get_or_create(
+            PeriodicTask.objects.update_or_create(
                 interval=schedule,
                 name="check-for-updates",
                 task="bookwyrm.models.site.check_for_updates_task",
@@ -91,7 +92,27 @@ class Dashboard(View):
         return redirect("settings-dashboard")
 
 
-def get_charts_and_stats(request):
+def get_stats():
+    """Defines the dashboard charts"""
+    now = timezone.now()
+    user_queryset = models.User.objects.filter(local=True)
+    status_queryset = models.Status.objects.filter(user__local=True, deleted=False)
+    return {
+        "users": user_queryset.filter(is_active=True).count(),
+        "active_users": user_queryset.filter(
+            is_active=True, last_active_date__gte=now - timedelta(days=31)
+        ).count(),
+        "statuses": status_queryset.count(),
+        "works": models.Work.objects.count(),
+        "reports": models.Report.objects.filter(resolved=False).count(),
+        "pending_domains": models.LinkDomain.objects.filter(status="pending").count(),
+        "invite_requests": models.InviteRequest.objects.filter(
+            ignored=False, invite__isnull=True
+        ).count(),
+    }
+
+
+def get_charts(request):
     """Defines the dashboard charts"""
     interval = int(request.GET.get("days", 1))
     now = timezone.now()
@@ -158,17 +179,6 @@ def get_charts_and_stats(request):
         "start": start.strftime("%Y-%m-%d"),
         "end": end.strftime("%Y-%m-%d"),
         "interval": interval,
-        "users": user_queryset.filter(is_active=True).count(),
-        "active_users": user_queryset.filter(
-            is_active=True, last_active_date__gte=now - timedelta(days=31)
-        ).count(),
-        "statuses": status_queryset.count(),
-        "works": models.Work.objects.count(),
-        "reports": models.Report.objects.filter(resolved=False).count(),
-        "pending_domains": models.LinkDomain.objects.filter(status="pending").count(),
-        "invite_requests": models.InviteRequest.objects.filter(
-            ignored=False, invite__isnull=True
-        ).count(),
         "user_stats": user_chart.get_chart(start, end, interval),
         "status_stats": status_chart.get_chart(start, end, interval),
         "register_stats": register_chart.get_chart(start, end, interval),

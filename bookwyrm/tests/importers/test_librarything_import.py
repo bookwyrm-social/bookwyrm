@@ -61,7 +61,9 @@ class LibrarythingImport(TestCase):
         self.assertEqual(import_job.include_reviews, False)
         self.assertEqual(import_job.privacy, "public")
 
-        import_items = models.ImportItem.objects.filter(job=import_job).all()
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")
+        )
         self.assertEqual(len(import_items), 3)
         self.assertEqual(import_items[0].index, 0)
         self.assertEqual(import_items[0].data["Book Id"], "5498194")
@@ -83,7 +85,9 @@ class LibrarythingImport(TestCase):
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "unlisted"
         )
-        import_items = models.ImportItem.objects.filter(job=import_job).all()[:2]
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")[:2]
+        )
 
         retry = self.importer.create_retry_job(
             self.local_user, import_job, import_items
@@ -93,7 +97,7 @@ class LibrarythingImport(TestCase):
         self.assertEqual(retry.include_reviews, False)
         self.assertEqual(retry.privacy, "unlisted")
 
-        retry_items = models.ImportItem.objects.filter(job=retry).all()
+        retry_items = models.ImportItem.objects.filter(job=retry).all().order_by("id")
         self.assertEqual(len(retry_items), 2)
         self.assertEqual(retry_items[0].index, 0)
         self.assertEqual(import_items[0].data["Book Id"], "5498194")

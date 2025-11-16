@@ -70,7 +70,9 @@ class ReadingViews(TestCase):
             },
         )
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock:
             views.ReadingStatus.as_view()(request, "start", self.book.id)
 
         self.assertEqual(shelf.books.get(), self.book)
@@ -85,6 +87,12 @@ class ReadingViews(TestCase):
         self.assertIsNone(readthrough.finish_date)
         self.assertEqual(readthrough.user, self.local_user)
         self.assertEqual(readthrough.book, self.book)
+
+        # Three broadcast tasks:
+        # 1. Create Readthrough
+        # 2. Create post as pure_content (for non-BookWyrm)
+        # 3. Create post with book attached - this should only happen once!
+        self.assertEqual(len(mock.mock_calls), 3)
 
     def test_start_reading_with_comment(self, *_):
         """begin a book"""

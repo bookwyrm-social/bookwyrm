@@ -72,9 +72,7 @@ class DeleteUserViews(TestCase):
     def test_delete_user(self, *_):
         """use a form to update a user"""
         view = views.DeleteUser.as_view()
-        form = forms.DeleteUserForm()
-        form.data["password"] = "password"
-        request = self.factory.post("", form.data)
+        request = self.factory.post("")
         request.user = self.local_user
         middleware = SessionMiddleware(request)
         middleware.process_request(request)
@@ -95,6 +93,7 @@ class DeleteUserViews(TestCase):
 
         self.local_user.refresh_from_db()
         self.assertFalse(self.local_user.is_active)
+        self.assertFalse(self.local_user.has_usable_password())
         self.assertEqual(self.local_user.deactivation_reason, "self_deletion")
 
     def test_deactivate_user(self, _):
@@ -111,6 +110,7 @@ class DeleteUserViews(TestCase):
 
         self.local_user.refresh_from_db()
         self.assertFalse(self.local_user.is_active)
+        self.assertTrue(self.local_user.has_usable_password())
         self.assertEqual(self.local_user.deactivation_reason, "self_deactivation")
 
     def test_reactivate_user_get(self, _):

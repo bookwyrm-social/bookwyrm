@@ -3,6 +3,7 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.views import View
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import book_search
 from bookwyrm.settings import PAGE_LENGTH
@@ -12,6 +13,7 @@ from .helpers import is_api_request
 class Isbn(View):
     """search a book by isbn"""
 
+    @vary_on_headers("Accept")
     def get(self, request, isbn):
         """info about a book"""
         book_results = book_search.isbn_search(isbn)

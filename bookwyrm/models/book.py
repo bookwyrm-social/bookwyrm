@@ -8,6 +8,7 @@ from typing_extensions import Self
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.cache import cache
+from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.db.models import Prefetch, ManyToManyField
 from django.dispatch import receiver
@@ -39,6 +40,9 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
 
     origin_id = models.CharField(max_length=255, null=True, blank=True)
     openlibrary_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
+    finna_key = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
     inventaire_id = fields.CharField(
@@ -90,6 +94,11 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     def isfdb_link(self):
         """generate the url from the isfdb id"""
         return f"https://www.isfdb.org/cgi-bin/title.cgi?{self.isfdb}"
+
+    @property
+    def finna_link(self):
+        """generate the url from the finna key"""
+        return f"http://finna.fi/Record/{self.finna_key}"
 
     class Meta:
         """can't initialize this model, that wouldn't make sense"""
@@ -333,11 +342,35 @@ class Book(BookDataModel):
         """editions and works both use "book" instead of model_name"""
         return f"{BASE_URL}/book/{self.id}"
 
-    def guess_sort_title(self):
+    def guess_sort_title(self, user=None):
         """Get a best-guess sort title for the current book"""
+
+        if self.languages not in ([], None):
+            lang_codes = set(
+                k
+                for (k, v) in LANGUAGE_ARTICLES.items()
+                for language in tuple(self.languages)
+                if language.lower() in v["variants"]
+            )
+
+        elif user and user.preferred_language:
+            lang_codes = set(
+                k
+                for (k, v) in LANGUAGE_ARTICLES.items()
+                if user.preferred_language.lower() in v["variants"]
+            )
+
+        else:
+            lang_codes = set(
+                k
+                for (k, v) in LANGUAGE_ARTICLES.items()
+                if DEFAULT_LANGUAGE.lower() in v["variants"]
+            )
+
         articles = chain(
-            *(LANGUAGE_ARTICLES.get(language, ()) for language in tuple(self.languages))
+            *(LANGUAGE_ARTICLES[language].get("articles") for language in lang_codes)
         )
+
         return re.sub(f'^{" |^".join(articles)} ', "", str(self.title).lower())
 
     def __repr__(self):
@@ -445,15 +478,107 @@ FormatChoices = [
 ]
 
 
+def validate_isbn10(maybe_isbn: str) -> None:
+    """Check if isbn10 mathes some expectations"""
+
+    if not (normalized_isbn := normalize_isbn(maybe_isbn)):
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    normalized_isbn = normalized_isbn.zfill(10)
+    # len should be 10 with poddible 0 in front
+    if len(normalized_isbn) != 10:
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    # Last character can be X for checksum mark
+    if not normalized_isbn.upper()[:-1].isnumeric():
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    if (isbn13_version := isbn_10_to_13(normalized_isbn)) is None:
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    if (checksum_version := isbn_13_to_10(isbn13_version)) is None:
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    if checksum_version != normalized_isbn:
+        raise ValidationError(
+            _(
+                "%(value)s doesn't have correct ISBN checksum, "
+                "we expected %(check_version)s"
+            ),
+            params={"value": maybe_isbn, "check_version": checksum_version},
+        )
+
+
+def validate_isbn13(maybe_isbn: str) -> None:
+    """Check if isbn13 mathes some expectations"""
+
+    if maybe_isbn[:3] not in ["978", "979"]:
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    normalized_isbn = normalize_isbn(maybe_isbn)
+    if len(normalized_isbn) != 13:
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    if not normalized_isbn.isnumeric():
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    # calculate checksum version
+    checksum_version = normalized_isbn[:-1]
+    checksum = sum(int(i) for i in checksum_version[::2]) + sum(
+        int(i) * 3 for i in checksum_version[1::2]
+    )
+    checkdigit = checksum % 10
+    if checkdigit != 0:
+        checkdigit = 10 - checkdigit
+    checksum_version += str(checkdigit)
+
+    # Check if we got same checksum
+    if checksum_version != normalized_isbn:
+        raise ValidationError(
+            _(
+                "%(value)s doesn't have correct ISBN checksum, "
+                "we expected %(check_version)s"
+            ),
+            params={
+                "value": maybe_isbn,
+                "check_version": maybe_isbn[:3] + checksum_version[3:],
+            },
+        )
+
+
 class Edition(Book):
     """an edition of a book"""
 
     # these identifiers only apply to editions, not works
     isbn_10 = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        validators=[validate_isbn10],
     )
     isbn_13 = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        validators=[validate_isbn13],
     )
     oclc_number = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
@@ -616,7 +741,7 @@ def isbn_10_to_13(isbn_10):
 
 def isbn_13_to_10(isbn_13):
     """convert isbn 13 to 10, if possible"""
-    if isbn_13[:3] != "978":
+    if isbn_13[:3] not in ["978"]:
         return None
 
     isbn_13 = re.sub(r"[^0-9X]", "", isbn_13)
@@ -630,7 +755,9 @@ def isbn_13_to_10(isbn_13):
     except ValueError:
         return None
     checkdigit = checksum % 11
-    checkdigit = 11 - checkdigit
+    checkdigit = (
+        11 - checkdigit
+    ) % 11  # we calculate checkdigit to make the whole sum % 11 == 0
     if checkdigit == 10:
         checkdigit = "X"
     return converted + str(checkdigit)

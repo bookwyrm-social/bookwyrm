@@ -31,8 +31,12 @@ class Connector(AbstractConnector):
             Mapping("subtitle"),
             Mapping("description", formatter=get_description),
             Mapping("languages", formatter=get_languages),
-            Mapping("series", formatter=get_first),
-            Mapping("seriesNumber", remote_field="series_number"),
+            Mapping("series", formatter=parse_series),
+            Mapping(
+                "seriesNumber",
+                remote_field="series",
+                formatter=parse_series_number,
+            ),
             Mapping("subjects"),
             Mapping("subjectPlaces", remote_field="subject_places"),
             Mapping("isbn13", remote_field="isbn_13", formatter=get_first),
@@ -186,11 +190,14 @@ class Connector(AbstractConnector):
             key = self.books_url + search_result["key"]
             authors = search_result.get("authors") or [{"name": "Unknown"}]
             author_names = [author.get("name") for author in authors]
+            cover_obj = search_result.get("cover")
+            cover = cover_obj.get("medium") if cover_obj else ""
             yield SearchResult(
                 title=search_result.get("title"),
                 key=key,
                 author=", ".join(author_names),
                 connector=self,
+                cover=cover,
                 year=search_result.get("publish_date"),
             )
 
@@ -323,3 +330,47 @@ def pick_default_edition(options: list[JsonDict]) -> Optional[JsonDict]:
     options = [e for e in options if e.get("isbn_13")] or options
     options = [e for e in options if e.get("ocaid")] or options
     return options[0]
+
+
+def parse_series(data: list[str]) -> str | None:
+    """try to parse series name from different styles,
+    * 'series name, #1'
+    * 'title -- number'
+    * 'title, Book number'
+    * 'title (number)'
+    """
+    if not data:
+        return None
+    series_title = data[0].strip()
+    for regex_to_try in [
+        r"(.+)(?:, ?#\d+)$",
+        r"(.+)(?:-- ?\d+)$",
+        r"(.+)(?:, Book ?\d+)$",
+        r"(.+)(?: \(\d+\))$",
+    ]:
+        if series_match := re.search(regex_to_try, series_title):
+            series_name = series_match.group(1).strip()
+            return series_name
+    return series_title
+
+
+def parse_series_number(data: list[str]) -> str | None:
+    """try to parse series number from different styles,
+    * 'series name, #1'
+    * 'title -- number'
+    * 'title, Book number'
+    * 'title (number)'
+    """
+    if not data:
+        return None
+    series_title = data[0].strip()
+    for regex_to_try in [
+        r"(.+)#(\d+)$",
+        r"(.+) -- (\d+)$",
+        r"(.+), Book (\d+)$",
+        r"(.+)\((\d+)\)",
+    ]:
+        if series_match := re.search(regex_to_try, series_title):
+            series_number = series_match.group(2)
+            return series_number
+    return None
