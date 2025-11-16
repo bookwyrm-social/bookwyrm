@@ -57,6 +57,7 @@ from .admin.reports import (
 from .admin.site import Site, Registration, RegistrationLimited
 from .admin.themes import Themes, delete_theme, test_theme
 from .admin.user_admin import UserAdmin, UserAdminList, ActivateUserAdmin
+from .admin.user_admin import ForcePasswordResetAdmin
 
 # user preferences
 from .preferences.change_password import ChangePassword
