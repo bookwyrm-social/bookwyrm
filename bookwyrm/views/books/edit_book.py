@@ -13,7 +13,7 @@ from django.views.decorators.http import require_POST
 from django.views import View
 
 from bookwyrm import book_search, forms, models
-from bookwyrm.utils.images import remove_uploaded_image_exif
+from bookwyrm.utils.images import remove_uploaded_image_exif, set_cover_from_url
 
 # from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.utils.isni import (
@@ -22,7 +22,6 @@ from bookwyrm.utils.isni import (
     augment_author_metadata,
 )
 from bookwyrm.views.helpers import get_edition, get_mergeable_object_or_404
-from .books import set_cover_from_url
 
 
 # pylint: disable=no-self-use
@@ -190,7 +189,7 @@ def add_authors(request, data):
         author_matches = (
             models.Author.objects.annotate(search=vector)
             .annotate(rank=SearchRank(vector, author, normalization=32))
-            .filter(rank__gt=0.4)
+            .filter(rank__gt=0.19)  # short alias names like XY get rank around 0.1956
             .order_by("-rank")[:5]
         )
 

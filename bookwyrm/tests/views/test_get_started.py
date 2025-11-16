@@ -39,7 +39,6 @@ class GetStartedViews(TestCase):
             title="Example Edition",
             remote_id="https://example.com/book/1",
         )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

@@ -50,8 +50,6 @@ class InboxAdd(TestCase):
             parent_work=models.Work.objects.create(title="blah"),
         )
 
-        models.SiteSettings.objects.create()
-
     @responses.activate
     def test_handle_add_book_to_shelf(self):
         """shelving a book"""

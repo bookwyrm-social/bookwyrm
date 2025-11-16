@@ -44,8 +44,6 @@ class InboxRemove(TestCase):
             parent_work=cls.work,
         )
 
-        models.SiteSettings.objects.create()
-
     def test_handle_unshelve_book(self):
         """remove a book from a shelf"""
         shelf = models.Shelf.objects.create(user=self.remote_user, name="Test Shelf")

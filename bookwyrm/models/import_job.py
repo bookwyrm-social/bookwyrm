@@ -303,6 +303,11 @@ class ImportItem(models.Model):
         return self._parse_datefield("date_finished")
 
     @property
+    def date_reviewed(self):
+        """the date a book was reviewed"""
+        return self._parse_datefield("review_published")
+
+    @property
     def reads(self):
         """formats a read through dataset for the book in this line"""
         start_date = self.date_started
@@ -447,7 +452,7 @@ def handle_imported_book(item):  # pylint: disable=too-many-branches
         # but "now" is a bad guess unless we have no choice
 
         published_date_guess = (
-            item.review_published or item.date_read or item.date_added or timezone.now()
+            item.date_reviewed or item.date_read or item.date_added or timezone.now()
         )
         if item.review:
 

@@ -38,8 +38,6 @@ class InboxRelationships(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
-        models.SiteSettings.objects.create()
-
     def test_follow(self):
         """remote user wants to follow local user"""
         activity = {

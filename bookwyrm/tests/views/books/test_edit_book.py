@@ -49,7 +49,6 @@ class EditBookViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=cls.work,
         )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""
@@ -381,6 +380,60 @@ class EditBookViews(TestCase):
         self.assertEqual(len(result["author_matches"]), 2)
         self.assertEqual(result["author_matches"][0]["name"], "Sappho")
         self.assertEqual(result["author_matches"][1]["name"], "Some Guy")
+
+    def test_existings_authors_names_add_author_helper(self):
+        """converts form input into author matches"""
+        for author_name in [
+            "YX",
+            "Medium author",
+            "幌田",
+            "long author name that exceeds normal limits",
+        ]:
+            author = models.Author.objects.create(name=author_name)
+            author.save()
+            form = forms.EditionForm(instance=self.book)
+            form.data["title"] = "New Title"
+            form.data["last_edited_by"] = self.local_user.id
+            form.data["add_author"] = [author_name]
+            request = self.factory.post("", form.data)
+            request.user = self.local_user
+
+            with patch("bookwyrm.utils.isni.find_authors_by_name") as mock:
+                mock.return_value = []
+                result = add_authors(request, form.data)
+
+            self.assertTrue(result["confirm_mode"])
+            self.assertEqual(result["add_author"], [author_name])
+            self.assertTrue(len(result["author_matches"]) >= 1)
+            self.assertEqual(result["author_matches"][0]["name"], author_name)
+
+    def test_existings_authors_aliases_add_author_helper(self):
+        """converts form input into author matches"""
+        for author_name in [
+            "YX",
+            "Medium author",
+            "幌田",
+            "long author name that exceeds normal limits",
+        ]:
+            author = models.Author.objects.create(
+                name="Mystery author", aliases=[author_name]
+            )
+            author.save()
+            form = forms.EditionForm(instance=self.book)
+            form.data["title"] = "New Title"
+            form.data["last_edited_by"] = self.local_user.id
+            form.data["add_author"] = [author_name]
+            request = self.factory.post("", form.data)
+            request.user = self.local_user
+
+            with patch("bookwyrm.utils.isni.find_authors_by_name") as mock:
+                mock.return_value = []
+                result = add_authors(request, form.data)
+
+            self.assertTrue(result["confirm_mode"])
+            self.assertEqual(result["add_author"], [author_name])
+            self.assertEqual(len(result["author_matches"]), 1)
+            self.assertEqual(result["author_matches"][0]["name"], author_name)
 
     def test_create_book_get(self):
         """there are so many views, this just makes sure it LOADS"""

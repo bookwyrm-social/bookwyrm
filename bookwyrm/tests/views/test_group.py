@@ -48,7 +48,6 @@ class GroupViews(TestCase):
         cls.membership = models.GroupMember.objects.create(
             group=cls.testgroup, user=cls.local_user
         )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

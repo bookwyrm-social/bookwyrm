@@ -65,7 +65,6 @@ class UserViews(TestCase):
                 shelf=cls.local_user.shelf_set.first(),
                 shelved_date=make_date(2024, 7, 1),
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

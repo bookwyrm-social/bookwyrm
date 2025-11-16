@@ -57,8 +57,6 @@ class BookViews(TestCase):
             parent_work=models.Work.objects.create(title="Another Work"),
         )
 
-        models.SiteSettings.objects.create()
-
     def setUp(self):
         """individual test setup"""
         self.factory = RequestFactory()

@@ -46,7 +46,6 @@ class ShelfViews(TestCase):
             cls.shelf = models.Shelf.objects.create(
                 name="Test Shelf", identifier="test-shelf", user=cls.local_user
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""
