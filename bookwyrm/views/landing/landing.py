@@ -16,7 +16,7 @@ class Home(View):
         if request.user.is_authenticated:
             feed_view = Feed.as_view()
             return feed_view(request, "home")
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
 
         if site.install_mode:
             return redirect("setup")

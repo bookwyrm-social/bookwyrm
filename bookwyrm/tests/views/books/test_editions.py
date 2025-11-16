@@ -37,8 +37,6 @@ class BookViews(TestCase):
             physical_format="paperback",
         )
 
-        models.SiteSettings.objects.create()
-
     def setUp(self):
         """individual test setup"""
         self.factory = RequestFactory()

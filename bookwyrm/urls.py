@@ -246,6 +246,11 @@ urlpatterns = [
         name="settings-activate-user",
     ),
     re_path(
+        r"^settings/federation-settings/?$",
+        views.FederationSettings.as_view(),
+        name="settings-federation-settings",
+    ),
+    re_path(
         r"^settings/force-password-reset/?$",
         views.ForcePasswordResetAdmin.as_view(),
         name="settings-force-password-reset",

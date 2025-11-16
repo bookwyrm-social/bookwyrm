@@ -10,6 +10,10 @@ from .abstract_connector import AbstractMinimalConnector
 class Connector(AbstractMinimalConnector):
     """this is basically just for search"""
 
+    def __init__(self, identifier: str):
+        models.SiteSettings.raise_federation_disabled()
+        super().__init__(identifier)
+
     def get_or_create_book(self, remote_id: str) -> models.Edition:
         return activitypub.resolve_remote_id(remote_id, model=models.Edition)
 

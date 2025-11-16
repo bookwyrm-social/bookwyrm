@@ -31,7 +31,6 @@ class PasswordViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        models.SiteSettings.objects.create(id=1)
 
     def setUp(self):
         """individual test setup"""

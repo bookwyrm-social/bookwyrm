@@ -18,6 +18,7 @@ from .admin.dashboard import Dashboard
 from .admin.federation import Federation, FederatedServer
 from .admin.federation import AddFederatedServer, ImportServerBlocklist
 from .admin.federation import block_server, unblock_server, refresh_server
+from .admin.federation_settings import FederationSettings
 from .admin.files_maintenance import (
     FilesMaintenance,
     run_export_deletions,

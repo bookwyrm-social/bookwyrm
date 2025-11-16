@@ -34,8 +34,6 @@ class IPBlocklistViews(TestCase):
         group = Group.objects.get(name="moderator")
         cls.local_user.groups.set([group])
 
-        models.SiteSettings.objects.create()
-
     def setUp(self):
         """individual test setup"""
         self.factory = RequestFactory()

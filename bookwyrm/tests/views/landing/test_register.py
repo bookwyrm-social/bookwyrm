@@ -35,9 +35,10 @@ class RegisterViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        cls.settings = models.SiteSettings.objects.create(
-            id=1, require_confirm_email=False, allow_registration=True
-        )
+        cls.settings = models.SiteSettings.get()
+        cls.settings.require_confirm_email = False
+        cls.settings.allow_registration = True
+        cls.settings.save()
 
     def setUp(self):
         """individual test setup"""

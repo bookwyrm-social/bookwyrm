@@ -35,8 +35,6 @@ class ListViews(TestCase):
                 "rat@local.com", "rat@rat.com", "ratword", local=True, localname="rat"
             )
 
-        models.SiteSettings.objects.create()
-
     def setUp(self):
         """individual test setup"""
         self.factory = RequestFactory()
