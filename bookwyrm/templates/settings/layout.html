@@ -47,6 +47,12 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Federated Instances" %}</a>
             </li>
             {% endif %}
+            {% if perms.bookwyrm.moderate_user %}
+            <li>
+                {% url 'settings-force-password-reset' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Force Password Reset" %}</a>
+            </li>
+            {% endif %}
         </ul>
         {% endif %}
         {% if perms.bookwyrm.moderate_user %}
