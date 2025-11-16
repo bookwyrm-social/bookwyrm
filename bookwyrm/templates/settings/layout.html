@@ -46,6 +46,7 @@
         {% if perms.bookwyrm.control_federation %}
         <h2 class="menu-label">{% trans "Federation" %}</h2>
         <ul class="menu-list">
+            {% if perms.bookwyrm.control_federation %}
             <li>
                 {% url 'settings-federation-settings' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Federation Settings" %}</a>
