@@ -16,6 +16,7 @@ class ImportUserViews(TestCase):
 
     def setUp(self):
         """we need basic test data and mocks"""
+        self.site = models.SiteSettings.get()
         self.factory = RequestFactory()
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),

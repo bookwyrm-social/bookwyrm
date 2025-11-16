@@ -153,7 +153,6 @@ class UserImport(View):
         jobs = BookwyrmImportJob.objects.filter(user=request.user).order_by(
             "-created_date"
         )
-        site = models.SiteSettings.get()
         paginated = Paginator(jobs, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
         data = {

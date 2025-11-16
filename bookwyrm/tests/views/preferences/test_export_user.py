@@ -13,6 +13,7 @@ class ExportUserViews(TestCase):
     """exporting user data"""
 
     def setUp(self):
+        self.site = models.SiteSettings.get()
         self.factory = RequestFactory()
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),

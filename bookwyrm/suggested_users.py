@@ -92,6 +92,8 @@ class SuggestedUsers(RedisStore):
 
     def get_suggestions(self, user, local=False):
         """get suggestions"""
+        local = local and models.SiteSettings.get().disable_federation
+
         values = self.get_store(self.store_id(user), withscores=True)
         annotations = [
             When(pk=int(pk), then=self.get_counts_from_rank(score)["mutuals"])
