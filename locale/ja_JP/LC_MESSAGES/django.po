@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-08 19:19+0000\n"
-"PO-Revision-Date: 2025-09-08 20:00\n"
+"POT-Creation-Date: 2025-11-16 19:21+0000\n"
+"PO-Revision-Date: 2025-11-16 19:34\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -37,15 +37,15 @@ msgstr "有効期限なし"
 msgid "Unlimited"
 msgstr "無制限"
 
-#: bookwyrm/forms/edit_user.py:105
+#: bookwyrm/forms/edit_user.py:99 bookwyrm/views/landing/password.py:117
 msgid "Incorrect password"
 msgstr "パスワードが間違っています"
 
-#: bookwyrm/forms/edit_user.py:112 bookwyrm/forms/landing.py:93
+#: bookwyrm/forms/edit_user.py:106 bookwyrm/forms/landing.py:93
 msgid "Password does not match"
 msgstr "パスワードが一致しません"
 
-#: bookwyrm/forms/edit_user.py:135
+#: bookwyrm/forms/edit_user.py:129
 msgid "Incorrect Password"
 msgstr "パスワードが正しくありません"
 
@@ -81,7 +81,11 @@ msgstr "このメールのユーザーはすでに存在します。"
 msgid "This email address cannot be registered."
 msgstr ""
 
-#: bookwyrm/forms/landing.py:127 bookwyrm/forms/landing.py:135
+#: bookwyrm/forms/landing.py:114
+msgid "Password cannot be the same as your current password"
+msgstr ""
+
+#: bookwyrm/forms/landing.py:145 bookwyrm/forms/landing.py:153
 msgid "Incorrect code"
 msgstr "コードが正しくありません"
 
@@ -195,7 +199,6 @@ msgstr "ペーパーバック"
 #: bookwyrm/models/book.py:499 bookwyrm/models/book.py:504
 #: bookwyrm/models/book.py:509 bookwyrm/models/book.py:527
 #: bookwyrm/models/book.py:533 bookwyrm/models/book.py:538
-#: bookwyrm/models/book.py:543 bookwyrm/models/book.py:548
 #, python-format
 msgid "%(value)s doesn't look like an ISBN"
 msgstr ""
@@ -326,12 +329,21 @@ msgstr "フォロワー"
 msgid "Private"
 msgstr "非公開"
 
+#: bookwyrm/models/housekeeping.py:116
+msgid "Missing"
+msgstr ""
+
+#: bookwyrm/models/housekeeping.py:117
+msgid "Wrong Path"
+msgstr ""
+
 #: bookwyrm/models/import_job.py:50 bookwyrm/models/job.py:19
 #: bookwyrm/templates/import/import.html:184
 #: bookwyrm/templates/import/import_user.html:225
 #: bookwyrm/templates/import/user_import_status.html:56
 #: bookwyrm/templates/preferences/export-user.html:146
 #: bookwyrm/templates/settings/files.html:162
+#: bookwyrm/templates/settings/files.html:344
 #: bookwyrm/templates/settings/imports/imports.html:180
 #: bookwyrm/templates/settings/imports/imports.html:270
 #: bookwyrm/templates/snippets/user_active_tag.html:8
@@ -344,6 +356,7 @@ msgstr "アクティブ"
 #: bookwyrm/templates/import/user_import_status.html:54
 #: bookwyrm/templates/preferences/export-user.html:144
 #: bookwyrm/templates/settings/files.html:160
+#: bookwyrm/templates/settings/files.html:342
 msgid "Complete"
 msgstr "完了"
 
@@ -355,11 +368,11 @@ msgstr "中断"
 msgid "Import stopped"
 msgstr "インポートを停止しました"
 
-#: bookwyrm/models/import_job.py:373 bookwyrm/models/import_job.py:398
+#: bookwyrm/models/import_job.py:378 bookwyrm/models/import_job.py:403
 msgid "Error loading book"
 msgstr "本の読み込みエラー"
 
-#: bookwyrm/models/import_job.py:382
+#: bookwyrm/models/import_job.py:387
 msgid "Could not find a match for book"
 msgstr "該当する本が見つかりませんでした"
 
@@ -459,7 +472,7 @@ msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
 msgstr[0] ""
 
-#: bookwyrm/models/user.py:39 bookwyrm/templates/book/book.html:333
+#: bookwyrm/models/user.py:39 bookwyrm/templates/book/book.html:336
 msgid "Reviews"
 msgstr "レビュー"
 
@@ -475,19 +488,19 @@ msgstr "引用"
 msgid "Everything else"
 msgstr "他のすべて"
 
-#: bookwyrm/settings.py:237
+#: bookwyrm/settings.py:238
 msgid "Home Timeline"
 msgstr "ホームタイムライン"
 
-#: bookwyrm/settings.py:237
+#: bookwyrm/settings.py:238
 msgid "Home"
 msgstr "ホーム"
 
-#: bookwyrm/settings.py:238
+#: bookwyrm/settings.py:239
 msgid "Books Timeline"
 msgstr "本のタイムライン"
 
-#: bookwyrm/settings.py:238
+#: bookwyrm/settings.py:239
 #: bookwyrm/templates/guided_tour/user_profile.html:101
 #: bookwyrm/templates/import/user_import_status.html:73
 #: bookwyrm/templates/search/layout.html:22
@@ -496,91 +509,91 @@ msgstr "本のタイムライン"
 msgid "Books"
 msgstr "本"
 
-#: bookwyrm/settings.py:315
+#: bookwyrm/settings.py:316
 msgid "English"
 msgstr "English (英語)"
 
-#: bookwyrm/settings.py:316
+#: bookwyrm/settings.py:317
 msgid "Català (Catalan)"
 msgstr "Català(カタルーニャ語)"
 
-#: bookwyrm/settings.py:317
+#: bookwyrm/settings.py:318
 msgid "Deutsch (German)"
 msgstr "Deutsch (ドイツ語)"
 
-#: bookwyrm/settings.py:318
+#: bookwyrm/settings.py:319
 msgid "Esperanto (Esperanto)"
 msgstr "Esperanto (エスペラント)"
 
-#: bookwyrm/settings.py:319
+#: bookwyrm/settings.py:320
 msgid "Español (Spanish)"
 msgstr "Español (スペイン語)"
 
-#: bookwyrm/settings.py:320
+#: bookwyrm/settings.py:321
 msgid "Euskara (Basque)"
 msgstr "Euskara (バスク語)"
 
-#: bookwyrm/settings.py:321
+#: bookwyrm/settings.py:322
 msgid "Galego (Galician)"
 msgstr "Galego (ガリシア語)"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:323
 msgid "Italiano (Italian)"
 msgstr "Italiano (イタリア語)"
 
-#: bookwyrm/settings.py:323
+#: bookwyrm/settings.py:324
 msgid "한국어 (Korean)"
 msgstr ""
 
-#: bookwyrm/settings.py:324
+#: bookwyrm/settings.py:325
 msgid "Suomi (Finnish)"
 msgstr "Suomi (フィンランド語)"
 
-#: bookwyrm/settings.py:325
+#: bookwyrm/settings.py:326
 msgid "Français (French)"
 msgstr "Français (フランス語)"
 
-#: bookwyrm/settings.py:326
+#: bookwyrm/settings.py:327
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (リトアニア語)"
 
-#: bookwyrm/settings.py:327
+#: bookwyrm/settings.py:328
 msgid "Nederlands (Dutch)"
 msgstr "Nederlands (オランダ語)"
 
-#: bookwyrm/settings.py:328
+#: bookwyrm/settings.py:329
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (ノルウェー語)"
 
-#: bookwyrm/settings.py:329
+#: bookwyrm/settings.py:330
 msgid "Polski (Polish)"
 msgstr "Polski (ポーランド語)"
 
-#: bookwyrm/settings.py:330
+#: bookwyrm/settings.py:331
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil(ブラジルポルトガル語)"
 
-#: bookwyrm/settings.py:331
+#: bookwyrm/settings.py:332
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (ヨーロッパポルトガル語)"
 
-#: bookwyrm/settings.py:332
+#: bookwyrm/settings.py:333
 msgid "Română (Romanian)"
 msgstr "Română (ルーマニア語)"
 
-#: bookwyrm/settings.py:333
+#: bookwyrm/settings.py:334
 msgid "Svenska (Swedish)"
 msgstr "スウェーデン語 (Swedish)"
 
-#: bookwyrm/settings.py:334
+#: bookwyrm/settings.py:335
 msgid "Українська (Ukrainian)"
 msgstr ""
 
-#: bookwyrm/settings.py:335
+#: bookwyrm/settings.py:336
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (簡体字中国語)"
 
-#: bookwyrm/settings.py:336
+#: bookwyrm/settings.py:337
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (繁体字中国語)"
 
@@ -638,54 +651,54 @@ msgstr "何か問題が発生しました！申し訳ありません。"
 msgid "About"
 msgstr "概要"
 
-#: bookwyrm/templates/about/about.html:21
+#: bookwyrm/templates/about/about.html:22
 #: bookwyrm/templates/get_started/layout.html:22
 #, python-format
 msgid "Welcome to %(site_name)s!"
 msgstr "%(site_name)sへようこそ！"
 
-#: bookwyrm/templates/about/about.html:25
+#: bookwyrm/templates/about/about.html:26
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm network</a>, this community is unique."
 msgstr "%(site_name)s は、読者のための独立した自発的なコミュニティ <em>BookWyrm</em> の一部です。 <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm ネットワーク</a>内のどのユーザともシームレスに交流できますが、このコミュニティは唯一です。"
 
-#: bookwyrm/templates/about/about.html:45
+#: bookwyrm/templates/about/about.html:47
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
 msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a>は %(site_name)s で最も愛されている本で、平均評価は5段階中%(rating)sです。"
 
-#: bookwyrm/templates/about/about.html:64
+#: bookwyrm/templates/about/about.html:66
 #, python-format
 msgid "More %(site_name)s users want to read <a href=\"%(book_path)s\"><em>%(title)s</em></a> than any other book."
 msgstr "%(site_name)s ユーザでは、 <a href=\"%(book_path)s\"><em>%(title)s</em></a> を読みたがっている人が他のどの本よりも多くいます。"
 
-#: bookwyrm/templates/about/about.html:83
+#: bookwyrm/templates/about/about.html:85
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> has the most divisive ratings of any book on %(site_name)s."
 msgstr "%(site_name)s では、 <a href=\"%(book_path)s\"><em>%(title)s</em></a> が最も評価が分かれています。"
 
-#: bookwyrm/templates/about/about.html:94
+#: bookwyrm/templates/about/about.html:96
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
 msgstr "読書を記録し、本について話し、レビューを書き、次に読む本を見付けましょう。広告一切なしで大企業に支配されないコミュニティ志向の BookWyrm は、小さく個人的なものに保たれている、人の使いやすいソフトウェアです。機能リクエスト、バグ報告、壮大な夢などをお持ちでしたら、<a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">プロジェクトに参加</a>してあなたの声をお聞かせください。"
 
-#: bookwyrm/templates/about/about.html:105
+#: bookwyrm/templates/about/about.html:107
 msgid "Meet your admins"
 msgstr "管理者の紹介"
 
-#: bookwyrm/templates/about/about.html:108
+#: bookwyrm/templates/about/about.html:110
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
 msgstr "%(site_name)s のモデレータと管理者はサイトを維持し、<a href=\"%(coc_path)s\">行動規範</a>の遵守を徹底し、ユーザがスパムや悪意ある行動を通報したとき対処します。"
 
-#: bookwyrm/templates/about/about.html:122
+#: bookwyrm/templates/about/about.html:124
 msgid "Moderator"
 msgstr "モデレーター"
 
-#: bookwyrm/templates/about/about.html:124 bookwyrm/templates/user_menu.html:62
+#: bookwyrm/templates/about/about.html:126 bookwyrm/templates/user_menu.html:62
 msgid "Admin"
 msgstr "管理者"
 
-#: bookwyrm/templates/about/about.html:140
+#: bookwyrm/templates/about/about.html:142
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:28
 #: bookwyrm/templates/snippets/status/status_options.html:35
 #: bookwyrm/templates/snippets/user_options.html:14
@@ -823,7 +836,7 @@ msgstr "最も短かった読み物……"
 #: bookwyrm/templates/annual_summary/layout.html:157
 #: bookwyrm/templates/annual_summary/layout.html:178
 #: bookwyrm/templates/annual_summary/layout.html:247
-#: bookwyrm/templates/book/book.html:70
+#: bookwyrm/templates/book/book.html:73
 #: bookwyrm/templates/discover/large-book.html:22
 #: bookwyrm/templates/landing/large-book.html:26
 #: bookwyrm/templates/landing/small-book.html:18
@@ -913,24 +926,24 @@ msgid "View ISNI record"
 msgstr "ISNIレコードを表示"
 
 #: bookwyrm/templates/author/author.html:103
-#: bookwyrm/templates/book/book.html:180
+#: bookwyrm/templates/book/book.html:183
 msgid "View on ISFDB"
 msgstr "ISFDBで表示"
 
 #: bookwyrm/templates/author/author.html:108
 #: bookwyrm/templates/author/sync_modal.html:5
-#: bookwyrm/templates/book/book.html:147
+#: bookwyrm/templates/book/book.html:150
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
 msgstr "データを読み込む"
 
 #: bookwyrm/templates/author/author.html:112
-#: bookwyrm/templates/book/book.html:151
+#: bookwyrm/templates/book/book.html:154
 msgid "View on OpenLibrary"
 msgstr "OpenLibraryで表示"
 
 #: bookwyrm/templates/author/author.html:127
-#: bookwyrm/templates/book/book.html:165
+#: bookwyrm/templates/book/book.html:168
 msgid "View on Inventaire"
 msgstr "Inventaireで表示"
 
@@ -1039,7 +1052,7 @@ msgid "ISNI:"
 msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:128
-#: bookwyrm/templates/book/book.html:246
+#: bookwyrm/templates/book/book.html:249
 #: bookwyrm/templates/book/edit/edit_book.html:150
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
@@ -1063,7 +1076,7 @@ msgstr "保存"
 
 #: bookwyrm/templates/author/edit_author.html:129
 #: bookwyrm/templates/author/sync_modal.html:23
-#: bookwyrm/templates/book/book.html:247
+#: bookwyrm/templates/book/book.html:250
 #: bookwyrm/templates/book/cover_add_modal.html:33
 #: bookwyrm/templates/book/edit/edit_book.html:152
 #: bookwyrm/templates/book/edit/edit_book.html:155
@@ -1079,6 +1092,7 @@ msgstr "保存"
 #: bookwyrm/templates/search/barcode_modal.html:43
 #: bookwyrm/templates/settings/federation/instance.html:106
 #: bookwyrm/templates/settings/files.html:193
+#: bookwyrm/templates/settings/files.html:354
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:16
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:16
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:22
@@ -1095,103 +1109,105 @@ msgstr "データのロードでは、 <strong>%(source_name)s</strong> に接�
 #: bookwyrm/templates/book/edit/edit_book.html:137
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
+#: bookwyrm/templates/landing/force_password_reset.html:94
 #: bookwyrm/templates/landing/password_reset.html:52
 #: bookwyrm/templates/preferences/security.html:80
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:19
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:19
+#: bookwyrm/templates/settings/users/force_password_reset.html:55
 #: bookwyrm/templates/snippets/remove_from_group_button.html:17
 msgid "Confirm"
 msgstr "確認"
 
-#: bookwyrm/templates/book/book.html:21
+#: bookwyrm/templates/book/book.html:24
 msgid "Unable to connect to remote source."
 msgstr "リモートの情報源に接続できませんでした。"
 
-#: bookwyrm/templates/book/book.html:78 bookwyrm/templates/book/book.html:79
+#: bookwyrm/templates/book/book.html:81 bookwyrm/templates/book/book.html:82
 msgid "Edit Book"
 msgstr "本を編集"
 
-#: bookwyrm/templates/book/book.html:104 bookwyrm/templates/book/book.html:107
+#: bookwyrm/templates/book/book.html:107 bookwyrm/templates/book/book.html:110
 msgid "Click to add cover"
 msgstr "クリックしてカバーを追加"
 
-#: bookwyrm/templates/book/book.html:113
+#: bookwyrm/templates/book/book.html:116
 msgid "Failed to load cover"
 msgstr "カバーを読み込めませんでした"
 
-#: bookwyrm/templates/book/book.html:124
+#: bookwyrm/templates/book/book.html:127
 msgid "Click to enlarge"
 msgstr "クリックして拡大"
 
-#: bookwyrm/templates/book/book.html:187
+#: bookwyrm/templates/book/book.html:190
 msgid "View on Finna"
 msgstr ""
 
-#: bookwyrm/templates/book/book.html:219
+#: bookwyrm/templates/book/book.html:222
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
 msgstr[0] "(%(review_count)s 件のレビュー)"
 
-#: bookwyrm/templates/book/book.html:235
+#: bookwyrm/templates/book/book.html:238
 msgid "Add Description"
 msgstr "説明を追加"
 
-#: bookwyrm/templates/book/book.html:242
+#: bookwyrm/templates/book/book.html:245
 #: bookwyrm/templates/book/edit/edit_book_form.html:55
 #: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
 msgid "Description:"
 msgstr "概要:"
 
-#: bookwyrm/templates/book/book.html:258
+#: bookwyrm/templates/book/book.html:261
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
 msgstr[0] "%(count)s 個の版"
 
-#: bookwyrm/templates/book/book.html:272
+#: bookwyrm/templates/book/book.html:275
 msgid "You have shelved this edition in:"
 msgstr "次の本棚に既に追加されています:"
 
-#: bookwyrm/templates/book/book.html:287
+#: bookwyrm/templates/book/book.html:290
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
 msgstr "この本の<a href=\"%(book_path)s\">別の版</a>があなたの本棚 <a href=\"%(shelf_path)s\">%(shelf_name)s</a> にあります。"
 
-#: bookwyrm/templates/book/book.html:298
+#: bookwyrm/templates/book/book.html:301
 msgid "Your reading activity"
 msgstr "あなたの読書活動"
 
-#: bookwyrm/templates/book/book.html:304
+#: bookwyrm/templates/book/book.html:307
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
 msgstr "読了日を追加"
 
-#: bookwyrm/templates/book/book.html:312
+#: bookwyrm/templates/book/book.html:315
 msgid "You don't have any reading activity for this book."
 msgstr "あなたはこの本の読書活動をしていません。"
 
-#: bookwyrm/templates/book/book.html:338
+#: bookwyrm/templates/book/book.html:341
 msgid "Your reviews"
 msgstr "あなたのレビュー"
 
-#: bookwyrm/templates/book/book.html:344
+#: bookwyrm/templates/book/book.html:347
 msgid "Your comments"
 msgstr "あなたのコメント"
 
-#: bookwyrm/templates/book/book.html:350
+#: bookwyrm/templates/book/book.html:353
 msgid "Your quotes"
 msgstr "あなたの引用"
 
-#: bookwyrm/templates/book/book.html:386
+#: bookwyrm/templates/book/book.html:389
 msgid "Subjects"
 msgstr "テーマ"
 
-#: bookwyrm/templates/book/book.html:398
+#: bookwyrm/templates/book/book.html:401
 msgid "Places"
 msgstr "場所"
 
-#: bookwyrm/templates/book/book.html:409
+#: bookwyrm/templates/book/book.html:412
 #: bookwyrm/templates/groups/group.html:19
 #: bookwyrm/templates/guided_tour/lists.html:14
 #: bookwyrm/templates/guided_tour/user_books.html:102
@@ -1206,11 +1222,11 @@ msgstr "場所"
 msgid "Lists"
 msgstr "リスト"
 
-#: bookwyrm/templates/book/book.html:421
+#: bookwyrm/templates/book/book.html:424
 msgid "Add to list"
 msgstr "リストに追加"
 
-#: bookwyrm/templates/book/book.html:431
+#: bookwyrm/templates/book/book.html:434
 #: bookwyrm/templates/book/cover_add_modal.html:32
 #: bookwyrm/templates/lists/add_item_modal.html:39
 #: bookwyrm/templates/lists/list.html:255
@@ -1622,6 +1638,7 @@ msgstr "ドメイン"
 #: bookwyrm/templates/preferences/export-user.html:113
 #: bookwyrm/templates/settings/announcements/announcements.html:37
 #: bookwyrm/templates/settings/files.html:137
+#: bookwyrm/templates/settings/files.html:319
 #: bookwyrm/templates/settings/imports/imports.html:304
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:48
 #: bookwyrm/templates/settings/invites/status_filter.html:5
@@ -1777,7 +1794,7 @@ msgstr "確認用コード:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/layout.html:81
-#: bookwyrm/templates/settings/dashboard/dashboard.html:106
+#: bookwyrm/templates/settings/dashboard/dashboard.html:107
 #: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Submit"
 msgstr "送信"
@@ -2044,6 +2061,8 @@ msgid "You requested to reset your %(site_name)s password. Click the link below 
 msgstr "%(site_name)s におけるパスワードのリセットをリクエストしました。以下のリンクをクリックして新しいパスワードを設定してからアカウントにログインしてください。"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:9
+#: bookwyrm/templates/landing/force_password_reset.html:9
+#: bookwyrm/templates/landing/force_password_reset.html:28
 #: bookwyrm/templates/landing/password_reset.html:4
 #: bookwyrm/templates/landing/password_reset.html:10
 #: bookwyrm/templates/landing/password_reset_request.html:4
@@ -2070,8 +2089,10 @@ msgstr "これはテストメールです。"
 msgid "Test email"
 msgstr "メールをテスト"
 
-#: bookwyrm/templates/embed-layout.html:21 bookwyrm/templates/layout.html:33
-#: bookwyrm/templates/layout.html:163 bookwyrm/templates/setup/layout.html:15
+#: bookwyrm/templates/embed-layout.html:21
+#: bookwyrm/templates/landing/force_password_reset.html:18
+#: bookwyrm/templates/layout.html:33 bookwyrm/templates/layout.html:163
+#: bookwyrm/templates/setup/layout.html:15
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:18
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:18
 #, python-format
@@ -3122,7 +3143,7 @@ msgstr "再試行ステータス"
 #: bookwyrm/templates/settings/celery.html:45
 #: bookwyrm/templates/settings/imports/imports.html:6
 #: bookwyrm/templates/settings/imports/imports.html:9
-#: bookwyrm/templates/settings/layout.html:82
+#: bookwyrm/templates/settings/layout.html:88
 msgid "Imports"
 msgstr "インポート"
 
@@ -3500,6 +3521,26 @@ msgstr ""
 msgid "Reason"
 msgstr ""
 
+#: bookwyrm/templates/landing/force_password_reset.html:30
+msgid "You must set a new password before logging in."
+msgstr ""
+
+#: bookwyrm/templates/landing/force_password_reset.html:50
+#: bookwyrm/templates/preferences/change_password.html:22
+msgid "Current password:"
+msgstr "現在のパスワード:"
+
+#: bookwyrm/templates/landing/force_password_reset.html:68
+#: bookwyrm/templates/preferences/change_password.html:28
+msgid "New password:"
+msgstr "新しいパスワード:"
+
+#: bookwyrm/templates/landing/force_password_reset.html:85
+#: bookwyrm/templates/landing/password_reset.html:43
+#: bookwyrm/templates/preferences/change_password.html:33
+msgid "Confirm password:"
+msgstr "パスワード（確認用）:"
+
 #: bookwyrm/templates/landing/invite.html:4
 #: bookwyrm/templates/landing/invite.html:8
 #: bookwyrm/templates/landing/login.html:50
@@ -3588,12 +3629,6 @@ msgstr "パスワードをお忘れですか？"
 #: bookwyrm/templates/landing/reactivate.html:56
 msgid "More about this site"
 msgstr "このサイトの詳細"
-
-#: bookwyrm/templates/landing/password_reset.html:43
-#: bookwyrm/templates/preferences/change_password.html:33
-#: bookwyrm/templates/preferences/delete_user.html:35
-msgid "Confirm password:"
-msgstr "パスワード（確認用）:"
 
 #: bookwyrm/templates/landing/password_reset_request.html:14
 #, python-format
@@ -4453,17 +4488,9 @@ msgstr "パスワードの変更"
 msgid "Successfully changed password"
 msgstr "パスワードの変更に成功しました"
 
-#: bookwyrm/templates/preferences/change_password.html:22
-msgid "Current password:"
-msgstr "現在のパスワード:"
-
-#: bookwyrm/templates/preferences/change_password.html:28
-msgid "New password:"
-msgstr "新しいパスワード:"
-
 #: bookwyrm/templates/preferences/delete_user.html:4
 #: bookwyrm/templates/preferences/delete_user.html:7
-#: bookwyrm/templates/preferences/delete_user.html:40
+#: bookwyrm/templates/preferences/delete_user.html:41
 #: bookwyrm/templates/preferences/layout.html:36
 #: bookwyrm/templates/settings/users/delete_user_form.html:22
 msgid "Delete Account"
@@ -4488,6 +4515,10 @@ msgstr "アカウントを完全に削除する"
 #: bookwyrm/templates/preferences/delete_user.html:29
 msgid "Deleting your account cannot be undone. The username will not be available to register in the future."
 msgstr "アカウントの削除を取り消すことはできません。あなたのユーザーネームは、今後アカウント登録の際に利用できなくなります。"
+
+#: bookwyrm/templates/preferences/delete_user.html:36
+msgid "I understand that my account cannot be recovered:"
+msgstr ""
 
 #: bookwyrm/templates/preferences/disable-2fa.html:4
 #: bookwyrm/templates/preferences/disable-2fa.html:7
@@ -4674,6 +4705,7 @@ msgstr[0] ""
 #: bookwyrm/templates/preferences/export-user.html:110
 #: bookwyrm/templates/preferences/security.html:126
 #: bookwyrm/templates/settings/files.html:136
+#: bookwyrm/templates/settings/files.html:318
 msgid "Date"
 msgstr ""
 
@@ -5076,7 +5108,7 @@ msgstr "編集"
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:111
+#: bookwyrm/templates/settings/layout.html:117
 msgid "Announcements"
 msgstr "お知らせ"
 
@@ -5094,13 +5126,13 @@ msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcement.html:57
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:79
-#: bookwyrm/templates/settings/dashboard/dashboard.html:84
+#: bookwyrm/templates/settings/dashboard/dashboard.html:85
 msgid "Start date:"
 msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcement.html:62
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:89
-#: bookwyrm/templates/settings/dashboard/dashboard.html:90
+#: bookwyrm/templates/settings/dashboard/dashboard.html:91
 msgid "End date:"
 msgstr ""
 
@@ -5182,42 +5214,51 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:26
 #: bookwyrm/templates/settings/files.html:28
+#: bookwyrm/templates/settings/files.html:221
 msgid "Schedule:"
 msgstr "スケジュール:"
 
 #: bookwyrm/templates/settings/automod/rules.html:33
 #: bookwyrm/templates/settings/files.html:35
+#: bookwyrm/templates/settings/files.html:228
 msgid "Last run:"
 msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:40
 #: bookwyrm/templates/settings/files.html:42
+#: bookwyrm/templates/settings/files.html:235
 msgid "Total run count:"
 msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:47
 #: bookwyrm/templates/settings/files.html:49
+#: bookwyrm/templates/settings/files.html:242
 msgid "Enabled:"
 msgstr "有効:"
 
 #: bookwyrm/templates/settings/automod/rules.html:59
 #: bookwyrm/templates/settings/files.html:61
+#: bookwyrm/templates/settings/files.html:254
 msgid "Delete schedule"
 msgstr "スケジュールを削除"
 
 #: bookwyrm/templates/settings/automod/rules.html:63
 #: bookwyrm/templates/settings/files.html:65
+#: bookwyrm/templates/settings/files.html:258
+#: bookwyrm/templates/settings/files.html:305
 msgid "Run now"
 msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:64
 #: bookwyrm/templates/settings/files.html:66
+#: bookwyrm/templates/settings/files.html:259
 msgid "Last run date will not be updated"
 msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:69
 #: bookwyrm/templates/settings/automod/rules.html:92
 #: bookwyrm/templates/settings/files.html:96
+#: bookwyrm/templates/settings/files.html:290
 msgid "Schedule scan"
 msgstr "スケジュールスキャン"
 
@@ -5262,7 +5303,7 @@ msgstr "ルールを削除"
 
 #: bookwyrm/templates/settings/celery.html:6
 #: bookwyrm/templates/settings/celery.html:8
-#: bookwyrm/templates/settings/layout.html:86
+#: bookwyrm/templates/settings/layout.html:92
 msgid "Celery Status"
 msgstr ""
 
@@ -5291,7 +5332,7 @@ msgid "Import triggered"
 msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:57
-#: bookwyrm/templates/settings/layout.html:98
+#: bookwyrm/templates/settings/layout.html:104
 msgid "Connectors"
 msgstr ""
 
@@ -5451,7 +5492,7 @@ msgid "Dashboard"
 msgstr "ダッシュボード"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
-#: bookwyrm/templates/settings/dashboard/dashboard.html:113
+#: bookwyrm/templates/settings/dashboard/dashboard.html:114
 msgid "Total users"
 msgstr "合計ユーザー"
 
@@ -5465,31 +5506,31 @@ msgstr ""
 msgid "Works"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:78
+#: bookwyrm/templates/settings/dashboard/dashboard.html:79
 msgid "Instance Activity"
 msgstr "インスタンスのアクティビティ"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:96
+#: bookwyrm/templates/settings/dashboard/dashboard.html:97
 msgid "Interval:"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:100
+#: bookwyrm/templates/settings/dashboard/dashboard.html:101
 msgid "Days"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:101
+#: bookwyrm/templates/settings/dashboard/dashboard.html:102
 msgid "Weeks"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:119
+#: bookwyrm/templates/settings/dashboard/dashboard.html:120
 msgid "User signup activity"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:125
+#: bookwyrm/templates/settings/dashboard/dashboard.html:126
 msgid "Status activity"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:131
+#: bookwyrm/templates/settings/dashboard/dashboard.html:132
 msgid "Works created"
 msgstr ""
 
@@ -5560,7 +5601,7 @@ msgstr "ドメイン:"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:7
-#: bookwyrm/templates/settings/layout.html:65
+#: bookwyrm/templates/settings/layout.html:71
 msgid "Email Blocklist"
 msgstr "メールアドレスのブロックリスト"
 
@@ -5585,7 +5626,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/email_config.html:6
 #: bookwyrm/templates/settings/email_config.html:8
-#: bookwyrm/templates/settings/layout.html:94
+#: bookwyrm/templates/settings/layout.html:100
 msgid "Email Configuration"
 msgstr "Eメール設定"
 
@@ -5812,7 +5853,43 @@ msgstr ""
 msgid "Completed"
 msgstr ""
 
-#: bookwyrm/templates/settings/files.html:210
+#: bookwyrm/templates/settings/files.html:206
+msgid "Find book covers from connectors"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:209
+msgid "These jobs find cover images where they are missing or have incorrect filepaths."
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:212
+msgid "Find missing covers"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:215
+msgid "Schedule a regular scan to find cover images for editions without them. This can be resource intensive so the recommended schedule is no less than every seven days."
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:296
+msgid "Fix broken book cover filepaths"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:299
+msgid "If you have lost your cover image files (e.g. due to server migration failure) the scheduled job above will not replace them. Run this job instead to attempt to find covers for books where the current cover filepath does not resolve to a file."
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:306
+msgid "This job cannot be scheduled to run regularly"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:320
+msgid "Editions checked"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:321
+msgid "Covers fixed"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:371
 msgid "Successfully updated expiry time"
 msgstr ""
 
@@ -6086,7 +6163,7 @@ msgstr "CIDR構文を使用して、IP範囲をブロックすることができ
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:7
-#: bookwyrm/templates/settings/layout.html:69
+#: bookwyrm/templates/settings/layout.html:75
 msgid "IP Address Blocklist"
 msgstr "IPアドレスのブロックリスト"
 
@@ -6111,49 +6188,55 @@ msgid "Manage Users"
 msgstr "ユーザーの管理"
 
 #: bookwyrm/templates/settings/layout.html:53
+#: bookwyrm/templates/settings/users/force_password_reset.html:7
+#: bookwyrm/templates/settings/users/force_password_reset.html:11
+msgid "Force Password Reset"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:59
 msgid "Moderation"
 msgstr "モデレーション"
 
-#: bookwyrm/templates/settings/layout.html:57
+#: bookwyrm/templates/settings/layout.html:63
 #: bookwyrm/templates/settings/reports/reports.html:8
 #: bookwyrm/templates/settings/reports/reports.html:17
 msgid "Reports"
 msgstr "通報"
 
-#: bookwyrm/templates/settings/layout.html:61
+#: bookwyrm/templates/settings/layout.html:67
 msgid "Auto-Moderation Rules"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:73
+#: bookwyrm/templates/settings/layout.html:79
 #: bookwyrm/templates/settings/link_domains/link_domains.html:5
 #: bookwyrm/templates/settings/link_domains/link_domains.html:7
 msgid "Link Domains"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:78
+#: bookwyrm/templates/settings/layout.html:84
 msgid "System"
 msgstr "システム"
 
-#: bookwyrm/templates/settings/layout.html:90
+#: bookwyrm/templates/settings/layout.html:96
 msgid "Scheduled Tasks"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:102
+#: bookwyrm/templates/settings/layout.html:108
 msgid "Files Maintenance"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:107
+#: bookwyrm/templates/settings/layout.html:113
 msgid "Instance Settings"
 msgstr "インスタンス設定"
 
-#: bookwyrm/templates/settings/layout.html:115
+#: bookwyrm/templates/settings/layout.html:121
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr "サイト設定"
 
-#: bookwyrm/templates/settings/layout.html:121
-#: bookwyrm/templates/settings/layout.html:124
+#: bookwyrm/templates/settings/layout.html:127
+#: bookwyrm/templates/settings/layout.html:130
 #: bookwyrm/templates/settings/registration.html:4
 #: bookwyrm/templates/settings/registration.html:6
 #: bookwyrm/templates/settings/registration_limited.html:4
@@ -6161,7 +6244,7 @@ msgstr "サイト設定"
 msgid "Registration"
 msgstr "新規登録"
 
-#: bookwyrm/templates/settings/layout.html:130
+#: bookwyrm/templates/settings/layout.html:136
 #: bookwyrm/templates/settings/site.html:107
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
@@ -6577,12 +6660,44 @@ msgstr "ユーザーを完全に削除"
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:12
 #, python-format
-msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? This action cannot be undone. To proceed, please enter your password to confirm deletion."
-msgstr "<strong>%(username)s</strong>のアカウントを削除してもよろしいですか？この操作は元に戻せません。続行するには、パスワードを入力して削除を確認してください。"
+msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? This action cannot be undone."
+msgstr ""
 
-#: bookwyrm/templates/settings/users/delete_user_form.html:17
-msgid "Your password:"
-msgstr "あなたのパスワード:"
+#: bookwyrm/templates/settings/users/delete_user_form.html:18
+msgid "I understand that this is a permanent action:"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:17
+msgid "All users in the selected category will be logged out and required to set a new password to log back in."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:18
+msgid "If your account is in the group, you will be logged out out after submitting."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:22
+msgid "Users given password resets:"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:35
+msgid "All users"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:39
+msgid "users"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:43
+msgid "Force password reset"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:48
+msgid "Number of users that will be effected:"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:53
+msgid "Are you sure you want to force password reset for these users:"
+msgstr ""
 
 #: bookwyrm/templates/settings/users/user_admin.html:9
 #, python-format
