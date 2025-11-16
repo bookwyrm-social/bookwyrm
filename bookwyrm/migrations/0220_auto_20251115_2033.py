@@ -6,7 +6,9 @@ from django.contrib.auth.hashers import make_password
 
 def set_unusable_passwords(apps, schema_editor):
     user_model = apps.get_model("bookwyrm", "User")
-    deleted_users = user_model.objects.filter(is_deleted=True, allow_reactivation=False)
+    deleted_users = user_model.objects.filter(
+        is_deleted=True, allow_reactivation=False, local=True
+    )
     for user in deleted_users:
         user.password = make_password(None)
         user.save()
