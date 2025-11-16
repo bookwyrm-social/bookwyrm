@@ -11,16 +11,18 @@
     {% endif %}
 </h2>
 
-{% if suggestion_list %}
-
 <p class="subtitle">
     {% blocktrans trimmed with title=book.title %}
     Readers who liked <em>{{ title }}</em> recommend giving these books a try:
     {% endblocktrans %}
 </p>
+
+{% if suggestion_list %}
+
     {% if items|length == 0 %}
     <section class="section has-background-light is-flex is-flex-direction-column is-align-items-center">
         <div class="column is-full is-centered">
+    <p>{% trans "Have a recommendation for someone who liked this book?" %}</p>
            {% include "book/suggestion_list/search.html" with list=suggestion_list is_suggestion=True %}
         </div>
     </section>
@@ -40,12 +42,12 @@
 {% else %}
 
 <section class="section has-background-light">
-        <form name="create-list" method="post" action="{% url 'suggestion-list' book_id=book.id %}#suggestions-section" class="has-text-centered">
+        <form name="create-list" method="post" action="{% url 'suggestion-list' book_id=book.id %}#suggestions-section">
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ request.user.id }}">
             <input type="hidden" name="suggests_for" value="{{ work.id }}">
             <p>{% trans "Have a recommendation for someone who liked this book?" %}</p>
-            <button type="submit" class="button">{% trans "Create suggestion list" %}</button>
+            <button type="submit" class="button">{% trans "Load books" %}</button>
         </form>
     </section>
 {% endif %}
