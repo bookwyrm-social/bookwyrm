@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-08 19:19+0000\n"
-"PO-Revision-Date: 2025-09-08 20:00\n"
+"POT-Creation-Date: 2025-11-16 19:21+0000\n"
+"PO-Revision-Date: 2025-11-16 19:34\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Welsh\n"
 "Language: cy\n"
@@ -37,15 +37,15 @@ msgstr "Ddim yn dod i ben"
 msgid "Unlimited"
 msgstr "Diderfyn"
 
-#: bookwyrm/forms/edit_user.py:105
+#: bookwyrm/forms/edit_user.py:99 bookwyrm/views/landing/password.py:117
 msgid "Incorrect password"
 msgstr "Cyfrinair anghywir"
 
-#: bookwyrm/forms/edit_user.py:112 bookwyrm/forms/landing.py:93
+#: bookwyrm/forms/edit_user.py:106 bookwyrm/forms/landing.py:93
 msgid "Password does not match"
 msgstr "Nid yw'r cyfrinair yn cyfateb"
 
-#: bookwyrm/forms/edit_user.py:135
+#: bookwyrm/forms/edit_user.py:129
 msgid "Incorrect Password"
 msgstr "Cyfrinair anghywir"
 
@@ -81,7 +81,11 @@ msgstr "Defnyddiwr gyda'r e-bost hwn eisoes yn bodoli."
 msgid "This email address cannot be registered."
 msgstr ""
 
-#: bookwyrm/forms/landing.py:127 bookwyrm/forms/landing.py:135
+#: bookwyrm/forms/landing.py:114
+msgid "Password cannot be the same as your current password"
+msgstr ""
+
+#: bookwyrm/forms/landing.py:145 bookwyrm/forms/landing.py:153
 msgid "Incorrect code"
 msgstr "Côd anghywir"
 
@@ -195,7 +199,6 @@ msgstr "Clawr meddal"
 #: bookwyrm/models/book.py:499 bookwyrm/models/book.py:504
 #: bookwyrm/models/book.py:509 bookwyrm/models/book.py:527
 #: bookwyrm/models/book.py:533 bookwyrm/models/book.py:538
-#: bookwyrm/models/book.py:543 bookwyrm/models/book.py:548
 #, python-format
 msgid "%(value)s doesn't look like an ISBN"
 msgstr ""
@@ -326,12 +329,21 @@ msgstr "Dilynwr"
 msgid "Private"
 msgstr "Preifat"
 
+#: bookwyrm/models/housekeeping.py:116
+msgid "Missing"
+msgstr ""
+
+#: bookwyrm/models/housekeeping.py:117
+msgid "Wrong Path"
+msgstr ""
+
 #: bookwyrm/models/import_job.py:50 bookwyrm/models/job.py:19
 #: bookwyrm/templates/import/import.html:184
 #: bookwyrm/templates/import/import_user.html:225
 #: bookwyrm/templates/import/user_import_status.html:56
 #: bookwyrm/templates/preferences/export-user.html:146
 #: bookwyrm/templates/settings/files.html:162
+#: bookwyrm/templates/settings/files.html:344
 #: bookwyrm/templates/settings/imports/imports.html:180
 #: bookwyrm/templates/settings/imports/imports.html:270
 #: bookwyrm/templates/snippets/user_active_tag.html:8
@@ -344,6 +356,7 @@ msgstr ""
 #: bookwyrm/templates/import/user_import_status.html:54
 #: bookwyrm/templates/preferences/export-user.html:144
 #: bookwyrm/templates/settings/files.html:160
+#: bookwyrm/templates/settings/files.html:342
 msgid "Complete"
 msgstr ""
 
@@ -355,11 +368,11 @@ msgstr ""
 msgid "Import stopped"
 msgstr ""
 
-#: bookwyrm/models/import_job.py:373 bookwyrm/models/import_job.py:398
+#: bookwyrm/models/import_job.py:378 bookwyrm/models/import_job.py:403
 msgid "Error loading book"
 msgstr "Gwall llwytho llyfr"
 
-#: bookwyrm/models/import_job.py:382
+#: bookwyrm/models/import_job.py:387
 msgid "Could not find a match for book"
 msgstr "Methu dod o hyd i pariad ar gyfer llyfr"
 
@@ -464,7 +477,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: bookwyrm/models/user.py:39 bookwyrm/templates/book/book.html:333
+#: bookwyrm/models/user.py:39 bookwyrm/templates/book/book.html:336
 msgid "Reviews"
 msgstr "Adolygiadau"
 
@@ -480,19 +493,19 @@ msgstr "Dyfyniadau"
 msgid "Everything else"
 msgstr "Popeth arall"
 
-#: bookwyrm/settings.py:237
+#: bookwyrm/settings.py:238
 msgid "Home Timeline"
 msgstr "Ffrwd gartref"
 
-#: bookwyrm/settings.py:237
+#: bookwyrm/settings.py:238
 msgid "Home"
 msgstr "Cartref"
 
-#: bookwyrm/settings.py:238
+#: bookwyrm/settings.py:239
 msgid "Books Timeline"
 msgstr "Ffrwd lyfrau"
 
-#: bookwyrm/settings.py:238
+#: bookwyrm/settings.py:239
 #: bookwyrm/templates/guided_tour/user_profile.html:101
 #: bookwyrm/templates/import/user_import_status.html:73
 #: bookwyrm/templates/search/layout.html:22
@@ -501,91 +514,91 @@ msgstr "Ffrwd lyfrau"
 msgid "Books"
 msgstr "Llyfrau"
 
-#: bookwyrm/settings.py:315
+#: bookwyrm/settings.py:316
 msgid "English"
 msgstr "Saesneg"
 
-#: bookwyrm/settings.py:316
+#: bookwyrm/settings.py:317
 msgid "Català (Catalan)"
 msgstr ""
 
-#: bookwyrm/settings.py:317
+#: bookwyrm/settings.py:318
 msgid "Deutsch (German)"
 msgstr "Deutsch (Almaeneg)"
 
-#: bookwyrm/settings.py:318
+#: bookwyrm/settings.py:319
 msgid "Esperanto (Esperanto)"
 msgstr ""
 
-#: bookwyrm/settings.py:319
+#: bookwyrm/settings.py:320
 msgid "Español (Spanish)"
 msgstr "Español (Sbaeneg)"
 
-#: bookwyrm/settings.py:320
+#: bookwyrm/settings.py:321
 msgid "Euskara (Basque)"
 msgstr ""
 
-#: bookwyrm/settings.py:321
+#: bookwyrm/settings.py:322
 msgid "Galego (Galician)"
 msgstr "Galego (Galiseg)"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:323
 msgid "Italiano (Italian)"
 msgstr "Italiano (Eidaleg)"
 
-#: bookwyrm/settings.py:323
+#: bookwyrm/settings.py:324
 msgid "한국어 (Korean)"
 msgstr ""
 
-#: bookwyrm/settings.py:324
+#: bookwyrm/settings.py:325
 msgid "Suomi (Finnish)"
 msgstr "Suomoi (Finneg)"
 
-#: bookwyrm/settings.py:325
+#: bookwyrm/settings.py:326
 msgid "Français (French)"
 msgstr "Français (Ffrangeg)"
 
-#: bookwyrm/settings.py:326
+#: bookwyrm/settings.py:327
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (Lithwaneg)"
 
-#: bookwyrm/settings.py:327
+#: bookwyrm/settings.py:328
 msgid "Nederlands (Dutch)"
 msgstr ""
 
-#: bookwyrm/settings.py:328
+#: bookwyrm/settings.py:329
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (Norwyaidd)"
 
-#: bookwyrm/settings.py:329
+#: bookwyrm/settings.py:330
 msgid "Polski (Polish)"
 msgstr ""
 
-#: bookwyrm/settings.py:330
+#: bookwyrm/settings.py:331
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (Portiwgaleg Brasil)"
 
-#: bookwyrm/settings.py:331
+#: bookwyrm/settings.py:332
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Portiwgaleg Ewropeaidd)"
 
-#: bookwyrm/settings.py:332
+#: bookwyrm/settings.py:333
 msgid "Română (Romanian)"
 msgstr "Română (Rwmaneg)"
 
-#: bookwyrm/settings.py:333
+#: bookwyrm/settings.py:334
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Swedeg)"
 
-#: bookwyrm/settings.py:334
+#: bookwyrm/settings.py:335
 msgid "Українська (Ukrainian)"
 msgstr ""
 
-#: bookwyrm/settings.py:335
+#: bookwyrm/settings.py:336
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Tsieinëeg Syml)"
 
-#: bookwyrm/settings.py:336
+#: bookwyrm/settings.py:337
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Tsieinëeg Traddodiadol)"
 
@@ -643,54 +656,54 @@ msgstr "Aeth rhywbeth o'i le! Sori am hynny."
 msgid "About"
 msgstr "Amdano"
 
-#: bookwyrm/templates/about/about.html:21
+#: bookwyrm/templates/about/about.html:22
 #: bookwyrm/templates/get_started/layout.html:22
 #, python-format
 msgid "Welcome to %(site_name)s!"
 msgstr "Croeso i %(site_name)s!"
 
-#: bookwyrm/templates/about/about.html:25
+#: bookwyrm/templates/about/about.html:26
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm network</a>, this community is unique."
 msgstr ""
 
-#: bookwyrm/templates/about/about.html:45
+#: bookwyrm/templates/about/about.html:47
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
 msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a>yw %(site_name)s llyfr mwyaf annwyl, gyda sgôr gyfartalog o %(rating)s allan o 5."
 
-#: bookwyrm/templates/about/about.html:64
+#: bookwyrm/templates/about/about.html:66
 #, python-format
 msgid "More %(site_name)s users want to read <a href=\"%(book_path)s\"><em>%(title)s</em></a> than any other book."
 msgstr "Mae mwy o ddefnyddwyr %(site_name)s eisiau darllen <a href=\"%(book_path)s\"><em>%(title)s</em></a> nag unrhyw lyfr arall."
 
-#: bookwyrm/templates/about/about.html:83
+#: bookwyrm/templates/about/about.html:85
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> has the most divisive ratings of any book on %(site_name)s."
 msgstr "Mae gan <a href=\"%(book_path)s\"><em>%(title)s</em></a> y gwerthusiadau mwyaf ymrannol o unrhyw lyfr ar %(site_name)s."
 
-#: bookwyrm/templates/about/about.html:94
+#: bookwyrm/templates/about/about.html:96
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
 msgstr "Traciwch eich darlleniad, siaradwch am lyfrau, ysgrifennwch adolygiadau, a darganfyddwch beth i'w ddarllen nesaf. Bob amser yn ddi-hysbyseb, yn wrth-gorfforaethol, ac yn canolbwyntio ar y gymuned, mae BookWyrm yn feddalwedd ar raddfa ddynol, wedi'i gynllunio i aros yn fach ac yn bersonol. Os oes gennych chi geisiadau nodwedd, adroddiadau nam, neu freuddwydion mawr, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">estyn allan</a> a gwneud i chi'ch hun glywed."
 
-#: bookwyrm/templates/about/about.html:105
+#: bookwyrm/templates/about/about.html:107
 msgid "Meet your admins"
 msgstr "Cwrdd â'r gweinyddwyr"
 
-#: bookwyrm/templates/about/about.html:108
+#: bookwyrm/templates/about/about.html:110
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
 msgstr "Mae gweinyddwyr a chymedrolwyr yn cadw safle %(site_name)s i fynd, yn goruwchwylio'r <a href=\"%(coc_path)s\">côd ymddygiad</a>, ac yn ymateb pan fo defnyddwyr yn adrodd am sbam ac ymddygiad gwrth-gymdeithasol."
 
-#: bookwyrm/templates/about/about.html:122
+#: bookwyrm/templates/about/about.html:124
 msgid "Moderator"
 msgstr "Cymedrolwr"
 
-#: bookwyrm/templates/about/about.html:124 bookwyrm/templates/user_menu.html:62
+#: bookwyrm/templates/about/about.html:126 bookwyrm/templates/user_menu.html:62
 msgid "Admin"
 msgstr "Gweinyddwr"
 
-#: bookwyrm/templates/about/about.html:140
+#: bookwyrm/templates/about/about.html:142
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:28
 #: bookwyrm/templates/snippets/status/status_options.html:35
 #: bookwyrm/templates/snippets/user_options.html:14
@@ -838,7 +851,7 @@ msgstr "Eu llyfr byrraf eleni…"
 #: bookwyrm/templates/annual_summary/layout.html:157
 #: bookwyrm/templates/annual_summary/layout.html:178
 #: bookwyrm/templates/annual_summary/layout.html:247
-#: bookwyrm/templates/book/book.html:70
+#: bookwyrm/templates/book/book.html:73
 #: bookwyrm/templates/discover/large-book.html:22
 #: bookwyrm/templates/landing/large-book.html:26
 #: bookwyrm/templates/landing/small-book.html:18
@@ -938,24 +951,24 @@ msgid "View ISNI record"
 msgstr "Gwelwch y cofnod ISNI"
 
 #: bookwyrm/templates/author/author.html:103
-#: bookwyrm/templates/book/book.html:180
+#: bookwyrm/templates/book/book.html:183
 msgid "View on ISFDB"
 msgstr ""
 
 #: bookwyrm/templates/author/author.html:108
 #: bookwyrm/templates/author/sync_modal.html:5
-#: bookwyrm/templates/book/book.html:147
+#: bookwyrm/templates/book/book.html:150
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
 msgstr "Llwythwch y data"
 
 #: bookwyrm/templates/author/author.html:112
-#: bookwyrm/templates/book/book.html:151
+#: bookwyrm/templates/book/book.html:154
 msgid "View on OpenLibrary"
 msgstr "Gwelwch ar OpenLibrary"
 
 #: bookwyrm/templates/author/author.html:127
-#: bookwyrm/templates/book/book.html:165
+#: bookwyrm/templates/book/book.html:168
 msgid "View on Inventaire"
 msgstr "Gweld ar Inventaire"
 
@@ -1064,7 +1077,7 @@ msgid "ISNI:"
 msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:128
-#: bookwyrm/templates/book/book.html:246
+#: bookwyrm/templates/book/book.html:249
 #: bookwyrm/templates/book/edit/edit_book.html:150
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
@@ -1088,7 +1101,7 @@ msgstr "Cadw"
 
 #: bookwyrm/templates/author/edit_author.html:129
 #: bookwyrm/templates/author/sync_modal.html:23
-#: bookwyrm/templates/book/book.html:247
+#: bookwyrm/templates/book/book.html:250
 #: bookwyrm/templates/book/cover_add_modal.html:33
 #: bookwyrm/templates/book/edit/edit_book.html:152
 #: bookwyrm/templates/book/edit/edit_book.html:155
@@ -1104,6 +1117,7 @@ msgstr "Cadw"
 #: bookwyrm/templates/search/barcode_modal.html:43
 #: bookwyrm/templates/settings/federation/instance.html:106
 #: bookwyrm/templates/settings/files.html:193
+#: bookwyrm/templates/settings/files.html:354
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:16
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:16
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:22
@@ -1120,39 +1134,41 @@ msgstr "Cysylltir data a lwythir at <strong>%(source_name)s</strong> a bydd yn g
 #: bookwyrm/templates/book/edit/edit_book.html:137
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
+#: bookwyrm/templates/landing/force_password_reset.html:94
 #: bookwyrm/templates/landing/password_reset.html:52
 #: bookwyrm/templates/preferences/security.html:80
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:19
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:19
+#: bookwyrm/templates/settings/users/force_password_reset.html:55
 #: bookwyrm/templates/snippets/remove_from_group_button.html:17
 msgid "Confirm"
 msgstr "Cadarnhau"
 
-#: bookwyrm/templates/book/book.html:21
+#: bookwyrm/templates/book/book.html:24
 msgid "Unable to connect to remote source."
 msgstr "Methu â chysylltu â'r rhwydwaith."
 
-#: bookwyrm/templates/book/book.html:78 bookwyrm/templates/book/book.html:79
+#: bookwyrm/templates/book/book.html:81 bookwyrm/templates/book/book.html:82
 msgid "Edit Book"
 msgstr "Golygu'r Llyfr"
 
-#: bookwyrm/templates/book/book.html:104 bookwyrm/templates/book/book.html:107
+#: bookwyrm/templates/book/book.html:107 bookwyrm/templates/book/book.html:110
 msgid "Click to add cover"
 msgstr "Cliciwch i ychwanegu clawr"
 
-#: bookwyrm/templates/book/book.html:113
+#: bookwyrm/templates/book/book.html:116
 msgid "Failed to load cover"
 msgstr "Methwyd â llwytho clawr"
 
-#: bookwyrm/templates/book/book.html:124
+#: bookwyrm/templates/book/book.html:127
 msgid "Click to enlarge"
 msgstr "Cliciwch i ehangu"
 
-#: bookwyrm/templates/book/book.html:187
+#: bookwyrm/templates/book/book.html:190
 msgid "View on Finna"
 msgstr ""
 
-#: bookwyrm/templates/book/book.html:219
+#: bookwyrm/templates/book/book.html:222
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
@@ -1163,17 +1179,17 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] "(adolygiadau %(review_count)s)"
 
-#: bookwyrm/templates/book/book.html:235
+#: bookwyrm/templates/book/book.html:238
 msgid "Add Description"
 msgstr "Ychwanegu disgrifiad"
 
-#: bookwyrm/templates/book/book.html:242
+#: bookwyrm/templates/book/book.html:245
 #: bookwyrm/templates/book/edit/edit_book_form.html:55
 #: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
 msgid "Description:"
 msgstr "Disgrifiad:"
 
-#: bookwyrm/templates/book/book.html:258
+#: bookwyrm/templates/book/book.html:261
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
@@ -1184,49 +1200,49 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] "Argraffiadau %(count)s"
 
-#: bookwyrm/templates/book/book.html:272
+#: bookwyrm/templates/book/book.html:275
 msgid "You have shelved this edition in:"
 msgstr "Rydych wedi rhoi'r fersiwn yma ar silff:"
 
-#: bookwyrm/templates/book/book.html:287
+#: bookwyrm/templates/book/book.html:290
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
 msgstr "Mae <a href=\"%(book_path)s\">fersiwn wahanol</a>o'r llyfr hwn ar eich <a href=\"%(shelf_path)s\">%(shelf_name)s</a>silff."
 
-#: bookwyrm/templates/book/book.html:298
+#: bookwyrm/templates/book/book.html:301
 msgid "Your reading activity"
 msgstr "Eich darllen"
 
-#: bookwyrm/templates/book/book.html:304
+#: bookwyrm/templates/book/book.html:307
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
 msgstr "Ychwanegu dyddiadau darllen"
 
-#: bookwyrm/templates/book/book.html:312
+#: bookwyrm/templates/book/book.html:315
 msgid "You don't have any reading activity for this book."
 msgstr "Does gennych ddim cofnod darllen ar gyfer y llyfr hwn."
 
-#: bookwyrm/templates/book/book.html:338
+#: bookwyrm/templates/book/book.html:341
 msgid "Your reviews"
 msgstr "Eich adolygiadau"
 
-#: bookwyrm/templates/book/book.html:344
+#: bookwyrm/templates/book/book.html:347
 msgid "Your comments"
 msgstr "Eich sylwadau"
 
-#: bookwyrm/templates/book/book.html:350
+#: bookwyrm/templates/book/book.html:353
 msgid "Your quotes"
 msgstr "Eich dyfyniadau"
 
-#: bookwyrm/templates/book/book.html:386
+#: bookwyrm/templates/book/book.html:389
 msgid "Subjects"
 msgstr "Pynciau"
 
-#: bookwyrm/templates/book/book.html:398
+#: bookwyrm/templates/book/book.html:401
 msgid "Places"
 msgstr "Lleoedd"
 
-#: bookwyrm/templates/book/book.html:409
+#: bookwyrm/templates/book/book.html:412
 #: bookwyrm/templates/groups/group.html:19
 #: bookwyrm/templates/guided_tour/lists.html:14
 #: bookwyrm/templates/guided_tour/user_books.html:102
@@ -1241,11 +1257,11 @@ msgstr "Lleoedd"
 msgid "Lists"
 msgstr "Rhestrau"
 
-#: bookwyrm/templates/book/book.html:421
+#: bookwyrm/templates/book/book.html:424
 msgid "Add to list"
 msgstr "Ychwanegu i'r rhestr"
 
-#: bookwyrm/templates/book/book.html:431
+#: bookwyrm/templates/book/book.html:434
 #: bookwyrm/templates/book/cover_add_modal.html:32
 #: bookwyrm/templates/lists/add_item_modal.html:39
 #: bookwyrm/templates/lists/list.html:255
@@ -1657,6 +1673,7 @@ msgstr "Parth"
 #: bookwyrm/templates/preferences/export-user.html:113
 #: bookwyrm/templates/settings/announcements/announcements.html:37
 #: bookwyrm/templates/settings/files.html:137
+#: bookwyrm/templates/settings/files.html:319
 #: bookwyrm/templates/settings/imports/imports.html:304
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:48
 #: bookwyrm/templates/settings/invites/status_filter.html:5
@@ -1812,7 +1829,7 @@ msgstr "Côd cadarnhau:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/layout.html:81
-#: bookwyrm/templates/settings/dashboard/dashboard.html:106
+#: bookwyrm/templates/settings/dashboard/dashboard.html:107
 #: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Submit"
 msgstr "Cyflwyno"
@@ -2089,6 +2106,8 @@ msgid "You requested to reset your %(site_name)s password. Click the link below 
 msgstr "Fe ofynnoch i newid eich cyfrinair %(site_name)s. Cliciwch ar y ddolen isod i newid eich cyfrinair a mewngofnodi i'ch cyfrif."
 
 #: bookwyrm/templates/email/password_reset/html_content.html:9
+#: bookwyrm/templates/landing/force_password_reset.html:9
+#: bookwyrm/templates/landing/force_password_reset.html:28
 #: bookwyrm/templates/landing/password_reset.html:4
 #: bookwyrm/templates/landing/password_reset.html:10
 #: bookwyrm/templates/landing/password_reset_request.html:4
@@ -2115,8 +2134,10 @@ msgstr ""
 msgid "Test email"
 msgstr ""
 
-#: bookwyrm/templates/embed-layout.html:21 bookwyrm/templates/layout.html:33
-#: bookwyrm/templates/layout.html:163 bookwyrm/templates/setup/layout.html:15
+#: bookwyrm/templates/embed-layout.html:21
+#: bookwyrm/templates/landing/force_password_reset.html:18
+#: bookwyrm/templates/layout.html:33 bookwyrm/templates/layout.html:163
+#: bookwyrm/templates/setup/layout.html:15
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:18
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:18
 #, python-format
@@ -3182,7 +3203,7 @@ msgstr "Ailgeisio Statws"
 #: bookwyrm/templates/settings/celery.html:45
 #: bookwyrm/templates/settings/imports/imports.html:6
 #: bookwyrm/templates/settings/imports/imports.html:9
-#: bookwyrm/templates/settings/layout.html:82
+#: bookwyrm/templates/settings/layout.html:88
 msgid "Imports"
 msgstr "Mewnforiadau"
 
@@ -3570,6 +3591,26 @@ msgstr ""
 msgid "Reason"
 msgstr ""
 
+#: bookwyrm/templates/landing/force_password_reset.html:30
+msgid "You must set a new password before logging in."
+msgstr ""
+
+#: bookwyrm/templates/landing/force_password_reset.html:50
+#: bookwyrm/templates/preferences/change_password.html:22
+msgid "Current password:"
+msgstr ""
+
+#: bookwyrm/templates/landing/force_password_reset.html:68
+#: bookwyrm/templates/preferences/change_password.html:28
+msgid "New password:"
+msgstr ""
+
+#: bookwyrm/templates/landing/force_password_reset.html:85
+#: bookwyrm/templates/landing/password_reset.html:43
+#: bookwyrm/templates/preferences/change_password.html:33
+msgid "Confirm password:"
+msgstr ""
+
 #: bookwyrm/templates/landing/invite.html:4
 #: bookwyrm/templates/landing/invite.html:8
 #: bookwyrm/templates/landing/login.html:50
@@ -3657,12 +3698,6 @@ msgstr ""
 #: bookwyrm/templates/landing/login.html:63
 #: bookwyrm/templates/landing/reactivate.html:56
 msgid "More about this site"
-msgstr ""
-
-#: bookwyrm/templates/landing/password_reset.html:43
-#: bookwyrm/templates/preferences/change_password.html:33
-#: bookwyrm/templates/preferences/delete_user.html:35
-msgid "Confirm password:"
 msgstr ""
 
 #: bookwyrm/templates/landing/password_reset_request.html:14
@@ -4548,17 +4583,9 @@ msgstr ""
 msgid "Successfully changed password"
 msgstr ""
 
-#: bookwyrm/templates/preferences/change_password.html:22
-msgid "Current password:"
-msgstr ""
-
-#: bookwyrm/templates/preferences/change_password.html:28
-msgid "New password:"
-msgstr ""
-
 #: bookwyrm/templates/preferences/delete_user.html:4
 #: bookwyrm/templates/preferences/delete_user.html:7
-#: bookwyrm/templates/preferences/delete_user.html:40
+#: bookwyrm/templates/preferences/delete_user.html:41
 #: bookwyrm/templates/preferences/layout.html:36
 #: bookwyrm/templates/settings/users/delete_user_form.html:22
 msgid "Delete Account"
@@ -4582,6 +4609,10 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/delete_user.html:29
 msgid "Deleting your account cannot be undone. The username will not be available to register in the future."
+msgstr ""
+
+#: bookwyrm/templates/preferences/delete_user.html:36
+msgid "I understand that my account cannot be recovered:"
 msgstr ""
 
 #: bookwyrm/templates/preferences/disable-2fa.html:4
@@ -4774,6 +4805,7 @@ msgstr[5] ""
 #: bookwyrm/templates/preferences/export-user.html:110
 #: bookwyrm/templates/preferences/security.html:126
 #: bookwyrm/templates/settings/files.html:136
+#: bookwyrm/templates/settings/files.html:318
 msgid "Date"
 msgstr ""
 
@@ -5184,7 +5216,7 @@ msgstr ""
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:111
+#: bookwyrm/templates/settings/layout.html:117
 msgid "Announcements"
 msgstr ""
 
@@ -5202,13 +5234,13 @@ msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcement.html:57
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:79
-#: bookwyrm/templates/settings/dashboard/dashboard.html:84
+#: bookwyrm/templates/settings/dashboard/dashboard.html:85
 msgid "Start date:"
 msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcement.html:62
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:89
-#: bookwyrm/templates/settings/dashboard/dashboard.html:90
+#: bookwyrm/templates/settings/dashboard/dashboard.html:91
 msgid "End date:"
 msgstr ""
 
@@ -5290,42 +5322,51 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:26
 #: bookwyrm/templates/settings/files.html:28
+#: bookwyrm/templates/settings/files.html:221
 msgid "Schedule:"
 msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:33
 #: bookwyrm/templates/settings/files.html:35
+#: bookwyrm/templates/settings/files.html:228
 msgid "Last run:"
 msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:40
 #: bookwyrm/templates/settings/files.html:42
+#: bookwyrm/templates/settings/files.html:235
 msgid "Total run count:"
 msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:47
 #: bookwyrm/templates/settings/files.html:49
+#: bookwyrm/templates/settings/files.html:242
 msgid "Enabled:"
 msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:59
 #: bookwyrm/templates/settings/files.html:61
+#: bookwyrm/templates/settings/files.html:254
 msgid "Delete schedule"
 msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:63
 #: bookwyrm/templates/settings/files.html:65
+#: bookwyrm/templates/settings/files.html:258
+#: bookwyrm/templates/settings/files.html:305
 msgid "Run now"
 msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:64
 #: bookwyrm/templates/settings/files.html:66
+#: bookwyrm/templates/settings/files.html:259
 msgid "Last run date will not be updated"
 msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:69
 #: bookwyrm/templates/settings/automod/rules.html:92
 #: bookwyrm/templates/settings/files.html:96
+#: bookwyrm/templates/settings/files.html:290
 msgid "Schedule scan"
 msgstr ""
 
@@ -5370,7 +5411,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:6
 #: bookwyrm/templates/settings/celery.html:8
-#: bookwyrm/templates/settings/layout.html:86
+#: bookwyrm/templates/settings/layout.html:92
 msgid "Celery Status"
 msgstr ""
 
@@ -5399,7 +5440,7 @@ msgid "Import triggered"
 msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:57
-#: bookwyrm/templates/settings/layout.html:98
+#: bookwyrm/templates/settings/layout.html:104
 msgid "Connectors"
 msgstr ""
 
@@ -5559,7 +5600,7 @@ msgid "Dashboard"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
-#: bookwyrm/templates/settings/dashboard/dashboard.html:113
+#: bookwyrm/templates/settings/dashboard/dashboard.html:114
 msgid "Total users"
 msgstr ""
 
@@ -5573,31 +5614,31 @@ msgstr ""
 msgid "Works"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:78
+#: bookwyrm/templates/settings/dashboard/dashboard.html:79
 msgid "Instance Activity"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:96
+#: bookwyrm/templates/settings/dashboard/dashboard.html:97
 msgid "Interval:"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:100
+#: bookwyrm/templates/settings/dashboard/dashboard.html:101
 msgid "Days"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:101
+#: bookwyrm/templates/settings/dashboard/dashboard.html:102
 msgid "Weeks"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:119
+#: bookwyrm/templates/settings/dashboard/dashboard.html:120
 msgid "User signup activity"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:125
+#: bookwyrm/templates/settings/dashboard/dashboard.html:126
 msgid "Status activity"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:131
+#: bookwyrm/templates/settings/dashboard/dashboard.html:132
 msgid "Works created"
 msgstr ""
 
@@ -5683,7 +5724,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:7
-#: bookwyrm/templates/settings/layout.html:65
+#: bookwyrm/templates/settings/layout.html:71
 msgid "Email Blocklist"
 msgstr ""
 
@@ -5713,7 +5754,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/email_config.html:6
 #: bookwyrm/templates/settings/email_config.html:8
-#: bookwyrm/templates/settings/layout.html:94
+#: bookwyrm/templates/settings/layout.html:100
 msgid "Email Configuration"
 msgstr ""
 
@@ -5940,7 +5981,43 @@ msgstr ""
 msgid "Completed"
 msgstr ""
 
-#: bookwyrm/templates/settings/files.html:210
+#: bookwyrm/templates/settings/files.html:206
+msgid "Find book covers from connectors"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:209
+msgid "These jobs find cover images where they are missing or have incorrect filepaths."
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:212
+msgid "Find missing covers"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:215
+msgid "Schedule a regular scan to find cover images for editions without them. This can be resource intensive so the recommended schedule is no less than every seven days."
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:296
+msgid "Fix broken book cover filepaths"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:299
+msgid "If you have lost your cover image files (e.g. due to server migration failure) the scheduled job above will not replace them. Run this job instead to attempt to find covers for books where the current cover filepath does not resolve to a file."
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:306
+msgid "This job cannot be scheduled to run regularly"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:320
+msgid "Editions checked"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:321
+msgid "Covers fixed"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:371
 msgid "Successfully updated expiry time"
 msgstr ""
 
@@ -6214,7 +6291,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:7
-#: bookwyrm/templates/settings/layout.html:69
+#: bookwyrm/templates/settings/layout.html:75
 msgid "IP Address Blocklist"
 msgstr ""
 
@@ -6239,49 +6316,55 @@ msgid "Manage Users"
 msgstr ""
 
 #: bookwyrm/templates/settings/layout.html:53
+#: bookwyrm/templates/settings/users/force_password_reset.html:7
+#: bookwyrm/templates/settings/users/force_password_reset.html:11
+msgid "Force Password Reset"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:59
 msgid "Moderation"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:57
+#: bookwyrm/templates/settings/layout.html:63
 #: bookwyrm/templates/settings/reports/reports.html:8
 #: bookwyrm/templates/settings/reports/reports.html:17
 msgid "Reports"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:61
+#: bookwyrm/templates/settings/layout.html:67
 msgid "Auto-Moderation Rules"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:73
+#: bookwyrm/templates/settings/layout.html:79
 #: bookwyrm/templates/settings/link_domains/link_domains.html:5
 #: bookwyrm/templates/settings/link_domains/link_domains.html:7
 msgid "Link Domains"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:78
+#: bookwyrm/templates/settings/layout.html:84
 msgid "System"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:90
+#: bookwyrm/templates/settings/layout.html:96
 msgid "Scheduled Tasks"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:102
+#: bookwyrm/templates/settings/layout.html:108
 msgid "Files Maintenance"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:107
+#: bookwyrm/templates/settings/layout.html:113
 msgid "Instance Settings"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:115
+#: bookwyrm/templates/settings/layout.html:121
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:121
-#: bookwyrm/templates/settings/layout.html:124
+#: bookwyrm/templates/settings/layout.html:127
+#: bookwyrm/templates/settings/layout.html:130
 #: bookwyrm/templates/settings/registration.html:4
 #: bookwyrm/templates/settings/registration.html:6
 #: bookwyrm/templates/settings/registration_limited.html:4
@@ -6289,7 +6372,7 @@ msgstr ""
 msgid "Registration"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:130
+#: bookwyrm/templates/settings/layout.html:136
 #: bookwyrm/templates/settings/site.html:107
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
@@ -6705,11 +6788,43 @@ msgstr ""
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:12
 #, python-format
-msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? This action cannot be undone. To proceed, please enter your password to confirm deletion."
+msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? This action cannot be undone."
 msgstr ""
 
-#: bookwyrm/templates/settings/users/delete_user_form.html:17
-msgid "Your password:"
+#: bookwyrm/templates/settings/users/delete_user_form.html:18
+msgid "I understand that this is a permanent action:"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:17
+msgid "All users in the selected category will be logged out and required to set a new password to log back in."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:18
+msgid "If your account is in the group, you will be logged out out after submitting."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:22
+msgid "Users given password resets:"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:35
+msgid "All users"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:39
+msgid "users"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:43
+msgid "Force password reset"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:48
+msgid "Number of users that will be effected:"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:53
+msgid "Are you sure you want to force password reset for these users:"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_admin.html:9
