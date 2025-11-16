@@ -136,7 +136,6 @@ class ActivitypubMixin:
         except PermissionDenied:
             return
 
-
         # if we're posting about ShelfBooks, set a delay to give the base activity
         # time to add the book on remote servers first to avoid race conditions
         countdown = (
