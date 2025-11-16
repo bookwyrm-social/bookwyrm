@@ -36,6 +36,9 @@
             </p>
         </div>
         <div class="card-footer-item">
+            {% include "snippets/shelve_button/shelve_button.html" with book=item.book %}
+        </div>
+        <div class="card-footer-item">
             {% include "book/suggestion_list/endorsement_button.html" %}
         </div>
     </div>
