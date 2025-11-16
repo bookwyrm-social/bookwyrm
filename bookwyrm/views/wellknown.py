@@ -14,6 +14,7 @@ from bookwyrm.settings import BASE_URL, DOMAIN, VERSION, LANGUAGE_CODE
 
 
 @require_GET
+@require_federation
 def webfinger(request):
     """allow other servers to ask about a user"""
     resource = request.GET.get("resource")
@@ -142,7 +143,6 @@ def host_meta(request):
 
 
 @require_GET
-@require_federation
 def opensearch(request):
     """Open Search xml spec"""
     site = models.SiteSettings.get()
