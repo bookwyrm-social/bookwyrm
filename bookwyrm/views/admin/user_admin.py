@@ -130,7 +130,17 @@ class ForcePasswordResetAdmin(View):
 
     def get(self, request):
         """user view"""
-        data = {"groups": Group.objects.all()}
+        group = request.GET.get("group")
+        data = {"groups": Group.objects.all(), "group": group}
+
+        user_queryset = models.User.objects.filter(local=True, is_deleted=False)
+        if group == "all":
+            data["count"] = user_queryset.count()
+        elif group == "user":
+            data["count"] = user_queryset.filter(groups__isnull=True).count()
+        elif group:
+            data["count"] = user_queryset.filter(groups__name=group).count()
+
         return TemplateResponse(
             request, "settings/users/force_password_reset.html", data
         )
@@ -138,9 +148,11 @@ class ForcePasswordResetAdmin(View):
     def post(self, request):
         """force password reset and log out groups of users"""
         group = request.POST.get("group")
-        user_queryset = models.User.objects.filter(local=True)
-        if group:
-            user_queryset = user_queryset.filter(group__name=group)
+        user_queryset = models.User.objects.filter(local=True, is_deleted=False)
+        if group == "user":
+            user_queryset = user_queryset.filter(groups__isnull=True)
+        elif group != "all":
+            user_queryset = user_queryset.filter(groups__name=group)
 
         user_queryset.update(force_password_reset=True)
 
