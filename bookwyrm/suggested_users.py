@@ -92,7 +92,7 @@ class SuggestedUsers(RedisStore):
 
     def get_suggestions(self, user, local=False):
         """get suggestions"""
-        local = local and models.SiteSettings.get().disable_federation
+        local = local or models.SiteSettings.get().disable_federation
 
         values = self.get_store(self.store_id(user), withscores=True)
         annotations = [
