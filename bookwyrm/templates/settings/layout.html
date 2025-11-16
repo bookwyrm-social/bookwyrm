@@ -41,6 +41,12 @@
                 {% url 'settings-invites' as alt_url %}
                 <a href="{{ url }}"{% if url in request.path or request.path in alt_url %} class="is-active" aria-selected="true"{% endif %}>{% trans "Invites" %}</a>
             </li>
+            {% if perms.bookwyrm.moderate_user %}
+            <li>
+                {% url 'settings-force-password-reset' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Force Password Reset" %}</a>
+            </li>
+            {% endif %}
         </ul>
         {% endif %}
         {% if perms.bookwyrm.control_federation %}
@@ -54,12 +60,6 @@
             <li>
                 {% url 'settings-federation' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Federated Instances" %}</a>
-            </li>
-            {% endif %}
-            {% if perms.bookwyrm.moderate_user %}
-            <li>
-                {% url 'settings-force-password-reset' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Force Password Reset" %}</a>
             </li>
             {% endif %}
         </ul>
