@@ -96,7 +96,7 @@ from .landing.landing import Home, Landing
 from .landing.login import Login, Logout
 from .landing.register import Register
 from .landing.register import ConfirmEmail, ConfirmEmailCode, ResendConfirmEmail
-from .landing.password import PasswordResetRequest, PasswordReset
+from .landing.password import PasswordResetRequest, PasswordReset, ForcePasswordReset
 
 # shelves
 from .shelf.shelf import Shelf

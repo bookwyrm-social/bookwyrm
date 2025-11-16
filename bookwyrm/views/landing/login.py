@@ -47,6 +47,11 @@ class Login(View):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
+            # do they need to reset their password?
+            if user.force_password_reset:
+                request.session["force_reset_password_user"] = user.username
+                return redirect("force-password-reset")
+
             # if 2fa is set, don't log them in until they enter the right code
             if user.two_factor_auth:
                 request.session["2fa_user"] = user.username
