@@ -47,7 +47,6 @@ class TransactionInboxCreate(TransactionTestCase):
             "cc": ["https://example.com/user/mouse/followers"],
             "object": {},
         }
-        models.SiteSettings.objects.create()
 
     def test_create_status_transaction(self, *_):
         """the "it justs works" mode"""

@@ -141,7 +141,7 @@ class Importer:
     # pylint: disable=no-self-use
     def get_import_limit(self, user: User) -> tuple[int, int]:
         """check if import limit is set and return how many imports are left"""
-        site_settings = SiteSettings.objects.get()
+        site_settings = SiteSettings.get()
         import_size_limit = site_settings.import_size_limit
         import_limit_reset = site_settings.import_limit_reset
         enforce_limit = import_size_limit and import_limit_reset

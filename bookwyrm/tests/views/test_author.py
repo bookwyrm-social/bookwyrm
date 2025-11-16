@@ -46,7 +46,6 @@ class AuthorViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=cls.work,
         )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

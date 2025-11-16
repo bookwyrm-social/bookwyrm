@@ -56,10 +56,10 @@ class Signature(TestCase):
             cls.cat = models.User.objects.create_user(
                 f"cat@{DOMAIN}", "cat@example.com", "", local=True, localname="cat"
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """test data"""
+        self.site = models.SiteSettings.get()
         private_key, public_key = create_key_pair()
         self.fake_remote = Sender(
             "http://localhost/user/remote", KeyPair(private_key, public_key)

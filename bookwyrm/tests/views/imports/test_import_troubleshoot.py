@@ -27,7 +27,6 @@ class ImportTroubleshootViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

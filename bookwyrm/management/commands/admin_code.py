@@ -6,7 +6,7 @@ from bookwyrm import models
 
 def get_admin_code():
     """get that code"""
-    return models.SiteSettings.objects.get().admin_code
+    return models.SiteSettings.get().admin_code
 
 
 class Command(BaseCommand):

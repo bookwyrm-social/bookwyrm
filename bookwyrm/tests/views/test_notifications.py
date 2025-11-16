@@ -32,7 +32,6 @@ class NotificationViews(TestCase):
             )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             cls.status = models.Status.objects.create(content="hi", user=cls.local_user)
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

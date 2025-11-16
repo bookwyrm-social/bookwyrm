@@ -126,6 +126,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "bookwyrm.middleware.FileTooBig",
+    "bookwyrm.middleware.ForceLogoutMiddleware",
 ]
 
 ROOT_URLCONF = "bookwyrm.urls"

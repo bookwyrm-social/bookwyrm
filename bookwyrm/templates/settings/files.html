@@ -56,7 +56,7 @@
             </dl>
 
             <div class="is-flex is-justify-content-space-between block">
-                <form name="unschedule-delete-exports-scan" method="POST" action="{% url 'settings-delete-exports-unschedule' delete_task.id %}">
+                <form name="unschedule-delete-exports-scan" method="POST" action="{% url 'settings-file-maintenance-unschedule' delete_task.id %}">
                     {% csrf_token %}
                     <button class="button is-danger">{% trans "Delete schedule" %}</button>
                 </form>
@@ -202,6 +202,167 @@
     {% endif %}
 </div>
 
+<div class="box block">
+    <h2 class="title is-4">{% trans "Find book covers from connectors" %}</h2>
+    <div class="content notification">
+        <p>
+            {% trans "These jobs find cover images where they are missing or have incorrect filepaths." %}
+        </p>
+    </div>
+    <h3 class="title is-5">{% trans "Find missing covers" %}</h3>
+    <div class="block">
+        <p>
+            {% trans "Schedule a regular scan to find cover images for editions without them. This can be resource intensive so the recommended schedule is no less than every seven days." %}
+        </p>
+    </div>
+    {% if find_covers_task %}
+    <dl class="block">
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">
+            {% trans "Schedule:" %}
+        </dt>
+        <dd>
+            {{ find_covers_task.schedule }}
+        </dd>
+
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">
+            {% trans "Last run:" %}
+        </dt>
+        <dd>
+            {{ find_covers_task.last_run_at|naturaltime }}
+        </dd>
+
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">
+            {% trans "Total run count:" %}
+        </dt>
+        <dd>
+            {{ find_covers_task.total_run_count }}
+        </dd>
+
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">
+            {% trans "Enabled:" %}
+        </dt>
+        <dd>
+            <span class="tag {% if find_covers_task.enabled %}is-success{% else %}is-danger{% endif %}">
+                {{ find_covers_task.enabled|yesno }}
+            </span>
+        </dd>
+    </dl>
+
+    <div class="is-flex is-justify-content-space-between block">
+        <form name="unschedule-find_covers" method="POST" action="{% url 'settings-file-maintenance-unschedule' find_covers_task.id %}">
+            {% csrf_token %}
+            <button class="button is-danger">{% trans "Delete schedule" %}</button>
+        </form>
+        <form name="run-find_covers-job" method="POST" action="{% url 'find-covers-task-run' %}">
+            {% csrf_token %}
+            <button class="button">{% trans "Run now" %}</button>
+            <p class="help">{% trans "Last run date will not be updated" %}</p>
+        </form>
+    </div>
+    {% else %}
+    <div class="block">
+        <form name="schedule-find-covers-job" method="POST" action="{% url 'find-covers-task-schedule' %}">
+            {% csrf_token %}
+            <div class="field">
+                <label class="label" for="covers_every">
+                    {{ covers_form.every.label }}
+                </label>
+                <div class="columns">
+                    <div class="column is-one-fifth">
+                        {{ covers_form.every }}
+                    </div>
+                </div>
+                <p class="help" id="desc_covers_every">
+                    {{ covers_form.every.help_text }}
+                </p>
+            </div>
+            <div class="field">
+                <label class="label" for="covers_period">
+                {{ covers_form.period.label }}
+                </label>
+                <div class="select">
+                    {{ covers_form.period }}
+                </div>
+                <p class="help" id="desc_covers_period">
+                    {{ covers_form.period.help_text }}
+                </p>
+            </div>
+            <button class="button is-warning">{% trans "Schedule scan" %}</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="block">
+        <h3 class="title is-5">{% trans "Fix broken book cover filepaths" %}</h3>
+        <div class="block">
+            <p>
+                {% trans "If you have lost your cover image files (e.g. due to server migration failure) the scheduled job above will not replace them. Run this job instead to attempt to find covers for books where the current cover filepath does not resolve to a file." %}
+            </p>
+        </div>
+        <div class="block">
+            <form name="run-wrong-cover-paths-job" method="POST" action="{% url 'wrong-cover-paths-run' %}">
+                {% csrf_token %}
+                <button class="button is-warning">{% trans "Run now" %}</button>
+                <p class="help">{% trans "This job cannot be scheduled to run regularly" %}</p>
+            </form>
+        </div>
+    </div>
+
+
+    {% if covers_jobs %}
+    <div class="block">
+        <h3 class="title is-5">Recent jobs</h3>
+        <div class="table-container">
+            <table class="table is-striped is-fullwidth">
+                <tr>
+                    <th class="has-text-centered">{% trans "Date" %}</th>
+                    <th class="has-text-centered">{% trans "Status" %}</th>
+                    <th class="has-text-centered">{% trans "Editions checked" %}</th>
+                    <th class="has-text-centered">{% trans "Covers fixed" %}</th>
+                    <th></th>
+                </tr>
+                {% for job in covers_jobs %}
+                <tr>
+                    <td class="has-text-centered">{{ job.updated_date }}</td>
+                    <td class="has-text-centered">
+                        <span
+                            {% if job.status == "stopped" or job.status == "failed" %}
+                            class="tag is-danger"
+                            {% elif job.status == "pending" %}
+                            class="tag is-warning"
+                            {% elif job.complete %}
+                            class="tag is-success"
+                            {% else %}
+                            class="tag"
+                            {% endif %}
+                        >
+                            {% if job.status %}
+                                {{ job.get_status_display }}
+                            {% elif job.complete %}
+                                {% trans "Complete" %}
+                            {% else %}
+                                {% trans "Active" %}
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td class="has-text-centered">{{ job.editions.count }}</td>
+                    <td class="has-text-centered">{{ job.found_covers.count }}</td>
+                    <td class="has-text-centered">
+                        {% if not job.complete %}
+                        <form name="cancel-job-{{ job.id }}" method="POST" action="{% url 'cancel-covers-job' job.id %}">
+                            {% csrf_token %}
+                            <button class="button is-small is-danger">{% trans "Cancel" %}</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
 
 {% if success %}
 <div class="notification is-success is-light">

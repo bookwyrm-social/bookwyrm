@@ -13,6 +13,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from bookwyrm import activitypub, models
+from bookwyrm.decorators import require_federation
 from bookwyrm.tasks import app, INBOX
 from bookwyrm.signatures import Signature
 from bookwyrm.utils import regex
@@ -25,6 +26,7 @@ class UserIsGoneError(Exception):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
+@method_decorator(require_federation, name="dispatch")
 # pylint: disable=no-self-use
 class Inbox(View):
     """requests sent by outside servers"""

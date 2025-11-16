@@ -44,7 +44,6 @@ class AnnualSummary(TestCase):
             parent_work=cls.work,
             pages=300,
         )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

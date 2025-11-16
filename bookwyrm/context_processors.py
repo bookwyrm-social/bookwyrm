@@ -8,7 +8,7 @@ def site_settings(request):
     if not request.is_secure():
         request_protocol = "http://"
 
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
     theme = "css/themes/bookwyrm-light.scss"
     if (
         hasattr(request, "user")
