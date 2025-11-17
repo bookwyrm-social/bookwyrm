@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-16 19:21+0000\n"
-"PO-Revision-Date: 2025-11-16 19:34\n"
+"PO-Revision-Date: 2025-11-17 12:36\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -83,7 +83,7 @@ msgstr "Non se pode rexistrar este enderezo de correo."
 
 #: bookwyrm/forms/landing.py:114
 msgid "Password cannot be the same as your current password"
-msgstr ""
+msgstr "O contrasinal non pode ser o mesmo que o actual"
 
 #: bookwyrm/forms/landing.py:145 bookwyrm/forms/landing.py:153
 msgid "Incorrect code"
@@ -331,11 +331,11 @@ msgstr "Privado"
 
 #: bookwyrm/models/housekeeping.py:116
 msgid "Missing"
-msgstr ""
+msgstr "Falta"
 
 #: bookwyrm/models/housekeeping.py:117
 msgid "Wrong Path"
-msgstr ""
+msgstr "Ruta incorrecta"
 
 #: bookwyrm/models/import_job.py:50 bookwyrm/models/job.py:19
 #: bookwyrm/templates/import/import.html:184
@@ -3537,7 +3537,7 @@ msgstr "Motivo"
 
 #: bookwyrm/templates/landing/force_password_reset.html:30
 msgid "You must set a new password before logging in."
-msgstr ""
+msgstr "Debes establecer un novo contrasinal antes de acceder."
 
 #: bookwyrm/templates/landing/force_password_reset.html:50
 #: bookwyrm/templates/preferences/change_password.html:22
@@ -4537,7 +4537,7 @@ msgstr "Se eliminas a conta non haberá volta atrás. O identificador non estar�
 
 #: bookwyrm/templates/preferences/delete_user.html:36
 msgid "I understand that my account cannot be recovered:"
-msgstr ""
+msgstr "Entendo que a miña conta non se pode recuperar:"
 
 #: bookwyrm/templates/preferences/disable-2fa.html:4
 #: bookwyrm/templates/preferences/disable-2fa.html:7
@@ -5883,39 +5883,39 @@ msgstr "Completada"
 
 #: bookwyrm/templates/settings/files.html:206
 msgid "Find book covers from connectors"
-msgstr ""
+msgstr "Atopa portadas de libros desde as conexións"
 
 #: bookwyrm/templates/settings/files.html:209
 msgid "These jobs find cover images where they are missing or have incorrect filepaths."
-msgstr ""
+msgstr "Estas tarefas buscan imaxes das portadas que faltan ou teñen rutas incorrectas ao ficheiro."
 
 #: bookwyrm/templates/settings/files.html:212
 msgid "Find missing covers"
-msgstr ""
+msgstr "Buscar portadas que faltan"
 
 #: bookwyrm/templates/settings/files.html:215
 msgid "Schedule a regular scan to find cover images for editions without them. This can be resource intensive so the recommended schedule is no less than every seven days."
-msgstr ""
+msgstr "Programa un escaneo regular para atopar imaxes das portadas para edicións que non as teñen. Pode consumir bastantes recursos, recoméndase non programala nun prazo menor a cada semana."
 
 #: bookwyrm/templates/settings/files.html:296
 msgid "Fix broken book cover filepaths"
-msgstr ""
+msgstr "Arranxar a ruta aos ficheiros das portadas"
 
 #: bookwyrm/templates/settings/files.html:299
 msgid "If you have lost your cover image files (e.g. due to server migration failure) the scheduled job above will not replace them. Run this job instead to attempt to find covers for books where the current cover filepath does not resolve to a file."
-msgstr ""
+msgstr "Se perdeches os ficheiros das imaxes das portadas (ex. debido a unha migración) a tarefa programada non as vai substituír. Executa esta tarefa para intentar atopar as portadas dos libros aos que a ruta ao actual ficheiro de imaxe non corresponde a un ficheiro existente."
 
 #: bookwyrm/templates/settings/files.html:306
 msgid "This job cannot be scheduled to run regularly"
-msgstr ""
+msgstr "Esta tarefa non se pode programar con regularidade"
 
 #: bookwyrm/templates/settings/files.html:320
 msgid "Editions checked"
-msgstr ""
+msgstr "Edicións comprobadas"
 
 #: bookwyrm/templates/settings/files.html:321
 msgid "Covers fixed"
-msgstr ""
+msgstr "Portadas arranxadas"
 
 #: bookwyrm/templates/settings/files.html:371
 msgid "Successfully updated expiry time"
@@ -6219,7 +6219,7 @@ msgstr "Xestionar usuarias"
 #: bookwyrm/templates/settings/users/force_password_reset.html:7
 #: bookwyrm/templates/settings/users/force_password_reset.html:11
 msgid "Force Password Reset"
-msgstr ""
+msgstr "Forzar restablecemento do contrasinal"
 
 #: bookwyrm/templates/settings/layout.html:59
 msgid "Moderation"
@@ -6689,43 +6689,43 @@ msgstr "Eliminar definitivamente a usuaria"
 #: bookwyrm/templates/settings/users/delete_user_form.html:12
 #, python-format
 msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? This action cannot be undone."
-msgstr ""
+msgstr "Tes certeza de querer eliminar a conta de <strong>%(username)s</strong>? Esta acción non se pode desfacer."
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:18
 msgid "I understand that this is a permanent action:"
-msgstr ""
+msgstr "Comprendo que ista é unha acción permanente:"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:17
 msgid "All users in the selected category will be logged out and required to set a new password to log back in."
-msgstr ""
+msgstr "Vaise fechar a sesión de todas as usuarias da categoría seleccionada para que restablezan o contrasinal e volvan acceder."
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:18
 msgid "If your account is in the group, you will be logged out out after submitting."
-msgstr ""
+msgstr "Se a túa conta está no grupo, vaise fechar a túa sesión despois do envío."
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:22
 msgid "Users given password resets:"
-msgstr ""
+msgstr "Usuarias que deben restablecer o contrasinal:"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:35
 msgid "All users"
-msgstr ""
+msgstr "Todas as usuarias"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:39
 msgid "users"
-msgstr ""
+msgstr "usuarias"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:43
 msgid "Force password reset"
-msgstr ""
+msgstr "Forzar restablecemento do contrasinal"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:48
 msgid "Number of users that will be effected:"
-msgstr ""
+msgstr "Número de usuarias que se verán afectadas:"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:53
 msgid "Are you sure you want to force password reset for these users:"
-msgstr ""
+msgstr "Tes certeza de querer forzar o restablecemento do contrasinal destas usuarias:"
 
 #: bookwyrm/templates/settings/users/user_admin.html:9
 #, python-format
