@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-16 19:21+0000\n"
-"PO-Revision-Date: 2025-11-16 19:34\n"
+"PO-Revision-Date: 2025-11-17 21:31\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -83,7 +83,7 @@ msgstr "Aquesta adreça de correu electrònic no pot ser registrada."
 
 #: bookwyrm/forms/landing.py:114
 msgid "Password cannot be the same as your current password"
-msgstr ""
+msgstr "La paraula de pas no pot ser la mateixa que l'actual"
 
 #: bookwyrm/forms/landing.py:145 bookwyrm/forms/landing.py:153
 msgid "Incorrect code"
@@ -331,11 +331,11 @@ msgstr "Privat"
 
 #: bookwyrm/models/housekeeping.py:116
 msgid "Missing"
-msgstr ""
+msgstr "Absent"
 
 #: bookwyrm/models/housekeeping.py:117
 msgid "Wrong Path"
-msgstr ""
+msgstr "Camí incorrecte"
 
 #: bookwyrm/models/import_job.py:50 bookwyrm/models/job.py:19
 #: bookwyrm/templates/import/import.html:184
@@ -3537,7 +3537,7 @@ msgstr "Raó"
 
 #: bookwyrm/templates/landing/force_password_reset.html:30
 msgid "You must set a new password before logging in."
-msgstr ""
+msgstr "Heu d'establir una contrasenya nova abans d'iniciar la sessió."
 
 #: bookwyrm/templates/landing/force_password_reset.html:50
 #: bookwyrm/templates/preferences/change_password.html:22
@@ -4537,7 +4537,7 @@ msgstr "L'acció d'eliminar el teu compte no es pot desfer. El teu nom d'usuari 
 
 #: bookwyrm/templates/preferences/delete_user.html:36
 msgid "I understand that my account cannot be recovered:"
-msgstr ""
+msgstr "Entenc que el meu compte no es pot recuperar:"
 
 #: bookwyrm/templates/preferences/disable-2fa.html:4
 #: bookwyrm/templates/preferences/disable-2fa.html:7
@@ -5883,23 +5883,23 @@ msgstr "Completat"
 
 #: bookwyrm/templates/settings/files.html:206
 msgid "Find book covers from connectors"
-msgstr ""
+msgstr "Troba les portades dels llibres a partir dels connectors"
 
 #: bookwyrm/templates/settings/files.html:209
 msgid "These jobs find cover images where they are missing or have incorrect filepaths."
-msgstr ""
+msgstr "Aquestes tasques troben imatges de portada on falten o tenen camins de fitxer incorrectes."
 
 #: bookwyrm/templates/settings/files.html:212
 msgid "Find missing covers"
-msgstr ""
+msgstr "Cerca les portades que falten"
 
 #: bookwyrm/templates/settings/files.html:215
 msgid "Schedule a regular scan to find cover images for editions without them. This can be resource intensive so the recommended schedule is no less than every seven days."
-msgstr ""
+msgstr "Programa un escaneig regular per trobar imatges de portada per a edicions que no en tenen. Això pot ser intensiu en recursos, de manera que es recomana fer-ho no més d'un cop a la setmana."
 
 #: bookwyrm/templates/settings/files.html:296
 msgid "Fix broken book cover filepaths"
-msgstr ""
+msgstr "Corregeix les rutes de fitxer trencades dels fitxers d'imatges de coberta"
 
 #: bookwyrm/templates/settings/files.html:299
 msgid "If you have lost your cover image files (e.g. due to server migration failure) the scheduled job above will not replace them. Run this job instead to attempt to find covers for books where the current cover filepath does not resolve to a file."
