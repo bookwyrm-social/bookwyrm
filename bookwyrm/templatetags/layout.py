@@ -5,7 +5,7 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context=False)
-def get_lang():
+def get_lang() -> str:
     """get current language, strip to the first two letters"""
     language = utils.translation.get_language()
     return language[0 : language.find("-")]
