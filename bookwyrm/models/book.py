@@ -638,8 +638,14 @@ class Edition(Book):
 
     activity_serializer = activitypub.Edition
     name_field = "title"
-    serialize_reverse_fields = [("file_links", "fileLinks", "-created_date")]
-    deserialize_reverse_fields = [("file_links", "fileLinks")]
+    serialize_reverse_fields = [
+        ("file_links", "fileLinks", "-created_date"),
+        ("seriesbooks", "seriesBooks", "-created_date"),
+    ]
+    deserialize_reverse_fields = [
+        ("file_links", "fileLinks"),
+        ("seriesbooks", "seriesBooks"),
+    ]
 
     @property
     def hyphenated_isbn13(self):

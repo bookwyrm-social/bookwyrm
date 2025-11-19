@@ -1,7 +1,5 @@
 """ testing series models """
-import json
-from unittest.mock import patch
-from django.db import IntegrityError
+
 from django.test import TestCase
 
 from bookwyrm import models, settings
@@ -30,6 +28,7 @@ class TestSeriesModel(TestCase):
         )
 
     def test_seriesbook(self):
+        """making a seriesbook"""
 
         self.assertEqual(models.SeriesBook.objects.count(), 0)
         models.SeriesBook.objects.create(
@@ -38,6 +37,7 @@ class TestSeriesModel(TestCase):
         self.assertEqual(models.SeriesBook.objects.count(), 1)
 
     def test_seriesbook_fields(self):
+        """do reverse fields work for seriesbook?"""
 
         self.assertEqual(models.SeriesBook.objects.count(), 0)
         seriesbook = models.SeriesBook.objects.create(

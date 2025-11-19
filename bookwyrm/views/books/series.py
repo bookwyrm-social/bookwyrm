@@ -62,24 +62,7 @@ class EditSeries(View):
         """edit page for series"""
 
         series = models.Series.objects.get(id=series_id)
-        seriesbooks = models.SeriesBook.objects.filter(series=series)
-        books = []
-        for item in seriesbooks:
-            edition = item.book.work.default_edition
-            number = item.series_number or ""
-            books.append(
-                {"edition": edition, "number": number, "id": item.book.work.id}
-            )
-            print({"edition": edition, "number": number, "id": item.book.work.id})
-
-        paginated = Paginator(books, PAGE_LENGTH)
-        page = paginated.get_page(request.GET.get("page"))
-
-        data = {
-            "series": series,
-            "books": page,
-            "form": SeriesForm(instance=series),
-        }
+        data = {"series": series, "form": SeriesForm(instance=series)}
 
         return TemplateResponse(request, "book/edit/edit_series.html", data)
 
@@ -87,23 +70,19 @@ class EditSeries(View):
     def post(self, request, series_id):
         """submit the series edit form"""
 
-        form = SeriesForm(request.POST)
-        data = {"form": form}
+        series = get_mergeable_object_or_404(models.Series, id=series_id)
+        form = SeriesForm(request.POST, instance=series)
+        data = {"series": series, "form": form}
 
         if not form.is_valid():
-            # TODO do we need to persist seriesbook data also?
-            print("not valid")
-            print(form.errors)
             return TemplateResponse(request, "book/edit/edit_series.html", data)
 
-        instance = models.Series.objects.get(id=series_id)
-        form = SeriesForm(request.POST, instance=instance)
         series = form.save(request)
-        alt_titles = []
-        for title in request.POST.getlist("alternative_names"):
-            if title != "":
-                alt_titles.append(title)
-        series.alternative_names = alt_titles
+        alt_names = []
+        for a_name in request.POST.getlist("alternative_names"):
+            if a_name != "":
+                alt_names.append(a_name)
+        series.alternative_names = alt_names
         series.save(update_fields=["alternative_names"])
 
         # update seriesbooks as needed
@@ -123,6 +102,7 @@ class SeriesBook(View):
     @vary_on_headers("Accept")
     def get(self, request, seriesbook_id):
         """we just need this for resolving AP requests"""
+
         seriesbook = get_mergeable_object_or_404(models.SeriesBook, id=seriesbook_id)
 
         if is_api_request(request):

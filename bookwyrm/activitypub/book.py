@@ -113,5 +113,5 @@ class SeriesBook(ActivityObject):
     actor: str
     book: str
     series: str
-    seriesNumber: str = ""
+    seriesNumber: int = None
     type: str = "SeriesBook"

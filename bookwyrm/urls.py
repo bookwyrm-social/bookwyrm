@@ -911,7 +911,7 @@ urlpatterns = [
         name="series",
     ),
     re_path(
-        rf"^series/(?P<series_id>\d+)(.json)/?$", views.Series.as_view()
+        r"^series/(?P<series_id>\d+)(.json)/?$", views.Series.as_view()
     ),  # activitypub
     re_path(
         r"^series/(?P<series_id>\d+)/edit/?$",

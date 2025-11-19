@@ -80,7 +80,7 @@ class Connector(AbstractConnector):
             **data.get("claims", {}),
             **{
                 k: data.get(k)
-                for k in ["uri", "image", "labels", "sitelinks", "type"]
+                for k in ["uri", "image", "labels", "sitelinks", "type", "originalLang"]
                 if k in data
             },
         }

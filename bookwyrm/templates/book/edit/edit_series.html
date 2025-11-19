@@ -60,19 +60,17 @@
     </div>
 
     <div class="columns is-multiline is-mobile">
-        {% for book in books %}
+        {% for seriesbook in series.seriesbooks.all %}
             <div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column" itemscope itemtype="https://schema.org/CreativeWork">
                 <div class="is-flex-grow-1 mb-3">
                     <meta itemprop="isPartOf" content="{{series.name}}">
-                    <meta itemprop="name" content="{{book.title}}">
+                    <meta itemprop="name" content="{{seriesbook.book.title}}">
                     <span class="subtitle"></span>
-                    {% include 'landing/small-book.html' with book=book.edition %}
+                    {% include 'landing/small-book.html' with book=seriesbook.book.work.default_edition %}
                 </div>
                 <div class="columns mx-2">
-                    {% with book=book %}
                     <label class="label column is-half" for="id_series_number">{% trans "Series #:" %}</label>
-                    <input class="input column is-half" type="text" name="series_number-{{book.id}}" id="id_series_number" value={{book.number}}>
-                    {% endwith %}
+                    <input class="input column is-half" type="text" name="series_number-{{seriesbook.book.id}}" id="id_series_number" value="{{seriesbook.series_number}}">
                 </div>
             </div>
         {% endfor %}

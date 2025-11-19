@@ -52,7 +52,7 @@ class TestSeries(TestCase):
             "languages": [],
             "series": "",
             "seriesNumber": "",
-            "bookSeries": ["https://example.com/series/2"],
+            "seriesBooks": ["https://example.com/seriesbook/2"],
             "subjects": [],
             "subjectPlaces": [],
             "authors": [],
@@ -138,46 +138,30 @@ class TestSeries(TestCase):
             status=200,
         )
 
-        # TODO:
-        # set_related_field.delay is in play here, we need to mock it so the seriesbook is unfurled
+        self.assertFalse(models.Work.objects.filter(title="Example Book 2").exists())
+        self.assertFalse(models.Series.objects.filter(name="Example Series 2").exists())
+        self.assertEqual(models.Series.objects.count(), 1)
+        self.assertEqual(models.Book.objects.count(), 1)
 
         book_data = activitypub.Work(**self.book_data)
         book = book_data.to_model()
+        with patch(
+            "bookwyrm.activitypub.base_activity.set_related_field.delay",
+            new_callable=set_related_field(
+                "SeriesBook",
+                "Work",
+                "book",
+                "https://example.com/book/2",
+                book_data.seriesBooks[0],
+            ),
+        ) as mocked:
+            book_data.to_model()  # run it again to trigger the mock
+            mocked.assert_called()
 
         self.assertEqual(book.title, "Example Book 2")
         self.assertTrue(models.Series.objects.filter(name="Example Series 2").exists())
         self.assertEqual(models.Series.objects.count(), 2)
-
-    @responses.activate
-    def test_deserialize_book_series_no_duplicate(self):
-        """check that new-style series don't duplicate"""
-
-        pass
-        # responses.add(
-        #     responses.GET,
-        #     "https://example.com/series/2",
-        #     json=self.series_data,
-        #     status=200,
-        # )
-
-        # responses.add(
-        #     responses.GET,
-        #     "https://example.com/seriesbook/2",
-        #     json=self.seriesbook_data,
-        #     status=200,
-        # )
-
-        # responses.add(
-        #     responses.GET,
-        #     "https://example.com/user/instance",
-        #     json=self.user.to_activity(),
-        #     status=200,
-        # )
-
-        # self.assertEqual(models.Series.objects.count(), 1)
-        # book_data = activitypub.Work(**self.book_data)
-        # book_data.to_model()
-        # self.assertEqual(models.Series.objects.count(), 1)
+        self.assertEqual(models.Book.objects.count(), 2)
 
     @responses.activate
     def test_deserialize_series(self):
@@ -212,9 +196,6 @@ class TestSeries(TestCase):
         series_data = activitypub.Series(**self.series_data)
         s = series_data.to_model()
 
-        # related field seriesbook is created via a task
-        # so we have to mock it to be sure it's called
-        # and that when called it works properly
         with patch(
             "bookwyrm.activitypub.base_activity.set_related_field.delay",
             new_callable=set_related_field(

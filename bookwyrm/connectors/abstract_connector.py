@@ -155,7 +155,7 @@ class AbstractMinimalConnector(ABC):
                     if work.series:
                         edition.series = series.name
                         edition.series_number = json.loads(work.series)[0].get(
-                            "seriesNumber", ""
+                            "series_number", ""
                         )
                         edition.save()
 
