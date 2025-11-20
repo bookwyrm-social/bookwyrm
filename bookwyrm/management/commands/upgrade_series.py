@@ -2,6 +2,7 @@
 
 from django.core.management.base import BaseCommand
 from django.contrib.postgres.search import SearchRank, SearchVector
+from django.db.models import Subquery
 from django.db.models.functions import Length
 from bookwyrm import activitypub
 from bookwyrm.models import Book, Edition, Series, SeriesBook, User
@@ -55,6 +56,7 @@ def upgrade_series_data():
 
         book.series = None
         book.series_number = None
+        book.save(broadcast=False)
 
     # print how many things we created
     new_series_count = Series.objects.count()
