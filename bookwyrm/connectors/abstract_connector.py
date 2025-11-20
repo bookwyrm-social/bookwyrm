@@ -125,12 +125,12 @@ class AbstractMinimalConnector(ABC):
         # Inventaire series will be a list of activity strings
         if work.series and isinstance(work.series, list):
             for data in work.series:
-                series_data = models.Series(**data)
+                series_data = models.Series(**data)  # type: ignore
                 series_to_process.append(series_data)
         else:
             # otherwise it's just a a name
             name = work.series or edition.series
-            series_to_process.append(models.Series(name=name))
+            series_to_process.append(models.Series(name=name))  # type: ignore
             work.series_number = work.series_number or edition.series_number
 
         for series in series_to_process:
@@ -158,9 +158,9 @@ class AbstractMinimalConnector(ABC):
                 ).filter(series__in=Subquery(possible_series.values("pk"))):
                     # there is already a series with a seriesbook by a matching author
                     # let's feel lucky
-                    instance = same_author_sb.first().series
+                    instance = same_author_sb.first().series  # type: ignore
 
-                if not instance:
+                else:
                     # leave it for the user to work out
                     if work.series:
                         edition.series = series.name
@@ -174,7 +174,7 @@ class AbstractMinimalConnector(ABC):
             edition.save()
 
             activitydata_to_seriesbook(
-                user=user, work=work, new=series, instance=instance
+                user=user, work=work, new=series, instance=instance  # type: ignore
             )
 
     @abstractmethod

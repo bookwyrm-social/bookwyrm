@@ -242,7 +242,7 @@ class Connector(AbstractConnector):
         remote_id_value = obj.inventaire_id
         return self.get_remote_id(remote_id_value)
 
-    def format_series(self, keys: Iterable[str]) -> list[dict]:
+    def format_series(self, keys: Iterable[str]) -> list[dict[str, str]]:
         """resolve series data into activitypub data"""
 
         series_list = []

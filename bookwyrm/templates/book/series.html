@@ -4,8 +4,6 @@
 
 {% block title %}{{ series.name }}{% endblock %}
 {% block content %}
-
-
 <div class="content">
 	{% with user_authenticated=request.user.is_authenticated can_edit_book=perms.bookwyrm.edit_book %}
 	{% if user_authenticated and can_edit_book %}
@@ -24,7 +22,6 @@
                 {% include 'snippets/authors.html' with book=series_authors limit=5 %}
             </p>
         {% endif %}
-		{% endwith %}
 		<div class="columns is-8">
 			<div class="column is-three-quarters">
 				{% if series.alternative_names%}
@@ -64,7 +61,7 @@
 				{% endif %}
 			</div>
 		</div>
-		</div>
+	</div>
 
 	<div class="columns is-multiline is-mobile">
 	{% for seriesbook in series.seriesbooks.all %}
@@ -78,5 +75,6 @@
 		</div>
 	{% endfor %}
 	</div>
+	{% endwith %}
 </div>
 {% endblock %}
