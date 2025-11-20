@@ -1,5 +1,5 @@
 """ testing book data connectors """
-import json
+
 from unittest.mock import patch
 from django.test import TestCase
 import responses
@@ -206,8 +206,11 @@ class AbstractConnector(TestCase):
 
         work = models.Work.objects.create(title="Test Book")
         work.series = [{"name": "Test Series 1"}]
-        edition = self.book
+        edition = models.Edition.objects.create(title="Test Book 2")
         edition.authors.add(author)
+        self.book.authors.add(author)
+        edition.save()
+        self.book.save()
 
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.SeriesBook.objects.count(), 1)
@@ -220,7 +223,6 @@ class AbstractConnector(TestCase):
     def test_get_or_create_seriesbook_with_ambiguous_series(self):
         """do we get series info in the book when we can't match author?"""
 
-        author = models.Author.objects.create(name="Sammy")
         series = models.Series.objects.create(
             name="Test Series 1", user=self.local_user
         )
@@ -231,7 +233,6 @@ class AbstractConnector(TestCase):
         work = models.Work.objects.create(title="Test Book 2")
         work.series = [{"name": "Test Series 1"}]
         edition = models.Edition.objects.create(title="Test Book 2")
-        edition.authors.add(author)
 
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.SeriesBook.objects.count(), 1)

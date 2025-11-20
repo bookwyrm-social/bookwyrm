@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 from typing import Optional, TypedDict, Any, Callable, Union, Iterator
 from urllib.parse import quote_plus
 
-import json
 import logging
 import re
 import asyncio
@@ -16,7 +15,7 @@ import aiohttp
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.core.files.base import ContentFile
 from django.db import transaction
-from django.db.models import Q, Subquery
+from django.db.models import Subquery
 
 from bookwyrm import activitypub, models, settings
 from bookwyrm.settings import USER_AGENT, INSTANCE_ACTOR_USERNAME
@@ -124,7 +123,7 @@ class AbstractMinimalConnector(ABC):
         authors = work.authors.all().union(edition.authors.all())
 
         # Inventaire series will be a list of activity strings
-        if work.series and type(work.series) == list:
+        if work.series and isinstance(work.series, list):
             for data in work.series:
                 series_data = models.Series(**data)
                 series_to_process.append(series_data)
@@ -146,21 +145,20 @@ class AbstractMinimalConnector(ABC):
                 .filter(
                     rank__gt=0.19
                 )  # short alias names like XY get rank around 0.1956
-                # .prefetch_related("seriesbooks")
                 .order_by("-rank")[:5]
             )
 
             if possible_series.exists():
-                for series in possible_series.all():
-                    books = models.Book.objects.filter(
-                        authors__in=Subquery(authors.values("pk"))
-                    )
-                    if models.SeriesBook.objects.filter(book__in=books).filter(
-                        series=series
-                    ):
-                        # we already have a series name with matching author, let's feel lucky
-                        instance = series
-                        break
+                books = models.Book.objects.filter(
+                    authors__in=Subquery(authors.values("pk"))
+                )
+
+                if same_author_sb := models.SeriesBook.objects.filter(
+                    book__in=books
+                ).filter(series__in=Subquery(possible_series.values("pk"))):
+                    # there is already a series with a seriesbook by a matching author
+                    # let's feel lucky
+                    instance = same_author_sb.first().series
 
                 if not instance:
                     # leave it for the user to work out

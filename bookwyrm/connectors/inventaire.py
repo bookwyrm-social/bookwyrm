@@ -1,5 +1,4 @@
 """ inventaire data connector """
-import json
 import re
 from typing import Any, Union, Optional, Iterator, Iterable
 
