@@ -13,9 +13,10 @@ import requests
 from requests.exceptions import RequestException
 import aiohttp
 
+from django.contrib.postgres.search import SearchRank, SearchVector
 from django.core.files.base import ContentFile
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Subquery
 
 from bookwyrm import activitypub, models, settings
 from bookwyrm.settings import USER_AGENT, INSTANCE_ACTOR_USERNAME
@@ -123,43 +124,56 @@ class AbstractMinimalConnector(ABC):
         authors = work.authors.all().union(edition.authors.all())
 
         # Inventaire series will be a list of activity strings
-        if work.series:
-            for data in json.loads(work.series):
+        if work.series and type(work.series) == list:
+            for data in work.series:
                 series_data = models.Series(**data)
                 series_to_process.append(series_data)
-        elif edition.series:
+        else:
             # otherwise it's just a a name
-            series_to_process.append(models.Series(name=edition.series))
-            work.series_number = edition.series_number
+            name = work.series or edition.series
+            series_to_process.append(models.Series(name=name))
+            work.series_number = work.series_number or edition.series_number
 
         for series in series_to_process:
             instance = None
-            possible_series = models.SeriesBook.objects.filter(
-                Q(series__name__iexact=series.name)
-                | Q(series__alternative_names__icontains=series.name)
-                | Q(series__alternative_names__in=series.alternative_names)
+
+            vector = SearchVector("name", weight="A") + SearchVector(
+                "alternative_names", weight="B"
+            )
+            possible_series = (
+                models.Series.objects.annotate(search=vector)
+                .annotate(rank=SearchRank(vector, series.name, normalization=32))
+                .filter(
+                    rank__gt=0.19
+                )  # short alias names like XY get rank around 0.1956
+                # .prefetch_related("seriesbooks")
+                .order_by("-rank")[:5]
             )
 
             if possible_series.exists():
-                # there is probably a more efficient way to do this...
-                for seriesbook in possible_series.all():
-                    for author in seriesbook.book.authors.all():
-                        if author in authors.all():
-                            # we already have a series with same name
-                            # and author, let's feel lucky
-                            instance = seriesbook.series
-                            break
+                for series in possible_series.all():
+                    books = models.Book.objects.filter(
+                        authors__in=Subquery(authors.values("pk"))
+                    )
+                    if models.SeriesBook.objects.filter(book__in=books).filter(
+                        series=series
+                    ):
+                        # we already have a series name with matching author, let's feel lucky
+                        instance = series
+                        break
 
                 if not instance:
                     # leave it for the user to work out
                     if work.series:
                         edition.series = series.name
-                        edition.series_number = json.loads(work.series)[0].get(
-                            "series_number", ""
-                        )
+                        edition.series_number = work.series_number
                         edition.save()
 
                     continue
+
+            edition.series = None
+            edition.series_number = None
+            edition.save()
 
             activitydata_to_seriesbook(
                 user=user, work=work, new=series, instance=instance

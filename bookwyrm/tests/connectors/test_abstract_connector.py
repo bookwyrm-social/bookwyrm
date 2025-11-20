@@ -182,7 +182,7 @@ class AbstractConnector(TestCase):
         """do we make a seriesbook?"""
 
         work = models.Work.objects.create(title="Test Book")
-        work.series = json.dumps([{"name": "Test Series 1"}])
+        work.series = [{"name": "Test Series 1"}]
         edition = self.book
 
         self.assertEqual(models.Series.objects.count(), 0)
@@ -205,7 +205,7 @@ class AbstractConnector(TestCase):
         )
 
         work = models.Work.objects.create(title="Test Book")
-        work.series = json.dumps([{"name": "Test Series 1"}])
+        work.series = [{"name": "Test Series 1"}]
         edition = self.book
         edition.authors.add(author)
 
@@ -229,7 +229,7 @@ class AbstractConnector(TestCase):
         )
 
         work = models.Work.objects.create(title="Test Book 2")
-        work.series = json.dumps([{"name": "Test Series 1"}])
+        work.series = [{"name": "Test Series 1"}]
         edition = models.Edition.objects.create(title="Test Book 2")
         edition.authors.add(author)
 

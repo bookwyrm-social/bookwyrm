@@ -267,16 +267,16 @@ class Connector(AbstractConnector):
                 else:
                     alternative_names.add(v)
 
-            series["alternativeNames"] = list(alternative_names)
-            series["inventaireId"] = uri
+            series["alternative_names"] = list(alternative_names)
+            series["inventaire_id"] = uri
             series["wikidata"] = uri.split("wd:")[1]
             if series_data.get("wdt:P6947"):
-                series["goodreadsKey"] = series_data["wdt:P6947"][0]
+                series["goodreads_key"] = series_data["wdt:P6947"][0]
             if series_data.get("wdt:P1235"):
                 series["isfdb"] = series_data["wdt:P1235"][0]
             if series_data.get("wdt:P8513"):
-                series["librarythingKey"] = series_data["wdt:P8513"][0]
-            series_list.append(json.dumps(series))
+                series["librarything_key"] = series_data["wdt:P8513"][0]
+            series_list.append(series)
         return series_list
 
 

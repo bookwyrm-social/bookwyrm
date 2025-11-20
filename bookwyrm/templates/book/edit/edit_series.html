@@ -19,6 +19,10 @@
 
 <h1 class="title">{% blocktrans with name=series.name %}Edit "{{ name }}"{% endblocktrans %}</h1>
 
+{% for match in matches.all %}
+    {{match.name}}
+{% endfor %}
+
 <form method="post" action="{% url 'edit-series' series.id %}">
     {% csrf_token %}
     <input type="hidden" id="id_user" name="user" value="{{series.user.id}}">

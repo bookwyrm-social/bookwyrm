@@ -308,11 +308,11 @@ class Inventaire(TestCase):
         )
 
         formatted = self.connector.format_series(["wd:999"])
-        data = json.loads(formatted[0])
+        data = formatted[0]
 
         self.assertEqual(data["name"], "Série de Tests")
-        self.assertIsInstance(data["alternativeNames"], list)
+        self.assertIsInstance(data["alternative_names"], list)
         self.assertEqual(data["wikidata"], "999")
-        self.assertEqual(data["goodreadsKey"], "grk123")
+        self.assertEqual(data["goodreads_key"], "grk123")
         self.assertEqual(data["isfdb"], "isfdb123")
-        self.assertEqual(data["librarythingKey"], "ltk123")
+        self.assertEqual(data["librarything_key"], "ltk123")
