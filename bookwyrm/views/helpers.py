@@ -49,7 +49,7 @@ def get_user_from_username(viewer, username):
 def is_api_request(request):
     """check whether a request is asking for html or data"""
     is_api = "json" in request.headers.get("Accept", "") or re.match(
-        r".*\.json/?$", request.path
+        r"\S{1,100}\.json/?$", request.path
     )
 
     if is_api:
