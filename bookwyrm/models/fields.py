@@ -308,7 +308,7 @@ class ForeignKey(  # pylint: disable=abstract-method
 class OneToOneField(  # pylint: disable=abstract-method
     ActivitypubRelatedFieldMixin, models.OneToOneField
 ):
-    """activitypub-aware foreign key field"""
+    """activitypub-aware one to one field"""
 
     def field_to_activity(self, value):
         if not value:
@@ -642,11 +642,11 @@ class BooleanField(ActivitypubFieldMixin, models.BooleanField):
 
 
 class IntegerField(ActivitypubFieldMixin, models.IntegerField):
-    """activitypub-aware boolean field"""
+    """activitypub-aware integer field"""
 
 
 class DecimalField(ActivitypubFieldMixin, models.DecimalField):
-    """activitypub-aware boolean field"""
+    """activitypub-aware decimal field"""
 
     def field_to_activity(self, value):
         if not value:
