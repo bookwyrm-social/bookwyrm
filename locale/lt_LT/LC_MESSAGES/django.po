@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-16 19:21+0000\n"
-"PO-Revision-Date: 2025-11-23 18:54\n"
+"PO-Revision-Date: 2025-11-23 19:59\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -470,9 +470,9 @@ msgstr "%(display_name)s – knygos „%(book_title)s“ apžvalga"
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%(display_name)s įvertino knygą „%(book_title)s“ %(display_rating).1f žvaigždute"
+msgstr[1] "%(display_name)s įvertino knygą „%(book_title)s“ %(display_rating).1f žvaigždutėmis"
+msgstr[2] "%(display_name)s įvertino knygą „%(book_title)s“ %(display_rating).1f žvaigždučių"
 msgstr[3] "%(display_name)s įvertino knygą „%(book_title)s“ %(display_rating).1f žvaigždučių"
 
 #: bookwyrm/models/user.py:39 bookwyrm/templates/book/book.html:336
@@ -4218,7 +4218,7 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> pakvietė jus pri
 #, python-format
 msgid "New <a href=\"%(path)s\">invite request</a> awaiting response"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">invite requests</a> awaiting response"
-msgstr[0] ""
+msgstr[0] "Atsakymo laukia %(display_count)s naujos <a href=\"%(path)s\">pakvietimo užklausos</a>"
 msgstr[1] "Atsakymo laukia %(display_count)s naujos <a href=\"%(path)s\">pakvietimo užklausos</a>"
 msgstr[2] "Atsakymo laukia %(display_count)s naujų <a href=\"%(path)s\">pakvietimo užklausų</a>"
 msgstr[3] "Atsakymo laukia %(display_count)s naujų <a href=\"%(path)s\">pakvietimo užklausų</a>"
@@ -4771,11 +4771,11 @@ msgstr "Data"
 
 #: bookwyrm/templates/preferences/export-user.html:116
 msgid "Size"
-msgstr ""
+msgstr "Dydis"
 
 #: bookwyrm/templates/preferences/export-user.html:160
 msgid "Download your export"
-msgstr ""
+msgstr "Parsisiųsti eksportuotą failą"
 
 #: bookwyrm/templates/preferences/export-user.html:164
 msgid "Archive is no longer available"
