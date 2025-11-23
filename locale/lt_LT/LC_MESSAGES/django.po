@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-16 19:21+0000\n"
-"PO-Revision-Date: 2025-11-23 12:32\n"
+"PO-Revision-Date: 2025-11-23 13:27\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -464,7 +464,7 @@ msgstr "%(display_name)s – knygos „%(book_title)s“ citata"
 #: bookwyrm/models/status.py:454
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
-msgstr "%(display_name)s – knygos „%(book_title)s“ recenzija"
+msgstr "%(display_name)s – knygos „%(book_title)s“ apžvalga"
 
 #: bookwyrm/models/status.py:486
 #, python-format
@@ -1778,7 +1778,7 @@ msgstr "Duomenų įkėlimas prisijungs prie <strong>%(source_name)s</strong> ir 
 
 #: bookwyrm/templates/compose.html:7 bookwyrm/templates/compose.html:21
 msgid "Edit review"
-msgstr "Redaguoti recenziją"
+msgstr "Redaguoti apžvalgą"
 
 #: bookwyrm/templates/compose.html:9 bookwyrm/templates/compose.html:23
 msgid "Edit quote"
@@ -3051,7 +3051,7 @@ msgstr[3] "Šiuo metu jums leidžiama importuoti po %(display_size)s knygų kas 
 #: bookwyrm/templates/import/import.html:26
 #, python-format
 msgid "You have %(display_left)s left."
-msgstr ""
+msgstr "Jūsų neišnaudotas likutis – %(display_left)s."
 
 #: bookwyrm/templates/import/import.html:33
 #: bookwyrm/templates/import/import_user.html:40
@@ -3087,7 +3087,7 @@ msgstr "OpenLibrary (CSV)"
 
 #: bookwyrm/templates/import/import.html:70
 msgid "OpenReads (CSV)"
-msgstr ""
+msgstr "„OpenReads“ (CSV)"
 
 #: bookwyrm/templates/import/import.html:73
 msgid "Calibre (CSV)"
@@ -3095,7 +3095,7 @@ msgstr "Calibre (CSV)"
 
 #: bookwyrm/templates/import/import.html:76
 msgid "BookWyrm (CSV)"
-msgstr ""
+msgstr "„BookWyrm“ (CSV)"
 
 #: bookwyrm/templates/import/import.html:82
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
@@ -3112,11 +3112,11 @@ msgstr "Įtraukti atsiliepimus"
 
 #: bookwyrm/templates/import/import.html:104
 msgid "Create new shelves if they do not exist"
-msgstr ""
+msgstr "Jeigu tinkamos lentynos nėra, galite sukurti naują"
 
 #: bookwyrm/templates/import/import.html:109
 msgid "Privacy setting for imported reviews and shelves:"
-msgstr ""
+msgstr "Importuojamų apžvalgų ir lentynų privatumas:"
 
 #: bookwyrm/templates/import/import.html:116
 #: bookwyrm/templates/import/import.html:118
@@ -3309,41 +3309,41 @@ msgstr "Atnaujinti importą"
 #: bookwyrm/templates/import/import_user.html:6
 #: bookwyrm/templates/preferences/layout.html:51
 msgid "Import BookWyrm Account"
-msgstr ""
+msgstr "Importuoti „BookWyrm“ paskyrą"
 
 #: bookwyrm/templates/import/import_user.html:13
 msgid "Not a valid import file"
-msgstr ""
+msgstr "Šis failas netinkamas importui"
 
 #: bookwyrm/templates/import/import_user.html:18
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set this account as an <strong>alias</strong> of the one you are migrating from, or <strong>move</strong> that account to this one, before you import your user data."
-msgstr ""
+msgstr "Jei norite numigruoti įrašus (komentarus, apžvalgas ar citatas), pirma turite arba nurodyti šią paskyrą kaip paskyros, iš kurios migruojate, <strong>pseudonimą</strong>, arba <strong>perkelti</strong> paskyrą į šią, prieš importuodami naudotojo duomenis."
 
 #: bookwyrm/templates/import/import_user.html:32
 #, python-format
 msgid "Currently you are allowed to import one user every %(hours)s hours."
-msgstr ""
+msgstr "Šiuo metu jums leidžiama importuoti vieną paskyrą kas %(hours)s val."
 
 #: bookwyrm/templates/import/import_user.html:33
 #, python-format
 msgid "You will next be able to import a user file at %(next_time)s"
-msgstr ""
+msgstr "Kitąkart paskyrą galėsite importuoti %(next_time)s"
 
 #: bookwyrm/templates/import/import_user.html:56
 msgid "Step 1:"
-msgstr ""
+msgstr "Pirmas žingsnis:"
 
 #: bookwyrm/templates/import/import_user.html:58
 msgid "Select an export file generated from another BookWyrm account. The file format should be <code>.tar.gz</code>."
-msgstr ""
+msgstr "Parinkite eksporto failą, sugeneruotą naudojantis kita „BookWyrm“ paskyra. Failo prievardis turėtų būti <code>.tar.gz</code>."
 
 #: bookwyrm/templates/import/import_user.html:73
 msgid "Step 2:"
-msgstr ""
+msgstr "Antras žingnis:"
 
 #: bookwyrm/templates/import/import_user.html:75
 msgid "Deselect any checkboxes for data you do not wish to include in your import."
-msgstr ""
+msgstr "Nuimkite žymėjimą nuo varnelių ties tais duomenimis, kurių nenorite importuoti."
 
 #: bookwyrm/templates/import/import_user.html:86
 #: bookwyrm/templates/preferences/export-user.html:21
@@ -3355,11 +3355,11 @@ msgstr "Nario paskyra"
 
 #: bookwyrm/templates/import/import_user.html:89
 msgid "Overwrites display name, summary, and avatar"
-msgstr ""
+msgstr "Bus perrašytas rodomas vardas, prisistatymas ir avataras"
 
 #: bookwyrm/templates/import/import_user.html:95
 msgid "User settings"
-msgstr ""
+msgstr "Naudotojo nustatymai"
 
 #: bookwyrm/templates/import/import_user.html:98
 msgid "Overwrites:"
