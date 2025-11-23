@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-16 19:21+0000\n"
-"PO-Revision-Date: 2025-11-23 13:27\n"
+"PO-Revision-Date: 2025-11-23 14:35\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -1442,7 +1442,7 @@ msgstr "Pavadinimas:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:36
 msgid "Sort Title:"
-msgstr ""
+msgstr "Pavadinimas rikiavimo tikslais:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:46
 msgid "Subtitle:"
@@ -2028,7 +2028,7 @@ msgstr "Labas!"
 #: bookwyrm/templates/email/html_layout.html:21
 #, python-format
 msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"%(base_url)s\">%(site_name)s</a>"
-msgstr ""
+msgstr "Svetainė „<a style=\"color: #3273dc;\" href=\"%(base_url)s\">%(site_name)s</a>“, veikianti „BookWyrm“ pagrindu"
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
@@ -3043,9 +3043,9 @@ msgstr "Netinkamas CSV failas"
 #, python-format
 msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
 msgid_plural "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s days."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Šiuo metu jums leidžiama importuoti po %(display_size)s knygą kas %(import_limit_reset)s d."
+msgstr[1] "Šiuo metu jums leidžiama importuoti po %(display_size)s knygas kas %(import_limit_reset)s d."
+msgstr[2] "Šiuo metu jums leidžiama importuoti po %(display_size)s knygų kas %(import_limit_reset)s d."
 msgstr[3] "Šiuo metu jums leidžiama importuoti po %(display_size)s knygų kas %(import_limit_reset)s d."
 
 #: bookwyrm/templates/import/import.html:26
@@ -3355,7 +3355,7 @@ msgstr "Nario paskyra"
 
 #: bookwyrm/templates/import/import_user.html:89
 msgid "Overwrites display name, summary, and avatar"
-msgstr "Bus perrašytas rodomas vardas, prisistatymas ir avataras"
+msgstr "Perrašyti rodomą vardą, prisistatymą ir avatarą"
 
 #: bookwyrm/templates/import/import_user.html:95
 msgid "User settings"
@@ -3363,79 +3363,79 @@ msgstr "Naudotojo nustatymai"
 
 #: bookwyrm/templates/import/import_user.html:98
 msgid "Overwrites:"
-msgstr ""
+msgstr "Perrašyti šias parinktis:"
 
 #: bookwyrm/templates/import/import_user.html:101
 msgid "Whether manual approval is required for other users to follow your account"
-msgstr ""
+msgstr "Ar, norint sekti jūsų paskyrą, būtina iš jūsų gauti patvirtinimą"
 
 #: bookwyrm/templates/import/import_user.html:104
 msgid "Whether following/followers are shown on your profile"
-msgstr ""
+msgstr "Ar jūsų profilyje rodomi sekamų narių ir sekėjų skaičiai"
 
 #: bookwyrm/templates/import/import_user.html:107
 msgid "Whether your reading goal is shown on your profile"
-msgstr ""
+msgstr "Ar jūsų profilyje rodomas jūsų skaitymo tikslas"
 
 #: bookwyrm/templates/import/import_user.html:110
 msgid "Whether you see user follow suggestions"
-msgstr ""
+msgstr "Ar jums rodomi pasiūlymai ką sekti"
 
 #: bookwyrm/templates/import/import_user.html:113
 msgid "Whether your account is suggested to others"
-msgstr ""
+msgstr "Ar jūsų paskyra siūloma sekti kitiems"
 
 #: bookwyrm/templates/import/import_user.html:116
 msgid "Your timezone"
-msgstr ""
+msgstr "Jūsų laiko juosta"
 
 #: bookwyrm/templates/import/import_user.html:119
 msgid "Your default post privacy setting"
-msgstr ""
+msgstr "Jūsų įrašų numatytasis privatumas"
 
 #: bookwyrm/templates/import/import_user.html:127
 msgid "Followers and following"
-msgstr ""
+msgstr "Sekėjai ir sekamieji"
 
 #: bookwyrm/templates/import/import_user.html:131
 msgid "User blocks"
-msgstr ""
+msgstr "Blokuojami naudotojai"
 
 #: bookwyrm/templates/import/import_user.html:138
 #: bookwyrm/templates/preferences/export-user.html:23
 msgid "Reading goals"
-msgstr ""
+msgstr "Skaitymo tikslai"
 
 #: bookwyrm/templates/import/import_user.html:141
 msgid "Overwrites reading goals for all years listed in the import file"
-msgstr ""
+msgstr "Perrašyti skaitymo tikslus visiems metams, nurodytiems importuojamame faile"
 
 #: bookwyrm/templates/import/import_user.html:145
 #: bookwyrm/templates/preferences/export-user.html:24
 msgid "Shelves"
-msgstr ""
+msgstr "Lentynos"
 
 #: bookwyrm/templates/import/import_user.html:148
 #: bookwyrm/templates/preferences/export-user.html:25
 msgid "Reading history"
-msgstr ""
+msgstr "Skaitymo žurnalas"
 
 #: bookwyrm/templates/import/import_user.html:151
 #: bookwyrm/templates/preferences/export-user.html:26
 msgid "Book reviews"
-msgstr ""
+msgstr "Knygų apžvalgos"
 
 #: bookwyrm/templates/import/import_user.html:157
 msgid "Comments about books"
-msgstr ""
+msgstr "Knygų komentarai"
 
 #: bookwyrm/templates/import/import_user.html:160
 msgid "Book lists"
-msgstr ""
+msgstr "Knygų sąrašai"
 
 #: bookwyrm/templates/import/import_user.html:163
 msgid "Saved lists"
-msgstr ""
+msgstr "Įsiminti sąrašai"
 
 #: bookwyrm/templates/import/manual_review.html:5
 #: bookwyrm/templates/import/troubleshoot.html:4
@@ -3495,16 +3495,16 @@ msgstr "Jei matote netikėtų nesklandumų, susisiekite su administratoriumi arb
 #: bookwyrm/templates/import/user_import_status.html:15
 #: bookwyrm/templates/import/user_import_status.html:26
 msgid "User Import Status"
-msgstr ""
+msgstr "Naudotojo importo būsena"
 
 #: bookwyrm/templates/import/user_import_status.html:13
 msgid "User Import Retry Status"
-msgstr ""
+msgstr "Pakartotinio naudotojo importo būsena"
 
 #: bookwyrm/templates/import/user_import_status.html:22
 #: bookwyrm/templates/settings/imports/imports.html:264
 msgid "User Imports"
-msgstr ""
+msgstr "Importuojami naudotojai"
 
 #: bookwyrm/templates/import/user_import_status.html:70
 #: bookwyrm/templates/settings/dashboard/user_chart.html:11
@@ -3519,41 +3519,41 @@ msgstr "Būsenos"
 
 #: bookwyrm/templates/import/user_import_status.html:85
 msgid "Follows & Blocks"
-msgstr ""
+msgstr "Sekimai ir blokavimai"
 
 #: bookwyrm/templates/import/user_import_status.html:144
 msgid "Imported books"
-msgstr ""
+msgstr "Importuotos knygos"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:5
 msgid "User Import Troubleshooting"
-msgstr ""
+msgstr "Naudotojo importo trikčių sprendimas"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:26
 msgid "Your account was not set as an alias of the original user account"
-msgstr ""
+msgstr "Jūsų paskyra nesukonfigūruota kaip pirminės paskyros pseudonimas"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:31
 msgid "Re-trying an import will not work in cases such as:"
-msgstr ""
+msgstr "Pakartotinis importas neveiks tokiais atvejais, kaip antai:"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:34
 msgid "A user, status, or BookWyrm server was deleted after your import file was created"
-msgstr ""
+msgstr "Jei naudotojo paskyra, įrašai ar „BookWyrm“ serveris pašalinti sukūrus importo failą"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:35
 msgid "Importing statuses when your old account has been deleted"
-msgstr ""
+msgstr "Įrašų importas, kai senoji paskyra panaikinta"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:43
 #, python-format
 msgid "Currently you are allowed to import or retry one user every %(hours)s hours."
-msgstr ""
+msgstr "Šiuo metu jums leidžiama importuoti ar pakartotinai importuoti vieną naudotojo paskyrą kas %(hours)s val."
 
 #: bookwyrm/templates/import/user_troubleshoot.html:44
 #, python-format
 msgid "You will be able to retry this import at %(next_time)s"
-msgstr ""
+msgstr "Šį importą galėsite kartoti %(next_time)s"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:65
 msgid "Relationship"
@@ -3565,7 +3565,7 @@ msgstr "Priežastis"
 
 #: bookwyrm/templates/landing/force_password_reset.html:30
 msgid "You must set a new password before logging in."
-msgstr ""
+msgstr "Prieš prisijungdami, turite susikurti naują slaptažodį."
 
 #: bookwyrm/templates/landing/force_password_reset.html:50
 #: bookwyrm/templates/preferences/change_password.html:22
@@ -3701,7 +3701,7 @@ msgstr "%(site_name)s paieška"
 
 #: bookwyrm/templates/layout.html:39
 msgid "Search for a book, author, user, or list"
-msgstr ""
+msgstr "Ieškoti knygos, autoriaus, naudotojo ar sąrašo"
 
 #: bookwyrm/templates/layout.html:54 bookwyrm/templates/layout.html:55
 msgid "Scan Barcode"
@@ -3717,7 +3717,7 @@ msgstr "slaptažodis"
 
 #: bookwyrm/templates/layout.html:136
 msgid "Show/Hide password"
-msgstr ""
+msgstr "Rodyti/slėpti slaptažodį"
 
 #: bookwyrm/templates/layout.html:150
 msgid "Join"
@@ -3975,7 +3975,7 @@ msgstr "Išsaugota"
 
 #: bookwyrm/templates/lists/list_items.html:50
 msgid "No lists found."
-msgstr ""
+msgstr "Sąrašų nerasta."
 
 #: bookwyrm/templates/lists/lists.html:14 bookwyrm/templates/user/lists.html:14
 msgid "Your Lists"
@@ -3992,15 +3992,15 @@ msgstr "Išsaugoti sąrašai"
 #: bookwyrm/templates/moved.html:27
 #, python-format
 msgid "<strong>You have moved your account</strong> to <a href=\"%(moved_to)s\">%(username)s</a>"
-msgstr ""
+msgstr "<strong>Jūs perkėlėte savo paskyrą</strong> į <a href=\"%(moved_to)s\">%(username)s</a>"
 
 #: bookwyrm/templates/moved.html:32
 msgid "You can undo the move to restore full functionality, but some followers may have already unfollowed this account."
-msgstr ""
+msgstr "Jūs galite atšaukti perkėlimą ir sugrąžinti visą funkcionalumą šiai paskyrai, tačiau gali būti, kad kai kurie sekėjai ją jau bus nustoję sekti."
 
 #: bookwyrm/templates/moved.html:42
 msgid "Undo move"
-msgstr ""
+msgstr "Atšaukti perkėlimą"
 
 #: bookwyrm/templates/moved.html:46 bookwyrm/templates/user_menu.html:77
 msgid "Log out"
@@ -4219,9 +4219,9 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> pakvietė jus pri
 msgid "New <a href=\"%(path)s\">invite request</a> awaiting response"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">invite requests</a> awaiting response"
 msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[1] "Atsakymo laukia %(display_count)s naujos <a href=\"%(path)s\">pakvietimo užklausos</a>"
+msgstr[2] "Atsakymo laukia %(display_count)s naujų <a href=\"%(path)s\">pakvietimo užklausų</a>"
+msgstr[3] "Atsakymo laukia %(display_count)s naujų <a href=\"%(path)s\">pakvietimo užklausų</a>"
 
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
@@ -4275,12 +4275,12 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> paminėjo jus <a 
 #: bookwyrm/templates/notifications/items/move_user.html:18
 #, python-format
 msgid "%(related_user)s has moved to <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
-msgstr ""
+msgstr "%(related_user)s perkėlė paskyrą į <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
 
 #: bookwyrm/templates/notifications/items/move_user.html:25
 #, python-format
 msgid "%(related_user)s has undone their move"
-msgstr ""
+msgstr "%(related_user)s atšaukė savo paskyros perkėlimą"
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
@@ -4344,12 +4344,12 @@ msgstr "pakeitė <a href=\"%(group_path)s\">%(group_name)s</a> aprašymą"
 #: bookwyrm/templates/notifications/items/user_export.html:14
 #, python-format
 msgid "Your <a href=\"%(url)s\">user export</a> is ready."
-msgstr ""
+msgstr "Jūsų <a href=\"%(url)s\">eksportuoti naudotojo duomenys</a> parengti."
 
 #: bookwyrm/templates/notifications/items/user_import.html:14
 #, python-format
 msgid "Your <a href=\"%(import_url)s\">user import</a> is complete."
-msgstr ""
+msgstr "Jūsų <a href=\"%(import_url)s\">naudotojo duomenų importas</a> užbaigtas."
 
 #: bookwyrm/templates/notifications/notifications_page.html:19
 msgid "Delete notifications"
@@ -4487,16 +4487,16 @@ msgstr "Dabar sekate %(display_name)s!"
 #: bookwyrm/templates/preferences/move_user.html:7
 #: bookwyrm/templates/preferences/move_user.html:39
 msgid "Move Account"
-msgstr ""
+msgstr "Perkelti paskyrą"
 
 #: bookwyrm/templates/preferences/alias_user.html:7
 #: bookwyrm/templates/preferences/alias_user.html:34
 msgid "Create Alias"
-msgstr ""
+msgstr "Pridėti pseudonimą"
 
 #: bookwyrm/templates/preferences/alias_user.html:12
 msgid "Add another account as an alias"
-msgstr ""
+msgstr "Pridėti kitą paskyrą kaip šios pseudonimą"
 
 #: bookwyrm/templates/preferences/alias_user.html:16
 msgid "Marking another account as an alias is required if you want to move that account to this one."
