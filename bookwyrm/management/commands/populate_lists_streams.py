@@ -1,4 +1,5 @@
-""" Re-create list streams """
+"""Re-create list streams"""
+
 from django.core.management.base import BaseCommand
 from bookwyrm import lists_stream, models
 

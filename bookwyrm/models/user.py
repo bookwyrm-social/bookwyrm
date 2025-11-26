@@ -1,4 +1,5 @@
-""" database schema for user data """
+"""database schema for user data"""
+
 import datetime
 from importlib import import_module
 import re

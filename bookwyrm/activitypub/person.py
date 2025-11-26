@@ -1,4 +1,5 @@
-""" actor serializer """
+"""actor serializer"""
+
 from dataclasses import dataclass
 from typing import Dict
 

@@ -1,4 +1,4 @@
-""" the good stuff! the books! """
+"""the good stuff! the books!"""
 
 from functools import reduce
 import operator

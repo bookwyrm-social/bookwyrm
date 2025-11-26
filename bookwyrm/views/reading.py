@@ -1,4 +1,4 @@
-""" the good stuff! the books! """
+"""the good stuff! the books!"""
 
 import logging
 from django.contrib.auth.decorators import login_required

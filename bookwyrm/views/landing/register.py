@@ -1,4 +1,5 @@
-""" class views for login/register views """
+"""class views for login/register views"""
+
 import zoneinfo
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied

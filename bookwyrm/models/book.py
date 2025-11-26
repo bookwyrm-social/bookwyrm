@@ -1,4 +1,4 @@
-""" database schema for books and shelves """
+"""database schema for books and shelves"""
 
 from itertools import chain
 import re
@@ -371,7 +371,7 @@ class Book(BookDataModel):
             *(LANGUAGE_ARTICLES[language].get("articles") for language in lang_codes)
         )
 
-        return re.sub(f'^{" |^".join(articles)} ', "", str(self.title).lower())
+        return re.sub(f"^{' |^'.join(articles)} ", "", str(self.title).lower())
 
     def __repr__(self):
         # pylint: disable=consider-using-f-string

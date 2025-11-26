@@ -1,4 +1,5 @@
 """end-of-year read books stats"""
+
 from datetime import date
 from uuid import uuid4
 

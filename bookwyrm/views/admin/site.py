@@ -1,4 +1,5 @@
-""" manage site settings """
+"""manage site settings"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator

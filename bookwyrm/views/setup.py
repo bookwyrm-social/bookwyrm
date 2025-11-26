@@ -1,4 +1,5 @@
-""" Installation wizard 🧙 """
+"""Installation wizard 🧙"""
+
 import re
 
 from django.contrib.auth import login

@@ -193,7 +193,7 @@ def export_settings(user: User):
 
 def export_saved_lists(user: User):
     """add user saved lists to export JSON"""
-    return [l.remote_id for l in user.saved_lists.all()]
+    return [saved_list.remote_id for saved_list in user.saved_lists.all()]
 
 
 def export_follows(user: User):
@@ -256,9 +256,9 @@ def export_book(user: User, edition: Edition):
     data["lists"] = []
     for item in list_items:
         list_info = item.book_list.to_activity()
-        list_info[
-            "privacy"
-        ] = item.book_list.privacy  # this isn't serialized so we add it
+        list_info["privacy"] = (
+            item.book_list.privacy
+        )  # this isn't serialized so we add it
         list_info["list_item"] = item.to_activity()
         data["lists"].append(list_info)
 

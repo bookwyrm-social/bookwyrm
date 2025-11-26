@@ -1,4 +1,5 @@
-""" using django model forms """
+"""using django model forms"""
+
 from bookwyrm import models
 from .custom_form import CustomForm
 

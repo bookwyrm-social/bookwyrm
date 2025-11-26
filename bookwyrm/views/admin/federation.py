@@ -1,4 +1,5 @@
-""" manage federated servers """
+"""manage federated servers"""
+
 import json
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
@@ -41,7 +42,7 @@ class Federation(View):
             "application_type",
             "server_name",
         ]
-        if not sort in sort_fields + [f"-{f}" for f in sort_fields]:
+        if sort not in sort_fields + [f"-{f}" for f in sort_fields]:
             sort = "-created_date"
         servers = servers.order_by(sort, "-created_date")
 

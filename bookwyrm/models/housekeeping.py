@@ -1,4 +1,5 @@
-""" cleanup tasks """
+"""cleanup tasks"""
+
 import math
 from datetime import datetime, timedelta, timezone
 
@@ -139,7 +140,6 @@ class FindMissingCoversJob(ParentJob):
             get_missing_cover_task.delay(job_id=self.id, edition_id=edition.id)
 
         if self.editions.count() == 0:
-
             self.complete_job()
 
 

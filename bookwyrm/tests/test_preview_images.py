@@ -1,4 +1,5 @@
-""" test generating preview images """
+"""test generating preview images"""
+
 import pathlib
 from unittest.mock import patch
 from PIL import Image

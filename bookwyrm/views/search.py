@@ -1,4 +1,4 @@
-""" search views"""
+"""search views"""
 
 import re
 
@@ -48,7 +48,7 @@ class Search(View):
             "user": user_search,
             "list": list_search,
         }
-        if not search_type in endpoints:
+        if search_type not in endpoints:
             search_type = "book"
 
         return endpoints[search_type](request)

@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 from unittest.mock import patch
 from django.http import Http404
 from django.test import TestCase

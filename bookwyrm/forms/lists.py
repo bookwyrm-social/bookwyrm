@@ -1,4 +1,5 @@
-""" using django model forms """
+"""using django model forms"""
+
 from django import forms
 from django.forms import ChoiceField
 from django.utils.translation import gettext_lazy as _

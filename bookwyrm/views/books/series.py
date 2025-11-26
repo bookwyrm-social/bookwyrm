@@ -1,4 +1,4 @@
-""" books belonging to the same series """
+"""books belonging to the same series"""
 
 from sys import float_info
 from django.views import View

@@ -1,4 +1,5 @@
-""" alert a user to activity """
+"""alert a user to activity"""
+
 from django.db import models, transaction
 from django.dispatch import receiver
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob

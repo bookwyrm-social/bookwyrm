@@ -1,4 +1,5 @@
-""" basics for an activitypub serializer """
+"""basics for an activitypub serializer"""
+
 from __future__ import annotations
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
@@ -326,8 +327,7 @@ def resolve_remote_id(
     save: bool = True,
     get_activity: bool = False,
     allow_external_connections: bool = True,
-) -> TBookWyrmModel:
-    ...
+) -> TBookWyrmModel: ...
 
 
 # pylint: disable=too-many-arguments
@@ -339,8 +339,7 @@ def resolve_remote_id(
     save: bool = True,
     get_activity: bool = False,
     allow_external_connections: bool = True,
-) -> base_model.BookWyrmModel:
-    ...
+) -> base_model.BookWyrmModel: ...
 
 
 # pylint: disable=too-many-arguments

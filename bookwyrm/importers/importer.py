@@ -1,4 +1,5 @@
-""" handle reading a csv from an external service, defaults are from Goodreads """
+"""handle reading a csv from an external service, defaults are from Goodreads"""
+
 import csv
 from datetime import timedelta
 from typing import Iterable, Optional
@@ -106,7 +107,7 @@ class Importer:
     def create_row_mappings(self, headers: list[str]) -> dict[str, Optional[str]]:
         """guess what the headers mean"""
         mappings = {}
-        for (key, guesses) in self.row_mappings_guesses:
+        for key, guesses in self.row_mappings_guesses:
             values = [h for h in headers if h.lower() in guesses]
             value = values[0] if len(values) else None
             if value:

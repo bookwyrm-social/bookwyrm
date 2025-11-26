@@ -1,4 +1,5 @@
-""" moderation via flagged posts and users """
+"""moderation via flagged posts and users"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
 from django.core.exceptions import PermissionDenied

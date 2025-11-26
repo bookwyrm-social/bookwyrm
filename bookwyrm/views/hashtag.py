@@ -1,4 +1,5 @@
-""" listing statuses for a given hashtag """
+"""listing statuses for a given hashtag"""
+
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.views import View

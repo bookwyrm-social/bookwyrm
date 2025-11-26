@@ -217,7 +217,7 @@ class UserImportSubTask(SubTask):
     def before_start(self, task_id, args, kwargs):
         """Handler called before the task starts."""
 
-        model = apps.get_model(f'bookwyrm.{kwargs["job_type"]}', require_ready=True)
+        model = apps.get_model(f"bookwyrm.{kwargs['job_type']}", require_ready=True)
         child_job = model.objects.get(id=kwargs["child_id"])
         child_job.task_id = task_id
         child_job.save(update_fields=["task_id"])
@@ -227,7 +227,7 @@ class UserImportSubTask(SubTask):
         """Run by the worker if the task executes successfully"""
 
         # we want to complete our own UserImportBook job, not ChildJob
-        model = apps.get_model(f'bookwyrm.{kwargs["job_type"]}', require_ready=True)
+        model = apps.get_model(f"bookwyrm.{kwargs['job_type']}", require_ready=True)
         subtask = model.objects.get(id=kwargs["child_id"])
         subtask.complete_job()
 
@@ -297,7 +297,6 @@ def start_import_task(**kwargs):
                 requests.exceptions.ConnectionError,
                 ConnectionRefusedError,
             ):
-
                 origin_is_ok = False
 
             for data in job.import_data.get("books"):
@@ -364,7 +363,6 @@ def import_book_task(**kwargs):  # pylint: disable=too-many-branches
         edition = book_data.get("edition")
         book = models.Edition.find_existing(edition)
         if not book:
-
             if kwargs["origin_is_ok"]:
                 # try importing from the instance the user is coming from
                 remote_id = edition.get("id")
@@ -461,15 +459,12 @@ def upsert_status_task(**kwargs):
             status["cc"] = update_followers_address(user, status["cc"])
             status[
                 "replies"
-            ] = (
-                {}
-            )  # this parses incorrectly but we can't set it without knowing the new id
+            ] = {}  # this parses incorrectly but we can't set it without knowing the new id
             status["inReplyToBook"] = task.book.remote_id
             parsed = activitypub.parse(status)
             if not status_already_exists(
                 user, parsed
             ):  # don't duplicate posts on multiple import
-
                 instance = parsed.to_model(
                     model=status_class, save=True, overwrite=True
                 )
@@ -509,7 +504,6 @@ def upsert_readthroughs(user, book_id, data):
     find or create the instances in the database"""
 
     for read_through in data:
-
         obj = {}
         keys = [
             "progress_mode",
@@ -547,7 +541,6 @@ def upsert_lists(
     for blist in lists:
         booklist = models.List.objects.filter(name=blist["name"], user=user).first()
         if not booklist:
-
             blist["owner"] = user.remote_id
             parsed = activitypub.parse(blist)
             booklist = parsed.to_model(model=models.List, save=True, overwrite=True)
@@ -575,7 +568,6 @@ def upsert_shelves(user, book, shelves):
     DB entries if they don't already exist"""
 
     for shelf in shelves:
-
         book_shelf = models.Shelf.objects.filter(name=shelf["name"], user=user).first()
 
         if not book_shelf:
@@ -617,7 +609,7 @@ def update_user_settings(user, data):
         ("discoverable", "discoverable"),
     ]
 
-    for (ap_field, bw_field) in ap_fields:
+    for ap_field, bw_field in ap_fields:
         setattr(user, bw_field, data[ap_field])
 
     bw_fields = [
@@ -669,7 +661,6 @@ def import_user_relationship_task(**kwargs):
 
     try:
         if task.relationship == "follow":
-
             followee = activitypub.resolve_remote_id(task.remote_id, models.User)
             if followee:
                 (
@@ -698,7 +689,6 @@ def import_user_relationship_task(**kwargs):
                 task.set_status("failed")
 
         elif task.relationship == "block":
-
             user_object = activitypub.resolve_remote_id(task.remote_id, models.User)
             if user_object:
                 exists = models.UserBlocks.objects.filter(

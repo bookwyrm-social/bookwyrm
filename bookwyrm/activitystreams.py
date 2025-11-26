@@ -1,4 +1,5 @@
-""" access the activity streams stored in redis """
+"""access the activity streams stored in redis"""
+
 from datetime import timedelta
 from django.dispatch import receiver
 from django.db import transaction

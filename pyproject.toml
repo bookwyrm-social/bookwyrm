@@ -1,2 +1,48 @@
-[tool.black]
-required-version = "22"
+[tool.ruff]
+exclude = [
+    "migrations",
+]
+
+line-length = 88
+
+target-version = "py311"
+
+# Only select essential rules to minimize code changes
+# E = pycodestyle errors (syntax errors, indentation issues)
+# W = pycodestyle warnings (whitespace, etc.)
+# F = pyflakes (unused imports, undefined names - critical errors only)
+lint.select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings  
+    "F",   # pyflakes (critical errors only)
+]
+
+# Ignore rules that would require code changes
+lint.ignore = [
+    "E501",   # line too long (handled by formatter)
+    "E722",   # bare except (too opinionated)
+    "E731",   # lambda assignment (was disabled in pylint)
+#    "W503",   # line break before binary operator (conflicts with formatter)
+    "F401",   # unused imports (can be noisy, disable to minimize changes)
+    "F403",   # star import (unable to detect undefined names from star imports)
+    "F841",   # unused variable (can be noisy)
+]
+
+# Per-file ignores for files with star imports
+# Star imports make it impossible to detect undefined names
+[tool.ruff.lint.per-file-ignores]
+"bookwyrm/views/__init__.py" = ["F821"]  # undefined name (due to star import from .wellknown)
+
+[tool.ruff.format]
+# Use double quotes for strings (black-compatible)
+quote-style = "double"
+# Use spaces for indentation (black-compatible)
+indent-style = "space"
+# Respect magic trailing comma (black-compatible)
+skip-magic-trailing-comma = false
+# Line ending style
+line-ending = "auto"
+# Docstring code format - preserve existing style
+docstring-code-format = false
+# Docstring code line length - use same as line-length
+docstring-code-line-length = "dynamic"

@@ -1,4 +1,5 @@
-""" clean up export files and find book covers """
+"""clean up export files and find book covers"""
+
 import json
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -11,6 +12,7 @@ from django.views.decorators.http import require_POST
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 from bookwyrm import forms, models
+
 
 # pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")

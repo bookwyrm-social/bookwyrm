@@ -1,4 +1,5 @@
-""" bookwyrm settings and configuration """
+"""bookwyrm settings and configuration"""
+
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
 from bookwyrm.settings import *

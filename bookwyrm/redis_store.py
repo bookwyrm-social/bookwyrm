@@ -1,4 +1,5 @@
-""" access the activity stores stored in redis """
+"""access the activity stores stored in redis"""
+
 from abc import ABC, abstractmethod
 import redis
 

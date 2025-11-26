@@ -1,4 +1,5 @@
 """test bookwyrm user export functions"""
+
 import datetime
 import json
 import pathlib
@@ -27,7 +28,6 @@ class BookwyrmExportJob(TestCase):
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
             patch("bookwyrm.activitystreams.add_book_statuses_task"),
         ):
-
             self.local_user = models.User.objects.create_user(
                 "mouse",
                 "mouse@mouse.mouse",

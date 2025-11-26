@@ -1,4 +1,5 @@
-""" store recommended follows in redis """
+"""store recommended follows in redis"""
+
 import math
 import logging
 from django.dispatch import receiver
@@ -211,7 +212,7 @@ def update_user(sender, instance, created, update_fields=None, **kwargs):
 
     # we know what fields were updated and discoverability didn't change
     if not instance.bookwyrm_user or (
-        update_fields and not "discoverable" in update_fields
+        update_fields and "discoverable" not in update_fields
     ):
         return
 

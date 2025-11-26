@@ -1,4 +1,5 @@
-""" class views for login/register views """
+"""class views for login/register views"""
+
 import time
 
 from django.contrib.auth import authenticate, login, logout

@@ -1,4 +1,5 @@
-""" Let users export their book data """
+"""Let users export their book data"""
+
 from datetime import timedelta
 import csv
 import datetime
@@ -22,6 +23,7 @@ from storages.backends.s3 import S3Storage
 from bookwyrm import models, settings
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
 from bookwyrm.utils.cache import get_or_set
+
 
 # pylint: disable=no-self-use,too-many-locals
 @method_decorator(login_required, name="dispatch")

@@ -1,4 +1,5 @@
-""" Our own command to all scss themes """
+"""Our own command to all scss themes"""
+
 import glob
 import os
 

@@ -1,4 +1,5 @@
-""" Repair editions with missing works """
+"""Repair editions with missing works"""
+
 from django.core.management.base import BaseCommand
 from bookwyrm import models
 

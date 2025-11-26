@@ -1,4 +1,5 @@
-""" non-interactive pages """
+"""non-interactive pages"""
+
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views import View

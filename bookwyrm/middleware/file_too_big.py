@@ -21,7 +21,6 @@ class FileTooBig:
             body = request.body  # pylint: disable=unused-variable
 
         except RequestDataTooBig:
-
             rendered = render(request, "413.html")
             response = HttpResponse(rendered)
             return response

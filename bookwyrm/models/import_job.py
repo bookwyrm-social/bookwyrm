@@ -1,4 +1,5 @@
-""" track progress of goodreads imports """
+"""track progress of goodreads imports"""
+
 from datetime import datetime
 import math
 import re
@@ -419,7 +420,6 @@ def handle_imported_book(item):  # pylint: disable=too-many-branches
             try:
                 shelf = Shelf.objects.get(identifier=item.shelf, user=user)
             except ObjectDoesNotExist:
-
                 shelf = Shelf.objects.create(
                     user=user,
                     identifier=item.shelf,
@@ -455,7 +455,6 @@ def handle_imported_book(item):  # pylint: disable=too-many-branches
             item.date_reviewed or item.date_read or item.date_added or timezone.now()
         )
         if item.review:
-
             # pylint: disable=consider-using-f-string
             review_title = "Review of {!r} on {!r}".format(
                 item.book.title,

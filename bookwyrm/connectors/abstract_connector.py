@@ -1,4 +1,5 @@
-""" functionality outline for a book data connector """
+"""functionality outline for a book data connector"""
+
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Optional, TypedDict, Any, Callable, Union, Iterator

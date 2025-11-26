@@ -1,4 +1,5 @@
-""" Overrides django's default form class """
+"""Overrides django's default form class"""
+
 from collections import defaultdict
 from django.forms import ModelForm
 from django.forms.widgets import Textarea

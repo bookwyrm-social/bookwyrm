@@ -56,7 +56,7 @@ Our documentation is maintained in a separate repository at https://github.com/b
 - [ ] I intend to create a matching pull request in the Documentation repository after this PR is merged
 
 <!-- Amazing! Thanks for filling that out. Your PR will need to have passing tests and happy linters before we can merge
-You will need to check your code with `black`, `pylint`, and `mypy`, or `./bw-dev formatters`
+You will need to check your code with `ruff` and `mypy`, or `./bw-dev formatters`
 -->
 
 ### Tests

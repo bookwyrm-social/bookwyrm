@@ -1,4 +1,5 @@
-""" invites when registration is closed """
+"""invites when registration is closed"""
+
 from functools import reduce
 import operator
 from urllib.parse import urlencode
@@ -104,7 +105,7 @@ class ManageInviteRequests(View):
             "answer",
         ]
         # pylint: disable=consider-using-f-string
-        if not sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
+        if sort not in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
             sort = "-created_date"
 
         requests = models.InviteRequest.objects.filter(ignored=ignored).order_by(sort)

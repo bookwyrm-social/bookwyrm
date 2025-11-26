@@ -1,2 +1,3 @@
-""" useful regex """
+"""useful regex"""
+
 from .regex import USERNAME

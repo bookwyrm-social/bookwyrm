@@ -1,4 +1,5 @@
-""" like/fav/star a status """
+"""like/fav/star a status"""
+
 from django.db import models
 
 from bookwyrm import activitypub

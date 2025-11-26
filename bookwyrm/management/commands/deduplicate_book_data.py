@@ -1,5 +1,5 @@
-""" PROCEED WITH CAUTION: uses deduplication fields to permanently
-merge book data objects """
+"""PROCEED WITH CAUTION: uses deduplication fields to permanently
+merge book data objects"""
 
 from django.core.management.base import BaseCommand
 from django.db.models import Count

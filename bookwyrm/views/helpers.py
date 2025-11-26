@@ -1,4 +1,4 @@
-""" helper functions used in various views """
+"""helper functions used in various views"""
 
 import re
 from datetime import datetime, timedelta
@@ -84,7 +84,6 @@ def handle_remote_webfinger(query, unknown_only=False, refresh=False):
         return None
 
     try:
-
         if refresh:
             # Always fetch the remote info - don't even bother checking the DB
             raise models.User.DoesNotExist("remote_only is set to True")

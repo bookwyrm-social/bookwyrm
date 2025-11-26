@@ -1,4 +1,5 @@
-""" incoming activities """
+"""incoming activities"""
+
 import json
 import re
 import logging
@@ -54,9 +55,9 @@ class Inbox(View):
             return HttpResponseForbidden()
 
         if (
-            not "object" in activity_json
-            or not "type" in activity_json
-            or not activity_json["type"] in activitypub.activity_objects
+            "object" not in activity_json
+            or "type" not in activity_json
+            or activity_json["type"] not in activitypub.activity_objects
         ):
             raise Http404()
 

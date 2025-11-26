@@ -1,4 +1,5 @@
-""" using another bookwyrm instance as a source of book data """
+"""using another bookwyrm instance as a source of book data"""
+
 from __future__ import annotations
 from typing import Any, Iterator
 

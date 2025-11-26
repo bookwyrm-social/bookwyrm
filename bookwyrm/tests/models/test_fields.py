@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 from collections import namedtuple
 from dataclasses import dataclass
 import datetime
@@ -23,6 +24,7 @@ from bookwyrm.models import fields, User, Status, Edition
 from bookwyrm.models.base_model import BookWyrmModel
 from bookwyrm.models.activitypub_mixin import ActivitypubMixin
 from bookwyrm.settings import PROTOCOL, NETLOC
+
 
 # pylint: disable=too-many-public-methods
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")

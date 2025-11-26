@@ -1,4 +1,5 @@
-""" testing model activitypub utilities """
+"""testing model activitypub utilities"""
+
 from unittest.mock import patch
 from collections import namedtuple
 from dataclasses import dataclass
@@ -287,9 +288,7 @@ class ActivitypubMixins(TestCase):
                 with patch("django.db.models.Model.save"):
                     super().save(*args, **kwargs)
 
-            def broadcast(
-                self, activity, sender, **kwargs
-            ):  # pylint: disable=arguments-differ
+            def broadcast(self, activity, sender, **kwargs):  # pylint: disable=arguments-differ
                 """do something"""
                 raise Success()
 

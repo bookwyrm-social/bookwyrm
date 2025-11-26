@@ -1,4 +1,5 @@
-""" defines relationships between users """
+"""defines relationships between users"""
+
 from django.core.cache import cache
 from django.db import models, transaction, IntegrityError
 from django.db.models import Q

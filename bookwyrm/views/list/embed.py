@@ -1,4 +1,5 @@
-""" book list views"""
+"""book list views"""
+
 from django.core.paginator import Paginator
 from django.db.models import Avg, DecimalField
 from django.db.models.functions import Coalesce

@@ -1,2 +1,3 @@
-""" import ALL the tests """
+"""import ALL the tests"""
+
 from . import *  # pylint: disable=import-self

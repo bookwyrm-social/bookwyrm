@@ -1,4 +1,5 @@
-""" models for storing different kinds of Activities """
+"""models for storing different kinds of Activities"""
+
 from dataclasses import MISSING
 from typing import Optional, Iterable
 import re
@@ -125,9 +126,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return list(mentions)
 
     @classmethod
-    def ignore_activity(
-        cls, activity, allow_external_connections=True
-    ):  # pylint: disable=too-many-return-statements
+    def ignore_activity(cls, activity, allow_external_connections=True):  # pylint: disable=too-many-return-statements
         """keep notes if they are replies to existing statuses"""
         if activity.type == "Announce":
             boosted = activitypub.resolve_remote_id(
@@ -353,8 +352,7 @@ class Comment(BookStatus):
         """indicate the book in question for mastodon (or w/e) users"""
         progress = self.progress or 0
         citation = (
-            f'comment on <a href="{self.book.remote_id}">'
-            f"<i>{self.book.title}</i></a>"
+            f'comment on <a href="{self.book.remote_id}"><i>{self.book.title}</i></a>'
         )
         if self.progress_mode == "PG" and progress > 0:
             citation += f", p. {progress}"

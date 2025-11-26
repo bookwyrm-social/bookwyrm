@@ -1,4 +1,5 @@
-""" using a bookwyrm instance as a source of book data """
+"""using a bookwyrm instance as a source of book data"""
+
 from __future__ import annotations
 from dataclasses import asdict, dataclass
 from functools import reduce
@@ -21,8 +22,7 @@ def search(
     min_confidence: float = 0,
     filters: Optional[list[Any]] = None,
     return_first: Literal[False],
-) -> QuerySet[models.Edition]:
-    ...
+) -> QuerySet[models.Edition]: ...
 
 
 @overload
@@ -32,8 +32,7 @@ def search(
     min_confidence: float = 0,
     filters: Optional[list[Any]] = None,
     return_first: Literal[True],
-) -> Optional[models.Edition]:
-    ...
+) -> Optional[models.Edition]: ...
 
 
 def search(
@@ -53,7 +52,7 @@ def search(
     results = None
     # first, try searching unique identifiers
     # unique identifiers never have spaces, title/author usually do
-    if not " " in query:
+    if " " not in query:
         results = search_identifiers(
             query, *filters, return_first=return_first, books=books
         )

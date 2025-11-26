@@ -1,4 +1,4 @@
-""" what are we here for if not for posting """
+"""what are we here for if not for posting"""
 
 import re
 import logging

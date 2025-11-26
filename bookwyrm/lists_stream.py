@@ -1,4 +1,5 @@
-""" access the list streams stored in redis """
+"""access the list streams stored in redis"""
+
 from django.dispatch import receiver
 from django.db import transaction
 from django.db.models import signals, Count, Q

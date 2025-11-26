@@ -1,4 +1,5 @@
-""" edit your own account """
+"""edit your own account"""
+
 from io import BytesIO
 from uuid import uuid4
 from PIL import Image

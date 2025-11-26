@@ -1,4 +1,5 @@
-""" shelf views """
+"""shelf views"""
+
 from collections import namedtuple
 
 from django.db.models import OuterRef, Subquery, F, Max

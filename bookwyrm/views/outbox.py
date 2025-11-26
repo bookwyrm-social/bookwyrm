@@ -1,4 +1,5 @@
-""" the good stuff! the books! """
+"""the good stuff! the books!"""
+
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views import View
@@ -22,7 +23,7 @@ class Outbox(View):
             user.to_outbox(
                 **request.GET,
                 filter_type=filter_type,
-                pure=not is_bookwyrm_request(request)
+                pure=not is_bookwyrm_request(request),
             ),
             encoder=activitypub.ActivityEncoder,
         )

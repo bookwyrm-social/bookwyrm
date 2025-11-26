@@ -1,4 +1,5 @@
-""" getting and verifying signatures """
+"""getting and verifying signatures"""
+
 import time
 from collections import namedtuple
 from urllib.parse import urlsplit

@@ -1,4 +1,5 @@
-""" is your email running? """
+"""is your email running?"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -6,6 +7,7 @@ from django.views import View
 
 from bookwyrm import emailing
 from bookwyrm import settings
+
 
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")

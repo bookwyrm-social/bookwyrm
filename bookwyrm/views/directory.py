@@ -1,4 +1,5 @@
-""" who all's here? """
+"""who all's here?"""
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import redirect
@@ -7,6 +8,7 @@ from django.views import View
 from django.utils.decorators import method_decorator
 
 from bookwyrm import suggested_users
+
 
 # pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")

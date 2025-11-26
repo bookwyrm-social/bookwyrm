@@ -1,4 +1,5 @@
-""" activitypub model functionality """
+"""activitypub model functionality"""
+
 import asyncio
 from base64 import b64encode
 from collections import namedtuple

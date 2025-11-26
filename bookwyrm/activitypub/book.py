@@ -1,4 +1,5 @@
-""" book and author data """
+"""book and author data"""
+
 from dataclasses import dataclass, field
 from typing import Optional
 

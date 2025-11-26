@@ -1,4 +1,5 @@
-""" moderation via flagged posts and users """
+"""moderation via flagged posts and users"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect

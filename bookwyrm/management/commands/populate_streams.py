@@ -1,4 +1,5 @@
-""" Re-create user streams """
+"""Re-create user streams"""
+
 from django.core.management.base import BaseCommand
 from bookwyrm import activitystreams, lists_stream, models
 

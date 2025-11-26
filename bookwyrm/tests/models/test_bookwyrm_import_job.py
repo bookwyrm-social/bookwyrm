@@ -1,4 +1,4 @@
-""" testing models """
+"""testing models"""
 
 import json
 import os
@@ -146,7 +146,6 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         goals = [{"goal": 12, "year": 2023, "privacy": "followers"}]
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-
             models.bookwyrm_import_job.update_goals(self.local_user, goals)
 
         self.local_user.refresh_from_db()
@@ -226,7 +225,6 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
             patch("bookwyrm.activitypub.resolve_remote_id", return_value=self.rat_user),
         ):
-
             bookwyrm_import_job.import_user_relationship_task(child_id=task.id)
 
         after_follow = models.UserFollows.objects.filter(
@@ -757,7 +755,6 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         with patch(
             "bookwyrm.activitypub.resolve_remote_id", return_value=self.rat_user
         ):
-
             alias = bookwyrm_import_job.is_alias(
                 self.local_user, self.rat_user.remote_id
             )

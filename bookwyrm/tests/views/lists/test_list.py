@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 
@@ -117,7 +118,7 @@ class ListViews(TestCase):
         """there are so many views, this just makes sure it LOADS"""
         view = views.List.as_view()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            for (i, book) in enumerate([self.book, self.book_two, self.book_three]):
+            for i, book in enumerate([self.book, self.book_two, self.book_three]):
                 models.ListItem.objects.create(
                     book_list=self.list,
                     user=self.local_user,

@@ -1,4 +1,5 @@
-""" non-interactive pages """
+"""non-interactive pages"""
+
 from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator

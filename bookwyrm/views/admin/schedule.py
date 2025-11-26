@@ -1,4 +1,5 @@
-""" Scheduled celery tasks """
+"""Scheduled celery tasks"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse

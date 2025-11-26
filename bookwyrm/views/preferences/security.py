@@ -1,4 +1,5 @@
-""" class views for 2FA management """
+"""class views for 2FA management"""
+
 from datetime import datetime, timedelta
 from importlib import import_module
 import pyotp
@@ -22,6 +23,7 @@ from bookwyrm.settings import DOMAIN, TWO_FACTOR_LOGIN_MAX_SECONDS
 from bookwyrm.views.helpers import set_language
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
+
 
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")

@@ -1,4 +1,5 @@
-""" non-interactive pages """
+"""non-interactive pages"""
+
 from django.contrib.auth.decorators import login_required
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator

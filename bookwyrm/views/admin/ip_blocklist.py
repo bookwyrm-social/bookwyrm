@@ -1,4 +1,5 @@
-""" Manage IP blocklist """
+"""Manage IP blocklist"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -6,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
+
 
 # pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")

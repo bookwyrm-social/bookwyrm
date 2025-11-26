@@ -1,4 +1,5 @@
-""" celery status """
+"""celery status"""
+
 import json
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -30,6 +31,7 @@ from bookwyrm.tasks import (
 )
 
 r = redis.from_url(settings.REDIS_BROKER_URL)
+
 
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")

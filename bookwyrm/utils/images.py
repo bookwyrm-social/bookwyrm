@@ -1,4 +1,4 @@
-""" Image  utilities """
+"""Image  utilities"""
 
 import logging
 from io import BytesIO

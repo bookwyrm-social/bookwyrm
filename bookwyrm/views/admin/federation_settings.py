@@ -1,4 +1,5 @@
-""" big picture settings about how the instance shares data """
+"""big picture settings about how the instance shares data"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator

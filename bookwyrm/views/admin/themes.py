@@ -1,4 +1,5 @@
-""" manage themes """
+"""manage themes"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse

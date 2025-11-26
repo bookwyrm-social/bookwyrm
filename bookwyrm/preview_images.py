@@ -1,4 +1,4 @@
-""" Generate social media preview images for twitter/mastodon/etc """
+"""Generate social media preview images for twitter/mastodon/etc"""
 
 import math
 import os

@@ -1,4 +1,5 @@
-""" instance overview """
+"""instance overview"""
+
 from datetime import timedelta
 import re
 
@@ -44,9 +45,9 @@ class Dashboard(View):
         ) or not re.match(regex.DOMAIN, settings.EMAIL_SENDER_DOMAIN)
 
         data["email_config_error"] = email_config_error
-        data[
-            "email_sender"
-        ] = f"{settings.EMAIL_SENDER_NAME}@{settings.EMAIL_SENDER_DOMAIN}"
+        data["email_sender"] = (
+            f"{settings.EMAIL_SENDER_NAME}@{settings.EMAIL_SENDER_DOMAIN}"
+        )
 
         site = models.SiteSettings.get()
         # pylint: disable=protected-access
@@ -201,7 +202,7 @@ class Chart:
         chart = {k: [] for k in self.queries.keys()}
         chart["labels"] = []
         while interval_start <= end:
-            for (name, query) in self.queries.items():
+            for name, query in self.queries.items():
                 chart[name].append(query(self.queryset, interval_start, interval_end))
             chart["labels"].append(interval_start.strftime("%b %d"))
 

@@ -1,4 +1,5 @@
-""" note serializer and children thereof """
+"""note serializer and children thereof"""
+
 from dataclasses import dataclass, field
 from typing import Dict, List
 import re

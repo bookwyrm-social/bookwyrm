@@ -1,4 +1,5 @@
 """group views"""
+
 from django.apps import apps
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError, transaction

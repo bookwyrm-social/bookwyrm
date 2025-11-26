@@ -1,8 +1,10 @@
-""" Erase any data stored about deleted users """
+"""Erase any data stored about deleted users"""
+
 import sys
 from django.core.management.base import BaseCommand, CommandError
 from bookwyrm import models
 from bookwyrm.models.user import erase_user_data
+
 
 # pylint: disable=missing-function-docstring
 class Command(BaseCommand):
@@ -18,7 +20,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):  # pylint: disable=unused-argument
-
         # Check for anything fishy
         bad_state = models.User.objects.filter(is_deleted=True, is_active=True)
         if bad_state.exists():

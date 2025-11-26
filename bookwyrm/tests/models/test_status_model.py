@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 from unittest.mock import patch
 import pathlib
 import re

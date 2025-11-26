@@ -1,4 +1,4 @@
-""" the good stuff! the books! """
+"""the good stuff! the books!"""
 
 from re import sub, findall
 
@@ -123,7 +123,7 @@ class CreateBook(View):
         # check if this is an edition of an existing work
         author_text = ", ".join(data.get("add_author", []))
         data["book_matches"] = book_search.search(
-            f'{form.cleaned_data.get("title")} {author_text}',
+            f"{form.cleaned_data.get('title')} {author_text}",
             min_confidence=0.1,
         )[:5]
 

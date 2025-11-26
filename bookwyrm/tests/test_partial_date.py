@@ -1,4 +1,4 @@
-""" test partial_date module """
+"""test partial_date module"""
 
 import datetime
 from datetime import timezone

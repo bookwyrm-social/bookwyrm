@@ -1,4 +1,5 @@
-""" tests the base functionality for activitypub dataclasses """
+"""tests the base functionality for activitypub dataclasses"""
+
 import json
 import pathlib
 from unittest.mock import patch

@@ -1,4 +1,5 @@
-""" Following and followers lists """
+"""Following and followers lists"""
+
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import Q, Count

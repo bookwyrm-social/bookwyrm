@@ -1,4 +1,5 @@
-""" edit your own account """
+"""edit your own account"""
+
 import time
 
 from django.contrib.auth import login, logout

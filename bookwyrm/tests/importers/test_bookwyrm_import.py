@@ -1,4 +1,5 @@
-""" testing bookwyrm csv import """
+"""testing bookwyrm csv import"""
+
 import pathlib
 from unittest.mock import patch
 import datetime

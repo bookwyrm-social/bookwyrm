@@ -1,4 +1,4 @@
-""" move your account somewhere else """
+"""move your account somewhere else"""
 
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required

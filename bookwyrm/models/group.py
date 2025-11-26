@@ -1,4 +1,5 @@
-""" do book related things with other users """
+"""do book related things with other users"""
+
 from django.db import models, IntegrityError, transaction
 from django.db.models import Q
 from bookwyrm.settings import BASE_URL

@@ -1,4 +1,5 @@
-""" import books from another app """
+"""import books from another app"""
+
 from io import TextIOWrapper
 import datetime
 from typing import Optional
@@ -28,6 +29,7 @@ from bookwyrm.importers import (
 from bookwyrm.models.bookwyrm_import_job import BookwyrmImportJob
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.utils.cache import get_or_set
+
 
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")

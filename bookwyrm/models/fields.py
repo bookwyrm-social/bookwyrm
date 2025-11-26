@@ -1,4 +1,5 @@
-""" activitypub-aware django model fields """
+"""activitypub-aware django model fields"""
+
 from dataclasses import MISSING
 from datetime import datetime
 import re

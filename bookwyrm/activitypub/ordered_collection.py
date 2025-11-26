@@ -1,4 +1,5 @@
-""" defines activitypub collections (lists) """
+"""defines activitypub collections (lists)"""
+
 from dataclasses import dataclass, field
 from typing import List
 

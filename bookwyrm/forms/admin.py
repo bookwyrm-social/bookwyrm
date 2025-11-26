@@ -1,4 +1,5 @@
-""" using django model forms """
+"""using django model forms"""
+
 import datetime
 
 from django import forms
@@ -216,5 +217,4 @@ class IntervalScheduleForm(StyledForm):
 
 
 class ExportFileExpiryForm(forms.Form):
-
     hours = forms.IntegerField(min_value=1)

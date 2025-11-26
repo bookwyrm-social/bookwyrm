@@ -1,4 +1,4 @@
-""" the good stuff! the books! """
+"""the good stuff! the books!"""
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction

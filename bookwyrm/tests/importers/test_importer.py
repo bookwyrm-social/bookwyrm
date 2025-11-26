@@ -1,4 +1,5 @@
-""" testing import """
+"""testing import"""
+
 from collections import namedtuple
 import pathlib
 import io

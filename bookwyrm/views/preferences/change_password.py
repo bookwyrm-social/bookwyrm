@@ -1,4 +1,5 @@
-""" class views for password management """
+"""class views for password management"""
+
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.template.response import TemplateResponse

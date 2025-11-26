@@ -1,4 +1,5 @@
-""" testing user follow suggestions """
+"""testing user follow suggestions"""
+
 from collections import namedtuple
 from unittest.mock import patch
 

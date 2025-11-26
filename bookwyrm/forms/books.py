@@ -1,4 +1,5 @@
-""" using django model forms """
+"""using django model forms"""
+
 from django import forms
 
 from file_resubmit.widgets import ResubmitImageWidget

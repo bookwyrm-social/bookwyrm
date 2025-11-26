@@ -1,4 +1,5 @@
-""" Remove preview images for remote users """
+"""Remove preview images for remote users"""
+
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 
@@ -35,6 +36,6 @@ class Command(BaseCommand):
                 self.stdout.write(".", ending="")
             self.stdout.write(" OK 🖼")
         else:
-            self.stdout.write(f"   | There was no remote users with preview images.")
+            self.stdout.write("   | There was no remote users with preview images.")
 
         self.stdout.write("🧑‍🚒 ⎨ I’m all done! ✧ Enjoy ✧")

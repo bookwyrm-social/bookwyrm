@@ -1,4 +1,5 @@
 """Generators for all the different thumbnail sizes"""
+
 from imagekit import ImageSpec, register
 from imagekit.processors import ResizeToFit
 

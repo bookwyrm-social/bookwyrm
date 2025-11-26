@@ -1,4 +1,4 @@
-""" Helping new users figure out the lay of the land """
+"""Helping new users figure out the lay of the land"""
 
 import re
 

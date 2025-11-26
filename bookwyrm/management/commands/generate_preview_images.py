@@ -1,4 +1,5 @@
-""" Generate preview images """
+"""Generate preview images"""
+
 from django.core.management.base import BaseCommand
 
 from bookwyrm import models, preview_images

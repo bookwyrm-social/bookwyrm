@@ -1,4 +1,4 @@
-""" using django model forms """
+"""using django model forms"""
 
 from urllib.parse import urlparse
 
