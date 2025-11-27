@@ -1,0 +1,46 @@
+{% load i18n %}
+{% load book_display_tags %}
+
+<div class="card is-stretchable">
+    <div class="card-content pb-0 columns">
+        {% with item_book=item.book %}
+            <div class="column is-one-third">
+                <div class="is-cover">
+                    <a href="{{ item_book.local_path }}" aria-hidden="true">
+                        {% include 'snippets/book_cover.html' with cover_class='is-h-m-mobile is-h-m-tablet is-align-items-flex-start' size='medium' book=item_book %}
+                    </a>
+                </div>
+            </div>
+            <div class="column is-two-thirds">
+                <p>
+                    {% include 'snippets/book_titleby.html' with book=item_book %}
+                </p>
+                {% if item.notes %}
+                    {% include "lists/list_item_notes.html" with list=book.suggestion_list hide_edit=True no_trim=False trim_length=15 %}
+                {% else %}
+                    <blockquote>
+                    {% with full=item_book|book_description %}
+                        {% include 'snippets/trimmed_text.html' with trim_length=15 hide_more=True %}
+                    {% endwith %}
+                    </blockquote>
+                {% endif %}
+            </div>
+        {% endwith %}
+    </div>
+    <div class="card-footer is-stacked-mobile has-background-tertiary is-align-items-stretch">
+        <div class="card-footer-item p-0">
+            <p>
+                {% blocktrans trimmed with username=item.user.display_name user_path=item.user.local_path %}
+                Added by <a href="{{ user_path }}">{{ username }}</a>
+                {% endblocktrans %}
+            </p>
+        </div>
+        <div class="card-footer-item">
+            {% include "snippets/shelve_button/shelve_button.html" with book=item.book %}
+        </div>
+        <div class="card-footer-item">
+            {% include "book/suggestion_list/endorsement_button.html" %}
+        </div>
+    </div>
+</div>
+
