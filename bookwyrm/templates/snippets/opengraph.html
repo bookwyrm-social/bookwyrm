@@ -20,5 +20,6 @@
 <meta name="twitter:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
 <meta name="og:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
 
-<meta name="twitter:description" content="{% if description %}{{ description|striptags }}{% else %}{{ site.instance_tagline }}{% endif %}">
-<meta name="og:description" content="{% if description %}{{ description|striptags }}{% else %}{{ site.instance_tagline }}{% endif %}">
+{% firstof description|striptags site.instance_tagline|striptags as description %}
+<meta name="twitter:description" content="{{ description }}">
+<meta name="og:description" content="{{ description }}">
