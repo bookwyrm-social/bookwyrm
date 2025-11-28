@@ -2,7 +2,7 @@
 import inspect
 import sys
 
-from .book import Book, Work, Edition, BookDataModel
+from .book import Book, Work, Edition, BookDataModel, Series, SeriesBook
 from .author import Author
 from .link import Link, FileLink, LinkDomain
 from .connector import Connector

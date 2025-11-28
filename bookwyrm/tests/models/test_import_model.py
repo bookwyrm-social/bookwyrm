@@ -8,7 +8,7 @@ from unittest.mock import patch
 from django.test import TestCase
 import responses
 
-from bookwyrm import models
+from bookwyrm import models, settings
 from bookwyrm.book_search import SearchResult
 from bookwyrm.connectors import connector_manager
 
@@ -19,14 +19,17 @@ class ImportJob(TestCase):
     @classmethod
     def setUpTestData(cls):
         """data is from a goodreads export of The Raven Tower"""
-        with (
-            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
-            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
-            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
-        ):
-            cls.local_user = models.User.objects.create_user(
-                "mouse", "mouse@mouse.mouse", "password", local=True
-            )
+
+        cls.local_user = models.User.objects.create_user(
+            "mouse", "mouse@mouse.mouse", "password", local=True
+        )
+
+        cls.instance_user = models.User.objects.create_user(
+            "instance@local.com",
+            local=True,
+            localname=settings.INSTANCE_ACTOR_USERNAME,
+            remote_id="https://example.com/users/instance_actor",
+        )
 
     def setUp(self):
         self.job = models.ImportJob.objects.create(user=self.local_user, mappings={})
