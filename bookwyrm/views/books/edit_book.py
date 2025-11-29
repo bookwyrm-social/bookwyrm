@@ -252,7 +252,7 @@ def add_series(request, data):
     matches = (
         models.Series.objects.annotate(search=vector)
         .annotate(rank=SearchRank(vector, series, normalization=32))
-        .filter(rank__gt=0.019)
+        .filter(rank__gt=0.19)
         .order_by("-rank")[:5]
     )
 
