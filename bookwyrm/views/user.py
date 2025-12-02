@@ -17,7 +17,6 @@ from bookwyrm.settings import PAGE_LENGTH, INSTANCE_ACTOR_USERNAME
 from .helpers import get_user_from_username, is_api_request
 
 
-# pylint: disable=no-self-use
 class User(View):
     """user profile page"""
 
@@ -165,7 +164,6 @@ def hide_suggestions(request):
     return redirect("/")
 
 
-# pylint: disable=unused-argument
 def user_redirect(request, username):
     """redirect to a user's feed"""
     return redirect("user-feed", username=username)

@@ -9,7 +9,6 @@ class Command(BaseCommand):
 
     help = "Repairs an edition that is in a broken state"
 
-    # pylint: disable=unused-argument
     def handle(self, *args, **options):
         """Find and repair broken editions"""
         # Find broken editions

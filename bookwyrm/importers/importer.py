@@ -46,7 +46,6 @@ class Importer:
         "reading": ["currently-reading", "reading", "currently reading"],
     }
 
-    # pylint: disable=too-many-arguments
     def create_job(
         self,
         user: User,
@@ -132,14 +131,12 @@ class Importer:
         ]
         return shelf[0] if shelf else normalized_row.get("shelf") or None
 
-    # pylint: disable=no-self-use
     def normalize_row(
         self, entry: dict[str, str], mappings: dict[str, Optional[str]]
     ) -> dict[str, Optional[str]]:
         """use the dataclass to create the formatted row of data"""
         return {k: entry.get(v) if v else None for k, v in mappings.items()}
 
-    # pylint: disable=no-self-use
     def get_import_limit(self, user: User) -> tuple[int, int]:
         """check if import limit is set and return how many imports are left"""
         site_settings = SiteSettings.get()
@@ -153,7 +150,7 @@ class Importer:
             import_jobs = ImportJob.objects.filter(
                 user=user, created_date__gte=time_range
             )
-            # pylint: disable=consider-using-generator
+
             imported_books = sum([job.successful_item_count for job in import_jobs])
             allowed_imports = import_size_limit - imported_books
         return enforce_limit, allowed_imports

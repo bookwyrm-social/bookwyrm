@@ -27,13 +27,13 @@ class SuggestedUsers(RedisStore):
         """get computed rank"""
         return obj.mutuals  # + (1.0 - (1.0 / (obj.shared_books + 1)))
 
-    def store_id(self, user):  # pylint: disable=no-self-use
+    def store_id(self, user):
         """the key used to store this user's recs"""
         if isinstance(user, int):
             return f"{user}-suggestions"
         return f"{user.id}-suggestions"
 
-    def get_counts_from_rank(self, rank):  # pylint: disable=no-self-use
+    def get_counts_from_rank(self, rank):
         """calculate mutuals count and shared books count from rank"""
         return {
             "mutuals": math.floor(rank),
@@ -56,7 +56,7 @@ class SuggestedUsers(RedisStore):
         """the stores that an object belongs in"""
         return [self.store_id(u) for u in self.get_users_for_object(obj)]
 
-    def get_users_for_object(self, obj):  # pylint: disable=no-self-use
+    def get_users_for_object(self, obj):
         """given a user, who might want to follow them"""
         return models.User.objects.filter(local=True, is_active=True).exclude(
             Q(id=obj.id) | Q(followers=obj) | Q(id__in=obj.blocks.all()) | Q(blocks=obj)
@@ -148,7 +148,6 @@ suggested_users = SuggestedUsers()
 
 
 @receiver(signals.post_save, sender=models.UserFollows)
-# pylint: disable=unused-argument
 def update_suggestions_on_follow(sender, instance, created, *args, **kwargs):
     """remove a follow from the recs and update the ranks"""
     if not created or not instance.user_object.discoverable:
@@ -160,7 +159,6 @@ def update_suggestions_on_follow(sender, instance, created, *args, **kwargs):
 
 
 @receiver(signals.post_save, sender=models.UserFollowRequest)
-# pylint: disable=unused-argument
 def update_suggestions_on_follow_request(sender, instance, created, *args, **kwargs):
     """remove a follow from the recs and update the ranks"""
     if not created or not instance.user_object.discoverable:
@@ -171,7 +169,6 @@ def update_suggestions_on_follow_request(sender, instance, created, *args, **kwa
 
 
 @receiver(signals.post_save, sender=models.UserBlocks)
-# pylint: disable=unused-argument
 def update_suggestions_on_block(sender, instance, *args, **kwargs):
     """remove blocked users from recs"""
     if instance.user_subject.local and instance.user_object.discoverable:
@@ -181,7 +178,6 @@ def update_suggestions_on_block(sender, instance, *args, **kwargs):
 
 
 @receiver(signals.post_delete, sender=models.UserFollows)
-# pylint: disable=unused-argument
 def update_suggestions_on_unfollow(sender, instance, **kwargs):
     """update rankings, but don't re-suggest because it was probably intentional"""
     if instance.user_object.discoverable:
@@ -190,7 +186,7 @@ def update_suggestions_on_unfollow(sender, instance, **kwargs):
 
 # @receiver(signals.post_save, sender=models.ShelfBook)
 # @receiver(signals.post_delete, sender=models.ShelfBook)
-# # pylint: disable=unused-argument
+#
 # def update_rank_on_shelving(sender, instance, *args, **kwargs):
 #     """when a user shelves or unshelves a book, re-compute their rank"""
 #     # if it's a local user, re-calculate who is rec'ed to them
@@ -203,7 +199,6 @@ def update_suggestions_on_unfollow(sender, instance, **kwargs):
 
 
 @receiver(signals.post_save, sender=models.User)
-# pylint: disable=unused-argument
 def update_user(sender, instance, created, update_fields=None, **kwargs):
     """an updated user, neat"""
     # a new user is found, create suggestions for them

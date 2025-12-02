@@ -8,7 +8,6 @@ from django.views import View
 from bookwyrm import forms, models
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.control_federation", raise_exception=True),

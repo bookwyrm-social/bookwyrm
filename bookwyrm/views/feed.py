@@ -22,7 +22,6 @@ from .helpers import is_api_request, is_bookwyrm_request, maybe_redirect_local_p
 from .annual_summary import get_annual_summary_year
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Feed(View):
     """activity stream"""
@@ -131,7 +130,6 @@ class DirectMessage(View):
 class Status(View):
     """get posting"""
 
-    # pylint: disable=unused-argument
     @vary_on_headers("Accept")
     def get(self, request, username, status_id, slug=None):
         """display a particular status (and replies, etc)"""

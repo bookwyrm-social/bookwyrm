@@ -23,7 +23,6 @@ class Command(BaseCommand):
 
     help = "Populate list streams for all users"
 
-    # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """run feed builder"""
         populate_lists_streams()

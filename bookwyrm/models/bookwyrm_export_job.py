@@ -74,7 +74,7 @@ def create_export_json_task(**kwargs):
         # trigger task to create tar file
         create_archive_task.delay(job_id=job.id)
 
-    except Exception as err:  # pylint: disable=broad-except
+    except Exception as err:
         logger.exception(
             "create_export_json_task for job %s failed with error: %s", job.id, err
         )
@@ -163,7 +163,7 @@ def create_archive_task(**kwargs):
 
         job.complete_job()
 
-    except Exception as err:  # pylint: disable=broad-except
+    except Exception as err:
         logger.exception(
             "create_archive_task for job %s failed with error: %s", job.id, err
         )

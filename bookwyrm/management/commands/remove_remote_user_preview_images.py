@@ -6,13 +6,11 @@ from django.db.models import Q
 from bookwyrm import models, preview_images
 
 
-# pylint: disable=line-too-long
 class Command(BaseCommand):
     """Remove preview images for remote users"""
 
     help = "Remove preview images for remote users"
 
-    # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """generate preview images"""
         self.stdout.write(

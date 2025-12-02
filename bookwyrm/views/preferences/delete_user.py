@@ -12,7 +12,6 @@ from django.views import View
 from bookwyrm import forms, models
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class DeleteUser(View):
     """delete user view"""

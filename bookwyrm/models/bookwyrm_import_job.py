@@ -232,7 +232,6 @@ class UserImportSubTask(SubTask):
         subtask.complete_job()
 
 
-# pylint: disable=too-many-branches
 @app.task(queue=IMPORTS, base=ImportUserTask)
 def start_import_task(**kwargs):
     """trigger the child import tasks for each user data
@@ -305,7 +304,7 @@ def start_import_task(**kwargs):
 
         archive_file.close()
 
-    except Exception as err:  # pylint: disable=broad-except
+    except Exception as err:
         logger.error(
             "User Import Job %s Failed with error: %s", job.id, err, exc_info=True
         )
@@ -348,7 +347,7 @@ def create_book_from_json(book_data):
 
 
 @app.task(queue=IMPORTS, base=UserImportSubTask)
-def import_book_task(**kwargs):  # pylint: disable=too-many-branches
+def import_book_task(**kwargs):
     """Take work and edition data,
     find or create the edition and work in the database"""
 
@@ -389,7 +388,7 @@ def import_book_task(**kwargs):  # pylint: disable=too-many-branches
         if "include_lists" in required:
             upsert_lists(task.parent_job.user, book.id, book_data.get("lists"))
 
-    except Exception as err:  # pylint: disable=broad-except
+    except Exception as err:
         logger.error(
             "Book Import Task %s for Job %s Failed with error: %s", task.id, job.id, err
         )
@@ -492,7 +491,7 @@ def upsert_status_task(**kwargs):
             task.save(update_fields=["fail_reason"])
             task.set_status("failed")
 
-    except Exception as err:  # pylint: disable=broad-except
+    except Exception as err:
         logger.error("User Status Import Task %s Failed with error: %s", task.id, err)
         task.fail_reason = _("Unknown error importing book status")
         task.save(update_fields=["fail_reason"])
@@ -723,7 +722,7 @@ def import_user_relationship_task(**kwargs):
             task.save(update_fields=["fail_reason"])
             task.set_status("failed")
 
-    except Exception as err:  # pylint: disable=broad-except
+    except Exception as err:
         logger.error(
             "User Import Relationship Task %s Failed with error: %s", task.id, err
         )

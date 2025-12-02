@@ -8,7 +8,6 @@ from bookwyrm import models
 from .custom_form import CustomForm
 
 
-# pylint: disable=missing-class-docstring
 class LinkDomainForm(CustomForm):
     class Meta:
         model = models.LinkDomain

@@ -19,7 +19,6 @@ from bookwyrm import emailing, forms, models
 from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.create_invites", raise_exception=True),
@@ -104,7 +103,7 @@ class ManageInviteRequests(View):
             "invite__invitees__created_date",
             "answer",
         ]
-        # pylint: disable=consider-using-f-string
+
         if sort not in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
             sort = "-created_date"
 
@@ -159,7 +158,7 @@ class ManageInviteRequests(View):
             )
             invite_request.save()
         emailing.invite_email(invite_request)
-        # pylint: disable=consider-using-f-string
+
         return redirect(
             "{:s}?{:s}".format(
                 reverse("settings-invite-requests"), urlencode(request.GET.dict())

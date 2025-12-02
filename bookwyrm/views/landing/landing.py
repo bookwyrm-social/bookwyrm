@@ -8,7 +8,6 @@ from bookwyrm import forms, models
 from bookwyrm.views.feed import Feed
 
 
-# pylint: disable= no-self-use
 class Home(View):
     """landing page or home feed depending on auth"""
 

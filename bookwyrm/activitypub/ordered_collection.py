@@ -6,7 +6,6 @@ from typing import List
 from .base_activity import ActivityObject
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class OrderedCollection(ActivityObject):
     """structure of an ordered collection activity"""
@@ -43,7 +42,6 @@ class BookList(OrderedCollectionPrivate):
     type: str = "BookList"
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class OrderedCollectionPage(ActivityObject):
     """structure of an ordered collection activity"""

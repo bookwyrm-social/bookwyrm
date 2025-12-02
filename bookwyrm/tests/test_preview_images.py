@@ -20,8 +20,6 @@ from bookwyrm.preview_images import (
 )
 
 
-# pylint: disable=unused-argument
-# pylint: disable=missing-function-docstring
 class PreviewImages(TestCase):
     """every response to a get request, html or json"""
 

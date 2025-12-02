@@ -9,7 +9,6 @@ from bookwyrm.models import base_model
 from bookwyrm.settings import BASE_URL
 
 
-# pylint: disable=attribute-defined-outside-init
 class BaseModel(TestCase):
     """functionality shared across models"""
 

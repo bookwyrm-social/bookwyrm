@@ -33,7 +33,6 @@ class Command(BaseCommand):
             help="Specifies which time of stream to populate",
         )
 
-    # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """run feed builder"""
         stream = options.get("stream")

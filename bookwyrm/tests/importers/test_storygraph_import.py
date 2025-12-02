@@ -26,7 +26,7 @@ class StorygraphImport(TestCase):
         """use a test csv"""
         self.importer = StorygraphImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/storygraph.csv")
-        # pylint: disable-next=consider-using-with
+
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
 
     def tearDown(self):

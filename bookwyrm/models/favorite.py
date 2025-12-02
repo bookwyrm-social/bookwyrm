@@ -21,7 +21,6 @@ class Favorite(ActivityMixin, BookWyrmModel):
 
     activity_serializer = activitypub.Like
 
-    # pylint: disable=unused-argument
     @classmethod
     def ignore_activity(cls, activity, allow_external_connections=True):
         """don't bother with incoming favs of unknown statuses"""

@@ -23,7 +23,6 @@ from .helpers import is_api_request
 from .helpers import handle_remote_webfinger
 
 
-# pylint: disable= no-self-use
 class Search(View):
     """search users or books"""
 

@@ -7,7 +7,6 @@ from .base_activity import ActivityObject
 from .image import Image
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class PublicKey(ActivityObject):
     """public key block"""
@@ -22,7 +21,6 @@ class PublicKey(ActivityObject):
         return super().serialize(omit=omit)
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class Person(ActivityObject):
     """actor activitypub json"""

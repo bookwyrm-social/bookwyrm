@@ -75,7 +75,6 @@ class StatusTransactions(TransactionTestCase):
 @patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
-# pylint: disable=too-many-public-methods
 class StatusViews(TestCase):
     """viewing and creating statuses"""
 

@@ -11,11 +11,9 @@ from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import maybe_redirect_local_path
 
 
-# pylint: disable= no-self-use
 class Hashtag(View):
     """listing statuses for a given hashtag"""
 
-    # pylint: disable=unused-argument
     def get(self, request, hashtag_id, slug=None):
         """show hashtag with related statuses"""
         hashtag = get_object_or_404(models.Hashtag, id=hashtag_id)

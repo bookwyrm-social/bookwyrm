@@ -194,7 +194,7 @@ case "$CMD" in
     ruff)
         prod_error
         $DOCKER_COMPOSE run --rm dev-tools ruff format celerywyrm bookwyrm
-        runweb ruff check bookwyrm/
+        $DOCKER_COMPOSE run --rm dev-tools ruff check celerywyrm bookwyrm
         ;;
     ruff-format)
         prod_error
@@ -202,14 +202,11 @@ case "$CMD" in
         ;;
     ruff-check)
         prod_error
-        # ruff check depends on having the app dependencies in place, so we run it in the web container
-        runweb ruff check bookwyrm/
+        $DOCKER_COMPOSE run --rm dev-tools ruff check celerywyrm bookwyrm
         ;;
     ruff-fix)
         prod_error
-        # Auto-fix ruff issues that can be fixed automatically
-        # ruff check depends on having the app dependencies in place, so we run it in the web container
-        runweb ruff check --fix bookwyrm/
+        $DOCKER_COMPOSE run --rm dev-tools ruff check --fix celerywyrm bookwyrm
         ;;
     prettier)
         prod_error
@@ -226,8 +223,8 @@ case "$CMD" in
         ;;
     formatters)
         prod_error
-        runweb ruff check bookwyrm/
         $DOCKER_COMPOSE run --rm dev-tools ruff format celerywyrm bookwyrm
+        $DOCKER_COMPOSE run --rm dev-tools ruff check --fix celerywyrm bookwyrm
         $DOCKER_COMPOSE run --rm dev-tools prettier --write bookwyrm/static/js/*.js
         $DOCKER_COMPOSE run --rm dev-tools eslint bookwyrm/static --ext .js
         $DOCKER_COMPOSE run --rm dev-tools stylelint --fix bookwyrm/static/css \

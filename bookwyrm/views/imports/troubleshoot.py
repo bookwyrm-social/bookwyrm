@@ -14,7 +14,6 @@ from bookwyrm.importers import Importer
 from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class ImportTroubleshoot(View):
     """problems items in an existing import"""

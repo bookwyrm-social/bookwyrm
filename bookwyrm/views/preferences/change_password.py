@@ -10,7 +10,6 @@ from django.views.decorators.debug import sensitive_variables, sensitive_post_pa
 from bookwyrm import forms
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class ChangePassword(View):
     """change password as logged in user"""

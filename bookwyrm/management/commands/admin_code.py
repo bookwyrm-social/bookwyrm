@@ -15,7 +15,6 @@ class Command(BaseCommand):
 
     help = "Gets admin code for configuring BookWyrm"
 
-    # pylint: disable=unused-argument
     def handle(self, *args, **options):
         """execute init"""
         self.stdout.write("*******************************************")

@@ -12,7 +12,6 @@ from bookwyrm import forms, models
 from bookwyrm.views.helpers import get_mergeable_object_or_404
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.edit_book", raise_exception=True), name="dispatch"
@@ -60,7 +59,6 @@ def get_annotated_links(book, form=None):
 
 @require_POST
 @login_required
-# pylint: disable=unused-argument
 def delete_link(request, book_id, link_id):
     """delete link"""
     link = get_object_or_404(models.FileLink, id=link_id, book=book_id)

@@ -17,7 +17,6 @@ def sort_by_series(book):
         return float_info.max
 
 
-# pylint: disable=no-self-use
 class BookSeriesBy(View):
     """book series by author"""
 

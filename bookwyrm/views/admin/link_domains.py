@@ -12,7 +12,6 @@ from bookwyrm.models.report import APPROVE_DOMAIN, BLOCK_DOMAIN
 from bookwyrm.views.helpers import redirect_to_referer
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.moderate_user", raise_exception=True),

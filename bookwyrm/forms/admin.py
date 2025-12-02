@@ -13,7 +13,6 @@ from bookwyrm import models
 from .custom_form import CustomForm, StyledForm
 
 
-# pylint: disable=missing-class-docstring
 class ExpiryWidget(widgets.Select):
     def value_from_datadict(self, data, files, name):
         """human-readable expiration time buckets"""
@@ -208,7 +207,6 @@ class IntervalScheduleForm(StyledForm):
             "period": forms.Select(attrs={"aria-describedby": "desc_period"}),
         }
 
-    # pylint: disable=arguments-differ
     def save(self, request, *args, **kwargs):
         """This is an outside model so the perms check works differently"""
         if not request.user.has_perm("bookwyrm.moderate_user"):

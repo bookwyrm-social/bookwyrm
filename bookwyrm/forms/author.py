@@ -6,7 +6,6 @@ from bookwyrm import models
 from .custom_form import CustomForm
 
 
-# pylint: disable=missing-class-docstring
 class AuthorForm(CustomForm):
     class Meta:
         model = models.Author

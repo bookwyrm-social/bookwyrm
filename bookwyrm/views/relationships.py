@@ -12,7 +12,6 @@ from bookwyrm.settings import PAGE_LENGTH
 from .helpers import get_user_from_username, is_api_request
 
 
-# pylint: disable=no-self-use
 class Relationships(View):
     """list of followers/following view"""
 

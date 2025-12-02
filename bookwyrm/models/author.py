@@ -75,8 +75,6 @@ class Author(BookDataModel):
     class Meta:
         """sets up indexes and triggers"""
 
-        # pylint: disable=line-too-long
-
         indexes = (GinIndex(fields=["search_vector"]),)
         triggers = [
             pgtrigger.Trigger(

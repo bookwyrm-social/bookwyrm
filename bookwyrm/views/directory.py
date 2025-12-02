@@ -10,7 +10,6 @@ from django.utils.decorators import method_decorator
 from bookwyrm import suggested_users
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class Directory(View):
     """display of known bookwyrm users"""

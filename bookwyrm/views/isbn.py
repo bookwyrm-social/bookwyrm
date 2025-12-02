@@ -11,7 +11,6 @@ from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request
 
 
-# pylint: disable= no-self-use
 class Isbn(View):
     """search a book by isbn"""
 

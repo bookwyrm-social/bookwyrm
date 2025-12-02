@@ -27,7 +27,6 @@ from bookwyrm.views.helpers import (
 )
 
 
-# pylint: disable=no-self-use
 class List(View):
     """book list page"""
 

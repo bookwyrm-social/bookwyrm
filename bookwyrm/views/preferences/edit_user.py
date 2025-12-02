@@ -15,7 +15,6 @@ from bookwyrm import forms
 from bookwyrm.views.helpers import set_language
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class EditUser(View):
     """edit user view"""

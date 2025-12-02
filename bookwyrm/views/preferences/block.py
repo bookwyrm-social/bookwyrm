@@ -10,7 +10,6 @@ from django.views.decorators.http import require_POST
 from bookwyrm import models
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Block(View):
     """blocking users"""

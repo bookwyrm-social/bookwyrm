@@ -143,7 +143,7 @@ class GroupMemberInvitation(models.Model):
     @transaction.atomic
     def accept(self):
         """turn this request into the real deal"""
-        # pylint: disable-next=import-outside-toplevel
+
         from .notification import Notification, NotificationType  # circular dependency
 
         GroupMember.from_request(self)

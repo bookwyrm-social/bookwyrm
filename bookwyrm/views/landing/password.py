@@ -12,7 +12,6 @@ from bookwyrm import forms, models
 from bookwyrm.emailing import password_reset_email
 
 
-# pylint: disable= no-self-use
 class PasswordResetRequest(View):
     """forgot password flow"""
 

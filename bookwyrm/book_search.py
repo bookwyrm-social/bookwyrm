@@ -114,7 +114,6 @@ def search_identifiers(
         # Oh did you think the 'S' in ISBN stood for 'standard'?
         normalized_isbn = query.strip().upper().rjust(10, "0")
         query = normalized_isbn
-    # pylint: disable=W0212
     or_filters = [
         {f.name: query}
         for f in models.Edition._meta.get_fields()
@@ -178,7 +177,6 @@ class SearchResult:
     confidence: float = 1.0
 
     def __repr__(self):
-        # pylint: disable=consider-using-f-string
         return "<SearchResult key={!r} title={!r} author={!r} confidence={!r}>".format(
             self.key, self.title, self.author, self.confidence
         )

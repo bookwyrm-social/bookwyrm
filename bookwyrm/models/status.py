@@ -109,7 +109,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         # clear user content
         self.content = None
         if hasattr(self, "quotation"):
-            self.quotation = None  # pylint: disable=attribute-defined-outside-init
+            self.quotation = None
         self.deleted_date = timezone.now()
         self.save(*args, **kwargs)
 
@@ -126,7 +126,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return list(mentions)
 
     @classmethod
-    def ignore_activity(cls, activity, allow_external_connections=True):  # pylint: disable=too-many-return-statements
+    def ignore_activity(cls, activity, allow_external_connections=True):
         """keep notes if they are replies to existing statuses"""
         if activity.type == "Announce":
             boosted = activitypub.resolve_remote_id(
@@ -252,7 +252,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             activity.attachment = covers
         return activity
 
-    def to_activity(self, pure=False):  # pylint: disable=arguments-differ
+    def to_activity(self, pure=False):
         """json serialized activitypub class"""
         return self.to_activity_dataclass(pure=pure).serialize()
 
@@ -531,7 +531,6 @@ class Boost(ActivityMixin, Status):
         self.deserialize_reverse_fields = []
 
 
-# pylint: disable=unused-argument
 @receiver(models.signals.post_save)
 def preview_image(instance, sender, *args, **kwargs):
     """Updates book previews if the rating has changed"""

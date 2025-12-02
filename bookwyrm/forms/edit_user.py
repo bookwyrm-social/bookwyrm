@@ -10,7 +10,6 @@ from bookwyrm.models.fields import ClearableFileInputWithWarning
 from .custom_form import CustomForm
 
 
-# pylint: disable=missing-class-docstring
 class EditUserForm(CustomForm):
     class Meta:
         model = models.User

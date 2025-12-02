@@ -24,7 +24,6 @@ from bookwyrm.utils.isni import (
 from bookwyrm.views.helpers import get_edition, get_mergeable_object_or_404
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.edit_book", raise_exception=True), name="dispatch"
@@ -205,7 +204,6 @@ def add_authors(request, data):
             if sub(r"\D", "", str(i.isni)) == sub(r"\D", "", str(a.isni))
         ]
 
-        # pylint: disable=cell-var-from-loop
         matches = list(filter(lambda x: x not in exists, isni_authors))
         # combine existing and isni authors
         matches.extend(author_matches)
@@ -242,8 +240,6 @@ def create_book_from_data(request):
 class ConfirmEditBook(View):
     """confirm edits to a book"""
 
-    # pylint: disable=too-many-locals
-    # pylint: disable=too-many-branches
     def post(self, request, book_id=None):
         """edit a book cool"""
         # returns None if no match is found

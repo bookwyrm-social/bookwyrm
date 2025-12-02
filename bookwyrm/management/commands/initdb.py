@@ -90,7 +90,6 @@ def init_connectors():
         priority=2,
     )
 
-    # pylint: disable=line-too-long
     models.Connector.objects.get_or_create(
         identifier="inventaire.io",
         name="Inventaire",
@@ -145,8 +144,6 @@ def init_link_domains():
         )
 
 
-# pylint: disable=no-self-use
-# pylint: disable=unused-argument
 class Command(BaseCommand):
     """command-line options"""
 

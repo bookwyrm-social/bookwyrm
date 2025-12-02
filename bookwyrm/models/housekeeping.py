@@ -67,7 +67,6 @@ class CleanUpUserExportFilesJob(ParentJob):
 class CleanUpExportsTask(ParentTask):
     """Task to delete expired user export files"""
 
-    # pylint: disable=too-many-arguments, unused-argument, no-self-use
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
         """Handler called after the task returns"""
 
@@ -155,7 +154,6 @@ class MissingCoverTask(ParentTask):
 
             job.found_covers.add(edition)
 
-    # pylint: disable=too-many-arguments, unused-argument, no-self-use
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
         """Handler called after the task returns"""
 
@@ -184,7 +182,7 @@ def get_cover_from_identifiers(edition):
     """for a given edition, can we find a book cover from the fedi?"""
 
     # idk there is probably a more pythonic way of doing this
-    # pylint: disable=protected-access
+
     fields = [
         f.name
         for f in models.Edition._meta.get_fields()

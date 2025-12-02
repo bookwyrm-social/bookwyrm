@@ -33,8 +33,6 @@ def remove_finna_connector():
     print("Finna connector deactivated")
 
 
-# pylint: disable=no-self-use
-# pylint: disable=unused-argument
 class Command(BaseCommand):
     """command-line options"""
 

@@ -13,8 +13,6 @@ from bookwyrm.management.commands import initdb
 from bookwyrm.settings import DOMAIN, BASE_URL
 
 
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
 class User(TestCase):
     @classmethod
     def setUpTestData(cls):

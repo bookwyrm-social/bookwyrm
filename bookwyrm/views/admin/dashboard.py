@@ -22,7 +22,6 @@ from bookwyrm import forms, models, settings
 from bookwyrm.utils import regex
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.moderate_user", raise_exception=True),
@@ -50,7 +49,7 @@ class Dashboard(View):
         )
 
         site = models.SiteSettings.get()
-        # pylint: disable=protected-access
+
         data["missing_conduct"] = (
             not site.code_of_conduct
             or site.code_of_conduct

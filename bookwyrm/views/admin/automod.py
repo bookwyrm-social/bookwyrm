@@ -21,7 +21,6 @@ from bookwyrm import forms, models
     permission_required("bookwyrm.moderate_post", raise_exception=True),
     name="dispatch",
 )
-# pylint: disable=no-self-use
 class AutoMod(View):
     """Manage automated flagging"""
 
@@ -67,7 +66,6 @@ def schedule_automod_task(request):
 @require_POST
 @permission_required("bookwyrm.moderate_user", raise_exception=True)
 @permission_required("bookwyrm.moderate_post", raise_exception=True)
-# pylint: disable=unused-argument
 def unschedule_automod_task(request, task_id):
     """unscheduler"""
     get_object_or_404(PeriodicTask, id=task_id).delete()
@@ -77,7 +75,6 @@ def unschedule_automod_task(request, task_id):
 @require_POST
 @permission_required("bookwyrm.moderate_user", raise_exception=True)
 @permission_required("bookwyrm.moderate_post", raise_exception=True)
-# pylint: disable=unused-argument
 def automod_delete(request, rule_id):
     """Remove a rule"""
     get_object_or_404(models.AutoMod, id=rule_id).delete()
@@ -87,7 +84,6 @@ def automod_delete(request, rule_id):
 @require_POST
 @permission_required("bookwyrm.moderate_user", raise_exception=True)
 @permission_required("bookwyrm.moderate_post", raise_exception=True)
-# pylint: disable=unused-argument
 def run_automod(request):
     """run scan"""
     models.automod_task.delay()

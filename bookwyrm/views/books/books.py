@@ -22,7 +22,6 @@ from bookwyrm.views.helpers import (
 )
 
 
-# pylint: disable=no-self-use
 class Book(View):
     """a book! this is the stuff"""
 

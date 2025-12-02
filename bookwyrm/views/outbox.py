@@ -8,7 +8,6 @@ from bookwyrm import activitypub, models
 from .helpers import is_bookwyrm_request
 
 
-# pylint: disable= no-self-use
 class Outbox(View):
     """outbox"""
 

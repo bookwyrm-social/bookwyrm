@@ -30,7 +30,6 @@ class StyledForm(ModelForm):
 class CustomForm(StyledForm):
     """Check permissions on save"""
 
-    # pylint: disable=arguments-differ
     def save(self, request, *args, **kwargs):
         """Save and check perms"""
         self.instance.raise_not_editable(request.user)

@@ -21,7 +21,7 @@ from bookwyrm.tasks import app, MISC
 
 logger = logging.getLogger(__name__)
 
-# pylint: disable=invalid-name
+
 TBookWyrmModel = TypeVar("TBookWyrmModel", bound=base_model.BookWyrmModel)
 
 
@@ -37,7 +37,6 @@ class ActivityEncoder(JSONEncoder):
 
 
 @dataclass
-# pylint: disable=invalid-name
 class Signature:
     """public key block"""
 
@@ -112,7 +111,6 @@ class ActivityObject:
                 value = field.default
             setattr(self, field.name, value)
 
-    # pylint: disable=too-many-locals,too-many-branches,too-many-arguments
     def to_model(
         self,
         model: Optional[type[TBookWyrmModel]] = None,
@@ -318,7 +316,6 @@ def get_model_from_type(activity_type):
     return model[0]
 
 
-# pylint: disable=too-many-arguments
 @overload
 def resolve_remote_id(
     remote_id: str,
@@ -330,7 +327,6 @@ def resolve_remote_id(
 ) -> TBookWyrmModel: ...
 
 
-# pylint: disable=too-many-arguments
 @overload
 def resolve_remote_id(
     remote_id: str,
@@ -342,7 +338,6 @@ def resolve_remote_id(
 ) -> base_model.BookWyrmModel: ...
 
 
-# pylint: disable=too-many-arguments
 def resolve_remote_id(
     remote_id: str,
     model: Optional[Union[str, type[base_model.BookWyrmModel]]] = None,
@@ -434,7 +429,6 @@ def get_activitypub_data(url):
         resp = requests.get(
             url,
             headers={
-                # pylint: disable=line-too-long
                 "Accept": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
                 "Date": now,
                 "Signature": make_signature("get", sender, url, now),

@@ -13,11 +13,10 @@ from bookwyrm import emailing, forms, models
 from bookwyrm.settings import DOMAIN
 
 
-# pylint: disable=no-self-use
 class Register(View):
     """register a user"""
 
-    def get(self, request):  # pylint: disable=unused-argument
+    def get(self, request):
         """whether or not you're logged in, just go to the home view"""
         return redirect("/")
 

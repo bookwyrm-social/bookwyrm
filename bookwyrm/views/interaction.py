@@ -12,7 +12,6 @@ from bookwyrm import models
 from .helpers import is_api_request
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Favorite(View):
     """like a status"""

@@ -18,7 +18,6 @@ class Command(BaseCommand):
 
     help = "Delete all the user streams"
 
-    # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """flush all, baby"""
         erase_streams()

@@ -9,7 +9,6 @@ from ..models import Review, Quotation, Comment
 from .helpers import get_user_from_username
 
 
-# pylint: disable=no-self-use
 class RssFeed(Feed):
     """serialize user's posts in rss feed"""
 
@@ -24,7 +23,7 @@ class RssFeed(Feed):
         template = get_template("rss/title.html")
         return template.render({"user": item.user, "item_title": title}).strip()
 
-    def get_object(self, request, username):  # pylint: disable=arguments-differ
+    def get_object(self, request, username):
         """the user who's posts get serialized"""
         return get_user_from_username(request.user, username)
 
@@ -69,7 +68,7 @@ class RssReviewsOnlyFeed(Feed):
         template = get_template("rss/title.html")
         return template.render({"user": item.user, "item_title": title}).strip()
 
-    def get_object(self, request, username):  # pylint: disable=arguments-differ
+    def get_object(self, request, username):
         """the user who's posts get serialized"""
         return get_user_from_username(request.user, username)
 
@@ -111,7 +110,7 @@ class RssQuotesOnlyFeed(Feed):
         template = get_template("rss/title.html")
         return template.render({"user": item.user, "item_title": title}).strip()
 
-    def get_object(self, request, username):  # pylint: disable=arguments-differ
+    def get_object(self, request, username):
         """the user who's posts get serialized"""
         return get_user_from_username(request.user, username)
 
@@ -153,7 +152,7 @@ class RssCommentsOnlyFeed(Feed):
         template = get_template("rss/title.html")
         return template.render({"user": item.user, "item_title": title}).strip()
 
-    def get_object(self, request, username):  # pylint: disable=arguments-differ
+    def get_object(self, request, username):
         """the user who's posts get serialized"""
         return get_user_from_username(request.user, username)
 
@@ -196,7 +195,7 @@ class RssShelfFeed(Feed):
         template = get_template("rss/title.html")
         return template.render({"user": authors, "item_title": item.title}).strip()
 
-    def get_object(self, request, shelf_identifier, username):  # pylint: disable=arguments-differ
+    def get_object(self, request, shelf_identifier, username):
         """the shelf that gets serialized"""
         user = get_user_from_username(request.user, username)
         # always get privacy, don't support rss over anything private

@@ -38,7 +38,6 @@ class Command(BaseCommand):
 
     help = "merges duplicate book data"
 
-    # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """run deduplications"""
         remove_editions()

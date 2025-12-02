@@ -178,7 +178,6 @@ def load_connector(
 
 
 @receiver(signals.post_save, sender="bookwyrm.FederatedServer")
-# pylint: disable=unused-argument
 def create_connector(
     sender: Any,
     instance: models.FederatedServer,

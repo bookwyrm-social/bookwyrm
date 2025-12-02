@@ -14,7 +14,6 @@ from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from bookwyrm import forms, models
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.edit_instance_settings", raise_exception=True),
@@ -51,7 +50,6 @@ def schedule_export_delete_task(request):
     return redirect("settings-files")
 
 
-# pylint: disable=unused-argument
 @require_POST
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
 def unschedule_file_maintenance_task(request, task_id):
@@ -68,7 +66,6 @@ def run_export_deletions(request):
     return redirect("settings-files")
 
 
-# pylint: disable=unused-argument
 @require_POST
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
 def cancel_export_delete_job(request, job_id):

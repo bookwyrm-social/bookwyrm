@@ -107,7 +107,7 @@ class ActivityStream(RedisStore):
         self.populate_store(self.stream_id(user.id))
 
     @tracer.start_as_current_span("ActivityStream._get_audience")
-    def _get_audience(self, status):  # pylint: disable=no-self-use
+    def _get_audience(self, status):
         """given a status, what users should see it, excluding the author"""
         trace.get_current_span().set_attribute("status_type", status.status_type)
         trace.get_current_span().set_attribute("status_privacy", status.privacy)
@@ -163,7 +163,7 @@ class ActivityStream(RedisStore):
         """convert a list of user ids into redis store ids"""
         return [self.stream_id(user_id) for user_id in user_ids]
 
-    def get_statuses_for_user(self, user):  # pylint: disable=no-self-use
+    def get_statuses_for_user(self, user):
         """given a user, what statuses should they see on this stream"""
         return models.Status.privacy_filter(
             user,
@@ -315,7 +315,6 @@ streams = {
 
 
 @receiver(signals.post_save)
-# pylint: disable=unused-argument
 def add_status_on_create(sender, instance, created, *args, **kwargs):
     """add newly created statuses to activity feeds"""
     # we're only interested in new statuses
@@ -366,7 +365,6 @@ def add_status_on_create_command(sender, instance, created):
 
 
 @receiver(signals.post_delete, sender=models.Boost)
-# pylint: disable=unused-argument
 def remove_boost_on_delete(sender, instance, *args, **kwargs):
     """boosts are deleted"""
     # remove the boost
@@ -376,7 +374,6 @@ def remove_boost_on_delete(sender, instance, *args, **kwargs):
 
 
 @receiver(signals.post_save, sender=models.UserFollows)
-# pylint: disable=unused-argument
 def add_statuses_on_follow(sender, instance, created, *args, **kwargs):
     """add a newly followed user's statuses to feeds"""
     if not created or not instance.user_subject.local:
@@ -387,7 +384,6 @@ def add_statuses_on_follow(sender, instance, created, *args, **kwargs):
 
 
 @receiver(signals.post_delete, sender=models.UserFollows)
-# pylint: disable=unused-argument
 def remove_statuses_on_unfollow(sender, instance, *args, **kwargs):
     """remove statuses from a feed on unfollow"""
     if not instance.user_subject.local:
@@ -398,7 +394,6 @@ def remove_statuses_on_unfollow(sender, instance, *args, **kwargs):
 
 
 @receiver(signals.post_save, sender=models.UserBlocks)
-# pylint: disable=unused-argument
 def remove_statuses_on_block(sender, instance, *args, **kwargs):
     """remove statuses from all feeds on block"""
     # blocks apply ot all feeds
@@ -415,7 +410,6 @@ def remove_statuses_on_block(sender, instance, *args, **kwargs):
 
 
 @receiver(signals.post_delete, sender=models.UserBlocks)
-# pylint: disable=unused-argument
 def add_statuses_on_unblock(sender, instance, *args, **kwargs):
     """add statuses back to all feeds on unblock"""
     # make sure there isn't a block in the other direction
@@ -445,7 +439,6 @@ def add_statuses_on_unblock(sender, instance, *args, **kwargs):
 
 
 @receiver(signals.post_save, sender=models.User)
-# pylint: disable=unused-argument
 def populate_streams_on_account_create(sender, instance, created, *args, **kwargs):
     """build a user's feeds when they join"""
     if not created or not instance.local:
@@ -462,7 +455,6 @@ def populate_streams_on_account_create_command(instance_id):
 
 
 @receiver(signals.pre_save, sender=models.ShelfBook)
-# pylint: disable=unused-argument
 def add_statuses_on_shelve(sender, instance, *args, **kwargs):
     """update books stream when user shelves a book"""
     if not instance.user.local:
@@ -478,7 +470,6 @@ def add_statuses_on_shelve(sender, instance, *args, **kwargs):
 
 
 @receiver(signals.post_delete, sender=models.ShelfBook)
-# pylint: disable=unused-argument
 def remove_statuses_on_unshelve(sender, instance, *args, **kwargs):
     """update books stream when user unshelves a book"""
     if not instance.user.local:

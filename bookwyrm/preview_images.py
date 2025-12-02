@@ -280,8 +280,6 @@ def generate_default_inner_img():
     return default_cover
 
 
-# pylint: disable=too-many-locals
-# pylint: disable=too-many-statements
 def generate_preview_image(
     texts=None, picture=None, rating=None, show_instance_layer=True
 ):
@@ -296,7 +294,7 @@ def generate_preview_image(
         )
         color_thief = ColorThief(picture)
         dominant_color = color_thief.get_color(quality=1)
-    except:  # pylint: disable=bare-except
+    except:
         inner_img_layer = generate_default_inner_img()
         dominant_color = ImageColor.getrgb(DEFAULT_COVER_COLOR)
 

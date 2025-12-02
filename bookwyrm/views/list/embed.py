@@ -13,7 +13,6 @@ from bookwyrm import models
 from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable=no-self-use
 class EmbedList(View):
     """embedded book list page"""
 

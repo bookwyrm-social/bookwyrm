@@ -10,7 +10,6 @@ from .custom_form import CustomForm
 from .widgets import ArrayWidget, SelectDateWidget, Select
 
 
-# pylint: disable=missing-class-docstring
 class CoverForm(CustomForm):
     class Meta:
         model = models.Book

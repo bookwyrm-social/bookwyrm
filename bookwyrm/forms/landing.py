@@ -13,7 +13,6 @@ from bookwyrm.settings import TWO_FACTOR_LOGIN_VALIDITY_WINDOW
 from .custom_form import CustomForm
 
 
-# pylint: disable=missing-class-docstring
 class LoginForm(CustomForm):
     class Meta:
         model = models.User

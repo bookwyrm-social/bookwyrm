@@ -9,7 +9,6 @@ from django.views import View
 from bookwyrm import emailing, forms, models
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class Report(View):
     """Make reports"""

@@ -20,7 +20,6 @@ from bookwyrm.utils import regex
 from bookwyrm.utils.validate import validate_url_domain
 
 
-# pylint: disable=unnecessary-pass
 class WebFingerError(Exception):
     """empty error class for problems finding user information with webfinger"""
 
@@ -249,7 +248,6 @@ def redirect_to_referer(request, *args, **kwargs):
     return redirect(*args or "/", **kwargs)
 
 
-# pylint: disable=redefined-builtin
 def get_mergeable_object_or_404(klass, id):
     """variant of get_object_or_404 that also redirects if id has been merged
     into another object"""

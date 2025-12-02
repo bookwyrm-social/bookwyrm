@@ -16,7 +16,6 @@ from bookwyrm import settings
 from bookwyrm.utils import regex
 
 
-# pylint: disable= no-self-use
 class InstanceConfig(View):
     """make sure the instance looks correct before adding any data"""
 
@@ -36,7 +35,6 @@ class InstanceConfig(View):
         )
         warnings["localhost"] = settings.DOMAIN == "localhost"
 
-        # pylint: disable=line-too-long
         data = {
             "warnings": warnings,
             "info": {

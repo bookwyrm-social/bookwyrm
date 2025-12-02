@@ -32,7 +32,6 @@ class SiteModel(models.Model):
 
         abstract = True
 
-    # pylint: disable=no-self-use
     def raise_not_editable(self, viewer: User) -> None:
         """Check if the user has the right permissions"""
         if viewer.has_perm("bookwyrm.edit_instance_settings"):
@@ -175,7 +174,6 @@ class Theme(SiteModel):
     loads = models.BooleanField(null=True, blank=True)
 
     def __str__(self) -> str:
-        # pylint: disable=invalid-str-returned
         return self.name
 
 
@@ -190,7 +188,6 @@ class SiteInvite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     invitees = models.ManyToManyField(User, related_name="invitees")
 
-    # pylint: disable=no-self-use
     def raise_not_editable(self, viewer: User) -> None:
         """Admins only"""
         if viewer.has_perm("bookwyrm.create_invites"):
@@ -256,7 +253,6 @@ class PasswordReset(models.Model):
         return f"{BASE_URL}/password-reset/{self.code}"
 
 
-# pylint: disable=unused-argument
 @receiver(models.signals.post_save, sender=SiteSettings)
 def preview_image(instance: SiteSettings, *args, **kwargs) -> None:
     """Update image preview for the default site image"""

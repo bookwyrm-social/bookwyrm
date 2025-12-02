@@ -50,7 +50,6 @@ class Command(BaseCommand):
             help="don't actually merge, only print what would happen",
         )
 
-    # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """run deduplications"""
         dedupe_model(models.Edition, dry_run=options["dry_run"])

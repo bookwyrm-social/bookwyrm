@@ -21,7 +21,6 @@ class Command(BaseCommand):
 
     help = "Populate suggested users for all users"
 
-    # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """run builder"""
         populate_suggestions()

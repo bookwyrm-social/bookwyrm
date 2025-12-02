@@ -14,7 +14,6 @@ from bookwyrm.models.import_job import import_item_task
 from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class ImportManualReview(View):
     """problems items in an existing import"""
@@ -45,7 +44,6 @@ class ImportManualReview(View):
 
 @login_required
 @require_POST
-# pylint: disable=unused-argument
 def approve_import_item(request, job_id, item_id):
     """we guessed right"""
     item = get_object_or_404(
@@ -63,7 +61,6 @@ def approve_import_item(request, job_id, item_id):
 
 @login_required
 @require_POST
-# pylint: disable=unused-argument
 def delete_import_item(request, job_id, item_id):
     """we guessed right"""
     item = get_object_or_404(

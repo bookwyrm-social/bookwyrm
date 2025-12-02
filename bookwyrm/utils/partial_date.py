@@ -13,7 +13,6 @@ from django.forms import DateField
 from django.forms.widgets import SelectDateWidget
 from django.utils import timezone
 
-# pylint: disable=no-else-return
 
 __all__ = [
     "PartialDate",
@@ -230,7 +229,6 @@ class PartialDateModel(models.DateTimeField):  # type: ignore[type-arg]
         kwargs.setdefault("form_class", PartialDateFormField)
         return super().formfield(**kwargs)
 
-    # pylint: disable-next=arguments-renamed,line-too-long
     def contribute_to_class(self, model, our_name_in_model, **kwargs):  # type: ignore[no-untyped-def]
         # Define precision field.
         descriptor = self.descriptor_class(self)

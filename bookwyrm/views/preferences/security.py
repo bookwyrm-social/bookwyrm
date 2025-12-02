@@ -25,7 +25,6 @@ from bookwyrm.views.helpers import set_language
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class UserSecurity(View):
     """change security settings as logged in user"""
@@ -47,7 +46,6 @@ class UserSecurity(View):
 
 @login_required
 @require_POST
-# pylint: disable= unused-argument
 def logout_session(request, session_key: str = None):
     """log out session"""
 
@@ -63,7 +61,6 @@ def logout_session(request, session_key: str = None):
     return redirect("/preferences/security")
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Edit2FA(View):
     """change 2FA settings as logged in user"""

@@ -18,7 +18,6 @@ from bookwyrm.views.helpers import get_mergeable_object_or_404
 from .preferences.edit_user import save_user_form
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class GetStartedProfile(View):
     """tell us about yourself"""

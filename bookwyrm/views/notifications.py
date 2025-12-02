@@ -7,7 +7,6 @@ from django.shortcuts import redirect
 from django.views import View
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Notifications(View):
     """notifications view"""

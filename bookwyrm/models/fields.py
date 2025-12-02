@@ -130,7 +130,6 @@ class ActivitypubFieldMixin:
             return {self.activitypub_wrapper: value}
         return value
 
-    # pylint: disable=unused-argument
     def field_from_activity(self, value, allow_external_connections=True, trigger=None):
         """formatter to convert activitypub into a model value"""
         if value and hasattr(self, "activitypub_wrapper"):
@@ -294,7 +293,7 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
             activity["cc"] = []
 
 
-class ForeignKey(  # pylint: disable=abstract-method
+class ForeignKey(
     ActivitypubRelatedFieldMixin,
     models.ForeignKey,
 ):
@@ -306,9 +305,7 @@ class ForeignKey(  # pylint: disable=abstract-method
         return value.remote_id
 
 
-class OneToOneField(  # pylint: disable=abstract-method
-    ActivitypubRelatedFieldMixin, models.OneToOneField
-):
+class OneToOneField(ActivitypubRelatedFieldMixin, models.OneToOneField):
     """activitypub-aware foreign key field"""
 
     def field_to_activity(self, value):
@@ -317,9 +314,7 @@ class OneToOneField(  # pylint: disable=abstract-method
         return value.to_activity()
 
 
-class ManyToManyField(  # pylint: disable=abstract-method
-    ActivitypubFieldMixin, models.ManyToManyField
-):
+class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
     """activitypub-aware many to many field"""
 
     def __init__(self, *args, link_only=False, **kwargs):
@@ -370,7 +365,7 @@ class ManyToManyField(  # pylint: disable=abstract-method
         return items
 
 
-class TagField(ManyToManyField):  # pylint: disable=abstract-method
+class TagField(ManyToManyField):
     """special case of many to many that uses Tags"""
 
     def __init__(self, *args, **kwargs):
@@ -463,7 +458,6 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         self.alt_field = alt_field
         super().__init__(*args, **kwargs)
 
-    # pylint: disable=arguments-renamed,too-many-arguments
     def set_field_from_activity(
         self, instance, data, save=True, overwrite=True, allow_external_connections=True
     ):
@@ -579,7 +573,6 @@ class PartialDateField(ActivitypubFieldMixin, PartialDateModel):
         return value.partial_isoformat() if value else None
 
     def field_from_activity(self, value, allow_external_connections=True, trigger=None):
-        # pylint: disable=no-else-return
         try:
             return from_partial_isoformat(value)
         except ValueError:

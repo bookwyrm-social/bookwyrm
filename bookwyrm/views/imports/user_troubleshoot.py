@@ -15,7 +15,6 @@ from bookwyrm.views import user_import_available
 from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class UserImportTroubleshoot(View):
     """failed items in an existing user import"""

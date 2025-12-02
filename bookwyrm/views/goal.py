@@ -15,7 +15,6 @@ from bookwyrm.status import create_generated_note
 from .helpers import get_user_from_username
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Goal(View):
     """track books for the year"""

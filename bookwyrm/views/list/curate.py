@@ -12,7 +12,6 @@ from bookwyrm.views.list.list import increment_order_in_reverse
 from bookwyrm.views.list.list import normalize_book_list_ordering
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class Curate(View):
     """approve or discard list suggestions"""

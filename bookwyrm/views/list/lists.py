@@ -16,7 +16,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-# pylint: disable=no-self-use
 class Lists(View):
     """book list page"""
 
@@ -35,7 +34,6 @@ class Lists(View):
         return TemplateResponse(request, "lists/lists.html", data)
 
     @method_decorator(login_required, name="dispatch")
-    # pylint: disable=unused-argument
     def post(self, request):
         """create a book_list"""
         form = forms.ListForm(request.POST)

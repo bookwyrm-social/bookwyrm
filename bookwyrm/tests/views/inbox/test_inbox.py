@@ -134,7 +134,6 @@ class Inbox(TestCase):
         request = self.factory.post(
             "",
             headers={
-                # pylint: disable-next=line-too-long
                 "user-agent": "http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
             },
         )
