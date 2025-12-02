@@ -17,6 +17,7 @@ from bookwyrm.models import base_model
 from bookwyrm.signatures import make_signature
 from bookwyrm.settings import DOMAIN, INSTANCE_ACTOR_USERNAME
 from bookwyrm.tasks import app, MISC
+from bookwyrm.federation.backoff import RemoteInstanceBackoff
 
 logger = logging.getLogger(__name__)
 
@@ -373,11 +374,35 @@ def resolve_remote_id(
             "Unable to serialize object without making external HTTP requests"
         )
 
+    # Check backoff before fetching from remote
+    if RemoteInstanceBackoff.should_skip_fetch(remote_id):
+        # Try to use cached version if available
+        cached_result = None
+        if model:
+            if isinstance(model, str):
+                model_class = apps.get_model(f"bookwyrm.{model}", require_ready=True)
+            else:
+                model_class = model
+            cached_result = model_class.find_existing_by_remote_id(remote_id)
+
+        if cached_result:
+            logger.warning(f"Using cached {remote_id} due to backoff")
+            return cached_result if not get_activity else cached_result.to_activity_dataclass()
+        else:
+            next_retry = RemoteInstanceBackoff.get_next_retry_time(remote_id)
+            raise ActivitySerializerError(
+                f"Remote {remote_id} temporarily unavailable (retry: {next_retry})"
+            )
+
     # load the data and create the object
     try:
         data = get_activitypub_data(remote_id)
+        # Record successful fetch for backoff tracking
+        RemoteInstanceBackoff.record_success(remote_id)
     except ConnectionError:
         logger.info("Could not connect to host for remote_id: %s", remote_id)
+        # Record failure for backoff tracking
+        RemoteInstanceBackoff.record_failure(remote_id)
         return None
     except requests.HTTPError as e:
         if (
@@ -392,6 +417,8 @@ def resolve_remote_id(
             )
         else:
             logger.exception("HTTP error - remote_id: %s - error: %s", remote_id, e)
+        # Record failure for backoff tracking
+        RemoteInstanceBackoff.record_failure(remote_id)
         return None
     # determine the model implicitly, if not provided
     # or if it's a model with subclasses like Status, check again

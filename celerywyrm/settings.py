@@ -2,6 +2,7 @@
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
 from bookwyrm.settings import *
+from celery.schedules import crontab
 
 QUERY_TIMEOUT = env.int("CELERY_QUERY_TIMEOUT", env.int("QUERY_TIMEOUT", 30))
 
@@ -31,6 +32,14 @@ CELERY_RESULT_SERIALIZER = "json"
 
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_TIMEZONE = env("TIME_ZONE", "UTC")
+
+# Beat schedule for periodic tasks
+CELERY_BEAT_SCHEDULE = {
+    "cleanup-backoff-entries": {
+        "task": "bookwyrm.tasks.cleanup_backoff_entries",
+        "schedule": crontab(hour=0, minute=0),  # Daily at midnight
+    },
+}
 
 CELERY_WORKER_CONCURRENCY = env("CELERY_WORKER_CONCURRENCY", None)
 CELERY_TASK_SOFT_TIME_LIMIT = env("CELERY_TASK_SOFT_TIME_LIMIT", None)

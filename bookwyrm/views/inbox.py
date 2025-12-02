@@ -16,6 +16,12 @@ from bookwyrm import activitypub, models
 from bookwyrm.tasks import app, INBOX
 from bookwyrm.signatures import Signature
 from bookwyrm.utils import regex
+from bookwyrm.federation.key_cache import (
+    get_cached_public_key,
+    cache_public_key,
+    clear_cached_key,
+)
+from bookwyrm.federation.backoff import RemoteInstanceBackoff
 
 logger = logging.getLogger(__name__)
 
@@ -134,9 +140,30 @@ def has_valid_signature(request, activity):
     """verify incoming signature"""
     try:
         signature = Signature.parse(request)
-        remote_user = activitypub.resolve_remote_id(
-            activity.get("actor"), model=models.User
-        )
+        actor_url = activity.get("actor")
+
+        # Try cache first
+        remote_user = get_cached_public_key(actor_url)
+
+        if not remote_user:
+            # Check backoff before fetching
+            if RemoteInstanceBackoff.should_skip_fetch(actor_url):
+                logger.warning(f"Actor {actor_url} in backoff, rejecting")
+                return False
+
+            # Fetch and cache
+            try:
+                remote_user = activitypub.resolve_remote_id(
+                    actor_url, model=models.User
+                )
+                if remote_user:
+                    cache_public_key(actor_url, remote_user)
+                    RemoteInstanceBackoff.record_success(actor_url)
+            except Exception as e:
+                RemoteInstanceBackoff.record_failure(actor_url)
+                logger.error(f"Failed to fetch actor {actor_url}: {e}")
+                return False
+
         if not remote_user:
             return False
 
@@ -149,13 +176,24 @@ def has_valid_signature(request, activity):
         try:
             signature.verify(remote_user.key_pair.public_key, request)
         except ValueError:
+            # Signature failed - key may have rotated, try refreshing
             old_key = remote_user.key_pair.public_key
-            remote_user = activitypub.resolve_remote_id(
-                remote_user.remote_id, model=models.User, refresh=True
-            )
-            if remote_user.key_pair.public_key == old_key:
-                raise  # Key unchanged.
-            signature.verify(remote_user.key_pair.public_key, request)
-    except (ValueError, requests.exceptions.HTTPError):
+            try:
+                remote_user = activitypub.resolve_remote_id(
+                    remote_user.remote_id, model=models.User, refresh=True
+                )
+                if remote_user.key_pair.public_key == old_key:
+                    # Key unchanged - clear cache and fail
+                    clear_cached_key(actor_url)
+                    raise  # Key unchanged.
+                # Key rotated - update cache and verify
+                cache_public_key(actor_url, remote_user)
+                signature.verify(remote_user.key_pair.public_key, request)
+            except Exception:
+                # Failed verification - clear cache
+                clear_cached_key(actor_url)
+                raise
+    except (ValueError, requests.exceptions.HTTPError) as e:
+        logger.warning(f"Signature verification failed for {activity.get('actor')}: {e}")
         return False
     return True
