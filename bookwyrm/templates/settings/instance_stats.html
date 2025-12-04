@@ -1,0 +1,319 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title %}{% trans "Instance Stats" %}{% endblock %}
+
+{% block header %}{% trans "Instance Stats" %}{% endblock %}
+
+{% block panel %}
+
+{# Time period selector #}
+<div class="block">
+    <form method="get" class="field has-addons">
+        <div class="control">
+            <span class="select">
+                <select name="days" onchange="this.form.submit()">
+                    <option value="7" {% if interval == 7 %}selected{% endif %}>{% trans "Last 7 days" %}</option>
+                    <option value="14" {% if interval == 14 %}selected{% endif %}>{% trans "Last 14 days" %}</option>
+                    <option value="30" {% if interval == 30 %}selected{% endif %}>{% trans "Last 30 days" %}</option>
+                </select>
+            </span>
+        </div>
+    </form>
+</div>
+
+{# Federation Stats Section #}
+<section class="block">
+    <h2 class="title is-4">{% trans "Federation" %}</h2>
+
+    <div class="columns is-multiline has-text-centered">
+        <div class="column is-3-desktop is-6-tablet">
+            <div class="notification is-info is-light">
+                <h3 class="heading">{% trans "Federated Servers" %}</h3>
+                <p class="title is-4">{{ federation.federated_servers|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-3-desktop is-6-tablet">
+            <div class="notification is-danger is-light">
+                <h3 class="heading">{% trans "Blocked Servers" %}</h3>
+                <p class="title is-4">{{ federation.blocked_servers|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-3-desktop is-6-tablet">
+            <div class="notification is-primary is-light">
+                <h3 class="heading">{% trans "Remote Users" %}</h3>
+                <p class="title is-4">{{ federation.remote_users|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-3-desktop is-6-tablet">
+            <div class="notification is-success is-light">
+                <h3 class="heading">{% trans "New Servers (period)" %}</h3>
+                <p class="title is-4">{{ activity.total_servers_period|intcomma }}</p>
+            </div>
+        </div>
+    </div>
+
+    {# Software breakdown #}
+    {% if federation.software_breakdown %}
+    <div class="columns">
+        <div class="column is-half">
+            <div class="box">
+                <h3 class="subtitle is-5">{% trans "Server Software Distribution" %}</h3>
+                <canvas id="software_chart" height="200"></canvas>
+            </div>
+        </div>
+        <div class="column is-half">
+            <div class="box">
+                <h3 class="subtitle is-5">{% trans "New Servers Discovered" %}</h3>
+                <canvas id="servers_chart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+
+{# Readwise Stats Section #}
+<section class="block">
+    <h2 class="title is-4">{% trans "Readwise Integration" %}</h2>
+
+    <div class="columns is-multiline has-text-centered">
+        <div class="column is-3-desktop is-6-tablet">
+            <div class="notification is-link is-light">
+                <h3 class="heading">{% trans "Users with Token" %}</h3>
+                <p class="title is-4">{{ readwise.users_with_token|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-3-desktop is-6-tablet">
+            <div class="notification is-success is-light">
+                <h3 class="heading">{% trans "Exported Quotes" %}</h3>
+                <p class="title is-4">{{ readwise.exported_quotes|intcomma }}</p>
+                <p class="is-size-7 has-text-grey">{{ readwise.export_percentage }}% {% trans "of" %} {{ readwise.total_quotes|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-3-desktop is-6-tablet">
+            <div class="notification is-info is-light">
+                <h3 class="heading">{% trans "Imported Highlights" %}</h3>
+                <p class="title is-4">{{ readwise.matched_highlights|intcomma }}</p>
+                <p class="is-size-7 has-text-grey">{{ readwise.match_percentage }}% {% trans "matched" %}</p>
+            </div>
+        </div>
+        <div class="column is-3-desktop is-6-tablet">
+            <div class="notification is-warning is-light">
+                <h3 class="heading">{% trans "Unmatched Highlights" %}</h3>
+                <p class="title is-4">{{ readwise.unmatched_highlights|intcomma }}</p>
+            </div>
+        </div>
+    </div>
+
+    {# Recent syncs #}
+    {% if readwise.recent_syncs %}
+    <div class="box">
+        <h3 class="subtitle is-5">{% trans "Recent Sync Activity" %}</h3>
+        <table class="table is-fullwidth is-striped">
+            <thead>
+                <tr>
+                    <th>{% trans "User" %}</th>
+                    <th>{% trans "Last Export" %}</th>
+                    <th>{% trans "Last Import" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sync in readwise.recent_syncs %}
+                <tr>
+                    <td>{{ sync.user.username }}</td>
+                    <td>{% if sync.last_export_at %}{{ sync.last_export_at|naturaltime }}{% else %}-{% endif %}</td>
+                    <td>{% if sync.last_import_at %}{{ sync.last_import_at|naturaltime }}{% else %}-{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</section>
+
+{# Activity Charts Section #}
+<section class="block">
+    <h2 class="title is-4">{% trans "Activity Over Time" %}</h2>
+
+    <div class="columns is-multiline has-text-centered mb-4">
+        <div class="column is-4-desktop is-6-tablet">
+            <div class="notification">
+                <h3 class="heading">{% trans "Statuses (period)" %}</h3>
+                <p class="title is-4">{{ activity.total_statuses_period|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-4-desktop is-6-tablet">
+            <div class="notification">
+                <h3 class="heading">{% trans "Quotes (period)" %}</h3>
+                <p class="title is-4">{{ activity.total_quotes_period|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-4-desktop is-6-tablet">
+            <div class="notification">
+                <h3 class="heading">{% trans "Avg Daily Statuses" %}</h3>
+                <p class="title is-4">{{ activity.total_statuses_period|floatformat:0 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column">
+            <div class="box">
+                <h3 class="subtitle is-5">{% trans "Status Activity" %}</h3>
+                <canvas id="status_chart" height="150"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column">
+            <div class="box">
+                <h3 class="subtitle is-5">{% trans "Quote Activity" %}</h3>
+                <canvas id="quotes_chart" height="150"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Color palette
+    const colors = {
+        primary: 'rgba(54, 162, 235, 0.8)',
+        primaryBorder: 'rgba(54, 162, 235, 1)',
+        success: 'rgba(75, 192, 192, 0.8)',
+        successBorder: 'rgba(75, 192, 192, 1)',
+        warning: 'rgba(255, 206, 86, 0.8)',
+        warningBorder: 'rgba(255, 206, 86, 1)',
+        danger: 'rgba(255, 99, 132, 0.8)',
+        dangerBorder: 'rgba(255, 99, 132, 1)',
+        info: 'rgba(153, 102, 255, 0.8)',
+        infoBorder: 'rgba(153, 102, 255, 1)',
+    };
+
+    // Status Activity Chart
+    const statusCtx = document.getElementById('status_chart');
+    if (statusCtx) {
+        new Chart(statusCtx, {
+            type: 'line',
+            data: {
+                labels: {{ activity.labels|safe }},
+                datasets: [{
+                    label: '{% trans "Statuses" %}',
+                    data: {{ activity.status_by_day|safe }},
+                    borderColor: colors.primaryBorder,
+                    backgroundColor: colors.primary,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    // Quotes Chart
+    const quotesCtx = document.getElementById('quotes_chart');
+    if (quotesCtx) {
+        new Chart(quotesCtx, {
+            type: 'line',
+            data: {
+                labels: {{ activity.labels|safe }},
+                datasets: [{
+                    label: '{% trans "Quotes" %}',
+                    data: {{ activity.quotes_by_day|safe }},
+                    borderColor: colors.successBorder,
+                    backgroundColor: colors.success,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    // Software Distribution Chart
+    const softwareCtx = document.getElementById('software_chart');
+    if (softwareCtx) {
+        const softwareData = {{ federation.software_breakdown|safe }};
+        new Chart(softwareCtx, {
+            type: 'doughnut',
+            data: {
+                labels: softwareData.map(d => d.application_type || 'Unknown'),
+                datasets: [{
+                    data: softwareData.map(d => d.count),
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(153, 102, 255, 0.8)',
+                        'rgba(255, 159, 64, 0.8)',
+                        'rgba(199, 199, 199, 0.8)',
+                        'rgba(83, 102, 255, 0.8)',
+                        'rgba(255, 99, 255, 0.8)',
+                        'rgba(99, 255, 132, 0.8)',
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { boxWidth: 12 }
+                    }
+                }
+            }
+        });
+    }
+
+    // Servers Discovered Chart
+    const serversCtx = document.getElementById('servers_chart');
+    if (serversCtx) {
+        new Chart(serversCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ activity.labels|safe }},
+                datasets: [{
+                    label: '{% trans "New Servers" %}',
+                    data: {{ activity.servers_by_day|safe }},
+                    backgroundColor: colors.info,
+                    borderColor: colors.infoBorder,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

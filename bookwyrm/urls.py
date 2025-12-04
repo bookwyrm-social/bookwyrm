@@ -97,6 +97,11 @@ urlpatterns = [
     re_path(
         r"^settings/dashboard/?$", views.Dashboard.as_view(), name="settings-dashboard"
     ),
+    re_path(
+        r"^settings/instance-stats/?$",
+        views.InstanceStats.as_view(),
+        name="settings-instance-stats",
+    ),
     re_path(r"^settings/site-settings/?$", views.Site.as_view(), name="settings-site"),
     re_path(
         r"^settings/site-registration/?$",

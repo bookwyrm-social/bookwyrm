@@ -15,6 +15,7 @@ from .admin.connectors import (
 )
 from .admin.schedule import ScheduledTasks
 from .admin.dashboard import Dashboard
+from .admin.instance_stats import InstanceStats
 from .admin.federation import Federation, FederatedServer
 from .admin.federation import AddFederatedServer, ImportServerBlocklist
 from .admin.federation import block_server, unblock_server, refresh_server
