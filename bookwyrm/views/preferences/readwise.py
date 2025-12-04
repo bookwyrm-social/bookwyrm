@@ -78,7 +78,7 @@ class ReadwiseSettings(View):
             }
             return TemplateResponse(request, "preferences/readwise.html", data)
 
-        form.save()
+        form.save(request)
 
         # Create sync record if token was just added
         if request.user.readwise_token:
