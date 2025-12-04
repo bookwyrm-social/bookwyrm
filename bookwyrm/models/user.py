@@ -163,6 +163,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     discoverable = fields.BooleanField(default=False)
     show_guided_tour = models.BooleanField(default=True)
     show_ratings = models.BooleanField(default=True)
+    newsletter_subscription = models.BooleanField(default=False)
 
     # feed options
     feed_status_types = DjangoArrayField(

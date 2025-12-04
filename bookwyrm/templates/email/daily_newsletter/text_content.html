@@ -1,0 +1,73 @@
+{% extends 'email/text_layout.html' %}
+{% load i18n %}
+{% block content %}
+
+{% blocktrans trimmed %}Here's what happened in your reading community on {{ date_str }}:{% endblocktrans %}
+
+{% if own_activities.reviews or own_activities.comments or own_activities.quotations or own_activities.shelf_changes %}
+=== {% trans "Your Activity" %} ===
+
+{% if own_activities.reviews %}
+{% trans "Reviews:" %}
+{% for review in own_activities.reviews %}
+- {{ review.book.title }}{% if review.rating %} ({{ review.rating }} {% trans "stars" %}){% endif %}
+{% endfor %}
+{% endif %}
+
+{% if own_activities.comments %}
+{% trans "Comments:" %}
+{% for comment in own_activities.comments %}
+- {% trans "Comment on" %} "{{ comment.book.title }}"
+{% endfor %}
+{% endif %}
+
+{% if own_activities.quotations %}
+{% trans "Quotations:" %}
+{% for quote in own_activities.quotations %}
+- {% trans "Quote from" %} "{{ quote.book.title }}"
+{% endfor %}
+{% endif %}
+
+{% if own_activities.shelf_changes %}
+{% trans "Shelf Updates:" %}
+{% for change in own_activities.shelf_changes %}
+- {% blocktrans trimmed with title=change.book.title shelf=change.shelf.name %}Added "{{ title }}" to {{ shelf }}{% endblocktrans %}
+{% endfor %}
+{% endif %}
+{% endif %}
+
+{% if followed_activities.reviews or followed_activities.comments or followed_activities.quotations %}
+=== {% trans "From People You Follow" %} ===
+
+{% if followed_activities.reviews %}
+{% trans "Reviews:" %}
+{% for review in followed_activities.reviews %}
+- {{ review.user.display_name }} {% trans "reviewed" %} "{{ review.book.title }}"{% if review.rating %} ({{ review.rating }} {% trans "stars" %}){% endif %}
+{% endfor %}
+{% endif %}
+
+{% if followed_activities.comments %}
+{% trans "Comments:" %}
+{% for comment in followed_activities.comments %}
+- {{ comment.user.display_name }} {% trans "commented on" %} "{{ comment.book.title }}"
+{% endfor %}
+{% endif %}
+
+{% if followed_activities.quotations %}
+{% trans "Quotations:" %}
+{% for quote in followed_activities.quotations %}
+- {{ quote.user.display_name }} {% trans "shared a quote from" %} "{{ quote.book.title }}"
+{% endfor %}
+{% endif %}
+
+{% if followed_activities.shelf_changes %}
+{% trans "Shelf Updates:" %}
+{% for change in followed_activities.shelf_changes|slice:":10" %}
+- {{ change.user.display_name }} {% trans "added" %} "{{ change.book.title }}" {% trans "to" %} {{ change.shelf.name }}
+{% endfor %}
+{% endif %}
+{% endif %}
+
+{% trans "Visit your feed for more:" %} {{ base_url }}
+
+{% endblock %}

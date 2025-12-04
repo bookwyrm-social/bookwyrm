@@ -1,0 +1,112 @@
+{% extends 'email/html_layout.html' %}
+{% load i18n %}
+
+{% block content %}
+<p>{% blocktrans trimmed %}Here's what happened in your reading community on {{ date_str }}:{% endblocktrans %}</p>
+
+{% if own_activities.reviews or own_activities.comments or own_activities.quotations or own_activities.shelf_changes %}
+<h2 style="color: #3273dc; margin-top: 1.5rem; font-size: 1.2rem;">{% trans "Your Activity" %}</h2>
+
+{% if own_activities.reviews %}
+<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Reviews" %}</h3>
+<ul style="margin: 0; padding-left: 1.5rem;">
+{% for review in own_activities.reviews %}
+<li style="margin-bottom: 0.5rem;">
+    <a style="color: #3273dc;" href="{{ base_url }}{{ review.book.local_path }}">{{ review.book.title }}</a>
+    {% if review.rating %} - {{ review.rating }} {% trans "stars" %}{% endif %}
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if own_activities.comments %}
+<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Comments" %}</h3>
+<ul style="margin: 0; padding-left: 1.5rem;">
+{% for comment in own_activities.comments %}
+<li style="margin-bottom: 0.5rem;">
+    {% trans "Comment on" %} <a style="color: #3273dc;" href="{{ base_url }}{{ comment.book.local_path }}">{{ comment.book.title }}</a>
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if own_activities.quotations %}
+<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Quotations" %}</h3>
+<ul style="margin: 0; padding-left: 1.5rem;">
+{% for quote in own_activities.quotations %}
+<li style="margin-bottom: 0.5rem;">
+    {% trans "Quote from" %} <a style="color: #3273dc;" href="{{ base_url }}{{ quote.book.local_path }}">{{ quote.book.title }}</a>
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if own_activities.shelf_changes %}
+<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Shelf Updates" %}</h3>
+<ul style="margin: 0; padding-left: 1.5rem;">
+{% for change in own_activities.shelf_changes %}
+<li style="margin-bottom: 0.5rem;">
+    {% blocktrans trimmed with title=change.book.title shelf=change.shelf.name %}Added <a style="color: #3273dc;" href="{{ base_url }}{{ change.book.local_path }}">{{ title }}</a> to {{ shelf }}{% endblocktrans %}
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+{% endif %}
+
+{% if followed_activities.reviews or followed_activities.comments or followed_activities.quotations or followed_activities.shelf_changes %}
+<h2 style="color: #3273dc; margin-top: 1.5rem; font-size: 1.2rem;">{% trans "From People You Follow" %}</h2>
+
+{% if followed_activities.reviews %}
+<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Reviews" %}</h3>
+<ul style="margin: 0; padding-left: 1.5rem;">
+{% for review in followed_activities.reviews %}
+<li style="margin-bottom: 0.5rem;">
+    <strong>{{ review.user.display_name }}</strong> {% trans "reviewed" %}
+    <a style="color: #3273dc;" href="{{ base_url }}{{ review.book.local_path }}">{{ review.book.title }}</a>
+    {% if review.rating %} - {{ review.rating }} {% trans "stars" %}{% endif %}
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if followed_activities.comments %}
+<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Comments" %}</h3>
+<ul style="margin: 0; padding-left: 1.5rem;">
+{% for comment in followed_activities.comments %}
+<li style="margin-bottom: 0.5rem;">
+    <strong>{{ comment.user.display_name }}</strong> {% trans "commented on" %}
+    <a style="color: #3273dc;" href="{{ base_url }}{{ comment.book.local_path }}">{{ comment.book.title }}</a>
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if followed_activities.quotations %}
+<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Quotations" %}</h3>
+<ul style="margin: 0; padding-left: 1.5rem;">
+{% for quote in followed_activities.quotations %}
+<li style="margin-bottom: 0.5rem;">
+    <strong>{{ quote.user.display_name }}</strong> {% trans "shared a quote from" %}
+    <a style="color: #3273dc;" href="{{ base_url }}{{ quote.book.local_path }}">{{ quote.book.title }}</a>
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if followed_activities.shelf_changes %}
+<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Shelf Updates" %}</h3>
+<ul style="margin: 0; padding-left: 1.5rem;">
+{% for change in followed_activities.shelf_changes|slice:":10" %}
+<li style="margin-bottom: 0.5rem;">
+    <strong>{{ change.user.display_name }}</strong> {% trans "added" %}
+    <a style="color: #3273dc;" href="{{ base_url }}{{ change.book.local_path }}">{{ change.book.title }}</a> {% trans "to" %} {{ change.shelf.name }}
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+{% endif %}
+
+<p style="margin-top: 2rem;">
+    <a style="color: #3273dc;" href="{{ base_url }}">{% trans "Visit your feed for more" %}</a>
+</p>
+{% endblock %}

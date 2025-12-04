@@ -43,6 +43,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "bookwyrm.connectors.connector_backoff.sync_connector_health",
         "schedule": crontab(minute="*/5"),  # Every 5 minutes
     },
+    "send-daily-newsletter": {
+        "task": "bookwyrm.newsletter.send_daily_newsletter",
+        "schedule": crontab(hour=8, minute=0),  # Daily at 8 AM UTC
+    },
 }
 
 CELERY_WORKER_CONCURRENCY = env("CELERY_WORKER_CONCURRENCY", None)
