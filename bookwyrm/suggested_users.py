@@ -102,6 +102,8 @@ class SuggestedUsers(RedisStore):
             models.User.objects.filter(
                 is_active=True, bookwyrm_user=True, id__in=[pk for (pk, _) in values]
             )
+            .exclude(followers=user)
+            .exclude(follower_requests=user)
             .annotate(
                 mutuals=Case(*annotations, output_field=IntegerField(), default=0)
             )
