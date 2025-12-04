@@ -10,7 +10,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 from django.utils import timezone
 
-from bookwyrm import forms, models, views
+from bookwyrm import forms, models, views, settings
 from bookwyrm.views.books.edit_book import add_authors
 from bookwyrm.tests.validate_html import validate_html
 from bookwyrm.tests.views.books.test_book import _setup_cover_url
@@ -34,6 +34,12 @@ class EditBookViews(TestCase):
                 local=True,
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
+            )
+            cls.instance_user = models.User.objects.create_user(
+                "instance@local.com",
+                local=True,
+                localname=settings.INSTANCE_ACTOR_USERNAME,
+                remote_id="https://example.com/users/instance_actor",
             )
         cls.group = Group.objects.create(name="editor")
         cls.group.permissions.add(
