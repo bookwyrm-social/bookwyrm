@@ -1,4 +1,5 @@
-""" Custom view decorators """
+"""Custom view decorators"""
+
 from functools import wraps
 from bookwyrm.models.site import SiteSettings
 

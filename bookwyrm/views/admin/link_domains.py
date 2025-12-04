@@ -1,4 +1,5 @@
-""" Manage link domains"""
+"""Manage link domains"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -10,7 +11,7 @@ from bookwyrm import forms, models
 from bookwyrm.models.report import APPROVE_DOMAIN, BLOCK_DOMAIN
 from bookwyrm.views.helpers import redirect_to_referer
 
-# pylint: disable=no-self-use
+
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.moderate_user", raise_exception=True),

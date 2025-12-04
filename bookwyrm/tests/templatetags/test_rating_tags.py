@@ -1,4 +1,5 @@
-""" Gettings book ratings """
+"""Gettings book ratings"""
+
 from unittest.mock import patch
 
 from django.test import TestCase

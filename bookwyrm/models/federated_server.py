@@ -1,4 +1,5 @@
-""" connections to external ActivityPub servers """
+"""connections to external ActivityPub servers"""
+
 from urllib.parse import urlparse
 
 from django.apps import apps

@@ -1,4 +1,5 @@
-""" test session functions """
+"""test session functions"""
+
 from importlib import import_module
 
 from django.conf import settings

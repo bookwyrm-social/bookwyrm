@@ -1,4 +1,5 @@
-""" Lets try NOT to sell viagra """
+"""Lets try NOT to sell viagra"""
+
 from functools import reduce
 import operator
 

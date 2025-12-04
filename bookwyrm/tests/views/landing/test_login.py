@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from importlib import import_module
 from unittest.mock import patch
 

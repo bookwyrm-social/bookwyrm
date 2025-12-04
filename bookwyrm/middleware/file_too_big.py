@@ -18,10 +18,9 @@ class FileTooBig:
         """If RequestDataTooBig is thrown, render the 413 error page"""
 
         try:
-            body = request.body  # pylint: disable=unused-variable
+            body = request.body
 
         except RequestDataTooBig:
-
             rendered = render(request, "413.html")
             response = HttpResponse(rendered)
             return response

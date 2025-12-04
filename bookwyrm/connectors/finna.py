@@ -88,7 +88,8 @@ class Connector(AbstractConnector):
             ]
         }
         data = get_data(
-            url=remote_id, params=request_parameters  # type:ignore[arg-type]
+            url=remote_id,
+            params=request_parameters,  # type:ignore[arg-type]
         )
         extracted = data.get("records", [])
         try:

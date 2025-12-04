@@ -1,4 +1,5 @@
-""" model for tags """
+"""model for tags"""
+
 from bookwyrm import activitypub
 from .activitypub_mixin import ActivitypubMixin
 from .base_model import BookWyrmModel

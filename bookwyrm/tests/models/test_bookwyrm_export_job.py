@@ -1,4 +1,5 @@
 """test bookwyrm user export functions"""
+
 import datetime
 import json
 import pathlib
@@ -16,7 +17,7 @@ class BookwyrmExportJob(TestCase):
     """testing user export functions"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(self):
         """lots of stuff to set up for a user export"""
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
@@ -27,7 +28,6 @@ class BookwyrmExportJob(TestCase):
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
             patch("bookwyrm.activitystreams.add_book_statuses_task"),
         ):
-
             self.local_user = models.User.objects.create_user(
                 "mouse",
                 "mouse@mouse.mouse",

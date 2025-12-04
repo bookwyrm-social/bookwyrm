@@ -1,4 +1,5 @@
-""" template filters for status interaction buttons """
+"""template filters for status interaction buttons"""
+
 from django import template
 
 from bookwyrm import models

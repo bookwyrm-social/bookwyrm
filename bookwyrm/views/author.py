@@ -1,4 +1,4 @@
-""" the good people stuff! the authors! """
+"""the good people stuff! the authors!"""
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
@@ -20,11 +20,9 @@ from bookwyrm.views.helpers import (
 )
 
 
-# pylint: disable= no-self-use
 class Author(View):
     """this person wrote a book"""
 
-    # pylint: disable=unused-argument
     @vary_on_headers("Accept")
     def get(self, request, author_id, slug=None):
         """landing page for an author"""
@@ -83,7 +81,6 @@ class EditAuthor(View):
 @login_required
 @require_POST
 @permission_required("bookwyrm.edit_book", raise_exception=True)
-# pylint: disable=unused-argument
 def update_author_from_remote(request, author_id, connector_identifier):
     """load the remote data for this author"""
     connector = connector_manager.load_connector(

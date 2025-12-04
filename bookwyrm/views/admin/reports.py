@@ -1,4 +1,5 @@
-""" moderation via flagged posts and users """
+"""moderation via flagged posts and users"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
 from django.core.exceptions import PermissionDenied
@@ -13,7 +14,6 @@ from bookwyrm.views.helpers import redirect_to_referer
 from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.moderate_user", raise_exception=True),

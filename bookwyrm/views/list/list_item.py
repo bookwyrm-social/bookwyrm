@@ -1,4 +1,5 @@
-""" book list views"""
+"""book list views"""
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
@@ -8,7 +9,6 @@ from bookwyrm import forms, models
 from bookwyrm.views.status import to_markdown
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class ListItem(View):
     """book list page"""

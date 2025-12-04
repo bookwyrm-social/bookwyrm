@@ -1,4 +1,4 @@
-""" shelf views """
+"""shelf views"""
 
 from django.db import IntegrityError, transaction
 from django.contrib.auth.decorators import login_required

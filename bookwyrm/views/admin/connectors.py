@@ -1,4 +1,5 @@
-""" manage book data sources """
+"""manage book data sources"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -18,7 +19,6 @@ from bookwyrm.connectors.settings import CONNECTORS
 class ConnectorSettings(View):
     """show connector settings page"""
 
-    # pylint: disable=no-self-use
     def get(self, request):
         """list of connectors"""
 
@@ -64,7 +64,6 @@ class ConnectorSettings(View):
         return TemplateResponse(request, "settings/connectors/connectors.html", data)
 
 
-# pylint: disable=unused-argument
 def deactivate_connector(request, connector_id):
     """we don't want to use this connector"""
 
@@ -73,7 +72,6 @@ def deactivate_connector(request, connector_id):
     return redirect("/settings/connectors/")
 
 
-# pylint: disable=unused-argument
 def activate_connector(request, connector_id: int):
     """oops changed our mind"""
 
@@ -91,7 +89,6 @@ def set_connector_priority(request, connector_id: int):
     return redirect("/settings/connectors/")
 
 
-# pylint: disable=unused-argument
 def update_connector(request, connector_id: int):
     """update connector info such as API endpoints"""
 

@@ -1,4 +1,5 @@
-""" testing activitystreams """
+"""testing activitystreams"""
+
 import datetime
 from unittest.mock import patch
 

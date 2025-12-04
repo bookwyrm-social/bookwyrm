@@ -1,4 +1,5 @@
-""" test creating emails """
+"""test creating emails"""
+
 from unittest.mock import patch
 
 from django.test import TestCase

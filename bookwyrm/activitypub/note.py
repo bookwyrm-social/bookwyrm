@@ -1,4 +1,5 @@
-""" note serializer and children thereof """
+"""note serializer and children thereof"""
+
 from dataclasses import dataclass, field
 from typing import Dict, List
 import re
@@ -16,13 +17,12 @@ class Tombstone(ActivityObject):
 
     type: str = "Tombstone"
 
-    def to_model(self, *args, **kwargs):  # pylint: disable=unused-argument
+    def to_model(self, *args, **kwargs):
         """this should never really get serialized, just searched for"""
         model = apps.get_model("bookwyrm.Status")
         return model.find_existing_by_remote_id(self.id)
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class Note(ActivityObject):
     """Note activity"""
@@ -41,7 +41,6 @@ class Note(ActivityObject):
     updated: str = None
     type: str = "Note"
 
-    # pylint: disable=too-many-arguments
     def to_model(
         self,
         model=None,
@@ -99,7 +98,6 @@ class GeneratedNote(Note):
     type: str = "GeneratedNote"
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class Comment(Note):
     """like a note but with a book"""

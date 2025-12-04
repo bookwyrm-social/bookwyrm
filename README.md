@@ -2,7 +2,7 @@
 
 [![](https://img.shields.io/github/release/bookwyrm-social/bookwyrm.svg?colorB=58839b)](https://github.com/bookwyrm-social/bookwyrm/releases)
 [![Run Python Tests](https://github.com/bookwyrm-social/bookwyrm/actions/workflows/django-tests.yml/badge.svg)](https://github.com/bookwyrm-social/bookwyrm/actions/workflows/django-tests.yml)
-[![Pylint](https://github.com/bookwyrm-social/bookwyrm/actions/workflows/pylint.yml/badge.svg)](https://github.com/bookwyrm-social/bookwyrm/actions/workflows/pylint.yml)
+[![Ruff](https://github.com/bookwyrm-social/bookwyrm/actions/workflows/python.yml/badge.svg?job=ruff)](https://github.com/bookwyrm-social/bookwyrm/actions/workflows/python.yml)
 
 BookWyrm is a social network for tracking your reading, talking about books, writing reviews, and discovering what to read next. Federation allows BookWyrm users to join small, trusted communities that can connect with one another, and with other ActivityPub services like [Mastodon](https://joinmastodon.org/) and [Pleroma](http://pleroma.social/).
 

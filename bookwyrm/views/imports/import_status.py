@@ -1,4 +1,5 @@
-""" import books from another app """
+"""import books from another app"""
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
@@ -14,7 +15,7 @@ from bookwyrm.importers import GoodreadsImporter
 from bookwyrm.models.import_job import import_item_task
 from bookwyrm.settings import PAGE_LENGTH
 
-# pylint: disable= no-self-use
+
 @method_decorator(login_required, name="dispatch")
 class ImportStatus(View):
     """status of an existing import"""
@@ -85,7 +86,6 @@ def stop_import(request, job_id):
     return redirect("import-status", job_id)
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class UserImportStatus(View):
     """status of an existing import"""

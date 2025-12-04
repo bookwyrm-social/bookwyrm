@@ -1,4 +1,5 @@
-""" tests incoming activities"""
+"""tests incoming activities"""
+
 import json
 from unittest.mock import patch
 

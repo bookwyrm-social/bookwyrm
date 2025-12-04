@@ -1,4 +1,5 @@
-""" class views for login/register views """
+"""class views for login/register views"""
+
 import zoneinfo
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
@@ -12,11 +13,10 @@ from bookwyrm import emailing, forms, models
 from bookwyrm.settings import DOMAIN
 
 
-# pylint: disable=no-self-use
 class Register(View):
     """register a user"""
 
-    def get(self, request):  # pylint: disable=unused-argument
+    def get(self, request):
         """whether or not you're logged in, just go to the home view"""
         return redirect("/")
 

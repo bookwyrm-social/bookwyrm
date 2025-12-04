@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 import datetime
 from unittest.mock import patch
 from django.test import TestCase

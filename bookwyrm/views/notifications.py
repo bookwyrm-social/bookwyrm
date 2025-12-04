@@ -1,4 +1,5 @@
-""" non-interactive pages """
+"""non-interactive pages"""
+
 from django.contrib.auth.decorators import login_required
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -6,7 +7,6 @@ from django.shortcuts import redirect
 from django.views import View
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Notifications(View):
     """notifications view"""

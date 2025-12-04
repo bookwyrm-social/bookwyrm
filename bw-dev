@@ -191,14 +191,22 @@ case "$CMD" in
         prod_error
         clean
         ;;
-    black)
+    ruff)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools black celerywyrm bookwyrm
+        $DOCKER_COMPOSE run --rm dev-tools ruff format celerywyrm bookwyrm
+        $DOCKER_COMPOSE run --rm dev-tools ruff check celerywyrm bookwyrm
         ;;
-    pylint)
+    ruff-format)
         prod_error
-        # pylint depends on having the app dependencies in place, so we run it in the web container
-        runweb pylint bookwyrm/
+        $DOCKER_COMPOSE run --rm dev-tools ruff format celerywyrm bookwyrm
+        ;;
+    ruff-check)
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools ruff check celerywyrm bookwyrm
+        ;;
+    ruff-fix)
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools ruff check --fix celerywyrm bookwyrm
         ;;
     prettier)
         prod_error
@@ -215,8 +223,8 @@ case "$CMD" in
         ;;
     formatters)
         prod_error
-        runweb pylint bookwyrm/
-        $DOCKER_COMPOSE run --rm dev-tools black celerywyrm bookwyrm
+        $DOCKER_COMPOSE run --rm dev-tools ruff format celerywyrm bookwyrm
+        $DOCKER_COMPOSE run --rm dev-tools ruff check --fix celerywyrm bookwyrm
         $DOCKER_COMPOSE run --rm dev-tools prettier --write bookwyrm/static/js/*.js
         $DOCKER_COMPOSE run --rm dev-tools eslint bookwyrm/static --ext .js
         $DOCKER_COMPOSE run --rm dev-tools stylelint --fix bookwyrm/static/css \
@@ -337,7 +345,10 @@ case "$CMD" in
         echo "    update_locales"
         echo "    build"
         echo "    clean"
-        echo "    black"
+        echo "    ruff (format and check)"
+        echo "    ruff-format (format code only)"
+        echo "    ruff-check (check code only)"
+        echo "    ruff-fix (auto-fix ruff issues)"
         echo "    prettier"
         echo "    eslint"
         echo "    stylelint"

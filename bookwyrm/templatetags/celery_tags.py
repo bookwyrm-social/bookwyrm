@@ -1,4 +1,5 @@
-""" template filters for really common utilities """
+"""template filters for really common utilities"""
+
 import datetime
 from django import template
 

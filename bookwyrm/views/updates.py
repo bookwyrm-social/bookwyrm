@@ -1,4 +1,5 @@
-""" endpoints for getting updates about activity """
+"""endpoints for getting updates about activity"""
+
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse
 from django.utils.translation import ngettext

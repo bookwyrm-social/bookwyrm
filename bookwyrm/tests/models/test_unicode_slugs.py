@@ -1,4 +1,5 @@
-""" Test Unicode slug generation and URL routing """
+"""Test Unicode slug generation and URL routing"""
+
 import re
 from unittest.mock import patch
 from django.test import TestCase

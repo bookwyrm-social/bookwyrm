@@ -1,4 +1,5 @@
-""" flagged for moderation """
+"""flagged for moderation"""
+
 from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.utils.translation import gettext_lazy as _

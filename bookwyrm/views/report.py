@@ -1,4 +1,5 @@
-""" moderation via flagged posts and users """
+"""moderation via flagged posts and users"""
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -8,7 +9,6 @@ from django.views import View
 from bookwyrm import emailing, forms, models
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class Report(View):
     """Make reports"""

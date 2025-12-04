@@ -1,4 +1,5 @@
-""" getting and verifying signatures """
+"""getting and verifying signatures"""
+
 import time
 from collections import namedtuple
 from urllib.parse import urlsplit
@@ -81,7 +82,7 @@ class Signature(TestCase):
             },
         )
 
-    def send_test_request(  # pylint: disable=too-many-arguments
+    def send_test_request(
         self, sender, signer=None, send_data=None, digest=None, date=None
     ):
         """sends a follow request to the "rat" user"""

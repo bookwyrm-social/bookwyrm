@@ -1,17 +1,17 @@
-""" Add finna connector to connectors """
+"""Add finna connector to connectors"""
+
 from django.core.management.base import BaseCommand
 
 from bookwyrm import models
 
 
 def enable_finna_connector():
-
     models.Connector.objects.create(
         identifier="api.finna.fi",
         name="Finna API",
         connector_file="finna",
         base_url="https://www.finna.fi",
-        books_url="https://api.finna.fi/api/v1/record" "?id=",
+        books_url="https://api.finna.fi/api/v1/record?id=",
         covers_url="https://api.finna.fi",
         search_url="https://api.finna.fi/api/v1/search?limit=20"
         "&filter[]=format%3a%220%2fBook%2f%22"
@@ -33,8 +33,6 @@ def remove_finna_connector():
     print("Finna connector deactivated")
 
 
-# pylint: disable=no-self-use
-# pylint: disable=unused-argument
 class Command(BaseCommand):
     """command-line options"""
 

@@ -14,7 +14,6 @@ class MergeCommand(BaseCommand):
             help="don't actually merge, only print what would happen",
         )
 
-    # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """merge the two objects"""
         model = self.MODEL

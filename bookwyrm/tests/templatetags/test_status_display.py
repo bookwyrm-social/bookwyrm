@@ -1,4 +1,5 @@
-""" style fixes and lookups for templates """
+"""style fixes and lookups for templates"""
+
 import datetime
 from unittest.mock import patch
 

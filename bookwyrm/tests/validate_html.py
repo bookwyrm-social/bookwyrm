@@ -1,4 +1,5 @@
-""" html validation on rendered templates """
+"""html validation on rendered templates"""
+
 from html.parser import HTMLParser
 from tidylib import tidy_document
 

@@ -1,4 +1,5 @@
-""" testing book data connectors """
+"""testing book data connectors"""
+
 import json
 import pathlib
 
@@ -20,7 +21,7 @@ class Finna(TestCase):
             name="Finna API",
             connector_file="finna",
             base_url="https://www.finna.fi",
-            books_url="https://api.finna.fi/api/v1/record" "?id=",
+            books_url="https://api.finna.fi/api/v1/record?id=",
             covers_url="https://api.finna.fi",
             search_url="https://api.finna.fi/api/v1/search?limit=20"
             "&filter[]=format%3a%220%2fBook%2f%22"

@@ -1,4 +1,5 @@
-""" openlibrary data connector """
+"""openlibrary data connector"""
+
 import re
 from typing import Any, Optional, Union, Iterator, Iterable
 

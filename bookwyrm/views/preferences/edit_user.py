@@ -1,4 +1,5 @@
-""" edit your own account """
+"""edit your own account"""
+
 from io import BytesIO
 from uuid import uuid4
 from PIL import Image
@@ -14,7 +15,6 @@ from bookwyrm import forms
 from bookwyrm.views.helpers import set_language
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class EditUser(View):
     """edit user view"""

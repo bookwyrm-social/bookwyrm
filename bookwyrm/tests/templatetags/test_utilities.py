@@ -1,4 +1,5 @@
-""" style fixes and lookups for templates """
+"""style fixes and lookups for templates"""
+
 from collections import namedtuple
 import re
 from unittest.mock import patch

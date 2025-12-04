@@ -1,4 +1,5 @@
-""" manage themes """
+"""manage themes"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -11,7 +12,6 @@ from sass_processor.processor import sass_processor
 from bookwyrm import forms, models
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.system_administration", raise_exception=True),
@@ -50,7 +50,6 @@ def get_view_data():
 
 @require_POST
 @permission_required("bookwyrm.system_administration", raise_exception=True)
-# pylint: disable=unused-argument
 def delete_theme(request, theme_id):
     """Remove a theme"""
     get_object_or_404(models.Theme, id=theme_id).delete()
@@ -59,7 +58,6 @@ def delete_theme(request, theme_id):
 
 @require_POST
 @permission_required("bookwyrm.system_administration", raise_exception=True)
-# pylint: disable=unused-argument
 def test_theme(request, theme_id):
     """Remove a theme"""
     theme = get_object_or_404(models.Theme, id=theme_id)
@@ -67,7 +65,7 @@ def test_theme(request, theme_id):
     try:
         sass_processor(theme.path)
         theme.loads = True
-    except Exception:  # pylint: disable=broad-except
+    except Exception:
         theme.loads = False
 
     theme.save()

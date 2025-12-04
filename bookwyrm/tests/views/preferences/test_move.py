@@ -1,4 +1,5 @@
-""" test move functionality """
+"""test move functionality"""
+
 import json
 from unittest.mock import patch
 import pathlib

@@ -1,4 +1,5 @@
-""" make forms available to the app """
+"""make forms available to the app"""
+
 # site admin
 from .admin import *
 from .author import *

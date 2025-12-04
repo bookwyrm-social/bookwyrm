@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 import pathlib
 
 import pytest
@@ -211,11 +212,10 @@ class Book(TestCase):
         self.assertIsNotNone(book.cover_bw_book_xxlarge_webp.url)
         self.assertIsNotNone(book.cover_bw_book_xxlarge_jpg.url)
 
-    # pylint: disable=unused-variable
     def test_populate_sort_title(self):
         """The sort title should remove the initial article on save"""
         books = []
-        for (k, v) in settings.LANGUAGE_ARTICLES.items():
+        for k, v in settings.LANGUAGE_ARTICLES.items():
             lang_books = [
                 models.Edition.objects.create(
                     title=f"{article} Test Edition", languages=[string]

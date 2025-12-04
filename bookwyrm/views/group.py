@@ -1,4 +1,5 @@
 """group views"""
+
 from django.apps import apps
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError, transaction
@@ -18,11 +19,9 @@ from bookwyrm.suggested_users import suggested_users
 from .helpers import get_user_from_username, maybe_redirect_local_path
 
 
-# pylint: disable=no-self-use
 class Group(View):
     """group page"""
 
-    # pylint: disable=unused-argument
     def get(self, request, group_id, slug=None):
         """display a group"""
 
@@ -86,7 +85,6 @@ class Group(View):
 class UserGroups(View):
     """a user's groups page"""
 
-    # pylint: disable=unused-argument
     def get(self, request, username, slug=None):
         """display a group"""
         user = get_user_from_username(request.user, username)
@@ -107,7 +105,6 @@ class UserGroups(View):
         return TemplateResponse(request, "user/groups.html", data)
 
     @method_decorator(login_required, name="dispatch")
-    # pylint: disable=unused-argument
     def post(self, request, username):
         """create a user group"""
         form = forms.GroupForm(request.POST)

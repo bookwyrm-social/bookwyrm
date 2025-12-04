@@ -1,4 +1,5 @@
-""" send emails """
+"""send emails"""
+
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 

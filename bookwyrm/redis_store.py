@@ -1,4 +1,5 @@
-""" access the activity stores stored in redis """
+"""access the activity stores stored in redis"""
+
 from abc import ABC, abstractmethod
 import redis
 
@@ -32,7 +33,6 @@ class RedisStore(ABC):
         # and go!
         return pipeline.execute()
 
-    # pylint: disable=no-self-use
     def remove_object_from_stores(self, obj, stores):
         """remove an object from all stores"""
         # if the stores are provided, the object can just be an id
@@ -61,7 +61,7 @@ class RedisStore(ABC):
             pipeline.zrem(store, -1, obj.id)
         pipeline.execute()
 
-    def get_store(self, store, **kwargs):  # pylint: disable=no-self-use
+    def get_store(self, store, **kwargs):
         """load the values in a store"""
         return r.zrevrange(store, 0, -1, **kwargs)
 

@@ -1,4 +1,5 @@
-""" book list views"""
+"""book list views"""
+
 from typing import Optional
 
 from django.contrib.auth.decorators import login_required
@@ -26,7 +27,6 @@ from bookwyrm.views.helpers import (
 )
 
 
-# pylint: disable=no-self-use
 class List(View):
     """book list page"""
 
@@ -216,10 +216,13 @@ def add_book(request):
     else:
         # add the book at the latest order of approved books, before pending books
         order_max = (
-            book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
-                "order__max"
-            ]
-        ) or 0
+            (
+                book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
+                    "order__max"
+                ]
+            )
+            or 0
+        )
         increment_order_in_reverse(book_list.id, order_max + 1)
     item.order = order_max + 1
     item.save()

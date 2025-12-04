@@ -1,11 +1,12 @@
-""" How many books do you want to read this year """
+"""How many books do you want to read this year"""
+
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
 
 from bookwyrm.models.status import Review
 from .base_model import BookWyrmModel
-from . import fields, Review
+from . import fields
 
 
 def get_current_year():

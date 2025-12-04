@@ -1,4 +1,5 @@
-""" test for files maintenance page functionality """
+"""test for files maintenance page functionality"""
+
 from unittest.mock import patch
 
 from django.contrib.auth.models import Group

@@ -1,4 +1,5 @@
-""" testing activitystreams """
+"""testing activitystreams"""
+
 from unittest.mock import patch
 from django.test import TestCase
 from bookwyrm import activitystreams, models

@@ -1,4 +1,5 @@
-""" functions for managing user sessions """
+"""functions for managing user sessions"""
+
 from importlib import import_module
 import ua_parser
 

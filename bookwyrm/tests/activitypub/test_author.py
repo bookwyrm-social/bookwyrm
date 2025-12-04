@@ -1,4 +1,5 @@
 """test author serializer"""
+
 from django.test import TestCase
 from bookwyrm import models
 

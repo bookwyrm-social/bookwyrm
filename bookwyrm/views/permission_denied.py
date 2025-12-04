@@ -6,7 +6,7 @@ from django.template.response import TemplateResponse
 from .helpers import is_api_request
 
 
-def permission_denied(request, exception):  # pylint: disable=unused-argument
+def permission_denied(request, exception):
     """permission denied page"""
 
     if request.method == "POST" or is_api_request(request):

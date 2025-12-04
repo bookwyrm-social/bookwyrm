@@ -1,4 +1,5 @@
-""" import books from another app """
+"""import books from another app"""
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
@@ -12,7 +13,7 @@ from bookwyrm import models
 from bookwyrm.importers import Importer
 from bookwyrm.settings import PAGE_LENGTH
 
-# pylint: disable= no-self-use
+
 @method_decorator(login_required, name="dispatch")
 class ImportTroubleshoot(View):
     """problems items in an existing import"""

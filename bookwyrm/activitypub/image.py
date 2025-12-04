@@ -1,4 +1,5 @@
-""" an image, nothing fancy """
+"""an image, nothing fancy"""
+
 from dataclasses import dataclass
 from .base_activity import ActivityObject
 

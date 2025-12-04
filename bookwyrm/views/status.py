@@ -1,4 +1,4 @@
-""" what are we here for if not for posting """
+"""what are we here for if not for posting"""
 
 import re
 import logging
@@ -27,7 +27,6 @@ from .helpers import load_date_in_user_tz_as_utc, redirect_to_referer
 logger = logging.getLogger(__name__)
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class EditStatus(View):
     """the view for *posting*"""
@@ -47,18 +46,16 @@ class EditStatus(View):
         return TemplateResponse(request, "compose.html", data)
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class CreateStatus(View):
     """the view for *posting*"""
 
-    def get(self, request, status_type):  # pylint: disable=unused-argument
+    def get(self, request, status_type):
         """compose view (...not used?)"""
         book = get_mergeable_object_or_404(models.Edition, id=request.GET.get("book"))
         data = {"book": book}
         return TemplateResponse(request, "compose.html", data)
 
-    # pylint: disable=too-many-branches
     @transaction.atomic
     def post(self, request, status_type, existing_status_id=None):
         """create status of whatever type"""
@@ -187,7 +184,7 @@ class DeleteStatus(View):
 
 @login_required
 @require_POST
-def update_progress(request, book_id):  # pylint: disable=unused-argument
+def update_progress(request, book_id):
     """Either it's just a progress update, or it's a comment with a progress update"""
     if request.POST.get("post-status"):
         return CreateStatus.as_view()(request, "comment")

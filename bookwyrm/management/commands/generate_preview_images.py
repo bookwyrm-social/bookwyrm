@@ -1,16 +1,15 @@
-""" Generate preview images """
+"""Generate preview images"""
+
 from django.core.management.base import BaseCommand
 
 from bookwyrm import models, preview_images
 
 
-# pylint: disable=line-too-long
 class Command(BaseCommand):
     """Creates previews for existing objects"""
 
     help = "Generate preview images"
 
-    # pylint: disable=no-self-use
     def add_arguments(self, parser):
         """options for how the command is run"""
         parser.add_argument(
@@ -20,7 +19,6 @@ class Command(BaseCommand):
             help="Generates images for ALL types: site, users and books. Can use a lot of computing power.",
         )
 
-    # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """generate preview images"""
         self.stdout.write(
@@ -40,7 +38,6 @@ class Command(BaseCommand):
         preview_images.generate_site_preview_image_task.delay()
         self.stdout.write(" OK 🖼")
 
-        # pylint: disable=consider-using-f-string
         if options["all"]:
             # Users
             users = models.User.objects.filter(

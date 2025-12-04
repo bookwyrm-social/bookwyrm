@@ -1,4 +1,4 @@
-""" the good stuff! the books! """
+"""the good stuff! the books!"""
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
@@ -22,7 +22,6 @@ from bookwyrm.views.helpers import (
 )
 
 
-# pylint: disable=no-self-use
 class Book(View):
     """a book! this is the stuff"""
 
@@ -83,7 +82,9 @@ class Book(View):
         queryset = queryset.select_related("user").order_by("-published_date")
         paginated = Paginator(queryset, PAGE_LENGTH)
 
-        lists = models.List.privacy_filter(request.user,).filter(
+        lists = models.List.privacy_filter(
+            request.user,
+        ).filter(
             listitem__approved=True,
             listitem__book__in=book.parent_work.editions.all(),
         )

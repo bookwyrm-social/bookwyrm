@@ -1,4 +1,5 @@
-""" Our own command to all scss themes """
+"""Our own command to all scss themes"""
+
 import glob
 import os
 
@@ -18,7 +19,6 @@ class Command(BaseCommand):
 
     help = "SCSS compile all BookWyrm themes"
 
-    # pylint: disable=unused-argument
     def handle(self, *args, **options):
         """compile"""
         themes_dir = os.path.join(

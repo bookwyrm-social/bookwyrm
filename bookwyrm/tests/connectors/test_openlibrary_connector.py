@@ -1,4 +1,5 @@
-""" testing book data connectors """
+"""testing book data connectors"""
+
 import json
 import pathlib
 from unittest.mock import patch
@@ -16,7 +17,6 @@ from bookwyrm.connectors.openlibrary import parse_series, parse_series_number
 from bookwyrm.connectors.connector_manager import ConnectorException
 
 
-# pylint: disable=too-many-public-methods
 class Openlibrary(TestCase):
     """test loading data from openlibrary.org"""
 

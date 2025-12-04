@@ -1,4 +1,4 @@
-""" Image  utilities """
+"""Image  utilities"""
 
 import logging
 from io import BytesIO
@@ -53,7 +53,7 @@ def set_cover_from_url(url: str) -> None | list[Any]:
     """load cover image from a url"""
     try:
         image_content, extension = get_image(url)
-    except:  # pylint: disable=bare-except
+    except:
         return None
     if not image_content or not extension:
         return None

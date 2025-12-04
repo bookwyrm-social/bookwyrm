@@ -1,4 +1,5 @@
-""" handle reading a tsv from librarything """
+"""handle reading a tsv from librarything"""
+
 import re
 from typing import Optional
 

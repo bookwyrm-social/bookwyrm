@@ -1,4 +1,5 @@
-""" Populate suggested users """
+"""Populate suggested users"""
+
 from django.core.management.base import BaseCommand
 
 from bookwyrm import models
@@ -19,7 +20,7 @@ class Command(BaseCommand):
     """start all over with user suggestions"""
 
     help = "Populate suggested users for all users"
-    # pylint: disable=no-self-use,unused-argument
+
     def handle(self, *args, **options):
         """run builder"""
         populate_suggestions()

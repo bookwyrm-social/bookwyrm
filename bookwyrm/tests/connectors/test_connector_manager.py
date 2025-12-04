@@ -1,4 +1,5 @@
-""" interface between the app and various connectors """
+"""interface between the app and various connectors"""
+
 from django.test import TestCase
 import responses
 

@@ -1,4 +1,4 @@
-""" using django model forms """
+"""using django model forms"""
 
 from urllib.parse import urlparse
 
@@ -8,7 +8,6 @@ from bookwyrm import models
 from .custom_form import CustomForm
 
 
-# pylint: disable=missing-class-docstring
 class LinkDomainForm(CustomForm):
     class Meta:
         model = models.LinkDomain

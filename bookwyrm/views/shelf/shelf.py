@@ -1,4 +1,5 @@
-""" shelf views """
+"""shelf views"""
+
 from collections import namedtuple
 
 from django.db.models import OuterRef, Subquery, F, Max
@@ -19,11 +20,9 @@ from bookwyrm.views.helpers import is_api_request, get_user_from_username
 from bookwyrm.book_search import search
 
 
-# pylint: disable=no-self-use
 class Shelf(View):
     """shelf page"""
 
-    # pylint: disable=R0914
     @vary_on_headers("Accept")
     def get(self, request, username, shelf_identifier=None):
         """display a shelf"""

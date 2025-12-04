@@ -1,4 +1,5 @@
-""" Re-create list streams """
+"""Re-create list streams"""
+
 from django.core.management.base import BaseCommand
 from bookwyrm import lists_stream, models
 
@@ -22,7 +23,6 @@ class Command(BaseCommand):
 
     help = "Populate list streams for all users"
 
-    # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """run feed builder"""
         populate_lists_streams()

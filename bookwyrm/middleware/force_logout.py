@@ -1,4 +1,4 @@
-""" Check if user needs to reset their password and log them out """
+"""Check if user needs to reset their password and log them out"""
 
 from django.contrib.auth import logout
 

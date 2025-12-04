@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from collections import namedtuple
 from unittest.mock import patch
 from django.template.response import TemplateResponse

@@ -1,4 +1,5 @@
-""" do book related things with other users """
+"""do book related things with other users"""
+
 from django.db import models, IntegrityError, transaction
 from django.db.models import Q
 from bookwyrm.settings import BASE_URL
@@ -142,7 +143,7 @@ class GroupMemberInvitation(models.Model):
     @transaction.atomic
     def accept(self):
         """turn this request into the real deal"""
-        # pylint: disable-next=import-outside-toplevel
+
         from .notification import Notification, NotificationType  # circular dependency
 
         GroupMember.from_request(self)

@@ -1,4 +1,5 @@
-""" test for user export app functionality """
+"""test for user export app functionality"""
+
 from unittest.mock import patch
 
 from django.http import HttpResponse

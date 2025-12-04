@@ -1,4 +1,5 @@
-""" background tasks """
+"""background tasks"""
+
 import os
 from celery import Celery
 

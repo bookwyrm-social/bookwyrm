@@ -1,4 +1,5 @@
-""" manage user """
+"""manage user"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Group
 from django.core.paginator import Paginator
@@ -12,7 +13,6 @@ from bookwyrm.models.report import USER_PERMS
 from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.moderate_user", raise_exception=True),
@@ -52,7 +52,7 @@ class UserAdminList(View):
             "federated_server__server_name",
             "is_active",
         ]
-        # pylint: disable=consider-using-f-string
+
         if sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
             users = users.order_by(sort)
 
@@ -78,7 +78,6 @@ class UserAdminList(View):
 class UserAdmin(View):
     """moderate an individual user"""
 
-    # pylint: disable=unused-argument
     def get(self, request, user_id, report_id=None):
         """user view"""
         user = get_object_or_404(models.User, id=user_id)
@@ -112,7 +111,6 @@ class UserAdmin(View):
 class ActivateUserAdmin(View):
     """activate a user manually"""
 
-    # pylint: disable=unused-argument
     def post(self, request, user_id):
         """activate user"""
         user = get_object_or_404(models.User, id=user_id)

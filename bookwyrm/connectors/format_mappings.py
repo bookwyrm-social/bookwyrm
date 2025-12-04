@@ -1,4 +1,5 @@
-""" comparing a free text format to the standardized one """
+"""comparing a free text format to the standardized one"""
+
 format_mappings = {
     "paperback": "Paperback",
     "soft": "Paperback",

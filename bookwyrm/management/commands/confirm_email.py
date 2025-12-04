@@ -1,4 +1,5 @@
-""" manually confirm e-mail of user """
+"""manually confirm e-mail of user"""
+
 from django.core.management.base import BaseCommand
 
 from bookwyrm import models

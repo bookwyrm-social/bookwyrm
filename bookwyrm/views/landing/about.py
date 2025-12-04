@@ -1,4 +1,5 @@
-""" non-interactive pages """
+"""non-interactive pages"""
+
 from dateutil.relativedelta import relativedelta
 from django.http import Http404
 from django.template.response import TemplateResponse

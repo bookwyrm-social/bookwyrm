@@ -1,4 +1,5 @@
-""" What you need in the database to make it work """
+"""What you need in the database to make it work"""
+
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
@@ -89,7 +90,6 @@ def init_connectors():
         priority=2,
     )
 
-    # pylint: disable=line-too-long
     models.Connector.objects.get_or_create(
         identifier="inventaire.io",
         name="Inventaire",
@@ -144,8 +144,6 @@ def init_link_domains():
         )
 
 
-# pylint: disable=no-self-use
-# pylint: disable=unused-argument
 class Command(BaseCommand):
     """command-line options"""
 

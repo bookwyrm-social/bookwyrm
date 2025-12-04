@@ -1,4 +1,4 @@
-""" search views"""
+"""search views"""
 
 import re
 
@@ -23,7 +23,6 @@ from .helpers import is_api_request
 from .helpers import handle_remote_webfinger
 
 
-# pylint: disable= no-self-use
 class Search(View):
     """search users or books"""
 
@@ -48,7 +47,7 @@ class Search(View):
             "user": user_search,
             "list": list_search,
         }
-        if not search_type in endpoints:
+        if search_type not in endpoints:
             search_type = "book"
 
         return endpoints[search_type](request)

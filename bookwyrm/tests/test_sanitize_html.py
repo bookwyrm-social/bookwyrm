@@ -1,4 +1,5 @@
-""" make sure only valid html gets to the app """
+"""make sure only valid html gets to the app"""
+
 from django.test import TestCase
 
 from bookwyrm.utils.sanitizer import clean

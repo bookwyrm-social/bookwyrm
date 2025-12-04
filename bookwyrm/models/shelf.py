@@ -1,4 +1,5 @@
-""" puttin' books on shelves """
+"""puttin' books on shelves"""
+
 import re
 from typing import Optional, Iterable
 from django.core.cache import cache

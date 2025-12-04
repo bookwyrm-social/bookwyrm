@@ -23,7 +23,6 @@ class Command(BaseCommand):
 
     help = "Find and fix isbn-10 entries that have incorrect checksum"
 
-    # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """run fix"""
         find_long_isbn10_editions()

@@ -1,4 +1,5 @@
 """custom 500 handler to enable context processors"""
+
 from django.template.response import TemplateResponse
 
 

@@ -1,4 +1,5 @@
-""" activities that do things """
+"""activities that do things"""
+
 from dataclasses import dataclass, field
 from typing import List
 from django.apps import apps

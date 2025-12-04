@@ -1,4 +1,5 @@
-""" test file management """
+"""test file management"""
+
 from datetime import datetime, timedelta, timezone
 from os import listdir
 import pathlib
@@ -124,7 +125,6 @@ class TestCleanUpExportFiles(TestCase):
         """clean up any files"""
 
         for filename in listdir("exports"):
-
             if "zzz_testfile.tar" in filename:
                 pathlib.Path(f"exports/{filename}").unlink(missing_ok=True)
 
@@ -197,7 +197,6 @@ class Covers(TestCase):
         """Get missing cover from remote source"""
 
         with open("test_image.jpg", "r+b") as f:
-
             self.second_edition.cover.save("test_image.jpeg", f)
             responses.add(
                 responses.GET,
@@ -207,13 +206,18 @@ class Covers(TestCase):
 
             self.assertEqual(self.first_edition.cover, None)
 
-            with patch(
-                "bookwyrm.models.housekeeping.search", return_value=self.query_response
-            ), patch(
-                "bookwyrm.models.housekeeping.get_data", return_value=self.book_json
-            ), patch(
-                "bookwyrm.models.housekeeping.set_cover_from_url",
-                return_value=["test_image.jpeg", f],
+            with (
+                patch(
+                    "bookwyrm.models.housekeeping.search",
+                    return_value=self.query_response,
+                ),
+                patch(
+                    "bookwyrm.models.housekeeping.get_data", return_value=self.book_json
+                ),
+                patch(
+                    "bookwyrm.models.housekeeping.set_cover_from_url",
+                    return_value=["test_image.jpeg", f],
+                ),
             ):
                 get_cover_from_identifiers(self.first_edition)
 
@@ -223,7 +227,6 @@ class Covers(TestCase):
         """does get_coverless_books return books with wrong cover filepaths?"""
 
         with open("test_image.jpg", "r+b") as f:
-
             self.second_edition.cover.save("test_image2.jpeg", f)
 
         self.assertNotEqual(self.second_edition.cover, None)
@@ -273,5 +276,4 @@ class Covers(TestCase):
             "covers/test_image2.jpeg",
             "covers/test_image3.jpeg",
         ]:
-
             pathlib.Path(filename).unlink(missing_ok=True)

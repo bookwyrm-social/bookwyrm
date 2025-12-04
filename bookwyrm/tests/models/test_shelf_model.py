@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 import json
 from unittest.mock import patch
 from django.test import TestCase

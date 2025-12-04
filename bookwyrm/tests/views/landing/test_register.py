@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
@@ -13,7 +14,6 @@ from bookwyrm.settings import DOMAIN
 from bookwyrm.tests.validate_html import validate_html
 
 
-# pylint: disable=too-many-public-methods
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.lists_stream.populate_lists_task.delay")

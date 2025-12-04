@@ -1,4 +1,5 @@
-""" class views for password management """
+"""class views for password management"""
+
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.template.response import TemplateResponse
@@ -9,7 +10,6 @@ from django.views.decorators.debug import sensitive_variables, sensitive_post_pa
 from bookwyrm import forms
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class ChangePassword(View):
     """change password as logged in user"""

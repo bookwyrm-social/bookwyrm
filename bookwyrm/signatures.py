@@ -1,4 +1,5 @@
-""" signs activitypub activities """
+"""signs activitypub activities"""
+
 import hashlib
 from urllib.parse import urlparse
 import datetime

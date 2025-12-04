@@ -1,4 +1,5 @@
-""" Re-create user streams """
+"""Re-create user streams"""
+
 from django.core.management.base import BaseCommand
 from bookwyrm import activitystreams, lists_stream, models
 
@@ -32,7 +33,6 @@ class Command(BaseCommand):
             help="Specifies which time of stream to populate",
         )
 
-    # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """run feed builder"""
         stream = options.get("stream")

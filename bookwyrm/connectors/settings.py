@@ -1,4 +1,4 @@
-""" settings book data connectors """
+"""settings book data connectors"""
 
 CONNECTORS = [
     "openlibrary",

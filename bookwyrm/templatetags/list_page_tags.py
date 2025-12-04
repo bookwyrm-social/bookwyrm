@@ -1,4 +1,5 @@
-""" template filters for list page """
+"""template filters for list page"""
+
 from django import template
 from django.utils.translation import gettext_lazy as _, ngettext
 

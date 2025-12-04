@@ -1,4 +1,5 @@
-""" Filters and tags related to shelving books """
+"""Filters and tags related to shelving books"""
+
 from django import template
 from django.utils.translation import gettext_lazy as _
 

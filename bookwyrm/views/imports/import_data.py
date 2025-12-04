@@ -1,4 +1,5 @@
-""" import books from another app """
+"""import books from another app"""
+
 from io import TextIOWrapper
 import datetime
 from typing import Optional
@@ -29,7 +30,7 @@ from bookwyrm.models.bookwyrm_import_job import BookwyrmImportJob
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.utils.cache import get_or_set
 
-# pylint: disable= no-self-use
+
 @method_decorator(login_required, name="dispatch")
 class Import(View):
     """import view"""
@@ -63,7 +64,7 @@ class Import(View):
         import_jobs = models.ImportJob.objects.filter(
             user=request.user, created_date__gte=time_range
         )
-        # pylint: disable=consider-using-generator
+
         imported_books = sum([job.successful_item_count for job in import_jobs])
         data["import_size_limit"] = site_settings.import_size_limit
         data["import_limit_reset"] = site_settings.import_limit_reset
@@ -142,7 +143,6 @@ def get_average_import_time() -> float:
     return None
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class UserImport(View):
     """import user view"""

@@ -1,4 +1,5 @@
-""" activitypub model functionality """
+"""activitypub model functionality"""
+
 import asyncio
 from base64 import b64encode
 from collections import namedtuple
@@ -67,7 +68,6 @@ class ActivitypubMixin:
         )
         if hasattr(self, "property_fields"):
             self.activity_fields += [
-                # pylint: disable=cell-var-from-loop
                 PropertyField(lambda a, o: set_activity_from_property_field(a, o, f))
                 for f in self.property_fields
             ]
@@ -211,7 +211,7 @@ class ActivitypubMixin:
         activity = generate_activity(self)
         return self.activity_serializer(**activity)
 
-    def to_activity(self, **kwargs):  # pylint: disable=unused-argument
+    def to_activity(self, **kwargs):
         """convert from a model to a json activity"""
         return self.to_activity_dataclass().serialize()
 
@@ -607,7 +607,6 @@ async def sign_and_send(
         logger.exception(err)
 
 
-# pylint: disable=unused-argument
 def to_ordered_collection_page(
     queryset, remote_id, id_only=False, page=1, pure=False, **kwargs
 ):

@@ -1,4 +1,5 @@
-""" customize the info available in context for rendering templates """
+"""customize the info available in context for rendering templates"""
+
 from bookwyrm import models, settings
 
 

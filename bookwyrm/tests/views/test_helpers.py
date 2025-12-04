@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 import pathlib
@@ -15,7 +16,7 @@ from bookwyrm.settings import USER_AGENT, BASE_URL
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.suggested_users.rerank_user_task.delay")
-class ViewsHelpers(TestCase):  # pylint: disable=too-many-public-methods
+class ViewsHelpers(TestCase):
     """viewing and creating statuses"""
 
     @classmethod
@@ -114,7 +115,6 @@ class ViewsHelpers(TestCase):  # pylint: disable=too-many-public-methods
             "",
             {"q": "Test Book"},
             headers={
-                # pylint: disable-next=line-too-long
                 "user-agent": "http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
             },
         )
