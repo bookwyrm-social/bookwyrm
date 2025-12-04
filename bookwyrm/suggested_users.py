@@ -111,6 +111,16 @@ class SuggestedUsers(RedisStore):
         )
         if local:
             users = users.filter(local=True)
+
+        # Filter out inactive users (no books AND no statuses) if preference is set
+        if not user.show_inactive_suggestions:
+            users = users.annotate(
+                book_count=Count("shelfbook", distinct=True),
+                status_count=Count(
+                    "status", filter=Q(status__deleted=False), distinct=True
+                ),
+            ).exclude(book_count=0, status_count=0)
+
         return users.order_by("-mutuals")[:5]
 
 

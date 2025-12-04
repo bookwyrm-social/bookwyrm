@@ -20,6 +20,7 @@ class EditUserForm(CustomForm):
             "show_goal",
             "show_ratings",
             "show_suggested_users",
+            "show_inactive_suggestions",
             "manually_approves_followers",
             "default_post_privacy",
             "discoverable",
