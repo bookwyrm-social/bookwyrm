@@ -23,7 +23,7 @@ class ReadwiseSettings(View):
     def get(self, request):
         """Display Readwise settings form"""
         # Get or create sync record for stats
-        sync, _ = models.ReadwiseSync.objects.get_or_create(user=request.user)
+        sync, _created = models.ReadwiseSync.objects.get_or_create(user=request.user)
 
         # Count stats
         total_quotes = models.Quotation.objects.filter(
@@ -68,7 +68,7 @@ class ReadwiseSettings(View):
         """Save Readwise token and settings"""
         form = forms.ReadwiseSettingsForm(request.POST, instance=request.user)
         if not form.is_valid():
-            sync, _ = models.ReadwiseSync.objects.get_or_create(user=request.user)
+            sync, _created = models.ReadwiseSync.objects.get_or_create(user=request.user)
             data = {
                 "form": form,
                 "user": request.user,
