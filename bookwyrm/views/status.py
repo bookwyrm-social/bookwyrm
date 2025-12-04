@@ -128,6 +128,17 @@ class CreateStatus(View):
 
         status.save(created=created)
 
+        # Auto-export to Readwise if enabled
+        if (
+            created
+            and isinstance(status, models.Quotation)
+            and request.user.readwise_auto_export
+            and request.user.readwise_token
+        ):
+            from bookwyrm.connectors.readwise import export_quote_to_readwise
+
+            transaction.on_commit(lambda: export_quote_to_readwise.delay(status.id))
+
         # update a readthrough, if needed
         if bool(request.POST.get("id")):
             try:

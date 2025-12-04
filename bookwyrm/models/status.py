@@ -391,6 +391,13 @@ class Quotation(BookStatus):
         blank=True,
     )
 
+    # Readwise sync tracking
+    readwise_highlight_id = models.BigIntegerField(
+        null=True,
+        blank=True,
+        help_text="Readwise highlight ID if exported to Readwise",
+    )
+
     def _format_position(self) -> Optional[str]:
         """serialize page position"""
         beg = self.position

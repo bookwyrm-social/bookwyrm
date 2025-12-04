@@ -1,0 +1,151 @@
+{% extends 'preferences/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Readwise Integration" %}{% endblock %}
+
+{% block header %}
+{% trans "Readwise Integration" %}
+{% endblock %}
+
+{% block panel %}
+{% if form.non_field_errors %}
+<p class="notification is-danger">{{ form.non_field_errors }}</p>
+{% endif %}
+
+<section class="block" id="about">
+    <div class="notification is-info is-light">
+        <p>
+            {% blocktrans %}
+            Connect your BookWyrm account with <a href="https://readwise.io" target="_blank" rel="noopener">Readwise</a> to sync your book highlights.
+            Export your BookWyrm quotes to Readwise for spaced repetition review, or import your Readwise highlights as quotes.
+            {% endblocktrans %}
+        </p>
+    </div>
+</section>
+
+<section class="block" id="settings">
+    <h2 class="title is-4">{% trans "Settings" %}</h2>
+    <div class="box">
+        <form name="readwise-settings" action="{% url 'prefs-readwise' %}" method="post">
+            {% csrf_token %}
+            <div class="field">
+                <label class="label" for="id_readwise_token">{% trans "Readwise API Token" %}</label>
+                {{ form.readwise_token }}
+                <p class="help" id="desc_readwise_token">
+                    {% blocktrans %}
+                    Get your token from <a href="https://readwise.io/access_token" target="_blank" rel="noopener">readwise.io/access_token</a>
+                    {% endblocktrans %}
+                </p>
+                {% include 'snippets/form_errors.html' with errors_list=form.readwise_token.errors id="desc_readwise_token_errors" %}
+            </div>
+
+            <div class="field">
+                <label class="checkbox label" for="id_readwise_auto_export">
+                    {{ form.readwise_auto_export }}
+                    {% trans "Automatically export new quotes to Readwise" %}
+                </label>
+                <p class="help" id="desc_readwise_auto_export">
+                    {% trans "When enabled, your new quotes will be automatically sent to Readwise when you create them." %}
+                </p>
+            </div>
+
+            <div class="field">
+                <button class="button is-primary" type="submit">{% trans "Save Settings" %}</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% if has_token %}
+<hr aria-hidden="true">
+
+<section class="block" id="sync">
+    <h2 class="title is-4">{% trans "Sync" %}</h2>
+    <div class="box">
+        <div class="columns">
+            <div class="column">
+                <h3 class="title is-5">{% trans "Export to Readwise" %}</h3>
+                <p class="mb-3">
+                    {% trans "Send all your BookWyrm quotes to Readwise." %}
+                </p>
+                <form action="{% url 'prefs-readwise' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="export">
+                    <button class="button is-success" type="submit">
+                        <span class="icon">
+                            <i class="fa fa-upload" aria-hidden="true"></i>
+                        </span>
+                        <span>{% trans "Export All Quotes" %}</span>
+                    </button>
+                </form>
+                {% if sync.last_export_at %}
+                <p class="help mt-2">
+                    {% blocktrans with date=sync.last_export_at %}Last export: {{ date }}{% endblocktrans %}
+                </p>
+                {% endif %}
+            </div>
+
+            <div class="column">
+                <h3 class="title is-5">{% trans "Import from Readwise" %}</h3>
+                <p class="mb-3">
+                    {% trans "Import your Readwise book highlights as BookWyrm quotes." %}
+                </p>
+                <form action="{% url 'prefs-readwise' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="import">
+                    <button class="button is-info" type="submit">
+                        <span class="icon">
+                            <i class="fa fa-download" aria-hidden="true"></i>
+                        </span>
+                        <span>{% trans "Import Highlights" %}</span>
+                    </button>
+                </form>
+                {% if sync.last_import_at %}
+                <p class="help mt-2">
+                    {% blocktrans with date=sync.last_import_at %}Last import: {{ date }}{% endblocktrans %}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr aria-hidden="true">
+
+<section class="block" id="stats">
+    <h2 class="title is-4">{% trans "Statistics" %}</h2>
+    <div class="box">
+        <div class="columns is-multiline">
+            <div class="column is-half">
+                <div class="has-text-centered">
+                    <p class="heading">{% trans "Total Quotes" %}</p>
+                    <p class="title">{{ stats.total_quotes }}</p>
+                </div>
+            </div>
+            <div class="column is-half">
+                <div class="has-text-centered">
+                    <p class="heading">{% trans "Exported to Readwise" %}</p>
+                    <p class="title">{{ stats.exported_quotes }}</p>
+                </div>
+            </div>
+            <div class="column is-half">
+                <div class="has-text-centered">
+                    <p class="heading">{% trans "Imported from Readwise" %}</p>
+                    <p class="title">{{ stats.imported_highlights }}</p>
+                </div>
+            </div>
+            <div class="column is-half">
+                <div class="has-text-centered">
+                    <p class="heading">{% trans "Unmatched Highlights" %}</p>
+                    <p class="title">{{ stats.unmatched_highlights }}</p>
+                    {% if stats.unmatched_highlights > 0 %}
+                    <p class="help">{% trans "Highlights that couldn't be matched to a book in BookWyrm" %}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

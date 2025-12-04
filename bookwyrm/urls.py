@@ -739,6 +739,11 @@ urlpatterns = [
         views.ExportArchive.as_view(),
         name="prefs-export-file",
     ),
+    re_path(
+        r"^preferences/readwise/?$",
+        views.ReadwiseSettings.as_view(),
+        name="prefs-readwise",
+    ),
     re_path(r"^preferences/move/?$", views.MoveUser.as_view(), name="prefs-move"),
     re_path(r"^preferences/alias/?$", views.AliasUser.as_view(), name="prefs-alias"),
     re_path(

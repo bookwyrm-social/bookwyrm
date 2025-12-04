@@ -55,6 +55,13 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Export BookWyrm Account" %}</a>
             </li>
         </ul>
+        <h2 class="menu-label">{% trans "Integrations" %}</h2>
+        <ul class="menu-list">
+            <li>
+                {% url 'prefs-readwise' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Readwise" %}</a>
+            </li>
+        </ul>
         <h2 class="menu-label">{% trans "Relationships" %}</h2>
         <ul class="menu-list">
             <li>

@@ -200,6 +200,18 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     hotp_secret = models.CharField(max_length=32, default=None, blank=True, null=True)
     hotp_count = models.IntegerField(default=0, blank=True, null=True)
 
+    # Readwise integration
+    readwise_token = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text="Readwise API token for highlight sync",
+    )
+    readwise_auto_export = models.BooleanField(
+        default=False,
+        help_text="Automatically export new quotes to Readwise",
+    )
+
     class Meta(AbstractUser.Meta):
         """indexes"""
 
