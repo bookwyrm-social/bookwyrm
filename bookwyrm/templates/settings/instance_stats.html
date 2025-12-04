@@ -132,6 +132,101 @@
     {% endif %}
 </section>
 
+{# Connector Health Section #}
+<section class="block">
+    <h2 class="title is-4">{% trans "Connector Health" %}</h2>
+
+    <div class="columns is-multiline has-text-centered">
+        <div class="column is-3-desktop is-6-tablet">
+            <div class="notification is-success is-light">
+                <h3 class="heading">{% trans "Healthy" %}</h3>
+                <p class="title is-4">{{ connectors.healthy_count }}</p>
+            </div>
+        </div>
+        <div class="column is-3-desktop is-6-tablet">
+            <div class="notification is-warning is-light">
+                <h3 class="heading">{% trans "Degraded" %}</h3>
+                <p class="title is-4">{{ connectors.degraded_count }}</p>
+            </div>
+        </div>
+        <div class="column is-3-desktop is-6-tablet">
+            <div class="notification is-danger is-light">
+                <h3 class="heading">{% trans "Unavailable" %}</h3>
+                <p class="title is-4">{{ connectors.unavailable_count }}</p>
+            </div>
+        </div>
+        <div class="column is-3-desktop is-6-tablet">
+            <div class="notification is-info is-light">
+                <h3 class="heading">{% trans "Total Connectors" %}</h3>
+                <p class="title is-4">{{ connectors.total_count }}</p>
+            </div>
+        </div>
+    </div>
+
+    {% if connectors.list %}
+    <div class="columns">
+        <div class="column is-half">
+            <div class="box">
+                <h3 class="subtitle is-5">{% trans "Connector Status Overview" %}</h3>
+                <canvas id="connector_health_chart" height="200"></canvas>
+            </div>
+        </div>
+        <div class="column is-half">
+            <div class="box">
+                <h3 class="subtitle is-5">{% trans "Response Times (ms)" %}</h3>
+                <canvas id="connector_latency_chart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="box">
+        <h3 class="subtitle is-5">{% trans "Connector Details" %}</h3>
+        <table class="table is-fullwidth is-striped">
+            <thead>
+                <tr>
+                    <th>{% trans "Connector" %}</th>
+                    <th>{% trans "Priority" %}</th>
+                    <th>{% trans "Status" %}</th>
+                    <th>{% trans "Success Rate" %}</th>
+                    <th>{% trans "Requests (1h)" %}</th>
+                    <th>{% trans "Avg Latency" %}</th>
+                    <th>{% trans "Last Success" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for connector in connectors.list %}
+                <tr{% if connector.in_backoff %} class="has-background-danger-light"{% endif %}>
+                    <td>
+                        <strong>{{ connector.name }}</strong>
+                        {% if connector.in_backoff %}
+                        <span class="tag is-danger is-small ml-2">{% trans "In Backoff" %}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ connector.priority }}</td>
+                    <td>
+                        {% if connector.health_status == "healthy" %}
+                        <span class="tag is-success">{% trans "Healthy" %}</span>
+                        {% elif connector.health_status == "degraded" %}
+                        <span class="tag is-warning">{% trans "Degraded" %}</span>
+                        {% else %}
+                        <span class="tag is-danger">{% trans "Unavailable" %}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ connector.success_rate }}%</td>
+                    <td>
+                        <span class="has-text-success">{{ connector.success_count }}</span> /
+                        <span class="has-text-danger">{{ connector.failure_count }}</span>
+                    </td>
+                    <td>{% if connector.avg_latency_ms %}{{ connector.avg_latency_ms }} ms{% else %}-{% endif %}</td>
+                    <td>{% if connector.last_success_at %}{{ connector.last_success_at|naturaltime }}{% else %}-{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</section>
+
 {# Activity Charts Section #}
 <section class="block">
     <h2 class="title is-4">{% trans "Activity Over Time" %}</h2>
@@ -310,6 +405,79 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 scales: {
                     y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    // Connector Health Doughnut Chart
+    const connectorHealthCtx = document.getElementById('connector_health_chart');
+    if (connectorHealthCtx) {
+        new Chart(connectorHealthCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['{% trans "Healthy" %}', '{% trans "Degraded" %}', '{% trans "Unavailable" %}'],
+                datasets: [{
+                    data: [{{ connectors.healthy_count }}, {{ connectors.degraded_count }}, {{ connectors.unavailable_count }}],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(255, 99, 132, 0.8)',
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(255, 99, 132, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { boxWidth: 12 }
+                    }
+                }
+            }
+        });
+    }
+
+    // Connector Latency Bar Chart
+    const connectorLatencyCtx = document.getElementById('connector_latency_chart');
+    if (connectorLatencyCtx) {
+        const connectorData = [
+            {% for connector in connectors.list %}
+            {name: '{{ connector.name|escapejs }}', latency: {{ connector.avg_latency_ms|default:0 }}, status: '{{ connector.health_status }}'},
+            {% endfor %}
+        ];
+
+        const statusColors = connectorData.map(d => {
+            if (d.status === 'healthy') return 'rgba(75, 192, 192, 0.8)';
+            if (d.status === 'degraded') return 'rgba(255, 206, 86, 0.8)';
+            return 'rgba(255, 99, 132, 0.8)';
+        });
+
+        new Chart(connectorLatencyCtx, {
+            type: 'bar',
+            data: {
+                labels: connectorData.map(d => d.name),
+                datasets: [{
+                    label: '{% trans "Avg Response Time (ms)" %}',
+                    data: connectorData.map(d => d.latency),
+                    backgroundColor: statusColors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { beginAtZero: true }
                 }
             }
         });

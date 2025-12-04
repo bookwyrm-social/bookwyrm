@@ -19,6 +19,7 @@ class TestInstanceStatsImports(TestCase):
         self.assertTrue(hasattr(instance_stats, "get_federation_stats"))
         self.assertTrue(hasattr(instance_stats, "get_readwise_stats"))
         self.assertTrue(hasattr(instance_stats, "get_activity_stats"))
+        self.assertTrue(hasattr(instance_stats, "get_connector_stats"))
 
 
 @patch("bookwyrm.activitystreams.add_status_task.delay")
@@ -129,3 +130,16 @@ class InstanceStatsFunctionsTest(TestCase):
         self.assertIn("servers_by_day", activity)
         self.assertEqual(len(activity["labels"]), 7)
         self.assertEqual(len(activity["status_by_day"]), 7)
+
+    def test_get_connector_stats(self):
+        """Test connector stats function returns expected structure"""
+        from bookwyrm.views.admin.instance_stats import get_connector_stats
+
+        stats = get_connector_stats()
+        self.assertIn("connectors", stats)
+        connectors = stats["connectors"]
+        self.assertIn("list", connectors)
+        self.assertIn("total_count", connectors)
+        self.assertIn("healthy_count", connectors)
+        self.assertIn("degraded_count", connectors)
+        self.assertIn("unavailable_count", connectors)

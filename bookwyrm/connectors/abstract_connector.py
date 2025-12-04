@@ -7,6 +7,7 @@ from urllib.parse import quote_plus
 import logging
 import re
 import asyncio
+import time
 from PIL import Image, UnidentifiedImageError
 import requests
 from requests.exceptions import RequestException
@@ -18,6 +19,7 @@ from django.db import transaction
 from bookwyrm import activitypub, models, settings
 from bookwyrm.settings import USER_AGENT
 from .connector_manager import load_more_data, ConnectorException, raise_not_valid_url
+from .connector_backoff import ConnectorBackoff
 from .format_mappings import format_mappings
 from ..book_search import SearchResult
 
@@ -86,17 +88,29 @@ class AbstractMinimalConnector(ABC):
             "User-Agent": USER_AGENT,
         }
         params = {"min_confidence": str(min_confidence)}
+        start_time = time.time()
         try:
             async with session.get(url, headers=headers, params=params) as response:
+                latency_ms = int((time.time() - start_time) * 1000)
+
                 if not response.ok:
                     logger.info("Unable to connect to %s: %s", url, response.reason)
+                    ConnectorBackoff.record_failure(
+                        self.identifier, f"http_{response.status}", latency_ms
+                    )
                     return None
 
                 try:
                     raw_data = await response.json()
                 except aiohttp.client_exceptions.ContentTypeError as err:
                     logger.exception(err)
+                    ConnectorBackoff.record_failure(
+                        self.identifier, "parse_error", latency_ms
+                    )
                     return None
+
+                # Record success with latency
+                ConnectorBackoff.record_success(self.identifier, latency_ms)
 
                 return ConnectorResults(
                     connector=self,
@@ -105,9 +119,13 @@ class AbstractMinimalConnector(ABC):
                     ),
                 )
         except asyncio.TimeoutError:
+            latency_ms = int((time.time() - start_time) * 1000)
             logger.info("Connection timed out for url: %s", url)
+            ConnectorBackoff.record_failure(self.identifier, "timeout", latency_ms)
         except aiohttp.ClientError as err:
+            latency_ms = int((time.time() - start_time) * 1000)
             logger.info(err)
+            ConnectorBackoff.record_failure(self.identifier, "client_error", latency_ms)
         return None
 
     @abstractmethod

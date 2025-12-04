@@ -17,6 +17,7 @@ from requests import HTTPError
 from bookwyrm import book_search, models
 from bookwyrm.book_search import SearchResult
 from bookwyrm.connectors import abstract_connector
+from bookwyrm.connectors.connector_backoff import ConnectorBackoff
 from bookwyrm.settings import SEARCH_TIMEOUT
 from bookwyrm.tasks import app, CONNECTORS
 
@@ -110,8 +111,12 @@ def first_search_result(
 
 
 def get_connectors() -> Iterator[abstract_connector.AbstractConnector]:
-    """load all connectors"""
+    """load all connectors, skipping those in backoff"""
     for info in models.Connector.objects.filter(active=True).order_by("priority").all():
+        # Skip connectors that are in backoff due to recent failures
+        if ConnectorBackoff.should_skip(info.identifier):
+            logger.debug("Skipping connector %s - in backoff period", info.identifier)
+            continue
         yield load_connector(info)
 
 

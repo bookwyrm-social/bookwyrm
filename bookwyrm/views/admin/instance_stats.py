@@ -11,6 +11,7 @@ from django.views import View
 from csp.decorators import csp_update
 
 from bookwyrm import models
+from bookwyrm.connectors.connector_backoff import ConnectorBackoff
 
 
 @method_decorator(login_required, name="dispatch")
@@ -32,6 +33,7 @@ class InstanceStats(View):
         data = {
             **get_federation_stats(),
             **get_readwise_stats(),
+            **get_connector_stats(),
             **get_activity_stats(now, interval),
             "interval": interval,
         }
@@ -135,6 +137,57 @@ def get_readwise_stats():
                 (matched_highlights / total_imported * 100) if total_imported > 0 else 0, 1
             ),
             "recent_syncs": recent_syncs,
+        }
+    }
+
+
+def get_connector_stats():
+    """Get connector health statistics"""
+    connectors = models.Connector.objects.filter(active=True).order_by("priority")
+    connector_list = []
+
+    healthy_count = 0
+    degraded_count = 0
+    unavailable_count = 0
+
+    for connector in connectors:
+        # Get real-time stats from cache
+        cache_stats = ConnectorBackoff.get_health_stats(connector.identifier)
+
+        connector_data = {
+            "identifier": connector.identifier,
+            "name": connector.name or connector.identifier,
+            "priority": connector.priority,
+            "health_status": cache_stats["health_status"],
+            "success_rate": cache_stats["success_rate"],
+            "success_count": cache_stats["success_count"],
+            "failure_count": cache_stats["failure_count"],
+            "avg_latency_ms": cache_stats["avg_latency_ms"],
+            "in_backoff": cache_stats["in_backoff"],
+            "consecutive_failures": cache_stats["consecutive_failures"],
+            # Database stats (persistent)
+            "db_success_count": connector.success_count,
+            "db_failure_count": connector.failure_count,
+            "last_success_at": connector.last_success_at,
+            "last_failure_at": connector.last_failure_at,
+        }
+        connector_list.append(connector_data)
+
+        # Count by health status
+        if cache_stats["health_status"] == "healthy":
+            healthy_count += 1
+        elif cache_stats["health_status"] == "degraded":
+            degraded_count += 1
+        else:
+            unavailable_count += 1
+
+    return {
+        "connectors": {
+            "list": connector_list,
+            "total_count": len(connector_list),
+            "healthy_count": healthy_count,
+            "degraded_count": degraded_count,
+            "unavailable_count": unavailable_count,
         }
     }
 
