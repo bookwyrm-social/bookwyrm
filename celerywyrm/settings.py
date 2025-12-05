@@ -45,7 +45,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     "send-daily-newsletter": {
         "task": "bookwyrm.newsletter.send_daily_newsletter",
-        "schedule": crontab(hour=8, minute=0),  # Daily at 8 AM UTC
+        "schedule": crontab(minute=0),  # Every hour, sends to users where it's 6 AM local
     },
 }
 

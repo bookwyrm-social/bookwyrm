@@ -151,11 +151,28 @@ def send_newsletter_to_user(user, activities, date_str):
     send_email.delay(user.email, *format_email("daily_newsletter", data))
 
 
+def is_target_hour_for_user(user, target_hour=6):
+    """
+    Check if it's currently the target hour (default 6 AM) in user's timezone.
+    Used for sending newsletters at a consistent local time for each user.
+    """
+    try:
+        user_tz = zoneinfo.ZoneInfo(user.preferred_timezone)
+    except (ValueError, KeyError):
+        user_tz = zoneinfo.ZoneInfo("UTC")
+
+    now_user_tz = datetime.now(user_tz)
+    return now_user_tz.hour == target_hour
+
+
 @app.task(queue=EMAIL)
 def send_daily_newsletter():
     """
     Celery task to send daily newsletter to subscribed users.
-    Scheduled to run at 8 AM UTC via celery beat.
+
+    Scheduled to run HOURLY via celery beat. Only sends to users
+    where it's currently 6 AM in their timezone, ensuring everyone
+    gets their newsletter at a consistent local time.
     """
     # Get all active, local users who have subscribed
     subscribed_users = models.User.objects.filter(
@@ -166,9 +183,15 @@ def send_daily_newsletter():
 
     sent_count = 0
     skip_count = 0
+    timezone_skip_count = 0
 
     for user in subscribed_users:
         try:
+            # Only send to users where it's currently 6 AM in their timezone
+            if not is_target_hour_for_user(user, target_hour=6):
+                timezone_skip_count += 1
+                continue
+
             start_date, end_date = get_yesterday_range_for_user(user)
             activities = get_newsletter_activities(user, start_date, end_date)
 
@@ -188,5 +211,8 @@ def send_daily_newsletter():
             logger.error("Failed to send newsletter to user %s: %s", user.id, e)
 
     logger.info(
-        "Daily newsletter: sent %d, skipped %d (no activity)", sent_count, skip_count
+        "Daily newsletter: sent %d, skipped %d (no activity), %d (wrong timezone hour)",
+        sent_count,
+        skip_count,
+        timezone_skip_count,
     )
