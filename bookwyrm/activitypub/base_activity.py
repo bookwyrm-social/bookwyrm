@@ -408,9 +408,9 @@ def resolve_remote_id(
         if (
             hasattr(e, "response")
             and hasattr(e.response, "status_code")
-            and e.response.status_code in (404, 410)
+            and e.response.status_code in (401, 404, 410)
         ):
-            # 404/410 are expected - remote resource deleted or gone
+            # 401/404/410 are expected - private accounts, deleted/gone resources
             logger.info(
                 "Remote resource unavailable (%s) - remote_id: %s",
                 e.response.status_code,
