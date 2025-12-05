@@ -184,27 +184,26 @@ def set_language(user, response):
 
 
 def filter_stream_by_status_type(activities, allowed_types=None):
-    """filter out activities based on types"""
+    """filter out activities based on types - combined into single query"""
     if not allowed_types:
         allowed_types = []
 
+    # Build combined filter to avoid multiple sequential filter() calls
+    # which can create excessive LEFT JOINs in the query
+    filters = Q()
+
     if "review" not in allowed_types:
-        activities = activities.filter(
-            Q(review__isnull=True), Q(boost__boosted_status__review__isnull=True)
-        )
+        filters &= Q(review__isnull=True) & Q(boost__boosted_status__review__isnull=True)
     if "comment" not in allowed_types:
-        activities = activities.filter(
-            Q(comment__isnull=True), Q(boost__boosted_status__comment__isnull=True)
-        )
+        filters &= Q(comment__isnull=True) & Q(boost__boosted_status__comment__isnull=True)
     if "quotation" not in allowed_types:
-        activities = activities.filter(
-            Q(quotation__isnull=True), Q(boost__boosted_status__quotation__isnull=True)
-        )
+        filters &= Q(quotation__isnull=True) & Q(boost__boosted_status__quotation__isnull=True)
     if "everything" not in allowed_types:
-        activities = activities.filter(
-            Q(generatednote__isnull=True),
-            Q(boost__boosted_status__generatednote__isnull=True),
-        )
+        filters &= Q(generatednote__isnull=True) & Q(boost__boosted_status__generatednote__isnull=True)
+
+    # Apply all filters in a single call
+    if filters:
+        activities = activities.filter(filters)
 
     return activities
 

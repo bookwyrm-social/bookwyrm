@@ -52,19 +52,18 @@ class Feed(View):
         )
         paginated = Paginator(filtered_activities, PAGE_LENGTH)
 
-        suggestions = suggested_users.get_suggestions(request.user)
+        suggestions = suggested_users.get_suggestions_cached(request.user)
 
-        cutoff = (
-            date(get_annual_summary_year(), 12, 31)
-            if get_annual_summary_year()
-            else None
-        )
-        readthroughs = (
+        # Check if user has any finished reads this year (for annual summary link)
+        # Use .exists() instead of loading all objects - we only need a boolean
+        annual_summary_year = get_annual_summary_year()
+        has_summary_read_throughs = (
             models.ReadThrough.objects.filter(
-                user=request.user, finish_date__lte=cutoff
-            )
-            if get_annual_summary_year()
-            else []
+                user=request.user,
+                finish_date__lte=date(annual_summary_year, 12, 31)
+            ).exists()
+            if annual_summary_year
+            else False
         )
 
         data = {
@@ -79,9 +78,9 @@ class Feed(View):
                 "feed_status_types_options": FeedFilterChoices,
                 "filters_applied": filters_applied,
                 "path": f"/{tab['key']}",
-                "annual_summary_year": get_annual_summary_year(),
+                "annual_summary_year": annual_summary_year,
                 "has_tour": True,
-                "has_summary_read_throughs": len(readthroughs),
+                "has_summary_read_throughs": has_summary_read_throughs,
             },
         }
         return TemplateResponse(request, "feed/feed.html", data)

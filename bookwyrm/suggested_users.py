@@ -1,6 +1,8 @@
 """ store recommended follows in redis """
 import math
 import logging
+from django.core.cache import cache
+from django.db.models import Value
 from django.dispatch import receiver
 from django.db import transaction
 from django.db.models import signals, Count, Q, Case, When, IntegerField
@@ -123,9 +125,61 @@ class SuggestedUsers(RedisStore):
 
         return users.order_by("-mutuals")[:5]
 
+    def get_suggestions_cached(self, user, local=False):
+        """Get suggestions with caching - invalidated by events, not TTL.
+
+        Cache key includes user_id to prevent data leakage between users.
+        Cache is invalidated when user follows/unfollows/blocks someone.
+        """
+        cache_key = f"suggested-users-{user.id}-{'local' if local else 'all'}"
+        if not user.show_inactive_suggestions:
+            cache_key = f"{cache_key}-active"
+
+        cached = cache.get(cache_key)
+        if cached is not None:
+            # Return users from cached IDs with pre-computed mutuals
+            if not cached:
+                return models.User.objects.none()
+
+            annotations = [
+                When(pk=uid, then=Value(mutuals))
+                for uid, mutuals in cached
+            ]
+            return (
+                models.User.objects.filter(id__in=[uid for uid, _ in cached])
+                .annotate(
+                    mutuals=Case(*annotations, output_field=IntegerField(), default=0)
+                )
+                .order_by("-mutuals")
+            )
+
+        # Cache miss - compute and store
+        suggestions = self.get_suggestions(user, local)
+        # Evaluate queryset and cache the results
+        cache_data = [(u.id, u.mutuals) for u in suggestions]
+        cache.set(cache_key, cache_data, timeout=None)  # No TTL - event invalidated
+        return suggestions
+
+
+def invalidate_suggestions_cache(user_id):
+    """Clear all cached suggestion variants for a user.
+
+    Called when user follows/unfollows/blocks someone, ensuring
+    the cache stays consistent with the user's relationships.
+    """
+    cache.delete_many([
+        f"suggested-users-{user_id}-all",
+        f"suggested-users-{user_id}-local",
+        f"suggested-users-{user_id}-all-active",
+        f"suggested-users-{user_id}-local-active",
+    ])
+
 
 def get_annotated_users(viewer, *args, **kwargs):
     """Users, annotated with things they have in common"""
+    # Pre-fetch following IDs once to avoid double evaluation in annotation
+    following_ids = list(viewer.following.values_list("id", flat=True))
+
     return (
         models.User.objects.filter(discoverable=True, is_active=True, *args, **kwargs)
         .exclude(Q(id__in=viewer.blocks.all()) | Q(blocks=viewer))
@@ -134,8 +188,8 @@ def get_annotated_users(viewer, *args, **kwargs):
                 "followers",
                 filter=Q(
                     ~Q(id=viewer.id),
-                    ~Q(id__in=viewer.following.all()),
-                    followers__in=viewer.following.all(),
+                    ~Q(id__in=following_ids),
+                    followers__id__in=following_ids,
                 ),
                 distinct=True,
             ),
@@ -165,6 +219,8 @@ def update_suggestions_on_follow(sender, instance, created, *args, **kwargs):
 
     if instance.user_subject.local:
         remove_suggestion_task.delay(instance.user_subject.id, instance.user_object.id)
+        # Invalidate cached suggestions for the user who followed
+        invalidate_suggestions_cache(instance.user_subject.id)
     rerank_user_task.delay(instance.user_object.id, update_only=False)
 
 
@@ -177,6 +233,8 @@ def update_suggestions_on_follow_request(sender, instance, created, *args, **kwa
 
     if instance.user_subject.local:
         remove_suggestion_task.delay(instance.user_subject.id, instance.user_object.id)
+        # Invalidate cached suggestions for the user who sent the request
+        invalidate_suggestions_cache(instance.user_subject.id)
 
 
 @receiver(signals.post_save, sender=models.UserBlocks)
@@ -185,8 +243,12 @@ def update_suggestions_on_block(sender, instance, *args, **kwargs):
     """remove blocked users from recs"""
     if instance.user_subject.local and instance.user_object.discoverable:
         remove_suggestion_task.delay(instance.user_subject.id, instance.user_object.id)
+        # Invalidate cached suggestions for the user who blocked
+        invalidate_suggestions_cache(instance.user_subject.id)
     if instance.user_object.local and instance.user_subject.discoverable:
         remove_suggestion_task.delay(instance.user_object.id, instance.user_subject.id)
+        # Invalidate cached suggestions for the blocked user too
+        invalidate_suggestions_cache(instance.user_object.id)
 
 
 @receiver(signals.post_delete, sender=models.UserFollows)
@@ -195,6 +257,9 @@ def update_suggestions_on_unfollow(sender, instance, **kwargs):
     """update rankings, but don't re-suggest because it was probably intentional"""
     if instance.user_object.discoverable:
         rerank_user_task.delay(instance.user_object.id, update_only=False)
+    # Invalidate cached suggestions for the user who unfollowed
+    if instance.user_subject.local:
+        invalidate_suggestions_cache(instance.user_subject.id)
 
 
 # @receiver(signals.post_save, sender=models.ShelfBook)
