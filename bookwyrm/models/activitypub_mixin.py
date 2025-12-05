@@ -578,7 +578,8 @@ async def sign_and_send(
     try:
         async with session.post(destination, data=data, headers=headers) as response:
             if not response.ok:
-                logger.exception(
+                # Non-OK responses are expected (blocked, deleted accounts, etc.)
+                logger.info(
                     "Failed to send broadcast to %s: %s", destination, response.reason
                 )
                 if kwargs.get("use_legacy_key") is not True:
@@ -593,7 +594,8 @@ async def sign_and_send(
     except asyncio.TimeoutError:
         logger.info("Connection timed out for url: %s", destination)
     except aiohttp.ClientError as err:
-        logger.exception(err)
+        # Connection errors are expected in federation (instances go offline)
+        logger.info("Connection error for %s: %s", destination, err)
 
 
 # pylint: disable=unused-argument
