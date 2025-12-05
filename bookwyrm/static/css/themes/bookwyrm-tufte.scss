@@ -1,0 +1,86 @@
+@import "../vendor/bulma/sass/utilities/derived-variables";
+
+/* Tufte-Inspired Theme
+ * Minimalist, content-focused design
+ * Based on edwardtufte.com aesthetic
+ ******************************************************************************/
+
+/* states - using Tufte red as primary */
+$primary: #b50101;
+$primary-light: #fdf2f2;
+$info: #4a4a4a;
+$success: #2e7d32;
+$warning: #f57c00;
+$danger: #c62828;
+
+/* book cover standins */
+$no-cover-color: #363636;
+
+/* background colors - clean whites */
+$scheme-main: #ffffff;
+$background-body: #ffffff;
+$background-secondary: #fafafa;
+$background-tertiary: #f5f5f5;
+$scrollbar-track: $background-secondary;
+$scrollbar-thumb: #cccccc;
+
+/* highlight colors */
+$primary-highlight: #fdf2f2;
+$info-highlight: #f5f5f5;
+$success-highlight: #e8f5e9;
+
+/* borders - subtle grays */
+$border: #e0e0e0;
+$border-hover: #bdbdbd;
+$border-light: #eeeeee;
+$border-light-hover: #e0e0e0;
+
+/* text - high contrast black */
+$text: #000000;
+$text-light: #4a4a4a;
+$text-strong: #000000;
+
+/* links - Tufte red */
+$link: #b50101;
+$link-background: #b50101;
+$link-hover: #8b0000;
+$link-focus: #8b0000;
+$link-active: #8b0000;
+
+/* bulma overrides */
+$background: $background-secondary;
+$menu-item-active-background-color: $link-background;
+
+/* misc */
+$invisible-overlay-background-color: rgba(0, 0, 0, 0.66);
+
+/* Fonts - clean sans-serif */
+$family-primary: $family-sans-serif;
+$family-secondary: $family-sans-serif;
+
+/* Custom utility classes */
+.has-text-muted {
+    color: #4a4a4a !important;
+}
+
+.has-text-more-muted {
+    color: #757575 !important;
+}
+
+/* Tab styling with Tufte red */
+.tabs li:not(.is-active) a {
+    color: #b50101 !important;
+}
+
+.tabs li:not(.is-active) a:hover {
+    border-bottom-color: #b50101 !important;
+}
+
+.tabs li.is-active a {
+    color: #000000 !important;
+    border-bottom-color: #000000 !important;
+}
+
+@import "../bookwyrm";
+@import "../vendor/icons.css";
+@import "../vendor/shepherd";
