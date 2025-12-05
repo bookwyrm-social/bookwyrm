@@ -235,7 +235,7 @@ def export_quote_to_readwise(quotation_id: int) -> bool:
         result = client.create_highlights([highlight])
 
         # Store the Readwise highlight ID if returned
-        if result and result.get("modified_highlights"):
+        if isinstance(result, dict) and result.get("modified_highlights"):
             modified = result["modified_highlights"]
             if modified:
                 quotation.readwise_highlight_id = modified[0].get("id")
@@ -300,7 +300,7 @@ def export_all_quotes_to_readwise(user_id: int) -> dict:
         if len(highlights_batch) >= batch_size:
             try:
                 result = client.create_highlights(highlights_batch)
-                if result.get("modified_highlights"):
+                if isinstance(result, dict) and result.get("modified_highlights"):
                     # Update quotations with Readwise IDs
                     for i, modified in enumerate(result["modified_highlights"]):
                         if i < len(quotation_ids):
@@ -320,7 +320,7 @@ def export_all_quotes_to_readwise(user_id: int) -> dict:
     if highlights_batch:
         try:
             result = client.create_highlights(highlights_batch)
-            if result.get("modified_highlights"):
+            if isinstance(result, dict) and result.get("modified_highlights"):
                 for i, modified in enumerate(result["modified_highlights"]):
                     if i < len(quotation_ids):
                         models.Quotation.objects.filter(id=quotation_ids[i]).update(

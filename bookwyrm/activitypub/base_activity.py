@@ -408,15 +408,17 @@ def resolve_remote_id(
         if (
             hasattr(e, "response")
             and hasattr(e.response, "status_code")
-            and e.response.status_code == 410
+            and e.response.status_code in (404, 410)
         ):
-            # only log a warning for "gone" since there is not much we can do
-            logger.warning(
-                "request for object dropped because it is gone (410) - remote_id: %s",
+            # 404/410 are expected - remote resource deleted or gone
+            logger.info(
+                "Remote resource unavailable (%s) - remote_id: %s",
+                e.response.status_code,
                 remote_id,
             )
         else:
-            logger.exception("HTTP error - remote_id: %s - error: %s", remote_id, e)
+            # Other HTTP errors - log but don't report to Sentry
+            logger.warning("HTTP error - remote_id: %s - error: %s", remote_id, e)
         # Record failure for backoff tracking
         RemoteInstanceBackoff.record_failure(remote_id)
         return None
