@@ -29,7 +29,7 @@
         </div>
 
         <label for="post_status" class="label">
-            <input type="checkbox" name="post-status" id="post_status" class="checkbox" checked>
+            <input type="checkbox" name="post-status" id="post_status" class="checkbox" {% if request.user.default_post_to_feed %}checked{% endif %}>
             {% trans "Post to feed" %}
         </label>
 

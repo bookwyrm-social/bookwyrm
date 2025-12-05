@@ -22,6 +22,7 @@ class EditUserForm(CustomForm):
             "show_suggested_users",
             "show_inactive_suggestions",
             "newsletter_subscription",
+            "default_post_to_feed",
             "manually_approves_followers",
             "default_post_privacy",
             "discoverable",

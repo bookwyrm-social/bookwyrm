@@ -7,7 +7,7 @@
 
     {% if rating %}
 
-        {% if not request.user.show_ratings %}
+        {% if request.user.is_authenticated and not request.user.show_ratings %}
 
         <button type="button" data-controls="rating-{{ uuid }}" id="rating-button-{{ uuid }}" aria-pressed="false" data-disappear>
             <em>{% trans "Show rating" %} </em>
@@ -15,7 +15,7 @@
 
         {% endif %}
 
-        <span class="{% if not request.user.show_ratings %}is-hidden{% endif %}" id="rating-{{ uuid }}">
+        <span class="{% if request.user.is_authenticated and not request.user.show_ratings %}is-hidden{% endif %}" id="rating-{{ uuid }}">
             <span class="is-sr-only">
                 {% blocktranslate trimmed with rating=rating|floatformat:0 count counter=rating|floatformat:0|add:0 %}
                     {{ rating }} star

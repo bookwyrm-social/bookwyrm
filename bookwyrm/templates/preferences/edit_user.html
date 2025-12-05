@@ -97,6 +97,15 @@
                 </p>
             </div>
             <div class="field">
+                <label class="checkbox label" for="id_default_post_to_feed">
+                    {{ form.default_post_to_feed }}
+                    {% trans "Post reading updates to feed by default" %}
+                </label>
+                <p class="help">
+                    {% trans "When updating reading status or setting goals, the 'Post to feed' checkbox will be checked by default." %}
+                </p>
+            </div>
+            <div class="field">
                 <label class="checkbox label" for="id_discoverable">
                     {{ form.discoverable }}
                     {% trans "Show this account in suggested users" %}

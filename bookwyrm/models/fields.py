@@ -359,13 +359,13 @@ class ManyToManyField(  # pylint: disable=abstract-method
                 validate_remote_id(remote_id)
             except ValidationError:
                 continue
-            items.append(
-                activitypub.resolve_remote_id(
-                    remote_id,
-                    model=self.related_model,
-                    allow_external_connections=allow_external_connections,
-                )
+            item = activitypub.resolve_remote_id(
+                remote_id,
+                model=self.related_model,
+                allow_external_connections=allow_external_connections,
             )
+            if item is not None:
+                items.append(item)
         return items
 
 
@@ -423,13 +423,13 @@ class TagField(ManyToManyField):  # pylint: disable=abstract-method
                 items.append(hashtag)
             else:
                 # for other tag types we fetch them remotely
-                items.append(
-                    activitypub.resolve_remote_id(
-                        link.href,
-                        model=self.related_model,
-                        allow_external_connections=allow_external_connections,
-                    )
+                item = activitypub.resolve_remote_id(
+                    link.href,
+                    model=self.related_model,
+                    allow_external_connections=allow_external_connections,
                 )
+                if item is not None:
+                    items.append(item)
         return items
 
 
