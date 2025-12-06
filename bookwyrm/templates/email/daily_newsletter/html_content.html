@@ -2,111 +2,282 @@
 {% load i18n %}
 
 {% block content %}
-<p>{% blocktrans trimmed %}Here's what happened in your reading community on {{ date_str }}:{% endblocktrans %}</p>
+<p style="margin-bottom: 1.5rem; color: #666;">{% blocktrans trimmed %}Here's what happened in your reading community on {{ date_str }}:{% endblocktrans %}</p>
 
+{# ===== YOUR ACTIVITY SECTION ===== #}
 {% if own_activities.reviews or own_activities.comments or own_activities.quotations or own_activities.shelf_changes %}
-<h2 style="color: #3273dc; margin-top: 1.5rem; font-size: 1.2rem;">{% trans "Your Activity" %}</h2>
+<h2 style="color: #3273dc; margin-top: 1.5rem; margin-bottom: 1rem; font-size: 1.1rem; border-bottom: 2px solid #3273dc; padding-bottom: 0.5rem;">{% trans "Your Activity" %}</h2>
 
 {% if own_activities.reviews %}
-<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Reviews" %}</h3>
-<ul style="margin: 0; padding-left: 1.5rem;">
+<p style="font-weight: bold; color: #333; margin-bottom: 0.5rem;">{% trans "Reviews" %}</p>
 {% for review in own_activities.reviews %}
-<li style="margin-bottom: 0.5rem;">
-    <a style="color: #3273dc;" href="{{ base_url }}{{ review.book.local_path }}">{{ review.book.title }}</a>
-    {% if review.rating %} - {{ review.rating }} {% trans "stars" %}{% endif %}
-</li>
+<table style="width: 100%; margin-bottom: 1rem; border-collapse: collapse;" cellpadding="0" cellspacing="0">
+<tr>
+    {% if review.book.cover %}
+    <td style="width: 60px; vertical-align: top; padding-right: 12px;">
+        <a href="{{ base_url }}{{ review.book.local_path }}">
+            <img src="{{ base_url }}{{ review.book.cover.url }}" alt="{{ review.book.title }}" width="60" style="border-radius: 4px; display: block;">
+        </a>
+    </td>
+    {% endif %}
+    <td style="vertical-align: top;">
+        <a href="{{ base_url }}{{ review.book.local_path }}" style="color: #3273dc; font-weight: bold; text-decoration: none; font-size: 1rem;">{{ review.book.title }}</a>
+        {% if review.rating %}<span style="color: #f39c12; margin-left: 0.5rem;">{% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}</span>{% endif %}
+        {% if review.book.description %}
+        <p style="color: #666; font-size: 0.9rem; margin: 0.3rem 0;">{{ review.book.description|striptags|truncatechars:150 }}</p>
+        {% endif %}
+        <a href="{{ base_url }}{{ review.book.local_path }}" style="display: inline-block; margin-top: 0.5rem; padding: 0.4rem 0.8rem; background-color: #3273dc; color: white; text-decoration: none; border-radius: 4px; font-size: 0.85rem;">{% trans "Want to Read" %}</a>
+    </td>
+</tr>
+</table>
 {% endfor %}
-</ul>
 {% endif %}
 
 {% if own_activities.comments %}
-<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Comments" %}</h3>
-<ul style="margin: 0; padding-left: 1.5rem;">
+<p style="font-weight: bold; color: #333; margin-bottom: 0.5rem; margin-top: 1rem;">{% trans "Comments" %}</p>
 {% for comment in own_activities.comments %}
-<li style="margin-bottom: 0.5rem;">
-    {% trans "Comment on" %} <a style="color: #3273dc;" href="{{ base_url }}{{ comment.book.local_path }}">{{ comment.book.title }}</a>
-</li>
+<table style="width: 100%; margin-bottom: 1rem; border-collapse: collapse;" cellpadding="0" cellspacing="0">
+<tr>
+    {% if comment.book.cover %}
+    <td style="width: 60px; vertical-align: top; padding-right: 12px;">
+        <a href="{{ base_url }}{{ comment.book.local_path }}">
+            <img src="{{ base_url }}{{ comment.book.cover.url }}" alt="{{ comment.book.title }}" width="60" style="border-radius: 4px; display: block;">
+        </a>
+    </td>
+    {% endif %}
+    <td style="vertical-align: top;">
+        <span style="color: #666; font-size: 0.9rem;">{% trans "Comment on" %}</span>
+        <a href="{{ base_url }}{{ comment.book.local_path }}" style="color: #3273dc; font-weight: bold; text-decoration: none;">{{ comment.book.title }}</a>
+        {% if comment.book.description %}
+        <p style="color: #666; font-size: 0.9rem; margin: 0.3rem 0;">{{ comment.book.description|striptags|truncatechars:150 }}</p>
+        {% endif %}
+        <a href="{{ base_url }}{{ comment.book.local_path }}" style="display: inline-block; margin-top: 0.5rem; padding: 0.4rem 0.8rem; background-color: #3273dc; color: white; text-decoration: none; border-radius: 4px; font-size: 0.85rem;">{% trans "Want to Read" %}</a>
+    </td>
+</tr>
+</table>
 {% endfor %}
-</ul>
 {% endif %}
 
 {% if own_activities.quotations %}
-<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Quotations" %}</h3>
-<ul style="margin: 0; padding-left: 1.5rem;">
+<p style="font-weight: bold; color: #333; margin-bottom: 0.5rem; margin-top: 1rem;">{% trans "Quotations" %}</p>
 {% for quote in own_activities.quotations %}
-<li style="margin-bottom: 0.5rem;">
-    {% trans "Quote from" %} <a style="color: #3273dc;" href="{{ base_url }}{{ quote.book.local_path }}">{{ quote.book.title }}</a>
-</li>
+<table style="width: 100%; margin-bottom: 1rem; border-collapse: collapse;" cellpadding="0" cellspacing="0">
+<tr>
+    {% if quote.book.cover %}
+    <td style="width: 60px; vertical-align: top; padding-right: 12px;">
+        <a href="{{ base_url }}{{ quote.book.local_path }}">
+            <img src="{{ base_url }}{{ quote.book.cover.url }}" alt="{{ quote.book.title }}" width="60" style="border-radius: 4px; display: block;">
+        </a>
+    </td>
+    {% endif %}
+    <td style="vertical-align: top;">
+        <span style="color: #666; font-size: 0.9rem;">{% trans "Quote from" %}</span>
+        <a href="{{ base_url }}{{ quote.book.local_path }}" style="color: #3273dc; font-weight: bold; text-decoration: none;">{{ quote.book.title }}</a>
+        {% if quote.book.description %}
+        <p style="color: #666; font-size: 0.9rem; margin: 0.3rem 0;">{{ quote.book.description|striptags|truncatechars:150 }}</p>
+        {% endif %}
+        <a href="{{ base_url }}{{ quote.book.local_path }}" style="display: inline-block; margin-top: 0.5rem; padding: 0.4rem 0.8rem; background-color: #3273dc; color: white; text-decoration: none; border-radius: 4px; font-size: 0.85rem;">{% trans "Want to Read" %}</a>
+    </td>
+</tr>
+</table>
 {% endfor %}
-</ul>
 {% endif %}
 
 {% if own_activities.shelf_changes %}
-<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Shelf Updates" %}</h3>
-<ul style="margin: 0; padding-left: 1.5rem;">
+<p style="font-weight: bold; color: #333; margin-bottom: 0.5rem; margin-top: 1rem;">{% trans "Shelf Updates" %}</p>
 {% for change in own_activities.shelf_changes %}
-<li style="margin-bottom: 0.5rem;">
-    {% blocktrans trimmed with title=change.book.title shelf=change.shelf.name %}Added <a style="color: #3273dc;" href="{{ base_url }}{{ change.book.local_path }}">{{ title }}</a> to {{ shelf }}{% endblocktrans %}
-</li>
+<table style="width: 100%; margin-bottom: 1rem; border-collapse: collapse;" cellpadding="0" cellspacing="0">
+<tr>
+    {% if change.book.cover %}
+    <td style="width: 60px; vertical-align: top; padding-right: 12px;">
+        <a href="{{ base_url }}{{ change.book.local_path }}">
+            <img src="{{ base_url }}{{ change.book.cover.url }}" alt="{{ change.book.title }}" width="60" style="border-radius: 4px; display: block;">
+        </a>
+    </td>
+    {% endif %}
+    <td style="vertical-align: top;">
+        <a href="{{ base_url }}{{ change.book.local_path }}" style="color: #3273dc; font-weight: bold; text-decoration: none;">{{ change.book.title }}</a>
+        <span style="color: #666;"> → {{ change.shelf.name }}</span>
+        {% if change.book.description %}
+        <p style="color: #666; font-size: 0.9rem; margin: 0.3rem 0;">{{ change.book.description|striptags|truncatechars:150 }}</p>
+        {% endif %}
+    </td>
+</tr>
+</table>
 {% endfor %}
-</ul>
 {% endif %}
 {% endif %}
 
+{# ===== FROM PEOPLE YOU FOLLOW SECTION ===== #}
 {% if followed_activities.reviews or followed_activities.comments or followed_activities.quotations or followed_activities.shelf_changes %}
-<h2 style="color: #3273dc; margin-top: 1.5rem; font-size: 1.2rem;">{% trans "From People You Follow" %}</h2>
+<h2 style="color: #3273dc; margin-top: 2rem; margin-bottom: 1rem; font-size: 1.1rem; border-bottom: 2px solid #3273dc; padding-bottom: 0.5rem;">{% trans "From People You Follow" %}</h2>
 
 {% if followed_activities.reviews %}
-<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Reviews" %}</h3>
-<ul style="margin: 0; padding-left: 1.5rem;">
-{% for review in followed_activities.reviews %}
-<li style="margin-bottom: 0.5rem;">
-    <strong>{{ review.user.display_name }}</strong> {% trans "reviewed" %}
-    <a style="color: #3273dc;" href="{{ base_url }}{{ review.book.local_path }}">{{ review.book.title }}</a>
-    {% if review.rating %} - {{ review.rating }} {% trans "stars" %}{% endif %}
-</li>
+<p style="font-weight: bold; color: #333; margin-bottom: 0.5rem;">{% trans "Reviews" %}</p>
+{% for group in followed_activities.reviews %}
+{# User header with avatar #}
+<table style="width: 100%; margin-bottom: 0.5rem; border-collapse: collapse;" cellpadding="0" cellspacing="0">
+<tr>
+    <td style="width: 32px; vertical-align: middle; padding-right: 8px;">
+        {% if group.user.avatar %}
+        <img src="{{ base_url }}{{ group.user.avatar.url }}" alt="{{ group.user.display_name }}" width="32" height="32" style="border-radius: 50%; display: block;">
+        {% else %}
+        <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #3273dc; color: white; text-align: center; line-height: 32px; font-weight: bold;">{{ group.user.display_name|first|upper }}</div>
+        {% endif %}
+    </td>
+    <td style="vertical-align: middle;">
+        <strong style="color: #333;">{{ group.user.display_name }}</strong> <span style="color: #666;">{% trans "reviewed" %}</span>
+    </td>
+</tr>
+</table>
+{# Books from this user #}
+{% for review in group.items %}
+<table style="width: 100%; margin-bottom: 1rem; margin-left: 40px; border-collapse: collapse;" cellpadding="0" cellspacing="0">
+<tr>
+    {% if review.book.cover %}
+    <td style="width: 50px; vertical-align: top; padding-right: 10px;">
+        <a href="{{ base_url }}{{ review.book.local_path }}">
+            <img src="{{ base_url }}{{ review.book.cover.url }}" alt="{{ review.book.title }}" width="50" style="border-radius: 4px; display: block;">
+        </a>
+    </td>
+    {% endif %}
+    <td style="vertical-align: top;">
+        <a href="{{ base_url }}{{ review.book.local_path }}" style="color: #3273dc; font-weight: bold; text-decoration: none;">{{ review.book.title }}</a>
+        {% if review.rating %}<span style="color: #f39c12; margin-left: 0.3rem; font-size: 0.9rem;">{% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}</span>{% endif %}
+        {% if review.book.description %}
+        <p style="color: #666; font-size: 0.85rem; margin: 0.2rem 0;">{{ review.book.description|striptags|truncatechars:120 }}</p>
+        {% endif %}
+        <a href="{{ base_url }}{{ review.book.local_path }}" style="display: inline-block; margin-top: 0.3rem; padding: 0.3rem 0.6rem; background-color: #3273dc; color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem;">{% trans "Want to Read" %}</a>
+    </td>
+</tr>
+</table>
 {% endfor %}
-</ul>
+{% endfor %}
 {% endif %}
 
 {% if followed_activities.comments %}
-<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Comments" %}</h3>
-<ul style="margin: 0; padding-left: 1.5rem;">
-{% for comment in followed_activities.comments %}
-<li style="margin-bottom: 0.5rem;">
-    <strong>{{ comment.user.display_name }}</strong> {% trans "commented on" %}
-    <a style="color: #3273dc;" href="{{ base_url }}{{ comment.book.local_path }}">{{ comment.book.title }}</a>
-</li>
+<p style="font-weight: bold; color: #333; margin-bottom: 0.5rem; margin-top: 1.5rem;">{% trans "Comments" %}</p>
+{% for group in followed_activities.comments %}
+<table style="width: 100%; margin-bottom: 0.5rem; border-collapse: collapse;" cellpadding="0" cellspacing="0">
+<tr>
+    <td style="width: 32px; vertical-align: middle; padding-right: 8px;">
+        {% if group.user.avatar %}
+        <img src="{{ base_url }}{{ group.user.avatar.url }}" alt="{{ group.user.display_name }}" width="32" height="32" style="border-radius: 50%; display: block;">
+        {% else %}
+        <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #3273dc; color: white; text-align: center; line-height: 32px; font-weight: bold;">{{ group.user.display_name|first|upper }}</div>
+        {% endif %}
+    </td>
+    <td style="vertical-align: middle;">
+        <strong style="color: #333;">{{ group.user.display_name }}</strong> <span style="color: #666;">{% trans "commented on" %}</span>
+    </td>
+</tr>
+</table>
+{% for comment in group.items %}
+<table style="width: 100%; margin-bottom: 1rem; margin-left: 40px; border-collapse: collapse;" cellpadding="0" cellspacing="0">
+<tr>
+    {% if comment.book.cover %}
+    <td style="width: 50px; vertical-align: top; padding-right: 10px;">
+        <a href="{{ base_url }}{{ comment.book.local_path }}">
+            <img src="{{ base_url }}{{ comment.book.cover.url }}" alt="{{ comment.book.title }}" width="50" style="border-radius: 4px; display: block;">
+        </a>
+    </td>
+    {% endif %}
+    <td style="vertical-align: top;">
+        <a href="{{ base_url }}{{ comment.book.local_path }}" style="color: #3273dc; font-weight: bold; text-decoration: none;">{{ comment.book.title }}</a>
+        {% if comment.book.description %}
+        <p style="color: #666; font-size: 0.85rem; margin: 0.2rem 0;">{{ comment.book.description|striptags|truncatechars:120 }}</p>
+        {% endif %}
+        <a href="{{ base_url }}{{ comment.book.local_path }}" style="display: inline-block; margin-top: 0.3rem; padding: 0.3rem 0.6rem; background-color: #3273dc; color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem;">{% trans "Want to Read" %}</a>
+    </td>
+</tr>
+</table>
 {% endfor %}
-</ul>
+{% endfor %}
 {% endif %}
 
 {% if followed_activities.quotations %}
-<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Quotations" %}</h3>
-<ul style="margin: 0; padding-left: 1.5rem;">
-{% for quote in followed_activities.quotations %}
-<li style="margin-bottom: 0.5rem;">
-    <strong>{{ quote.user.display_name }}</strong> {% trans "shared a quote from" %}
-    <a style="color: #3273dc;" href="{{ base_url }}{{ quote.book.local_path }}">{{ quote.book.title }}</a>
-</li>
+<p style="font-weight: bold; color: #333; margin-bottom: 0.5rem; margin-top: 1.5rem;">{% trans "Quotations" %}</p>
+{% for group in followed_activities.quotations %}
+<table style="width: 100%; margin-bottom: 0.5rem; border-collapse: collapse;" cellpadding="0" cellspacing="0">
+<tr>
+    <td style="width: 32px; vertical-align: middle; padding-right: 8px;">
+        {% if group.user.avatar %}
+        <img src="{{ base_url }}{{ group.user.avatar.url }}" alt="{{ group.user.display_name }}" width="32" height="32" style="border-radius: 50%; display: block;">
+        {% else %}
+        <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #3273dc; color: white; text-align: center; line-height: 32px; font-weight: bold;">{{ group.user.display_name|first|upper }}</div>
+        {% endif %}
+    </td>
+    <td style="vertical-align: middle;">
+        <strong style="color: #333;">{{ group.user.display_name }}</strong> <span style="color: #666;">{% trans "shared a quote from" %}</span>
+    </td>
+</tr>
+</table>
+{% for quote in group.items %}
+<table style="width: 100%; margin-bottom: 1rem; margin-left: 40px; border-collapse: collapse;" cellpadding="0" cellspacing="0">
+<tr>
+    {% if quote.book.cover %}
+    <td style="width: 50px; vertical-align: top; padding-right: 10px;">
+        <a href="{{ base_url }}{{ quote.book.local_path }}">
+            <img src="{{ base_url }}{{ quote.book.cover.url }}" alt="{{ quote.book.title }}" width="50" style="border-radius: 4px; display: block;">
+        </a>
+    </td>
+    {% endif %}
+    <td style="vertical-align: top;">
+        <a href="{{ base_url }}{{ quote.book.local_path }}" style="color: #3273dc; font-weight: bold; text-decoration: none;">{{ quote.book.title }}</a>
+        {% if quote.book.description %}
+        <p style="color: #666; font-size: 0.85rem; margin: 0.2rem 0;">{{ quote.book.description|striptags|truncatechars:120 }}</p>
+        {% endif %}
+        <a href="{{ base_url }}{{ quote.book.local_path }}" style="display: inline-block; margin-top: 0.3rem; padding: 0.3rem 0.6rem; background-color: #3273dc; color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem;">{% trans "Want to Read" %}</a>
+    </td>
+</tr>
+</table>
 {% endfor %}
-</ul>
+{% endfor %}
 {% endif %}
 
 {% if followed_activities.shelf_changes %}
-<h3 style="font-size: 1rem; margin-top: 1rem;">{% trans "Shelf Updates" %}</h3>
-<ul style="margin: 0; padding-left: 1.5rem;">
-{% for change in followed_activities.shelf_changes|slice:":10" %}
-<li style="margin-bottom: 0.5rem;">
-    <strong>{{ change.user.display_name }}</strong> {% trans "added" %}
-    <a style="color: #3273dc;" href="{{ base_url }}{{ change.book.local_path }}">{{ change.book.title }}</a> {% trans "to" %} {{ change.shelf.name }}
-</li>
+<p style="font-weight: bold; color: #333; margin-bottom: 0.5rem; margin-top: 1.5rem;">{% trans "Shelf Updates" %}</p>
+{% for group in followed_activities.shelf_changes %}
+<table style="width: 100%; margin-bottom: 0.5rem; border-collapse: collapse;" cellpadding="0" cellspacing="0">
+<tr>
+    <td style="width: 32px; vertical-align: middle; padding-right: 8px;">
+        {% if group.user.avatar %}
+        <img src="{{ base_url }}{{ group.user.avatar.url }}" alt="{{ group.user.display_name }}" width="32" height="32" style="border-radius: 50%; display: block;">
+        {% else %}
+        <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #3273dc; color: white; text-align: center; line-height: 32px; font-weight: bold;">{{ group.user.display_name|first|upper }}</div>
+        {% endif %}
+    </td>
+    <td style="vertical-align: middle;">
+        <strong style="color: #333;">{{ group.user.display_name }}</strong> <span style="color: #666;">{% trans "shelved" %}</span>
+    </td>
+</tr>
+</table>
+{% for change in group.items %}
+<table style="width: 100%; margin-bottom: 1rem; margin-left: 40px; border-collapse: collapse;" cellpadding="0" cellspacing="0">
+<tr>
+    {% if change.book.cover %}
+    <td style="width: 50px; vertical-align: top; padding-right: 10px;">
+        <a href="{{ base_url }}{{ change.book.local_path }}">
+            <img src="{{ base_url }}{{ change.book.cover.url }}" alt="{{ change.book.title }}" width="50" style="border-radius: 4px; display: block;">
+        </a>
+    </td>
+    {% endif %}
+    <td style="vertical-align: top;">
+        <a href="{{ base_url }}{{ change.book.local_path }}" style="color: #3273dc; font-weight: bold; text-decoration: none;">{{ change.book.title }}</a>
+        <span style="color: #666; font-size: 0.9rem;"> → {{ change.shelf.name }}</span>
+        {% if change.book.description %}
+        <p style="color: #666; font-size: 0.85rem; margin: 0.2rem 0;">{{ change.book.description|striptags|truncatechars:120 }}</p>
+        {% endif %}
+        <a href="{{ base_url }}{{ change.book.local_path }}" style="display: inline-block; margin-top: 0.3rem; padding: 0.3rem 0.6rem; background-color: #3273dc; color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem;">{% trans "Want to Read" %}</a>
+    </td>
+</tr>
+</table>
 {% endfor %}
-</ul>
+{% endfor %}
 {% endif %}
 {% endif %}
 
-<p style="margin-top: 2rem;">
-    <a style="color: #3273dc;" href="{{ base_url }}">{% trans "Visit your feed for more" %}</a>
+<p style="margin-top: 2rem; text-align: center;">
+    <a href="{{ base_url }}" style="display: inline-block; padding: 0.6rem 1.5rem; background-color: #3273dc; color: white; text-decoration: none; border-radius: 4px; font-size: 1rem;">{% trans "Visit your feed" %}</a>
 </p>
 {% endblock %}

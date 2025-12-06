@@ -1,6 +1,7 @@
 """Daily newsletter generation and sending"""
 import logging
 import zoneinfo
+from collections import defaultdict
 from datetime import datetime, timedelta
 
 from django.db.models import Q
@@ -11,6 +12,37 @@ from bookwyrm.tasks import app, EMAIL
 
 
 logger = logging.getLogger(__name__)
+
+
+def truncate_description(text, max_length=150):
+    """Truncate text to max_length with ellipsis, breaking at word boundary"""
+    if not text or len(text) <= max_length:
+        return text or ""
+    truncated = text[:max_length]
+    # Try to break at last space to avoid cutting words
+    last_space = truncated.rfind(" ")
+    if last_space > max_length // 2:
+        truncated = truncated[:last_space]
+    return truncated.rstrip() + "..."
+
+
+def group_activities_by_user(activities, max_per_user=3):
+    """
+    Group activities by user, limiting to max_per_user items each.
+
+    Returns list of dicts: [{'user': User, 'items': [activity1, activity2, ...]}]
+    """
+    grouped = defaultdict(list)
+    for activity in activities:
+        if len(grouped[activity.user_id]) < max_per_user:
+            grouped[activity.user_id].append(activity)
+
+    # Convert to list of dicts with user object
+    result = []
+    for user_id, items in grouped.items():
+        if items:
+            result.append({"user": items[0].user, "items": items})
+    return result
 
 
 def get_yesterday_range_for_user(user):
@@ -124,28 +156,33 @@ def send_newsletter_to_user(user, activities, date_str):
     data["user"] = user.display_name
     data["date_str"] = date_str
 
-    # Group activities by user for better presentation
+    # Split into own vs followed activities
+    own_reviews = [a for a in activities["reviews"] if a.user_id == user.id]
+    own_comments = [a for a in activities["comments"] if a.user_id == user.id]
+    own_quotations = [a for a in activities["quotations"] if a.user_id == user.id]
+    own_shelf_changes = [a for a in activities["shelf_changes"] if a.user_id == user.id]
+
+    followed_reviews = [a for a in activities["reviews"] if a.user_id != user.id]
+    followed_comments = [a for a in activities["comments"] if a.user_id != user.id]
+    followed_quotations = [a for a in activities["quotations"] if a.user_id != user.id]
+    followed_shelf_changes = [
+        a for a in activities["shelf_changes"] if a.user_id != user.id
+    ]
+
+    # Own activities (flat list - no grouping needed since it's all from one user)
     data["own_activities"] = {
-        "reviews": [a for a in activities["reviews"] if a.user_id == user.id],
-        "comments": [a for a in activities["comments"] if a.user_id == user.id],
-        "quotations": [a for a in activities["quotations"] if a.user_id == user.id],
-        "shelf_changes": [
-            a for a in activities["shelf_changes"] if a.user_id == user.id
-        ],
-        "reading_progress": [
-            a for a in activities["reading_progress"] if a.user_id == user.id
-        ],
+        "reviews": own_reviews[:3],  # Limit to 3
+        "comments": own_comments[:3],
+        "quotations": own_quotations[:3],
+        "shelf_changes": own_shelf_changes[:3],
     }
+
+    # Followed activities grouped by user (max 3 items per user)
     data["followed_activities"] = {
-        "reviews": [a for a in activities["reviews"] if a.user_id != user.id],
-        "comments": [a for a in activities["comments"] if a.user_id != user.id],
-        "quotations": [a for a in activities["quotations"] if a.user_id != user.id],
-        "shelf_changes": [
-            a for a in activities["shelf_changes"] if a.user_id != user.id
-        ],
-        "reading_progress": [
-            a for a in activities["reading_progress"] if a.user_id != user.id
-        ],
+        "reviews": group_activities_by_user(followed_reviews, max_per_user=3),
+        "comments": group_activities_by_user(followed_comments, max_per_user=3),
+        "quotations": group_activities_by_user(followed_quotations, max_per_user=3),
+        "shelf_changes": group_activities_by_user(followed_shelf_changes, max_per_user=3),
     }
 
     send_email.delay(user.email, *format_email("daily_newsletter", data))
