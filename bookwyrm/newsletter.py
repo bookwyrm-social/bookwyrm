@@ -66,7 +66,10 @@ def get_book_cover_base64(book, base_url):
     """Get base64 encoded book cover or None"""
     if not book or not book.cover:
         return None
-    cover_url = f"{base_url}{book.cover.url}"
+    cover_url = book.cover.url
+    # Only prepend base_url if not already absolute
+    if not cover_url.startswith(("http://", "https://")):
+        cover_url = f"{base_url}{cover_url}"
     return image_to_base64(cover_url, max_size_kb=50)
 
 
@@ -74,7 +77,10 @@ def get_user_avatar_base64(user, base_url):
     """Get base64 encoded user avatar or None"""
     if not user or not user.avatar:
         return None
-    avatar_url = f"{base_url}{user.avatar.url}"
+    avatar_url = user.avatar.url
+    # Only prepend base_url if not already absolute
+    if not avatar_url.startswith(("http://", "https://")):
+        avatar_url = f"{base_url}{avatar_url}"
     return image_to_base64(avatar_url, max_size_kb=30)
 
 
@@ -358,10 +364,13 @@ def send_daily_newsletter():
     """
     Celery task to send daily newsletter to subscribed users.
 
-    Scheduled to run HOURLY via celery beat. Only sends to users
-    where it's currently 6 AM in their timezone, ensuring everyone
-    gets their newsletter at a consistent local time.
+    Scheduled to run HOURLY via celery beat.
+    DEBUG MODE: Sends to all users every hour (timezone check disabled).
+    PRODUCTION: Set NEWSLETTER_DEBUG=false to enable 6 AM timezone check.
     """
+    import os
+    debug_mode = os.environ.get("NEWSLETTER_DEBUG", "true").lower() == "true"
+
     # Get all active, local users who have subscribed
     subscribed_users = models.User.objects.filter(
         is_active=True,
@@ -375,10 +384,12 @@ def send_daily_newsletter():
 
     for user in subscribed_users:
         try:
-            # Only send to users where it's currently 6 AM in their timezone
-            if not is_target_hour_for_user(user, target_hour=6):
-                timezone_skip_count += 1
-                continue
+            # In debug mode, skip timezone check and send every hour
+            if not debug_mode:
+                # Only send to users where it's currently 6 AM in their timezone
+                if not is_target_hour_for_user(user, target_hour=6):
+                    timezone_skip_count += 1
+                    continue
 
             start_date, end_date = get_yesterday_range_for_user(user)
             activities = get_newsletter_activities(user, start_date, end_date)
@@ -399,7 +410,8 @@ def send_daily_newsletter():
             logger.error("Failed to send newsletter to user %s: %s", user.id, e)
 
     logger.info(
-        "Daily newsletter: sent %d, skipped %d (no activity), %d (wrong timezone hour)",
+        "Daily newsletter (debug=%s): sent %d, skipped %d (no activity), %d (wrong timezone hour)",
+        debug_mode,
         sent_count,
         skip_count,
         timezone_skip_count,
