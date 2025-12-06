@@ -19,3 +19,7 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
+
+# Also discover tasks from modules not named 'tasks.py'
+# (autodiscover_tasks only finds tasks.py files in installed apps)
+app.autodiscover_tasks(["bookwyrm"], related_name="newsletter")
