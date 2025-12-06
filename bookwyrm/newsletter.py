@@ -1,9 +1,13 @@
 """Daily newsletter generation and sending"""
+import base64
 import logging
+import mimetypes
 import zoneinfo
 from collections import defaultdict
 from datetime import datetime, timedelta
+from io import BytesIO
 
+import requests
 from django.db.models import Q
 
 from bookwyrm import models
@@ -12,6 +16,66 @@ from bookwyrm.tasks import app, EMAIL
 
 
 logger = logging.getLogger(__name__)
+
+# HTTP session for downloading images
+_http_session = None
+
+
+def get_http_session():
+    """Get or create HTTP session for image downloads"""
+    global _http_session
+    if _http_session is None:
+        _http_session = requests.Session()
+        _http_session.headers.update({"User-Agent": "BookWyrm Newsletter"})
+    return _http_session
+
+
+def image_to_base64(image_url, max_size_kb=100):
+    """
+    Download image from URL and convert to base64 data URI.
+    Returns None if download fails or image is too large.
+    """
+    if not image_url:
+        return None
+
+    try:
+        session = get_http_session()
+        response = session.get(image_url, timeout=5)
+        response.raise_for_status()
+
+        # Check size (limit to max_size_kb to keep email size reasonable)
+        if len(response.content) > max_size_kb * 1024:
+            logger.debug("Image too large for embedding: %s", image_url)
+            return None
+
+        # Determine mime type
+        content_type = response.headers.get("content-type", "image/jpeg")
+        if ";" in content_type:
+            content_type = content_type.split(";")[0].strip()
+
+        # Convert to base64
+        b64_data = base64.b64encode(response.content).decode("utf-8")
+        return f"data:{content_type};base64,{b64_data}"
+
+    except Exception as e:
+        logger.debug("Failed to download image %s: %s", image_url, e)
+        return None
+
+
+def get_book_cover_base64(book, base_url):
+    """Get base64 encoded book cover or None"""
+    if not book or not book.cover:
+        return None
+    cover_url = f"{base_url}{book.cover.url}"
+    return image_to_base64(cover_url, max_size_kb=50)
+
+
+def get_user_avatar_base64(user, base_url):
+    """Get base64 encoded user avatar or None"""
+    if not user or not user.avatar:
+        return None
+    avatar_url = f"{base_url}{user.avatar.url}"
+    return image_to_base64(avatar_url, max_size_kb=30)
 
 
 def truncate_description(text, max_length=150):
@@ -150,11 +214,72 @@ def has_activities(activities):
     return any(len(activities[key]) > 0 for key in activities)
 
 
+def prepare_activity_with_images(activity, base_url, activity_type="status"):
+    """
+    Prepare an activity dict with embedded base64 images.
+    Returns dict with activity data and image data URIs.
+    """
+    result = {
+        "activity": activity,
+        "book_cover": None,
+        "user_avatar": None,
+    }
+
+    # Get book cover
+    book = getattr(activity, "book", None)
+    if book:
+        result["book_cover"] = get_book_cover_base64(book, base_url)
+
+    # Get user avatar for followed activities
+    if activity_type == "followed":
+        result["user_avatar"] = get_user_avatar_base64(activity.user, base_url)
+
+    return result
+
+
+def prepare_grouped_activities_with_images(grouped, base_url):
+    """
+    Prepare grouped activities with embedded images.
+    Returns list of groups with user avatars and item book covers.
+    """
+    result = []
+    for group in grouped:
+        group_data = {
+            "user": group["user"],
+            "user_avatar": get_user_avatar_base64(group["user"], base_url),
+            "items": [],
+        }
+        for item in group["items"]:
+            group_data["items"].append({
+                "activity": item,
+                "book_cover": get_book_cover_base64(getattr(item, "book", None), base_url),
+            })
+        result.append(group_data)
+    return result
+
+
+def get_currently_reading(user):
+    """
+    Get books the user is currently reading.
+    Returns list of ReadThrough objects with active reading.
+    """
+    return list(
+        models.ReadThrough.objects.filter(
+            user=user,
+            start_date__isnull=False,
+            finish_date__isnull=True,
+        )
+        .select_related("book")
+        .order_by("-start_date")[:5]
+    )
+
+
 def send_newsletter_to_user(user, activities, date_str):
     """Send newsletter email to a single user"""
     data = email_data()
     data["user"] = user.display_name
     data["date_str"] = date_str
+    base_url = data.get("base_url", "")
 
     # Split into own vs followed activities
     own_reviews = [a for a in activities["reviews"] if a.user_id == user.id]
@@ -169,21 +294,47 @@ def send_newsletter_to_user(user, activities, date_str):
         a for a in activities["shelf_changes"] if a.user_id != user.id
     ]
 
-    # Own activities (flat list - no grouping needed since it's all from one user)
+    # Own activities with embedded images (flat list)
     data["own_activities"] = {
-        "reviews": own_reviews[:3],  # Limit to 3
-        "comments": own_comments[:3],
-        "quotations": own_quotations[:3],
-        "shelf_changes": own_shelf_changes[:3],
+        "reviews": [
+            prepare_activity_with_images(a, base_url) for a in own_reviews[:3]
+        ],
+        "comments": [
+            prepare_activity_with_images(a, base_url) for a in own_comments[:3]
+        ],
+        "quotations": [
+            prepare_activity_with_images(a, base_url) for a in own_quotations[:3]
+        ],
+        "shelf_changes": [
+            prepare_activity_with_images(a, base_url) for a in own_shelf_changes[:3]
+        ],
     }
 
-    # Followed activities grouped by user (max 3 items per user)
+    # Followed activities grouped by user with embedded images
     data["followed_activities"] = {
-        "reviews": group_activities_by_user(followed_reviews, max_per_user=3),
-        "comments": group_activities_by_user(followed_comments, max_per_user=3),
-        "quotations": group_activities_by_user(followed_quotations, max_per_user=3),
-        "shelf_changes": group_activities_by_user(followed_shelf_changes, max_per_user=3),
+        "reviews": prepare_grouped_activities_with_images(
+            group_activities_by_user(followed_reviews, max_per_user=3), base_url
+        ),
+        "comments": prepare_grouped_activities_with_images(
+            group_activities_by_user(followed_comments, max_per_user=3), base_url
+        ),
+        "quotations": prepare_grouped_activities_with_images(
+            group_activities_by_user(followed_quotations, max_per_user=3), base_url
+        ),
+        "shelf_changes": prepare_grouped_activities_with_images(
+            group_activities_by_user(followed_shelf_changes, max_per_user=3), base_url
+        ),
     }
+
+    # Currently reading books with covers
+    currently_reading = get_currently_reading(user)
+    data["currently_reading"] = [
+        {
+            "readthrough": rt,
+            "book_cover": get_book_cover_base64(rt.book, base_url),
+        }
+        for rt in currently_reading
+    ]
 
     send_email.delay(user.email, *format_email("daily_newsletter", data))
 
