@@ -58,6 +58,7 @@ INSTALLED_APPS = INSTALLED_APPS + [
     "celerywyrm",
 ]
 
-ROOT_URLCONF = "celerywyrm.urls"
+# Use bookwyrm.urls so email templates can resolve URL names like 'prefs-profile'
+ROOT_URLCONF = "bookwyrm.urls"
 
 WSGI_APPLICATION = "celerywyrm.wsgi.application"
