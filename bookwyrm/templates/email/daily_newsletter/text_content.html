@@ -11,7 +11,8 @@
 {% trans "Reviews:" %}
 {% for item in own_activities.reviews %}
 - {{ item.activity.book.title }}{% if item.activity.rating %} ({{ item.activity.rating }} {% trans "stars" %}){% endif %}
-  {{ base_url }}{{ item.activity.book.local_path }}
+{% if item.activity.content %}  "{{ item.activity.content|striptags|truncatechars:150 }}"{% endif %}
+  {% trans "Read Review:" %} {{ base_url }}{{ item.activity.local_path }}
 {% endfor %}
 {% endif %}
 
@@ -19,7 +20,8 @@
 {% trans "Comments:" %}
 {% for item in own_activities.comments %}
 - {% trans "Comment on" %} "{{ item.activity.book.title }}"
-  {{ base_url }}{{ item.activity.book.local_path }}
+{% if item.activity.content %}  "{{ item.activity.content|striptags|truncatechars:150 }}"{% endif %}
+  {% trans "View Comment:" %} {{ base_url }}{{ item.activity.local_path }}
 {% endfor %}
 {% endif %}
 
@@ -28,7 +30,7 @@
 {% for item in own_activities.quotations %}
 - {% trans "From" %} "{{ item.activity.book.title }}"
 {% if item.activity.quote %}  "{{ item.activity.quote|striptags|truncatechars:200 }}"{% endif %}
-  {{ base_url }}{{ item.activity.book.local_path }}
+  {% trans "See Quote:" %} {{ base_url }}{{ item.activity.local_path }}
 {% endfor %}
 {% endif %}
 
@@ -36,7 +38,7 @@
 {% trans "Shelf Updates:" %}
 {% for item in own_activities.shelf_changes %}
 - {% blocktrans trimmed with title=item.activity.book.title shelf=item.activity.shelf.name %}Added "{{ title }}" to {{ shelf }}{% endblocktrans %}
-  {{ base_url }}{{ item.activity.book.local_path }}
+  {% trans "View Book:" %} {{ base_url }}{{ item.activity.book.local_path }}
 {% endfor %}
 {% endif %}
 {% endif %}
@@ -51,7 +53,8 @@
 {{ group.user.display_name }} {% trans "reviewed:" %}
 {% for item in group.items %}
   - {{ item.activity.book.title }}{% if item.activity.rating %} ({{ item.activity.rating }} {% trans "stars" %}){% endif %}
-    {% trans "Want to Read:" %} {{ base_url }}{{ item.activity.book.local_path }}
+{% if item.activity.content %}    "{{ item.activity.content|striptags|truncatechars:120 }}"{% endif %}
+    {% trans "Read Review:" %} {{ base_url }}{{ item.activity.local_path }}
 {% endfor %}
 {% endfor %}
 {% endif %}
@@ -63,7 +66,8 @@
 {{ group.user.display_name }} {% trans "commented on:" %}
 {% for item in group.items %}
   - {{ item.activity.book.title }}
-    {% trans "Want to Read:" %} {{ base_url }}{{ item.activity.book.local_path }}
+{% if item.activity.content %}    "{{ item.activity.content|striptags|truncatechars:120 }}"{% endif %}
+    {% trans "View Comment:" %} {{ base_url }}{{ item.activity.local_path }}
 {% endfor %}
 {% endfor %}
 {% endif %}
@@ -76,7 +80,7 @@
 {% for item in group.items %}
   - {{ item.activity.book.title }}
 {% if item.activity.quote %}    "{{ item.activity.quote|striptags|truncatechars:200 }}"{% endif %}
-    {% trans "Want to Read:" %} {{ base_url }}{{ item.activity.book.local_path }}
+    {% trans "See Quote:" %} {{ base_url }}{{ item.activity.local_path }}
 {% endfor %}
 {% endfor %}
 {% endif %}
@@ -88,7 +92,7 @@
 {{ group.user.display_name }} {% trans "shelved:" %}
 {% for item in group.items %}
   - {{ item.activity.book.title }} -> {{ item.activity.shelf.name }}
-    {% trans "Want to Read:" %} {{ base_url }}{{ item.activity.book.local_path }}
+    {% trans "View Book:" %} {{ base_url }}{{ item.activity.book.local_path }}
 {% endfor %}
 {% endfor %}
 {% endif %}
@@ -99,7 +103,7 @@
 
 {% for item in currently_reading %}
 - {{ item.readthrough.book.title }}{% if item.readthrough.progress %} ({{ item.readthrough.progress }}% {% trans "complete" %}){% endif %}
-  {{ base_url }}{{ item.readthrough.book.local_path }}
+  {% trans "Update Progress:" %} {{ base_url }}{{ item.readthrough.book.local_path }}
 {% endfor %}
 {% endif %}
 
