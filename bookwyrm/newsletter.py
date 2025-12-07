@@ -96,6 +96,46 @@ def truncate_description(text, max_length=150):
     return truncated.rstrip() + "..."
 
 
+def dedupe_reviews_by_book(reviews):
+    """
+    Deduplicate reviews for the same book by the same user.
+
+    When a user rates and reviews a book, it may create two statuses:
+    - ReviewRating (rating only)
+    - Review (rating + content)
+
+    This function keeps only the Review with content when both exist,
+    preventing duplicate entries in the newsletter.
+
+    Returns deduplicated list of reviews.
+    """
+    # Group by (user_id, book_id)
+    by_user_book = defaultdict(list)
+    for review in reviews:
+        book_id = getattr(review.book, "id", None) if review.book else None
+        key = (review.user_id, book_id)
+        by_user_book[key].append(review)
+
+    result = []
+    for (user_id, book_id), user_reviews in by_user_book.items():
+        if len(user_reviews) == 1:
+            result.append(user_reviews[0])
+        else:
+            # Multiple reviews for same book by same user
+            # Prefer reviews with content over rating-only
+            with_content = [r for r in user_reviews if r.content]
+            if with_content:
+                # Take the most recent one with content
+                result.append(max(with_content, key=lambda r: r.published_date))
+            else:
+                # All are rating-only, take most recent
+                result.append(max(user_reviews, key=lambda r: r.published_date))
+
+    # Sort by published_date descending to maintain original order
+    result.sort(key=lambda r: r.published_date, reverse=True)
+    return result
+
+
 def group_activities_by_user(activities, max_per_user=3):
     """
     Group activities by user, limiting to max_per_user items each.
@@ -187,6 +227,9 @@ def get_newsletter_activities(user, start_date, end_date):
             activities["comments"].append(status)
         elif isinstance(status, models.Quotation):
             activities["quotations"].append(status)
+
+    # Dedupe reviews: when user rates AND reviews same book, show only the review
+    activities["reviews"] = dedupe_reviews_by_book(activities["reviews"])
 
     # Query ShelfBook changes (shelf moves)
     shelf_changes = (
