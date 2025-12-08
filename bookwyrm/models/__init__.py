@@ -10,7 +10,7 @@ from .connector import Connector
 from .shelf import Shelf, ShelfBook
 from .list import List, ListItem
 
-from .status import Status, GeneratedNote, Comment, Quotation
+from .status import Status, GeneratedNote, BookStatus, Comment, Quotation
 from .status import Review, ReviewRating
 from .status import Boost
 from .attachment import Image
