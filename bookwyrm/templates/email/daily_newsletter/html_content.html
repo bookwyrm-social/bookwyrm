@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block content %}
-<p style="margin-bottom: 1.5rem; color: #4a4a4a; font-size: 0.95rem;">{% blocktrans trimmed %}Here's what happened in your reading community on {{ date_str }}:{% endblocktrans %}</p>
+<p style="margin-bottom: 1.5rem; color: #4a4a4a; font-size: 1rem;">{% blocktrans trimmed %}Here's what happened in your reading community on {{ date_str }}:{% endblocktrans %}</p>
 
 {# ===== YOUR ACTIVITY SECTION ===== #}
 {% if own_activities.reviews or own_activities.comments or own_activities.quotations or own_activities.shelf_changes %}
@@ -14,7 +14,7 @@
 <table style="width: 100%; margin-bottom: 1.25rem; border-collapse: collapse;" cellpadding="0" cellspacing="0">
 <tr>
     {% if item.book_cover %}
-    <td style="width: 80px; vertical-align: top; padding-right: 15px;">
+    <td style="width: 80px; vertical-align: top; padding-right: 20px;">
         <a href="{{ base_url }}{{ item.activity.book.local_path }}">
             <img src="{{ item.book_cover }}" alt="{{ item.activity.book.title }}" width="80" style="display: block; max-width: 80px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);">
         </a>
@@ -24,11 +24,11 @@
         <a href="{{ base_url }}{{ item.activity.book.local_path }}" style="color: #b50101; font-weight: normal; text-decoration: none; font-size: 1rem;">{{ item.activity.book.title }}</a>
         {% if item.activity.rating %}<span style="color: #b50101; margin-left: 0.5rem; font-size: 0.9rem;">{% for i in "12345" %}{% if forloop.counter <= item.activity.rating %}★{% else %}☆{% endif %}{% endfor %}</span>{% endif %}
         {% if item.activity.content %}
-        <p style="color: #4a4a4a; font-size: 0.9rem; margin: 0.4rem 0; line-height: 1.5;">{{ item.activity.content|striptags|truncatechars:150 }}</p>
+        <p style="color: #4a4a4a; font-size: 0.95rem; margin: 0.4rem 0; line-height: 1.6;">{{ item.activity.content|striptags|truncatechars:150 }}</p>
         {% endif %}
         <div style="margin-top: 0.6rem;">
-            <a href="{{ base_url }}{{ item.activity.local_path }}" style="display: inline-block; padding: 0.5rem 1rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.85rem; min-width: 44px; text-align: center;">{% trans "Read Review" %}</a>
-            <a href="{{ base_url }}{{ item.activity.local_path }}#comment" style="display: inline-block; margin-left: 0.5rem; padding: 0.5rem 1rem; background-color: #ffffff; color: #000000; text-decoration: none; font-size: 0.85rem; border: 1px solid #e0e0e0; min-width: 44px; text-align: center;">{% trans "Reply" %}</a>
+            <a href="{{ base_url }}{{ item.activity.local_path }}" style="display: inline-block; padding: 0.6rem 1.25rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.85rem; min-width: 44px; text-align: center;">{% trans "Read Review" %}</a>
+            <a href="{{ base_url }}{{ item.activity.local_path }}#comment" style="display: inline-block; margin-left: 0.5rem; padding: 0.6rem 1.25rem; background-color: #ffffff; color: #000000; text-decoration: none; font-size: 0.85rem; border: 1px solid #e0e0e0; min-width: 44px; text-align: center;">{% trans "Reply" %}</a>
         </div>
     </td>
 </tr>
@@ -42,7 +42,7 @@
 <table style="width: 100%; margin-bottom: 1.25rem; border-collapse: collapse;" cellpadding="0" cellspacing="0">
 <tr>
     {% if item.book_cover %}
-    <td style="width: 80px; vertical-align: top; padding-right: 15px;">
+    <td style="width: 80px; vertical-align: top; padding-right: 20px;">
         <a href="{{ base_url }}{{ item.activity.book.local_path }}">
             <img src="{{ item.book_cover }}" alt="{{ item.activity.book.title }}" width="80" style="display: block; max-width: 80px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);">
         </a>
@@ -52,11 +52,11 @@
         <span style="color: #4a4a4a; font-size: 0.9rem;">{% trans "Comment on" %}</span>
         <a href="{{ base_url }}{{ item.activity.book.local_path }}" style="color: #b50101; text-decoration: none;">{{ item.activity.book.title }}</a>
         {% if item.activity.content %}
-        <p style="color: #4a4a4a; font-size: 0.9rem; margin: 0.4rem 0; line-height: 1.5;">{{ item.activity.content|striptags|truncatechars:150 }}</p>
+        <p style="color: #4a4a4a; font-size: 0.95rem; margin: 0.4rem 0; line-height: 1.6;">{{ item.activity.content|striptags|truncatechars:150 }}</p>
         {% endif %}
         <div style="margin-top: 0.6rem;">
-            <a href="{{ base_url }}{{ item.activity.local_path }}" style="display: inline-block; padding: 0.5rem 1rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.85rem; min-width: 44px; text-align: center;">{% trans "View Comment" %}</a>
-            <a href="{{ base_url }}{{ item.activity.local_path }}#comment" style="display: inline-block; margin-left: 0.5rem; padding: 0.5rem 1rem; background-color: #ffffff; color: #000000; text-decoration: none; font-size: 0.85rem; border: 1px solid #e0e0e0; min-width: 44px; text-align: center;">{% trans "Reply" %}</a>
+            <a href="{{ base_url }}{{ item.activity.local_path }}" style="display: inline-block; padding: 0.6rem 1.25rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.85rem; min-width: 44px; text-align: center;">{% trans "View Comment" %}</a>
+            <a href="{{ base_url }}{{ item.activity.local_path }}#comment" style="display: inline-block; margin-left: 0.5rem; padding: 0.6rem 1.25rem; background-color: #ffffff; color: #000000; text-decoration: none; font-size: 0.85rem; border: 1px solid #e0e0e0; min-width: 44px; text-align: center;">{% trans "Reply" %}</a>
         </div>
     </td>
 </tr>
@@ -70,7 +70,7 @@
 <table style="width: 100%; margin-bottom: 1.25rem; border-collapse: collapse;" cellpadding="0" cellspacing="0">
 <tr>
     {% if item.book_cover %}
-    <td style="width: 80px; vertical-align: top; padding-right: 15px;">
+    <td style="width: 80px; vertical-align: top; padding-right: 20px;">
         <a href="{{ base_url }}{{ item.activity.book.local_path }}">
             <img src="{{ item.book_cover }}" alt="{{ item.activity.book.title }}" width="80" style="display: block; max-width: 80px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);">
         </a>
@@ -80,13 +80,13 @@
         <span style="color: #4a4a4a; font-size: 0.9rem;">{% trans "From" %}</span>
         <a href="{{ base_url }}{{ item.activity.book.local_path }}" style="color: #b50101; text-decoration: none;">{{ item.activity.book.title }}</a>
         {% if item.activity.quote %}
-        <blockquote style="margin: 0.6rem 0; padding: 0.6rem 1rem; border-left: 2px solid #b50101; background-color: #fafafa; font-style: italic; color: #000000; line-height: 1.6;">
+        <blockquote style="margin: 0.6rem 0; padding: 0.75rem 1.25rem; border-left: 2px solid #b50101; background-color: #fafafa; font-style: italic; color: #000000; line-height: 1.7;">
             {{ item.activity.quote|striptags|truncatechars:300 }}
         </blockquote>
         {% endif %}
         <div style="margin-top: 0.6rem;">
-            <a href="{{ base_url }}{{ item.activity.local_path }}" style="display: inline-block; padding: 0.5rem 1rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.85rem; min-width: 44px; text-align: center;">{% trans "See Quote" %}</a>
-            <a href="{{ base_url }}{{ item.activity.local_path }}#comment" style="display: inline-block; margin-left: 0.5rem; padding: 0.5rem 1rem; background-color: #ffffff; color: #000000; text-decoration: none; font-size: 0.85rem; border: 1px solid #e0e0e0; min-width: 44px; text-align: center;">{% trans "Reply" %}</a>
+            <a href="{{ base_url }}{{ item.activity.local_path }}" style="display: inline-block; padding: 0.6rem 1.25rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.85rem; min-width: 44px; text-align: center;">{% trans "See Quote" %}</a>
+            <a href="{{ base_url }}{{ item.activity.local_path }}#comment" style="display: inline-block; margin-left: 0.5rem; padding: 0.6rem 1.25rem; background-color: #ffffff; color: #000000; text-decoration: none; font-size: 0.85rem; border: 1px solid #e0e0e0; min-width: 44px; text-align: center;">{% trans "Reply" %}</a>
         </div>
     </td>
 </tr>
@@ -100,7 +100,7 @@
 <table style="width: 100%; margin-bottom: 1.25rem; border-collapse: collapse;" cellpadding="0" cellspacing="0">
 <tr>
     {% if item.book_cover %}
-    <td style="width: 80px; vertical-align: top; padding-right: 15px;">
+    <td style="width: 80px; vertical-align: top; padding-right: 20px;">
         <a href="{{ base_url }}{{ item.activity.book.local_path }}">
             <img src="{{ item.book_cover }}" alt="{{ item.activity.book.title }}" width="80" style="display: block; max-width: 80px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);">
         </a>
@@ -110,10 +110,10 @@
         <a href="{{ base_url }}{{ item.activity.book.local_path }}" style="color: #b50101; text-decoration: none;">{{ item.activity.book.title }}</a>
         <span style="color: #4a4a4a;"> → {{ item.activity.shelf.name }}</span>
         {% if item.activity.book.description %}
-        <p style="color: #4a4a4a; font-size: 0.9rem; margin: 0.4rem 0; line-height: 1.5;">{{ item.activity.book.description|striptags|truncatechars:150 }}</p>
+        <p style="color: #4a4a4a; font-size: 0.95rem; margin: 0.4rem 0; line-height: 1.6;">{{ item.activity.book.description|striptags|truncatechars:150 }}</p>
         {% endif %}
         <div style="margin-top: 0.6rem;">
-            <a href="{{ base_url }}{{ item.activity.book.local_path }}" style="display: inline-block; padding: 0.5rem 1rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.85rem; min-width: 44px; text-align: center;">{% trans "View Book" %}</a>
+            <a href="{{ base_url }}{{ item.activity.book.local_path }}" style="display: inline-block; padding: 0.6rem 1.25rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.85rem; min-width: 44px; text-align: center;">{% trans "View Book" %}</a>
         </div>
     </td>
 </tr>
@@ -149,7 +149,7 @@
 <table style="width: 100%; margin-bottom: 1rem; margin-left: 16px; border-collapse: collapse;" cellpadding="0" cellspacing="0">
 <tr>
     {% if item.book_cover %}
-    <td style="width: 65px; vertical-align: top; padding-right: 12px;">
+    <td style="width: 65px; vertical-align: top; padding-right: 16px;">
         <a href="{{ base_url }}{{ item.activity.book.local_path }}">
             <img src="{{ item.book_cover }}" alt="{{ item.activity.book.title }}" width="65" style="display: block; max-width: 65px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);">
         </a>
@@ -159,11 +159,11 @@
         <a href="{{ base_url }}{{ item.activity.book.local_path }}" style="color: #b50101; text-decoration: none;">{{ item.activity.book.title }}</a>
         {% if item.activity.rating %}<span style="color: #b50101; margin-left: 0.3rem; font-size: 0.85rem;">{% for i in "12345" %}{% if forloop.counter <= item.activity.rating %}★{% else %}☆{% endif %}{% endfor %}</span>{% endif %}
         {% if item.activity.content %}
-        <p style="color: #4a4a4a; font-size: 0.85rem; margin: 0.3rem 0; line-height: 1.5;">{{ item.activity.content|striptags|truncatechars:120 }}</p>
+        <p style="color: #4a4a4a; font-size: 0.9rem; margin: 0.3rem 0; line-height: 1.6;">{{ item.activity.content|striptags|truncatechars:120 }}</p>
         {% endif %}
         <div style="margin-top: 0.5rem;">
-            <a href="{{ base_url }}{{ item.activity.local_path }}" style="display: inline-block; padding: 0.4rem 0.8rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.8rem; min-width: 44px; text-align: center;">{% trans "Read Review" %}</a>
-            <a href="{{ base_url }}{{ item.activity.local_path }}#comment" style="display: inline-block; margin-left: 0.4rem; padding: 0.4rem 0.8rem; background-color: #ffffff; color: #000000; text-decoration: none; font-size: 0.8rem; border: 1px solid #e0e0e0; min-width: 44px; text-align: center;">{% trans "Reply" %}</a>
+            <a href="{{ base_url }}{{ item.activity.local_path }}" style="display: inline-block; padding: 0.5rem 1rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.8rem; min-width: 44px; text-align: center;">{% trans "Read Review" %}</a>
+            <a href="{{ base_url }}{{ item.activity.local_path }}#comment" style="display: inline-block; margin-left: 0.4rem; padding: 0.5rem 1rem; background-color: #ffffff; color: #000000; text-decoration: none; font-size: 0.8rem; border: 1px solid #e0e0e0; min-width: 44px; text-align: center;">{% trans "Reply" %}</a>
         </div>
     </td>
 </tr>
@@ -193,7 +193,7 @@
 <table style="width: 100%; margin-bottom: 1rem; margin-left: 16px; border-collapse: collapse;" cellpadding="0" cellspacing="0">
 <tr>
     {% if item.book_cover %}
-    <td style="width: 65px; vertical-align: top; padding-right: 12px;">
+    <td style="width: 65px; vertical-align: top; padding-right: 16px;">
         <a href="{{ base_url }}{{ item.activity.book.local_path }}">
             <img src="{{ item.book_cover }}" alt="{{ item.activity.book.title }}" width="65" style="display: block; max-width: 65px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);">
         </a>
@@ -202,11 +202,11 @@
     <td style="vertical-align: top;">
         <a href="{{ base_url }}{{ item.activity.book.local_path }}" style="color: #b50101; text-decoration: none;">{{ item.activity.book.title }}</a>
         {% if item.activity.content %}
-        <p style="color: #4a4a4a; font-size: 0.85rem; margin: 0.3rem 0; line-height: 1.5;">{{ item.activity.content|striptags|truncatechars:120 }}</p>
+        <p style="color: #4a4a4a; font-size: 0.9rem; margin: 0.3rem 0; line-height: 1.6;">{{ item.activity.content|striptags|truncatechars:120 }}</p>
         {% endif %}
         <div style="margin-top: 0.5rem;">
-            <a href="{{ base_url }}{{ item.activity.local_path }}" style="display: inline-block; padding: 0.4rem 0.8rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.8rem; min-width: 44px; text-align: center;">{% trans "View Comment" %}</a>
-            <a href="{{ base_url }}{{ item.activity.local_path }}#comment" style="display: inline-block; margin-left: 0.4rem; padding: 0.4rem 0.8rem; background-color: #ffffff; color: #000000; text-decoration: none; font-size: 0.8rem; border: 1px solid #e0e0e0; min-width: 44px; text-align: center;">{% trans "Reply" %}</a>
+            <a href="{{ base_url }}{{ item.activity.local_path }}" style="display: inline-block; padding: 0.5rem 1rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.8rem; min-width: 44px; text-align: center;">{% trans "View Comment" %}</a>
+            <a href="{{ base_url }}{{ item.activity.local_path }}#comment" style="display: inline-block; margin-left: 0.4rem; padding: 0.5rem 1rem; background-color: #ffffff; color: #000000; text-decoration: none; font-size: 0.8rem; border: 1px solid #e0e0e0; min-width: 44px; text-align: center;">{% trans "Reply" %}</a>
         </div>
     </td>
 </tr>
@@ -236,7 +236,7 @@
 <table style="width: 100%; margin-bottom: 1rem; margin-left: 16px; border-collapse: collapse;" cellpadding="0" cellspacing="0">
 <tr>
     {% if item.book_cover %}
-    <td style="width: 65px; vertical-align: top; padding-right: 12px;">
+    <td style="width: 65px; vertical-align: top; padding-right: 16px;">
         <a href="{{ base_url }}{{ item.activity.book.local_path }}">
             <img src="{{ item.book_cover }}" alt="{{ item.activity.book.title }}" width="65" style="display: block; max-width: 65px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);">
         </a>
@@ -245,13 +245,13 @@
     <td style="vertical-align: top;">
         <a href="{{ base_url }}{{ item.activity.book.local_path }}" style="color: #b50101; text-decoration: none;">{{ item.activity.book.title }}</a>
         {% if item.activity.quote %}
-        <blockquote style="margin: 0.5rem 0; padding: 0.5rem 1rem; border-left: 2px solid #b50101; background-color: #fafafa; font-style: italic; color: #000000; font-size: 0.9rem; line-height: 1.5;">
+        <blockquote style="margin: 0.5rem 0; padding: 0.6rem 1.25rem; border-left: 2px solid #b50101; background-color: #fafafa; font-style: italic; color: #000000; font-size: 0.95rem; line-height: 1.7;">
             {{ item.activity.quote|striptags|truncatechars:250 }}
         </blockquote>
         {% endif %}
         <div style="margin-top: 0.5rem;">
-            <a href="{{ base_url }}{{ item.activity.local_path }}" style="display: inline-block; padding: 0.4rem 0.8rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.8rem; min-width: 44px; text-align: center;">{% trans "See Quote" %}</a>
-            <a href="{{ base_url }}{{ item.activity.local_path }}#comment" style="display: inline-block; margin-left: 0.4rem; padding: 0.4rem 0.8rem; background-color: #ffffff; color: #000000; text-decoration: none; font-size: 0.8rem; border: 1px solid #e0e0e0; min-width: 44px; text-align: center;">{% trans "Reply" %}</a>
+            <a href="{{ base_url }}{{ item.activity.local_path }}" style="display: inline-block; padding: 0.5rem 1rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.8rem; min-width: 44px; text-align: center;">{% trans "See Quote" %}</a>
+            <a href="{{ base_url }}{{ item.activity.local_path }}#comment" style="display: inline-block; margin-left: 0.4rem; padding: 0.5rem 1rem; background-color: #ffffff; color: #000000; text-decoration: none; font-size: 0.8rem; border: 1px solid #e0e0e0; min-width: 44px; text-align: center;">{% trans "Reply" %}</a>
         </div>
     </td>
 </tr>
@@ -281,7 +281,7 @@
 <table style="width: 100%; margin-bottom: 1rem; margin-left: 16px; border-collapse: collapse;" cellpadding="0" cellspacing="0">
 <tr>
     {% if item.book_cover %}
-    <td style="width: 65px; vertical-align: top; padding-right: 12px;">
+    <td style="width: 65px; vertical-align: top; padding-right: 16px;">
         <a href="{{ base_url }}{{ item.activity.book.local_path }}">
             <img src="{{ item.book_cover }}" alt="{{ item.activity.book.title }}" width="65" style="display: block; max-width: 65px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);">
         </a>
@@ -291,10 +291,10 @@
         <a href="{{ base_url }}{{ item.activity.book.local_path }}" style="color: #b50101; text-decoration: none;">{{ item.activity.book.title }}</a>
         <span style="color: #4a4a4a; font-size: 0.85rem;"> → {{ item.activity.shelf.name }}</span>
         {% if item.activity.book.description %}
-        <p style="color: #4a4a4a; font-size: 0.85rem; margin: 0.3rem 0; line-height: 1.5;">{{ item.activity.book.description|striptags|truncatechars:120 }}</p>
+        <p style="color: #4a4a4a; font-size: 0.9rem; margin: 0.3rem 0; line-height: 1.6;">{{ item.activity.book.description|striptags|truncatechars:120 }}</p>
         {% endif %}
         <div style="margin-top: 0.5rem;">
-            <a href="{{ base_url }}{{ item.activity.book.local_path }}" style="display: inline-block; padding: 0.4rem 0.8rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.8rem; min-width: 44px; text-align: center;">{% trans "View Book" %}</a>
+            <a href="{{ base_url }}{{ item.activity.book.local_path }}" style="display: inline-block; padding: 0.5rem 1rem; background-color: #b50101; color: white; text-decoration: none; font-size: 0.8rem; min-width: 44px; text-align: center;">{% trans "View Book" %}</a>
         </div>
     </td>
 </tr>
@@ -312,7 +312,7 @@
 <table style="width: 100%; margin-bottom: 1.25rem; border-collapse: collapse;" cellpadding="0" cellspacing="0">
 <tr>
     {% if item.book_cover %}
-    <td style="width: 80px; vertical-align: top; padding-right: 15px;">
+    <td style="width: 80px; vertical-align: top; padding-right: 20px;">
         <a href="{{ base_url }}{{ item.readthrough.book.local_path }}">
             <img src="{{ item.book_cover }}" alt="{{ item.readthrough.book.title }}" width="80" style="display: block; max-width: 80px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);">
         </a>
@@ -330,7 +330,7 @@
         </p>
         {% endif %}
         <div style="margin-top: 0.6rem;">
-            <a href="{{ base_url }}{{ item.readthrough.book.local_path }}" style="display: inline-block; padding: 0.5rem 1rem; background-color: #2e7d32; color: white; text-decoration: none; font-size: 0.85rem; min-width: 44px; text-align: center;">{% trans "Update Progress" %}</a>
+            <a href="{{ base_url }}{{ item.readthrough.book.local_path }}" style="display: inline-block; padding: 0.6rem 1.25rem; background-color: #2e7d32; color: white; text-decoration: none; font-size: 0.85rem; min-width: 44px; text-align: center;">{% trans "Update Progress" %}</a>
         </div>
     </td>
 </tr>
@@ -339,6 +339,6 @@
 {% endif %}
 
 <p style="margin-top: 2rem; text-align: center;">
-    <a href="{{ base_url }}" style="display: inline-block; padding: 0.75rem 2rem; background-color: #b50101; color: white; text-decoration: none; font-size: 1rem; min-width: 44px;">{% trans "Visit your feed" %}</a>
+    <a href="{{ base_url }}" style="display: inline-block; padding: 0.875rem 2.5rem; background-color: #b50101; color: white; text-decoration: none; font-size: 1rem; min-width: 44px;">{% trans "Visit your feed" %}</a>
 </p>
 {% endblock %}
