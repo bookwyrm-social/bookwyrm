@@ -36,6 +36,10 @@ class IsbnHyphenator:
         if isbn_13 is None:
             return None
 
+        # Handle empty string or invalid length ISBN
+        if not isbn_13 or len(isbn_13) < 13:
+            return isbn_13
+
         if self.__element_tree is None:
             self.__element_tree = ElementTree.parse(self.__range_file_path)
 
