@@ -10,9 +10,11 @@ from io import BytesIO
 import requests
 from django.db.models import Q
 
+from celery import shared_task
+
 from bookwyrm import models
 from bookwyrm.emailing import email_data, format_email, send_email
-from bookwyrm.tasks import app, EMAIL
+from bookwyrm.tasks import EMAIL
 
 
 logger = logging.getLogger(__name__)
@@ -402,7 +404,7 @@ def is_target_hour_for_user(user, target_hour=6):
     return now_user_tz.hour == target_hour
 
 
-@app.task(queue=EMAIL)
+@shared_task(queue=EMAIL)
 def send_daily_newsletter():
     """
     Celery task to send daily newsletter to subscribed users.

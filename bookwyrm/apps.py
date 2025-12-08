@@ -35,6 +35,11 @@ class BookwyrmConfig(AppConfig):
 
     def ready(self):
         """set up OTLP and preview image files, if desired"""
+        # Import newsletter module to register Celery tasks with shared_task decorator
+        # This must happen after Django apps are ready to avoid circular imports
+        # pylint: disable=import-outside-toplevel,unused-import
+        from bookwyrm import newsletter  # noqa: F401
+
         if settings.OTEL_EXPORTER_OTLP_ENDPOINT or settings.OTEL_EXPORTER_CONSOLE:
             # pylint: disable=import-outside-toplevel
             from bookwyrm.telemetry import open_telemetry

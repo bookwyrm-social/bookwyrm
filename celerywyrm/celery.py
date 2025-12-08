@@ -20,6 +20,6 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
 
-# Also discover tasks from modules not named 'tasks.py'
-# (autodiscover_tasks only finds tasks.py files in installed apps)
-app.autodiscover_tasks(["bookwyrm"], related_name="newsletter")
+# Newsletter tasks use @shared_task decorator which auto-registers
+# when the module is imported. We import it via Celery beat schedule
+# in celerywyrm/settings.py which references the task by name.
