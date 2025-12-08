@@ -7,13 +7,14 @@ line-length = 88
 
 target-version = "py311"
 
-lint.select = [
+[tool.ruff.lint]
+select = [
     "E",   # pycodestyle errors
     "W",   # pycodestyle warnings  
     "F",   # pyflakes (critical errors only)
 ]
 
-lint.ignore = [
+ignore = [
     "E501",   # line too long
     "E722",   # bare except
     "E731",   # lambda assignment
