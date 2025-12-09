@@ -583,7 +583,7 @@ class Edition(Book):
     oclc_number = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
-    pages = fields.IntegerField(blank=True, null=True, deduplication_field=True)
+    pages = fields.IntegerField(blank=True, null=True)
     physical_format = fields.CharField(
         max_length=255, choices=FormatChoices, null=True, blank=True
     )
