@@ -1,4 +1,5 @@
-""" Makes the app aware of the users timezone """
+"""Makes the app aware of the users timezone"""
+
 import zoneinfo
 
 from django.utils import timezone

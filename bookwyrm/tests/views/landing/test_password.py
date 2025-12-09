@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from datetime import timedelta
 from unittest.mock import patch
 

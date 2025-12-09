@@ -1,4 +1,4 @@
-""" books belonging to the same series """
+"""books belonging to the same series"""
 
 from sys import float_info
 from django.views import View
@@ -17,7 +17,6 @@ def sort_by_series(book):
         return float_info.max
 
 
-# pylint: disable=no-self-use
 class BookSeriesBy(View):
     """book series by author"""
 

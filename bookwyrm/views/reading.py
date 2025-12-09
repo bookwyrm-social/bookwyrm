@@ -1,4 +1,4 @@
-""" the good stuff! the books! """
+"""the good stuff! the books!"""
 
 import logging
 from django.contrib.auth.decorators import login_required
@@ -21,7 +21,6 @@ from .helpers import load_date_in_user_tz_as_utc, redirect_to_referer
 logger = logging.getLogger(__name__)
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class ReadingStatus(View):
     """consider reading a book"""
@@ -165,7 +164,6 @@ class ReadThrough(View):
 
 
 @transaction.atomic
-# pylint: disable=too-many-arguments
 def update_readthrough_on_shelve(
     user, annotated_book, status, start_date=None, finish_date=None, stopped_date=None
 ):

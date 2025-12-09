@@ -1,4 +1,4 @@
-""" responds to various requests to /.well-know """
+"""responds to various requests to /.well-know"""
 
 from dateutil.relativedelta import relativedelta
 from django.http import HttpResponseNotFound

@@ -1,4 +1,5 @@
 """Import data from Bookwyrm export files"""
+
 from django.http import QueryDict
 
 from bookwyrm.models import User
@@ -11,7 +12,6 @@ class BookwyrmImporter:
     This is kind of a combination of an importer and a connector.
     """
 
-    # pylint: disable=no-self-use
     def process_import(
         self, user: User, archive_file: bytes, settings: QueryDict
     ) -> BookwyrmImportJob:

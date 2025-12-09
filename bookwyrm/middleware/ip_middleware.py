@@ -1,4 +1,5 @@
-""" Block IP addresses """
+"""Block IP addresses"""
+
 from django.http import Http404
 from bookwyrm import models
 

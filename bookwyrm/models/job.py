@@ -122,7 +122,7 @@ class ParentJob(Job):
         if not self.complete and self.has_completed:
             self.complete_job()
 
-    def __terminate_job(self):  # pylint: disable=unused-private-member
+    def __terminate_job(self):
         """Tell workers to ignore and not execute this task
         & pending child tasks. Extend.
         """
@@ -186,9 +186,7 @@ class ParentTask(app.Task):
     Usage e.g. @app.task(base=ParentTask)
     """
 
-    def before_start(
-        self, task_id, args, kwargs
-    ):  # pylint: disable=no-self-use, unused-argument
+    def before_start(self, task_id, args, kwargs):
         """Handler called before the task starts. Override.
 
         Prepare ParentJob before the task starts.
@@ -213,9 +211,7 @@ class ParentTask(app.Task):
         if kwargs.get("no_children"):
             job.set_status(ChildJob.Status.ACTIVE)
 
-    def on_success(
-        self, retval, task_id, args, kwargs
-    ):  # pylint: disable=no-self-use, unused-argument
+    def on_success(self, retval, task_id, args, kwargs):
         """Run by the worker if the task executes successfully. Override.
 
         Update ParentJob on Task complete.
@@ -248,9 +244,7 @@ class SubTask(app.Task):
     Usage e.g. @app.task(base=SubTask)
     """
 
-    def before_start(
-        self, task_id, args, kwargs
-    ):  # pylint: disable=no-self-use, unused-argument
+    def before_start(self, task_id, args, kwargs):
         """Handler called before the task starts. Override.
 
         Prepare ChildJob before the task starts.
@@ -272,9 +266,7 @@ class SubTask(app.Task):
         child_job.save(update_fields=["task_id"])
         child_job.set_status(ChildJob.Status.ACTIVE)
 
-    def on_success(
-        self, retval, task_id, args, kwargs
-    ):  # pylint: disable=no-self-use, unused-argument
+    def on_success(self, retval, task_id, args, kwargs):
         """Run by the worker if the task executes successfully. Override.
 
         Notify ChildJob of task completion.

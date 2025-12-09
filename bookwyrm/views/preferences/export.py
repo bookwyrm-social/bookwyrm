@@ -1,4 +1,5 @@
-""" Let users export their book data """
+"""Let users export their book data"""
+
 from datetime import timedelta
 import csv
 import datetime
@@ -23,7 +24,7 @@ from bookwyrm import models, settings
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
 from bookwyrm.utils.cache import get_or_set
 
-# pylint: disable=no-self-use,too-many-locals
+
 @method_decorator(login_required, name="dispatch")
 class Export(View):
     """Let users export data"""
@@ -54,7 +55,7 @@ class Export(View):
 
         deduplication_fields = [
             f.name
-            for f in models.Edition._meta.get_fields()  # pylint: disable=protected-access
+            for f in models.Edition._meta.get_fields()
             if getattr(f, "deduplication_field", False)
         ]
         fields = (
@@ -147,7 +148,6 @@ class Export(View):
         )
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class ExportUser(View):
     """
@@ -186,7 +186,6 @@ class ExportUser(View):
                 try:
                     export["size"] = job.export_data.size
                     export["url"] = reverse("prefs-export-file", args=[job.task_id])
-                # pylint: disable=broad-exception-caught
                 except (
                     FileNotFoundError,
                     Exception,
@@ -261,7 +260,6 @@ class ExportArchive(View):
                 export.export_data,
                 content_type="application/gzip",
                 headers={
-                    # pylint: disable=line-too-long
                     "Content-Disposition": 'attachment; filename="bookwyrm-account-export.tar.gz"'
                 },
             )

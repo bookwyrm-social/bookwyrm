@@ -1,4 +1,5 @@
-""" boosts and favs """
+"""boosts and favs"""
+
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.db import IntegrityError
@@ -11,7 +12,6 @@ from bookwyrm import models
 from .helpers import is_api_request
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Favorite(View):
     """like a status"""
