@@ -61,7 +61,7 @@ class Export(View):
             ["title", "author_text"]
             + deduplication_fields
             + [
-                "pages", 
+                "pages",
                 "start_date",
                 "finish_date",
                 "stopped_date",
