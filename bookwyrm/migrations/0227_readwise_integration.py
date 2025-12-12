@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "last_export",
+                    "last_export_at",
                     models.DateTimeField(
                         blank=True,
                         help_text="Last time quotes were exported to Readwise",
@@ -63,12 +63,20 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "last_import",
+                    "last_import_at",
                     models.DateTimeField(
                         blank=True,
                         help_text="Last time highlights were imported from Readwise",
                         null=True,
                     ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True),
                 ),
                 (
                     "user",
@@ -112,7 +120,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "readwise_book_title",
+                    "book_title",
                     models.CharField(
                         blank=True,
                         help_text="Book title from Readwise (for reference if no match)",
@@ -120,7 +128,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "readwise_book_author",
+                    "book_author",
                     models.CharField(
                         blank=True,
                         help_text="Book author from Readwise (for reference if no match)",
@@ -128,10 +136,15 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "imported_at",
-                    models.DateTimeField(
-                        auto_now_add=True,
+                    "highlight_text",
+                    models.TextField(
+                        blank=True,
+                        help_text="The highlight text (stored for debugging/reference)",
                     ),
+                ),
+                (
+                    "imported_at",
+                    models.DateTimeField(auto_now_add=True),
                 ),
                 (
                     "user",
@@ -142,24 +155,25 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "matched_book",
+                    "quotation",
                     models.ForeignKey(
                         blank=True,
-                        help_text="BookWyrm book matched to this Readwise book",
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
                         related_name="readwise_source",
-                        to="bookwyrm.edition",
+                        help_text="The BookWyrm quotation created from this highlight",
+                        to="bookwyrm.quotation",
                     ),
                 ),
                 (
-                    "created_quotation",
+                    "matched_book",
                     models.ForeignKey(
                         blank=True,
+                        help_text="The BookWyrm edition this was matched to",
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
                         related_name="readwise_highlights",
-                        to="bookwyrm.quotation",
+                        to="bookwyrm.edition",
                     ),
                 ),
             ],
