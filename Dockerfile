@@ -10,3 +10,7 @@ RUN apt-get update && apt-get install -y gettext libgettextpo-dev tidy && apt-ge
 
 COPY requirements.txt /app/
 RUN pip install -r requirements.txt --no-cache-dir
+COPY entrypoint.sh /entrypoint.sh
+
+# Entrypoint script is used to do database migrations and collectstatic
+ENTRYPOINT ["/entrypoint.sh"]
