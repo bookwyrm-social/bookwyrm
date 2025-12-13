@@ -427,7 +427,7 @@ class EditBookViews(TestCase):
             request = self.factory.post("", form.data)
             request.user = self.local_user
 
-            with patch("bookwyrm.utils.isni.find_authors_by_name") as mock:
+            with patch("bookwyrm.views.books.edit_book.find_authors_by_name") as mock:
                 mock.return_value = []
                 result = add_authors(request, form.data)
 
