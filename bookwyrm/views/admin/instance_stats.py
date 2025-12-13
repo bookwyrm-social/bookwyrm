@@ -142,8 +142,14 @@ def get_readwise_stats():
 
 
 def get_connector_stats():
-    """Get connector health statistics"""
-    connectors = models.Connector.objects.filter(active=True).order_by("priority")
+    """Get connector health statistics for data source connectors only.
+
+    Excludes BookWyrm federation connectors as they are federated instances,
+    not external book data sources that need health monitoring.
+    """
+    connectors = models.Connector.objects.filter(active=True).exclude(
+        connector_file="bookwyrm_connector"
+    ).order_by("priority")
     connector_list = []
 
     healthy_count = 0
