@@ -136,6 +136,7 @@
 <section class="block">
     <h2 class="title is-4">{% trans "Connector Health" %}</h2>
 
+    {# Overall Summary #}
     <div class="columns is-multiline has-text-centered">
         <div class="column is-3-desktop is-6-tablet">
             <div class="notification is-success is-light">
@@ -163,24 +164,21 @@
         </div>
     </div>
 
-    {% if connectors.list %}
-    <div class="columns">
-        <div class="column is-half">
-            <div class="box">
-                <h3 class="subtitle is-5">{% trans "Connector Status Overview" %}</h3>
+    {# External Book APIs Section #}
+    <div class="box">
+        <h3 class="subtitle is-5">{% trans "External Book APIs" %}</h3>
+        <p class="has-text-grey mb-3">{% trans "Manually configured book data sources (OpenLibrary, Inventaire, Finna, etc.)" %}</p>
+
+        {% if connectors.external_apis %}
+        <div class="columns mb-4">
+            <div class="column is-half">
                 <canvas id="connector_health_chart" height="200"></canvas>
             </div>
-        </div>
-        <div class="column is-half">
-            <div class="box">
-                <h3 class="subtitle is-5">{% trans "Response Times (ms)" %}</h3>
+            <div class="column is-half">
                 <canvas id="connector_latency_chart" height="200"></canvas>
             </div>
         </div>
-    </div>
 
-    <div class="box">
-        <h3 class="subtitle is-5">{% trans "Connector Details" %}</h3>
         <table class="table is-fullwidth is-striped">
             <thead>
                 <tr>
@@ -194,7 +192,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for connector in connectors.list %}
+                {% for connector in connectors.external_apis %}
                 <tr{% if connector.in_backoff %} class="has-background-danger-light"{% endif %}>
                     <td>
                         <strong>{{ connector.name }}</strong>
@@ -223,8 +221,101 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% else %}
+        <p class="has-text-grey-light">{% trans "No external API connectors configured." %}</p>
+        {% endif %}
     </div>
-    {% endif %}
+
+    {# Federated BookWyrm Instances Section #}
+    <div class="box">
+        <h3 class="subtitle is-5">{% trans "Federated BookWyrm Instances" %}</h3>
+        <p class="has-text-grey mb-3">{% trans "Auto-created when federating with other BookWyrm servers. Used for cross-instance book searches." %}</p>
+
+        {# Summary stats for federated instances #}
+        <div class="columns is-multiline has-text-centered mb-4">
+            <div class="column is-2-desktop is-4-tablet">
+                <div class="notification is-light py-2">
+                    <h4 class="heading is-size-7">{% trans "Total" %}</h4>
+                    <p class="title is-5">{{ connectors.fed_total }}</p>
+                </div>
+            </div>
+            <div class="column is-2-desktop is-4-tablet">
+                <div class="notification is-success is-light py-2">
+                    <h4 class="heading is-size-7">{% trans "Healthy" %}</h4>
+                    <p class="title is-5">{{ connectors.fed_healthy }}</p>
+                </div>
+            </div>
+            <div class="column is-2-desktop is-4-tablet">
+                <div class="notification is-warning is-light py-2">
+                    <h4 class="heading is-size-7">{% trans "Degraded" %}</h4>
+                    <p class="title is-5">{{ connectors.fed_degraded }}</p>
+                </div>
+            </div>
+            <div class="column is-2-desktop is-4-tablet">
+                <div class="notification is-danger is-light py-2">
+                    <h4 class="heading is-size-7">{% trans "Unavailable" %}</h4>
+                    <p class="title is-5">{{ connectors.fed_unavailable }}</p>
+                </div>
+            </div>
+            <div class="column is-2-desktop is-4-tablet">
+                <div class="notification is-dark is-light py-2">
+                    <h4 class="heading is-size-7">{% trans "In Backoff" %}</h4>
+                    <p class="title is-5">{{ connectors.fed_in_backoff }}</p>
+                </div>
+            </div>
+        </div>
+
+        {% if connectors.federated_bookwyrm %}
+        {# Collapsible details #}
+        <details>
+            <summary class="button is-small is-outlined mb-3">
+                {% trans "Show details" %} ({{ connectors.fed_total }} {% trans "instances" %})
+            </summary>
+            <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+                <table class="table is-fullwidth is-striped is-narrow">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Instance" %}</th>
+                            <th>{% trans "Status" %}</th>
+                            <th>{% trans "Success Rate" %}</th>
+                            <th>{% trans "Requests (1h)" %}</th>
+                            <th>{% trans "Avg Latency" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for connector in connectors.federated_bookwyrm %}
+                        <tr{% if connector.in_backoff %} class="has-background-danger-light"{% endif %}>
+                            <td>
+                                <span class="is-size-7">{{ connector.identifier }}</span>
+                                {% if connector.in_backoff %}
+                                <span class="tag is-danger is-small ml-1">{% trans "Backoff" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if connector.health_status == "healthy" %}
+                                <span class="tag is-success is-small">{% trans "Healthy" %}</span>
+                                {% elif connector.health_status == "degraded" %}
+                                <span class="tag is-warning is-small">{% trans "Degraded" %}</span>
+                                {% else %}
+                                <span class="tag is-danger is-small">{% trans "Unavailable" %}</span>
+                                {% endif %}
+                            </td>
+                            <td class="is-size-7">{{ connector.success_rate }}%</td>
+                            <td class="is-size-7">
+                                <span class="has-text-success">{{ connector.success_count }}</span> /
+                                <span class="has-text-danger">{{ connector.failure_count }}</span>
+                            </td>
+                            <td class="is-size-7">{% if connector.avg_latency_ms %}{{ connector.avg_latency_ms }} ms{% else %}-{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </details>
+        {% else %}
+        <p class="has-text-grey-light">{% trans "No federated BookWyrm instances discovered yet." %}</p>
+        {% endif %}
+    </div>
 </section>
 
 {# Activity Charts Section #}
@@ -410,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Connector Health Doughnut Chart
+    // Connector Health Doughnut Chart (External APIs only)
     const connectorHealthCtx = document.getElementById('connector_health_chart');
     if (connectorHealthCtx) {
         new Chart(connectorHealthCtx, {
@@ -418,7 +509,7 @@ document.addEventListener('DOMContentLoaded', function() {
             data: {
                 labels: ['{% trans "Healthy" %}', '{% trans "Degraded" %}', '{% trans "Unavailable" %}'],
                 datasets: [{
-                    data: [{{ connectors.healthy_count }}, {{ connectors.degraded_count }}, {{ connectors.unavailable_count }}],
+                    data: [{{ connectors.ext_healthy }}, {{ connectors.ext_degraded }}, {{ connectors.ext_unavailable }}],
                     backgroundColor: [
                         'rgba(75, 192, 192, 0.8)',
                         'rgba(255, 206, 86, 0.8)',
@@ -444,11 +535,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Connector Latency Bar Chart
+    // Connector Latency Bar Chart (External APIs only)
     const connectorLatencyCtx = document.getElementById('connector_latency_chart');
     if (connectorLatencyCtx) {
         const connectorData = [
-            {% for connector in connectors.list %}
+            {% for connector in connectors.external_apis %}
             {name: '{{ connector.name|escapejs }}', latency: {{ connector.avg_latency_ms|default:0 }}, status: '{{ connector.health_status }}'},
             {% endfor %}
         ];

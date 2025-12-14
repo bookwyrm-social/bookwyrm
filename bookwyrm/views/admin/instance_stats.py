@@ -142,21 +142,32 @@ def get_readwise_stats():
 
 
 def get_connector_stats():
-    """Get connector health statistics for data source connectors only.
+    """Get connector health statistics for all connectors.
 
-    Excludes BookWyrm federation connectors as they are federated instances,
-    not external book data sources that need health monitoring.
+    Separates connectors into two categories:
+    1. External APIs (OpenLibrary, Inventaire, Finna) - manually configured data sources
+    2. Federated BookWyrm instances - auto-created when federating with other BookWyrm servers
+
+    Both categories are actively used during book searches.
     """
-    connectors = models.Connector.objects.filter(active=True).exclude(
-        connector_file="bookwyrm_connector"
-    ).order_by("priority")
-    connector_list = []
+    all_connectors = models.Connector.objects.filter(active=True).order_by("priority")
 
-    healthy_count = 0
-    degraded_count = 0
-    unavailable_count = 0
+    # Separate into categories
+    external_apis = []
+    federated_bookwyrm = []
 
-    for connector in connectors:
+    # Counts for external APIs
+    ext_healthy = 0
+    ext_degraded = 0
+    ext_unavailable = 0
+
+    # Counts for federated BookWyrm
+    fed_healthy = 0
+    fed_degraded = 0
+    fed_unavailable = 0
+    fed_in_backoff = 0
+
+    for connector in all_connectors:
         # Get real-time stats from cache
         cache_stats = ConnectorBackoff.get_health_stats(connector.identifier)
 
@@ -177,23 +188,52 @@ def get_connector_stats():
             "last_success_at": connector.last_success_at,
             "last_failure_at": connector.last_failure_at,
         }
-        connector_list.append(connector_data)
 
-        # Count by health status
-        if cache_stats["health_status"] == "healthy":
-            healthy_count += 1
-        elif cache_stats["health_status"] == "degraded":
-            degraded_count += 1
+        if connector.connector_file == "bookwyrm_connector":
+            federated_bookwyrm.append(connector_data)
+            if cache_stats["health_status"] == "healthy":
+                fed_healthy += 1
+            elif cache_stats["health_status"] == "degraded":
+                fed_degraded += 1
+            else:
+                fed_unavailable += 1
+            if cache_stats["in_backoff"]:
+                fed_in_backoff += 1
         else:
-            unavailable_count += 1
+            external_apis.append(connector_data)
+            if cache_stats["health_status"] == "healthy":
+                ext_healthy += 1
+            elif cache_stats["health_status"] == "degraded":
+                ext_degraded += 1
+            else:
+                ext_unavailable += 1
+
+    # Sort federated by health status (problematic first) then by name
+    status_order = {"unavailable": 0, "degraded": 1, "healthy": 2}
+    federated_bookwyrm.sort(
+        key=lambda c: (status_order.get(c["health_status"], 3), c["name"])
+    )
 
     return {
         "connectors": {
-            "list": connector_list,
-            "total_count": len(connector_list),
-            "healthy_count": healthy_count,
-            "degraded_count": degraded_count,
-            "unavailable_count": unavailable_count,
+            # External APIs (detailed view)
+            "external_apis": external_apis,
+            "ext_total": len(external_apis),
+            "ext_healthy": ext_healthy,
+            "ext_degraded": ext_degraded,
+            "ext_unavailable": ext_unavailable,
+            # Federated BookWyrm (summary + details)
+            "federated_bookwyrm": federated_bookwyrm,
+            "fed_total": len(federated_bookwyrm),
+            "fed_healthy": fed_healthy,
+            "fed_degraded": fed_degraded,
+            "fed_unavailable": fed_unavailable,
+            "fed_in_backoff": fed_in_backoff,
+            # Combined totals
+            "total_count": len(external_apis) + len(federated_bookwyrm),
+            "healthy_count": ext_healthy + fed_healthy,
+            "degraded_count": ext_degraded + fed_degraded,
+            "unavailable_count": ext_unavailable + fed_unavailable,
         }
     }
 

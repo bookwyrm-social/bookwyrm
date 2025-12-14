@@ -138,7 +138,20 @@ class InstanceStatsFunctionsTest(TestCase):
         stats = get_connector_stats()
         self.assertIn("connectors", stats)
         connectors = stats["connectors"]
-        self.assertIn("list", connectors)
+        # External APIs
+        self.assertIn("external_apis", connectors)
+        self.assertIn("ext_total", connectors)
+        self.assertIn("ext_healthy", connectors)
+        self.assertIn("ext_degraded", connectors)
+        self.assertIn("ext_unavailable", connectors)
+        # Federated BookWyrm instances
+        self.assertIn("federated_bookwyrm", connectors)
+        self.assertIn("fed_total", connectors)
+        self.assertIn("fed_healthy", connectors)
+        self.assertIn("fed_degraded", connectors)
+        self.assertIn("fed_unavailable", connectors)
+        self.assertIn("fed_in_backoff", connectors)
+        # Combined totals
         self.assertIn("total_count", connectors)
         self.assertIn("healthy_count", connectors)
         self.assertIn("degraded_count", connectors)
