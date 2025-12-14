@@ -17,7 +17,7 @@ from django.views import View
 from django.views.decorators.http import require_POST
 
 from functools import partial
-from markdown import markdown
+import mistune
 from bookwyrm import forms, models
 from bookwyrm.models.report import DELETE_ITEM
 from bookwyrm.utils import regex, sanitizer
@@ -366,6 +366,6 @@ def _to_markdown(content, user):
 def to_markdown(content):
     """catch links and convert to markdown"""
     content = format_links(content)
-    content = markdown(content)
+    content = mistune.html(content)
     # sanitize resulting html
     return sanitizer.clean(content)
