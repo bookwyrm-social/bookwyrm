@@ -2,7 +2,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Optional, TypedDict, Any, Callable, Union, Iterator
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus, urlparse
 
 import logging
 import re
@@ -332,6 +332,10 @@ def get_data(
     # check if the url is blocked
     raise_not_valid_url(url)
 
+    # Extract connector identifier from URL for health tracking
+    identifier = urlparse(url).hostname
+    start_time = time.time()
+
     try:
         resp = requests.get(
             url,
@@ -344,11 +348,19 @@ def get_data(
             },
             timeout=timeout,
         )
+        latency_ms = int((time.time() - start_time) * 1000)
     except RequestException as err:
+        latency_ms = int((time.time() - start_time) * 1000)
         logger.info(err)
+        if identifier:
+            ConnectorBackoff.record_failure(identifier, "request_error", latency_ms)
         raise ConnectorException(err)
 
     if not resp.ok:
+        if identifier:
+            ConnectorBackoff.record_failure(
+                identifier, f"http_{resp.status_code}", latency_ms
+            )
         if resp.status_code == 401:
             # this is probably an AUTHORIZED_FETCH issue
             resp.raise_for_status()
@@ -358,11 +370,18 @@ def get_data(
         data = resp.json()
     except ValueError as err:
         logger.info(err)
+        if identifier:
+            ConnectorBackoff.record_failure(identifier, "parse_error", latency_ms)
         raise ConnectorException(err)
 
     if not isinstance(data, dict):
+        if identifier:
+            ConnectorBackoff.record_failure(identifier, "invalid_format", latency_ms)
         raise ConnectorException("Unexpected data format")
 
+    # Record success
+    if identifier:
+        ConnectorBackoff.record_success(identifier, latency_ms)
     return data
 
 
