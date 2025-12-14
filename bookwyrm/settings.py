@@ -282,6 +282,7 @@ DATABASES = {
         "PASSWORD": env("POSTGRES_PASSWORD", "bookwyrm"),
         "HOST": env("POSTGRES_HOST", ""),
         "PORT": env.int("PGPORT", 5432),
+        "CONN_MAX_AGE": env.int("CONN_MAX_AGE", 600),  # Keep connections for 10 minutes
     },
 }
 
