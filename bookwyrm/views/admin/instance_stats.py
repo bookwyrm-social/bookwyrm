@@ -1,4 +1,5 @@
 """Instance statistics dashboard for federation and Readwise metrics"""
+import json
 from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -6,6 +7,7 @@ from django.db.models import Count, Q
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.utils.safestring import mark_safe
 from django.views import View
 
 from csp.decorators import csp_update
@@ -75,7 +77,8 @@ def get_federation_stats():
             "blocked_servers": blocked_count,
             "remote_users": remote_users,
             "users_from_federated": users_from_federated,
-            "software_breakdown": list(software_breakdown),
+            # JSON-serialize for JavaScript template usage
+            "software_breakdown": mark_safe(json.dumps(list(software_breakdown))),
         }
     }
 
@@ -287,10 +290,11 @@ def get_activity_stats(now, interval_days):
 
     return {
         "activity": {
-            "labels": labels,
-            "status_by_day": status_by_day,
-            "quotes_by_day": quotes_by_day,
-            "servers_by_day": servers_by_day,
+            # JSON-serialize arrays for JavaScript chart usage
+            "labels": mark_safe(json.dumps(labels)),
+            "status_by_day": mark_safe(json.dumps(status_by_day)),
+            "quotes_by_day": mark_safe(json.dumps(quotes_by_day)),
+            "servers_by_day": mark_safe(json.dumps(servers_by_day)),
             "total_statuses_period": sum(status_by_day),
             "total_quotes_period": sum(quotes_by_day),
             "total_servers_period": sum(servers_by_day),
