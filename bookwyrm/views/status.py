@@ -107,6 +107,8 @@ class CreateStatus(View):
         if status.reply_parent:
             status.mention_users.add(status.reply_parent.user)
 
+        content = format_images(content, request.user)
+
         # inspect the text for hashtags
         hashtags = find_or_create_hashtags(content)
         for _, mention_hashtag in hashtags.items():
@@ -119,10 +121,10 @@ class CreateStatus(View):
 
         # don't apply formatting to generated notes
         if not isinstance(status, models.GeneratedNote) and content:
-            status.content = _to_markdown(content, request.user)
+            status.content = to_markdown(content)
         # do apply formatting to quotes
         if hasattr(status, "quote"):
-            status.quote = _to_markdown(status.quote, request.user)
+            status.quote = to_markdown(status.quote)
 
         status.save(created=created)
 
@@ -353,15 +355,6 @@ def _unwrap(text):
         suffix = inner_punct + suffix
 
     return prefix, text, suffix
-
-
-def _to_markdown(content, user):
-    """annoying workaround because the markdown library incorrectly parses <= in the sizes attribute"""
-    content = format_links(content)
-    content = markdown(content)
-    content = format_images(content, user)
-    # sanitize resulting html
-    return sanitizer.clean(content)
 
 def to_markdown(content):
     """catch links and convert to markdown"""
