@@ -1,4 +1,5 @@
-""" test populating user streams """
+"""test populating user streams"""
+
 from unittest.mock import patch
 from django.test import TestCase
 

@@ -1,4 +1,5 @@
 """testing the annual summary page"""
+
 import datetime
 from unittest.mock import patch
 

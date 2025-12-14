@@ -1,4 +1,5 @@
-""" template filters for really common utilities """
+"""template filters for really common utilities"""
+
 import os
 import re
 from uuid import uuid4
@@ -109,7 +110,7 @@ def possible_series_hint(seriesbook):
         if seriesbook.book.authors.first()
         else None
     )
-    # pylint: disable=line-too-long
+
     hint = f'Includes <a href="{path}" target="_blank" rel="nofollow noopener noreferrer">"{title}"</a>'
     if author:
         hint += f" by {author}"
@@ -117,7 +118,6 @@ def possible_series_hint(seriesbook):
     return mark_safe(hint)
 
 
-# pylint: disable=unused-argument
 @register.filter(name="get_isni", needs_autoescape=True)
 def get_isni(existing, author, autoescape=True):
     """Returns the isni ID if an existing author has an ISNI listing"""
@@ -163,10 +163,10 @@ def get_file_size(nbytes):
     if raw_size < 1024:
         return f"{raw_size} bytes"
     if raw_size < 1024**2:
-        return f"{raw_size/1024:.2f} KB"
+        return f"{raw_size / 1024:.2f} KB"
     if raw_size < 1024**3:
-        return f"{raw_size/1024**2:.2f} MB"
-    return f"{raw_size/1024**3:.2f} GB"
+        return f"{raw_size / 1024**2:.2f} MB"
+    return f"{raw_size / 1024**3:.2f} GB"
 
 
 @register.filter(name="get_user_permission")

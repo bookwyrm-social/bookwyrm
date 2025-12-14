@@ -1,4 +1,5 @@
-""" make sure all our nice views are available """
+"""make sure all our nice views are available"""
+
 # site admin
 from .admin.announcements import Announcements, Announcement
 from .admin.announcements import EditAnnouncement, delete_announcement

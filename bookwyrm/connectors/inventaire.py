@@ -1,4 +1,5 @@
-""" inventaire data connector """
+"""inventaire data connector"""
+
 import re
 from typing import Any, Union, Optional, Iterator, Iterable
 
@@ -131,7 +132,7 @@ class Connector(AbstractConnector):
 
     def load_edition_data(self, work_uri: str) -> JsonDict:
         """get a list of editions for a work"""
-        # pylint: disable=line-too-long
+
         url = f"{self.books_url}?action=reverse-claims&property=wdt:P629&value={work_uri}&sort=true"
         return get_data(url, is_activitypub=False)
 

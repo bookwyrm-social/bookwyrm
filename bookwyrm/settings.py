@@ -11,8 +11,6 @@ from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ImproperlyConfigured
 
 
-# pylint: disable=line-too-long
-
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")

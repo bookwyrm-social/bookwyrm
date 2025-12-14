@@ -1,4 +1,5 @@
-""" test for context processor """
+"""test for context processor"""
+
 from unittest.mock import patch
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase

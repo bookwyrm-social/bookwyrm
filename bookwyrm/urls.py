@@ -1,4 +1,5 @@
-""" url routing for the app and api """
+"""url routing for the app and api"""
+
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -329,7 +330,6 @@ urlpatterns = [
         views.LinkDomain.as_view(),
         name="settings-link-domain",
     ),
-    # pylint: disable=line-too-long
     re_path(
         r"^setting/link-domains/(?P<status>(pending|approved|blocked))/(?P<domain_id>\d+)/?$",
         views.LinkDomain.as_view(),
@@ -977,8 +977,8 @@ urlpatterns = [
 # Serves /static when DEBUG is true.
 urlpatterns.extend(staticfiles_urlpatterns())
 
-# pylint: disable=invalid-name
+
 handler500 = "bookwyrm.views.server_error"
 
-# pylint: disable=invalid-name
+
 handler403 = "bookwyrm.views.permission_denied"

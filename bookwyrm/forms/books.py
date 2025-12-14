@@ -1,4 +1,5 @@
-""" using django model forms """
+"""using django model forms"""
+
 from django import forms
 
 from file_resubmit.widgets import ResubmitImageWidget
@@ -9,7 +10,6 @@ from .custom_form import CustomForm
 from .widgets import ArrayWidget, SelectDateWidget, Select
 
 
-# pylint: disable=missing-class-docstring
 class CoverForm(CustomForm):
     class Meta:
         model = models.Book

@@ -1,4 +1,4 @@
-""" database schema for books and shelves """
+"""database schema for books and shelves"""
 
 from itertools import chain
 import re
@@ -126,7 +126,6 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
 
         super().save(*args, update_fields=update_fields, **kwargs)
 
-    # pylint: disable=arguments-differ
     def broadcast(self, activity, sender, software="bookwyrm", **kwargs):
         """only send book data updates to other bookwyrm instances"""
         super().broadcast(activity, sender, software=software, **kwargs)
@@ -155,7 +154,7 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
             # the linking table anyway. If we update it through that model
             # instead then we won’t lose the extra fields in the linking
             # table.
-            # pylint: disable=protected-access
+
             related_field_obj = related_model._meta.get_field(related_field)
             if isinstance(related_field_obj, ManyToManyField):
                 through = related_field_obj.remote_field.through
@@ -389,7 +388,7 @@ class Book(BookDataModel):
             *(LANGUAGE_ARTICLES[language].get("articles") for language in lang_codes)
         )
 
-        return re.sub(f'^{" |^".join(articles)} ', "", str(self.title).lower())
+        return re.sub(f"^{' |^'.join(articles)} ", "", str(self.title).lower())
 
     def book_series(self):
         """get the series this book is in"""
@@ -399,7 +398,6 @@ class Book(BookDataModel):
         return list(series)
 
     def __repr__(self):
-        # pylint: disable=consider-using-f-string
         return "<{} key={!r} title={!r}>".format(
             self.__class__,
             self.openlibrary_key,
@@ -408,8 +406,6 @@ class Book(BookDataModel):
 
     class Meta:
         """set up indexes and triggers"""
-
-        # pylint: disable=line-too-long
 
         indexes = (GinIndex(fields=["search_vector"]),)
         triggers = [
@@ -804,7 +800,6 @@ def normalize_isbn(isbn):
     return re.sub(r"[^0-9X]", "", isbn)
 
 
-# pylint: disable=unused-argument
 @receiver(models.signals.post_save, sender=Edition)
 def preview_image(instance, *args, **kwargs):
     """create preview image on book create"""

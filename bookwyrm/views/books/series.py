@@ -20,7 +20,6 @@ from bookwyrm.views.helpers import (
 class Series(View):
     """a series of books"""
 
-    # pylint: disable=unused-argument,no-self-use
     @vary_on_headers("Accept")
     def get(self, request, series_id, slug=None):
         """landing page for a series"""
@@ -57,7 +56,6 @@ class Series(View):
 class EditSeries(View):
     """Edit information about series and seriesbooks"""
 
-    # pylint: disable=no-self-use
     def get(self, request, series_id=None):
         """edit page for series"""
 
@@ -66,7 +64,7 @@ class EditSeries(View):
 
         return TemplateResponse(request, "book/edit/edit_series.html", data)
 
-    # pylint: disable=no-self-use
+
     def post(self, request, series_id):
         """submit the series edit form"""
 
@@ -98,7 +96,6 @@ class EditSeries(View):
 class SeriesBook(View):
     """a book in a series"""
 
-    # pylint: disable=no-self-use
     @vary_on_headers("Accept")
     def get(self, request, seriesbook_id):
         """we just need this for resolving AP requests"""

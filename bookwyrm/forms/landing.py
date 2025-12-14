@@ -1,4 +1,5 @@
-""" Forms for the landing pages """
+"""Forms for the landing pages"""
+
 from django import forms
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -12,7 +13,6 @@ from bookwyrm.settings import TWO_FACTOR_LOGIN_VALIDITY_WINDOW
 from .custom_form import CustomForm
 
 
-# pylint: disable=missing-class-docstring
 class LoginForm(CustomForm):
     class Meta:
         model = models.User
@@ -131,7 +131,6 @@ class Confirm2FAForm(CustomForm):
         totp = pyotp.TOTP(self.instance.otp_secret)
 
         if not totp.verify(otp, valid_window=TWO_FACTOR_LOGIN_VALIDITY_WINDOW):
-
             if self.instance.hotp_secret:
                 # maybe it's a backup code?
                 hotp = pyotp.HOTP(self.instance.hotp_secret)

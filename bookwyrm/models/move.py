@@ -1,4 +1,5 @@
-""" move an object including migrating a user account """
+"""move an object including migrating a user account"""
+
 from django.core.exceptions import PermissionDenied
 from django.db import models
 

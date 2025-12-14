@@ -1,4 +1,5 @@
-""" class views for login/register views """
+"""class views for login/register views"""
+
 import time
 
 from django.contrib.auth import authenticate, login, logout
@@ -14,7 +15,6 @@ from bookwyrm import forms, models
 from bookwyrm.views.helpers import set_language
 
 
-# pylint: disable=no-self-use
 class Login(View):
     """authenticate an existing user"""
 
@@ -30,7 +30,6 @@ class Login(View):
         }
         return TemplateResponse(request, "landing/login.html", data)
 
-    # pylint: disable=too-many-return-statements
     @sensitive_variables("password")
     @method_decorator(sensitive_post_parameters("password"))
     def post(self, request):
