@@ -18,7 +18,6 @@ def upgrade_series_data():
     for book in (
         Edition.objects.filter(parent_work__seriesbooks=None).exclude(series=None).all()
     ):
-
         vector = SearchVector("name", weight="A") + SearchVector(
             "alternative_names", weight="B"
         )
@@ -30,7 +29,6 @@ def upgrade_series_data():
         )
 
         if possible_series.exists():
-
             books = Book.objects.filter(authors__in=Subquery(book.authors.values("pk")))
 
             if same_author_sb := SeriesBook.objects.filter(book__in=books).filter(

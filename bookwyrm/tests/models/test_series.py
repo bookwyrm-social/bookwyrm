@@ -1,4 +1,4 @@
-""" testing series models """
+"""testing series models"""
 
 from django.test import TestCase
 

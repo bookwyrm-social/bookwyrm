@@ -16,7 +16,6 @@ class Connector(AbstractMinimalConnector):
         super().__init__(identifier)
 
     def get_or_create_book(self, remote_id: str) -> models.Edition:
-
         edition = activitypub.resolve_remote_id(remote_id, model=models.Edition)
 
         if edition.series:

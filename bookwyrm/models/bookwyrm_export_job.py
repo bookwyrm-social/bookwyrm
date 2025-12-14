@@ -76,11 +76,11 @@ def create_export_json_task(**kwargs):
             # trigger task to create tar file
             create_archive_task.delay(job_id=job.id)
 
-    except Exception as err:
-        logger.exception(
-            "create_export_json_task for job %s failed with error: %s", job.id, err
-        )
-        job.set_status("failed")
+        except Exception as err:
+            logger.exception(
+                "create_export_json_task for job %s failed with error: %s", job.id, err
+            )
+            job.set_status("failed")
 
 
 def archive_file_location(file, directory="") -> str:

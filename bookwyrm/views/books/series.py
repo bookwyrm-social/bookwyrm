@@ -64,7 +64,6 @@ class EditSeries(View):
 
         return TemplateResponse(request, "book/edit/edit_series.html", data)
 
-
     def post(self, request, series_id):
         """submit the series edit form"""
 

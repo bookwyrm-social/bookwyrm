@@ -365,7 +365,6 @@ class ConfirmEditBook(View):
                     if not models.SeriesBook.objects.filter(
                         series=series, book=book.parent_work, user=user
                     ).exists():  # don't create a dupe!
-
                         models.SeriesBook.objects.create(
                             series=series,
                             book=book.parent_work,
@@ -376,10 +375,9 @@ class ConfirmEditBook(View):
                     book = clear_series(book)
 
                 else:
-
                     if maybe_series := models.Series.objects.filter(
-                        Q(title=book__series)
-                        | Q(alternative_titles__contains(book__series))
+                        Q(title=book.series)
+                        | Q(alternative_titles__contains=book.series)
                     ):
                         # is there a SeriesBook already despite what the user claims?
                         maybe_seriesbooks = models.SeriesBook.filter(

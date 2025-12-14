@@ -175,7 +175,10 @@ class AbstractMinimalConnector(ABC):
             edition.save()
 
             activitydata_to_seriesbook(
-                user=user, work=work, new=series, instance=instance  # type: ignore
+                user=user,
+                work=work,
+                new=series,
+                instance=instance,  # type: ignore
             )
 
     @abstractmethod
