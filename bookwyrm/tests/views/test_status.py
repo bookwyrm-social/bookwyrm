@@ -7,6 +7,7 @@ from django.core.exceptions import PermissionDenied
 from django.test import TestCase, TransactionTestCase
 from django.test.client import RequestFactory
 from django.utils import timezone
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from bookwyrm import forms, models, views
 from bookwyrm.views.status import find_mentions, find_or_create_hashtags
@@ -437,6 +438,32 @@ class StatusViews(TestCase):
         result = find_or_create_hashtags("#ひぐま")
         hashtag = models.Hashtag.objects.filter(name="#ひぐま").first()
         self.assertEqual(result["#ひぐま"], hashtag)
+
+    def test_format_image_helper(self, *_):
+        """find and format images into tags"""
+        fake_file = SimpleUploadedFile('foo.jpg', b'a')
+        user = self.local_user
+        upload = models.UserUpload.objects.create(
+                original_name = "foo.jpg",
+                original_file = fake_file,
+                user = self.local_user
+        )
+        models.UserUploadVersion.objects.create(
+                user_upload = upload,
+                max_dimension = '240',
+                file = fake_file,
+        )
+        models.UserUploadVersion.objects.create(
+                user_upload = upload,
+                max_dimension = '600',
+                file = fake_file,
+        )
+        img_path = upload.original_file.name
+        text = f"!image({img_path})"
+        expected = f'<img srcset="/images/uploads/user_{user.id}/{upload.id}/240.jpg 240w /images/uploads/user_{user.id}/{upload.id}/600.jpg 600w" sizes="(width <= 600px) 100vw" src="/images/uploads/user_{user.id}/{upload.id}/600.jpg" />'
+        self.assertEqual(
+            views.status.format_images(text, self.local_user), expected
+        )
 
     def test_format_links_simple_url(self, *_):
         """find and format urls into a tags"""

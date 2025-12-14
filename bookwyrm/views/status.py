@@ -16,6 +16,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 
+from functools import partial
 from markdown import markdown
 from bookwyrm import forms, models
 from bookwyrm.models.report import DELETE_ITEM
@@ -118,10 +119,10 @@ class CreateStatus(View):
 
         # don't apply formatting to generated notes
         if not isinstance(status, models.GeneratedNote) and content:
-            status.content = to_markdown(content)
+            status.content = _to_markdown(content, request.user)
         # do apply formatting to quotes
         if hasattr(status, "quote"):
-            status.quote = to_markdown(status.quote)
+            status.quote = _to_markdown(status.quote, request.user)
 
         status.save(created=created)
 
@@ -136,6 +137,19 @@ class CreateStatus(View):
             return HttpResponse()
         return redirect_to_referer(request)
 
+def format_images(content, user):
+    """Detect special image tags and make them responsive"""
+    return re.sub(
+            r'!image\(([^)]+)\)',
+            partial(responsive_image_tag, user),
+            content
+    )
+
+def responsive_image_tag(user, matchobj):
+    upload = user.user_uploads.get(original_file = matchobj.group(1))
+    srcs = [[version.file.url, version.max_dimension] for version in upload.versions.all()]
+    srcset = ' '.join([f"{src[0]} {src[1]}w" for src in srcs])
+    return f"<img srcset=\"{srcset}\" sizes=\"(width <= 600px) 100vw\" src=\"{srcs[-1][0]}\" />"
 
 def format_mentions(content, mentions):
     """Detect @mentions and make them links"""
@@ -340,6 +354,14 @@ def _unwrap(text):
 
     return prefix, text, suffix
 
+
+def _to_markdown(content, user):
+    """annoying workaround because the markdown library incorrectly parses <= in the sizes attribute"""
+    content = format_links(content)
+    content = markdown(content)
+    content = format_images(content, user)
+    # sanitize resulting html
+    return sanitizer.clean(content)
 
 def to_markdown(content):
     """catch links and convert to markdown"""

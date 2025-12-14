@@ -23,7 +23,7 @@ from .annual_goal import AnnualGoal
 from .relationship import UserFollows, UserFollowRequest, UserBlocks
 from .report import Report, ReportAction
 from .federated_server import FederatedServer
-from .user_upload import UserUpload
+from .user_upload import UserUpload, UserUploadVersion
 
 from .group import Group, GroupMember, GroupMemberInvitation
 

@@ -39,13 +39,12 @@ let XhrFiles = new (class {
         const self = this;
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('load', function(e) {
-            if (this.status != 200) {
+            if (this.status != 201) {
                 console.log(e);
                 return;
             }
             const responseJSON = JSON.parse(e.target.responseText);
-            const url = responseJSON.url;
-            self.insertImageMarkdown(target, file, url);
+            self.insertImageMarkdown(target, file, responseJSON);
         });
         xhr.open('post', '/upload', true);
         const fd = new FormData();
@@ -60,8 +59,8 @@ let XhrFiles = new (class {
         return document.querySelector('[name=csrfmiddlewaretoken]').value;
     }
 
-    insertImageMarkdown(target, file, url) {
-        const imageMarkdown = `![${file.name}](${url})`;
+    insertImageMarkdown(target, file, metadata) {
+        const imageMarkdown = `!image(${metadata.name})`;
         const content = target.value;
         const caret = target.selectionEnd;
         const preCaret = content.slice(0, caret);

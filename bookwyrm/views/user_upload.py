@@ -41,6 +41,7 @@ class CreateUserUpload(View):
 
         biggest = upload.versions.order_by("-max_dimension")[0]
         return JsonResponse({
+                "name": upload.original_file.name,
                 "url": request.build_absolute_uri(biggest.file.url)
             }, status = 201)
 
