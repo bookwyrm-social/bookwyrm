@@ -148,42 +148,42 @@
                             </table>
                             {% endif %}
 
-                            <!-- Grid Reviews (2 columns) -->
+                            <!-- Grid Reviews (stacked cards with covers) -->
                             {% if grid_reviews %}
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                            {% for review in grid_reviews %}
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #e8e4dc; margin-bottom: 12px;">
                                 <tr>
-                                    {% for review in grid_reviews %}
-                                    <td class="grid-item" style="width: 48%; vertical-align: top; {% if forloop.counter|divisibleby:2 %}padding-left: 8px;{% else %}padding-right: 8px;{% endif %} padding-bottom: 16px;">
-                                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #e8e4dc; padding: 16px;">
+                                    {% if review.book_cover %}
+                                    <td style="width: 80px; vertical-align: top; padding: 16px 0 16px 16px;">
+                                        <a href="{{ base_url }}{{ review.activity.local_path }}">
+                                            <img src="{{ review.book_cover }}" alt="{{ review.activity.book.title }}" width="80" style="display: block; max-width: 80px; height: auto;">
+                                        </a>
+                                    </td>
+                                    {% endif %}
+                                    <td style="vertical-align: top; padding: 16px;">
+                                        <!-- User meta -->
+                                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 6px;">
                                             <tr>
-                                                <td>
-                                                    <!-- User meta -->
-                                                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 8px;">
-                                                        <tr>
-                                                            {% if review.user_avatar %}
-                                                            <td style="width: 20px; vertical-align: middle; padding-right: 6px;">
-                                                                <img src="{{ review.user_avatar }}" alt="" width="20" height="20" style="border-radius: 50%; display: block;">
-                                                            </td>
-                                                            {% endif %}
-                                                            <td style="vertical-align: middle;">
-                                                                <span style="font-family: 'Source Sans 3', sans-serif; color: #8a8580; font-size: 11px;">{{ review.activity.user.display_name }}</span>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                    <!-- Book title (links to review) -->
-                                                    <a href="{{ base_url }}{{ review.activity.local_path }}" style="font-family: 'Playfair Display', Georgia, serif; color: #0a0a0a; font-size: 15px; font-weight: 700; text-decoration: none; display: block; line-height: 1.3;">{{ review.activity.book.title|truncatechars:40 }}</a>
-                                                    <!-- Star rating -->
-                                                    {% if review.activity.rating %}
-                                                    <div style="color: #c41e3a; font-size: 12px; margin-top: 6px;">{% for i in "12345" %}{% if forloop.counter <= review.activity.rating %}&#9733;{% else %}&#9734;{% endif %}{% endfor %}</div>
-                                                    {% endif %}
+                                                {% if review.user_avatar %}
+                                                <td style="width: 20px; vertical-align: middle; padding-right: 6px;">
+                                                    <img src="{{ review.user_avatar }}" alt="" width="20" height="20" style="border-radius: 50%; display: block;">
+                                                </td>
+                                                {% endif %}
+                                                <td style="vertical-align: middle;">
+                                                    <span style="font-family: 'Source Sans 3', sans-serif; color: #8a8580; font-size: 11px;">{{ review.activity.user.display_name }} {% trans "reviewed" %}</span>
                                                 </td>
                                             </tr>
                                         </table>
+                                        <!-- Book title (links to review) -->
+                                        <a href="{{ base_url }}{{ review.activity.local_path }}" style="font-family: 'Playfair Display', Georgia, serif; color: #0a0a0a; font-size: 16px; font-weight: 700; text-decoration: none; display: block; line-height: 1.3;">{{ review.activity.book.title }}</a>
+                                        <!-- Star rating -->
+                                        {% if review.activity.rating %}
+                                        <div style="color: #c41e3a; font-size: 14px; margin-top: 6px;">{% for i in "12345" %}{% if forloop.counter <= review.activity.rating %}&#9733;{% else %}&#9734;{% endif %}{% endfor %}</div>
+                                        {% endif %}
                                     </td>
-                                    {% if forloop.counter|divisibleby:2 %}</tr><tr>{% endif %}
-                                    {% endfor %}
                                 </tr>
                             </table>
+                            {% endfor %}
                             {% endif %}
                         </td>
                     </tr>
@@ -209,13 +209,19 @@
                                 </tr>
                             </table>
 
-                            <!-- Comment items with left border -->
+                            <!-- Comment items with book covers -->
                             {% for group in followed_activities.comments %}
                             {% for item in group.items %}
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 16px;">
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #e8e4dc; margin-bottom: 12px;">
                                 <tr>
-                                    <td style="width: 3px; background-color: #0a0a0a;"></td>
-                                    <td style="padding-left: 20px;">
+                                    {% if item.book_cover %}
+                                    <td style="width: 80px; vertical-align: top; padding: 16px 0 16px 16px;">
+                                        <a href="{{ base_url }}{{ item.activity.local_path }}">
+                                            <img src="{{ item.book_cover }}" alt="{{ item.activity.book.title }}" width="80" style="display: block; max-width: 80px; height: auto;">
+                                        </a>
+                                    </td>
+                                    {% endif %}
+                                    <td style="vertical-align: top; padding: 16px;">
                                         <!-- User meta -->
                                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 6px;">
                                             <tr>
@@ -225,12 +231,12 @@
                                                 </td>
                                                 {% endif %}
                                                 <td style="vertical-align: middle;">
-                                                    <span style="font-family: 'Source Sans 3', sans-serif; color: #8a8580; font-size: 12px;">{{ group.user.display_name }} {% trans "commented on" %}</span>
+                                                    <span style="font-family: 'Source Sans 3', sans-serif; color: #8a8580; font-size: 11px;">{{ group.user.display_name }} {% trans "commented on" %}</span>
                                                 </td>
                                             </tr>
                                         </table>
                                         <!-- Book title (links to comment) -->
-                                        <a href="{{ base_url }}{{ item.activity.local_path }}" style="font-family: 'Playfair Display', Georgia, serif; color: #9a1830; font-size: 16px; font-weight: 700; text-decoration: none;">{{ item.activity.book.title }}</a>
+                                        <a href="{{ base_url }}{{ item.activity.local_path }}" style="font-family: 'Playfair Display', Georgia, serif; color: #0a0a0a; font-size: 16px; font-weight: 700; text-decoration: none; display: block; line-height: 1.3;">{{ item.activity.book.title }}</a>
                                         <!-- Full comment text -->
                                         {% if item.activity.content %}
                                         <p style="font-family: 'Source Sans 3', sans-serif; color: #444444; font-size: 14px; font-style: italic; line-height: 1.5; margin: 8px 0 0 0;">{{ item.activity.content|striptags }}</p>
