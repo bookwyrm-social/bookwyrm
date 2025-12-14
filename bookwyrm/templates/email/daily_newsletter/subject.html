@@ -1,1 +1,1 @@
-{% load i18n %}{% blocktrans trimmed with site=site_name %}Your daily reading digest from {{ site }}{% endblocktrans %}
+{% load i18n %}{{ site_name }} | {{ date_month }} {{ date_day }} - {% trans "Daily Book Updates" %}

@@ -325,12 +325,21 @@ def get_currently_reading(user):
     )
 
 
-def send_newsletter_to_user(user, activities, date_str):
+def send_newsletter_to_user(user, activities, date_str, start_date):
     """Send newsletter email to a single user"""
     data = email_data()
     data["user"] = user.display_name
     data["date_str"] = date_str
     base_url = data.get("base_url", "")
+
+    # Date components for editorial header
+    data["date_day"] = start_date.day
+    data["date_month"] = start_date.strftime("%B")
+    data["date_year"] = start_date.year
+
+    # URLs for footer
+    data["feed_url"] = base_url
+    data["email_preferences_url"] = f"{base_url}/preferences/profile"
 
     # Split into own vs followed activities
     own_reviews = [a for a in activities["reviews"] if a.user_id == user.id]
@@ -348,7 +357,7 @@ def send_newsletter_to_user(user, activities, date_str):
     # Own activities with embedded images (flat list)
     data["own_activities"] = {
         "reviews": [
-            prepare_activity_with_images(a, base_url) for a in own_reviews[:3]
+            prepare_activity_with_images(a, base_url) for a in own_reviews[:5]
         ],
         "comments": [
             prepare_activity_with_images(a, base_url) for a in own_comments[:3]
@@ -360,6 +369,21 @@ def send_newsletter_to_user(user, activities, date_str):
             prepare_activity_with_images(a, base_url) for a in own_shelf_changes[:3]
         ],
     }
+
+    # Featured review (first review with content) and grid reviews
+    all_reviews_prepared = [
+        prepare_activity_with_images(a, base_url, "followed")
+        for a in activities["reviews"][:6]
+    ]
+    data["featured_review"] = all_reviews_prepared[0] if all_reviews_prepared else None
+    data["grid_reviews"] = all_reviews_prepared[1:5] if len(all_reviews_prepared) > 1 else []
+
+    # Featured highlight (first quotation)
+    all_quotations = activities["quotations"][:3]
+    data["featured_highlight"] = (
+        prepare_activity_with_images(all_quotations[0], base_url, "followed")
+        if all_quotations else None
+    )
 
     # Followed activities grouped by user with embedded images
     data["followed_activities"] = {
@@ -447,7 +471,7 @@ def send_daily_newsletter():
             # Format date string
             date_str = start_date.strftime("%B %d, %Y")
 
-            send_newsletter_to_user(user, activities, date_str)
+            send_newsletter_to_user(user, activities, date_str, start_date)
             sent_count += 1
 
         except Exception as e:  # pylint: disable=broad-except

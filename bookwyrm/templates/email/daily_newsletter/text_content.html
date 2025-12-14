@@ -1,101 +1,54 @@
-{% extends 'email/text_layout.html' %}
 {% load i18n %}
-{% block content %}
 
-{% blocktrans trimmed %}Here's what happened in your reading community on {{ date_str }}:{% endblocktrans %}
+{{ site_name }} - {% trans "Daily Book Updates" %}
+{{ date_str }}
 
-{% if own_activities.reviews or own_activities.comments or own_activities.quotations or own_activities.shelf_changes %}
-=== {% trans "Your Activity" %} ===
+{% trans "Good morning," %} {{ user }}!
 
-{% if own_activities.reviews %}
-{% trans "Reviews:" %}
-{% for item in own_activities.reviews %}
-- {{ item.activity.book.title }}{% if item.activity.rating %} ({{ item.activity.rating }} {% trans "stars" %}){% endif %}
-{% if item.activity.content %}  "{{ item.activity.content|striptags|truncatechars:150 }}"{% endif %}
-  {% trans "Read Review:" %} {{ base_url }}{{ item.activity.local_path }}
+{% blocktrans trimmed %}Here's what happened in your reading community:{% endblocktrans %}
+
+{% if featured_review or grid_reviews %}
+=== {% trans "Reviews" %} ===
+
+{% if featured_review %}
+{% trans "Featured:" %}
+{{ featured_review.activity.user.display_name }} {% trans "reviewed" %}:
+{{ featured_review.activity.book.title }}{% if featured_review.activity.rating %} ({{ featured_review.activity.rating }}/5 {% trans "stars" %}){% endif %}
+{% if featured_review.activity.content %}"{{ featured_review.activity.content|striptags|truncatechars:150 }}"{% endif %}
+{% trans "Read Review:" %} {{ base_url }}{{ featured_review.activity.local_path }}
+
+{% endif %}
+{% if grid_reviews %}
+{% for review in grid_reviews %}
+{{ review.activity.user.display_name }} {% trans "reviewed" %}:
+- {{ review.activity.book.title }}{% if review.activity.rating %} ({{ review.activity.rating }}/5){% endif %}
+  {{ base_url }}{{ review.activity.local_path }}
 {% endfor %}
 {% endif %}
-
-{% if own_activities.comments %}
-{% trans "Comments:" %}
-{% for item in own_activities.comments %}
-- {% trans "Comment on" %} "{{ item.activity.book.title }}"
-{% if item.activity.content %}  "{{ item.activity.content|striptags|truncatechars:150 }}"{% endif %}
-  {% trans "View Comment:" %} {{ base_url }}{{ item.activity.local_path }}
-{% endfor %}
-{% endif %}
-
-{% if own_activities.quotations %}
-{% trans "Highlights:" %}
-{% for item in own_activities.quotations %}
-- {% trans "From" %} "{{ item.activity.book.title }}"
-{% if item.activity.quote %}  "{{ item.activity.quote|striptags|truncatechars:200 }}"{% endif %}
-  {% trans "See Quote:" %} {{ base_url }}{{ item.activity.local_path }}
-{% endfor %}
-{% endif %}
-
-{% if own_activities.shelf_changes %}
-{% trans "Shelf Updates:" %}
-{% for item in own_activities.shelf_changes %}
-- {% blocktrans trimmed with title=item.activity.book.title shelf=item.activity.shelf.name %}Added "{{ title }}" to {{ shelf }}{% endblocktrans %}
-  {% trans "View Book:" %} {{ base_url }}{{ item.activity.book.local_path }}
-{% endfor %}
-{% endif %}
-{% endif %}
-
-{% if followed_activities.reviews or followed_activities.comments or followed_activities.quotations or followed_activities.shelf_changes %}
-=== {% trans "From People You Follow" %} ===
-
-{% if followed_activities.reviews %}
-{% trans "Reviews:" %}
-{% for group in followed_activities.reviews %}
-
-{{ group.user.display_name }} {% trans "reviewed:" %}
-{% for item in group.items %}
-  - {{ item.activity.book.title }}{% if item.activity.rating %} ({{ item.activity.rating }} {% trans "stars" %}){% endif %}
-{% if item.activity.content %}    "{{ item.activity.content|striptags|truncatechars:120 }}"{% endif %}
-    {% trans "Read Review:" %} {{ base_url }}{{ item.activity.local_path }}
-{% endfor %}
-{% endfor %}
 {% endif %}
 
 {% if followed_activities.comments %}
-{% trans "Comments:" %}
+=== {% trans "Comments" %} ===
+
 {% for group in followed_activities.comments %}
-
-{{ group.user.display_name }} {% trans "commented on:" %}
+{{ group.user.display_name }} {% trans "commented:" %}
 {% for item in group.items %}
-  - {{ item.activity.book.title }}
-{% if item.activity.content %}    "{{ item.activity.content|striptags|truncatechars:120 }}"{% endif %}
-    {% trans "View Comment:" %} {{ base_url }}{{ item.activity.local_path }}
+- {{ item.activity.book.title }}
+{% if item.activity.content %}  "{{ item.activity.content|striptags|truncatechars:120 }}"{% endif %}
+  {{ base_url }}{{ item.activity.local_path }}
 {% endfor %}
+
 {% endfor %}
 {% endif %}
 
-{% if followed_activities.quotations %}
-{% trans "Highlights:" %}
-{% for group in followed_activities.quotations %}
+{% if featured_highlight %}
+=== {% trans "Highlight" %} ===
 
-{{ group.user.display_name }} {% trans "highlighted:" %}
-{% for item in group.items %}
-  - {{ item.activity.book.title }}
-{% if item.activity.quote %}    "{{ item.activity.quote|striptags|truncatechars:200 }}"{% endif %}
-    {% trans "See Quote:" %} {{ base_url }}{{ item.activity.local_path }}
-{% endfor %}
-{% endfor %}
-{% endif %}
+{% trans "From" %} "{{ featured_highlight.activity.book.title }}":
+{% if featured_highlight.activity.quote %}"{{ featured_highlight.activity.quote|striptags|truncatechars:250 }}"{% endif %}
+- {% trans "Highlighted by" %} {{ featured_highlight.activity.user.display_name }}
+{{ base_url }}{{ featured_highlight.activity.local_path }}
 
-{% if followed_activities.shelf_changes %}
-{% trans "Shelf Updates:" %}
-{% for group in followed_activities.shelf_changes %}
-
-{{ group.user.display_name }} {% trans "shelved:" %}
-{% for item in group.items %}
-  - {{ item.activity.book.title }} -> {{ item.activity.shelf.name }}
-    {% trans "View Book:" %} {{ base_url }}{{ item.activity.book.local_path }}
-{% endfor %}
-{% endfor %}
-{% endif %}
 {% endif %}
 
 {% if currently_reading %}
@@ -103,10 +56,15 @@
 
 {% for item in currently_reading %}
 - {{ item.readthrough.book.title }}{% if item.readthrough.progress %} ({{ item.readthrough.progress }}% {% trans "complete" %}){% endif %}
-  {% trans "Update Progress:" %} {{ base_url }}{{ item.readthrough.book.local_path }}
+  {{ base_url }}{{ item.readthrough.book.local_path }}
 {% endfor %}
+
 {% endif %}
 
-{% trans "Visit your feed for more:" %} {{ base_url }}
+---
 
-{% endblock %}
+{% trans "Visit your feed:" %} {{ feed_url }}
+{% trans "Email preferences:" %} {{ email_preferences_url }}
+
+{% blocktrans %}BookWyrm hosted on {{ site_name }}{% endblocktrans %}
+{{ domain }}
