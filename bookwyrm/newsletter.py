@@ -325,17 +325,24 @@ def get_currently_reading(user):
     )
 
 
-def send_newsletter_to_user(user, activities, date_str, start_date):
-    """Send newsletter email to a single user"""
+def send_newsletter_to_user(user, activities, date_str, yesterday_date):
+    """Send newsletter email to a single user.
+
+    Args:
+        user: The user to send the newsletter to
+        activities: Dict of activities to include
+        date_str: Formatted date string for display
+        yesterday_date: date object for yesterday in user's timezone
+    """
     data = email_data()
     data["user"] = user.display_name
     data["date_str"] = date_str
     base_url = data.get("base_url", "")
 
-    # Date components for editorial header
-    data["date_day"] = start_date.day
-    data["date_month"] = start_date.strftime("%B")
-    data["date_year"] = start_date.year
+    # Date components for editorial header (user's local yesterday)
+    data["date_day"] = yesterday_date.day
+    data["date_month"] = yesterday_date.strftime("%B")
+    data["date_year"] = yesterday_date.year
 
     # URLs for footer
     data["feed_url"] = base_url
@@ -468,10 +475,17 @@ def send_daily_newsletter():
                 skip_count += 1
                 continue
 
-            # Format date string
-            date_str = start_date.strftime("%B %d, %Y")
+            # Get yesterday's date in user's timezone (for display, not query)
+            try:
+                user_tz = zoneinfo.ZoneInfo(user.preferred_timezone)
+            except (ValueError, KeyError):
+                user_tz = zoneinfo.ZoneInfo("UTC")
+            yesterday_local = (datetime.now(user_tz).date() - timedelta(days=1))
 
-            send_newsletter_to_user(user, activities, date_str, start_date)
+            # Format date string using user's local yesterday
+            date_str = yesterday_local.strftime("%B %d, %Y")
+
+            send_newsletter_to_user(user, activities, date_str, yesterday_local)
             sent_count += 1
 
         except Exception as e:  # pylint: disable=broad-except
