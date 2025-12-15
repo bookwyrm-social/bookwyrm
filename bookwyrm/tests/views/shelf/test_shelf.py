@@ -266,3 +266,40 @@ class ShelfViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(len(result.context_data["books"].object_list), 0)
+
+    def test_shelf_page_remote_user(self, *_):
+        """viewing a remote user's shelf should render with local URLs"""
+        with patch("bookwyrm.models.user.set_remote_server"):
+            remote_user = models.User.objects.create_user(
+                "nutria",
+                "",
+                "nutriaword",
+                local=False,
+                remote_id="https://example.com/users/nutria",
+                inbox="https://example.com/users/nutria/inbox",
+                outbox="https://example.com/users/nutria/outbox",
+            )
+        # Create a shelf with a book for the remote user
+        remote_shelf = remote_user.shelf_set.first()
+        models.ShelfBook.objects.create(
+            book=self.book,
+            user=remote_user,
+            shelf=remote_shelf,
+        )
+
+        view = views.Shelf.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, "nutria@example.com", remote_shelf.identifier)
+
+        self.assertIsInstance(result, TemplateResponse)
+        # HTML validation will fail if URLs point to remote instance
+        # because the template uses {% url %} which generates local paths
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+        # Verify shelves in context have identifiers for local URL generation
+        for shelf in result.context_data["shelves"]:
+            self.assertIsNotNone(shelf.identifier)

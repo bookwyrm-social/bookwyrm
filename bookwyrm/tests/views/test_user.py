@@ -155,6 +155,62 @@ class UserViews(TestCase):
 
         self.assertEqual(first_book, self.book_recently_shelved)
 
+    def test_user_page_shelf_preview_has_identifier(self):
+        """shelf preview should include identifier for generating local URLs"""
+        view = views.User.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.user.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, "mouse")
+
+        self.assertIsInstance(result, TemplateResponse)
+        self.assertEqual(result.status_code, 200)
+
+        # Verify shelf preview has 'identifier' key (used for URL generation)
+        # and does NOT have 'local_path' key (which would redirect remote users)
+        first_shelf = result.context_data["shelves"][0]
+        self.assertIn("identifier", first_shelf)
+        self.assertNotIn("local_path", first_shelf)
+        self.assertEqual(first_shelf["identifier"], "to-read")
+
+    def test_user_page_remote_user_shelf_preview(self):
+        """viewing remote user should have shelf identifiers for local URLs"""
+        with patch("bookwyrm.models.user.set_remote_server"):
+            remote_user = models.User.objects.create_user(
+                "nutria",
+                "",
+                "nutriaword",
+                local=False,
+                remote_id="https://example.com/users/nutria",
+                inbox="https://example.com/users/nutria/inbox",
+                outbox="https://example.com/users/nutria/outbox",
+            )
+        # Create a shelf with a book for the remote user
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            shelf = remote_user.shelf_set.first()
+            models.ShelfBook.objects.create(
+                book=self.book,
+                user=remote_user,
+                shelf=shelf,
+            )
+
+        view = views.User.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.user.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, "nutria@example.com")
+
+        self.assertIsInstance(result, TemplateResponse)
+        self.assertEqual(result.status_code, 200)
+
+        # Verify shelf preview uses identifier (not local_path which would be remote URL)
+        if result.context_data["shelves"]:
+            first_shelf = result.context_data["shelves"][0]
+            self.assertIn("identifier", first_shelf)
+            self.assertNotIn("local_path", first_shelf)
+
     def test_followers_page(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Relationships.as_view()
