@@ -56,7 +56,7 @@ class User(View):
             shelf_preview.append(
                 {
                     "name": user_shelf.name,
-                    "local_path": user_shelf.local_path,
+                    "identifier": user_shelf.identifier,
                     "books": user_shelf.books.order_by(
                         "-shelfbook__shelved_date"
                     ).all()[:3],
