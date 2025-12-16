@@ -279,8 +279,13 @@ class ShelfViews(TestCase):
                 inbox="https://example.com/users/nutria/inbox",
                 outbox="https://example.com/users/nutria/outbox",
             )
-        # Create a shelf with a book for the remote user
-        remote_shelf = remote_user.shelf_set.first()
+        # Create a shelf for the remote user (remote users don't get default shelves)
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            remote_shelf = models.Shelf.objects.create(
+                name="To Read",
+                identifier="to-read",
+                user=remote_user,
+            )
         models.ShelfBook.objects.create(
             book=self.book,
             user=remote_user,
