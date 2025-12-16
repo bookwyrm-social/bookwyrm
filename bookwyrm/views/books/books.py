@@ -106,6 +106,7 @@ class Book(View):
 
         if request.user.is_authenticated:
             data["list_options"] = request.user.list_set.exclude(id__in=data["lists"])
+            data["list_form"] = forms.ListForm()
             data["file_link_form"] = forms.FileLinkForm()
             readthroughs = models.ReadThrough.objects.filter(
                 user=request.user,

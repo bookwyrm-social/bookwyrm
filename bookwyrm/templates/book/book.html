@@ -428,13 +428,15 @@
                                 {% for list in list_options %}
                                 <option value="{{ list.id }}">{{ list.name }}</option>
                                 {% endfor %}
+                                <option value="NEW_LIST_CREATION">+ {% trans "Create new list..." %}</option>
                             </select>
                         </div>
                         <div class="control">
-                            <button type="submit" class="button is-link">{% trans "Add" %}</button>
+                            <button type="button" class="button is-link" name="button-book-list">{% trans "Add" %}</button>
                         </div>
                     </div>
                 </form>
+                {% include "lists/create_list_modal.html" with id="modal-create-list-with-book" %}
                 {% endif %}
             </section>
             {% endif %}
