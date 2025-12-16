@@ -49,7 +49,7 @@
                 {% for shelf_tab in shelves %}
                 <li class="{% if shelf_tab.identifier == shelf.identifier %}is-active{% endif %}">
                     <a
-                        href="{% url 'shelf' user|username shelf_tab.identifier %}"
+                        href="/user/{{ user|username }}/books/{{ shelf_tab.identifier }}"
                         {% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}
                     >
                         {% include "snippets/translated_shelf_name.html" with shelf=shelf_tab %}
