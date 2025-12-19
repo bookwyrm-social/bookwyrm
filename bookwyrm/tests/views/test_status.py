@@ -460,7 +460,7 @@ class StatusViews(TestCase):
         )
         img_path = upload.original_file.name
         text = f"!image({img_path})"
-        expected = f'<img srcset="/images/uploads/user_{user.id}/{upload.id}/240.jpg 240w /images/uploads/user_{user.id}/{upload.id}/600.jpg 600w" sizes="(width <= 600px) 100vw" src="/images/uploads/user_{user.id}/{upload.id}/600.jpg" />'
+        expected = f'<img srcset="/images/uploads/user_{user.id}/{upload.id}/240.jpg 240w, /images/uploads/user_{user.id}/{upload.id}/600.jpg 600w" sizes="(width <= 600px) 100vw, 60vw" src="/images/uploads/user_{user.id}/{upload.id}/600.jpg" />'
         self.assertEqual(
             views.status.format_images(text, self.local_user), expected
         )

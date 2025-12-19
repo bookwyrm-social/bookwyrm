@@ -16,11 +16,18 @@ from bookwyrm import models
 
 logger = logging.getLogger(__name__)
 
+PREFERRED_EXTENSIONS = {img_type: ext for ext, img_type in Image.EXTENSION}
+PREFERRED_EXTENSIONS.update({
+    "JPEG": ".jpg",
+    "TIFF": ".tif",
+})
+
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class CreateUserUpload(View):
     def post(self, request):
         file = request.FILES['file']
+        image = Image.open(file)
         upload = models.UserUpload(
                     user=request.user,
                     original_name=file.name,
@@ -29,7 +36,6 @@ class CreateUserUpload(View):
                 )
         upload.save()
 
-        image = Image.open(file)
         width, height = image.size
         env = Env()
         sizes = env.list("UPLOAD_IMAGE_SIZES", [400, 1200], subcast=int)
@@ -55,10 +61,12 @@ class CreateUserUpload(View):
         img_byte_arr = BytesIO()
         image.save(img_byte_arr, image_format)
 
+        ext = PREFERRED_EXTENSIONS[image_format]
+
         return user_upload.versions.create(
                     max_dimension=max_dimension,
                     user_upload=user_upload,
-                    file=File(img_byte_arr, name = "resized")
+                    file=File(img_byte_arr, name = "resized{0}".format(ext))
                 )
 
 def target_size(width, height, max_dimension):
