@@ -329,7 +329,7 @@ class Openlibrary(TestCase):
             result = self.connector.create_edition_from_data(work, self.edition_md_data)
         self.assertEqual(
             result.description,
-            '<blockquote>\n<p>"She didn\'t choose her garden" opens this chapbook '
+            '<blockquote>\n<p>&quot;She didn\'t choose her garden&quot; opens this chapbook '
             "exploring Black womanhood, mental and physical health, spirituality, and "
             "ancestral roots. It is an investigation of how to locate a self amidst "
             "complex racial history and how to forge an authentic way forward. There's "
