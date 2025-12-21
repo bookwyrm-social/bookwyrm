@@ -605,7 +605,7 @@ class HtmlField(ActivitypubFieldMixin, models.TextField):
         return clean(value)
 
     def field_to_activity(self, value):
-        return mistune.html(value) if value else value
+        return mistune.html(value).rstrip() if value else value
 
 
 class ArrayField(ActivitypubFieldMixin, DjangoArrayField):

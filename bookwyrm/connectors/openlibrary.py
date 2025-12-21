@@ -249,9 +249,9 @@ def ignore_edition(edition_data: JsonDict) -> bool:
 def get_description(description_blob: Union[JsonDict, str]) -> str:
     """descriptions can be a string or a dict"""
     if isinstance(description_blob, dict):
-        description = mistune.html(description_blob.get("value", ""))
+        description = mistune.html(description_blob.get("value", "")).rstrip()
     else:
-        description = mistune.html(description_blob)
+        description = mistune.html(description_blob).rstrip()
 
     if (
         description.startswith("<p>")
