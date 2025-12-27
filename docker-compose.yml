@@ -67,7 +67,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-        restart: true
       celery_worker:
         condition: service_started
       redis_activity:
