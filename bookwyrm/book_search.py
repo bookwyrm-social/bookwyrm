@@ -137,10 +137,34 @@ def search_title_author(
 ) -> QuerySet[models.Edition]:
     """searches for title and author"""
     books = books or models.Edition.objects
-    query = SearchQuery(query, config="simple") | SearchQuery(query, config="english")
+    # We split up search terms so each term is checked individually against search vectors
+    # For some reason search_type="plain" doesn't do it but we do it manually
+    search_query = None
+    for search_term in query.split(" "):
+        if search_query is None:
+            search_query = SearchQuery(search_term, config="simple") | SearchQuery(
+                search_term, config="english"
+            )
+        else:
+            search_query |= SearchQuery(search_term, config="simple") | SearchQuery(
+                search_term, config="english"
+            )
     results = (
-        books.filter(*filters, search_vector=query)
-        .annotate(rank=SearchRank(F("search_vector"), query, normalization=32))
+        books.filter(*filters, search_vector=search_query)
+        .annotate(
+            rank=SearchRank(
+                F("search_vector"),
+                search_query,
+                weights=[
+                    0.1,  # D, series name
+                    1.0,  # C, book author names and aliases
+                    0.4,  # B, book subtitle
+                    1.0,  # A, book title
+                ],  # give author and title same weight as we are searching both
+                normalization=32,
+                cover_density=True,  # if terms are close together, give better rank
+            )
+        )
         .filter(rank__gt=min_confidence)
         .order_by("-rank")
     )

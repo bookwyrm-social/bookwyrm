@@ -22,8 +22,10 @@ class BookSearch(TestCase):
         cls.second_author = models.Author.objects.create(
             name="Author Two", aliases=["The Second"]
         )
+        cls.third_author = models.Author.objects.create(name="Theo Riofrancos")
 
         cls.work = models.Work.objects.create(title="Example Work")
+        cls.second_work = models.Work.objects.create(title="Extraction")
 
         cls.first_edition = models.Edition.objects.create(
             title="Example Edition",
@@ -52,6 +54,16 @@ class BookSearch(TestCase):
         cls.third_edition.authors.add(cls.first_author)
         cls.third_edition.authors.add(cls.second_author)
 
+        cls.fourth_edition = models.Edition.objects.create(
+            title="Extraction",
+            parent_work=cls.second_work,
+            isbn_13="9781-324-03676-0",
+            physical_format="Paperback",
+            published_date=datetime.datetime(2019, 4, 9, 0, 0, tzinfo=timezone.utc),
+        )
+        cls.fourth_edition.authors.add(cls.third_author)
+        cls.second_work.authors.add(cls.third_author)
+
     def test_search(self):
         """search for a book in the db"""
         # title
@@ -78,6 +90,17 @@ class BookSearch(TestCase):
         results = book_search.search("hello")
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0], self.second_edition)
+
+    def test_search_author_title(self):
+        for search_term in [
+            "extraction thea riofrancos",
+            "extraction riofrancos",
+            "extraction",
+            "thea riofrancos extraction",
+        ]:
+            results = book_search.search_title_author(search_term, min_confidence=0)
+            self.assertEqual(len(results), 1)
+            self.assertEqual(results[0], self.fourth_edition)
 
     def test_isbn_search(self):
         """test isbn search"""
@@ -417,6 +440,13 @@ class SearchVectorUpdates(TestCase):
         self.assertEqual(self.edition, self._search_first("Identifier"))
         self.assertEqual(self.edition, self._search_first("Another"))
         self.assertEqual(self.edition, self._search_first("Work"))
+        self.assertEqual(self.edition, self._search_first("First Edition of Work"))
+        self.assertEqual(
+            self.edition, self._search_first("First Edition of Work Identifier")
+        )
+        self.assertEqual(
+            self.edition, self._search_first("First Edition of Work Identifier Another")
+        )
 
     def _search_first(self, query):
         """wrapper around search_title_author"""
