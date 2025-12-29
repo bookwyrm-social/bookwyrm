@@ -15,8 +15,8 @@ services:
     volumes:
       - ./nginx/${NGINX_SETUP:-https}.conf:/etc/nginx/templates/default.conf.template
       - ./nginx/server_config:/etc/nginx/templates/server_config.template
+      - ./nginx/server_name:/etc/nginx/templates/server_name.template
       - ./nginx/locations:/etc/nginx/conf.d/locations
-      - ./nginx/server_name:/etc/nginx/conf.d/server_name
       - ./nginx/99-autoreload.sh:/docker-entrypoint.d/99-autoreload.sh
       - ./certbot/conf:/etc/nginx/ssl
       - ./certbot/data:/var/www/certbot
