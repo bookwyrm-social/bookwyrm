@@ -6,7 +6,7 @@ from typing import Any, Dict, Optional, Iterable
 from typing_extensions import Self
 
 from django.contrib.postgres.search import SearchVectorField
-from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.indexes import GinIndex, BloomIndex
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
@@ -382,7 +382,26 @@ class Book(BookDataModel):
     class Meta:
         """set up indexes and triggers"""
 
-        indexes = (GinIndex(fields=["search_vector"]),)
+        indexes = [
+            GinIndex(fields=["search_vector"]),
+            # Add bloom index for all deduplication_fields
+            BloomIndex(
+                fields=[
+                    "remote_id",
+                    "openlibrary_key",
+                    "finna_key",
+                    "inventaire_id",
+                    "librarything_key",
+                    "goodreads_key",
+                    "bnf_id",
+                    "viaf",
+                    "wikidata",
+                    "asin",
+                    "aasin",
+                    "isfdb",
+                ]
+            ),
+        ]
         triggers = [
             pgtrigger.Trigger(
                 name="update_search_vector_on_book_edit",
@@ -606,6 +625,17 @@ class Edition(Book):
     name_field = "title"
     serialize_reverse_fields = [("file_links", "fileLinks", "-created_date")]
     deserialize_reverse_fields = [("file_links", "fileLinks")]
+
+    class Meta:
+        indexes = [
+            BloomIndex(
+                fields=[
+                    "isbn_10",
+                    "isbn_13",
+                    "oclc_number",
+                ]
+            )
+        ]
 
     @property
     def hyphenated_isbn13(self):
