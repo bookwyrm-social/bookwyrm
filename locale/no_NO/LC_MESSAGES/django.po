@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-16 19:21+0000\n"
-"PO-Revision-Date: 2025-11-16 19:34\n"
+"PO-Revision-Date: 2025-12-29 17:54\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Norwegian\n"
 "Language: no\n"
@@ -83,7 +83,7 @@ msgstr "Denne e-postadressen kan ikke registreres."
 
 #: bookwyrm/forms/landing.py:114
 msgid "Password cannot be the same as your current password"
-msgstr ""
+msgstr "Passordet ditt kan ikke være det samme som ditt nåværende passord"
 
 #: bookwyrm/forms/landing.py:145 bookwyrm/forms/landing.py:153
 msgid "Incorrect code"
@@ -239,7 +239,7 @@ msgstr "Blokkér"
 
 #: bookwyrm/models/bookwyrm_import_job.py:398
 msgid "Unknown error importing book"
-msgstr ""
+msgstr "Ukjent feil under importering av bok"
 
 #: bookwyrm/models/bookwyrm_import_job.py:496
 msgid "unauthorized"
@@ -247,7 +247,7 @@ msgstr "uautorisert"
 
 #: bookwyrm/models/bookwyrm_import_job.py:502
 msgid "Unknown error importing book status"
-msgstr ""
+msgstr "Ukjent feil under importering av bokstatus"
 
 #: bookwyrm/models/bookwyrm_import_job.py:696
 #: bookwyrm/models/bookwyrm_import_job.py:722
@@ -260,7 +260,7 @@ msgstr "ugyldig_forhold"
 
 #: bookwyrm/models/bookwyrm_import_job.py:740
 msgid "Unkown error importing relationship"
-msgstr ""
+msgstr "Ukjent feil ved importering av forhold"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
@@ -331,11 +331,11 @@ msgstr "Privat"
 
 #: bookwyrm/models/housekeeping.py:116
 msgid "Missing"
-msgstr ""
+msgstr "Mangler"
 
 #: bookwyrm/models/housekeeping.py:117
 msgid "Wrong Path"
-msgstr ""
+msgstr "Feil sti"
 
 #: bookwyrm/models/import_job.py:50 bookwyrm/models/job.py:19
 #: bookwyrm/templates/import/import.html:184
@@ -444,7 +444,7 @@ msgstr "Slettet element"
 
 #: bookwyrm/models/session.py:42
 msgid "Unknown"
-msgstr ""
+msgstr "Ukjent"
 
 #: bookwyrm/models/status.py:192
 #, python-format
@@ -1146,7 +1146,7 @@ msgstr "Klikk for å forstørre"
 
 #: bookwyrm/templates/book/book.html:190
 msgid "View on Finna"
-msgstr ""
+msgstr "Se på Finna"
 
 #: bookwyrm/templates/book/book.html:222
 #, python-format
@@ -3537,7 +3537,7 @@ msgstr "Årsak"
 
 #: bookwyrm/templates/landing/force_password_reset.html:30
 msgid "You must set a new password before logging in."
-msgstr ""
+msgstr "Du må angi et nytt passord før du logger inn."
 
 #: bookwyrm/templates/landing/force_password_reset.html:50
 #: bookwyrm/templates/preferences/change_password.html:22
@@ -4537,7 +4537,7 @@ msgstr "Å slette kontoen din kan ikke angres. Brukernavnet vil ikke være tilgj
 
 #: bookwyrm/templates/preferences/delete_user.html:36
 msgid "I understand that my account cannot be recovered:"
-msgstr ""
+msgstr "Jeg forstår at kontoen min ikke kan gjenopprettes:"
 
 #: bookwyrm/templates/preferences/disable-2fa.html:4
 #: bookwyrm/templates/preferences/disable-2fa.html:7
@@ -4719,8 +4719,8 @@ msgstr "Brukereksportfiler vil oppføres med «fullført» når de er klare. Det
 #, python-format
 msgid "Export files will be deleted after %(expiry_hours)s hour."
 msgid_plural "Export files will be deleted after %(expiry_hours)s hours."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Eksportfiler vil bli slettet etter %(expiry_hours)s time."
+msgstr[1] "Eksportfiler vil bli slettet etter %(expiry_hours)s timer."
 
 #: bookwyrm/templates/preferences/export-user.html:110
 #: bookwyrm/templates/preferences/security.html:126
@@ -4761,7 +4761,7 @@ msgstr "Konto"
 
 #: bookwyrm/templates/preferences/layout.html:24
 msgid "Security Settings"
-msgstr ""
+msgstr "Sikkerhetsinnstillinger"
 
 #: bookwyrm/templates/preferences/layout.html:32
 msgid "Move  Account"
@@ -4803,7 +4803,7 @@ msgstr "Angi brukernavn for konto du ønsker å flytte til f.eks. <em>user@examp
 #: bookwyrm/templates/preferences/security.html:4
 #: bookwyrm/templates/preferences/security.html:7
 msgid "Account Security"
-msgstr ""
+msgstr "Kontosikkerhet"
 
 #: bookwyrm/templates/preferences/security.html:13
 msgid "Two Factor Authentication"
@@ -4868,55 +4868,55 @@ msgstr "Sett opp 2FA"
 
 #: bookwyrm/templates/preferences/security.html:111
 msgid "Sessions"
-msgstr ""
+msgstr "Økter"
 
 #: bookwyrm/templates/preferences/security.html:114
 msgid "Some legacy sessions may not be displayed."
-msgstr ""
+msgstr "Det kan være at enkelte eldre økter ikke vises."
 
 #: bookwyrm/templates/preferences/security.html:119
 msgid "You are logged in to the following sessions:"
-msgstr ""
+msgstr "Du er logget inn på følgende økter:"
 
 #: bookwyrm/templates/preferences/security.html:126
 msgid "Date first logged in"
-msgstr ""
+msgstr "Dato for første innlogging"
 
 #: bookwyrm/templates/preferences/security.html:127
 msgid "IP address"
-msgstr ""
+msgstr "IP adresse"
 
 #: bookwyrm/templates/preferences/security.html:127
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
 #: bookwyrm/templates/preferences/security.html:128
 msgid "Operating System"
-msgstr ""
+msgstr "Operativsystem"
 
 #: bookwyrm/templates/preferences/security.html:128
 msgid "OS"
-msgstr ""
+msgstr "OS"
 
 #: bookwyrm/templates/preferences/security.html:129
 msgid "Web Browser"
-msgstr ""
+msgstr "Nettleser"
 
 #: bookwyrm/templates/preferences/security.html:129
 msgid "Browser"
-msgstr ""
+msgstr "Nettleser"
 
 #: bookwyrm/templates/preferences/security.html:143
 msgid "You"
-msgstr ""
+msgstr "Deg"
 
 #: bookwyrm/templates/preferences/security.html:147
 msgid "Log Out"
-msgstr ""
+msgstr "Logg ut"
 
 #: bookwyrm/templates/preferences/security.html:161
 msgid "Currently your logged-in sessions are unable to be displayed."
-msgstr ""
+msgstr "For øyeblikket er din innloggede økter ikke i stand til å vises."
 
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
@@ -5845,15 +5845,15 @@ msgstr "Ingen instanser funnet"
 #: bookwyrm/templates/settings/files.html:7
 #: bookwyrm/templates/settings/files.html:11
 msgid "Files maintenance"
-msgstr ""
+msgstr "Vedlikehold av filer"
 
 #: bookwyrm/templates/settings/files.html:17
 msgid "Schedule file deletion"
-msgstr ""
+msgstr "Planlegge fil sletting"
 
 #: bookwyrm/templates/settings/files.html:21
 msgid "This job deletes uploaded user export and import files that have reached the expiry age."
-msgstr ""
+msgstr "Denne jobben sletter opplastede brukereksport og importfiler som har blitt utløpt."
 
 #: bookwyrm/templates/settings/files.html:102
 msgid "Export file expiration"

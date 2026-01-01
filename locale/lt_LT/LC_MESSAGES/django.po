@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-16 19:21+0000\n"
-"PO-Revision-Date: 2025-11-23 21:11\n"
+"PO-Revision-Date: 2025-12-05 22:37\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -4715,7 +4715,7 @@ msgstr "Naujojoje savo „BookWyrm“ paskyroje galėsite pasirinkti norimus imp
 
 #: bookwyrm/templates/preferences/export-user.html:45
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set the account you are moving to as an <strong>alias</strong> of this one, or <strong>move</strong> this account to the new account, before you import your user data."
-msgstr "Jeigu norite migruoti įrašus (komentarus, apžvalgas ar citatas), turite arba prudėti naująją paskyrą kaip šios <strong>pseudonimą</strong>, arba <strong>perkelti</strong> šią paskyrą į naująją prieš importuodami naudotojo duomenis."
+msgstr "Jeigu norite migruoti įrašus (komentarus, apžvalgas ar citatas), turite arba pridėti naująją paskyrą kaip šios <strong>pseudonimą</strong>, arba <strong>perkelti</strong> šią paskyrą į naująją prieš importuodami naudotojo duomenis."
 
 #: bookwyrm/templates/preferences/export-user.html:50
 msgid "New user exports are currently disabled."
@@ -4821,27 +4821,25 @@ msgstr "Migruoti paskyrą į kitą serverį"
 
 #: bookwyrm/templates/preferences/move_user.html:16
 msgid "Moving your account will notify all your followers and direct them to follow the new account."
-msgstr ""
+msgstr "Perkeliant paskyrą, apie tai bus pranešta jūsų sekėjams; jie bus nukreipti sekti naujosios paskyros."
 
 #: bookwyrm/templates/preferences/move_user.html:19
 #, python-format
-msgid "\n"
-"                <strong>%(user)s</strong> will be marked as moved and will not be discoverable or usable unless you undo the move.\n"
-"                "
-msgstr ""
+msgid "<strong>%(user)s</strong> will be marked as moved and will not be discoverable or usable unless you undo the move."
+msgstr "Paskyra <strong>%(user)s</strong> bus pažymėta kaip perkelta; ji nebebus randama ir ja nebegalėsite pasinaudoti, nebent atšauktumėte perkėlimą."
 
 #: bookwyrm/templates/preferences/move_user.html:25
 msgid "Remember to add this user as an alias of the target account before you try to move."
-msgstr ""
+msgstr "Nepamirškite prieš pradėdami perkėlimą nurodyti šios paskyros kaip naujosios paskyros pseudonimo."
 
 #: bookwyrm/templates/preferences/move_user.html:30
 msgid "Enter the username for the account you want to move to e.g. <em>user@example.com </em>:"
-msgstr ""
+msgstr "Įveskite perkeliamos paskyros naudotojo vardą, pvz., <em>naudotojas@example.com</em>:"
 
 #: bookwyrm/templates/preferences/security.html:4
 #: bookwyrm/templates/preferences/security.html:7
 msgid "Account Security"
-msgstr ""
+msgstr "Paskyros sauga"
 
 #: bookwyrm/templates/preferences/security.html:13
 msgid "Two Factor Authentication"
@@ -4906,55 +4904,55 @@ msgstr "Sutvarkyti 2FA"
 
 #: bookwyrm/templates/preferences/security.html:111
 msgid "Sessions"
-msgstr ""
+msgstr "Sesijos"
 
 #: bookwyrm/templates/preferences/security.html:114
 msgid "Some legacy sessions may not be displayed."
-msgstr ""
+msgstr "Kai kurios senos sesijos gali būti nerodomos."
 
 #: bookwyrm/templates/preferences/security.html:119
 msgid "You are logged in to the following sessions:"
-msgstr ""
+msgstr "Jūsų paskyra prijungta šiose sesijose:"
 
 #: bookwyrm/templates/preferences/security.html:126
 msgid "Date first logged in"
-msgstr ""
+msgstr "Pirmojo prisijungimo data"
 
 #: bookwyrm/templates/preferences/security.html:127
 msgid "IP address"
-msgstr ""
+msgstr "IP adresas"
 
 #: bookwyrm/templates/preferences/security.html:127
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
 #: bookwyrm/templates/preferences/security.html:128
 msgid "Operating System"
-msgstr ""
+msgstr "Operacinė sistema"
 
 #: bookwyrm/templates/preferences/security.html:128
 msgid "OS"
-msgstr ""
+msgstr "OS"
 
 #: bookwyrm/templates/preferences/security.html:129
 msgid "Web Browser"
-msgstr ""
+msgstr "Interneto naršyklė"
 
 #: bookwyrm/templates/preferences/security.html:129
 msgid "Browser"
-msgstr ""
+msgstr "Naršyklė"
 
 #: bookwyrm/templates/preferences/security.html:143
 msgid "You"
-msgstr ""
+msgstr "Jūs"
 
 #: bookwyrm/templates/preferences/security.html:147
 msgid "Log Out"
-msgstr ""
+msgstr "Atsijungti"
 
 #: bookwyrm/templates/preferences/security.html:161
 msgid "Currently your logged-in sessions are unable to be displayed."
-msgstr ""
+msgstr "Šiuo metu jūsų sesijų parodyti nepavyksta."
 
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
@@ -5383,24 +5381,24 @@ msgstr "Eilės"
 
 #: bookwyrm/templates/settings/celery.html:26
 msgid "Streams"
-msgstr ""
+msgstr "Srautai"
 
 #: bookwyrm/templates/settings/celery.html:32
 msgid "Broadcast"
-msgstr ""
+msgstr "Transliacija"
 
 #: bookwyrm/templates/settings/celery.html:38
 msgid "Inbox"
-msgstr ""
+msgstr "Gautieji"
 
 #: bookwyrm/templates/settings/celery.html:51
 msgid "Import triggered"
-msgstr ""
+msgstr "Importas suplanuotas"
 
 #: bookwyrm/templates/settings/celery.html:57
 #: bookwyrm/templates/settings/layout.html:104
 msgid "Connectors"
-msgstr ""
+msgstr "Integracijos"
 
 #: bookwyrm/templates/settings/celery.html:64
 #: bookwyrm/templates/settings/site.html:91
@@ -5409,7 +5407,7 @@ msgstr "Paveikslėliai"
 
 #: bookwyrm/templates/settings/celery.html:70
 msgid "Suggested Users"
-msgstr ""
+msgstr "Siūlomi nariai"
 
 #: bookwyrm/templates/settings/celery.html:83
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:43
@@ -5419,7 +5417,7 @@ msgstr "El. paštas"
 
 #: bookwyrm/templates/settings/celery.html:89
 msgid "Misc"
-msgstr ""
+msgstr "Kita"
 
 #: bookwyrm/templates/settings/celery.html:96
 msgid "Low priority"
@@ -5493,11 +5491,11 @@ msgstr "Klaidos"
 
 #: bookwyrm/templates/settings/connectors/available.html:15
 msgid "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof."
-msgstr ""
+msgstr "„Finna.fi“ yra ieškos tarnyba, po vienu stogu kaupianti medžiagą iš šimtų Suomijoje veikiančių organizacijų."
 
 #: bookwyrm/templates/settings/connectors/available.html:28
 msgid "Create new connector"
-msgstr ""
+msgstr "Kurti naują integarciją"
 
 #: bookwyrm/templates/settings/connectors/connector.html:35
 #: bookwyrm/templates/settings/connectors/update.html:33
@@ -5508,29 +5506,29 @@ msgstr "Išjungimo priežastis:"
 #: bookwyrm/templates/settings/connectors/connector.html:50
 #: bookwyrm/templates/settings/connectors/update.html:47
 msgid "Deactivate"
-msgstr ""
+msgstr "Išjungti"
 
 #: bookwyrm/templates/settings/connectors/connector.html:61
 #: bookwyrm/templates/settings/connectors/update.html:58
 msgid "Activate"
-msgstr ""
+msgstr "Įjungti"
 
 #: bookwyrm/templates/settings/connectors/connectors.html:4
 #: bookwyrm/templates/settings/connectors/connectors.html:6
 msgid "Connector Settings"
-msgstr ""
+msgstr "Integracijos nustatymai"
 
 #: bookwyrm/templates/settings/connectors/connectors.html:11
 msgid "Connectors are sources of data about books and authors."
-msgstr ""
+msgstr "Integracijos padeda gauti duomenis apie knygas ir autorius iš įvairių šaltinių."
 
 #: bookwyrm/templates/settings/connectors/connectors.html:12
 msgid "The priority determines the order in which search results appear. The highest priority is <code>1</code>. The default priority is <code>2</code>."
-msgstr ""
+msgstr "Prioritetas nusprendžia radinių rodymo tvarką. Aukščiausias prioritetas yra <code>1</code>, numatytasis – <code>2</code>."
 
 #: bookwyrm/templates/settings/connectors/connectors.html:14
 msgid "Connector settings only determine whether a connector will be used to deliver search results. To manage more interactions with other federated servers, including domain blocks, see"
-msgstr ""
+msgstr "Integracijos nustatymuose galima tik pasirinkti, ar konkreti integracija bus naudojama ieškos rezultatams teikti. Daugiau nustatymų, susijusių su komunikacija tarp federuojamų serverių, įskaitant blokuojamus domenus, rasite"
 
 #: bookwyrm/templates/settings/connectors/connectors.html:14
 #: bookwyrm/templates/settings/federation/edit_instance.html:12
@@ -5544,12 +5542,12 @@ msgstr "Susijungę serveriai"
 
 #: bookwyrm/templates/settings/connectors/update.html:66
 msgid "should be updated. Check recent release notes for more information."
-msgstr ""
+msgstr "derėtų atnaujinti. Išsamesnės informacijos ieškokite paskiausių laidų apžvalgose."
 
 #: bookwyrm/templates/settings/connectors/update.html:76
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:19
 msgid "Update"
-msgstr ""
+msgstr "Naujinti"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
@@ -5610,11 +5608,11 @@ msgstr "Būsenos publikuotos"
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:12
 msgid "Would you like to automatically check for new BookWyrm releases? (recommended)"
-msgstr ""
+msgstr "Ar norėtumėte automatiškai ieškoti išleistų „BookWyrm“ naujinimų? (rekomenduojama)"
 
 #: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:20
 msgid "Schedule checks"
-msgstr ""
+msgstr "Suplanuoti patikras"
 
 #: bookwyrm/templates/settings/dashboard/warnings/domain_review.html:9
 #, python-format
@@ -5895,15 +5893,15 @@ msgstr "Serverių nerasta"
 #: bookwyrm/templates/settings/files.html:7
 #: bookwyrm/templates/settings/files.html:11
 msgid "Files maintenance"
-msgstr ""
+msgstr "Failų priežiūra"
 
 #: bookwyrm/templates/settings/files.html:17
 msgid "Schedule file deletion"
-msgstr ""
+msgstr "Suplanuoti failų šalinimą"
 
 #: bookwyrm/templates/settings/files.html:21
 msgid "This job deletes uploaded user export and import files that have reached the expiry age."
-msgstr ""
+msgstr "Ši procedūra pašalina nebegaliojančius eksporto ir importo failus."
 
 #: bookwyrm/templates/settings/files.html:102
 msgid "Export file expiration"
@@ -5933,43 +5931,43 @@ msgstr "Užbaigta"
 
 #: bookwyrm/templates/settings/files.html:206
 msgid "Find book covers from connectors"
-msgstr ""
+msgstr "Ieškoti knygų viršelių per integracijas"
 
 #: bookwyrm/templates/settings/files.html:209
 msgid "These jobs find cover images where they are missing or have incorrect filepaths."
-msgstr ""
+msgstr "Šios procedūros ieško viršelių atvaizdų, kai jie nenurodyti arba nurodyti klaidingai."
 
 #: bookwyrm/templates/settings/files.html:212
 msgid "Find missing covers"
-msgstr ""
+msgstr "Ieškoti trūkstamų viršelių"
 
 #: bookwyrm/templates/settings/files.html:215
 msgid "Schedule a regular scan to find cover images for editions without them. This can be resource intensive so the recommended schedule is no less than every seven days."
-msgstr ""
+msgstr "Suplanuokite periodinę leidimų be viršelių nuotraukų paiešką. Ši procedūra gali būti reikli ištekliams, todėl rekomenduojama ją vykdyti ne dažniau nei kartą per savaitę."
 
 #: bookwyrm/templates/settings/files.html:296
 msgid "Fix broken book cover filepaths"
-msgstr ""
+msgstr "Taisyti sugadintus knygų viršelių failų kelius"
 
 #: bookwyrm/templates/settings/files.html:299
 msgid "If you have lost your cover image files (e.g. due to server migration failure) the scheduled job above will not replace them. Run this job instead to attempt to find covers for books where the current cover filepath does not resolve to a file."
-msgstr ""
+msgstr "Jei praradote savo knygų viršelių failus (pavyzdžiui, dėl nepavykusios serverio migracijos), aukščiau nurodyta planinė procedūra jų neatitaisys. Jei norite ieškoti viršelių knygoms, kurių viršelių failų vardai rodo į nepasiekiamus failus, suplanuokite šią procedūrą."
 
 #: bookwyrm/templates/settings/files.html:306
 msgid "This job cannot be scheduled to run regularly"
-msgstr ""
+msgstr "Šios procedūros neleidžiama planuoti kaip periodinės"
 
 #: bookwyrm/templates/settings/files.html:320
 msgid "Editions checked"
-msgstr ""
+msgstr "Leidimų patikrinta"
 
 #: bookwyrm/templates/settings/files.html:321
 msgid "Covers fixed"
-msgstr ""
+msgstr "Viršelių pataisyta"
 
 #: bookwyrm/templates/settings/files.html:371
 msgid "Successfully updated expiry time"
-msgstr ""
+msgstr "Galiojimas sėkmingai pratęstas"
 
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:4
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:4
@@ -5978,7 +5976,7 @@ msgstr "Sustabdyti importavimą?"
 
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:7
 msgid "This action will stop the user import before it is complete and cannot be un-done"
-msgstr ""
+msgstr "Šiuo veiksmu bus negrįžtamai nutrauktas neužbaigtas naudotojo importas"
 
 #: bookwyrm/templates/settings/imports/imports.html:19
 msgid "Disable starting new imports"
@@ -5994,7 +5992,7 @@ msgstr "Kai importavimas išjungtas - naujų pradėti negalima, bet seni importa
 
 #: bookwyrm/templates/settings/imports/imports.html:32
 msgid "This setting prevents both book imports and user imports."
-msgstr ""
+msgstr "Ši parinktis suteikia galimybę uždrausti knygų ir naudotojų importą."
 
 #: bookwyrm/templates/settings/imports/imports.html:37
 msgid "Disable imports"
@@ -6039,55 +6037,55 @@ msgstr "Nustatyti limitą"
 
 #: bookwyrm/templates/settings/imports/imports.html:98
 msgid "Disable starting new user exports"
-msgstr ""
+msgstr "Neleisti pradėti naujų naudotojų importo"
 
 #: bookwyrm/templates/settings/imports/imports.html:109
 msgid "This is only intended to be used when things have gone very wrong with exports and you need to pause the feature while addressing issues."
-msgstr ""
+msgstr "Ši pasinktis turėtų būti naudojama tik tuomet, jei su eksportu iškilo rimtų problemų ir jį reikia laikinai pristabdyti, kol jas išspręsite."
 
 #: bookwyrm/templates/settings/imports/imports.html:110
 msgid "While exports are disabled, users will not be allowed to start new user exports, but existing exports will not be affected."
-msgstr ""
+msgstr "Kol eksportas neleidžiamas, naudotojai negalės pradėti naujo paskyrų eksporto, tačiau jau pradėtų procesų tai nepaveiks."
 
 #: bookwyrm/templates/settings/imports/imports.html:115
 msgid "Disable user exports"
-msgstr ""
+msgstr "Neleisti naudotojų eksporto"
 
 #: bookwyrm/templates/settings/imports/imports.html:123
 msgid "Limit how often users can import and export"
-msgstr ""
+msgstr "Riboti naudotojų leidžiamų importo ir eksporto procesų dažnį"
 
 #: bookwyrm/templates/settings/imports/imports.html:134
 msgid "Some users might try to run user imports or exports very frequently, which you want to limit."
-msgstr ""
+msgstr "Kai kurie naudotojai gali per dažnai norėti vykdyti importą ar eksportą. Čia galite tai apriboti."
 
 #: bookwyrm/templates/settings/imports/imports.html:138
 msgid "Limit how often users can import and export user data"
-msgstr ""
+msgstr "Riboti naudotojų leidžiamų importo ir eksporto procesų dažnį"
 
 #: bookwyrm/templates/settings/imports/imports.html:140
 msgid "hours"
-msgstr ""
+msgstr "val."
 
 #: bookwyrm/templates/settings/imports/imports.html:144
 msgid "Change limit"
-msgstr ""
+msgstr "Keisti ribą"
 
 #: bookwyrm/templates/settings/imports/imports.html:159
 msgid "Users are currently unable to start new user exports. This is the default setting."
-msgstr ""
+msgstr "Šiuo metu naudotojams neleidžiama pradėti naujų eksportų. Tai – numatytoji parinkties reikšmė."
 
 #: bookwyrm/templates/settings/imports/imports.html:161
 msgid "It is not currently possible to provide user exports when using Azure storage."
-msgstr ""
+msgstr "Šiuo metu nėra galimybės naudotojams leisti duomenų eksportą, kai naudojamasi „Azure“ saugykla."
 
 #: bookwyrm/templates/settings/imports/imports.html:167
 msgid "Enable user exports"
-msgstr ""
+msgstr "Leisti naudotojų eksportą"
 
 #: bookwyrm/templates/settings/imports/imports.html:174
 msgid "Book Imports"
-msgstr ""
+msgstr "Knygų importas"
 
 #: bookwyrm/templates/settings/imports/imports.html:198
 #: bookwyrm/templates/settings/imports/imports.html:288
@@ -6269,7 +6267,7 @@ msgstr "Tvarkyti naudotojus"
 #: bookwyrm/templates/settings/users/force_password_reset.html:7
 #: bookwyrm/templates/settings/users/force_password_reset.html:11
 msgid "Force Password Reset"
-msgstr ""
+msgstr "Priverstinai atkurti slaptažodį"
 
 #: bookwyrm/templates/settings/layout.html:59
 msgid "Moderation"
@@ -6283,7 +6281,7 @@ msgstr "Pranešimai"
 
 #: bookwyrm/templates/settings/layout.html:67
 msgid "Auto-Moderation Rules"
-msgstr ""
+msgstr "Automatinio moderavimo taisyklės"
 
 #: bookwyrm/templates/settings/layout.html:79
 #: bookwyrm/templates/settings/link_domains/link_domains.html:5
@@ -6297,11 +6295,11 @@ msgstr "Sistema"
 
 #: bookwyrm/templates/settings/layout.html:96
 msgid "Scheduled Tasks"
-msgstr ""
+msgstr "Planinės užduotys"
 
 #: bookwyrm/templates/settings/layout.html:108
 msgid "Files Maintenance"
-msgstr ""
+msgstr "Failų priežiūra"
 
 #: bookwyrm/templates/settings/layout.html:113
 msgid "Instance Settings"
@@ -6327,7 +6325,7 @@ msgstr "Registracija"
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
 msgid "Themes"
-msgstr "Temos"
+msgstr "Grafiniai apvalkalai"
 
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:5
 #, python-format
@@ -6444,22 +6442,22 @@ msgstr "Raportuotos nuorodos"
 
 #: bookwyrm/templates/settings/reports/report.html:66
 msgid "Moderation Activity"
-msgstr ""
+msgstr "Moderavimo veikla"
 
 #: bookwyrm/templates/settings/reports/report.html:73
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> opened this report"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> atidarė šį pranešimą"
 
 #: bookwyrm/templates/settings/reports/report.html:86
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> commented on this report:"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> parašė komentarą po šiuo pranešimu:"
 
 #: bookwyrm/templates/settings/reports/report.html:90
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> took an action on this report:"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> atliko veiksmą, remdamasi(s) šiuo pranešimu:"
 
 #: bookwyrm/templates/settings/reports/report_header.html:6
 #, python-format
@@ -6483,7 +6481,7 @@ msgstr "Pranešimas #%(report_id)s: naudotojas @%(username)s"
 
 #: bookwyrm/templates/settings/reports/report_links_table.html:19
 msgid "Approve domain"
-msgstr ""
+msgstr "Patvirtinti domeną"
 
 #: bookwyrm/templates/settings/reports/report_links_table.html:26
 msgid "Block domain"
@@ -6531,57 +6529,57 @@ msgstr "Pranešimų nerasta."
 #: bookwyrm/templates/settings/schedules.html:7
 #: bookwyrm/templates/settings/schedules.html:11
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Planinės užduotys"
 
 #: bookwyrm/templates/settings/schedules.html:17
 #: bookwyrm/templates/settings/schedules.html:101
 msgid "Tasks"
-msgstr ""
+msgstr "Užduotys"
 
 #: bookwyrm/templates/settings/schedules.html:22
 msgid "Name"
-msgstr ""
+msgstr "Pavadinimas"
 
 #: bookwyrm/templates/settings/schedules.html:25
 msgid "Celery task"
-msgstr ""
+msgstr "„Celery“ užduotis"
 
 #: bookwyrm/templates/settings/schedules.html:28
 msgid "Date changed"
-msgstr ""
+msgstr "Keitimo data"
 
 #: bookwyrm/templates/settings/schedules.html:31
 msgid "Last run at"
-msgstr ""
+msgstr "Paskutinio vykdymo data"
 
 #: bookwyrm/templates/settings/schedules.html:34
 #: bookwyrm/templates/settings/schedules.html:98
 msgid "Schedule"
-msgstr ""
+msgstr "Tvarkaraštis"
 
 #: bookwyrm/templates/settings/schedules.html:37
 msgid "Schedule ID"
-msgstr ""
+msgstr "Tvarkaraščio ID"
 
 #: bookwyrm/templates/settings/schedules.html:40
 msgid "Enabled"
-msgstr ""
+msgstr "Įjungta"
 
 #: bookwyrm/templates/settings/schedules.html:73
 msgid "Un-schedule"
-msgstr ""
+msgstr "Išjungti tvarkaraštį"
 
 #: bookwyrm/templates/settings/schedules.html:81
 msgid "No scheduled tasks"
-msgstr ""
+msgstr "Planinių užduočių nėra"
 
 #: bookwyrm/templates/settings/schedules.html:90
 msgid "Schedules"
-msgstr ""
+msgstr "Tvarkaraščiai"
 
 #: bookwyrm/templates/settings/schedules.html:119
 msgid "No schedules found"
-msgstr ""
+msgstr "Tvarkaraščių nerasta"
 
 #: bookwyrm/templates/settings/site.html:10
 #: bookwyrm/templates/settings/site.html:43
@@ -6663,27 +6661,27 @@ msgstr "Papildoma informacija:"
 
 #: bookwyrm/templates/settings/themes.html:10
 msgid "Set instance default theme"
-msgstr "Nustatyti numatytąją serverio temą"
+msgstr "Nustatyti numatytąjį serverio grafinį apvalkalą"
 
 #: bookwyrm/templates/settings/themes.html:19
 msgid "One of your themes appears to be broken. Selecting this theme will make the application unusable."
-msgstr ""
+msgstr "Panašu, kad vienas jūsų grafinių apvalkalų yra sugadintas. Pasirinkus šį apvalkalą, sistema taps nenaudotina."
 
 #: bookwyrm/templates/settings/themes.html:28
 msgid "Successfully added theme"
-msgstr "Tema pridėta sėkmingai"
+msgstr "Grafinis apvalkalas pridėtas sėkmingai"
 
 #: bookwyrm/templates/settings/themes.html:35
 msgid "How to add a theme"
-msgstr "Kaip pridėti temą"
+msgstr "Kaip pridėti grafinį apvalkalą"
 
 #: bookwyrm/templates/settings/themes.html:38
 msgid "Copy the theme file into the <code>bookwyrm/static/css/themes</code> directory on your server from the command line."
-msgstr "Nukopijuokite fialus į serverio katalogą <code>bookwyrm/static/css/themes</code> iš komandinės eilutės."
+msgstr "Nukopijuokite grafinio apvalkalo failą į serverio katalogą <code>bookwyrm/static/css/themes</code>."
 
 #: bookwyrm/templates/settings/themes.html:41
 msgid "Run <code>./bw-dev compile_themes</code> and <code>./bw-dev collectstatic</code>."
-msgstr "Paleisti <code>./bw-dev compile_themes</code> ir <code>./bw-dev collectstatic</code>."
+msgstr "Įvykdykite <code>./bw-dev compile_themes</code> ir <code>./bw-dev collectstatic</code> komandas."
 
 #: bookwyrm/templates/settings/themes.html:44
 msgid "Add the file name using the form below to make it available in the application interface."
@@ -6692,24 +6690,24 @@ msgstr "Pridėkite failo pavadinimą, naudodamiesi žemiau esančia forma, kad j
 #: bookwyrm/templates/settings/themes.html:51
 #: bookwyrm/templates/settings/themes.html:91
 msgid "Add theme"
-msgstr "Pridėti temą"
+msgstr "Pridėti grafinį apvalkalą"
 
 #: bookwyrm/templates/settings/themes.html:57
 msgid "Unable to save theme"
-msgstr "Nepavyko išsaugoti temos"
+msgstr "Nepavyko įrašyti grafinio apvalkalo"
 
 #: bookwyrm/templates/settings/themes.html:72
 #: bookwyrm/templates/settings/themes.html:102
 msgid "Theme name"
-msgstr "Temos pavadinimas"
+msgstr "Grafinio apvalkalo pavadinimas"
 
 #: bookwyrm/templates/settings/themes.html:82
 msgid "Theme filename"
-msgstr "Temos failo vardas"
+msgstr "Grafinio apvalkalo failo vardas"
 
 #: bookwyrm/templates/settings/themes.html:97
 msgid "Available Themes"
-msgstr "Galimos temos"
+msgstr "Galimi grafiniai apvalkalai"
 
 #: bookwyrm/templates/settings/themes.html:105
 msgid "File"
@@ -6717,19 +6715,19 @@ msgstr "Failas"
 
 #: bookwyrm/templates/settings/themes.html:123
 msgid "Remove theme"
-msgstr "Pašalinti temą"
+msgstr "Pašalinti grafinį apvalkalą"
 
 #: bookwyrm/templates/settings/themes.html:134
 msgid "Test theme"
-msgstr ""
+msgstr "Išbandyti grafinį apvalkalą"
 
 #: bookwyrm/templates/settings/themes.html:143
 msgid "Broken theme"
-msgstr ""
+msgstr "Sugadintas grafinis apvalkalas"
 
 #: bookwyrm/templates/settings/themes.html:152
 msgid "Loaded successfully"
-msgstr ""
+msgstr "Įkeltas sėkmingai"
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:5
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:52
@@ -6739,43 +6737,43 @@ msgstr "Visam laikui pašalinti naudotoją"
 #: bookwyrm/templates/settings/users/delete_user_form.html:12
 #, python-format
 msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? This action cannot be undone."
-msgstr ""
+msgstr "Ar tikrai norite negrįžtamai pašalinti paskyrą <strong>%(username)s</strong>?"
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:18
 msgid "I understand that this is a permanent action:"
-msgstr ""
+msgstr "Aš suprantu, kad šis veiksmas negrįžtamas:"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:17
 msgid "All users in the selected category will be logged out and required to set a new password to log back in."
-msgstr ""
+msgstr "Visi naudotojai šioje kategorijoje bus atjungti nuo sistemos ir priversti pasikeisti slaptažodį prieš iš naujo prisijungdami."
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:18
 msgid "If your account is in the group, you will be logged out out after submitting."
-msgstr ""
+msgstr "Jei jūsų paskyra yra šioje grupėje, jūsų sesija taipogi bus nutraukta."
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:22
 msgid "Users given password resets:"
-msgstr ""
+msgstr "Naudotojai, kuriems bus atkurti slaptažodžiai:"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:35
 msgid "All users"
-msgstr ""
+msgstr "Visi naudotojai"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:39
 msgid "users"
-msgstr ""
+msgstr "naudotojai"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:43
 msgid "Force password reset"
-msgstr ""
+msgstr "Priverstinai atkurti slaptažodį"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:48
 msgid "Number of users that will be effected:"
-msgstr ""
+msgstr "Paveiksimų naudotojų skaičius:"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:53
 msgid "Are you sure you want to force password reset for these users:"
-msgstr ""
+msgstr "Ar tikrai norite nurodyti šiems naudotojams atkurti slaptažodžius:"
 
 #: bookwyrm/templates/settings/users/user_admin.html:9
 #, python-format
@@ -6810,7 +6808,7 @@ msgstr "Nenustatytas"
 
 #: bookwyrm/templates/settings/users/user_info.html:20
 msgid "This account is the instance actor for signing HTTP requests."
-msgstr ""
+msgstr "Šią paskyrą serveris naudoja HTTP užklausoms pasirašyti."
 
 #: bookwyrm/templates/settings/users/user_info.html:24
 msgid "View user profile"
@@ -6878,15 +6876,15 @@ msgstr "Nario veiksmai"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:15
 msgid "This is the instance admin actor"
-msgstr ""
+msgstr "Tai – serverio administratoriaus paskyra"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:18
 msgid "You must not delete or disable this account as it is critical to the functioning of your server. This actor signs outgoing GET requests to smooth interaction with secure ActivityPub servers."
-msgstr ""
+msgstr "Šios paskyros neturėtumėte šalinti ar atjungti, nes ji yra būtina tinkamam šio serverio veikimui. Ši paskyra naudojama GET užklausoms pasirašyti, bendraujant su kitais „ActivityPub“ serveriais."
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:19
 msgid "This account is not discoverable by ordinary users and does not have a profile page."
-msgstr ""
+msgstr "Ši paskyra neatrandama įprastiems naudotojams ir neturi profilio puslapio."
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:35
 msgid "Activate user"
@@ -6954,7 +6952,7 @@ msgstr "Atrodo, kad jūsų domenas nesukonfigūruotas. Į jį neturėtų įeiti 
 
 #: bookwyrm/templates/setup/config.html:42
 msgid "You are running BookWyrm with <code>localhost</code>. This should <strong>never</strong> be used in a production environment."
-msgstr ""
+msgstr "Jūs naudojatės „BookWyrm“ per <code>localhost</code>. Tokia konfigūracija <strong>niekada</strong> neturėtų būti naudojama produkcinėje aplinkoje."
 
 #: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:44
 msgid "Settings"
@@ -6966,7 +6964,7 @@ msgstr "Serverio informacija:"
 
 #: bookwyrm/templates/setup/config.html:62
 msgid "Instance base URL:"
-msgstr ""
+msgstr "Serverio bazinis URL adresas:"
 
 #: bookwyrm/templates/setup/config.html:75
 msgid "Using S3:"
@@ -7075,7 +7073,7 @@ msgstr "Iki"
 #: bookwyrm/templates/shelf/shelf.html:221
 #, python-format
 msgid "We couldn't find any books that matched %(shelves_filter_query)s"
-msgstr ""
+msgstr "Nepavyko rasti jokių knygų, aititinkančių paiešką „%(shelves_filter_query)s“"
 
 #: bookwyrm/templates/shelf/shelf.html:225
 msgid "This shelf is empty."
@@ -7083,11 +7081,11 @@ msgstr "Ši lentyna tuščia."
 
 #: bookwyrm/templates/shelf/shelves_filter_field.html:6
 msgid "Filter by keyword"
-msgstr ""
+msgstr "Filtruoti pagal raktinį žodį"
 
 #: bookwyrm/templates/shelf/shelves_filter_field.html:7
 msgid "Enter text here"
-msgstr ""
+msgstr "Įveskite tekstą čia"
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:16
 msgid "Invite"
@@ -7291,7 +7289,7 @@ msgstr "Paremkite %(site_name)s per <a href=\"%(support_link)s\" target=\"_blank
 
 #: bookwyrm/templates/snippets/footer.html:49
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
-msgstr "„BookWyrm“ šaltinio kodas yra laisvai prieinamas. Galite prisidėti arba pranešti apie klaidas per <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
+msgstr "„BookWyrm“ pirminiai tekstai yra laisvai prieinami. Prisidėti prie šios platformos vystymo arba pranešti apie klaidas galite per <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">„GitHub“</a>."
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:20
 #: bookwyrm/templates/snippets/stars.html:38
@@ -7397,12 +7395,12 @@ msgstr "%(username)s perskaitė <a href=\"%(path)s\">%(read_count)s iš %(goal_c
 
 #: bookwyrm/templates/snippets/move_user_buttons.html:10
 msgid "Follow at new account"
-msgstr ""
+msgstr "Sekti naująją paskyrą"
 
 #: bookwyrm/templates/snippets/moved_user_notice.html:7
 #, python-format
 msgid "<em>%(user)s</em> has moved to <a href=\"%(moved_to_link)s\">%(moved_to_name)s</a>"
-msgstr ""
+msgstr "<em>%(user)s</em> perkėlė paskyrą į <a href=\"%(moved_to_link)s\">%(moved_to_name)s</a>"
 
 #: bookwyrm/templates/snippets/page_text.html:8
 #, python-format
@@ -7547,7 +7545,7 @@ msgstr "Baigti skaityti"
 
 #: bookwyrm/templates/snippets/stars.html:13
 msgid "Show rating"
-msgstr ""
+msgstr "Rodyti įvertinimą"
 
 #: bookwyrm/templates/snippets/status/content_status.html:69
 msgid "Show status"
@@ -7712,7 +7710,7 @@ msgstr "Rodyti mažiau"
 
 #: bookwyrm/templates/snippets/user_active_tag.html:5
 msgid "Moved"
-msgstr ""
+msgstr "Perkelta"
 
 #: bookwyrm/templates/snippets/user_active_tag.html:12
 msgid "Deleted"
@@ -7880,10 +7878,10 @@ msgstr "Įrašų dar nėra"
 #, python-format
 msgid "%(display_count)s follower"
 msgid_plural "%(display_count)s followers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%(display_count)s sekėjas"
+msgstr[1] "%(display_count)s sekėjai"
+msgstr[2] "%(display_count)s sekėjų"
+msgstr[3] "%(display_count)s sekėjų"
 
 #: bookwyrm/templates/user/user_preview.html:31
 #, python-format
@@ -7910,7 +7908,7 @@ msgstr "Žiūrėti paskyrą ir dar daugiau"
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
 #, python-format
 msgid "File exceeds maximum size: %(max_size)sMB"
-msgstr ""
+msgstr "Failo dydis viršija leistiną: %(max_size)s MB"
 
 #: bookwyrm/templatetags/list_page_tags.py:14
 #, python-format
@@ -7933,7 +7931,7 @@ msgstr "%(title)s: %(subtitle)s"
 
 #: bookwyrm/templatetags/utilities.py:133
 msgid "a new user account"
-msgstr ""
+msgstr "nauja naudotojo paskyra"
 
 #: bookwyrm/views/updates.py:45
 #, python-format
