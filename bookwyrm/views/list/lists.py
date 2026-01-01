@@ -47,12 +47,12 @@ class Lists(View):
             book_list.group = None
         book_list.save()
 
-        book_id = request.POST.get('book')
+        book_id = request.POST.get("book")
         if book_id:
-            # We want to add a book to the new list directly after it's creation
+            # We want to add a book to the new list directly after its creation
             updated_post = request.POST.copy()
-            updated_post['book_list'] = book_list.id
-            updated_post['book'] = book_id
+            updated_post["book_list"] = book_list.id
+            updated_post["book"] = book_id
             request.POST = updated_post
             return add_book(request)
 
