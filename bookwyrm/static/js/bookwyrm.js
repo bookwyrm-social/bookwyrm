@@ -60,6 +60,12 @@ let BookWyrm = new (class {
             .forEach((form) =>
                 form.addEventListener("submit", (e) => this.setPreferredTimezone(e, form))
             );
+
+        document
+            .querySelectorAll("button[name='button-book-list']")
+            .forEach((button) =>
+                button.addEventListener("click", this.checkListSelection.bind(this))
+            );
     }
 
     /**
@@ -861,5 +867,36 @@ let BookWyrm = new (class {
         }
 
         this.toggleFocus(passwordElementId);
+    }
+
+    /**
+     * When user want to add book to list, it checks if the list needs
+     * to be created and if so open a modal to do it. Otherwise it submit
+     * the form to add the book to the selected list.
+     *
+     * @param {Event} event - The click event from the button
+     * @returns {undefined}
+     */
+    checkListSelection(event) {
+        const selectElement = document.getElementById("id_list");
+        const formElement = document.querySelector("form[name='list-add']");
+        const modalElement = document.getElementById("modal-create-list-with-book");
+
+        if (!selectElement || !formElement) {
+            console.error("List management elements not found. Check your HTML IDs.");
+
+            return;
+        }
+
+        if (selectElement.value === "NEW_LIST_CREATION") {
+            if (modalElement) {
+                event.currentTarget.dataset.modalOpen = "modal-create-list-with-book";
+                this.handleModalButton(event);
+            } else {
+                console.error("Modal element not found with ID: modal-create-list-with-book");
+            }
+        } else {
+            formElement.submit();
+        }
     }
 })();
