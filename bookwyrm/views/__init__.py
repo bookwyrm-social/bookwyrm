@@ -196,6 +196,7 @@ from .user import (
     user_redirect,
     toggle_guided_tour,
 )
+from .user_upload import CreateUserUpload
 from .relationships import Relationships
 from .wellknown import *
 from .annual_summary import (
