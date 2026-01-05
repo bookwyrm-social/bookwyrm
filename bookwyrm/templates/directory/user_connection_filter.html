@@ -1,0 +1,14 @@
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+<legend class="label">{% trans "Followed users" %}</legend>
+<label class="is-block">
+    <input type="radio" class="radio" name="connection" value="followed" {% if request.GET.connection == 'followed' %}checked{% endif %}>
+    {% trans "Followed users" %}
+</label>
+<label class="is-block">
+    <input type="radio" class="radio" name="connection" value="unfollowed" {% if request.GET.connection == 'unfollowed' %}checked{% endif %}>
+    {% trans "Yet not followed users" %}
+</label>
+{% endblock %}

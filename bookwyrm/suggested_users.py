@@ -117,30 +117,36 @@ class SuggestedUsers(RedisStore):
 
 def get_annotated_users(viewer, *args, **kwargs):
     """Users, annotated with things they have in common"""
-    return (
-        models.User.objects.filter(discoverable=True, is_active=True, *args, **kwargs)
-        .exclude(Q(id__in=viewer.blocks.all()) | Q(blocks=viewer))
-        .annotate(
-            mutuals=Count(
-                "followers",
-                filter=Q(
-                    ~Q(id=viewer.id),
-                    ~Q(id__in=viewer.following.all()),
-                    followers__in=viewer.following.all(),
-                ),
-                distinct=True,
+    followed = kwargs.pop("followed", None)
+    query = models.User.objects.filter(
+        discoverable=True, is_active=True, *args, **kwargs
+    ).exclude(Q(id__in=viewer.blocks.all()) | Q(blocks=viewer))
+
+    if followed is True:
+        query = query.filter(id__in=viewer.following.all())
+    elif followed is False:
+        query = query.exclude(id__in=viewer.following.all())
+
+    return query.annotate(
+        mutuals=Count(
+            "followers",
+            filter=Q(
+                ~Q(id=viewer.id),
+                ~Q(id__in=viewer.following.all()),
+                followers__in=viewer.following.all(),
             ),
-            # shared_books=Count(
-            #     "shelfbook",
-            #     filter=Q(
-            #         ~Q(id=viewer.id),
-            #         shelfbook__book__parent_work__in=[
-            #             s.book.parent_work for s in viewer.shelfbook_set.all()
-            #         ],
-            #     ),
-            #     distinct=True,
-            # ),
-        )
+            distinct=True,
+        ),
+        # shared_books=Count(
+        #     "shelfbook",
+        #     filter=Q(
+        #         ~Q(id=viewer.id),
+        #         shelfbook__book__parent_work__in=[
+        #             s.book.parent_work for s in viewer.shelfbook_set.all()
+        #         ],
+        #     ),
+        #     distinct=True,
+        # ),
     )
 
 
