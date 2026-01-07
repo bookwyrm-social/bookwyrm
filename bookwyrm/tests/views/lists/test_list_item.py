@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -37,8 +38,6 @@ class ListItemViews(TestCase):
             patch("bookwyrm.lists_stream.remove_list_task.delay"),
         ):
             cls.list = models.List.objects.create(name="Test List", user=cls.local_user)
-
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

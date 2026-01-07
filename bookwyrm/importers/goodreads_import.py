@@ -1,4 +1,5 @@
-""" handle reading a csv from goodreads """
+"""handle reading a csv from goodreads"""
+
 from typing import Optional
 from . import Importer
 

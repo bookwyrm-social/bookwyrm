@@ -1,4 +1,4 @@
-""" the good stuff! the books! """
+"""the good stuff! the books!"""
 
 from functools import reduce
 import operator
@@ -20,7 +20,6 @@ from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import is_api_request, get_mergeable_object_or_404
 
 
-# pylint: disable=no-self-use
 class Editions(View):
     """list of editions"""
 

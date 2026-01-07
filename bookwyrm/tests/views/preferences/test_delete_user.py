@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 
@@ -51,8 +52,6 @@ class DeleteUserViews(TestCase):
                     user=cls.local_user,
                     shelf=cls.local_user.shelf_set.first(),
                 )
-
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

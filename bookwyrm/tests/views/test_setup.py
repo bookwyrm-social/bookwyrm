@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.contrib.sessions.middleware import SessionMiddleware
@@ -17,7 +18,9 @@ class SetupViews(TestCase):
     @classmethod
     def setUpTestData(cls):
         """we need basic test data and mocks"""
-        cls.site = models.SiteSettings.objects.create(install_mode=True)
+        cls.site = models.SiteSettings.get()
+        cls.site.install_mode = True
+        cls.site.save()
 
     def setUp(self):
         """individual test setup"""

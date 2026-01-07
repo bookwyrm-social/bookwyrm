@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser, Group, Permission
@@ -46,7 +47,6 @@ class AuthorViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=cls.work,
         )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

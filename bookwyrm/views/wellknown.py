@@ -1,4 +1,4 @@
-""" responds to various requests to /.well-know """
+"""responds to various requests to /.well-know"""
 
 from dateutil.relativedelta import relativedelta
 from django.http import HttpResponseNotFound
@@ -9,10 +9,12 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET
 
 from bookwyrm import models
+from bookwyrm.decorators import require_federation
 from bookwyrm.settings import BASE_URL, DOMAIN, VERSION, LANGUAGE_CODE
 
 
 @require_GET
+@require_federation
 def webfinger(request):
     """allow other servers to ask about a user"""
     resource = request.GET.get("resource")
@@ -42,6 +44,7 @@ def webfinger(request):
 
 
 @require_GET
+@require_federation
 def nodeinfo_pointer(_):
     """direct servers to nodeinfo"""
     return JsonResponse(
@@ -57,6 +60,7 @@ def nodeinfo_pointer(_):
 
 
 @require_GET
+@require_federation
 def nodeinfo(_):
     """basic info about the server"""
     status_count = models.Status.objects.filter(user__local=True, deleted=False).count()
@@ -92,6 +96,7 @@ def nodeinfo(_):
 
 
 @require_GET
+@require_federation
 def instance_info(_):
     """let's talk about your cool unique instance"""
     user_count = models.User.objects.filter(is_active=True, local=True).count()
@@ -121,6 +126,7 @@ def instance_info(_):
 
 
 @require_GET
+@require_federation
 def peers(_):
     """list of federated servers this instance connects with"""
     names = models.FederatedServer.objects.filter(status="federated").values_list(
@@ -130,6 +136,7 @@ def peers(_):
 
 
 @require_GET
+@require_federation
 def host_meta(request):
     """meta of the host"""
     return TemplateResponse(request, "host_meta.xml", {"DOMAIN": DOMAIN})

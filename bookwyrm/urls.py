@@ -1,4 +1,5 @@
-""" url routing for the app and api """
+"""url routing for the app and api"""
+
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -188,14 +189,34 @@ urlpatterns = [
         name="settings-delete-exports-schedule",
     ),
     re_path(
-        r"^settings/delete-exports/unschedule/(?P<task_id>\d+)/?$",
-        views.unschedule_export_delete_task,
-        name="settings-delete-exports-unschedule",
+        r"^settings/file-maintenance/unschedule/(?P<task_id>\d+)/?$",
+        views.unschedule_file_maintenance_task,
+        name="settings-file-maintenance-unschedule",
     ),
     re_path(
         r"^settings/delete-exports/run/?$",
         views.run_export_deletions,
         name="settings-delete-exports-run",
+    ),
+    re_path(
+        r"^settings/missing-covers/schedule/?$",
+        views.schedule_run_missing_covers_job,
+        name="find-covers-task-schedule",
+    ),
+    re_path(
+        r"^settings/missing-covers/run/?$",
+        views.run_missing_covers,
+        name="find-covers-task-run",
+    ),
+    re_path(
+        r"^settings/wrong-cover-paths/run/?$",
+        views.run_wrong_cover_paths,
+        name="wrong-cover-paths-run",
+    ),
+    re_path(
+        r"^settings/file-maintenance/cancel-covers/(?P<job_id>\d+)/?$",
+        views.cancel_covers_job,
+        name="cancel-covers-job",
     ),
     re_path(
         r"^settings/delete-exports/cancel/(?P<job_id>\d+)/?$",
@@ -224,6 +245,16 @@ urlpatterns = [
         r"^settings/users/(?P<user_id>\d+)/activate/?$",
         views.ActivateUserAdmin.as_view(),
         name="settings-activate-user",
+    ),
+    re_path(
+        r"^settings/federation-settings/?$",
+        views.FederationSettings.as_view(),
+        name="settings-federation-settings",
+    ),
+    re_path(
+        r"^settings/force-password-reset/?$",
+        views.ForcePasswordResetAdmin.as_view(),
+        name="settings-force-password-reset",
     ),
     re_path(
         r"^settings/federation/(?P<status>(federated|blocked))?/?$",
@@ -299,7 +330,6 @@ urlpatterns = [
         views.LinkDomain.as_view(),
         name="settings-link-domain",
     ),
-    # pylint: disable=line-too-long
     re_path(
         r"^setting/link-domains/(?P<status>(pending|approved|blocked))/(?P<domain_id>\d+)/?$",
         views.LinkDomain.as_view(),
@@ -933,8 +963,8 @@ urlpatterns = [
 # Serves /static when DEBUG is true.
 urlpatterns.extend(staticfiles_urlpatterns())
 
-# pylint: disable=invalid-name
+
 handler500 = "bookwyrm.views.server_error"
 
-# pylint: disable=invalid-name
+
 handler403 = "bookwyrm.views.permission_denied"

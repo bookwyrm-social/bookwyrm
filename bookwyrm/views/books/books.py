@@ -1,6 +1,4 @@
-""" the good stuff! the books! """
-
-from uuid import uuid4
+"""the good stuff! the books!"""
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
@@ -15,9 +13,8 @@ from django.views.decorators.vary import vary_on_headers
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager, ConnectorException
-from bookwyrm.connectors.abstract_connector import get_image
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.utils.images import remove_uploaded_image_exif
+from bookwyrm.utils.images import remove_uploaded_image_exif, set_cover_from_url
 from bookwyrm.views.helpers import (
     is_api_request,
     maybe_redirect_local_path,
@@ -25,7 +22,6 @@ from bookwyrm.views.helpers import (
 )
 
 
-# pylint: disable=no-self-use
 class Book(View):
     """a book! this is the stuff"""
 
@@ -86,7 +82,9 @@ class Book(View):
         queryset = queryset.select_related("user").order_by("-published_date")
         paginated = Paginator(queryset, PAGE_LENGTH)
 
-        lists = models.List.privacy_filter(request.user,).filter(
+        lists = models.List.privacy_filter(
+            request.user,
+        ).filter(
             listitem__approved=True,
             listitem__book__in=book.parent_work.editions.all(),
         )
@@ -108,6 +106,7 @@ class Book(View):
 
         if request.user.is_authenticated:
             data["list_options"] = request.user.list_set.exclude(id__in=data["lists"])
+            data["list_form"] = forms.ListForm()
             data["file_link_form"] = forms.FileLinkForm()
             readthroughs = models.ReadThrough.objects.filter(
                 user=request.user,
@@ -163,18 +162,6 @@ def upload_cover(request, book_id):
     book.save()
 
     return redirect(book.local_path)
-
-
-def set_cover_from_url(url):
-    """load it from a url"""
-    try:
-        image_content, extension = get_image(url)
-    except:  # pylint: disable=bare-except
-        return None
-    if not image_content:
-        return None
-    image_name = str(uuid4()) + "." + extension
-    return [image_name, image_content]
 
 
 @login_required

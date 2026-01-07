@@ -1,4 +1,5 @@
-""" inventaire data connector """
+"""inventaire data connector"""
+
 import re
 from typing import Any, Union, Optional, Iterator, Iterable
 
@@ -66,7 +67,7 @@ class Connector(AbstractConnector):
         return f"{self.books_url}?action=by-uris&uris={value}"
 
     def get_book_data(self, remote_id: str) -> JsonDict:
-        data = get_data(remote_id)
+        data = get_data(remote_id, is_activitypub=False)
         extracted = list(data.get("entities", {}).values())
         try:
             data = extracted[0]
@@ -129,9 +130,9 @@ class Connector(AbstractConnector):
 
     def load_edition_data(self, work_uri: str) -> JsonDict:
         """get a list of editions for a work"""
-        # pylint: disable=line-too-long
+
         url = f"{self.books_url}?action=reverse-claims&property=wdt:P629&value={work_uri}&sort=true"
-        return get_data(url)
+        return get_data(url, is_activitypub=False)
 
     def get_edition_from_work_data(self, data: JsonDict) -> JsonDict:
         work_uri = data.get("uri")
@@ -230,7 +231,7 @@ class Connector(AbstractConnector):
         title = link.get("title")
         url = f"{self.base_url}/api/data?action=wp-extract&lang=en&title={title}"
         try:
-            data = get_data(url)
+            data = get_data(url, is_activitypub=False)
         except ConnectorException:
             return ""
         return str(data.get("extract", ""))

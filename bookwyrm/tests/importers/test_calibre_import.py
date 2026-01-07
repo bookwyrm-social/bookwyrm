@@ -1,4 +1,5 @@
-""" testing import """
+"""testing import"""
+
 import pathlib
 from unittest.mock import patch
 
@@ -19,7 +20,7 @@ class CalibreImport(TestCase):
         """use a test csv"""
         self.importer = CalibreImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/calibre.csv")
-        # pylint: disable-next=consider-using-with
+
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
 
     def tearDown(self):
@@ -37,7 +38,6 @@ class CalibreImport(TestCase):
             cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
-        models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
         cls.book = models.Edition.objects.create(
             title="Example Edition",

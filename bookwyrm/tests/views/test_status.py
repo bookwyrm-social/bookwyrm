@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 import dateutil
@@ -74,7 +75,6 @@ class StatusTransactions(TransactionTestCase):
 @patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
-# pylint: disable=too-many-public-methods
 class StatusViews(TestCase):
     """viewing and creating statuses"""
 
@@ -118,7 +118,6 @@ class StatusViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=work,
         )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

@@ -1,2 +1,33 @@
-[tool.black]
-required-version = "22"
+[tool.ruff]
+exclude = [
+    "migrations",
+]
+
+line-length = 88
+
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings  
+    "F",   # pyflakes (critical errors only)
+]
+
+ignore = [
+    "E501",   # line too long
+    "E722",   # bare except
+    "E731",   # lambda assignment
+    "F401",   # unused imports
+    "F403",   # star import (unable to detect undefined names from star imports)
+    "F405",   # `env` may be undefined, or defined from star imports
+    "F841",   # unused variable
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = false
+docstring-code-line-length = "dynamic"

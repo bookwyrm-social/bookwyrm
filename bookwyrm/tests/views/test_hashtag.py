@@ -1,4 +1,5 @@
-""" tests for hashtag view """
+"""tests for hashtag view"""
+
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
@@ -66,8 +67,6 @@ class HashtagView(TestCase):
             ]
         for status in cls.statuses_bookclub:
             status.mention_hashtags.add(cls.hashtag_bookclub)
-
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

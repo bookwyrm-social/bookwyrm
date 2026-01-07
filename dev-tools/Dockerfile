@@ -4,15 +4,14 @@ WORKDIR /app/dev-tools
 ENV PATH="/app/dev-tools/node_modules/.bin:$PATH"
 ENV PYTHONUNBUFFERED=1
 ENV NPM_CONFIG_UPDATE_NOTIFIER=false
-ENV PIP_ROOT_USER_ACTION=ignore PIP_DISABLE_PIP_VERSION_CHECK=1
+ENV PIP_ROOT_USER_ACTION=ignore
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 
-COPY nodejs.pref /etc/apt/preferences.d/
-COPY nodejs.sources /etc/apt/sources.list.d/
+COPY --from=node:18-slim /usr/local/bin /usr/local/bin
+COPY --from=node:18-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY package.json requirements.txt .stylelintrc.js .stylelintignore /app/dev-tools/
 
-RUN apt-get update            && \
-    apt-get install -y nodejs && \
-    pip install -r requirements.txt && \
+RUN pip install --no-cache-dir -r requirements.txt && \
     npm install .
 
 WORKDIR /app

@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from importlib import import_module
 from unittest.mock import patch
 
@@ -51,7 +52,9 @@ class LoginViews(TestCase):
                 localname="badger",
                 two_factor_auth=True,
             )
-        models.SiteSettings.objects.create(id=1, require_confirm_email=False)
+        site = models.SiteSettings.get()
+        site.require_confirm_email = False
+        site.save()
 
     def setUp(self):
         """individual test setup"""

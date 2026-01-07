@@ -1,4 +1,5 @@
-""" template filters """
+"""template filters"""
+
 from dateutil.relativedelta import relativedelta
 from django import template
 from django.conf import settings

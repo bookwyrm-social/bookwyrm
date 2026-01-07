@@ -1,5 +1,7 @@
-""" manage user """
+"""manage user"""
+
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import Group
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -11,7 +13,6 @@ from bookwyrm.models.report import USER_PERMS
 from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.moderate_user", raise_exception=True),
@@ -51,7 +52,7 @@ class UserAdminList(View):
             "federated_server__server_name",
             "is_active",
         ]
-        # pylint: disable=consider-using-f-string
+
         if sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
             users = users.order_by(sort)
 
@@ -77,7 +78,6 @@ class UserAdminList(View):
 class UserAdmin(View):
     """moderate an individual user"""
 
-    # pylint: disable=unused-argument
     def get(self, request, user_id, report_id=None):
         """user view"""
         user = get_object_or_404(models.User, id=user_id)
@@ -111,9 +111,54 @@ class UserAdmin(View):
 class ActivateUserAdmin(View):
     """activate a user manually"""
 
-    # pylint: disable=unused-argument
     def post(self, request, user_id):
         """activate user"""
         user = get_object_or_404(models.User, id=user_id)
         user.reactivate()
         return redirect("settings-user", user.id)
+
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.moderate_user", raise_exception=True),
+    name="dispatch",
+)
+class ForcePasswordResetAdmin(View):
+    """Require a group of users to reset their passwords"""
+
+    def get(self, request):
+        """user view"""
+        group = request.GET.get("group")
+        data = {"groups": Group.objects.all(), "group": group}
+
+        user_queryset = models.User.objects.filter(local=True, is_deleted=False)
+        if group == "all":
+            data["count"] = user_queryset.count()
+        elif group == "user":
+            data["count"] = user_queryset.filter(groups__isnull=True).count()
+        elif group:
+            data["count"] = user_queryset.filter(groups__name=group).count()
+
+        return TemplateResponse(
+            request, "settings/users/force_password_reset.html", data
+        )
+
+    def post(self, request):
+        """force password reset and log out groups of users"""
+        group = request.POST.get("group")
+        user_queryset = models.User.objects.filter(local=True, is_deleted=False)
+        if group == "user":
+            user_queryset = user_queryset.filter(groups__isnull=True)
+        elif group != "all":
+            user_queryset = user_queryset.filter(groups__name=group)
+
+        user_queryset.update(force_password_reset=True)
+
+        data = {
+            "groups": Group.objects.all(),
+            "force_count": user_queryset.count(),
+            "submitted": True,
+        }
+        return TemplateResponse(
+            request, "settings/users/force_password_reset.html", data
+        )

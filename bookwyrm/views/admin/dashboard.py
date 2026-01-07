@@ -1,4 +1,5 @@
-""" instance overview """
+"""instance overview"""
+
 from datetime import timedelta
 import re
 
@@ -21,7 +22,6 @@ from bookwyrm import forms, models, settings
 from bookwyrm.utils import regex
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.moderate_user", raise_exception=True),
@@ -44,12 +44,12 @@ class Dashboard(View):
         ) or not re.match(regex.DOMAIN, settings.EMAIL_SENDER_DOMAIN)
 
         data["email_config_error"] = email_config_error
-        data[
-            "email_sender"
-        ] = f"{settings.EMAIL_SENDER_NAME}@{settings.EMAIL_SENDER_DOMAIN}"
+        data["email_sender"] = (
+            f"{settings.EMAIL_SENDER_NAME}@{settings.EMAIL_SENDER_DOMAIN}"
+        )
 
-        site = models.SiteSettings.objects.get()
-        # pylint: disable=protected-access
+        site = models.SiteSettings.get()
+
         data["missing_conduct"] = (
             not site.code_of_conduct
             or site.code_of_conduct
@@ -201,7 +201,7 @@ class Chart:
         chart = {k: [] for k in self.queries.keys()}
         chart["labels"] = []
         while interval_start <= end:
-            for (name, query) in self.queries.items():
+            for name, query in self.queries.items():
                 chart[name].append(query(self.queryset, interval_start, interval_end))
             chart["labels"].append(interval_start.strftime("%b %d"))
 

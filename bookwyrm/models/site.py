@@ -1,6 +1,8 @@
-""" the particulars for this instance of BookWyrm """
+"""the particulars for this instance of BookWyrm"""
+
+from __future__ import annotations
 import datetime
-from typing import Optional, Iterable
+from typing import Any, Optional, Iterable
 from urllib.parse import urljoin
 import uuid
 
@@ -30,8 +32,7 @@ class SiteModel(models.Model):
 
         abstract = True
 
-    # pylint: disable=no-self-use
-    def raise_not_editable(self, viewer):
+    def raise_not_editable(self, viewer: User) -> None:
         """Check if the user has the right permissions"""
         if viewer.has_perm("bookwyrm.edit_instance_settings"):
             return
@@ -83,6 +84,7 @@ class SiteSettings(SiteModel):
     invite_question_text = models.CharField(
         max_length=255, blank=True, default="What is your favourite book?"
     )
+
     # images
     logo = models.ImageField(upload_to="logos/", null=True, blank=True)
     logo_small = models.ImageField(upload_to="logos/", null=True, blank=True)
@@ -103,12 +105,13 @@ class SiteSettings(SiteModel):
     import_limit_reset = models.IntegerField(default=0)
     user_exports_enabled = models.BooleanField(default=False)
     user_import_time_limit = models.IntegerField(default=48)
+    disable_federation = models.BooleanField(default=False)
     export_files_lifetime_hours = models.IntegerField(default=72)
 
     field_tracker = FieldTracker(fields=["name", "instance_tagline", "logo"])
 
     @classmethod
-    def get(cls):
+    def get(cls) -> SiteSettings:
         """gets the site settings db entry or defaults"""
         try:
             return cls.objects.get(id=1)
@@ -117,29 +120,37 @@ class SiteSettings(SiteModel):
             default_settings.save()
             return default_settings
 
+    @classmethod
+    def raise_federation_disabled(cls) -> None:
+        """Don't connect to the outside world"""
+        if cls.get().disable_federation:
+            raise PermissionDenied("Federation is disabled")
+
     @property
-    def logo_url(self):
+    def logo_url(self) -> Any:
         """helper to build the logo url"""
         return self.get_url("logo", "images/logo.png")
 
     @property
-    def logo_small_url(self):
+    def logo_small_url(self) -> Any:
         """helper to build the logo url"""
         return self.get_url("logo_small", "images/logo-small.png")
 
     @property
-    def favicon_url(self):
+    def favicon_url(self) -> Any:
         """helper to build the logo url"""
         return self.get_url("favicon", "images/favicon.png")
 
-    def get_url(self, field, default_path):
+    def get_url(self, field: str, default_path: str) -> Any:
         """get a media url or a default static path"""
         uploaded = getattr(self, field, None)
         if uploaded:
             return get_absolute_url(uploaded)
         return urljoin(STATIC_FULL_URL, default_path)
 
-    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
+    def save(
+        self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs
+    ) -> None:
         """if require_confirm_email is disabled, make sure no users are pending,
         if enabled, make sure invite_question_text is not empty"""
         if not self.invite_question_text:
@@ -162,8 +173,7 @@ class Theme(SiteModel):
     path = models.CharField(max_length=50, unique=True)
     loads = models.BooleanField(null=True, blank=True)
 
-    def __str__(self):
-        # pylint: disable=invalid-str-returned
+    def __str__(self) -> str:
         return self.name
 
 
@@ -178,21 +188,20 @@ class SiteInvite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     invitees = models.ManyToManyField(User, related_name="invitees")
 
-    # pylint: disable=no-self-use
-    def raise_not_editable(self, viewer):
+    def raise_not_editable(self, viewer: User) -> None:
         """Admins only"""
         if viewer.has_perm("bookwyrm.create_invites"):
             return
         raise PermissionDenied()
 
-    def valid(self):
+    def valid(self) -> bool:
         """make sure it hasn't expired or been used"""
         return (self.expiry is None or self.expiry > timezone.now()) and (
             self.use_limit is None or self.times_used < self.use_limit
         )
 
     @property
-    def link(self):
+    def link(self) -> str:
         """formats the invite link"""
         return f"{BASE_URL}/invite/{self.code}"
 
@@ -208,20 +217,20 @@ class InviteRequest(BookWyrmModel):
     invite_sent = models.BooleanField(default=False)
     ignored = models.BooleanField(default=False)
 
-    def raise_not_editable(self, viewer):
+    def raise_not_editable(self, viewer: User) -> None:
         """Only check perms on edit, not create"""
         if not self.id or viewer.has_perm("bookwyrm.create_invites"):
             return
         raise PermissionDenied()
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         """don't create a request for a registered email"""
         if not self.id and User.objects.filter(email=self.email).exists():
             raise IntegrityError()
         super().save(*args, **kwargs)
 
 
-def get_password_reset_expiry():
+def get_password_reset_expiry() -> datetime.datetime:
     """give people a limited time to use the link"""
     now = timezone.now()
     return now + datetime.timedelta(days=1)
@@ -234,19 +243,18 @@ class PasswordReset(models.Model):
     expiry = models.DateTimeField(default=get_password_reset_expiry)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    def valid(self):
+    def valid(self) -> bool:
         """make sure it hasn't expired or been used"""
         return self.expiry > timezone.now()
 
     @property
-    def link(self):
+    def link(self) -> str:
         """formats the invite link"""
         return f"{BASE_URL}/password-reset/{self.code}"
 
 
-# pylint: disable=unused-argument
 @receiver(models.signals.post_save, sender=SiteSettings)
-def preview_image(instance, *args, **kwargs):
+def preview_image(instance: SiteSettings, *args, **kwargs) -> None:
     """Update image preview for the default site image"""
     if not ENABLE_PREVIEW_IMAGES:
         return
@@ -257,10 +265,10 @@ def preview_image(instance, *args, **kwargs):
 
 
 @app.task(queue=MISC)
-def check_for_updates_task():
+def check_for_updates_task() -> None:
     """See if git remote knows about a new version"""
-    site = SiteSettings.objects.get()
-    release = get_data(RELEASE_API, timeout=3)
+    site = SiteSettings.get()
+    release = get_data(RELEASE_API, timeout=3, is_activitypub=False)
     available_version = release.get("tag_name", None)
     if available_version:
         site.available_version = available_version

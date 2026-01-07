@@ -1,4 +1,5 @@
-""" Repair editions with missing works """
+"""Repair editions with missing works"""
+
 from django.core.management.base import BaseCommand
 from bookwyrm import models
 
@@ -8,7 +9,6 @@ class Command(BaseCommand):
 
     help = "Repairs an edition that is in a broken state"
 
-    # pylint: disable=unused-argument
     def handle(self, *args, **options):
         """Find and repair broken editions"""
         # Find broken editions

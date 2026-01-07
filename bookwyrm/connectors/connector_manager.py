@@ -1,4 +1,5 @@
-""" interface with whatever connectors the app has """
+"""interface with whatever connectors the app has"""
+
 from __future__ import annotations
 import asyncio
 import importlib
@@ -50,15 +51,13 @@ async def async_connector_search(
 @overload
 def search(
     query: str, *, min_confidence: float = 0.1, return_first: Literal[False]
-) -> list[abstract_connector.ConnectorResults]:
-    ...
+) -> list[abstract_connector.ConnectorResults]: ...
 
 
 @overload
 def search(
     query: str, *, min_confidence: float = 0.1, return_first: Literal[True]
-) -> Optional[SearchResult]:
-    ...
+) -> Optional[SearchResult]: ...
 
 
 def search(
@@ -111,7 +110,11 @@ def first_search_result(
 
 def get_connectors() -> Iterator[abstract_connector.AbstractConnector]:
     """load all connectors"""
-    for info in models.Connector.objects.filter(active=True).order_by("priority").all():
+    queryset = models.Connector.objects.filter(active=True)
+    if models.SiteSettings.get().disable_federation:
+        queryset = queryset.exclude(connector_file="bookwyrm_connector")
+
+    for info in queryset.order_by("priority").all():
         yield load_connector(info)
 
 
@@ -175,7 +178,6 @@ def load_connector(
 
 
 @receiver(signals.post_save, sender="bookwyrm.FederatedServer")
-# pylint: disable=unused-argument
 def create_connector(
     sender: Any,
     instance: models.FederatedServer,
@@ -191,7 +193,7 @@ def create_connector(
 def raise_not_valid_url(url: str) -> None:
     """do some basic reality checks on the url"""
     parsed = urlparse(url)
-    if not parsed.scheme in ["http", "https"]:
+    if parsed.scheme not in ["http", "https"]:
         raise ConnectorException("Invalid scheme: ", url)
 
     if not parsed.hostname:
@@ -216,7 +218,7 @@ def create_finna_connector() -> None:
         name="Finna API",
         connector_file="finna",
         base_url="https://www.finna.fi",
-        books_url="https://api.finna.fi/api/v1/record" "?id=",
+        books_url="https://api.finna.fi/api/v1/record?id=",
         covers_url="https://api.finna.fi",
         search_url="https://api.finna.fi/api/v1/search?limit=20"
         "&filter[]=format%3a%220%2fBook%2f%22"
