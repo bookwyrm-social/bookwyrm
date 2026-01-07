@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-01 17:29+0000\n"
-"PO-Revision-Date: 2026-01-01 18:32\n"
+"PO-Revision-Date: 2026-01-07 13:32\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -83,7 +83,7 @@ msgstr "Diese E-Mail-Adresse kann nicht registriert werden."
 
 #: bookwyrm/forms/landing.py:114
 msgid "Password cannot be the same as your current password"
-msgstr ""
+msgstr "Das Passwort darf nicht mit Ihrem aktuellen Passwort identisch sein"
 
 #: bookwyrm/forms/landing.py:144 bookwyrm/forms/landing.py:152
 msgid "Incorrect code"
@@ -239,7 +239,7 @@ msgstr "Blockieren"
 
 #: bookwyrm/models/bookwyrm_import_job.py:395
 msgid "Unknown error importing book"
-msgstr ""
+msgstr "Unbekannter Fehler beim Importieren des Buches"
 
 #: bookwyrm/models/bookwyrm_import_job.py:490
 msgid "unauthorized"
@@ -247,7 +247,7 @@ msgstr "nicht autorisiert"
 
 #: bookwyrm/models/bookwyrm_import_job.py:496
 msgid "Unknown error importing book status"
-msgstr ""
+msgstr "Unbekannter Fehler beim Importieren des Buchstatus"
 
 #: bookwyrm/models/bookwyrm_import_job.py:686
 #: bookwyrm/models/bookwyrm_import_job.py:711
@@ -260,7 +260,7 @@ msgstr "Nicht erlaubte Verbindung"
 
 #: bookwyrm/models/bookwyrm_import_job.py:729
 msgid "Unkown error importing relationship"
-msgstr ""
+msgstr "Unbekannter Fehler beim Importieren der Beziehung"
 
 #: bookwyrm/models/federated_server.py:12
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
@@ -331,11 +331,11 @@ msgstr "Privat"
 
 #: bookwyrm/models/housekeeping.py:116
 msgid "Missing"
-msgstr ""
+msgstr "Fehlend"
 
 #: bookwyrm/models/housekeeping.py:117
 msgid "Wrong Path"
-msgstr ""
+msgstr "Ungültiger Pfad"
 
 #: bookwyrm/models/import_job.py:51 bookwyrm/models/job.py:19
 #: bookwyrm/templates/import/import.html:184
@@ -444,7 +444,7 @@ msgstr "Gelöschter Eintrag"
 
 #: bookwyrm/models/session.py:43
 msgid "Unknown"
-msgstr ""
+msgstr "Unbekannt"
 
 #: bookwyrm/models/status.py:191
 #, python-format
@@ -1147,7 +1147,7 @@ msgstr "Zum Vergrößern anklicken"
 
 #: bookwyrm/templates/book/book.html:190
 msgid "View on Finna"
-msgstr ""
+msgstr "Auf Finna ansehen"
 
 #: bookwyrm/templates/book/book.html:222
 #, python-format
@@ -2360,7 +2360,7 @@ msgstr "Du kannst Benutzer*innen auf anderen BookWyrm-Instanzen und verteilten D
 
 #: bookwyrm/templates/get_started/users.html:11
 msgid "You can follow other users on this BookWyrm instance."
-msgstr ""
+msgstr "Du kannst anderen Benutzern auf dieser BookWyrm-Instanz folgen."
 
 #: bookwyrm/templates/get_started/users.html:15
 msgid "Search for a user"
@@ -3520,7 +3520,7 @@ msgstr "Ein Konto, Status oder BookWyrm-Server wurde gelöscht, nachdem Ihre Imp
 
 #: bookwyrm/templates/import/user_troubleshoot.html:35
 msgid "Importing statuses when your old account has been deleted"
-msgstr ""
+msgstr "Importieren des Status, falls dein altes Konto bereist gelöscht wurde"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:43
 #, python-format
@@ -3542,7 +3542,7 @@ msgstr "Grund"
 
 #: bookwyrm/templates/landing/force_password_reset.html:30
 msgid "You must set a new password before logging in."
-msgstr ""
+msgstr "Du musst vor dem Einloggen ein neues Passwort erstellen."
 
 #: bookwyrm/templates/landing/force_password_reset.html:50
 #: bookwyrm/templates/preferences/change_password.html:22
@@ -4542,7 +4542,7 @@ msgstr "Das Löschen des Benutzer*inkonto kann nicht rückgängig gemacht werden
 
 #: bookwyrm/templates/preferences/delete_user.html:36
 msgid "I understand that my account cannot be recovered:"
-msgstr ""
+msgstr "Ich verstehe, dass mein Konto nicht wiederhergestellt werden kann:"
 
 #: bookwyrm/templates/preferences/disable-2fa.html:4
 #: bookwyrm/templates/preferences/disable-2fa.html:7
@@ -4724,8 +4724,8 @@ msgstr "Die Datei mit dem exportierten Account wird als 'Abgeschlossen' angezeig
 #, python-format
 msgid "Export files will be deleted after %(expiry_hours)s hour."
 msgid_plural "Export files will be deleted after %(expiry_hours)s hours."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Exportdateien werden nach %(expiry_hours)s Stunde gelöscht."
+msgstr[1] "Exportdateien werden nach %(expiry_hours)s Stunden gelöscht."
 
 #: bookwyrm/templates/preferences/export-user.html:110
 #: bookwyrm/templates/preferences/security.html:126
@@ -4766,7 +4766,7 @@ msgstr "Account"
 
 #: bookwyrm/templates/preferences/layout.html:24
 msgid "Security Settings"
-msgstr ""
+msgstr "Sicherheitseinstellungen"
 
 #: bookwyrm/templates/preferences/layout.html:32
 msgid "Move  Account"
@@ -4791,7 +4791,7 @@ msgstr "Das Verschieben deines Kontos wird alle deine Follower*innen benachricht
 #: bookwyrm/templates/preferences/move_user.html:19
 #, python-format
 msgid "<strong>%(user)s</strong> will be marked as moved and will not be discoverable or usable unless you undo the move."
-msgstr ""
+msgstr "<strong>%(user)s</strong> wird als umgezogen markiert und ist nicht auffindbar oder nutzbar bis Du den Umzug rückgängig machst."
 
 #: bookwyrm/templates/preferences/move_user.html:25
 msgid "Remember to add this user as an alias of the target account before you try to move."
@@ -4804,7 +4804,7 @@ msgstr "Geben Sie den Benutzernamen für das Konto ein, zu dem Sie wechseln möc
 #: bookwyrm/templates/preferences/security.html:4
 #: bookwyrm/templates/preferences/security.html:7
 msgid "Account Security"
-msgstr ""
+msgstr "Kontosicherheit"
 
 #: bookwyrm/templates/preferences/security.html:13
 msgid "Two Factor Authentication"
@@ -4869,55 +4869,55 @@ msgstr "2FA einrichten"
 
 #: bookwyrm/templates/preferences/security.html:111
 msgid "Sessions"
-msgstr ""
+msgstr "Sessions"
 
 #: bookwyrm/templates/preferences/security.html:114
 msgid "Some legacy sessions may not be displayed."
-msgstr ""
+msgstr "Einige ältere Sessions werden möglicherweise nicht angezeigt."
 
 #: bookwyrm/templates/preferences/security.html:119
 msgid "You are logged in to the following sessions:"
-msgstr ""
+msgstr "Du bist mit folgenden Sessions angemeldet:"
 
 #: bookwyrm/templates/preferences/security.html:126
 msgid "Date first logged in"
-msgstr ""
+msgstr "Datum der ersten Anmeldung"
 
 #: bookwyrm/templates/preferences/security.html:127
 msgid "IP address"
-msgstr ""
+msgstr "IP-Adresse"
 
 #: bookwyrm/templates/preferences/security.html:127
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
 #: bookwyrm/templates/preferences/security.html:128
 msgid "Operating System"
-msgstr ""
+msgstr "Betriebssystem"
 
 #: bookwyrm/templates/preferences/security.html:128
 msgid "OS"
-msgstr ""
+msgstr "OS"
 
 #: bookwyrm/templates/preferences/security.html:129
 msgid "Web Browser"
-msgstr ""
+msgstr "Webbrowser"
 
 #: bookwyrm/templates/preferences/security.html:129
 msgid "Browser"
-msgstr ""
+msgstr "Browser"
 
 #: bookwyrm/templates/preferences/security.html:143
 msgid "You"
-msgstr ""
+msgstr "Du"
 
 #: bookwyrm/templates/preferences/security.html:147
 msgid "Log Out"
-msgstr ""
+msgstr "Abmelden"
 
 #: bookwyrm/templates/preferences/security.html:161
 msgid "Currently your logged-in sessions are unable to be displayed."
-msgstr ""
+msgstr "Derzeit können Deine eingeloggten Sessions nicht angezeigt werden."
 
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
@@ -5452,7 +5452,7 @@ msgstr "Fehler"
 
 #: bookwyrm/templates/settings/connectors/available.html:15
 msgid "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof."
-msgstr ""
+msgstr "Finna.fi ist ein Suchdienst, der Material von Hunderten finnischen Organisationen an einer Stelle sammelt."
 
 #: bookwyrm/templates/settings/connectors/available.html:28
 msgid "Create new connector"
@@ -7287,7 +7287,7 @@ msgstr[1] "%(rating)s Sterne"
 #, python-format
 msgid "set a goal to read %(counter)s book in %(year)s"
 msgid_plural "set a goal to read %(counter)s books in %(year)s"
-msgstr[0] "setzte sich das Ziel, im Jahr %(year)s %(counter)s Buch zu lesen"
+msgstr[0] "hat sich das Ziel gesetzt, im Jahr %(year)s %(counter)s Buch zu lesen"
 msgstr[1] "setze dir das Ziel, %(year)s %(counter)s Bücher zu lesen"
 
 #: bookwyrm/templates/snippets/generated_status/rating.html:3
