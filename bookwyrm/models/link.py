@@ -1,4 +1,5 @@
-""" outlink data """
+"""outlink data"""
+
 from typing import Optional, Iterable
 from urllib.parse import urlparse
 

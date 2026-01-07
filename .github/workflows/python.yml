@@ -52,8 +52,8 @@ jobs:
     - name: Run Tests
       run: pytest -n 3
 
-  pylint:
-    name: Linting (pylint)
+  ruff:
+    name: Linting & Formatting (ruff)
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -66,8 +66,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Analyse code with pylint
-      run: pylint bookwyrm/
+    - name: Check code formatting with ruff
+      run: ruff format --check bookwyrm/ celerywyrm/
+    - name: Lint code with ruff
+      run: ruff check bookwyrm/ celerywyrm/
 
   mypy:
     name: Typing (mypy)
@@ -88,12 +90,3 @@ jobs:
     - name: Analyse code with mypy
       run: mypy bookwyrm celerywyrm
 
-  black:
-    name: Formatting (black; run ./bw-dev black to fix)
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-    - uses: psf/black@stable
-      with:
-        version: "22.*"

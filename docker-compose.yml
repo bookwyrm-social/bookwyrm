@@ -6,7 +6,8 @@ services:
       - "${PORT:-80}:80"
       - "${PORT:-443:443}"
     depends_on:
-      - web
+      web:
+        condition: service_healthy
     networks:
       - main
     environment:
@@ -15,8 +16,8 @@ services:
     volumes:
       - ./nginx/${NGINX_SETUP:-https}.conf:/etc/nginx/templates/default.conf.template
       - ./nginx/server_config:/etc/nginx/templates/server_config.template
+      - ./nginx/server_name:/etc/nginx/templates/server_name.template
       - ./nginx/locations:/etc/nginx/conf.d/locations
-      - ./nginx/server_name:/etc/nginx/conf.d/server_name
       - ./nginx/99-autoreload.sh:/docker-entrypoint.d/99-autoreload.sh
       - ./certbot/conf:/etc/nginx/ssl
       - ./certbot/data:/var/www/certbot
@@ -38,7 +39,7 @@ services:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       retries: 5
-      start_period: 30s
+      start_period: 5s
       timeout: 10s
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -53,12 +54,16 @@ services:
       - static_volume:/app/static
       - media_volume:/app/images
       - exports_volume:/app/exports
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000"]
+      interval: 10s
+      timeout: 10s
+      start_period: 3s
+      retries: 6
     depends_on:
       db:
         condition: service_healthy
         restart: true
-      celery_worker:
-        condition: service_started
       redis_activity:
         condition: service_started
     networks:
@@ -89,14 +94,24 @@ services:
     networks:
       - main
     command: celery -A celerywyrm worker -l info -Q high_priority,medium_priority,low_priority,streams,images,suggested_users,email,connectors,lists,inbox,imports,import_triggered,broadcast,misc
+    healthcheck:
+      test: celery -A celerywyrm status
+      interval: 10s
+      timeout: 10s
+      start_period: 2s
+      retries: 6
     volumes:
       - .:/app
       - static_volume:/app/static
       - media_volume:/app/images
       - exports_volume:/app/exports
     depends_on:
-      - db
-      - redis_broker
+      web:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      redis_broker:
+        condition: service_started
     restart: on-failure
   celery_beat:
     env_file: .env
@@ -104,17 +119,30 @@ services:
     networks:
       - main
     command: celery -A celerywyrm beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    healthcheck:
+      test: celery -A celerywyrm status
+      interval: 10s
+      timeout: 10s
+      retries: 6
+      start_period: 2s
     volumes:
       - .:/app
       - static_volume:/app/static
       - media_volume:/app/images
       - exports_volume:/app/exports
     depends_on:
-      - celery_worker
+      celery_worker:
+        condition: service_healthy
     restart: on-failure
   flower:
     build: .
     command: celery -A celerywyrm flower --basic_auth=${FLOWER_USER}:${FLOWER_PASSWORD} --url_prefix=flower
+    healthcheck:
+      test: celery -A celerywyrm status
+      interval: 10s
+      timeout: 10s
+      retries: 6
+      start_period: 2s
     env_file: .env
     volumes:
       - .:/app
@@ -122,8 +150,12 @@ services:
     networks:
       - main
     depends_on:
-      - db
-      - redis_broker
+      db:
+        condition: service_healthy
+      redis_broker:
+        condition: service_started
+      web:
+        condition: service_healthy
     restart: on-failure
   dev-tools:
     build: dev-tools

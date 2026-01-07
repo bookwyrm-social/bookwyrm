@@ -1,4 +1,5 @@
-""" testing import """
+"""testing import"""
+
 from unittest.mock import patch
 from django.test import RequestFactory, TestCase
 
@@ -134,9 +135,10 @@ class RssFeedView(TestCase):
 
     def test_rss_shelf(self, *_):
         """load the rss feed of a shelf"""
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.activitystreams.add_book_statuses_task.delay"):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.activitystreams.add_book_statuses_task.delay"),
+        ):
             # make the shelf
             shelf = models.Shelf.objects.create(
                 name="Test Shelf", identifier="test-shelf", user=self.local_user

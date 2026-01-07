@@ -1,4 +1,5 @@
-""" views for actions you can take in the application """
+"""views for actions you can take in the application"""
+
 import urllib.parse
 import re
 
@@ -150,7 +151,6 @@ def ostatus_follow_request(request):
 
     # don't do these checks for AnonymousUser before they sign in
     if request.user.is_authenticated:
-
         # you have blocked them so you probably don't want to follow
         if hasattr(request.user, "blocks") and user in request.user.blocks.all():
             error = "is_blocked"

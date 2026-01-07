@@ -1,4 +1,5 @@
-""" manages interfaces with external sources of book data """
+"""manages interfaces with external sources of book data"""
+
 from typing import Optional
 
 from django.db import models

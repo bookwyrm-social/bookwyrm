@@ -1,4 +1,5 @@
-""" handle reading a csv from openlibrary"""
+"""handle reading a csv from openlibrary"""
+
 from typing import Any
 
 from . import Importer

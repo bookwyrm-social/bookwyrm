@@ -1,4 +1,5 @@
-""" style fixes and lookups for templates """
+"""style fixes and lookups for templates"""
+
 from django.test import TestCase
 from bookwyrm.templatetags import markdown
 

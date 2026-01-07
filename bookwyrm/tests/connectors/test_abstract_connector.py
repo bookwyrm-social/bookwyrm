@@ -1,4 +1,5 @@
-""" testing book data connectors """
+"""testing book data connectors"""
+
 from unittest.mock import patch
 from django.test import TestCase
 import responses

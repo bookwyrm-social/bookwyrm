@@ -1,4 +1,5 @@
-""" class views for password management """
+"""class views for password management"""
+
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.http import HttpResponseBadRequest
@@ -11,7 +12,6 @@ from bookwyrm import forms, models
 from bookwyrm.emailing import password_reset_email
 
 
-# pylint: disable= no-self-use
 class PasswordResetRequest(View):
     """forgot password flow"""
 
