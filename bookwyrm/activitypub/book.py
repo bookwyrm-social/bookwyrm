@@ -34,8 +34,9 @@ class Book(BookData):
     subtitle: str = None
     description: str = ""
     languages: list[str] = field(default_factory=list)
-    series: str = ""
-    seriesNumber: str = ""
+    series: str = ""  # legacy, now deprecated
+    seriesNumber: str = ""  # legacy, now deprecated
+    seriesBooks: list[str] = field(default_factory=list)
     subjects: list[str] = field(default_factory=list)
     subjectPlaces: list[str] = field(default_factory=list)
 
@@ -90,3 +91,25 @@ class Author(BookData):
     wikipediaLink: str = ""
     type: str = "Author"
     website: str = ""
+
+
+@dataclass(init=False)
+class Series(BookData):
+    """serializes a book series"""
+
+    actor: str
+    name: str
+    alternativeNames: list[str] = field(default_factory=list)
+    seriesBooks: list[str] = field(default_factory=list)
+    type: str = "Series"
+
+
+@dataclass(init=False)
+class SeriesBook(ActivityObject):
+    """a book in a series"""
+
+    actor: str
+    book: str
+    series: str
+    seriesNumber: int = None
+    type: str = "SeriesBook"

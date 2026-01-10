@@ -100,6 +100,24 @@ def get_isni_bio(existing, author):
     return ""
 
 
+@register.filter(name="possible_series_hint")
+def possible_series_hint(seriesbook):
+    """Returns the hint string for a possible matching series"""
+    title = seriesbook.book.title
+    path = seriesbook.series.local_path
+    author = (
+        seriesbook.book.authors.first().name
+        if seriesbook.book.authors.first()
+        else None
+    )
+
+    hint = f'Includes <a href="{path}" target="_blank" rel="nofollow noopener noreferrer">"{title}"</a>'
+    if author:
+        hint += f" by {author}"
+
+    return mark_safe(hint)
+
+
 @register.filter(name="get_isni", needs_autoescape=True)
 def get_isni(existing, author, autoescape=True):
     """Returns the isni ID if an existing author has an ISNI listing"""

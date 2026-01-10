@@ -28,6 +28,8 @@ class Connector(AbstractConnector):
             Mapping("title", remote_field="wdt:P1476", formatter=get_first),
             Mapping("title", remote_field="labels", formatter=get_language_code),
             Mapping("subtitle", remote_field="wdt:P1680", formatter=get_first),
+            Mapping("series", remote_field="wdt:P179", formatter=self.format_series),
+            Mapping("seriesNumber", remote_field="wdt:P1545", formatter=get_first),
             Mapping("inventaireId", remote_field="uri"),
             Mapping(
                 "description", remote_field="sitelinks", formatter=self.get_description
@@ -78,7 +80,7 @@ class Connector(AbstractConnector):
             **data.get("claims", {}),
             **{
                 k: data.get(k)
-                for k in ["uri", "image", "labels", "sitelinks", "type"]
+                for k in ["uri", "image", "labels", "sitelinks", "type", "originalLang"]
                 if k in data
             },
         }
@@ -240,6 +242,42 @@ class Connector(AbstractConnector):
         """use get_remote_id to figure out the link from a model obj"""
         remote_id_value = obj.inventaire_id
         return self.get_remote_id(remote_id_value)
+
+    def format_series(self, keys: Iterable[str]) -> list[dict[str, str]]:
+        """resolve series data into activitypub data"""
+
+        series_list = []
+        for uri in keys:
+            try:
+                series_data = self.get_book_data(self.get_remote_id(uri))
+            except ConnectorException:
+                continue
+
+            alternative_names = set()
+            series = {}
+            original_lang = series_data.get("originalLang")
+            if original_lang:
+                original_lang = original_lang.split("-")[0]
+            else:
+                original_lang = "en"
+
+            for k, v in series_data["labels"].items():
+                if k == original_lang:
+                    series["name"] = v
+                else:
+                    alternative_names.add(v)
+
+            series["alternative_names"] = list(alternative_names)
+            series["inventaire_id"] = uri
+            series["wikidata"] = uri.split("wd:")[1]
+            if series_data.get("wdt:P6947"):
+                series["goodreads_key"] = series_data["wdt:P6947"][0]
+            if series_data.get("wdt:P1235"):
+                series["isfdb"] = series_data["wdt:P1235"][0]
+            if series_data.get("wdt:P8513"):
+                series["librarything_key"] = series_data["wdt:P8513"][0]
+            series_list.append(series)
+        return series_list
 
 
 def get_language_code(options: JsonDict, code: str = "en") -> Any:
