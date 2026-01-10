@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-01 17:29+0000\n"
-"PO-Revision-Date: 2026-01-09 15:33\n"
+"PO-Revision-Date: 2026-01-10 16:13\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -83,7 +83,7 @@ msgstr "Diese E-Mail-Adresse kann nicht registriert werden."
 
 #: bookwyrm/forms/landing.py:114
 msgid "Password cannot be the same as your current password"
-msgstr "Das Passwort darf nicht mit Ihrem aktuellen Passwort identisch sein"
+msgstr "Das Passwort darf nicht mit deinem aktuellen Passwort identisch sein"
 
 #: bookwyrm/forms/landing.py:144 bookwyrm/forms/landing.py:152
 msgid "Incorrect code"
@@ -1306,7 +1306,7 @@ msgstr "Titelbild via URL herunterladen:"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
 msgid "Book cover preview"
-msgstr "Vorschau des Covers"
+msgstr "Vorschau des Titelbilds"
 
 #: bookwyrm/templates/book/cover_show_modal.html:11
 #: bookwyrm/templates/components/inline_form.html:8
@@ -5359,7 +5359,7 @@ msgstr "Import ausgelöst"
 #: bookwyrm/templates/settings/celery.html:57
 #: bookwyrm/templates/settings/layout.html:113
 msgid "Connectors"
-msgstr "Konnektoren"
+msgstr "Connectoren"
 
 #: bookwyrm/templates/settings/celery.html:64
 #: bookwyrm/templates/settings/site.html:91
@@ -5877,35 +5877,35 @@ msgstr "Verhindert, dass deine Instanz mit anderen föderierten Diensten interag
 #: bookwyrm/templates/settings/files.html:7
 #: bookwyrm/templates/settings/files.html:11
 msgid "Files maintenance"
-msgstr ""
+msgstr "Dateiverwaltung"
 
 #: bookwyrm/templates/settings/files.html:17
 msgid "Schedule file deletion"
-msgstr ""
+msgstr "Löschung von Dateien planen"
 
 #: bookwyrm/templates/settings/files.html:21
 msgid "This job deletes uploaded user export and import files that have reached the expiry age."
-msgstr ""
+msgstr "Dieser Job löscht Dateien, die beim Im- und Export von Benutzer*innen erzeugt wurden, sofern sie das Ablaufdatum erreicht haben."
 
 #: bookwyrm/templates/settings/files.html:102
 msgid "Export file expiration"
-msgstr ""
+msgstr "Ablaufdatum der Exportdateien"
 
 #: bookwyrm/templates/settings/files.html:109
 msgid "Maximum age of export files, in hours"
-msgstr ""
+msgstr "Maximales Alter der Exportdateien in Stunden"
 
 #: bookwyrm/templates/settings/files.html:122
 msgid "Files older than this will be deleted."
-msgstr ""
+msgstr "Dateien, die älter sind, werden gelöscht."
 
 #: bookwyrm/templates/settings/files.html:125
 msgid "Set expiry hours"
-msgstr ""
+msgstr "Ablaufzeit festlegen"
 
 #: bookwyrm/templates/settings/files.html:138
 msgid "Expired files"
-msgstr ""
+msgstr "Abgelaufene Dateien"
 
 #: bookwyrm/templates/settings/files.html:186
 #: bookwyrm/templates/settings/imports/imports.html:184
@@ -5915,43 +5915,43 @@ msgstr "Abgeschlossen"
 
 #: bookwyrm/templates/settings/files.html:206
 msgid "Find book covers from connectors"
-msgstr ""
+msgstr "Titelbilder über Connectoren abrufen"
 
 #: bookwyrm/templates/settings/files.html:209
 msgid "These jobs find cover images where they are missing or have incorrect filepaths."
-msgstr ""
+msgstr "Diese Jobs finden Titelbilder, wenn diese fehlen oder falsche Dateipfade haben."
 
 #: bookwyrm/templates/settings/files.html:212
 msgid "Find missing covers"
-msgstr ""
+msgstr "Fehlende Titelbilder finden"
 
 #: bookwyrm/templates/settings/files.html:215
 msgid "Schedule a regular scan to find cover images for editions without them. This can be resource intensive so the recommended schedule is no less than every seven days."
-msgstr ""
+msgstr "Plane eine regelmäßige Suche nach fehlenden Titelbildern. Dies kann ressourcenintensiv sein, weshalb ein Intervall von mindestens sieben Tagen empfohlen wird."
 
 #: bookwyrm/templates/settings/files.html:296
 msgid "Fix broken book cover filepaths"
-msgstr ""
+msgstr "Finde fehlerhafte Dateipfade für Titelbilder"
 
 #: bookwyrm/templates/settings/files.html:299
 msgid "If you have lost your cover image files (e.g. due to server migration failure) the scheduled job above will not replace them. Run this job instead to attempt to find covers for books where the current cover filepath does not resolve to a file."
-msgstr ""
+msgstr "Wenn du die Titelbild-Dateien verloren hast (z. B. im Zuge eines Fehlers bei einer Migration), wird der obere Job sie nicht ersetzen. Führe stattdessen diesen Job aus, um zu versuchen, Titelbilder für Bücher zu finden, bei denen der aktuelle Dateipfad nicht ordnungsgemäß zu einer Datei aufgelöst werden kann."
 
 #: bookwyrm/templates/settings/files.html:306
 msgid "This job cannot be scheduled to run regularly"
-msgstr ""
+msgstr "Dieser Job kann nicht regelmäßig ausgeführt werden"
 
 #: bookwyrm/templates/settings/files.html:320
 msgid "Editions checked"
-msgstr ""
+msgstr "Geprüfte Ausgaben"
 
 #: bookwyrm/templates/settings/files.html:321
 msgid "Covers fixed"
-msgstr ""
+msgstr "Titelbilder repariert"
 
 #: bookwyrm/templates/settings/files.html:371
 msgid "Successfully updated expiry time"
-msgstr ""
+msgstr "Ablaufzeit erfolgreich aktualisiert"
 
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:4
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:4
@@ -6251,11 +6251,11 @@ msgstr "Benutzer*innen verwalten"
 #: bookwyrm/templates/settings/users/force_password_reset.html:7
 #: bookwyrm/templates/settings/users/force_password_reset.html:11
 msgid "Force Password Reset"
-msgstr ""
+msgstr "Zurücksetzen des Passworts erzwingen"
 
 #: bookwyrm/templates/settings/layout.html:53
 msgid "Federation"
-msgstr ""
+msgstr "Föderation"
 
 #: bookwyrm/templates/settings/layout.html:68
 msgid "Moderation"
@@ -6269,7 +6269,7 @@ msgstr "Meldungen"
 
 #: bookwyrm/templates/settings/layout.html:76
 msgid "Auto-Moderation Rules"
-msgstr ""
+msgstr "Regeln für automatisierte Moderation"
 
 #: bookwyrm/templates/settings/layout.html:88
 #: bookwyrm/templates/settings/link_domains/link_domains.html:5
@@ -6283,11 +6283,11 @@ msgstr "System"
 
 #: bookwyrm/templates/settings/layout.html:105
 msgid "Scheduled Tasks"
-msgstr ""
+msgstr "Geplante Aufgaben"
 
 #: bookwyrm/templates/settings/layout.html:117
 msgid "Files Maintenance"
-msgstr ""
+msgstr "Dateiverwaltung"
 
 #: bookwyrm/templates/settings/layout.html:122
 msgid "Instance Settings"
@@ -6713,15 +6713,15 @@ msgstr "Benutzer*in dauerhaft löschen"
 #: bookwyrm/templates/settings/users/delete_user_form.html:12
 #, python-format
 msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? This action cannot be undone."
-msgstr ""
+msgstr "Bist du sicher, dass du das Konto von <strong>%(username)s</strong> löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden."
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:18
 msgid "I understand that this is a permanent action:"
-msgstr ""
+msgstr "Ich verstehe, dass dies eine endgültige Aktion ist:"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:17
 msgid "All users in the selected category will be logged out and required to set a new password to log back in."
-msgstr ""
+msgstr "Alle Benutzer*innen in der ausgewählten Kategorie werden abgemeldet und müssen ein neues Passwort festlegen, um sich wieder anzumelden."
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:18
 msgid "If your account is in the group, you will be logged out out after submitting."
