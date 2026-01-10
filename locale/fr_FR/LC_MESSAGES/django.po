@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-01 17:29+0000\n"
-"PO-Revision-Date: 2026-01-01 18:32\n"
+"PO-Revision-Date: 2026-01-07 17:46\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -83,7 +83,7 @@ msgstr "Cette adresse de courriel ne peut pas être enregistrée."
 
 #: bookwyrm/forms/landing.py:114
 msgid "Password cannot be the same as your current password"
-msgstr ""
+msgstr "Le mot de passe ne peut être identique à votre mot de passe actuel"
 
 #: bookwyrm/forms/landing.py:144 bookwyrm/forms/landing.py:152
 msgid "Incorrect code"
@@ -331,11 +331,11 @@ msgstr "Privé"
 
 #: bookwyrm/models/housekeeping.py:116
 msgid "Missing"
-msgstr ""
+msgstr "Manquant"
 
 #: bookwyrm/models/housekeeping.py:117
 msgid "Wrong Path"
-msgstr ""
+msgstr "Mauvais chemin d'accès"
 
 #: bookwyrm/models/import_job.py:51 bookwyrm/models/job.py:19
 #: bookwyrm/templates/import/import.html:184
@@ -2360,7 +2360,7 @@ msgstr "Vous pouvez suivre des utilisateur⋅ices d’autres instances BookWyrm 
 
 #: bookwyrm/templates/get_started/users.html:11
 msgid "You can follow other users on this BookWyrm instance."
-msgstr ""
+msgstr "Vous pouvez suivre d'autres utilisateurs sur cette instance de BookWyrm."
 
 #: bookwyrm/templates/get_started/users.html:15
 msgid "Search for a user"
@@ -3542,7 +3542,7 @@ msgstr "Motif"
 
 #: bookwyrm/templates/landing/force_password_reset.html:30
 msgid "You must set a new password before logging in."
-msgstr ""
+msgstr "Vous devez définir un nouveau mot de passe avant de vous connecter."
 
 #: bookwyrm/templates/landing/force_password_reset.html:50
 #: bookwyrm/templates/preferences/change_password.html:22
@@ -4542,7 +4542,7 @@ msgstr "La suppression de votre compte ne peut pas être annulée. Le nom d'util
 
 #: bookwyrm/templates/preferences/delete_user.html:36
 msgid "I understand that my account cannot be recovered:"
-msgstr ""
+msgstr "Je comprends que mon compte ne pourra pas être récupéré :"
 
 #: bookwyrm/templates/preferences/disable-2fa.html:4
 #: bookwyrm/templates/preferences/disable-2fa.html:7
@@ -4791,7 +4791,7 @@ msgstr "Migrer ce compte notifiera tou·te·s vos abonné·e·s et les rediriger
 #: bookwyrm/templates/preferences/move_user.html:19
 #, python-format
 msgid "<strong>%(user)s</strong> will be marked as moved and will not be discoverable or usable unless you undo the move."
-msgstr ""
+msgstr "L'utilisateur <strong>%(user)s</strong> sera marqué comme migré et ne sera plus découvrable ou utilisable, à moins que vous n'annuliez la migration."
 
 #: bookwyrm/templates/preferences/move_user.html:25
 msgid "Remember to add this user as an alias of the target account before you try to move."
@@ -5846,11 +5846,11 @@ msgstr "Aucune instance trouvée"
 #: bookwyrm/templates/settings/federation/settings.html:3
 #: bookwyrm/templates/settings/layout.html:58
 msgid "Federation Settings"
-msgstr ""
+msgstr "Paramètres de la Fédération"
 
 #: bookwyrm/templates/settings/federation/settings.html:5
 msgid "Federated Settings"
-msgstr ""
+msgstr "Paramètres de la Fédération"
 
 #: bookwyrm/templates/settings/federation/settings.html:12
 #: bookwyrm/templates/settings/registration.html:13
@@ -5868,11 +5868,11 @@ msgstr "Impossible d’enregistrer les paramètres"
 
 #: bookwyrm/templates/settings/federation/settings.html:37
 msgid "Disable federation"
-msgstr ""
+msgstr "Désactiver la fédération"
 
 #: bookwyrm/templates/settings/federation/settings.html:40
 msgid "Prevents your instance from interacting with other federated services. Existing data from other instances will still be present."
-msgstr ""
+msgstr "Empêche votre instance d'interagir avec d'autres services fédérés. Les données existantes d'autres instances seront toujours présentes."
 
 #: bookwyrm/templates/settings/files.html:7
 #: bookwyrm/templates/settings/files.html:11
@@ -5915,39 +5915,39 @@ msgstr "Terminé"
 
 #: bookwyrm/templates/settings/files.html:206
 msgid "Find book covers from connectors"
-msgstr ""
+msgstr "Trouver des couvertures de livres à partir de connecteurs"
 
 #: bookwyrm/templates/settings/files.html:209
 msgid "These jobs find cover images where they are missing or have incorrect filepaths."
-msgstr ""
+msgstr "Ces tâches trouvent des images de couverture là où elles sont manquantes ou ont des chemins de fichier incorrects."
 
 #: bookwyrm/templates/settings/files.html:212
 msgid "Find missing covers"
-msgstr ""
+msgstr "Trouver les couvertures manquantes"
 
 #: bookwyrm/templates/settings/files.html:215
 msgid "Schedule a regular scan to find cover images for editions without them. This can be resource intensive so the recommended schedule is no less than every seven days."
-msgstr ""
+msgstr "Planifiez un scan régulier pour trouver des images de couverture sans elles. Cela peut être intensif en ressources de sorte que le calendrier recommandé n'est pas inférieur tous les sept jours."
 
 #: bookwyrm/templates/settings/files.html:296
 msgid "Fix broken book cover filepaths"
-msgstr ""
+msgstr "Corriger les chemins de fichiers de couverture de livres cassés"
 
 #: bookwyrm/templates/settings/files.html:299
 msgid "If you have lost your cover image files (e.g. due to server migration failure) the scheduled job above will not replace them. Run this job instead to attempt to find covers for books where the current cover filepath does not resolve to a file."
-msgstr ""
+msgstr "Si vous avez perdu vos fichiers d'image de couverture (par exemple en raison d'une panne de migration du serveur), la tâche planifiée ci-dessus ne les remplacera pas. Exécutez cette tâche à la place pour tenter de trouver des couvertures pour les livres où le chemin de fichier de couverture actuel ne se résout pas à un fichier."
 
 #: bookwyrm/templates/settings/files.html:306
 msgid "This job cannot be scheduled to run regularly"
-msgstr ""
+msgstr "Cette tâche ne peut pas être planifiée pour s'exécuter régulièrement"
 
 #: bookwyrm/templates/settings/files.html:320
 msgid "Editions checked"
-msgstr ""
+msgstr "Éditions vérifiées"
 
 #: bookwyrm/templates/settings/files.html:321
 msgid "Covers fixed"
-msgstr ""
+msgstr "Couvertures corrigées"
 
 #: bookwyrm/templates/settings/files.html:371
 msgid "Successfully updated expiry time"
@@ -6251,11 +6251,11 @@ msgstr "Gérer les comptes"
 #: bookwyrm/templates/settings/users/force_password_reset.html:7
 #: bookwyrm/templates/settings/users/force_password_reset.html:11
 msgid "Force Password Reset"
-msgstr ""
+msgstr "Forcer la réinitialisation du mot de passe"
 
 #: bookwyrm/templates/settings/layout.html:53
 msgid "Federation"
-msgstr ""
+msgstr "Fédération"
 
 #: bookwyrm/templates/settings/layout.html:68
 msgid "Moderation"
@@ -6713,43 +6713,43 @@ msgstr "Supprimer définitivement l'utilisateur"
 #: bookwyrm/templates/settings/users/delete_user_form.html:12
 #, python-format
 msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? This action cannot be undone."
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir supprimer le compte <strong>%(username)s</strong>? Cette action est irréversible."
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:18
 msgid "I understand that this is a permanent action:"
-msgstr ""
+msgstr "Je comprends qu'il s'agit d'une action permanente:"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:17
 msgid "All users in the selected category will be logged out and required to set a new password to log back in."
-msgstr ""
+msgstr "Tous les utilisateurs de la catégorie sélectionnée seront déconnectés et devront définir un nouveau mot de passe pour se reconnecter."
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:18
 msgid "If your account is in the group, you will be logged out out after submitting."
-msgstr ""
+msgstr "Si votre compte est dans le groupe, vous serez déconnecté après validation."
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:22
 msgid "Users given password resets:"
-msgstr ""
+msgstr "Réinitialisation du mot de passe des utilisateurs :"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:35
 msgid "All users"
-msgstr ""
+msgstr "Tous les utilisateurs"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:39
 msgid "users"
-msgstr ""
+msgstr "utilisateurs"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:43
 msgid "Force password reset"
-msgstr ""
+msgstr "Forcer la réinitialisation du mot de passe"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:48
 msgid "Number of users that will be effected:"
-msgstr ""
+msgstr "Nombre d'utilisateurs concernés :"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:53
 msgid "Are you sure you want to force password reset for these users:"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir forcer la réinitialisation du mot de passe pour ces utilisateurs:"
 
 #: bookwyrm/templates/settings/users/user_admin.html:9
 #, python-format
@@ -7792,7 +7792,7 @@ msgstr "Modifier le profil"
 
 #: bookwyrm/templates/user/user.html:29
 msgid "Federation is currently disabled, so you will not be able to interact with this user."
-msgstr ""
+msgstr "La Fédération est actuellement désactivée, vous ne pourrez donc pas interagir avec cet utilisateur."
 
 #: bookwyrm/templates/user/user.html:51
 #, python-format
