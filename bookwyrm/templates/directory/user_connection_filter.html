@@ -2,13 +2,13 @@
 {% load i18n %}
 
 {% block filter %}
-<legend class="label">{% trans "Followed users" %}</legend>
+<legend class="label">{% trans "Following users" %}</legend>
 <label class="is-block">
-    <input type="radio" class="radio" name="connection" value="followed" {% if request.GET.connection == 'followed' %}checked{% endif %}>
-    {% trans "Followed users" %}
+    <input type="radio" class="radio" name="connection" value="following" {% if request.GET.connection == 'following' %}checked{% endif %}>
+    {% trans "Following users" %}
 </label>
 <label class="is-block">
-    <input type="radio" class="radio" name="connection" value="unfollowed" {% if request.GET.connection == 'unfollowed' %}checked{% endif %}>
-    {% trans "Yet not followed users" %}
+    <input type="radio" class="radio" name="connection" value="not_following" {% if request.GET.connection == 'not_following' %}checked{% endif %}>
+    {% trans "Not following users" %}
 </label>
 {% endblock %}

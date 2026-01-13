@@ -117,14 +117,14 @@ class SuggestedUsers(RedisStore):
 
 def get_annotated_users(viewer, *args, **kwargs):
     """Users, annotated with things they have in common"""
-    followed = kwargs.pop("followed", None)
+    following = kwargs.pop("following", None)
     query = models.User.objects.filter(
         discoverable=True, is_active=True, *args, **kwargs
-    ).exclude(Q(id__in=viewer.blocks.all()) | Q(blocks=viewer))
+    ).exclude(Q(id__in=viewer.blocks.all()) | Q(blocks=viewer) | Q(id=viewer.id))
 
-    if followed is True:
+    if following is True:
         query = query.filter(id__in=viewer.following.all())
-    elif followed is False:
+    elif following is False:
         query = query.exclude(id__in=viewer.following.all())
 
     return query.annotate(

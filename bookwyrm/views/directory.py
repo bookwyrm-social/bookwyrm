@@ -21,10 +21,10 @@ class Directory(View):
         if not software or software == "bookwyrm":
             filters["bookwyrm_user"] = True
         users_connection = request.GET.get("connection")
-        if users_connection == "followed":
-            filters["followed"] = True
-        elif users_connection == "unfollowed":
-            filters["followed"] = False
+        if users_connection == "following":
+            filters["following"] = True
+        elif users_connection == "not_following":
+            filters["following"] = False
         scope = request.GET.get("scope", "federated")
         if scope == "local":
             filters["local"] = True
