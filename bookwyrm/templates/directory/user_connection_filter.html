@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block filter %}
-<legend class="label">{% trans "Following users" %}</legend>
+<legend class="label">{% trans "Relationship" %}</legend>
 <label class="is-block">
     <input type="radio" class="radio" name="connection" value="following" {% if request.GET.connection == 'following' %}checked{% endif %}>
     {% trans "Following users" %}
