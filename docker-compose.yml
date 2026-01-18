@@ -73,7 +73,6 @@ services:
     env_file: .env
     command: gunicorn bookwyrm.wsgi:application
     volumes:
-      - .:/app
       - static_volume:/app/static
       - media_volume:/app/images
       - exports_volume:/app/exports
