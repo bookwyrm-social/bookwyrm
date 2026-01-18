@@ -10,4 +10,4 @@ fi
 BACKUP_DB=${POSTGRES_DB:-bookwyrm}
 BACKUP_USER=${POSTGRES_USER:-bookwyrm}
 filename=backup_${BACKUP_DB}_$(date +%F)
-pg_dump -U $BACKUP_USER $BACKUP_DB > /backups/$filename.sql
+pg_dump -U $BACKUP_USER $BACKUP_DB --file /backups/$filename.sql
