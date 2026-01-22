@@ -387,6 +387,7 @@ class Book(BookDataModel):
             # Add bloom index for all deduplication_fields
             BloomIndex(
                 fields=[
+                    "origin_id",
                     "remote_id",
                     "openlibrary_key",
                     "finna_key",
