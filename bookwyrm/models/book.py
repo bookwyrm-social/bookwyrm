@@ -1,7 +1,9 @@
 """database schema for books and shelves"""
 
 from itertools import chain
+from functools import reduce
 import re
+import operator
 from typing import Any, Dict, Optional, Iterable
 from typing_extensions import Self
 
@@ -10,7 +12,7 @@ from django.contrib.postgres.indexes import GinIndex, BloomIndex
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
-from django.db.models import Prefetch, ManyToManyField
+from django.db.models import Prefetch, ManyToManyField, Q
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
@@ -387,6 +389,7 @@ class Book(BookDataModel):
             # Add bloom index for all deduplication_fields
             BloomIndex(
                 fields=[
+                    "origin_id",
                     "remote_id",
                     "openlibrary_key",
                     "finna_key",
@@ -636,6 +639,77 @@ class Edition(Book):
                 ]
             )
         ]
+
+    @classmethod
+    def find_existing(cls, data):
+        """compare data to fields that can be used for deduplication.
+        This always includes remote_id, but can also be unique identifiers
+        like an isbn for an edition"""
+        filters = []
+        # grabs all the data from the model to create django queryset filters
+        for field in cls._meta.get_fields():
+            if (
+                not hasattr(field, "deduplication_field")
+                or not field.deduplication_field
+            ):
+                continue
+
+            value = data.get(field.get_activitypub_field())
+            if not value:
+                continue
+            filters.append({field.name: value})
+
+        if "id" in data:
+            # kinda janky, but this handles special case for books
+            filters.append({"origin_id": data["id"]})
+
+        if not filters:
+            # if there are no deduplication fields, it will match the first
+            # item no matter what. this shouldn't happen but just in case.
+            return None
+
+        # For books, we want to first check with isbn10/13/oclc fields if possible
+        # as it hits Edition table bloom index
+        book_filters = []
+        for filter_item in filters:
+            filter_fields = {
+                field_name: field_value
+                for field_name, field_value in filter_item.items()
+                if field_name in ["isbn_10", "isbn_13", "oclc_number"]
+            }
+            if filter_fields:
+                book_filters.append(filter_fields)
+        objects = cls.objects
+        if hasattr(objects, "select_subclasses"):
+            objects = objects.select_subclasses()
+
+        if book_filters:
+            possible_book = objects.filter(
+                reduce(operator.or_, (Q(**f) for f in book_filters))
+            )
+            if (book := possible_book.first()) is not None:
+                return book
+
+        # if no match, drop isbn10/13/oclc_number from filters so bloom index hits from Book-table
+        book_filters = []
+        for filter_item in filters:
+            filter_fields = {
+                field_name: field_value
+                for field_name, field_value in filter_item.items()
+                if field_name not in ["isbn_10", "isbn_13", "oclc_number"]
+            }
+            if filter_fields:
+                book_filters.append(filter_fields)
+
+        filters = book_filters
+
+        if not filters:
+            return None
+
+        # an OR operation on all the match fields, sorry for the dense syntax
+        match = objects.filter(reduce(operator.or_, (Q(**f) for f in filters)))
+        # there OUGHT to be only one match
+        return match.first()
 
     @property
     def hyphenated_isbn13(self):
