@@ -1,4 +1,4 @@
-FROM postgres:13.16
+FROM postgres:17
 
 # crontab
 RUN mkdir /backups
