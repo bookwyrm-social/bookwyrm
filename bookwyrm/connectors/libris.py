@@ -208,7 +208,7 @@ class Connector(AbstractConnector):
 
         if not records:
             raise ConnectorException(f"No book found for ID: {libris_id}")
-        # cast to JsonDict since we know the API structure
+        # records is typed as Any because dict.get() on JsonDict returns Any
         return records[0]  # type: ignore[no-any-return]
 
     def get_remote_author_id(self, data: JsonDict) -> str | None:
