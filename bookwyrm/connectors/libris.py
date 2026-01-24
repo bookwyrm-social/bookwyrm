@@ -11,14 +11,14 @@ from .connector_manager import ConnectorException
 from .openlibrary_languages import languages
 
 
-def get_first(value):
+def get_first(value: str | list[str] | None) -> str | None:
     """Extract first element if value is a list, otherwise return as-is."""
     if isinstance(value, list):
         return value[0] if value else None
     return value
 
 
-def join_paragraphs(value: str | list | None) -> str | None:
+def join_paragraphs(value: str | list[str] | None) -> str | None:
     """join list elements with newlines, or return string as-is."""
     if not value:
         return None
@@ -35,7 +35,7 @@ def extract_id_from_url(url: str | None) -> str | None:
     return None
 
 
-def resolve_languages(data: str | list | None) -> list[str]:
+def resolve_languages(data: str | list[str] | None) -> list[str]:
     """Convert ISO language codes to language names using OpenLibrary language map"""
     if not data:
         return []
@@ -51,7 +51,7 @@ def resolve_languages(data: str | list | None) -> list[str]:
     return result
 
 
-def parse_isbn(isbn: str | list | None, length: int) -> str | None:
+def parse_isbn(isbn: str | list[str] | None, length: int) -> str | None:
     """extract ISBN of specified length from ISBN field.
 
     args:
@@ -76,17 +76,17 @@ def parse_isbn(isbn: str | list | None, length: int) -> str | None:
     return cleaned if len(cleaned) == length else None
 
 
-def parse_isbn13(isbn: str | list | None) -> str | None:
+def parse_isbn13(isbn: str | list[str] | None) -> str | None:
     """extract ISBN-13 from ISBN field"""
     return parse_isbn(isbn, 13)
 
 
-def parse_isbn10(isbn: str | list | None) -> str | None:
+def parse_isbn10(isbn: str | list[str] | None) -> str | None:
     """extract ISBN-10 from ISBN field"""
     return parse_isbn(isbn, 10)
 
 
-def parse_publishers(publisher: str | list | None) -> list[str]:
+def parse_publishers(publisher: str | list[str] | None) -> list[str]:
     """parse publisher field, handling 'City : Publisher' format"""
     if not publisher:
         return []
@@ -125,7 +125,7 @@ def parse_author_name(author: str | None) -> str | None:
     return author
 
 
-def parse_authors(creator: str | list | None) -> list[str]:
+def parse_authors(creator: str | list[str] | None) -> list[str]:
     """parse creator field into list of author names.
 
     deduplicates authors since the API sometimes returns the same author
@@ -147,13 +147,13 @@ def parse_authors(creator: str | list | None) -> list[str]:
     return list(dict.fromkeys(result))
 
 
-def get_first_author_name(data: str | list | None) -> str | None:
+def get_first_author_name(data: str | list[str] | None) -> str | None:
     """get the first author's name from creator data"""
     authors = parse_authors(data)
     return authors[0] if authors else None
 
 
-def format_authors_for_display(creator: str | list | None) -> str | None:
+def format_authors_for_display(creator: str | list[str] | None) -> str | None:
     """format authors for display in search results (semicolon-separated)"""
     authors = parse_authors(creator)
     if not authors:
@@ -208,11 +208,15 @@ class Connector(AbstractConnector):
 
         if not records:
             raise ConnectorException(f"No book found for ID: {libris_id}")
-        return records[0]
+        # cast to JsonDict since we know the API structure
+        return records[0]  # type: ignore[no-any-return]
 
     def get_remote_author_id(self, data: JsonDict) -> str | None:
         """return search URL for author info"""
-        author = get_first_author_name(data)
+        creator = data.get("creator")
+        if creator is None:
+            return None
+        author = get_first_author_name(creator)
         if author:
             return f"{self.search_url}forf:({author})"
         return None
@@ -239,9 +243,15 @@ class Connector(AbstractConnector):
             if min_confidence is not None and confidence < min_confidence:
                 break
 
+            # SearchResult requires non-None title and key
+            title = get_first(record.get("title"))
+            key = get_first(record.get("identifier"))
+            if not title or not key:
+                continue
+
             yield SearchResult(
-                title=get_first(record.get("title")),
-                key=get_first(record.get("identifier")),
+                title=title,
+                key=key,
                 author=format_authors_for_display(record.get("creator")),
                 cover=None,  # Libris doesn't provide cover images in JSON
                 year=get_first(record.get("date")),
