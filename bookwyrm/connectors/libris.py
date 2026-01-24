@@ -114,13 +114,13 @@ def parse_author_name(author: str | None) -> str | None:
         return None
 
     # remove year information (e.g., "1976-", "1900-1980", or "1947- .")
-    author = re.sub(r",?\s*\d{4}-?\d*\s*\.?\s*$", "", author).strip()
+    author = re.sub(r"(\d\??){1,4}(\W\-?\??){0,3}((\d\?){1,4}$)?", "", author).strip()
 
     # handle "Lastname, Firstname" format
     if ", " in author:
         parts = author.split(", ", 1)
         if len(parts) == 2:
-            return f"{parts[1]} {parts[0]}"
+            return f"{parts[1].rstrip(',')} {parts[0].rstrip(',')}"
 
     return author
 
