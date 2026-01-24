@@ -4,7 +4,9 @@
 /** @todo Replace icons with SVG symbols.
     @see https://www.youtube.com/watch?v=9xXBYcWgCHA */
 .shelf-option:disabled > *::after {
-    font-family: icomoon; /* stylelint-disable font-family-no-missing-generic-family-keyword */
+    /* stylelint-disable font-family-no-missing-generic-family-keyword */
+    font-family: icomoon;
+    /* stylelint-enable font-family-no-missing-generic-family-keyword */
     content: "\e919"; /* icon-check */
     margin-left: 0.5em;
 }

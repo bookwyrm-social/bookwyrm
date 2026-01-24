@@ -35,6 +35,7 @@
 .form-rate-stars input.half:checked + input + .icon:hover::before {
     content: "\e9d8" !important; /* icon-star-half */
 }
+/* stylelint-enable no-descending-specificity */
 
 /* Icons directly following half check inputs that follow the checked input are emptied. */
 .form-rate-stars input.half:checked + input + .icon ~ .icon::before {
