@@ -8,7 +8,7 @@ from typing import Any, Dict, Optional, Iterable
 from typing_extensions import Self
 
 from django.contrib.postgres.search import SearchVectorField
-from django.contrib.postgres.indexes import GinIndex, BloomIndex
+from django.contrib.postgres.indexes import GinIndex, BloomIndex, Index
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
@@ -646,7 +646,8 @@ class Edition(Book):
                     "isbn_13",
                     "oclc_number",
                 ]
-            )
+            ),
+            Index(fields=["parent_work", "-edition_rank"]),
         ]
 
     @classmethod
