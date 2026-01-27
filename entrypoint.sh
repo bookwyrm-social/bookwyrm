@@ -16,7 +16,6 @@ if [ "$1" = "gunicorn" ]; then
     # we run all the migrations if needed, it is no-op if none needed
     info "**** Checking needed migrations"
     python manage.py migrate || die "failed to migrate"
-    python manage.py migrate django_celery_beat || die "failed to migrate django"
     info "**** Migrations done"
 
     info "**** Checking if database is initialized"
