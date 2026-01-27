@@ -231,3 +231,18 @@ def create_finna_connector() -> None:
         "&field[]=id&field[]=formats&field[]=images"
         "&lookfor=isbn:",
     )
+
+
+def create_libris_connector() -> None:
+    """create a Libris connector"""
+
+    models.Connector.objects.create(
+        identifier="libris.kb.se",
+        name="Libris",
+        connector_file="libris",
+        base_url="https://libris.kb.se",
+        books_url="http://libris.kb.se/xsearch?format=json&format_level=full&n=1&query=",
+        covers_url="https://libris.kb.se",
+        search_url="http://libris.kb.se/xsearch?format=json&format_level=full&n=20&query=",
+        isbn_search_url="http://libris.kb.se/xsearch?format=json&format_level=full&n=5&query=isbn:",
+    )
