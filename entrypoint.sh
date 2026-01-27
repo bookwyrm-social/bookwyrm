@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-info() { echo >&2 "$*"; }
+info() { echo >&2 "[$(date --iso-8601=seconds)] $*"; }
 die() {
     echo >&2 "$*"
     exit 1
