@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-01 17:29+0000\n"
-"PO-Revision-Date: 2026-01-29 19:37\n"
+"PO-Revision-Date: 2026-01-29 20:39\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -3520,7 +3520,7 @@ msgstr "Een gebruiker, status of BookWyrm-server is verwijderd nadat jouw import
 
 #: bookwyrm/templates/import/user_troubleshoot.html:35
 msgid "Importing statuses when your old account has been deleted"
-msgstr ""
+msgstr "Statussen importeren wanneer je oude account verwijderd is"
 
 #: bookwyrm/templates/import/user_troubleshoot.html:43
 #, python-format
@@ -4791,7 +4791,7 @@ msgstr "Het verplaatsen van je account zal al je volgers op de hoogte stellen en
 #: bookwyrm/templates/preferences/move_user.html:19
 #, python-format
 msgid "<strong>%(user)s</strong> will be marked as moved and will not be discoverable or usable unless you undo the move."
-msgstr ""
+msgstr "<strong>%(user)s</strong> wordt als 'verhuisd' gemarkeerd en is niet langer vindbaar of bruikbaar, tenzij je de verhuizing ongedaan maakt."
 
 #: bookwyrm/templates/preferences/move_user.html:25
 msgid "Remember to add this user as an alias of the target account before you try to move."
@@ -4881,7 +4881,7 @@ msgstr "Je bent ingelogd met de volgende sessies:"
 
 #: bookwyrm/templates/preferences/security.html:126
 msgid "Date first logged in"
-msgstr ""
+msgstr "Datum van eerste inlog"
 
 #: bookwyrm/templates/preferences/security.html:127
 msgid "IP address"
@@ -4917,7 +4917,7 @@ msgstr "Uitloggen"
 
 #: bookwyrm/templates/preferences/security.html:161
 msgid "Currently your logged-in sessions are unable to be displayed."
-msgstr ""
+msgstr "Het is niet mogelijk om je actieve sessies weer te geven."
 
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
@@ -5452,7 +5452,7 @@ msgstr "Foutmeldingen"
 
 #: bookwyrm/templates/settings/connectors/available.html:15
 msgid "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof."
-msgstr ""
+msgstr "Finna.fi is een zoekmachine die materiaal van honderden Finse organisaties samenbrengt."
 
 #: bookwyrm/templates/settings/connectors/available.html:28
 msgid "Create new connector"
@@ -5489,7 +5489,7 @@ msgstr "De prioriteit bepaalt in welke volgorde de zoekresultaten worden weergeg
 
 #: bookwyrm/templates/settings/connectors/connectors.html:14
 msgid "Connector settings only determine whether a connector will be used to deliver search results. To manage more interactions with other federated servers, including domain blocks, see"
-msgstr ""
+msgstr "Connector-instellingen bepalen alleen of een connector gebruikt wordt bij zoekopdrachten. Om interacties met andere gefedereerde servers te beheren, inclusief het blokkeren van domeinen, zie"
 
 #: bookwyrm/templates/settings/connectors/connectors.html:14
 #: bookwyrm/templates/settings/federation/edit_instance.html:12
@@ -5872,7 +5872,7 @@ msgstr "Federatie uitschakelen"
 
 #: bookwyrm/templates/settings/federation/settings.html:40
 msgid "Prevents your instance from interacting with other federated services. Existing data from other instances will still be present."
-msgstr ""
+msgstr "Stopt de interactie van jouw instantie met andere federatieve diensten. Bestaande data uit andere diensten blijft zichtbaar."
 
 #: bookwyrm/templates/settings/files.html:7
 #: bookwyrm/templates/settings/files.html:11
@@ -5885,11 +5885,11 @@ msgstr "Bestandsverwijdering inplannen"
 
 #: bookwyrm/templates/settings/files.html:21
 msgid "This job deletes uploaded user export and import files that have reached the expiry age."
-msgstr ""
+msgstr "Deze job verwijdert geüploadde gebruikersexport- en importbestanden die de bewaringstermijn hebben overschreden."
 
 #: bookwyrm/templates/settings/files.html:102
 msgid "Export file expiration"
-msgstr ""
+msgstr "Bewaartermijn exportbestanden"
 
 #: bookwyrm/templates/settings/files.html:109
 msgid "Maximum age of export files, in hours"
@@ -5915,11 +5915,11 @@ msgstr "Voltooid"
 
 #: bookwyrm/templates/settings/files.html:206
 msgid "Find book covers from connectors"
-msgstr ""
+msgstr "Boekomslagen vinden van connectors"
 
 #: bookwyrm/templates/settings/files.html:209
 msgid "These jobs find cover images where they are missing or have incorrect filepaths."
-msgstr ""
+msgstr "Deze jobs vinden omslagafbeeldingen waar ze ontbreken of een onjuist bestandspad hebben."
 
 #: bookwyrm/templates/settings/files.html:212
 msgid "Find missing covers"
@@ -5927,19 +5927,19 @@ msgstr "Ontbrekende omslagen vinden"
 
 #: bookwyrm/templates/settings/files.html:215
 msgid "Schedule a regular scan to find cover images for editions without them. This can be resource intensive so the recommended schedule is no less than every seven days."
-msgstr ""
+msgstr "Plan een reguliere scan om boekomslagen te vinden voor edities zonder omslag. Dit kan veel resources vragen, dus het wordt aangeraden dit niet vaker dan eens per zeven dagen uit te voeren."
 
 #: bookwyrm/templates/settings/files.html:296
 msgid "Fix broken book cover filepaths"
-msgstr ""
+msgstr "Herstel onjuiste bestandspaden van boekomslagen"
 
 #: bookwyrm/templates/settings/files.html:299
 msgid "If you have lost your cover image files (e.g. due to server migration failure) the scheduled job above will not replace them. Run this job instead to attempt to find covers for books where the current cover filepath does not resolve to a file."
-msgstr ""
+msgstr "Wanneer je omslagafbeeldingen kwijt bent (bijv. door een servermigratie), dan zal de job hierboven deze niet vervangen. Voer in plaats daarvan deze job uit om omslagafbeeldingen te zoeken voor edities waar het huidige pad niet naar een bestand verwijst."
 
 #: bookwyrm/templates/settings/files.html:306
 msgid "This job cannot be scheduled to run regularly"
-msgstr ""
+msgstr "Deze job kan niet regulier ingepland worden"
 
 #: bookwyrm/templates/settings/files.html:320
 msgid "Editions checked"
@@ -6269,7 +6269,7 @@ msgstr "Meldingen"
 
 #: bookwyrm/templates/settings/layout.html:76
 msgid "Auto-Moderation Rules"
-msgstr ""
+msgstr "Auto-moderatieregels"
 
 #: bookwyrm/templates/settings/layout.html:88
 #: bookwyrm/templates/settings/link_domains/link_domains.html:5
@@ -6287,7 +6287,7 @@ msgstr "Geplande taken"
 
 #: bookwyrm/templates/settings/layout.html:117
 msgid "Files Maintenance"
-msgstr ""
+msgstr "Bestandsonderhoud"
 
 #: bookwyrm/templates/settings/layout.html:122
 msgid "Instance Settings"
@@ -6713,7 +6713,7 @@ msgstr "Gebruiker definitief verwijderen"
 #: bookwyrm/templates/settings/users/delete_user_form.html:12
 #, python-format
 msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? This action cannot be undone."
-msgstr ""
+msgstr "Weet je zeker dat je <strong>%(username)s</strong>'s account wilt verwijderen? Dit kan niet ongedaan gemaakt worden."
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:18
 msgid "I understand that this is a permanent action:"
@@ -6721,7 +6721,7 @@ msgstr "Ik begrijp dat dit een permanente actie is:"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:17
 msgid "All users in the selected category will be logged out and required to set a new password to log back in."
-msgstr ""
+msgstr "Alle gebruikers in de gekozen categorie worden uitgelogd en moeten bij het inloggen een nieuw wachtwoord instellen."
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:18
 msgid "If your account is in the group, you will be logged out out after submitting."
@@ -6749,7 +6749,7 @@ msgstr "Aantal gebruikers dat dit zal betreffen:"
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:53
 msgid "Are you sure you want to force password reset for these users:"
-msgstr ""
+msgstr "Weet je zeker dat je een wachtwoordreset wilt forceren voor deze gebruikers:"
 
 #: bookwyrm/templates/settings/users/user_admin.html:9
 #, python-format
@@ -6928,7 +6928,7 @@ msgstr "Je domein lijkt verkeerd ingesteld te zijn. Het mag geen protocol of sla
 
 #: bookwyrm/templates/setup/config.html:42
 msgid "You are running BookWyrm with <code>localhost</code>. This should <strong>never</strong> be used in a production environment."
-msgstr ""
+msgstr "Je draait BookWyrm op <code>localhost</code>. Dit dient <strong>nooit</strong> in een productieomgeving gebruikt te worden."
 
 #: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:44
 msgid "Settings"
