@@ -37,11 +37,38 @@ proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 proxy_set_header X-Forwarded-Proto https;
 proxy_set_header Host $host;
 proxy_redirect off;
+absolute_redirect off;
 
 location ~ ^/(login[^-/]|password-reset|resend-link|2fa-check) {
     limit_req zone=loginlimit;
     proxy_pass http://web;
 }
+
+# Anubis subrequest authentication endpoint
+location /.within.website/ {
+    proxy_pass http://anubis;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header Host $host;
+    proxy_pass_request_body off;
+    proxy_set_header content-length "";
+    auth_request off;
+    proxy_cache off;
+}
+
+location @redirectToAnubis {
+    return 307 /.within.website/?redir=$request_uri;
+    auth_request off;
+    proxy_cache off;
+}
+
+# server robots.txt from anubis
+location /robots.txt {
+    proxy_pass http://anubis;
+    auth_request off;
+}
+
+#end of anubis related configuration
 
 # do not log periodic polling requests from logged in users
 location /api/updates/ {
@@ -50,6 +77,8 @@ location /api/updates/ {
 }
 
 location / {
+    auth_request /.within.website/x/cmd/anubis/api/check;
+    error_page 401 = @redirectToAnubis;
     proxy_pass http://web;
 }
 
@@ -77,6 +106,8 @@ location /images/ {
 
 # monitor the celery queues with flower, no caching enabled
 location /flower/ {
+   auth_request /.within.website/x/cmd/anubis/api/check;
+   error_page 401 = @redirectToAnubis;
    proxy_pass http://flower;
-   proxy_cache_bypass 1;
+   proxy_cache off;
 }

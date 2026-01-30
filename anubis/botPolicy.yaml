@@ -1,0 +1,13 @@
+bots:
+  # import default config, you can check what it contains in https://github.com/TecharoHQ/anubis/blob/main/data/botPolicies.yaml
+  - import: (data)/meta/default-config.yaml
+  - name: Other Bookwyrm instance requests
+    action: ALLOW
+    expression:
+      all:
+        - 'userAgent.startsWith("BookWyrm")'
+        - '"Accept" in headers'
+        - 'headers["Accept"] == "application/activity+json"'
+status_codes:
+  CHALLENGE: 200
+  DENY: 403
