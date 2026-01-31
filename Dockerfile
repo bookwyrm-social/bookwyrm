@@ -6,10 +6,10 @@ RUN mkdir /app /app/static /app/images
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y gettext libgettextpo-dev tidy && apt-get clean
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked apt-get update && apt-get install -y gettext libgettextpo-dev tidy
 
 COPY pyproject.toml /app/
-RUN pip install "pip>=25.1.0" --no-cache-dir && pip install --group main --group dev --no-cache-dir
+RUN --mount=type=cache,target=/root/.cache/pip pip install "pip>=25.1.0" && pip install --group main --group dev
 
 COPY entrypoint.sh /entrypoint.sh
 
