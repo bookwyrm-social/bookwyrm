@@ -199,6 +199,13 @@
                     {% endif %}
                 </p>
                 {% endif %}
+                {% if book.libris_key %}
+                <p>
+                    <a href="{{ book.libris_link }}" target="_blank" rel="nofollow noopener noreferrer">
+                        {% trans "View on Libris" %}
+                    </a>
+                </p>
+                {% endif %}
             </section>
         </div>
 
