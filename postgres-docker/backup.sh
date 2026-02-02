@@ -1,6 +1,11 @@
 #!/bin/bash
 source /backups/.env
 
+if [ $DEBUG ]; then
+    echo "Skipping backups because DEBUG is true"
+    exit 1
+fi
+
 if [ -z "$POSTGRES_DB" ]; then
     echo "Database not specified, defaulting to bookwyrm"
 fi
