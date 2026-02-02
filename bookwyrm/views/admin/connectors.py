@@ -6,9 +6,9 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from bookwyrm.models import Connector
-from bookwyrm.connectors import create_finna_connector
+from bookwyrm.connectors import create_finna_connector, create_libris_connector
 from bookwyrm.connectors.settings import CONNECTORS
+from bookwyrm.models import Connector
 
 
 @method_decorator(login_required, name="dispatch")
@@ -107,5 +107,7 @@ def create_connector(request):
     # and make a create_xxx_connector() function in connector_manager.py
     if connector_file == "finna":
         create_finna_connector()
+    elif connector_file == "libris":
+        create_libris_connector()
 
     return redirect("/settings/connectors/")
