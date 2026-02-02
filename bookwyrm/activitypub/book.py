@@ -14,6 +14,7 @@ class BookData(ActivityObject):
     openlibraryKey: Optional[str] = None
     inventaireId: Optional[str] = None
     finnaKey: Optional[str] = None
+    librisKey: Optional[str] = None
     librarythingKey: Optional[str] = None
     goodreadsKey: Optional[str] = None
     bnfId: Optional[str] = None

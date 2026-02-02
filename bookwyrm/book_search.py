@@ -114,6 +114,11 @@ def search_identifiers(
         # Oh did you think the 'S' in ISBN stood for 'standard'?
         normalized_isbn = query.strip().upper().rjust(10, "0")
         query = normalized_isbn
+        # Try first searching just for ISBN10 and ISBN13, assuming those are the most common
+        results = books.filter(*filters, Q(isbn_10=query) | Q(isbn_13=query)).distinct()
+        if results.exists():
+            return results
+
     or_filters = [
         {f.name: query}
         for f in models.Edition._meta.get_fields()

@@ -300,24 +300,37 @@ def export_book(user: User, edition: Edition):
 def get_books_for_user(user):
     """
     Get all the books and editions related to a user.
-    We use union() instead of Q objects because it creates
+    We use selecting book_id instead of Q objects because it creates
     multiple simple queries instead of a complex DB query
     that can time out.
     """
 
-    shelf_eds = Edition.objects.select_related("parent_work").filter(shelves__user=user)
-    rt_eds = Edition.objects.select_related("parent_work").filter(
-        readthrough__user=user
+    shelf_ids = ShelfBook.objects.filter(user=user).values_list("book_id", flat=True)
+    readthrough = ReadThrough.objects.filter(user=user).values_list(
+        "book_id", flat=True
     )
-    review_eds = Edition.objects.select_related("parent_work").filter(review__user=user)
-    list_eds = Edition.objects.select_related("parent_work").filter(list__user=user)
-    comment_eds = Edition.objects.select_related("parent_work").filter(
-        comment__user=user, comment__deleted=False
+    reviews = Review.objects.filter(user=user).values_list("book_id", flat=True)
+    lists = ListItem.objects.filter(user=user).values_list("book_id", flat=True)
+    comments = Comment.objects.filter(user=user, deleted=False).values_list(
+        "book_id", flat=True
     )
-    quote_eds = Edition.objects.select_related("parent_work").filter(
-        quotation__user=user, quotation__deleted=False
+    quotes = Quotation.objects.filter(user=user, deleted=False).values_list(
+        "book_id", flat=True
     )
 
-    editions = shelf_eds.union(rt_eds, review_eds, list_eds, comment_eds, quote_eds)
+    editions = (
+        Edition.objects.select_related("parent_work")
+        .filter(
+            id__in=(
+                set(shelf_ids)
+                | set(readthrough)
+                | set(reviews)
+                | set(lists)
+                | set(comments)
+                | set(quotes)
+            )
+        )
+        .distinct()
+    )
 
     return editions

@@ -5,4 +5,5 @@ CONNECTORS = [
     "inventaire",
     "bookwyrm_connector",
     "finna",
+    "libris",
 ]
