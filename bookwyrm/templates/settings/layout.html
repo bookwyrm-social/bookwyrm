@@ -41,7 +41,22 @@
                 {% url 'settings-invites' as alt_url %}
                 <a href="{{ url }}"{% if url in request.path or request.path in alt_url %} class="is-active" aria-selected="true"{% endif %}>{% trans "Invites" %}</a>
             </li>
+            {% if perms.bookwyrm.moderate_user %}
+            <li>
+                {% url 'settings-force-password-reset' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Force Password Reset" %}</a>
+            </li>
+            {% endif %}
+        </ul>
+        {% endif %}
+        {% if perms.bookwyrm.control_federation %}
+        <h2 class="menu-label">{% trans "Federation" %}</h2>
+        <ul class="menu-list">
             {% if perms.bookwyrm.control_federation %}
+            <li>
+                {% url 'settings-federation-settings' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Federation Settings" %}</a>
+            </li>
             <li>
                 {% url 'settings-federation' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Federated Instances" %}</a>
@@ -58,7 +73,7 @@
             </li>
             <li>
                 {% url 'settings-automod' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Auto-moderation rules" %}</a>
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Auto-Moderation Rules" %}</a>
             </li>
             <li>
                 {% url 'settings-email-blocks' as url %}
@@ -83,7 +98,7 @@
             </li>
             <li>
                 {% url 'settings-celery' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Celery status" %}</a>
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Celery Status" %}</a>
             </li>
             <li>
                 {% url 'settings-redis' as url %}
@@ -91,11 +106,19 @@
             </li>
             <li>
                 {% url 'settings-schedules' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Scheduled tasks" %}</a>
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Scheduled Tasks" %}</a>
             </li>
             <li>
                 {% url 'settings-email-config' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Email Configuration" %}</a>
+            </li>
+            <li>
+                {% url 'settings-connectors' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Connectors" %}</a>
+            </li>
+            <li>
+                {% url 'settings-files' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Files Maintenance" %}</a>
             </li>
         </ul>
         {% endif %}

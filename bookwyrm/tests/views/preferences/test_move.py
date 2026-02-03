@@ -1,4 +1,5 @@
-""" test move functionality """
+"""test move functionality"""
+
 import json
 from unittest.mock import patch
 import pathlib
@@ -91,6 +92,13 @@ class ViewsHelpers(TestCase):
             responses.GET,
             "https://example.com/user/mouse",
             json=self.userdata,
+            status=200,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://your.domain.here:4242/user/rat",
+            json=self.local_user.to_activity(),
             status=200,
         )
 

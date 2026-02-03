@@ -1,6 +1,7 @@
-""" the good stuff! the books! """
+"""the good stuff! the books!"""
 
 from re import sub, findall
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.db import transaction
@@ -12,6 +13,7 @@ from django.views.decorators.http import require_POST
 from django.views import View
 
 from bookwyrm import book_search, forms, models
+from bookwyrm.utils.images import remove_uploaded_image_exif, set_cover_from_url
 
 # from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.utils.isni import (
@@ -20,10 +22,8 @@ from bookwyrm.utils.isni import (
     augment_author_metadata,
 )
 from bookwyrm.views.helpers import get_edition, get_mergeable_object_or_404
-from .books import set_cover_from_url
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.edit_book", raise_exception=True), name="dispatch"
@@ -36,7 +36,7 @@ class EditBook(View):
         book = get_edition(book_id)
         # This doesn't update the sort title, just pre-populates it in the form
         if book.sort_title in ["", None]:
-            book.sort_title = book.guess_sort_title()
+            book.sort_title = book.guess_sort_title(user=request.user)
         if not book.description:
             book.description = book.parent_work.description
         data = {"book": book, "form": forms.EditionForm(instance=book)}
@@ -71,6 +71,8 @@ class EditBook(View):
             image = set_cover_from_url(url)
             if image:
                 book.cover.save(*image, save=False)
+        elif "cover" in form.files:
+            book.cover = remove_uploaded_image_exif(form.files["cover"])
 
         book.save()
         return redirect(f"/book/{book.id}")
@@ -120,7 +122,7 @@ class CreateBook(View):
         # check if this is an edition of an existing work
         author_text = ", ".join(data.get("add_author", []))
         data["book_matches"] = book_search.search(
-            f'{form.cleaned_data.get("title")} {author_text}',
+            f"{form.cleaned_data.get('title')} {author_text}",
             min_confidence=0.1,
         )[:5]
 
@@ -142,6 +144,8 @@ class CreateBook(View):
                 image = set_cover_from_url(url)
                 if image:
                     book.cover.save(*image, save=False)
+            elif "cover" in form.files:
+                book.cover = remove_uploaded_image_exif(form.files["cover"])
 
             book.save()
         return redirect(f"/book/{book.id}")
@@ -183,8 +187,8 @@ def add_authors(request, data):
 
         author_matches = (
             models.Author.objects.annotate(search=vector)
-            .annotate(rank=SearchRank(vector, author))
-            .filter(rank__gt=0.4)
+            .annotate(rank=SearchRank(vector, author, normalization=32))
+            .filter(rank__gt=0.19)  # short alias names like XY get rank around 0.1956
             .order_by("-rank")[:5]
         )
 
@@ -200,7 +204,6 @@ def add_authors(request, data):
             if sub(r"\D", "", str(i.isni)) == sub(r"\D", "", str(a.isni))
         ]
 
-        # pylint: disable=cell-var-from-loop
         matches = list(filter(lambda x: x not in exists, isni_authors))
         # combine existing and isni authors
         matches.extend(author_matches)
@@ -237,8 +240,6 @@ def create_book_from_data(request):
 class ConfirmEditBook(View):
     """confirm edits to a book"""
 
-    # pylint: disable=too-many-locals
-    # pylint: disable=too-many-branches
     def post(self, request, book_id=None):
         """edit a book cool"""
         # returns None if no match is found
@@ -311,6 +312,12 @@ class ConfirmEditBook(View):
                 image = set_cover_from_url(url)
                 if image:
                     book.cover.save(*image, save=False)
+            elif "cover" in form.files:
+                book.cover = remove_uploaded_image_exif(form.files["cover"])
+
+            # add a sort title if we don't have one
+            if book.sort_title in ["", None]:
+                book.sort_title = book.guess_sort_title(user=request.user)
 
             # we don't tell the world when creating a book
             book.save(broadcast=False)

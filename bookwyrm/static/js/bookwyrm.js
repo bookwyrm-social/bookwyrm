@@ -3,7 +3,6 @@
 
 let BookWyrm = new (class {
     constructor() {
-        this.MAX_FILE_SIZE_BYTES = 10 * 1000000;
         this.initOnDOMLoaded();
         this.initRecurringTasks();
         this.initEventListeners();
@@ -13,6 +12,10 @@ let BookWyrm = new (class {
         document
             .querySelectorAll("[data-controls]")
             .forEach((button) => button.addEventListener("click", this.toggleAction.bind(this)));
+
+        document
+            .querySelectorAll("[data-disappear]")
+            .forEach((button) => button.addEventListener("click", this.hideSelf.bind(this)));
 
         document
             .querySelectorAll(".interaction")
@@ -56,6 +59,12 @@ let BookWyrm = new (class {
             .querySelectorAll('form[name="register"]')
             .forEach((form) =>
                 form.addEventListener("submit", (e) => this.setPreferredTimezone(e, form))
+            );
+
+        document
+            .querySelectorAll("button[name='button-book-list']")
+            .forEach((button) =>
+                button.addEventListener("click", this.checkListSelection.bind(this))
             );
     }
 
@@ -179,6 +188,18 @@ let BookWyrm = new (class {
         let visible = document.getElementById(targetId);
 
         this.addRemoveClass(visible, "is-hidden", true);
+    }
+
+    /**
+     * Hide the element you just clicked
+     *
+     * @param {Event} event
+     * @return {undefined}
+     */
+    hideSelf(event) {
+        let trigger = event.currentTarget;
+
+        this.addRemoveClass(trigger, "is-hidden", true);
     }
 
     /**
@@ -380,13 +401,14 @@ let BookWyrm = new (class {
     }
 
     disableIfTooLarge(eventOrElement) {
-        const { addRemoveClass, MAX_FILE_SIZE_BYTES } = this;
+        const { addRemoveClass } = this;
         const element = eventOrElement.currentTarget || eventOrElement;
+        const limit = element.dataset.maxUpload;
 
         const submits = element.form.querySelectorAll('[type="submit"]');
         const warns = element.parentElement.querySelectorAll(".file-too-big");
         const isTooBig =
-            element.files && element.files[0] && element.files[0].size > MAX_FILE_SIZE_BYTES;
+            element.files && limit && element.files[0] && element.files[0].size > limit;
 
         if (isTooBig) {
             submits.forEach((submitter) => (submitter.disabled = true));
@@ -845,5 +867,36 @@ let BookWyrm = new (class {
         }
 
         this.toggleFocus(passwordElementId);
+    }
+
+    /**
+     * When user want to add book to list, it checks if the list needs
+     * to be created and if so open a modal to do it. Otherwise it submit
+     * the form to add the book to the selected list.
+     *
+     * @param {Event} event - The click event from the button
+     * @returns {undefined}
+     */
+    checkListSelection(event) {
+        const selectElement = document.getElementById("id_list");
+        const formElement = document.querySelector("form[name='list-add']");
+        const modalElement = document.getElementById("modal-create-list-with-book");
+
+        if (!selectElement || !formElement) {
+            console.error("List management elements not found. Check your HTML IDs.");
+
+            return;
+        }
+
+        if (selectElement.value === "NEW_LIST_CREATION") {
+            if (modalElement) {
+                event.currentTarget.dataset.modalOpen = "modal-create-list-with-book";
+                this.handleModalButton(event);
+            } else {
+                console.error("Modal element not found with ID: modal-create-list-with-book");
+            }
+        } else {
+            formElement.submit();
+        }
     }
 })();

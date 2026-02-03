@@ -1,4 +1,5 @@
-""" test ISBN hyphenator for books """
+"""test ISBN hyphenator for books"""
+
 from django.test import TestCase
 
 from bookwyrm.isbn.isbn import hyphenator_singleton as hyphenator

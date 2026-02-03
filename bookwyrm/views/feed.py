@@ -1,4 +1,5 @@
-""" non-interactive pages """
+"""non-interactive pages"""
+
 from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -9,6 +10,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import activitystreams, forms, models
 from bookwyrm.models.user import FeedFilterChoices
@@ -20,7 +22,6 @@ from .helpers import is_api_request, is_bookwyrm_request, maybe_redirect_local_p
 from .annual_summary import get_annual_summary_year
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Feed(View):
     """activity stream"""
@@ -129,7 +130,7 @@ class DirectMessage(View):
 class Status(View):
     """get posting"""
 
-    # pylint: disable=unused-argument
+    @vary_on_headers("Accept")
     def get(self, request, username, status_id, slug=None):
         """display a particular status (and replies, etc)"""
         user = get_user_from_username(request.user, username)
@@ -217,6 +218,7 @@ class Status(View):
 class Replies(View):
     """replies page (a json view of status)"""
 
+    @vary_on_headers("Accept")
     def get(self, request, username, status_id):
         """ordered collection of replies to a status"""
         # the html view is the same as Status

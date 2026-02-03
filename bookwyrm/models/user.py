@@ -1,5 +1,7 @@
-""" database schema for user data """
+"""database schema for user data"""
+
 import datetime
+from importlib import import_module
 import re
 import zoneinfo
 from typing import Optional, Iterable
@@ -7,6 +9,7 @@ from urllib.parse import urlparse
 from uuid import uuid4
 
 from django.apps import apps
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
@@ -31,6 +34,7 @@ from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .federated_server import FederatedServer
 from . import fields
 
+SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 FeedFilterChoices = [
     ("review", _("Reviews")),
@@ -45,13 +49,13 @@ def get_feed_filter_choices():
     return [f[0] for f in FeedFilterChoices]
 
 
-# pylint: disable=too-many-public-methods
 class User(OrderedCollectionPageMixin, AbstractUser):
     """a user who wants to read books"""
 
     username = fields.UsernameField()
     email = models.EmailField(unique=True, null=True)
     is_deleted = models.BooleanField(default=False)
+    force_password_reset = models.BooleanField(default=False)
 
     key_pair = fields.OneToOneField(
         "KeyPair",
@@ -141,7 +145,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     hide_follows = fields.BooleanField(default=False)
 
     # migration fields
-
     moved_to = fields.RemoteIdField(
         null=True, unique=False, activitypub_field="movedTo", deduplication_field=False
     )
@@ -158,6 +161,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     show_suggested_users = models.BooleanField(default=True)
     discoverable = fields.BooleanField(default=False)
     show_guided_tour = models.BooleanField(default=True)
+    show_ratings = models.BooleanField(default=True)
 
     # feed options
     feed_status_types = DjangoArrayField(
@@ -222,7 +226,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     @property
     def alt_text(self):
         """alt text with username"""
-        # pylint: disable=consider-using-f-string
+
         return "avatar for {:s}".format(self.localname or self.username)
 
     @property
@@ -305,9 +309,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         return self.to_ordered_collection(
             self.following.order_by("-updated_date").all(),
             remote_id=remote_id,
+            collection_only=True,
             id_only=True,
             **kwargs,
-        )
+        ).serialize()
 
     def to_followers_activity(self, **kwargs):
         """activitypub followers list"""
@@ -315,9 +320,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         return self.to_ordered_collection(
             self.followers.order_by("-updated_date").all(),
             remote_id=remote_id,
+            collection_only=True,
             id_only=True,
             **kwargs,
-        )
+        ).serialize()
 
     def to_activity(self, **kwargs):
         """override default AP serializer to add context object
@@ -412,6 +418,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         self.is_active = False
         self.allow_reactivation = False
         self.is_deleted = True
+        self.set_unusable_password()
 
         self.erase_user_data()
         self.erase_user_statuses()
@@ -471,7 +478,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     @property
     def local_path(self):
         """this model doesn't inherit bookwyrm model, so here we are"""
-        # pylint: disable=consider-using-f-string
+
         return "/user/{:s}".format(self.localname or self.username)
 
     def create_shelves(self):
@@ -508,6 +515,15 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         if self == viewer or viewer.has_perm("bookwyrm.moderate_user"):
             return
         raise PermissionDenied()
+
+    def refresh_user_sessions(self):
+        """Check sessions still exist
+        We delete them on logout but not when sessions expire"""
+
+        cache_session = SessionStore()
+        for sess in self.sessions.all():
+            if not cache_session.exists(session_key=sess.session_key):
+                sess.delete()
 
 
 class KeyPair(ActivitypubMixin, BookWyrmModel):
@@ -633,7 +649,6 @@ def get_remote_reviews(outbox):
         activitypub.Review(**activity).to_model()
 
 
-# pylint: disable=unused-argument
 @receiver(models.signals.post_save, sender=User)
 def preview_image(instance, *args, **kwargs):
     """create preview images when user is updated"""

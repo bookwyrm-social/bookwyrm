@@ -1,4 +1,5 @@
-""" alert a user to activity """
+"""alert a user to activity"""
+
 from django.db import models, transaction
 from django.dispatch import receiver
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
@@ -130,7 +131,6 @@ class Notification(BookWyrmModel):
 
 
 @receiver(models.signals.post_save, sender=Favorite)
-# pylint: disable=unused-argument
 def notify_on_fav(sender, instance, *args, **kwargs):
     """someone liked your content, you ARE loved"""
     Notification.notify(
@@ -142,7 +142,6 @@ def notify_on_fav(sender, instance, *args, **kwargs):
 
 
 @receiver(models.signals.post_delete, sender=Favorite)
-# pylint: disable=unused-argument
 def notify_on_unfav(sender, instance, *args, **kwargs):
     """oops, didn't like that after all"""
     if not instance.status.user.local:
@@ -157,7 +156,6 @@ def notify_on_unfav(sender, instance, *args, **kwargs):
 
 @receiver(models.signals.post_save)
 @transaction.atomic
-# pylint: disable=unused-argument
 def notify_user_on_mention(sender, instance, *args, **kwargs):
     """creating and deleting statuses with @ mentions and replies"""
     if not issubclass(sender, Status):
@@ -194,7 +192,6 @@ def notify_user_on_mention(sender, instance, *args, **kwargs):
 
 
 @receiver(models.signals.post_save, sender=Boost)
-# pylint: disable=unused-argument
 def notify_user_on_boost(sender, instance, *args, **kwargs):
     """boosting a status"""
     if (
@@ -212,7 +209,6 @@ def notify_user_on_boost(sender, instance, *args, **kwargs):
 
 
 @receiver(models.signals.post_delete, sender=Boost)
-# pylint: disable=unused-argument
 def notify_user_on_unboost(sender, instance, *args, **kwargs):
     """unboosting a status"""
     Notification.unnotify(
@@ -224,7 +220,6 @@ def notify_user_on_unboost(sender, instance, *args, **kwargs):
 
 
 @receiver(models.signals.post_save, sender=ImportJob)
-# pylint: disable=unused-argument
 def notify_user_on_import_complete(
     sender, instance, *args, update_fields=None, **kwargs
 ):
@@ -240,7 +235,6 @@ def notify_user_on_import_complete(
 
 
 @receiver(models.signals.post_save, sender=BookwyrmImportJob)
-# pylint: disable=unused-argument
 def notify_user_on_user_import_complete(
     sender, instance, *args, update_fields=None, **kwargs
 ):
@@ -254,7 +248,6 @@ def notify_user_on_user_import_complete(
 
 
 @receiver(models.signals.post_save, sender=BookwyrmExportJob)
-# pylint: disable=unused-argument
 def notify_user_on_user_export_complete(
     sender, instance, *args, update_fields=None, **kwargs
 ):
@@ -271,7 +264,6 @@ def notify_user_on_user_export_complete(
 
 @receiver(models.signals.post_save, sender=Report)
 @transaction.atomic
-# pylint: disable=unused-argument
 def notify_admins_on_report(sender, instance, created, *args, **kwargs):
     """something is up, make sure the admins know"""
     if not created:
@@ -290,7 +282,6 @@ def notify_admins_on_report(sender, instance, created, *args, **kwargs):
 
 @receiver(models.signals.post_save, sender=LinkDomain)
 @transaction.atomic
-# pylint: disable=unused-argument
 def notify_admins_on_link_domain(sender, instance, created, *args, **kwargs):
     """a new link domain needs to be verified"""
     if not created:
@@ -309,7 +300,6 @@ def notify_admins_on_link_domain(sender, instance, created, *args, **kwargs):
 
 @receiver(models.signals.post_save, sender=InviteRequest)
 @transaction.atomic
-# pylint: disable=unused-argument
 def notify_admins_on_invite_request(sender, instance, created, *args, **kwargs):
     """need to handle a new invite request"""
     if not created:
@@ -326,7 +316,6 @@ def notify_admins_on_invite_request(sender, instance, created, *args, **kwargs):
 
 
 @receiver(models.signals.post_save, sender=GroupMemberInvitation)
-# pylint: disable=unused-argument
 def notify_user_on_group_invite(sender, instance, *args, **kwargs):
     """Cool kids club here we come"""
     Notification.notify(
@@ -339,7 +328,6 @@ def notify_user_on_group_invite(sender, instance, *args, **kwargs):
 
 @receiver(models.signals.post_save, sender=ListItem)
 @transaction.atomic
-# pylint: disable=unused-argument
 def notify_user_on_list_item_add(sender, instance, created, *args, **kwargs):
     """Someone added to your list"""
     if not created:
@@ -359,7 +347,6 @@ def notify_user_on_list_item_add(sender, instance, created, *args, **kwargs):
 
 @receiver(models.signals.post_save, sender=UserFollowRequest)
 @transaction.atomic
-# pylint: disable=unused-argument
 def notify_user_on_follow(sender, instance, created, *args, **kwargs):
     """Someone added to your list"""
     if not created or not instance.user_object.local:

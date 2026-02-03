@@ -1,4 +1,5 @@
-""" testing bookwyrm csv import """
+"""testing bookwyrm csv import"""
+
 import pathlib
 from unittest.mock import patch
 import datetime
@@ -25,7 +26,7 @@ class BookwyrmBooksImport(TestCase):
         """use a test csv"""
         self.importer = BookwyrmBooksImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/bookwyrm.csv")
-        # pylint: disable-next=consider-using-with
+
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
 
     def tearDown(self):
@@ -43,7 +44,6 @@ class BookwyrmBooksImport(TestCase):
             cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
-        models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
         cls.book = models.Edition.objects.create(
             title="Example Edition",
@@ -57,7 +57,9 @@ class BookwyrmBooksImport(TestCase):
             self.local_user, self.csv, False, "public"
         )
 
-        import_items = models.ImportItem.objects.filter(job=import_job).all()
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")
+        )
         self.assertEqual(len(import_items), 3)
         self.assertEqual(import_items[0].index, 0)
         self.assertEqual(import_items[0].normalized_data["isbn_13"], "")
@@ -79,7 +81,9 @@ class BookwyrmBooksImport(TestCase):
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "unlisted"
         )
-        import_items = models.ImportItem.objects.filter(job=import_job).all()[:2]
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")[:2]
+        )
 
         retry = self.importer.create_retry_job(
             self.local_user, import_job, import_items
@@ -89,7 +93,7 @@ class BookwyrmBooksImport(TestCase):
         self.assertEqual(retry.include_reviews, False)
         self.assertEqual(retry.privacy, "unlisted")
 
-        retry_items = models.ImportItem.objects.filter(job=retry).all()
+        retry_items = models.ImportItem.objects.filter(job=retry).all().order_by("id")
         self.assertEqual(len(retry_items), 2)
         self.assertEqual(retry_items[0].index, 0)
         self.assertEqual(retry_items[0].data["title"], "我穿我自己")
@@ -132,7 +136,9 @@ class BookwyrmBooksImport(TestCase):
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "public"
         )
-        import_item = models.ImportItem.objects.filter(job=import_job).all()[1]
+        import_item = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")[1]
+        )
         import_item.book = self.book
         import_item.save()
 

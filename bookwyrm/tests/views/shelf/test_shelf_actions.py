@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 
@@ -52,7 +53,6 @@ class ShelfActionViews(TestCase):
             cls.shelf = models.Shelf.objects.create(
                 name="Test Shelf", identifier="test-shelf", user=cls.local_user
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

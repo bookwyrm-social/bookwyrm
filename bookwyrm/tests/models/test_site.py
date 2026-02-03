@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 from datetime import timedelta
 from unittest.mock import patch
 

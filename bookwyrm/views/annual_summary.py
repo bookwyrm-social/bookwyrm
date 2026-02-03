@@ -1,4 +1,5 @@
 """end-of-year read books stats"""
+
 from datetime import date
 from uuid import uuid4
 
@@ -20,11 +21,10 @@ FIRST_DAY = 15
 LAST_DAY = 15
 
 
-# pylint: disable= no-self-use
 class AnnualSummary(View):
     """display a summary of the year for the current user"""
 
-    def get(self, request, username, year):  # pylint: disable=too-many-locals
+    def get(self, request, username, year):
         """get response"""
 
         user = get_user_from_username(request.user, username)

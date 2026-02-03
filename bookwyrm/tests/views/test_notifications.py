@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -32,7 +33,6 @@ class NotificationViews(TestCase):
             )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             cls.status = models.Status.objects.create(content="hi", user=cls.local_user)
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

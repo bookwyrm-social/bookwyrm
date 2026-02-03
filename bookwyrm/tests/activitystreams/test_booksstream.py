@@ -1,4 +1,5 @@
-""" testing activitystreams """
+"""testing activitystreams"""
+
 import itertools
 
 from unittest.mock import patch

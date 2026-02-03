@@ -1,9 +1,13 @@
-""" Let users export their book data """
+"""Let users export their book data"""
+
 from datetime import timedelta
 import csv
+import datetime
 import io
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Avg, ExpressionWrapper, F
+from django.db.models.fields import DurationField
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseServerError, Http404
@@ -16,12 +20,11 @@ from django.shortcuts import redirect
 
 from storages.backends.s3 import S3Storage
 
-from bookwyrm import models
+from bookwyrm import models, settings
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
-from bookwyrm import settings
+from bookwyrm.utils.cache import get_or_set
 
 
-# pylint: disable=no-self-use,too-many-locals
 @method_decorator(login_required, name="dispatch")
 class Export(View):
     """Let users export data"""
@@ -52,13 +55,14 @@ class Export(View):
 
         deduplication_fields = [
             f.name
-            for f in models.Edition._meta.get_fields()  # pylint: disable=protected-access
+            for f in models.Edition._meta.get_fields()
             if getattr(f, "deduplication_field", False)
         ]
         fields = (
             ["title", "author_text"]
             + deduplication_fields
             + [
+                "pages",
                 "start_date",
                 "finish_date",
                 "stopped_date",
@@ -144,7 +148,6 @@ class Export(View):
         )
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class ExportUser(View):
     """
@@ -166,7 +169,7 @@ class ExportUser(View):
         last_job = self.user_jobs.first()
         if not last_job:
             return None
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         blocked_until = last_job.created_date + timedelta(
             hours=site.user_import_time_limit
         )
@@ -183,17 +186,18 @@ class ExportUser(View):
                 try:
                     export["size"] = job.export_data.size
                     export["url"] = reverse("prefs-export-file", args=[job.task_id])
-                except FileNotFoundError:
-                    # file no longer exists locally
-                    export["unavailable"] = True
-                except Exception:  # pylint: disable=broad-except
-                    # file no longer exists on storage backend
-                    export["unavailable"] = True
+                except (
+                    FileNotFoundError,
+                    Exception,
+                ):
+                    # file no longer exists
+                    export["url"] = None
 
             exports.append(export)
 
         next_available = self.new_export_blocked_until()
         paginated = Paginator(exports, settings.PAGE_LENGTH)
+        site = models.SiteSettings.objects.get()
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "jobs": page,
@@ -201,7 +205,16 @@ class ExportUser(View):
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
+            "expiry_hours": site.export_files_lifetime_hours,
         }
+
+        seconds = get_or_set(
+            "avg-user-export-time", get_average_export_time, timeout=86400
+        )
+        if seconds and seconds > 60**2:
+            data["recent_avg_hours"] = seconds / (60**2)
+        elif seconds:
+            data["recent_avg_minutes"] = seconds / 60
 
         return TemplateResponse(request, "preferences/export-user.html", data)
 
@@ -247,9 +260,31 @@ class ExportArchive(View):
                 export.export_data,
                 content_type="application/gzip",
                 headers={
-                    # pylint: disable=line-too-long
                     "Content-Disposition": 'attachment; filename="bookwyrm-account-export.tar.gz"'
                 },
             )
         except FileNotFoundError:
             raise Http404()
+
+
+def get_average_export_time() -> float:
+    """Helper to figure out how long exports are taking (returns seconds)"""
+    last_week = timezone.now() - datetime.timedelta(days=7)
+    recent_avg = (
+        models.BookwyrmExportJob.objects.filter(
+            created_date__gte=last_week, complete=True
+        )
+        .exclude(status="stopped")
+        .annotate(
+            runtime=ExpressionWrapper(
+                F("updated_date") - F("created_date"),
+                output_field=DurationField(),
+            )
+        )
+        .aggregate(Avg("runtime"))
+        .get("runtime__avg")
+    )
+
+    if recent_avg:
+        return recent_avg.total_seconds()
+    return None

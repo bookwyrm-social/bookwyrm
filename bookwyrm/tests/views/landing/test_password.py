@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from datetime import timedelta
 from unittest.mock import patch
 
@@ -31,7 +32,6 @@ class PasswordViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        models.SiteSettings.objects.create(id=1)
 
     def setUp(self):
         """individual test setup"""

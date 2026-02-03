@@ -1,4 +1,5 @@
-""" views for actions you can take in the application """
+"""views for actions you can take in the application"""
+
 import urllib.parse
 import re
 
@@ -9,7 +10,9 @@ from django.template.response import TemplateResponse
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
+from bookwyrm.decorators import require_federation
 from bookwyrm.models.relationship import clear_cache
+from bookwyrm.utils import regex
 from .helpers import (
     get_user_from_username,
     handle_remote_webfinger,
@@ -131,11 +134,13 @@ def delete_follow_request(request):
     return redirect(f"/user/{request.user.localname}")
 
 
+@require_federation
 def ostatus_follow_request(request):
     """prepare an outgoing remote follow request"""
     uri = urllib.parse.unquote(request.GET.get("acct"))
     username_parts = re.search(
-        r"(?:^http(?:s?):\/\/)([\w\-\.]*)(?:.)*(?:(?:\/)([\w]*))", uri
+        regex.REMOTE_USER_URL,
+        uri,
     )
     account = f"{username_parts[2]}@{username_parts[1]}"
     user = handle_remote_webfinger(account)
@@ -146,7 +151,6 @@ def ostatus_follow_request(request):
 
     # don't do these checks for AnonymousUser before they sign in
     if request.user.is_authenticated:
-
         # you have blocked them so you probably don't want to follow
         if hasattr(request.user, "blocks") and user in request.user.blocks.all():
             error = "is_blocked"
@@ -169,6 +173,7 @@ def ostatus_follow_request(request):
 
 
 @login_required
+@require_federation
 def ostatus_follow_success(request):
     """display success message for remote follow"""
     user = get_user_from_username(request.user, request.GET.get("following"))
@@ -176,6 +181,7 @@ def ostatus_follow_success(request):
     return TemplateResponse(request, "ostatus/success.html", data)
 
 
+@require_federation
 def remote_follow_page(request):
     """display remote follow page"""
     user = get_user_from_username(request.user, request.GET.get("user"))
@@ -184,6 +190,7 @@ def remote_follow_page(request):
 
 
 @require_POST
+@require_federation
 def remote_follow(request):
     """direct user to follow from remote account using ostatus subscribe protocol"""
     remote_user = request.POST.get("remote_user")

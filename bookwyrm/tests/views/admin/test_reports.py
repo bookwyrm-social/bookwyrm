@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 
@@ -41,7 +42,6 @@ class ReportViews(TestCase):
         initdb.init_permissions()
         group = Group.objects.get(name="moderator")
         cls.local_user.groups.set([group])
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""
@@ -169,16 +169,3 @@ class ReportViews(TestCase):
         self.rat.refresh_from_db()
         self.assertFalse(self.rat.is_active)
         self.assertEqual(self.rat.deactivation_reason, "moderator_deletion")
-
-    def test_delete_user_error(self, *_):
-        """toggle whether a user is able to log in"""
-        self.assertTrue(self.rat.is_active)
-        request = self.factory.post("", {"password": "wrong password"})
-        request.user = self.local_user
-
-        result = views.moderator_delete_user(request, self.rat.id)
-        self.assertIsInstance(result, TemplateResponse)
-        validate_html(result.render())
-
-        self.rat.refresh_from_db()
-        self.assertTrue(self.rat.is_active)

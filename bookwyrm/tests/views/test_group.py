@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
@@ -48,7 +49,6 @@ class GroupViews(TestCase):
         cls.membership = models.GroupMember.objects.create(
             group=cls.testgroup, user=cls.local_user
         )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""
@@ -82,6 +82,16 @@ class GroupViews(TestCase):
         view = views.UserGroups.as_view()
         request = self.factory.get("")
         request.user = self.local_user
+        result = view(request, username="mouse@local.com")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_usergroups_get_anonymous(self, _):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.UserGroups.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
         result = view(request, username="mouse@local.com")
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
