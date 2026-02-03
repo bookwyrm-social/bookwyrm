@@ -1,4 +1,5 @@
-""" tests incoming activities"""
+"""tests incoming activities"""
+
 from unittest.mock import patch
 
 from django.test import TestCase
