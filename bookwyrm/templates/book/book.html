@@ -49,7 +49,7 @@
                     {% spaceless %}
                     <div columns>
                         <div class="notification is-info is-light column is-half">
-                            {% blocktrans with series=book.series %}
+                            {% blocktrans trimmed with series=book.series %}
                             This book might be part of the <em>{{series}}</em> series.
                             {% endblocktrans %}
                             {% if user_authenticated and can_edit_book %}
@@ -65,17 +65,17 @@
                 <div>
                     {% spaceless %}
                     {% if sbook.series_number %}
-                    {% blocktrans with title=sbook.series.name path=sbook.series.local_path number=sbook.series_number %}
                     <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
-                        Book <span itemprop="position">{{ number }}</span> in <em><a href="{{ path }}">{{ title }}</a></em>
+                        {% blocktrans trimmed with title=sbook.series.name path=sbook.series.local_path number=sbook.series_number %}
+                            Book <span itemprop="position">{{ number }}</span> in <em><a href="{{ path }}">{{ title }}</a></em>
+                        {% endblocktrans %}
                     </span>
-                    {% endblocktrans %}
                     {% else %}
-                    {% blocktrans with title=sbook.series.name path=sbook.series.local_path %}
                     <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
-                        Part of <em><a href="{{ path }}">{{ title }}</a></em>
+                        {% blocktrans trimmed with title=sbook.series.name path=sbook.series.local_path %}
+                            Part of <em><a href="{{ path }}">{{ title }}</a></em>
+                        {% endblocktrans %}
                     </span>
-                    {% endblocktrans %}
                     {% endif %}
                     {% endspaceless %}
                 </div>

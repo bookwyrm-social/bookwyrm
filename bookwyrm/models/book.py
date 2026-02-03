@@ -978,6 +978,9 @@ class SeriesBook(ObjectMixin, BookWyrmModel):
         "User", on_delete=models.PROTECT, activitypub_field="actor", related_name="+"
     )  # for broadcast, should always be instance user but we can't set that here
 
+    class Meta:
+        ordering = ["series_number"]
+
     activity_serializer = activitypub.SeriesBook
 
     def get_remote_id(self):

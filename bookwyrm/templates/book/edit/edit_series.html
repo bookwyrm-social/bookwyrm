@@ -73,8 +73,8 @@
                     {% include 'landing/small-book.html' with book=seriesbook.book.work.default_edition %}
                 </div>
                 <div class="columns mx-2">
-                    <label class="label column is-half" for="id_series_number">{% trans "Series #:" %}</label>
-                    <input class="input column is-half" type="text" name="series_number-{{seriesbook.book.id}}" id="id_series_number" value="{{seriesbook.series_number}}">
+                    <label class="label column is-half" for="id_series_number">{% trans "Series position:" %}</label>
+                    <input class="input column is-half" type="text" name="series_number-{{seriesbook.book.id}}" id="id_series_number" value="{{seriesbook.series_number|default:''}}">
                 </div>
             </div>
         {% endfor %}
