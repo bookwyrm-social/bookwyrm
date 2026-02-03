@@ -1,0 +1,20 @@
+{% extends 'components/modal.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block modal-title %}
+{% trans "Create new list" %}
+{% endblock %}
+
+{% block modal-form-open %}
+<form name="create-list" method="post" action="{% url 'lists' %}">
+{% endblock %}
+
+{% block modal-body %}
+{% csrf_token %}
+<input type="hidden" name="book" value="{{ book.id }}">
+
+{% include 'lists/form.html' with curation_group=group %}
+{% endblock %}
+
+{% block modal-form-close %}</form>{% endblock %}

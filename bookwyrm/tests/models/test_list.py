@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 from uuid import UUID
 from unittest.mock import patch
 from django.test import TestCase

@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -39,7 +40,6 @@ class GetStartedViews(TestCase):
             title="Example Edition",
             remote_id="https://example.com/book/1",
         )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

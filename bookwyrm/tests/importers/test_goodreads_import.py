@@ -1,4 +1,5 @@
-""" testing import """
+"""testing import"""
+
 import pathlib
 from unittest.mock import patch
 import datetime
@@ -25,7 +26,7 @@ class GoodreadsImport(TestCase):
         """use a test csv"""
         self.importer = GoodreadsImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
-        # pylint: disable-next=consider-using-with
+
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
 
     def tearDown(self):
@@ -43,7 +44,6 @@ class GoodreadsImport(TestCase):
             cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
-        models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
         cls.book = models.Edition.objects.create(
             title="Example Edition",
@@ -57,12 +57,15 @@ class GoodreadsImport(TestCase):
             self.local_user, self.csv, False, "public"
         )
 
-        import_items = models.ImportItem.objects.filter(job=import_job).all()
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")
+        )
         self.assertEqual(len(import_items), 3)
         self.assertEqual(import_items[0].index, 0)
         self.assertEqual(import_items[0].data["Book Id"], "42036538")
         self.assertEqual(import_items[0].normalized_data["isbn_13"], '="9781250313195"')
         self.assertEqual(import_items[0].normalized_data["isbn_10"], '="1250313198"')
+        self.assertEqual(import_items[0].normalized_data["goodreads_key"], "42036538")
 
         self.assertEqual(import_items[1].index, 1)
         self.assertEqual(import_items[1].data["Book Id"], "52691223")
@@ -74,7 +77,9 @@ class GoodreadsImport(TestCase):
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "unlisted"
         )
-        import_items = models.ImportItem.objects.filter(job=import_job).all()[:2]
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")[:2]
+        )
 
         retry = self.importer.create_retry_job(
             self.local_user, import_job, import_items
@@ -84,7 +89,7 @@ class GoodreadsImport(TestCase):
         self.assertEqual(retry.include_reviews, False)
         self.assertEqual(retry.privacy, "unlisted")
 
-        retry_items = models.ImportItem.objects.filter(job=retry).all()
+        retry_items = models.ImportItem.objects.filter(job=retry).all().order_by("id")
         self.assertEqual(len(retry_items), 2)
         self.assertEqual(retry_items[0].index, 0)
         self.assertEqual(retry_items[0].data["Book Id"], "42036538")

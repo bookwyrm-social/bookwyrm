@@ -1,4 +1,4 @@
-""" move your account somewhere else """
+"""move your account somewhere else"""
 
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
@@ -12,7 +12,6 @@ from bookwyrm import forms, models
 from bookwyrm.views.helpers import handle_remote_webfinger
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class MoveUser(View):
     """move user view"""
@@ -53,7 +52,6 @@ class MoveUser(View):
         return TemplateResponse(request, "preferences/move_user.html", data)
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class AliasUser(View):
     """alias user view"""

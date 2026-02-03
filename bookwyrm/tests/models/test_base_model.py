@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 from unittest.mock import patch
 from django.http import Http404
 from django.test import TestCase
@@ -8,7 +9,6 @@ from bookwyrm.models import base_model
 from bookwyrm.settings import BASE_URL
 
 
-# pylint: disable=attribute-defined-outside-init
 class BaseModel(TestCase):
     """functionality shared across models"""
 

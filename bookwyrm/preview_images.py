@@ -1,4 +1,4 @@
-""" Generate social media preview images for twitter/mastodon/etc """
+"""Generate social media preview images for twitter/mastodon/etc"""
 
 import math
 import os
@@ -172,7 +172,7 @@ def generate_instance_layer(content_width):
     """Places components for instance preview"""
     font_instance = get_font("light", size=28)
 
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
 
     if site.logo_small:
         with Image.open(site.logo_small) as logo_img:
@@ -280,8 +280,6 @@ def generate_default_inner_img():
     return default_cover
 
 
-# pylint: disable=too-many-locals
-# pylint: disable=too-many-statements
 def generate_preview_image(
     texts=None, picture=None, rating=None, show_instance_layer=True
 ):
@@ -296,7 +294,7 @@ def generate_preview_image(
         )
         color_thief = ColorThief(picture)
         dominant_color = color_thief.get_color(quality=1)
-    except:  # pylint: disable=bare-except
+    except:
         inner_img_layer = generate_default_inner_img()
         dominant_color = ImageColor.getrgb(DEFAULT_COVER_COLOR)
 
@@ -426,7 +424,7 @@ def generate_site_preview_image_task():
     if not settings.ENABLE_PREVIEW_IMAGES:
         return
 
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
 
     if site.logo:
         logo = site.logo

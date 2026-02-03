@@ -1,4 +1,5 @@
-""" getting and verifying signatures """
+"""getting and verifying signatures"""
+
 import time
 from collections import namedtuple
 from urllib.parse import urlsplit
@@ -56,10 +57,10 @@ class Signature(TestCase):
             cls.cat = models.User.objects.create_user(
                 f"cat@{DOMAIN}", "cat@example.com", "", local=True, localname="cat"
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """test data"""
+        self.site = models.SiteSettings.get()
         private_key, public_key = create_key_pair()
         self.fake_remote = Sender(
             "http://localhost/user/remote", KeyPair(private_key, public_key)
@@ -81,7 +82,7 @@ class Signature(TestCase):
             },
         )
 
-    def send_test_request(  # pylint: disable=too-many-arguments
+    def send_test_request(
         self, sender, signer=None, send_data=None, digest=None, date=None
     ):
         """sends a follow request to the "rat" user"""

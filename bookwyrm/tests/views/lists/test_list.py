@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 
@@ -13,7 +14,6 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.tests.validate_html import validate_html
 
 
-# pylint: disable=too-many-public-methods
 class ListViews(TestCase):
     """list view"""
 
@@ -72,8 +72,6 @@ class ListViews(TestCase):
         ):
             cls.list = models.List.objects.create(name="Test List", user=cls.local_user)
 
-        models.SiteSettings.objects.create()
-
     def setUp(self):
         """individual test setup"""
         self.factory = RequestFactory()
@@ -119,7 +117,7 @@ class ListViews(TestCase):
         """there are so many views, this just makes sure it LOADS"""
         view = views.List.as_view()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            for (i, book) in enumerate([self.book, self.book_two, self.book_three]):
+            for i, book in enumerate([self.book, self.book_two, self.book_three]):
                 models.ListItem.objects.create(
                     book_list=self.list,
                     user=self.local_user,

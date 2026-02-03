@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import datetime
 import pathlib
 from unittest.mock import patch
@@ -31,7 +32,6 @@ class ImportViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

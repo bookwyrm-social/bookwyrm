@@ -1,4 +1,5 @@
-""" template filters for really common utilities """
+"""template filters for really common utilities"""
+
 import os
 import re
 from uuid import uuid4
@@ -99,7 +100,6 @@ def get_isni_bio(existing, author):
     return ""
 
 
-# pylint: disable=unused-argument
 @register.filter(name="get_isni", needs_autoescape=True)
 def get_isni(existing, author, autoescape=True):
     """Returns the isni ID if an existing author has an ISNI listing"""
@@ -116,7 +116,7 @@ def get_isni(existing, author, autoescape=True):
 
 
 @register.simple_tag(takes_context=False)
-def id_to_username(user_id):
+def id_to_username(user_id, return_empty=False):
     """given an arbitrary remote id, return the username"""
     if user_id:
         url = urlparse(user_id)
@@ -126,6 +126,10 @@ def id_to_username(user_id):
         value = f"{name}@{domain}"
 
         return value
+
+    if return_empty:
+        return ""
+
     return _("a new user account")
 
 
@@ -141,10 +145,10 @@ def get_file_size(nbytes):
     if raw_size < 1024:
         return f"{raw_size} bytes"
     if raw_size < 1024**2:
-        return f"{raw_size/1024:.2f} KB"
+        return f"{raw_size / 1024:.2f} KB"
     if raw_size < 1024**3:
-        return f"{raw_size/1024**2:.2f} MB"
-    return f"{raw_size/1024**3:.2f} GB"
+        return f"{raw_size / 1024**2:.2f} MB"
+    return f"{raw_size / 1024**3:.2f} GB"
 
 
 @register.filter(name="get_user_permission")

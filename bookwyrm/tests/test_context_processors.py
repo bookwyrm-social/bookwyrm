@@ -1,4 +1,5 @@
-""" test for context processor """
+"""test for context processor"""
+
 from unittest.mock import patch
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
@@ -28,7 +29,7 @@ class ContextProcessor(TestCase):
             )
         cls.anonymous_user = AnonymousUser
         cls.anonymous_user.is_authenticated = False
-        cls.site = models.SiteSettings.objects.create()
+        cls.site = models.SiteSettings.get()
 
     def setUp(self):
         """other test data"""

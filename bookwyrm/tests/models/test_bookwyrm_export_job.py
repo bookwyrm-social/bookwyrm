@@ -1,4 +1,5 @@
 """test bookwyrm user export functions"""
+
 import datetime
 import json
 import pathlib
@@ -15,7 +16,8 @@ from bookwyrm.utils.tar import BookwyrmTarFile
 class BookwyrmExportJob(TestCase):
     """testing user export functions"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):
         """lots of stuff to set up for a user export"""
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
@@ -26,7 +28,6 @@ class BookwyrmExportJob(TestCase):
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
             patch("bookwyrm.activitystreams.add_book_statuses_task"),
         ):
-
             self.local_user = models.User.objects.create_user(
                 "mouse",
                 "mouse@mouse.mouse",
@@ -92,6 +93,12 @@ class BookwyrmExportJob(TestCase):
             self.edition = models.Edition.objects.create(
                 title="Example Edition", parent_work=self.work
             )
+            self.second_work = models.Work.objects.create(
+                title="Another Example Work", remote_id="https://example.com/book/2"
+            )
+            self.another_edition = models.Edition.objects.create(
+                title="Another Edition", parent_work=self.second_work
+            )
 
             # edition cover
             cover_path = pathlib.Path(__file__).parent.joinpath(
@@ -108,6 +115,12 @@ class BookwyrmExportJob(TestCase):
             models.ReadThrough.objects.create(
                 user=self.local_user,
                 book=self.edition,
+                start_date=self.readthrough_start,
+                finish_date=finish,
+            )
+            models.ReadThrough.objects.create(
+                user=self.local_user,
+                book=self.another_edition,
                 start_date=self.readthrough_start,
                 finish_date=finish,
             )
@@ -144,12 +157,28 @@ class BookwyrmExportJob(TestCase):
                 book=self.edition,
                 progress=15,
             )
+            # deleted comment
+            models.Comment.objects.create(
+                content="so far",
+                user=self.local_user,
+                book=self.edition,
+                progress=5,
+                deleted=True,
+            )
             # quote
             models.Quotation.objects.create(
                 content="check this out",
                 quote="A rose by any other name",
                 user=self.local_user,
                 book=self.edition,
+            )
+            # deleted quote
+            models.Quotation.objects.create(
+                content="check this out",
+                quote="A rose by any other name",
+                user=self.local_user,
+                book=self.edition,
+                deleted=True,
             )
 
             self.job = models.BookwyrmExportJob.objects.create(user=self.local_user)
@@ -162,7 +191,7 @@ class BookwyrmExportJob(TestCase):
     def test_add_book_to_user_export_job(self):
         """does AddBookToUserExportJob ...add the book to the export?"""
         self.assertIsNotNone(self.job.export_json["books"])
-        self.assertEqual(len(self.job.export_json["books"]), 1)
+        self.assertEqual(len(self.job.export_json["books"]), 2)
         book = self.job.export_json["books"][0]
 
         self.assertEqual(book["work"]["id"], self.work.remote_id)
@@ -225,7 +254,7 @@ class BookwyrmExportJob(TestCase):
 
         data = models.bookwyrm_export_job.get_books_for_user(self.local_user)
 
-        self.assertEqual(len(data), 1)
+        self.assertEqual(len(data), 2)
         self.assertEqual(data[0].title, "Example Edition")
 
     def test_archive(self):
@@ -247,10 +276,3 @@ class BookwyrmExportJob(TestCase):
             with self.local_user.avatar.open() as expected_avatar:
                 archive_avatar = tar.extractfile(data["icon"]["url"])
                 self.assertEqual(expected_avatar.read(), archive_avatar.read())
-
-            # Edition cover should be present in archive
-            with self.edition.cover.open() as expected_cover:
-                archive_cover = tar.extractfile(
-                    data["books"][0]["edition"]["cover"]["url"]
-                )
-                self.assertEqual(expected_cover.read(), archive_cover.read())

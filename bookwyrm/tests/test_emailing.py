@@ -1,4 +1,5 @@
-""" test creating emails """
+"""test creating emails"""
+
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -26,7 +27,6 @@ class Emailing(TestCase):
                 local=True,
                 localname="mouse",
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """other test data"""

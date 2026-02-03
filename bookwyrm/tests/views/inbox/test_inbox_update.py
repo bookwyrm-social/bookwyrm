@@ -1,4 +1,5 @@
-""" tests incoming activities"""
+"""tests incoming activities"""
+
 import json
 import pathlib
 from unittest.mock import patch
@@ -38,8 +39,6 @@ class InboxUpdate(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

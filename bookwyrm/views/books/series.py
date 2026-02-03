@@ -1,8 +1,9 @@
-""" books belonging to the same series """
+"""books belonging to the same series"""
 
 from sys import float_info
 from django.views import View
 from django.template.response import TemplateResponse
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm.views.helpers import is_api_request, get_mergeable_object_or_404
 from bookwyrm import models
@@ -16,10 +17,10 @@ def sort_by_series(book):
         return float_info.max
 
 
-# pylint: disable=no-self-use
 class BookSeriesBy(View):
     """book series by author"""
 
+    @vary_on_headers("Accept")
     def get(self, request, author_id):
         """lists all books in a series"""
         series_name = request.GET.get("series_name")

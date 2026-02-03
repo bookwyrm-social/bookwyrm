@@ -1,4 +1,5 @@
-""" basics for an activitypub serializer """
+"""basics for an activitypub serializer"""
+
 from __future__ import annotations
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
@@ -20,7 +21,7 @@ from bookwyrm.tasks import app, MISC
 
 logger = logging.getLogger(__name__)
 
-# pylint: disable=invalid-name
+
 TBookWyrmModel = TypeVar("TBookWyrmModel", bound=base_model.BookWyrmModel)
 
 
@@ -36,7 +37,6 @@ class ActivityEncoder(JSONEncoder):
 
 
 @dataclass
-# pylint: disable=invalid-name
 class Signature:
     """public key block"""
 
@@ -111,7 +111,6 @@ class ActivityObject:
                 value = field.default
             setattr(self, field.name, value)
 
-    # pylint: disable=too-many-locals,too-many-branches,too-many-arguments
     def to_model(
         self,
         model: Optional[type[TBookWyrmModel]] = None,
@@ -120,6 +119,7 @@ class ActivityObject:
         save: bool = True,
         overwrite: bool = True,
         allow_external_connections: bool = True,
+        trigger=None,
     ) -> Optional[TBookWyrmModel]:
         """convert from an activity to a model instance. Args:
         model: the django model that this object is being converted to
@@ -133,6 +133,9 @@ class ActivityObject:
             only update blank fields if false
         allow_external_connections: look up missing data if true,
             throw an exception if false and an external connection is needed
+        trigger: the object that originally triggered this
+            self.to_model. e.g. if this is a Work being dereferenced from
+            an incoming Edition
         """
         model = model or get_model_from_type(self.type)
 
@@ -223,6 +226,8 @@ class ActivityObject:
             related_field_name = model_field.field.name
 
             for item in values:
+                if trigger and item == trigger.remote_id:
+                    continue
                 set_related_field.delay(
                     related_model.__name__,
                     instance.__class__.__name__,
@@ -311,7 +316,6 @@ def get_model_from_type(activity_type):
     return model[0]
 
 
-# pylint: disable=too-many-arguments
 @overload
 def resolve_remote_id(
     remote_id: str,
@@ -320,11 +324,9 @@ def resolve_remote_id(
     save: bool = True,
     get_activity: bool = False,
     allow_external_connections: bool = True,
-) -> TBookWyrmModel:
-    ...
+) -> TBookWyrmModel: ...
 
 
-# pylint: disable=too-many-arguments
 @overload
 def resolve_remote_id(
     remote_id: str,
@@ -333,11 +335,9 @@ def resolve_remote_id(
     save: bool = True,
     get_activity: bool = False,
     allow_external_connections: bool = True,
-) -> base_model.BookWyrmModel:
-    ...
+) -> base_model.BookWyrmModel: ...
 
 
-# pylint: disable=too-many-arguments
 def resolve_remote_id(
     remote_id: str,
     model: Optional[Union[str, type[base_model.BookWyrmModel]]] = None,
@@ -369,17 +369,24 @@ def resolve_remote_id(
 
     # load the data and create the object
     try:
-        data = get_data(remote_id)
+        data = get_activitypub_data(remote_id)
     except ConnectionError:
         logger.info("Could not connect to host for remote_id: %s", remote_id)
         return None
     except requests.HTTPError as e:
-        if (e.response is not None) and e.response.status_code == 401:
-            # This most likely means it's a mastodon with secure fetch enabled.
-            data = get_activitypub_data(remote_id)
+        if (
+            hasattr(e, "response")
+            and hasattr(e.response, "status_code")
+            and e.response.status_code == 410
+        ):
+            # only log a warning for "gone" since there is not much we can do
+            logger.warning(
+                "request for object dropped because it is gone (410) - remote_id: %s",
+                remote_id,
+            )
         else:
-            logger.info("Could not connect to host for remote_id: %s", remote_id)
-            return None
+            logger.exception("HTTP error - remote_id: %s - error: %s", remote_id, e)
+        return None
     # determine the model implicitly, if not provided
     # or if it's a model with subclasses like Status, check again
     if not model or hasattr(model.objects, "select_subclasses"):
@@ -422,7 +429,6 @@ def get_activitypub_data(url):
         resp = requests.get(
             url,
             headers={
-                # pylint: disable=line-too-long
                 "Accept": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
                 "Date": now,
                 "Signature": make_signature("get", sender, url, now),

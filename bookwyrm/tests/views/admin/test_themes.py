@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.contrib.auth.models import Group
@@ -42,7 +43,7 @@ class AdminThemesViews(TestCase):
         group = Group.objects.get(name="admin")
         cls.local_user.groups.set([group])
 
-        cls.site = models.SiteSettings.objects.create()
+        cls.site = models.SiteSettings.get()
 
     def setUp(self):
         """individual test setup"""

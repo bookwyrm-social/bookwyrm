@@ -1,4 +1,5 @@
-""" progress in a book """
+"""progress in a book"""
+
 from typing import Optional, Iterable
 
 from django.core import validators
@@ -59,7 +60,7 @@ class ReadThrough(BookWyrmModel):
 
         constraints = [
             models.CheckConstraint(
-                check=Q(finish_date__gte=F("start_date")), name="chronology"
+                condition=Q(finish_date__gte=F("start_date")), name="chronology"
             )
         ]
         ordering = ("-start_date",)

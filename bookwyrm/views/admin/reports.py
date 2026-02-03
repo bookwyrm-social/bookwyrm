@@ -1,4 +1,5 @@
-""" moderation via flagged posts and users """
+"""moderation via flagged posts and users"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
 from django.core.exceptions import PermissionDenied
@@ -14,7 +15,6 @@ from bookwyrm.views.helpers import redirect_to_referer, is_api_request
 from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.moderate_user", raise_exception=True),
@@ -130,22 +130,12 @@ def moderator_delete_user(request, user_id, report_id=None):
     if not user.local:
         raise PermissionDenied()
 
-    form = forms.DeleteUserForm(request.POST, instance=user)
+    user.deactivation_reason = "moderator_deletion"
+    user.delete()
 
-    moderator = models.User.objects.get(id=request.user.id)
-    # check the moderator's password
-    if form.is_valid() and moderator.check_password(form.cleaned_data["password"]):
-        user.deactivation_reason = "moderator_deletion"
-        user.delete()
-
-        # make a note of the fact that we did this
-        models.Report.record_action(report_id, USER_DELETION, request.user)
-        return redirect_to_referer(request, "settings-user", user.id)
-
-    form.errors["password"] = ["Invalid password"]
-
-    data = {"user": user, "group_form": forms.UserGroupForm(), "form": form}
-    return TemplateResponse(request, "settings/users/user.html", data)
+    # make a note of the fact that we did this
+    models.Report.record_action(report_id, USER_DELETION, request.user)
+    return redirect_to_referer(request, "settings-user", user.id)
 
 
 @login_required

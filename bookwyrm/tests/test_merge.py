@@ -12,8 +12,6 @@ class MergeBookDataModel(TestCase):
     @classmethod
     def setUpTestData(cls):
         """shared data"""
-        models.SiteSettings.objects.create()
-
         cls.jrr_tolkien = models.Author.objects.create(
             name="J.R.R. Tolkien",
             aliases=["JRR Tolkien", "Tolkien"],
