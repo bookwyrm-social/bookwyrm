@@ -57,7 +57,8 @@ class RedisStatusViews(TestCase):
         request = self.factory.post("", {"dry_run": True})
         request.user = self.local_user
 
-        with patch("redis.from_url"):
+        with patch("bookwyrm.views.admin.redis.erase_keys") as redis_mock:
+            redis_mock.return_value = 0
             result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
@@ -72,7 +73,8 @@ class RedisStatusViews(TestCase):
         request = self.factory.post("")
         request.user = self.local_user
 
-        with patch("redis.from_url"):
+        with patch("bookwyrm.views.admin.redis.erase_keys") as redis_mock:
+            redis_mock.return_value = 0
             result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
@@ -87,7 +89,9 @@ class RedisStatusViews(TestCase):
         request = self.factory.post("", {"erase_cache": True})
         request.user = self.local_user
 
-        result = view(request)
+        with patch("bookwyrm.views.admin.redis.erase_keys") as redis_mock:
+            redis_mock.return_value = 0
+            result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
