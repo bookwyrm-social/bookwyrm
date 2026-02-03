@@ -1,0 +1,10 @@
+{% load i18n %}
+{% load shelf_tags %}
+‘{{ obj.title }}’ {% if obj.author_text %} by {{obj.author_text}} {% endif %}
+<p>{{ obj.description|default_if_none:obj.parent_work.description}}</p>
+{% if obj.isbn_13 %}{% trans "ISBN 13:" %} {{ obj.isbn_13 }}<br>{% endif %}
+{% if obj.oclc_number %}{% trans "OCLC Number:" %} {{ obj.oclc_number }}<br>{% endif %}
+{% if obj.asin %}{% trans "ASIN:" %} {{ obj.asin }}<br>{% endif %}
+{% if obj.aasin %}{% trans "Audible ASIN:" %} {{ obj.aasin }}<br>{% endif %}
+{% if obj.isfdb %}{% trans "ISFDB ID:" %} {{ obj.isfdb }}<br>{% endif %}
+{% if obj.goodreads_key %}{% trans "Goodreads:" %} {{ obj.goodreads_key }}{% endif %}

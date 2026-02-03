@@ -1,4 +1,5 @@
-""" tests incoming activities"""
+"""tests incoming activities"""
+
 import json
 from unittest.mock import patch
 
@@ -37,8 +38,6 @@ class InboxRelationships(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-
-        models.SiteSettings.objects.create()
 
     def test_follow(self):
         """remote user wants to follow local user"""

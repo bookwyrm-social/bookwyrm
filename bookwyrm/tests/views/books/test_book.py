@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import pathlib
 from unittest.mock import patch
 
@@ -55,8 +56,6 @@ class BookViews(TestCase):
         )
         for i in range(10000):
             models.Edition.objects.create(title=i, parent_work=cls.work)
-
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

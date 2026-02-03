@@ -1,4 +1,5 @@
-""" handle reading a csv from calibre """
+"""handle reading a csv from calibre"""
+
 from typing import Any, Optional
 
 from bookwyrm.models import Shelf

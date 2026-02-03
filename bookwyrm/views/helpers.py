@@ -1,4 +1,4 @@
-""" helper functions used in various views """
+"""helper functions used in various views"""
 
 import re
 from datetime import datetime, timedelta
@@ -20,7 +20,6 @@ from bookwyrm.utils import regex
 from bookwyrm.utils.validate import validate_url_domain
 
 
-# pylint: disable=unnecessary-pass
 class WebFingerError(Exception):
     """empty error class for problems finding user information with webfinger"""
 
@@ -48,9 +47,14 @@ def get_user_from_username(viewer, username):
 
 def is_api_request(request):
     """check whether a request is asking for html or data"""
-    return "json" in request.headers.get("Accept", "") or re.match(
-        r".*\.json/?$", request.path
+    is_api = "json" in request.headers.get("Accept", "") or re.match(
+        r"\S{1,100}\.json/?$", request.path
     )
+
+    if is_api:
+        # don't allow API requests if federation is disabled
+        models.SiteSettings.raise_federation_disabled()
+    return is_api
 
 
 def is_bookwyrm_request(request):
@@ -63,6 +67,9 @@ def is_bookwyrm_request(request):
 
 def handle_remote_webfinger(query, unknown_only=False, refresh=False):
     """webfingerin' other servers"""
+    # SHOULD we do a remote webfinger? Is it allowed?
+    models.SiteSettings.raise_federation_disabled()
+
     user = None
 
     # usernames could be @user@domain or user@domain
@@ -76,7 +83,6 @@ def handle_remote_webfinger(query, unknown_only=False, refresh=False):
         return None
 
     try:
-
         if refresh:
             # Always fetch the remote info - don't even bother checking the DB
             raise models.User.DoesNotExist("remote_only is set to True")
@@ -107,6 +113,9 @@ def handle_remote_webfinger(query, unknown_only=False, refresh=False):
 
 def subscribe_remote_webfinger(query):
     """get subscribe template from other servers"""
+    # SHOULD we do a remote webfinger? Is it allowed?
+    models.SiteSettings.raise_federation_disabled()
+
     template = None
     # usernames could be @user@domain or user@domain
     if not query:
@@ -156,8 +165,7 @@ def handle_reading_status(user, shelf, book, privacy):
         # it's a non-standard shelf, don't worry about it
         return
 
-    status = create_generated_note(user, message, mention_books=[book], privacy=privacy)
-    status.save()
+    create_generated_note(user, message, mention_books=[book], privacy=privacy)
 
 
 def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:
@@ -240,7 +248,6 @@ def redirect_to_referer(request, *args, **kwargs):
     return redirect(*args or "/", **kwargs)
 
 
-# pylint: disable=redefined-builtin
 def get_mergeable_object_or_404(klass, id):
     """variant of get_object_or_404 that also redirects if id has been merged
     into another object"""

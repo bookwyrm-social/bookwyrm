@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 from collections import namedtuple
 from dataclasses import dataclass
 import datetime
@@ -24,7 +25,7 @@ from bookwyrm.models.base_model import BookWyrmModel
 from bookwyrm.models.activitypub_mixin import ActivitypubMixin
 from bookwyrm.settings import PROTOCOL, NETLOC
 
-# pylint: disable=too-many-public-methods
+
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.lists_stream.populate_lists_task.delay")
@@ -162,7 +163,6 @@ class ModelFields(TestCase):
         class TestActivity(ActivityObject):
             """real simple mock"""
 
-            # pylint: disable=invalid-name
             to: List[str]
             cc: List[str]
             id: str = "http://hi.com"

@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.contrib.auth.models import Group
@@ -40,8 +41,6 @@ class LinkDomainViews(TestCase):
             url="https://beep.com/book/1",
             added_by=cls.local_user,
         )
-
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

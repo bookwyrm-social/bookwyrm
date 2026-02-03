@@ -6,7 +6,6 @@ from django.contrib.postgres.operations import CreateCollation
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("bookwyrm", "0200_alter_user_preferred_timezone"),
     ]
@@ -23,6 +22,16 @@ class Migration(migrations.Migration):
             name="name",
             field=bookwyrm.models.fields.CharField(
                 db_collation="case_insensitive", max_length=256
+            ),
+        ),
+        migrations.AlterField(
+            model_name="user",
+            name="localname",
+            field=models.CharField(
+                max_length=255,
+                null=True,
+                unique=False,
+                validators=[bookwyrm.models.fields.validate_localname],
             ),
         ),
         migrations.AlterField(

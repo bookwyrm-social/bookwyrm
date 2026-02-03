@@ -1,4 +1,5 @@
-""" test generating preview images """
+"""test generating preview images"""
+
 import pathlib
 from unittest.mock import patch
 from PIL import Image
@@ -19,8 +20,6 @@ from bookwyrm.preview_images import (
 )
 
 
-# pylint: disable=unused-argument
-# pylint: disable=missing-function-docstring
 class PreviewImages(TestCase):
     """every response to a get request, html or json"""
 
@@ -92,7 +91,7 @@ class PreviewImages(TestCase):
             parent_work=self.work,
         )
 
-        self.site = models.SiteSettings.objects.create()
+        self.site = models.SiteSettings.get()
 
         settings.ENABLE_PREVIEW_IMAGES = True
 

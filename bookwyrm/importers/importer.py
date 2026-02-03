@@ -1,4 +1,5 @@
-""" handle reading a csv from an external service, defaults are from Goodreads """
+"""handle reading a csv from an external service, defaults are from Goodreads"""
+
 import csv
 from datetime import timedelta
 from typing import Iterable, Optional
@@ -18,17 +19,26 @@ class Importer:
     row_mappings_guesses = [
         ("id", ["id", "book id"]),
         ("title", ["title"]),
-        ("authors", ["author", "authors", "primary author"]),
-        ("isbn_10", ["isbn10", "isbn", "isbn/uid"]),
-        ("isbn_13", ["isbn13", "isbn", "isbns", "isbn/uid"]),
+        ("authors", ["author_text", "author", "authors", "primary author"]),
+        ("isbn_10", ["isbn_10", "isbn10", "isbn", "isbn/uid"]),
+        ("isbn_13", ["isbn_13", "isbn13", "isbn", "isbns", "isbn/uid"]),
         ("shelf", ["shelf", "exclusive shelf", "read status", "bookshelf"]),
-        ("review_name", ["review name"]),
-        ("review_body", ["my review", "review"]),
+        ("review_name", ["review_name", "review name"]),
+        ("review_body", ["review_content", "my review", "review"]),
         ("rating", ["my rating", "rating", "star rating"]),
-        ("date_added", ["date added", "entry date", "added"]),
-        ("date_started", ["date started", "started"]),
-        ("date_finished", ["date finished", "last date read", "date read", "finished"]),
+        (
+            "date_added",
+            ["shelf_date", "date_added", "date added", "entry date", "added"],
+        ),
+        ("date_started", ["start_date", "date started", "started"]),
+        (
+            "date_finished",
+            ["finish_date", "date finished", "last date read", "date read", "finished"],
+        ),
     ]
+
+    # TODO: stopped
+
     date_fields = ["date_added", "date_started", "date_finished"]
     shelf_mapping_guesses = {
         "to-read": ["to-read", "want to read"],
@@ -37,7 +47,12 @@ class Importer:
     }
 
     def create_job(
-        self, user: User, csv_file: Iterable[str], include_reviews: bool, privacy: str
+        self,
+        user: User,
+        csv_file: Iterable[str],
+        include_reviews: bool,
+        privacy: str,
+        create_shelves: bool = True,
     ) -> ImportJob:
         """check over a csv and creates a database entry for the job"""
         csv_reader = csv.DictReader(csv_file, delimiter=self.delimiter)
@@ -54,6 +69,7 @@ class Importer:
         job = ImportJob.objects.create(
             user=user,
             include_reviews=include_reviews,
+            create_shelves=create_shelves,
             privacy=privacy,
             mappings=mappings,
             source=self.service,
@@ -90,7 +106,7 @@ class Importer:
     def create_row_mappings(self, headers: list[str]) -> dict[str, Optional[str]]:
         """guess what the headers mean"""
         mappings = {}
-        for (key, guesses) in self.row_mappings_guesses:
+        for key, guesses in self.row_mappings_guesses:
             values = [h for h in headers if h.lower() in guesses]
             value = values[0] if len(values) else None
             if value:
@@ -113,19 +129,17 @@ class Importer:
         shelf = [
             s for (s, gs) in self.shelf_mapping_guesses.items() if shelf_name in gs
         ]
-        return shelf[0] if shelf else None
+        return shelf[0] if shelf else normalized_row.get("shelf") or None
 
-    # pylint: disable=no-self-use
     def normalize_row(
         self, entry: dict[str, str], mappings: dict[str, Optional[str]]
     ) -> dict[str, Optional[str]]:
         """use the dataclass to create the formatted row of data"""
         return {k: entry.get(v) if v else None for k, v in mappings.items()}
 
-    # pylint: disable=no-self-use
     def get_import_limit(self, user: User) -> tuple[int, int]:
         """check if import limit is set and return how many imports are left"""
-        site_settings = SiteSettings.objects.get()
+        site_settings = SiteSettings.get()
         import_size_limit = site_settings.import_size_limit
         import_limit_reset = site_settings.import_limit_reset
         enforce_limit = import_size_limit and import_limit_reset
@@ -136,7 +150,7 @@ class Importer:
             import_jobs = ImportJob.objects.filter(
                 user=user, created_date__gte=time_range
             )
-            # pylint: disable=consider-using-generator
+
             imported_books = sum([job.successful_item_count for job in import_jobs])
             allowed_imports = import_size_limit - imported_books
         return enforce_limit, allowed_imports
@@ -148,6 +162,7 @@ class Importer:
         job = ImportJob.objects.create(
             user=user,
             include_reviews=original_job.include_reviews,
+            create_shelves=original_job.create_shelves,
             privacy=original_job.privacy,
             source=original_job.source,
             # TODO: allow users to adjust mappings

@@ -30,14 +30,16 @@
                     {% include 'snippets/form_errors.html' with errors_list=form.title.errors id="desc_title" %}
                 </div>
 
+                {% if form.sort_title.value %}
                 <div class="field">
                     <label class="label" for="id_sort_title">
                         {% trans "Sort Title:" %}
                     </label>
-                    <input type="text" name="sort_title" value="{{ form.sort_title.value|default:'' }}" maxlength="255" class="input" required="" id="id_sort_title" aria-describedby="desc_sort_title">
+                    <input type="text" name="sort_title" value="{{ form.sort_title.value|default:'' }}" maxlength="255" class="input" id="id_sort_title" aria-describedby="desc_sort_title">
 
                     {% include 'snippets/form_errors.html' with errors_list=form.sort_title.errors id="desc_sort_title" %}
                 </div>
+                {% endif%}
 
                 <div class="field">
                     <label class="label" for="id_subtitle">
@@ -381,6 +383,24 @@
                     {{ form.isfdb }}
 
                     {% include 'snippets/form_errors.html' with errors_list=form.isfdb.errors id="desc_isfdb" %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_finna_key">
+                        {% trans "Finna ID:" %}
+                    </label>
+                    {{ form.finna_key }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.finna_key.errors id="desc_finna_key" %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_libris_key">
+                        {% trans "Libris ID:" %}
+                    </label>
+                    {{ form.libris_key }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.libris_key.errors id="desc_libris_key" %}
                 </div>
             </div>
         </section>
