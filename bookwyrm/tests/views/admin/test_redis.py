@@ -57,7 +57,8 @@ class RedisStatusViews(TestCase):
         request = self.factory.post("", {"dry_run": True})
         request.user = self.local_user
 
-        result = view(request)
+        with patch("redis.from_url"):
+            result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -71,7 +72,8 @@ class RedisStatusViews(TestCase):
         request = self.factory.post("")
         request.user = self.local_user
 
-        result = view(request)
+        with patch("redis.from_url"):
+            result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
