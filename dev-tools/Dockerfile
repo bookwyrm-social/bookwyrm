@@ -11,6 +11,6 @@ COPY --from=node:18-slim /usr/local/bin /usr/local/bin
 COPY --from=node:18-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY package.json .stylelintrc.js .stylelintignore /app/dev-tools/
 
-RUN npm install .
+RUN --mount=type=cache,target=/root/.npm npm install .
 
 WORKDIR /app
