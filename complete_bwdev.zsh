@@ -20,7 +20,10 @@ compilemessages
 update_locales
 build
 clean
-black
+ruff
+ruff-format
+ruff-check
+ruff-fix
 prettier
 eslint
 stylelint

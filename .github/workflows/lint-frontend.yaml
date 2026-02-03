@@ -15,14 +15,15 @@ on:
 jobs:
   lint:
     name: Lint with stylelint and ESLint.
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install modules
-        run: npm install stylelint stylelint-config-recommended stylelint-config-standard stylelint-order eslint
+      #  run: npm install stylelint stylelint-config-recommended stylelint-config-standard stylelint-order eslint
+        run: npm install eslint@^8.9.0
 
       # See .stylelintignore for files that are not linted.
       # - name: Run stylelint

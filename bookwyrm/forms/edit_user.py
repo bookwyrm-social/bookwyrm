@@ -1,4 +1,5 @@
-""" using django model forms """
+"""using django model forms"""
+
 from django import forms
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -8,7 +9,7 @@ from bookwyrm import models
 from bookwyrm.models.fields import ClearableFileInputWithWarning
 from .custom_form import CustomForm
 
-# pylint: disable=missing-class-docstring
+
 class EditUserForm(CustomForm):
     class Meta:
         model = models.User
@@ -18,6 +19,7 @@ class EditUserForm(CustomForm):
             "email",
             "summary",
             "show_goal",
+            "show_ratings",
             "show_suggested_users",
             "manually_approves_followers",
             "default_post_privacy",
@@ -64,7 +66,17 @@ class LimitedEditUserForm(CustomForm):
         }
 
 
-class DeleteUserForm(CustomForm):
+class MoveUserForm(CustomForm):
+    target = forms.CharField(widget=forms.TextInput)
+
+    class Meta:
+        model = models.User
+        fields = ["password"]
+
+
+class AliasUserForm(CustomForm):
+    username = forms.CharField(widget=forms.TextInput)
+
     class Meta:
         model = models.User
         fields = ["password"]

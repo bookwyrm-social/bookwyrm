@@ -31,5 +31,7 @@
             </div>
         </div>
     </div>
+    {% empty %}
+    <p class="column"><em>{% trans "No groups found." %}</em></p>
     {% endfor %}
 </div>

@@ -1,4 +1,6 @@
-""" basics for an activitypub serializer """
+"""basics for an activitypub serializer"""
+
+from __future__ import annotations
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
 import logging
@@ -19,6 +21,7 @@ from bookwyrm.tasks import app, MISC
 
 logger = logging.getLogger(__name__)
 
+
 TBookWyrmModel = TypeVar("TBookWyrmModel", bound=base_model.BookWyrmModel)
 
 
@@ -34,7 +37,6 @@ class ActivityEncoder(JSONEncoder):
 
 
 @dataclass
-# pylint: disable=invalid-name
 class Signature:
     """public key block"""
 
@@ -72,8 +74,10 @@ class ActivityObject:
 
     def __init__(
         self,
-        activity_objects: Optional[list[str, base_model.BookWyrmModel]] = None,
-        **kwargs: dict[str, Any],
+        activity_objects: Optional[
+            dict[str, Union[str, list[str], ActivityObject, base_model.BookWyrmModel]]
+        ] = None,
+        **kwargs: Any,
     ):
         """this lets you pass in an object with fields that aren't in the
         dataclass, which it ignores. Any field in the dataclass is required or
@@ -107,7 +111,6 @@ class ActivityObject:
                 value = field.default
             setattr(self, field.name, value)
 
-    # pylint: disable=too-many-locals,too-many-branches,too-many-arguments
     def to_model(
         self,
         model: Optional[type[TBookWyrmModel]] = None,
@@ -116,6 +119,7 @@ class ActivityObject:
         save: bool = True,
         overwrite: bool = True,
         allow_external_connections: bool = True,
+        trigger=None,
     ) -> Optional[TBookWyrmModel]:
         """convert from an activity to a model instance. Args:
         model: the django model that this object is being converted to
@@ -129,6 +133,9 @@ class ActivityObject:
             only update blank fields if false
         allow_external_connections: look up missing data if true,
             throw an exception if false and an external connection is needed
+        trigger: the object that originally triggered this
+            self.to_model. e.g. if this is a Work being dereferenced from
+            an incoming Edition
         """
         model = model or get_model_from_type(self.type)
 
@@ -219,6 +226,8 @@ class ActivityObject:
             related_field_name = model_field.field.name
 
             for item in values:
+                if trigger and item == trigger.remote_id:
+                    continue
                 set_related_field.delay(
                     related_model.__name__,
                     instance.__class__.__name__,
@@ -233,7 +242,7 @@ class ActivityObject:
         omit = kwargs.get("omit", ())
         data = self.__dict__.copy()
         # recursively serialize
-        for (k, v) in data.items():
+        for k, v in data.items():
             try:
                 if issubclass(type(v), ActivityObject):
                     data[k] = v.serialize()
@@ -246,7 +255,10 @@ class ActivityObject:
                 pass
         data = {k: v for (k, v) in data.items() if v is not None and k not in omit}
         if "@context" not in omit:
-            data["@context"] = "https://www.w3.org/ns/activitystreams"
+            data["@context"] = [
+                "https://www.w3.org/ns/activitystreams",
+                {"Hashtag": "as:Hashtag"},
+            ]
         return data
 
 
@@ -304,7 +316,6 @@ def get_model_from_type(activity_type):
     return model[0]
 
 
-# pylint: disable=too-many-arguments
 @overload
 def resolve_remote_id(
     remote_id: str,
@@ -313,11 +324,9 @@ def resolve_remote_id(
     save: bool = True,
     get_activity: bool = False,
     allow_external_connections: bool = True,
-) -> TBookWyrmModel:
-    ...
+) -> TBookWyrmModel: ...
 
 
-# pylint: disable=too-many-arguments
 @overload
 def resolve_remote_id(
     remote_id: str,
@@ -326,11 +335,9 @@ def resolve_remote_id(
     save: bool = True,
     get_activity: bool = False,
     allow_external_connections: bool = True,
-) -> base_model.BookWyrmModel:
-    ...
+) -> base_model.BookWyrmModel: ...
 
 
-# pylint: disable=too-many-arguments
 def resolve_remote_id(
     remote_id: str,
     model: Optional[Union[str, type[base_model.BookWyrmModel]]] = None,
@@ -362,17 +369,24 @@ def resolve_remote_id(
 
     # load the data and create the object
     try:
-        data = get_data(remote_id)
+        data = get_activitypub_data(remote_id)
     except ConnectionError:
         logger.info("Could not connect to host for remote_id: %s", remote_id)
         return None
     except requests.HTTPError as e:
-        if (e.response is not None) and e.response.status_code == 401:
-            # This most likely means it's a mastodon with secure fetch enabled.
-            data = get_activitypub_data(remote_id)
+        if (
+            hasattr(e, "response")
+            and hasattr(e.response, "status_code")
+            and e.response.status_code == 410
+        ):
+            # only log a warning for "gone" since there is not much we can do
+            logger.warning(
+                "request for object dropped because it is gone (410) - remote_id: %s",
+                remote_id,
+            )
         else:
-            logger.info("Could not connect to host for remote_id: %s", remote_id)
-            return None
+            logger.exception("HTTP error - remote_id: %s - error: %s", remote_id, e)
+        return None
     # determine the model implicitly, if not provided
     # or if it's a model with subclasses like Status, check again
     if not model or hasattr(model.objects, "select_subclasses"):
@@ -393,19 +407,15 @@ def resolve_remote_id(
 
 def get_representative():
     """Get or create an actor representing the instance
-    to sign requests to 'secure mastodon' servers"""
-    username = f"{INSTANCE_ACTOR_USERNAME}@{DOMAIN}"
-    email = "bookwyrm@localhost"
-    try:
-        user = models.User.objects.get(username=username)
-    except models.User.DoesNotExist:
-        user = models.User.objects.create_user(
-            username=username,
-            email=email,
-            local=True,
-            localname=INSTANCE_ACTOR_USERNAME,
-        )
-    return user
+    to sign outgoing HTTP GET requests"""
+    return models.User.objects.get_or_create(
+        username=f"{INSTANCE_ACTOR_USERNAME}@{DOMAIN}",
+        defaults={
+            "email": "bookwyrm@localhost",
+            "local": True,
+            "localname": INSTANCE_ACTOR_USERNAME,
+        },
+    )[0]
 
 
 def get_activitypub_data(url):
@@ -419,11 +429,11 @@ def get_activitypub_data(url):
         resp = requests.get(
             url,
             headers={
-                # pylint: disable=line-too-long
                 "Accept": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
                 "Date": now,
                 "Signature": make_signature("get", sender, url, now),
             },
+            timeout=15,
         )
     except requests.RequestException:
         raise ConnectorException()

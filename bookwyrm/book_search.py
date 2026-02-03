@@ -1,4 +1,5 @@
-""" using a bookwyrm instance as a source of book data """
+"""using a bookwyrm instance as a source of book data"""
+
 from __future__ import annotations
 from dataclasses import asdict, dataclass
 from functools import reduce
@@ -21,8 +22,7 @@ def search(
     min_confidence: float = 0,
     filters: Optional[list[Any]] = None,
     return_first: Literal[False],
-) -> QuerySet[models.Edition]:
-    ...
+) -> QuerySet[models.Edition]: ...
 
 
 @overload
@@ -32,17 +32,16 @@ def search(
     min_confidence: float = 0,
     filters: Optional[list[Any]] = None,
     return_first: Literal[True],
-) -> Optional[models.Edition]:
-    ...
+) -> Optional[models.Edition]: ...
 
 
-# pylint: disable=arguments-differ
 def search(
     query: str,
     *,
     min_confidence: float = 0,
     filters: Optional[list[Any]] = None,
     return_first: bool = False,
+    books: Optional[QuerySet[models.Edition]] = None,
 ) -> Union[Optional[models.Edition], QuerySet[models.Edition]]:
     """search your local database"""
     filters = filters or []
@@ -53,14 +52,16 @@ def search(
     results = None
     # first, try searching unique identifiers
     # unique identifiers never have spaces, title/author usually do
-    if not " " in query:
-        results = search_identifiers(query, *filters, return_first=return_first)
+    if " " not in query:
+        results = search_identifiers(
+            query, *filters, return_first=return_first, books=books
+        )
 
     # if there were no identifier results...
     if not results:
         # then try searching title/author
         results = search_title_author(
-            query, min_confidence, *filters, return_first=return_first
+            query, min_confidence, *filters, return_first=return_first, books=books
         )
     return results
 
@@ -98,20 +99,32 @@ def format_search_result(search_result):
 
 
 def search_identifiers(
-    query, *filters, return_first=False
+    query,
+    *filters,
+    return_first=False,
+    books=None,
 ) -> Union[Optional[models.Edition], QuerySet[models.Edition]]:
-    """tries remote_id, isbn; defined as dedupe fields on the model"""
+    """search Editions by deduplication fields
+
+    Best for cases when we can assume someone is searching for an exact match on
+    commonly unique data identifiers like isbn or specific library ids.
+    """
+    books = books or models.Edition.objects
     if connectors.maybe_isbn(query):
         # Oh did you think the 'S' in ISBN stood for 'standard'?
         normalized_isbn = query.strip().upper().rjust(10, "0")
         query = normalized_isbn
-    # pylint: disable=W0212
+        # Try first searching just for ISBN10 and ISBN13, assuming those are the most common
+        results = books.filter(*filters, Q(isbn_10=query) | Q(isbn_13=query)).distinct()
+        if results.exists():
+            return results
+
     or_filters = [
         {f.name: query}
         for f in models.Edition._meta.get_fields()
         if hasattr(f, "deduplication_field") and f.deduplication_field
     ]
-    results = models.Edition.objects.filter(
+    results = books.filter(
         *filters, reduce(operator.or_, (Q(**f) for f in or_filters))
     ).distinct()
 
@@ -121,13 +134,18 @@ def search_identifiers(
 
 
 def search_title_author(
-    query, min_confidence, *filters, return_first=False
+    query,
+    min_confidence,
+    *filters,
+    return_first=False,
+    books=None,
 ) -> QuerySet[models.Edition]:
     """searches for title and author"""
+    books = books or models.Edition.objects
     query = SearchQuery(query, config="simple") | SearchQuery(query, config="english")
     results = (
-        models.Edition.objects.filter(*filters, search_vector=query)
-        .annotate(rank=SearchRank(F("search_vector"), query))
+        books.filter(*filters, search_vector=query)
+        .annotate(rank=SearchRank(F("search_vector"), query, normalization=32))
         .filter(rank__gt=min_confidence)
         .order_by("-rank")
     )
@@ -137,7 +155,7 @@ def search_title_author(
 
     # filter out multiple editions of the same work
     list_results = []
-    for work_id in set(editions_of_work[:30]):
+    for work_id in editions_of_work[:30]:
         result = (
             results.filter(parent_work=work_id)
             .order_by("-rank", "-edition_rank")
@@ -164,7 +182,6 @@ class SearchResult:
     confidence: float = 1.0
 
     def __repr__(self):
-        # pylint: disable=consider-using-f-string
         return "<SearchResult key={!r} title={!r} author={!r} confidence={!r}>".format(
             self.key, self.title, self.author, self.confidence
         )

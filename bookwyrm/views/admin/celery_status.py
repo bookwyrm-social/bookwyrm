@@ -1,4 +1,5 @@
-""" celery status """
+"""celery status"""
+
 import json
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -31,7 +32,7 @@ from bookwyrm.tasks import (
 
 r = redis.from_url(settings.REDIS_BROKER_URL)
 
-# pylint: disable= no-self-use
+
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.edit_instance_settings", raise_exception=True),
@@ -47,7 +48,7 @@ class CeleryStatus(View):
             inspect = celery.control.inspect()
             stats = inspect.stats()
             active_tasks = inspect.active()
-        # pylint: disable=broad-except
+
         except Exception as err:
             stats = active_tasks = None
             errors.append(err)
@@ -69,7 +70,7 @@ class CeleryStatus(View):
                 BROADCAST: r.llen(BROADCAST),
                 MISC: r.llen(MISC),
             }
-        # pylint: disable=broad-except
+
         except Exception as err:
             queues = None
             errors.append(err)
@@ -88,6 +89,7 @@ class CeleryStatus(View):
     def post(self, request):
         """Submit form to clear queues"""
         form = ClearCeleryForm(request.POST)
+        results = []
         if form.is_valid():
             if len(celery.control.ping()) != 0:
                 return HttpResponse(
@@ -110,20 +112,20 @@ class ClearCeleryForm(forms.Form):
     queues = forms.MultipleChoiceField(
         label="Queues",
         choices=[
-            (LOW, "Low prioirty"),
+            (LOW, "Low priority"),
             (MEDIUM, "Medium priority"),
             (HIGH, "High priority"),
-            (STREAMS, "Streams"),
-            (IMAGES, "Images"),
-            (SUGGESTED_USERS, "Suggested users"),
-            (EMAIL, "Email"),
+            (BROADCAST, "Broadcast"),
             (CONNECTORS, "Connectors"),
-            (LISTS, "Lists"),
-            (INBOX, "Inbox"),
+            (EMAIL, "Email"),
+            (IMAGES, "Images"),
             (IMPORTS, "Imports"),
             (IMPORT_TRIGGERED, "Import triggered"),
-            (BROADCAST, "Broadcasts"),
+            (INBOX, "Inbox"),
+            (LISTS, "Lists"),
             (MISC, "Misc"),
+            (STREAMS, "Streams"),
+            (SUGGESTED_USERS, "Suggested users"),
         ],
         widget=forms.CheckboxSelectMultiple,
     )
@@ -140,14 +142,13 @@ class ClearCeleryForm(forms.Form):
 
 
 @require_GET
-# pylint: disable=unused-argument
 def celery_ping(request):
     """Just tells you if Celery is on or not"""
     try:
         ping = celery.control.inspect().ping()
         if ping:
             return HttpResponse()
-    # pylint: disable=broad-except
+
     except Exception:
         pass
 

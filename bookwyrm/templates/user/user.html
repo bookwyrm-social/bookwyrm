@@ -22,9 +22,18 @@
     </div>
     {% endif %}
 </div>
+
+{% if site.disable_federation and not user.local %}
+<div class="notification is-danger is-light">
+    <p>
+    {% trans "Federation is currently disabled, so you will not be able to interact with this user." %}
+    </p>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block panel %}
+
 {% if user.bookwyrm_user %}
 <div class="block">
     <h2 class="title">
@@ -51,9 +60,15 @@
             {% endfor %}
             </div>
         </div>
+        {% empty %}
+        <p class="column">
+            <em>No books found.</em>
+        </p>
         {% endfor %}
     </div>
+    {% if shelves.exists %}
     <small><a href="{% url 'user-shelves' user|username %}">{% trans "View all books" %}</a></small>
+    {% endif %}
 </div>
 {% endif %}
 
@@ -119,16 +134,16 @@
         </div>
         {% endif %}
     </div>
+
     {% for activity in activities %}
     <div class="block" id="feed_{{ activity.id }}">
         {% include 'snippets/status/status.html' with status=activity %}
     </div>
-    {% endfor %}
-    {% if not activities %}
+    {% empty %}
     <div class="block">
-        <p>{% trans "No activities yet!" %}</p>
+        <p><em>{% trans "No activities yet!" %}</em></p>
     </div>
-    {% endif %}
+    {% endfor %}
 
     {% include 'snippets/pagination.html' with page=activities path=user.local_path anchor="#feed" mode="chronological" %}
 </div>

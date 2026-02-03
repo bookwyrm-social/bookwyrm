@@ -1,7 +1,9 @@
-""" url routing for the app and api """
+"""url routing for the app and api"""
+
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, re_path
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.urls import path, re_path, include
 from django.views.generic.base import TemplateView
 
 from bookwyrm import settings, views
@@ -32,6 +34,12 @@ urlpatterns = [
     path(
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+    ),
+    path(
+        "manifest.json",
+        TemplateView.as_view(
+            template_name="manifest.json", content_type="application/json"
+        ),
     ),
     # federation endpoints
     re_path(r"^inbox/?$", views.Inbox.as_view(), name="inbox"),
@@ -81,6 +89,11 @@ urlpatterns = [
     re_path(
         r"^password-reset/(?P<code>[A-Za-z0-9]+)/?$", views.PasswordReset.as_view()
     ),
+    re_path(
+        r"^force-password-reset/?$",
+        views.ForcePasswordReset.as_view(),
+        name="force-password-reset",
+    ),
     # admin
     re_path(
         r"^settings/dashboard/?$", views.Dashboard.as_view(), name="settings-dashboard"
@@ -101,6 +114,11 @@ urlpatterns = [
         r"^settings/themes/(?P<theme_id>\d+)/delete/?$",
         views.delete_theme,
         name="settings-themes-delete",
+    ),
+    re_path(
+        r"^settings/themes/(?P<theme_id>\d+)/test/?$",
+        views.test_theme,
+        name="settings-themes-test",
     ),
     re_path(
         r"^settings/announcements/?$",
@@ -128,6 +146,84 @@ urlpatterns = [
         name="settings-announcements-delete",
     ),
     re_path(
+        r"^settings/connectors/?$",
+        views.ConnectorSettings.as_view(),
+        name="settings-connectors",
+    ),
+    re_path(
+        r"^settings/connectors/(?P<connector_id>\d+)/deactivate?$",
+        views.deactivate_connector,
+        name="settings-deactivate-connector",
+    ),
+    re_path(
+        r"^settings/connectors/(?P<connector_id>\d+)/activate?$",
+        views.activate_connector,
+        name="settings-activate-connector",
+    ),
+    re_path(
+        r"^settings/connectors/(?P<connector_id>\d+)/priority?$",
+        views.set_connector_priority,
+        name="settings-connector-priority",
+    ),
+    re_path(
+        r"^settings/connectors/create?$",
+        views.create_connector,
+        name="settings-create-connector",
+    ),
+    re_path(
+        r"^settings/connectors/(?P<connector_id>\d+)/update?$",
+        views.update_connector,
+        name="settings-update-connector",
+    ),
+    re_path(
+        r"^settings/files/?$", views.FilesMaintenance.as_view(), name="settings-files"
+    ),
+    re_path(
+        r"^settings/delete-exports/set-age/?$",
+        views.set_export_expiry_age,
+        name="settings-delete-exports-set-age",
+    ),
+    re_path(
+        r"^settings/delete-exports/schedule/?$",
+        views.schedule_export_delete_task,
+        name="settings-delete-exports-schedule",
+    ),
+    re_path(
+        r"^settings/file-maintenance/unschedule/(?P<task_id>\d+)/?$",
+        views.unschedule_file_maintenance_task,
+        name="settings-file-maintenance-unschedule",
+    ),
+    re_path(
+        r"^settings/delete-exports/run/?$",
+        views.run_export_deletions,
+        name="settings-delete-exports-run",
+    ),
+    re_path(
+        r"^settings/missing-covers/schedule/?$",
+        views.schedule_run_missing_covers_job,
+        name="find-covers-task-schedule",
+    ),
+    re_path(
+        r"^settings/missing-covers/run/?$",
+        views.run_missing_covers,
+        name="find-covers-task-run",
+    ),
+    re_path(
+        r"^settings/wrong-cover-paths/run/?$",
+        views.run_wrong_cover_paths,
+        name="wrong-cover-paths-run",
+    ),
+    re_path(
+        r"^settings/file-maintenance/cancel-covers/(?P<job_id>\d+)/?$",
+        views.cancel_covers_job,
+        name="cancel-covers-job",
+    ),
+    re_path(
+        r"^settings/delete-exports/cancel/(?P<job_id>\d+)/?$",
+        views.cancel_export_delete_job,
+        name="settings-delete-exports-cancel",
+    ),
+    re_path(
         r"^settings/email-preview/?$",
         views.admin.email_config.email_preview,
         name="settings-email-preview",
@@ -149,6 +245,16 @@ urlpatterns = [
         r"^settings/users/(?P<user_id>\d+)/activate/?$",
         views.ActivateUserAdmin.as_view(),
         name="settings-activate-user",
+    ),
+    re_path(
+        r"^settings/federation-settings/?$",
+        views.FederationSettings.as_view(),
+        name="settings-federation-settings",
+    ),
+    re_path(
+        r"^settings/force-password-reset/?$",
+        views.ForcePasswordResetAdmin.as_view(),
+        name="settings-force-password-reset",
     ),
     re_path(
         r"^settings/federation/(?P<status>(federated|blocked))?/?$",
@@ -224,7 +330,6 @@ urlpatterns = [
         views.LinkDomain.as_view(),
         name="settings-link-domain",
     ),
-    # pylint: disable=line-too-long
     re_path(
         r"^setting/link-domains/(?P<status>(pending|approved|blocked))/(?P<domain_id>\d+)/?$",
         views.LinkDomain.as_view(),
@@ -317,9 +422,24 @@ urlpatterns = [
         name="settings-imports-complete",
     ),
     re_path(
+        r"^settings/user-imports/(?P<import_id>\d+)/complete/?$",
+        views.set_user_import_completed,
+        name="settings-user-import-complete",
+    ),
+    re_path(
         r"^settings/imports/disable/?$",
         views.disable_imports,
         name="settings-imports-disable",
+    ),
+    re_path(
+        r"^settings/user-exports/enable/?$",
+        views.enable_user_exports,
+        name="settings-user-exports-enable",
+    ),
+    re_path(
+        r"^settings/user-exports/disable/?$",
+        views.disable_user_exports,
+        name="settings-user-exports-disable",
     ),
     re_path(
         r"^settings/imports/enable/?$",
@@ -332,10 +452,20 @@ urlpatterns = [
         name="settings-imports-set-limit",
     ),
     re_path(
+        r"^settings/user-imports/set-limit/?$",
+        views.set_user_import_limit,
+        name="settings-user-imports-set-limit",
+    ),
+    re_path(
         r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
     ),
     re_path(
         r"^settings/celery/ping/?$", views.celery_ping, name="settings-celery-ping"
+    ),
+    re_path(
+        r"^settings/schedules/(?P<task_id>\d+)?$",
+        views.ScheduledTasks.as_view(),
+        name="settings-schedules",
     ),
     re_path(
         r"^settings/email-config/?$",
@@ -396,6 +526,12 @@ urlpatterns = [
     re_path(r"^search/?$", views.Search.as_view(), name="search"),
     # imports
     re_path(r"^import/?$", views.Import.as_view(), name="import"),
+    re_path(r"^user-import/?$", views.UserImport.as_view(), name="user-import"),
+    re_path(
+        r"^user-import/(?P<job_id>\d+)/?$",
+        views.UserImportStatus.as_view(),
+        name="user-import-status",
+    ),
     re_path(
         r"^import/(?P<job_id>\d+)/?$",
         views.ImportStatus.as_view(),
@@ -407,6 +543,11 @@ urlpatterns = [
         name="import-stop",
     ),
     re_path(
+        r"^user-import/(?P<job_id>\d+)/stop/?$",
+        views.stop_user_import,
+        name="user-import-stop",
+    ),
+    re_path(
         r"^import/(?P<job_id>\d+)/retry/(?P<item_id>\d+)/?$",
         views.retry_item,
         name="import-item-retry",
@@ -415,6 +556,11 @@ urlpatterns = [
         r"^import/(?P<job_id>\d+)/failed/?$",
         views.ImportTroubleshoot.as_view(),
         name="import-troubleshoot",
+    ),
+    re_path(
+        r"^user-import/(?P<job_id>\d+)/failed/?$",
+        views.UserImportTroubleshoot.as_view(),
+        name="user-import-troubleshoot",
     ),
     re_path(
         r"^import/(?P<job_id>\d+)/review/?$",
@@ -540,9 +686,19 @@ urlpatterns = [
         name="shelf",
     ),
     re_path(
+        rf"^{USER_PATH}/(shelf|books)/(?P<shelf_identifier>[\w-]+)/rss/?$",
+        views.rss_feed.RssShelfFeed(),
+        name="shelf-rss",
+    ),
+    re_path(
         rf"^{LOCAL_USER_PATH}/(books|shelf)/(?P<shelf_identifier>[\w-]+)(.json)?/?$",
         views.Shelf.as_view(),
         name="shelf",
+    ),
+    re_path(
+        rf"^{LOCAL_USER_PATH}/(books|shelf)/(?P<shelf_identifier>[\w-]+)/rss/?$",
+        views.rss_feed.RssShelfFeed(),
+        name="shelf-rss",
     ),
     re_path(r"^create-shelf/?$", views.create_shelf, name="shelf-create"),
     re_path(r"^delete-shelf/(?P<shelf_id>\d+)/?$", views.delete_shelf),
@@ -561,6 +717,16 @@ urlpatterns = [
         r"^preferences/password/?$",
         views.ChangePassword.as_view(),
         name="prefs-password",
+    ),
+    re_path(
+        r"^preferences/security/?$",
+        views.UserSecurity.as_view(),
+        name="prefs-security",
+    ),
+    re_path(
+        r"^preferences/security/logout/(?P<session_key>\w+)/?$",
+        views.logout_session,
+        name="prefs-logout-session",
     ),
     re_path(
         r"^preferences/2fa/?$",
@@ -593,6 +759,22 @@ urlpatterns = [
         name="prompt-2fa",
     ),
     re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
+    re_path(
+        r"^preferences/user-export/?$",
+        views.ExportUser.as_view(),
+        name="prefs-user-export",
+    ),
+    path(
+        "preferences/user-export/<archive_id>",
+        views.ExportArchive.as_view(),
+        name="prefs-export-file",
+    ),
+    re_path(r"^preferences/move/?$", views.MoveUser.as_view(), name="prefs-move"),
+    re_path(r"^preferences/alias/?$", views.AliasUser.as_view(), name="prefs-alias"),
+    re_path(
+        r"^preferences/remove-alias/?$", views.remove_alias, name="prefs-remove-alias"
+    ),
+    re_path(r"^preferences/unmove/?$", views.unmove, name="prefs-unmove"),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(
         r"^preferences/deactivate/?$",
@@ -750,6 +932,9 @@ urlpatterns = [
     # following
     re_path(r"^follow/?$", views.follow, name="follow"),
     re_path(r"^unfollow/?$", views.unfollow, name="unfollow"),
+    re_path(
+        r"^remove-follow/(?P<user_id>\d+)/?$", views.remove_follow, name="remove-follow"
+    ),
     re_path(r"^accept-follow-request/?$", views.accept_follow_request),
     re_path(r"^delete-follow-request/?$", views.delete_follow_request),
     re_path(r"^ostatus_follow/?$", views.remote_follow, name="remote-follow"),
@@ -772,7 +957,14 @@ urlpatterns = [
         r"^summary_revoke_key/?$", views.summary_revoke_key, name="summary-revoke-key"
     ),
     path("guided-tour/<tour>", views.toggle_guided_tour),
+    re_path(r"^o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# pylint: disable=invalid-name
+# Serves /static when DEBUG is true.
+urlpatterns.extend(staticfiles_urlpatterns())
+
+
 handler500 = "bookwyrm.views.server_error"
+
+
+handler403 = "bookwyrm.views.permission_denied"

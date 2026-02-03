@@ -1,5 +1,6 @@
-""" class views for login/register views """
-import pytz
+"""class views for login/register views"""
+
+import zoneinfo
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
@@ -12,11 +13,10 @@ from bookwyrm import emailing, forms, models
 from bookwyrm.settings import DOMAIN
 
 
-# pylint: disable=no-self-use
 class Register(View):
     """register a user"""
 
-    def get(self, request):  # pylint: disable=unused-argument
+    def get(self, request):
         """whether or not you're logged in, just go to the home view"""
         return redirect("/")
 
@@ -57,9 +57,11 @@ class Register(View):
         email = form.data["email"]
         password = form.data["password"]
         try:
-            preferred_timezone = pytz.timezone(form.data.get("preferred_timezone"))
-        except pytz.exceptions.UnknownTimeZoneError:
-            preferred_timezone = pytz.utc
+            preferred_timezone = zoneinfo.ZoneInfo(
+                form.data.get("preferred_timezone", "")
+            )
+        except (ValueError, zoneinfo.ZoneInfoNotFoundError):
+            preferred_timezone = zoneinfo.ZoneInfo("UTC")
 
         # make sure the email isn't blocked as spam
         email_domain = email.split("@")[-1]
@@ -95,7 +97,7 @@ class Register(View):
 class ConfirmEmailCode(View):
     """confirm email address"""
 
-    def get(self, request, code):  # pylint: disable=unused-argument
+    def get(self, request, code):
         """you got the code! good work"""
         settings = models.SiteSettings.get()
         if request.user.is_authenticated:
@@ -122,7 +124,7 @@ class ConfirmEmailCode(View):
 class ConfirmEmail(View):
     """enter code to confirm email address"""
 
-    def get(self, request):  # pylint: disable=unused-argument
+    def get(self, request):
         """you need a code! keep looking"""
         settings = models.SiteSettings.get()
         if request.user.is_authenticated or not settings.require_confirm_email:

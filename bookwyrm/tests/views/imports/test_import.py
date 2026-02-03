@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import datetime
 import pathlib
 from unittest.mock import patch
@@ -7,6 +8,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.utils import timezone
 
 from bookwyrm import forms, models, views
 from bookwyrm.tests.validate_html import validate_html
@@ -15,21 +17,25 @@ from bookwyrm.tests.validate_html import validate_html
 class ImportViews(TestCase):
     """goodreads import views"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
                 "password",
                 local=True,
                 localname="mouse",
             )
-        models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_import_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -75,13 +81,13 @@ class ImportViews(TestCase):
         form.data["source"] = "Goodreads"
         form.data["privacy"] = "public"
         form.data["include_reviews"] = False
-        csv_file = pathlib.Path(__file__).parent.joinpath("../../data/goodreads.csv")
-        form.data["csv_file"] = SimpleUploadedFile(
-            # pylint: disable=consider-using-with
-            csv_file,
-            open(csv_file, "rb").read(),
-            content_type="text/csv",
-        )
+        csv_path = pathlib.Path(__file__).parent.joinpath("../../data/goodreads.csv")
+        with open(csv_path, "rb") as csv_file:
+            form.data["csv_file"] = SimpleUploadedFile(
+                csv_path,
+                csv_file.read(),
+                content_type="text/csv",
+            )
 
         request = self.factory.post("", form.data)
         request.user = self.local_user
@@ -117,8 +123,8 @@ class ImportViews(TestCase):
         """Give people a sense of the timing"""
         models.ImportJob.objects.create(
             user=self.local_user,
-            created_date=datetime.datetime(2000, 1, 1),
-            updated_date=datetime.datetime(2001, 1, 1),
+            created_date=datetime.datetime(2000, 1, 1, tzinfo=datetime.timezone.utc),
+            updated_date=datetime.datetime(2001, 1, 1, tzinfo=datetime.timezone.utc),
             status="complete",
             complete=True,
             mappings={},
@@ -128,7 +134,7 @@ class ImportViews(TestCase):
 
     def test_get_average_import_time_with_data(self):
         """Now, with data"""
-        now = datetime.datetime.now()
+        now = timezone.now()
         two_hours_ago = now - datetime.timedelta(hours=2)
         four_hours_ago = now - datetime.timedelta(hours=4)
         models.ImportJob.objects.create(
@@ -152,7 +158,7 @@ class ImportViews(TestCase):
 
     def test_get_average_import_time_ignore_stopped(self):
         """Don't include stopped, do include no status"""
-        now = datetime.datetime.now()
+        now = timezone.now()
         two_hours_ago = now - datetime.timedelta(hours=2)
         four_hours_ago = now - datetime.timedelta(hours=4)
         models.ImportJob.objects.create(

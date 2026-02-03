@@ -1,11 +1,12 @@
-""" incoming activities """
+"""incoming activities"""
+
 import json
 import re
 import logging
 
 import requests
 
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, HttpResponseForbidden, Http404
 from django.core.exceptions import BadRequest, PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
@@ -13,6 +14,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from bookwyrm import activitypub, models
+from bookwyrm.decorators import require_federation
 from bookwyrm.tasks import app, INBOX
 from bookwyrm.signatures import Signature
 from bookwyrm.utils import regex
@@ -20,8 +22,12 @@ from bookwyrm.utils import regex
 logger = logging.getLogger(__name__)
 
 
+class UserIsGoneError(Exception):
+    """error class for when a user is banned or deleted"""
+
+
 @method_decorator(csrf_exempt, name="dispatch")
-# pylint: disable=no-self-use
+@method_decorator(require_federation, name="dispatch")
 class Inbox(View):
     """requests sent by outside servers"""
 
@@ -40,13 +46,17 @@ class Inbox(View):
         except json.decoder.JSONDecodeError:
             raise BadRequest()
 
-        # let's be extra sure we didn't block this domain
-        raise_is_blocked_activity(activity_json)
+        try:
+            # let's be extra sure we didn't block this domain
+            raise_is_blocked_activity(activity_json)
+        except UserIsGoneError:
+            # banned or deleted users are not allowed to send us Activities
+            return HttpResponseForbidden()
 
         if (
-            not "object" in activity_json
-            or not "type" in activity_json
-            or not activity_json["type"] in activitypub.activity_objects
+            "object" not in activity_json
+            or "type" not in activity_json
+            or activity_json["type"] not in activitypub.activity_objects
         ):
             raise Http404()
 
@@ -86,12 +96,13 @@ def raise_is_blocked_activity(activity_json):
         # well I guess it's not even a valid activity so who knows
         return
 
-    # check if the user is banned/deleted
+    # check if the user is banned/deleted in our database
     existing = models.User.find_existing_by_remote_id(actor)
     if existing and existing.deleted:
         logger.debug("%s is banned/deleted, denying request based on actor", actor)
-        raise PermissionDenied()
+        raise UserIsGoneError()
 
+    # check if we have blocked the whole server
     if models.FederatedServer.is_blocked(actor):
         logger.debug("%s is blocked, denying request based on actor", actor)
         raise PermissionDenied()

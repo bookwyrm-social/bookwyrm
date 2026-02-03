@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 from uuid import UUID
 from unittest.mock import patch
 from django.test import TestCase
@@ -11,21 +12,24 @@ from bookwyrm import models, settings
 class List(TestCase):
     """some activitypub oddness ahead"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """look, a list"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
         work = models.Work.objects.create(title="hello")
-        self.book = models.Edition.objects.create(title="hi", parent_work=work)
+        cls.book = models.Edition.objects.create(title="hi", parent_work=work)
 
     def test_remote_id(self, *_):
         """shelves use custom remote ids"""
         book_list = models.List.objects.create(name="Test List", user=self.local_user)
-        expected_id = f"https://{settings.DOMAIN}/list/{book_list.id}"
+        expected_id = f"{settings.BASE_URL}/list/{book_list.id}"
         self.assertEqual(book_list.get_remote_id(), expected_id)
 
     def test_to_activity(self, *_):

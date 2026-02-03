@@ -1,4 +1,5 @@
-""" moderation via flagged posts and users """
+"""moderation via flagged posts and users"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
@@ -6,7 +7,7 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
-from django_celery_beat.models import PeriodicTask
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 from bookwyrm import forms, models
 
@@ -20,7 +21,6 @@ from bookwyrm import forms, models
     permission_required("bookwyrm.moderate_post", raise_exception=True),
     name="dispatch",
 )
-# pylint: disable=no-self-use
 class AutoMod(View):
     """Manage automated flagging"""
 
@@ -54,7 +54,7 @@ def schedule_automod_task(request):
         return TemplateResponse(request, "settings/automod/rules.html", data)
 
     with transaction.atomic():
-        schedule = form.save(request)
+        schedule, _ = IntervalSchedule.objects.get_or_create(**form.cleaned_data)
         PeriodicTask.objects.get_or_create(
             interval=schedule,
             name="automod-task",
@@ -66,7 +66,6 @@ def schedule_automod_task(request):
 @require_POST
 @permission_required("bookwyrm.moderate_user", raise_exception=True)
 @permission_required("bookwyrm.moderate_post", raise_exception=True)
-# pylint: disable=unused-argument
 def unschedule_automod_task(request, task_id):
     """unscheduler"""
     get_object_or_404(PeriodicTask, id=task_id).delete()
@@ -76,7 +75,6 @@ def unschedule_automod_task(request, task_id):
 @require_POST
 @permission_required("bookwyrm.moderate_user", raise_exception=True)
 @permission_required("bookwyrm.moderate_post", raise_exception=True)
-# pylint: disable=unused-argument
 def automod_delete(request, rule_id):
     """Remove a rule"""
     get_object_or_404(models.AutoMod, id=rule_id).delete()
@@ -86,7 +84,6 @@ def automod_delete(request, rule_id):
 @require_POST
 @permission_required("bookwyrm.moderate_user", raise_exception=True)
 @permission_required("bookwyrm.moderate_post", raise_exception=True)
-# pylint: disable=unused-argument
 def run_automod(request):
     """run scan"""
     models.automod_task.delay()

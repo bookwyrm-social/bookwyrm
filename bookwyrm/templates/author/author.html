@@ -28,7 +28,7 @@
     <meta itemprop="name" content="{{ author.name }}">
 
     {% firstof author.aliases author.born author.died as details %}
-    {% firstof author.wikipedia_link author.website author.openlibrary_key author.inventaire_id author.isni author.isfdb as links %}
+    {% firstof author.wikipedia_link author.website author.openlibrary_key author.inventaire_id author.isni author.isfdb author.wikidata as links %}
     {% if details or links %}
     <div class="column is-3">
         {% if details %}
@@ -72,6 +72,14 @@
                     </a>
                 </div>
                 {% endif %}
+
+                {% if author.wikidata %}
+                <div>
+                    <a itemprop="sameAs" href="https://www.wikidata.org/wiki/{{ author.wikidata }}" rel="nofollow noopener noreferrer" target="_blank">
+                        {% trans "View on Wikidata" %}
+                    </a>
+                </div>
+                {% endif %} 
 
                 {% if author.website %}
                 <div>
@@ -141,14 +149,6 @@
                 <div>
                     <a itemprop="sameAs" href="https://www.goodreads.com/author/show/{{ author.goodreads_key }}" target="_blank" rel="nofollow noopener noreferrer">
                         {% trans "View on Goodreads" %}
-                    </a>
-                </div>
-                {% endif %}
-
-                {% if author.isfdb %}
-                <div>
-                    <a itemprop="sameAs" href="https://www.isfdb.org/cgi-bin/ea.cgi?{{ author.isfdb }}" target="_blank" rel="nofollow noopener noreferrer">
-                        {% trans "View ISFDB entry" %}
                     </a>
                 </div>
                 {% endif %}

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-26 00:20+0000\n"
-"PO-Revision-Date: 2023-04-26 00:45\n"
+"POT-Creation-Date: 2026-01-01 17:29+0000\n"
+"PO-Revision-Date: 2026-01-01 18:32\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -33,66 +33,69 @@ msgstr "Jeden miesiąc"
 msgid "Does Not Expire"
 msgstr "Nie wygasa"
 
-#: bookwyrm/forms/admin.py:49
-#, python-brace-format
-msgid "{i} uses"
-msgstr "{i} użyć"
-
 #: bookwyrm/forms/admin.py:50
 msgid "Unlimited"
-msgstr "Nieskończone"
+msgstr "Bez ograniczeń"
 
-#: bookwyrm/forms/edit_user.py:88
+#: bookwyrm/forms/edit_user.py:100 bookwyrm/views/landing/password.py:117
 msgid "Incorrect password"
 msgstr "Niepoprawne hasło"
 
-#: bookwyrm/forms/edit_user.py:95 bookwyrm/forms/landing.py:90
+#: bookwyrm/forms/edit_user.py:107 bookwyrm/forms/landing.py:93
 msgid "Password does not match"
 msgstr "Hasła nie są identyczne"
 
-#: bookwyrm/forms/edit_user.py:118
+#: bookwyrm/forms/edit_user.py:130
 msgid "Incorrect Password"
 msgstr "Niepoprawne hasło"
 
-#: bookwyrm/forms/forms.py:54
+#: bookwyrm/forms/forms.py:60
 msgid "Reading finish date cannot be before start date."
 msgstr "Data ukończenia czytania musi mieć miejsce po dacie rozpoczęcia."
 
-#: bookwyrm/forms/forms.py:59
+#: bookwyrm/forms/forms.py:65
 msgid "Reading stopped date cannot be before start date."
-msgstr "Data ukończenia czytania musi mieć miejsce po dacie rozpoczęcia."
+msgstr "Data wstrzymania czytania musi mieć miejsce po dacie rozpoczęcia."
 
-#: bookwyrm/forms/forms.py:67
+#: bookwyrm/forms/forms.py:73
 msgid "Reading stopped date cannot be in the future."
-msgstr "Data wstrzymania czytania nie może być w przyszłości."
+msgstr "Data wstrzymania czytania nie może mieć miejsca w przyszłości."
 
-#: bookwyrm/forms/forms.py:74
+#: bookwyrm/forms/forms.py:80
 msgid "Reading finished date cannot be in the future."
-msgstr "Data zakończenia czytania nie może być w przyszłości."
+msgstr "Data ukończenia czytania nie może mieć miejsca w przyszłości."
 
-#: bookwyrm/forms/landing.py:38
+#: bookwyrm/forms/landing.py:37
 msgid "Username or password are incorrect"
 msgstr "Niepoprawna nazwa użytkownika lub hasło"
 
-#: bookwyrm/forms/landing.py:57
+#: bookwyrm/forms/landing.py:56
 msgid "User with this username already exists"
 msgstr "Ta nazwa użytkownika jest już używana"
 
-#: bookwyrm/forms/landing.py:66
+#: bookwyrm/forms/landing.py:65
 msgid "A user with this email already exists."
-msgstr "Ten adres e-mail jest już w użyciu."
+msgstr "Ten e-mail jest już używany."
 
-#: bookwyrm/forms/landing.py:124 bookwyrm/forms/landing.py:132
+#: bookwyrm/forms/landing.py:69
+msgid "This email address cannot be registered."
+msgstr "Nie można zarejestrować tego adresu e-mail."
+
+#: bookwyrm/forms/landing.py:114
+msgid "Password cannot be the same as your current password"
+msgstr ""
+
+#: bookwyrm/forms/landing.py:144 bookwyrm/forms/landing.py:152
 msgid "Incorrect code"
 msgstr "Niepoprawny kod"
 
-#: bookwyrm/forms/links.py:36
+#: bookwyrm/forms/links.py:35
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
 msgstr "Ta domena jest zablokowana. Skontaktuj się z administratorem, jeśli uważasz, że wystąpił błąd."
 
-#: bookwyrm/forms/links.py:49
+#: bookwyrm/forms/links.py:50
 msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr "Ten odnośnik z typem pliku został już dodany do tej książki. Jeśli nie jest on widoczny, domena jest nadal sprawdzana."
+msgstr "Ten odnośnik z typem pliku jest już dodany do tej książki. Jeśli nie jest widoczny, domena jest nadal weryfikowana."
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
@@ -102,8 +105,8 @@ msgstr "Sortowanie"
 msgid "Book Title"
 msgstr "Tytuł książki"
 
-#: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:156
-#: bookwyrm/templates/shelf/shelf.html:188
+#: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:164
+#: bookwyrm/templates/shelf/shelf.html:196
 #: bookwyrm/templates/snippets/create_status/review.html:32
 msgid "Rating"
 msgstr "Ocena"
@@ -120,84 +123,152 @@ msgstr "Rosnąco"
 msgid "Descending"
 msgstr "Malejąco"
 
-#: bookwyrm/models/announcement.py:11
+#: bookwyrm/models/announcement.py:12
 msgid "Primary"
 msgstr "Podstawowy"
 
-#: bookwyrm/models/announcement.py:12
+#: bookwyrm/models/announcement.py:13
 msgid "Success"
 msgstr "Powodzenie"
 
-#: bookwyrm/models/announcement.py:13
+#: bookwyrm/models/announcement.py:14
 #: bookwyrm/templates/settings/invites/manage_invites.html:47
 msgid "Link"
 msgstr "Odnośnik"
 
-#: bookwyrm/models/announcement.py:14
+#: bookwyrm/models/announcement.py:15
 msgid "Warning"
 msgstr "Ostrzeżenie"
 
-#: bookwyrm/models/announcement.py:15
+#: bookwyrm/models/announcement.py:16
 msgid "Danger"
 msgstr "Zagrożenie"
 
-#: bookwyrm/models/antispam.py:112 bookwyrm/models/antispam.py:146
+#: bookwyrm/models/antispam.py:114 bookwyrm/models/antispam.py:148
 msgid "Automatically generated report"
 msgstr "Automatycznie wygenerowany raport"
 
-#: bookwyrm/models/base_model.py:18 bookwyrm/models/import_job.py:47
-#: bookwyrm/models/link.py:72 bookwyrm/templates/import/import_status.html:214
+#: bookwyrm/models/base_model.py:19 bookwyrm/models/import_job.py:50
+#: bookwyrm/models/job.py:18 bookwyrm/models/link.py:77
+#: bookwyrm/templates/import/import_status.html:214
 #: bookwyrm/templates/settings/link_domains/link_domains.html:19
 msgid "Pending"
 msgstr "Oczekujące"
 
-#: bookwyrm/models/base_model.py:19
+#: bookwyrm/models/base_model.py:20
 msgid "Self deletion"
 msgstr "Usunięte samodzielnie"
 
-#: bookwyrm/models/base_model.py:20
-msgid "Self deactivation"
-msgstr "Automatyczna dezaktywacja"
-
 #: bookwyrm/models/base_model.py:21
+msgid "Self deactivation"
+msgstr "Dezaktywowane samodzielnie"
+
+#: bookwyrm/models/base_model.py:22
 msgid "Moderator suspension"
 msgstr "Zawieszone przez moderatora"
 
-#: bookwyrm/models/base_model.py:22
+#: bookwyrm/models/base_model.py:23
 msgid "Moderator deletion"
 msgstr "Usunięte przez moderatora"
 
-#: bookwyrm/models/base_model.py:23
+#: bookwyrm/models/base_model.py:24
 msgid "Domain block"
 msgstr "Blokada domeny"
 
-#: bookwyrm/models/book.py:272
+#: bookwyrm/models/book.py:488
 msgid "Audiobook"
 msgstr "Audiobook"
 
-#: bookwyrm/models/book.py:273
+#: bookwyrm/models/book.py:489
 msgid "eBook"
 msgstr "eBook"
 
-#: bookwyrm/models/book.py:274
+#: bookwyrm/models/book.py:490
 msgid "Graphic novel"
 msgstr "Powieść ilustrowana"
 
-#: bookwyrm/models/book.py:275
+#: bookwyrm/models/book.py:491
 msgid "Hardcover"
 msgstr "Twarda oprawa"
 
-#: bookwyrm/models/book.py:276
+#: bookwyrm/models/book.py:492
 msgid "Paperback"
 msgstr "Miękka oprawa"
 
-#: bookwyrm/models/federated_server.py:11
+#: bookwyrm/models/book.py:501 bookwyrm/models/book.py:508
+#: bookwyrm/models/book.py:514 bookwyrm/models/book.py:519
+#: bookwyrm/models/book.py:524 bookwyrm/models/book.py:542
+#: bookwyrm/models/book.py:548 bookwyrm/models/book.py:553
+#, python-format
+msgid "%(value)s doesn't look like an ISBN"
+msgstr ""
+
+#: bookwyrm/models/book.py:530 bookwyrm/models/book.py:570
+#, python-format
+msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
+msgstr ""
+
+#: bookwyrm/models/bookwyrm_import_job.py:151 bookwyrm/models/report.py:85
+#: bookwyrm/templates/settings/reports/report.html:115
+#: bookwyrm/templates/snippets/create_status.html:26
+msgid "Comment"
+msgstr "Skomentuj"
+
+#: bookwyrm/models/bookwyrm_import_job.py:152
+#: bookwyrm/templates/import/import_status.html:127
+#: bookwyrm/templates/import/manual_review.html:13
+#: bookwyrm/templates/snippets/create_status.html:16
+msgid "Review"
+msgstr "Recenzja"
+
+#: bookwyrm/models/bookwyrm_import_job.py:153
+msgid "Quotation"
+msgstr "Cytat"
+
+#: bookwyrm/models/bookwyrm_import_job.py:181
+#: bookwyrm/templates/snippets/follow_button.html:24
+msgid "Follow"
+msgstr "Obserwuj"
+
+#: bookwyrm/models/bookwyrm_import_job.py:182
+#: bookwyrm/templates/settings/federation/instance.html:116
+#: bookwyrm/templates/settings/link_domains/link_domains.html:87
+#: bookwyrm/templates/snippets/block_button.html:5
+msgid "Block"
+msgstr "Zablokuj"
+
+#: bookwyrm/models/bookwyrm_import_job.py:395
+msgid "Unknown error importing book"
+msgstr ""
+
+#: bookwyrm/models/bookwyrm_import_job.py:490
+msgid "unauthorized"
+msgstr "nieautoryzowane"
+
+#: bookwyrm/models/bookwyrm_import_job.py:496
+msgid "Unknown error importing book status"
+msgstr ""
+
+#: bookwyrm/models/bookwyrm_import_job.py:686
+#: bookwyrm/models/bookwyrm_import_job.py:711
+msgid "connection_error"
+msgstr "błąd_połączenia"
+
+#: bookwyrm/models/bookwyrm_import_job.py:721
+msgid "invalid_relationship"
+msgstr "nieprawidłowa_relacja"
+
+#: bookwyrm/models/bookwyrm_import_job.py:729
+msgid "Unkown error importing relationship"
+msgstr ""
+
+#: bookwyrm/models/federated_server.py:12
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
 #: bookwyrm/templates/settings/federation/instance_list.html:22
 msgid "Federated"
-msgstr "Federacja"
+msgstr "Sfederowane"
 
-#: bookwyrm/models/federated_server.py:12 bookwyrm/models/link.py:71
+#: bookwyrm/models/federated_server.py:13 bookwyrm/models/link.py:76
 #: bookwyrm/templates/settings/federation/edit_instance.html:56
 #: bookwyrm/templates/settings/federation/instance.html:10
 #: bookwyrm/templates/settings/federation/instance_list.html:26
@@ -205,26 +276,26 @@ msgstr "Federacja"
 msgid "Blocked"
 msgstr "Zablokowane"
 
-#: bookwyrm/models/fields.py:29
+#: bookwyrm/models/fields.py:36
 #, python-format
 msgid "%(value)s is not a valid remote_id"
 msgstr "%(value)s nie jest prawidłowym remote_id"
 
-#: bookwyrm/models/fields.py:38 bookwyrm/models/fields.py:47
+#: bookwyrm/models/fields.py:45 bookwyrm/models/fields.py:54
 #, python-format
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s nie jest prawidłową nazwą użytkownika"
 
-#: bookwyrm/models/fields.py:192 bookwyrm/templates/layout.html:128
+#: bookwyrm/models/fields.py:201 bookwyrm/templates/layout.html:129
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "nazwa użytkownika"
 
-#: bookwyrm/models/fields.py:197
+#: bookwyrm/models/fields.py:206
 msgid "A user with that username already exists."
-msgstr "Ta nazwa użytkownika jest już w użyciu."
+msgstr "Ta nazwa użytkownika jest już używana."
 
-#: bookwyrm/models/fields.py:216
+#: bookwyrm/models/fields.py:225
 #: bookwyrm/templates/snippets/privacy-icons.html:3
 #: bookwyrm/templates/snippets/privacy-icons.html:4
 #: bookwyrm/templates/snippets/privacy_select.html:11
@@ -232,7 +303,7 @@ msgstr "Ta nazwa użytkownika jest już w użyciu."
 msgid "Public"
 msgstr "Publiczne"
 
-#: bookwyrm/models/fields.py:217
+#: bookwyrm/models/fields.py:226
 #: bookwyrm/templates/snippets/privacy-icons.html:7
 #: bookwyrm/templates/snippets/privacy-icons.html:8
 #: bookwyrm/templates/snippets/privacy_select.html:14
@@ -240,14 +311,16 @@ msgstr "Publiczne"
 msgid "Unlisted"
 msgstr "Niepubliczne"
 
-#: bookwyrm/models/fields.py:218
+#: bookwyrm/models/fields.py:227
 #: bookwyrm/templates/snippets/privacy_select.html:17
 #: bookwyrm/templates/user/relationships/followers.html:6
+#: bookwyrm/templates/user/relationships/followers.html:11
+#: bookwyrm/templates/user/relationships/followers.html:21
 #: bookwyrm/templates/user/relationships/layout.html:11
 msgid "Followers"
 msgstr "Obserwujący"
 
-#: bookwyrm/models/fields.py:219
+#: bookwyrm/models/fields.py:228
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:6
 #: bookwyrm/templates/snippets/privacy-icons.html:15
 #: bookwyrm/templates/snippets/privacy-icons.html:16
@@ -256,161 +329,293 @@ msgstr "Obserwujący"
 msgid "Private"
 msgstr "Prywatne"
 
-#: bookwyrm/models/import_job.py:48 bookwyrm/templates/import/import.html:168
-#: bookwyrm/templates/settings/imports/imports.html:98
-#: bookwyrm/templates/settings/users/user_admin.html:81
-#: bookwyrm/templates/settings/users/user_info.html:28
+#: bookwyrm/models/housekeeping.py:116
+msgid "Missing"
+msgstr ""
+
+#: bookwyrm/models/housekeeping.py:117
+msgid "Wrong Path"
+msgstr ""
+
+#: bookwyrm/models/import_job.py:51 bookwyrm/models/job.py:19
+#: bookwyrm/templates/import/import.html:184
+#: bookwyrm/templates/import/import_user.html:225
+#: bookwyrm/templates/import/user_import_status.html:56
+#: bookwyrm/templates/preferences/export-user.html:146
+#: bookwyrm/templates/settings/files.html:162
+#: bookwyrm/templates/settings/files.html:344
+#: bookwyrm/templates/settings/imports/imports.html:180
+#: bookwyrm/templates/settings/imports/imports.html:270
+#: bookwyrm/templates/snippets/user_active_tag.html:8
 msgid "Active"
 msgstr "Aktywne"
 
-#: bookwyrm/models/import_job.py:49 bookwyrm/templates/import/import.html:166
+#: bookwyrm/models/import_job.py:52 bookwyrm/models/job.py:20
+#: bookwyrm/templates/import/import.html:182
+#: bookwyrm/templates/import/import_user.html:223
+#: bookwyrm/templates/import/user_import_status.html:54
+#: bookwyrm/templates/preferences/export-user.html:144
+#: bookwyrm/templates/settings/files.html:160
+#: bookwyrm/templates/settings/files.html:342
 msgid "Complete"
 msgstr "Zakończone"
 
-#: bookwyrm/models/import_job.py:50
+#: bookwyrm/models/import_job.py:53 bookwyrm/models/job.py:21
 msgid "Stopped"
 msgstr "Wstrzymane"
 
-#: bookwyrm/models/import_job.py:83 bookwyrm/models/import_job.py:91
+#: bookwyrm/models/import_job.py:87 bookwyrm/models/import_job.py:95
 msgid "Import stopped"
 msgstr "Import wstrzymany"
 
-#: bookwyrm/models/import_job.py:363 bookwyrm/models/import_job.py:388
+#: bookwyrm/models/import_job.py:377 bookwyrm/models/import_job.py:402
 msgid "Error loading book"
 msgstr "Błąd wczytywania książki"
 
-#: bookwyrm/models/import_job.py:372
+#: bookwyrm/models/import_job.py:386
 msgid "Could not find a match for book"
 msgstr "Nie znaleziono pasującej książki"
 
-#: bookwyrm/models/link.py:51
+#: bookwyrm/models/job.py:22
+#: bookwyrm/templates/import/user_import_status.html:69
+msgid "Failed"
+msgstr "Błąd"
+
+#: bookwyrm/models/link.py:56
 msgid "Free"
 msgstr "Bezpłatne"
 
-#: bookwyrm/models/link.py:52
+#: bookwyrm/models/link.py:57
 msgid "Purchasable"
 msgstr "Do kupienia"
 
-#: bookwyrm/models/link.py:53
+#: bookwyrm/models/link.py:58
 msgid "Available for loan"
 msgstr "Do wypożyczenia"
 
-#: bookwyrm/models/link.py:70
+#: bookwyrm/models/link.py:75
 #: bookwyrm/templates/settings/link_domains/link_domains.html:23
 msgid "Approved"
 msgstr "Zatwierdzone"
 
-#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:305
+#: bookwyrm/models/report.py:86
+msgid "Resolved report"
+msgstr "Rozwiązane zgłoszenie"
+
+#: bookwyrm/models/report.py:87
+msgid "Re-opened report"
+msgstr "Ponownie otworzone zgłoszenie"
+
+#: bookwyrm/models/report.py:88
+msgid "Messaged reporter"
+msgstr "Wysłano do zgłaszającego"
+
+#: bookwyrm/models/report.py:89
+msgid "Messaged reported user"
+msgstr "Wysłano do zgłoszonego użytkownika"
+
+#: bookwyrm/models/report.py:90
+msgid "Suspended user"
+msgstr "Użytkownik zawieszony"
+
+#: bookwyrm/models/report.py:91
+msgid "Un-suspended user"
+msgstr "Anulowano zawieszenie"
+
+#: bookwyrm/models/report.py:92
+msgid "Changed user permission level"
+msgstr "Zmieniono poziom uprawnień użytkownika"
+
+#: bookwyrm/models/report.py:93
+msgid "Deleted user account"
+msgstr "Usunięto konto użytkownika"
+
+#: bookwyrm/models/report.py:94
+msgid "Blocked domain"
+msgstr "Domena zablokowana"
+
+#: bookwyrm/models/report.py:95
+msgid "Approved domain"
+msgstr "Zatwierdzona domena"
+
+#: bookwyrm/models/report.py:96
+msgid "Deleted item"
+msgstr "Usunięty element"
+
+#: bookwyrm/models/session.py:43
+msgid "Unknown"
+msgstr ""
+
+#: bookwyrm/models/status.py:191
+#, python-format
+msgid "%(display_name)s's status"
+msgstr "Status %(display_name)s"
+
+#: bookwyrm/models/status.py:365
+#, python-format
+msgid "%(display_name)s's comment on %(book_title)s"
+msgstr "%(display_name)s komentuje %(book_title)s"
+
+#: bookwyrm/models/status.py:416
+#, python-format
+msgid "%(display_name)s's quote from %(book_title)s"
+msgstr "%(display_name)s cytuje %(book_title)s"
+
+#: bookwyrm/models/status.py:452
+#, python-format
+msgid "%(display_name)s's review of %(book_title)s"
+msgstr "%(display_name)s ocenia %(book_title)s"
+
+#: bookwyrm/models/status.py:484
+#, python-format
+msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
+msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
+msgstr[0] "%(display_name)s ocenia %(book_title)s: %(display_rating).1f gwiazdka"
+msgstr[1] "%(display_name)s ocenia %(book_title)s: %(display_rating).1f gwiazdki"
+msgstr[2] "%(display_name)s ocenia %(book_title)s: %(display_rating).1f gwiazdek"
+msgstr[3] "%(display_name)s ocenia %(book_title)s: %(display_rating).1f gwiazdek"
+
+#: bookwyrm/models/user.py:40 bookwyrm/templates/book/book.html:336
 msgid "Reviews"
 msgstr "Oceny"
 
-#: bookwyrm/models/user.py:33
+#: bookwyrm/models/user.py:41
 msgid "Comments"
 msgstr "Komentarze"
 
-#: bookwyrm/models/user.py:34
+#: bookwyrm/models/user.py:42 bookwyrm/templates/import/import_user.html:154
 msgid "Quotations"
 msgstr "Cytaty"
 
-#: bookwyrm/models/user.py:35
+#: bookwyrm/models/user.py:43
 msgid "Everything else"
 msgstr "Wszystko inne"
 
-#: bookwyrm/settings.py:221
+#: bookwyrm/settings.py:236
 msgid "Home Timeline"
 msgstr "Strona główna"
 
-#: bookwyrm/settings.py:221
+#: bookwyrm/settings.py:236
 msgid "Home"
 msgstr "Start"
 
-#: bookwyrm/settings.py:222
+#: bookwyrm/settings.py:237
 msgid "Books Timeline"
 msgstr "Oś czasu książek"
 
-#: bookwyrm/settings.py:222
+#: bookwyrm/settings.py:237
 #: bookwyrm/templates/guided_tour/user_profile.html:101
+#: bookwyrm/templates/import/user_import_status.html:73
 #: bookwyrm/templates/search/layout.html:22
-#: bookwyrm/templates/search/layout.html:43
-#: bookwyrm/templates/user/layout.html:95
+#: bookwyrm/templates/search/layout.html:44
+#: bookwyrm/templates/user/layout.html:107
 msgid "Books"
 msgstr "Książki"
 
-#: bookwyrm/settings.py:294
+#: bookwyrm/settings.py:314
 msgid "English"
 msgstr "English (Angielski)"
 
-#: bookwyrm/settings.py:295
+#: bookwyrm/settings.py:315
 msgid "Català (Catalan)"
-msgstr "Català (Kataloński)"
+msgstr "Català (kataloński)"
 
-#: bookwyrm/settings.py:296
+#: bookwyrm/settings.py:316
 msgid "Deutsch (German)"
-msgstr "Deutsch (Niemiecki)"
+msgstr "Deutsch (niemiecki)"
 
-#: bookwyrm/settings.py:297
+#: bookwyrm/settings.py:317
 msgid "Esperanto (Esperanto)"
-msgstr "Esperanto (Esperanto)"
+msgstr "Esperanto (esperanto)"
 
-#: bookwyrm/settings.py:298
+#: bookwyrm/settings.py:318
 msgid "Español (Spanish)"
-msgstr "Español (Hiszpański)"
+msgstr "Español (hiszpański)"
 
-#: bookwyrm/settings.py:299
+#: bookwyrm/settings.py:319
 msgid "Euskara (Basque)"
-msgstr ""
+msgstr "Euskara (baskijski)"
 
-#: bookwyrm/settings.py:300
+#: bookwyrm/settings.py:320
 msgid "Galego (Galician)"
-msgstr "Galego (Galicyjski)"
+msgstr "Galego (galicyjski)"
 
-#: bookwyrm/settings.py:301
+#: bookwyrm/settings.py:321
 msgid "Italiano (Italian)"
-msgstr "Italiano (Włoski)"
+msgstr "Italiano (włoski)"
 
-#: bookwyrm/settings.py:302
+#: bookwyrm/settings.py:322
+msgid "한국어 (Korean)"
+msgstr "한국어 (koreański)"
+
+#: bookwyrm/settings.py:323
 msgid "Suomi (Finnish)"
-msgstr "Suomi (Fiński)"
+msgstr "Suomi (fiński)"
 
-#: bookwyrm/settings.py:303
+#: bookwyrm/settings.py:324
 msgid "Français (French)"
-msgstr "Français (Francuski)"
+msgstr "Français (francuski)"
 
-#: bookwyrm/settings.py:304
+#: bookwyrm/settings.py:325
 msgid "Lietuvių (Lithuanian)"
-msgstr "Lietuvių (Litewski)"
+msgstr "Lietuvių (litewski)"
 
-#: bookwyrm/settings.py:305
+#: bookwyrm/settings.py:326
+msgid "Nederlands (Dutch)"
+msgstr "Nederlands (holenderski)"
+
+#: bookwyrm/settings.py:327
 msgid "Norsk (Norwegian)"
-msgstr "Norsk (Norweski)"
+msgstr "Norsk (norweski)"
 
-#: bookwyrm/settings.py:306
+#: bookwyrm/settings.py:328
 msgid "Polski (Polish)"
-msgstr "Polski"
+msgstr "polski"
 
-#: bookwyrm/settings.py:307
+#: bookwyrm/settings.py:329
 msgid "Português do Brasil (Brazilian Portuguese)"
-msgstr "Português do Brasil (Brazylijski Portugalski)"
+msgstr "Português do Brasil (portugalski — Brazylia)"
 
-#: bookwyrm/settings.py:308
+#: bookwyrm/settings.py:330
 msgid "Português Europeu (European Portuguese)"
-msgstr "Português Europeu (Portugalski)"
+msgstr "Português Europeu (portugalski — Portugalia)"
 
-#: bookwyrm/settings.py:309
+#: bookwyrm/settings.py:331
 msgid "Română (Romanian)"
-msgstr "Română (Rumuński)"
+msgstr "Română (rumuński)"
 
-#: bookwyrm/settings.py:310
+#: bookwyrm/settings.py:332
 msgid "Svenska (Swedish)"
-msgstr "Svenska (Szwedzki)"
+msgstr "Svenska (szwedzki)"
 
-#: bookwyrm/settings.py:311
+#: bookwyrm/settings.py:333
+msgid "Українська (Ukrainian)"
+msgstr "Українська (ukraiński)"
+
+#: bookwyrm/settings.py:334
 msgid "简体中文 (Simplified Chinese)"
-msgstr "简体中文 (Uproszczony chiński)"
+msgstr "简体中文 (chiński — uproszczony)"
 
-#: bookwyrm/settings.py:312
+#: bookwyrm/settings.py:335
 msgid "繁體中文 (Traditional Chinese)"
-msgstr "繁體中文 (Tradycyjny chiński)"
+msgstr "繁體中文 (chiński — tradycyjny)"
+
+#: bookwyrm/templates/403.html:5
+msgid "Oh no!"
+msgstr "O nie!"
+
+#: bookwyrm/templates/403.html:9 bookwyrm/templates/landing/invite.html:21
+msgid "Permission Denied"
+msgstr "Odmowa dostępu"
+
+#: bookwyrm/templates/403.html:11
+#, python-format
+msgid "You do not have permission to view this page or perform this action. Your user permission level is <code>%(level)s</code>."
+msgstr "Brak uprawnień do zobaczenia tej strony lub wykonania tej czynności. Poziom Twoich uprawnień to <code>%(level)s</code>."
+
+#: bookwyrm/templates/403.html:15
+msgid "If you think you should have access, please speak to your BookWyrm server administrator."
+msgstr "Jeśli Twoim zdaniem jest to błąd, skontaktuj się ze swoim administratorem serwera BookWyrm."
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
@@ -419,6 +624,18 @@ msgstr "Nie znaleziono"
 #: bookwyrm/templates/404.html:9
 msgid "The page you requested doesn't seem to exist!"
 msgstr "Wygląda na to, że ta strona nie istnieje!"
+
+#: bookwyrm/templates/413.html:4 bookwyrm/templates/413.html:8
+msgid "File too large"
+msgstr "Za duży plik"
+
+#: bookwyrm/templates/413.html:9
+msgid "The file you are uploading is too large."
+msgstr "Przesyłany plik jest za duży."
+
+#: bookwyrm/templates/413.html:11
+msgid "You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting."
+msgstr "Możesz spróbować użyć mniejszego pliku lub zapytać administratora swojego serwera BookWyrm o zwiększenie wartości ustawienia <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code>."
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -430,62 +647,62 @@ msgstr "Błąd serwera"
 
 #: bookwyrm/templates/500.html:9
 msgid "Something went wrong! Sorry about that."
-msgstr "Coś poszło nie tak! Przepraszamy za to."
+msgstr "Coś poszło nie tak! Przykro nam."
 
 #: bookwyrm/templates/about/about.html:9
 #: bookwyrm/templates/about/layout.html:35
 msgid "About"
 msgstr "Informacje"
 
-#: bookwyrm/templates/about/about.html:21
+#: bookwyrm/templates/about/about.html:22
 #: bookwyrm/templates/get_started/layout.html:22
 #, python-format
 msgid "Welcome to %(site_name)s!"
-msgstr "Witaj na %(site_name)s!"
+msgstr "Witaj w %(site_name)s!"
 
-#: bookwyrm/templates/about/about.html:25
+#: bookwyrm/templates/about/about.html:26
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm network</a>, this community is unique."
-msgstr ""
+msgstr "%(site_name)s jest częścią <em>BookWyrm</em>, sieci niezależnych, samostanowiących społeczności czytelników. Możesz bezproblemowo wchodzić w interakcje z użytkownikami gdziekolwiek w <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\"> sieci BookWyrm</a>."
 
-#: bookwyrm/templates/about/about.html:45
+#: bookwyrm/templates/about/about.html:47
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
 msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> jest najbardziej docenioną przez %(site_name)s książką ze średnią oceną %(rating)s z 5."
 
-#: bookwyrm/templates/about/about.html:64
+#: bookwyrm/templates/about/about.html:66
 #, python-format
 msgid "More %(site_name)s users want to read <a href=\"%(book_path)s\"><em>%(title)s</em></a> than any other book."
 msgstr "Więcej użytkowników %(site_name)s chce przeczytać <a href=\"%(book_path)s\"><em>%(title)s</em></a> niż jakąkolwiek inną książkę."
 
-#: bookwyrm/templates/about/about.html:83
+#: bookwyrm/templates/about/about.html:85
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> has the most divisive ratings of any book on %(site_name)s."
 msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> ma najbardziej podzielone opinie na %(site_name)s."
 
-#: bookwyrm/templates/about/about.html:94
+#: bookwyrm/templates/about/about.html:96
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
-msgstr ""
+msgstr "Śledź swój postęp czytania, rozmawiaj o książkach, pisz recenzje i odkryj swoją następną książkę. Na zawsze bez reklam, antykorporacyjne i skierowane w stronę społeczności, BookWyrm jest oprogramowaniem dla ludzi, stworzonym, by pozostać małym i personalnym. Jeśli masz pomysł, chcesz zgłosić błąd lub masz wielką wizję, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">daj znać</a> i pozwól się wysłuchać."
 
-#: bookwyrm/templates/about/about.html:105
+#: bookwyrm/templates/about/about.html:107
 msgid "Meet your admins"
 msgstr "Poznaj swoich administratorów"
 
-#: bookwyrm/templates/about/about.html:108
+#: bookwyrm/templates/about/about.html:110
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
 msgstr "Moderatorzy oraz administratorzy %(site_name)s odpowiadają za prawidłowe funkcjonowanie witryny, nadzorują przestrzeganie <a href=\"%(coc_path)s\">regulaminu</a> oraz odpowiadają na zgłoszenia spamu lub nieodpowiedniego zachowania."
 
-#: bookwyrm/templates/about/about.html:122
+#: bookwyrm/templates/about/about.html:124
 msgid "Moderator"
 msgstr "Moderator"
 
-#: bookwyrm/templates/about/about.html:124 bookwyrm/templates/user_menu.html:67
+#: bookwyrm/templates/about/about.html:126 bookwyrm/templates/user_menu.html:62
 msgid "Admin"
 msgstr "Administrator"
 
-#: bookwyrm/templates/about/about.html:140
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:14
+#: bookwyrm/templates/about/about.html:142
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:28
 #: bookwyrm/templates/snippets/status/status_options.html:35
 #: bookwyrm/templates/snippets/user_options.html:14
 msgid "Send direct message"
@@ -503,7 +720,7 @@ msgstr "Regulamin"
 #: bookwyrm/templates/about/layout.html:54
 #: bookwyrm/templates/snippets/footer.html:34
 msgid "Impressum"
-msgstr ""
+msgstr "Impressum"
 
 #: bookwyrm/templates/about/layout.html:11
 msgid "Active users:"
@@ -514,12 +731,12 @@ msgid "Statuses posted:"
 msgstr "Zamieszczonych statusów:"
 
 #: bookwyrm/templates/about/layout.html:19
-#: bookwyrm/templates/setup/config.html:74
+#: bookwyrm/templates/setup/config.html:68
 msgid "Software version:"
 msgstr "Wersja oprogramowania:"
 
 #: bookwyrm/templates/about/layout.html:30
-#: bookwyrm/templates/embed-layout.html:33
+#: bookwyrm/templates/embed-layout.html:34
 #: bookwyrm/templates/snippets/footer.html:8
 #, python-format
 msgid "About %(site_name)s"
@@ -616,10 +833,10 @@ msgstr "Przekłada się to na średnio %(pages)s stron na książkę."
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "(Brak informacji o liczbie stron dla %(no_page_number)s książki)"
+msgstr[1] "(Brak informacji o liczbie stron dla %(no_page_number)s książek)"
+msgstr[2] "(Brak informacji o liczbie stron dla %(no_page_number)s książek)"
+msgstr[3] "(Brak informacji o liczbie stron dla %(no_page_number)s książek)"
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -628,7 +845,7 @@ msgstr "Najkrócej wczytano się w…"
 #: bookwyrm/templates/annual_summary/layout.html:157
 #: bookwyrm/templates/annual_summary/layout.html:178
 #: bookwyrm/templates/annual_summary/layout.html:247
-#: bookwyrm/templates/book/book.html:63
+#: bookwyrm/templates/book/book.html:73
 #: bookwyrm/templates/discover/large-book.html:22
 #: bookwyrm/templates/landing/large-book.html:26
 #: bookwyrm/templates/landing/small-book.html:18
@@ -650,9 +867,9 @@ msgstr "…a najdłużej w"
 msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgstr[0] "%(display_name)s obiera sobie za cel przeczytanie %(goal)s książki w %(year)s roku,<br /> a osiąga już %(goal_percent)s %% tego celu"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[1] "%(display_name)s obiera sobie za cel przeczytanie %(goal)s książek w %(year)s roku<br /> i osiąga już %(goal_percent)s%% tego celu"
+msgstr[2] "%(display_name)s obiera sobie za cel przeczytanie %(goal)s książek w %(year)s roku<br /> i osiąga już %(goal_percent)s%% tego celu"
+msgstr[3] "%(display_name)s obiera sobie za cel przeczytanie %(goal)s książek w %(year)s roku<br /> i osiąga już %(goal_percent)s%% tego celu"
 
 #: bookwyrm/templates/annual_summary/layout.html:211
 msgid "Way to go!"
@@ -712,46 +929,46 @@ msgid "Wikipedia"
 msgstr "Wikipedia"
 
 #: bookwyrm/templates/author/author.html:79
-msgid "Website"
-msgstr ""
+msgid "View on Wikidata"
+msgstr "Pokaż na Wikidata"
 
 #: bookwyrm/templates/author/author.html:87
+msgid "Website"
+msgstr "Strona WWW"
+
+#: bookwyrm/templates/author/author.html:95
 msgid "View ISNI record"
 msgstr "Zobacz wpis ISNI"
 
-#: bookwyrm/templates/author/author.html:95
-#: bookwyrm/templates/book/book.html:173
+#: bookwyrm/templates/author/author.html:103
+#: bookwyrm/templates/book/book.html:183
 msgid "View on ISFDB"
-msgstr ""
+msgstr "Zobacz na ISFDB"
 
-#: bookwyrm/templates/author/author.html:100
+#: bookwyrm/templates/author/author.html:108
 #: bookwyrm/templates/author/sync_modal.html:5
-#: bookwyrm/templates/book/book.html:140
+#: bookwyrm/templates/book/book.html:150
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
 msgstr "Wczytaj dane"
 
-#: bookwyrm/templates/author/author.html:104
-#: bookwyrm/templates/book/book.html:144
+#: bookwyrm/templates/author/author.html:112
+#: bookwyrm/templates/book/book.html:154
 msgid "View on OpenLibrary"
 msgstr "Pokaż na OpenLibrary"
 
-#: bookwyrm/templates/author/author.html:119
-#: bookwyrm/templates/book/book.html:158
+#: bookwyrm/templates/author/author.html:127
+#: bookwyrm/templates/book/book.html:168
 msgid "View on Inventaire"
 msgstr "Pokaż na Inventaire"
 
-#: bookwyrm/templates/author/author.html:135
+#: bookwyrm/templates/author/author.html:143
 msgid "View on LibraryThing"
 msgstr "Pokaż na LibraryThing"
 
-#: bookwyrm/templates/author/author.html:143
+#: bookwyrm/templates/author/author.html:151
 msgid "View on Goodreads"
 msgstr "Pokaż na Goodreads"
-
-#: bookwyrm/templates/author/author.html:151
-msgid "View ISFDB entry"
-msgstr ""
 
 #: bookwyrm/templates/author/author.html:166
 #, python-format
@@ -778,7 +995,7 @@ msgid "Last edited by:"
 msgstr "Ostatnio edytowane przez:"
 
 #: bookwyrm/templates/author/edit_author.html:33
-#: bookwyrm/templates/book/edit/edit_book_form.html:19
+#: bookwyrm/templates/book/edit/edit_book_form.html:21
 msgid "Metadata"
 msgstr "Metadane"
 
@@ -790,8 +1007,8 @@ msgid "Name:"
 msgstr "Nazwa:"
 
 #: bookwyrm/templates/author/edit_author.html:44
-#: bookwyrm/templates/book/edit/edit_book_form.html:78
-#: bookwyrm/templates/book/edit/edit_book_form.html:148
+#: bookwyrm/templates/book/edit/edit_book_form.html:91
+#: bookwyrm/templates/book/edit/edit_book_form.html:161
 msgid "Separate multiple values with commas."
 msgstr "Oddziel kilka wartości przecinkami."
 
@@ -803,50 +1020,54 @@ msgstr "O mnie:"
 msgid "Wikipedia link:"
 msgstr "Odnośnik do Wikipedii:"
 
-#: bookwyrm/templates/author/edit_author.html:60
-msgid "Website:"
-msgstr ""
+#: bookwyrm/templates/author/edit_author.html:58
+msgid "Wikidata:"
+msgstr "Wikidata:"
 
-#: bookwyrm/templates/author/edit_author.html:65
+#: bookwyrm/templates/author/edit_author.html:62
+msgid "Website:"
+msgstr "Strona WWW:"
+
+#: bookwyrm/templates/author/edit_author.html:67
 msgid "Birth date:"
 msgstr "Data urodzenia:"
 
-#: bookwyrm/templates/author/edit_author.html:72
+#: bookwyrm/templates/author/edit_author.html:74
 msgid "Death date:"
 msgstr "Data śmierci:"
 
-#: bookwyrm/templates/author/edit_author.html:79
+#: bookwyrm/templates/author/edit_author.html:81
 msgid "Author Identifiers"
 msgstr "Identyfikatory autora"
 
-#: bookwyrm/templates/author/edit_author.html:81
+#: bookwyrm/templates/author/edit_author.html:83
 msgid "Openlibrary key:"
 msgstr "Klucz Openlibrary:"
 
-#: bookwyrm/templates/author/edit_author.html:88
-#: bookwyrm/templates/book/edit/edit_book_form.html:323
+#: bookwyrm/templates/author/edit_author.html:90
+#: bookwyrm/templates/book/edit/edit_book_form.html:336
 msgid "Inventaire ID:"
 msgstr "ID Inventaire:"
 
-#: bookwyrm/templates/author/edit_author.html:95
+#: bookwyrm/templates/author/edit_author.html:97
 msgid "Librarything key:"
 msgstr "Klucz Librarything:"
 
-#: bookwyrm/templates/author/edit_author.html:102
-#: bookwyrm/templates/book/edit/edit_book_form.html:332
+#: bookwyrm/templates/author/edit_author.html:104
+#: bookwyrm/templates/book/edit/edit_book_form.html:345
 msgid "Goodreads key:"
 msgstr "Klucz Goodreads:"
 
-#: bookwyrm/templates/author/edit_author.html:109
+#: bookwyrm/templates/author/edit_author.html:111
 msgid "ISFDB:"
-msgstr ""
+msgstr "ISFDB:"
 
-#: bookwyrm/templates/author/edit_author.html:116
+#: bookwyrm/templates/author/edit_author.html:118
 msgid "ISNI:"
 msgstr "ISNI:"
 
-#: bookwyrm/templates/author/edit_author.html:126
-#: bookwyrm/templates/book/book.html:218
+#: bookwyrm/templates/author/edit_author.html:128
+#: bookwyrm/templates/book/book.html:249
 #: bookwyrm/templates/book/edit/edit_book.html:150
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
@@ -854,28 +1075,29 @@ msgstr "ISNI:"
 #: bookwyrm/templates/lists/bookmark_button.html:15
 #: bookwyrm/templates/lists/edit_item_form.html:15
 #: bookwyrm/templates/lists/form.html:130
-#: bookwyrm/templates/preferences/edit_user.html:140
+#: bookwyrm/templates/preferences/edit_user.html:146
 #: bookwyrm/templates/readthrough/readthrough_modal.html:81
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:120
 #: bookwyrm/templates/settings/federation/edit_instance.html:98
 #: bookwyrm/templates/settings/federation/instance.html:105
+#: bookwyrm/templates/settings/federation/settings.html:45
 #: bookwyrm/templates/settings/registration.html:96
 #: bookwyrm/templates/settings/registration_limited.html:76
 #: bookwyrm/templates/settings/site.html:144
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:75
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:89
 #: bookwyrm/templates/shelf/form.html:25
 #: bookwyrm/templates/snippets/reading_modals/layout.html:18
 msgid "Save"
 msgstr "Zapisz"
 
-#: bookwyrm/templates/author/edit_author.html:127
+#: bookwyrm/templates/author/edit_author.html:129
 #: bookwyrm/templates/author/sync_modal.html:23
-#: bookwyrm/templates/book/book.html:219
+#: bookwyrm/templates/book/book.html:250
 #: bookwyrm/templates/book/cover_add_modal.html:33
 #: bookwyrm/templates/book/edit/edit_book.html:152
 #: bookwyrm/templates/book/edit/edit_book.html:155
 #: bookwyrm/templates/book/file_links/add_link_modal.html:59
-#: bookwyrm/templates/book/file_links/verification_modal.html:25
+#: bookwyrm/templates/book/file_links/verification_modal.html:26
 #: bookwyrm/templates/book/sync_modal.html:23
 #: bookwyrm/templates/groups/delete_group_modal.html:15
 #: bookwyrm/templates/lists/add_item_modal.html:36
@@ -885,7 +1107,10 @@ msgstr "Zapisz"
 #: bookwyrm/templates/readthrough/readthrough_modal.html:80
 #: bookwyrm/templates/search/barcode_modal.html:43
 #: bookwyrm/templates/settings/federation/instance.html:106
+#: bookwyrm/templates/settings/files.html:193
+#: bookwyrm/templates/settings/files.html:354
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:16
+#: bookwyrm/templates/settings/imports/complete_user_import_modal.html:16
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:22
 #: bookwyrm/templates/snippets/report_modal.html:52
 msgid "Cancel"
@@ -900,34 +1125,41 @@ msgstr "Wczytanie danych spowoduje połączenie z <strong>%(source_name)s</stron
 #: bookwyrm/templates/book/edit/edit_book.html:137
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
+#: bookwyrm/templates/landing/force_password_reset.html:94
 #: bookwyrm/templates/landing/password_reset.html:52
-#: bookwyrm/templates/preferences/2fa.html:77
+#: bookwyrm/templates/preferences/security.html:80
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:19
+#: bookwyrm/templates/settings/imports/complete_user_import_modal.html:19
+#: bookwyrm/templates/settings/users/force_password_reset.html:55
 #: bookwyrm/templates/snippets/remove_from_group_button.html:17
 msgid "Confirm"
 msgstr "Zatwierdź"
 
-#: bookwyrm/templates/book/book.html:20
+#: bookwyrm/templates/book/book.html:24
 msgid "Unable to connect to remote source."
 msgstr "Błąd połączenia ze zdalnym źródłem."
 
-#: bookwyrm/templates/book/book.html:71 bookwyrm/templates/book/book.html:72
+#: bookwyrm/templates/book/book.html:81 bookwyrm/templates/book/book.html:82
 msgid "Edit Book"
 msgstr "Edytuj książkę"
 
-#: bookwyrm/templates/book/book.html:97 bookwyrm/templates/book/book.html:100
+#: bookwyrm/templates/book/book.html:107 bookwyrm/templates/book/book.html:110
 msgid "Click to add cover"
 msgstr "Naciśnij, aby dodać okładkę"
 
-#: bookwyrm/templates/book/book.html:106
+#: bookwyrm/templates/book/book.html:116
 msgid "Failed to load cover"
 msgstr "Błąd wczytywania okładki"
 
-#: bookwyrm/templates/book/book.html:117
+#: bookwyrm/templates/book/book.html:127
 msgid "Click to enlarge"
 msgstr "Naciśnij, aby powiększyć"
 
-#: bookwyrm/templates/book/book.html:195
+#: bookwyrm/templates/book/book.html:190
+msgid "View on Finna"
+msgstr ""
+
+#: bookwyrm/templates/book/book.html:222
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
@@ -936,17 +1168,17 @@ msgstr[1] "(%(review_count)s opinie)"
 msgstr[2] "(%(review_count)s opinii)"
 msgstr[3] "(%(review_count)s opinii)"
 
-#: bookwyrm/templates/book/book.html:207
+#: bookwyrm/templates/book/book.html:238
 msgid "Add Description"
 msgstr "Dodaj opis"
 
-#: bookwyrm/templates/book/book.html:214
-#: bookwyrm/templates/book/edit/edit_book_form.html:42
+#: bookwyrm/templates/book/book.html:245
+#: bookwyrm/templates/book/edit/edit_book_form.html:55
 #: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
 msgid "Description:"
 msgstr "Opis:"
 
-#: bookwyrm/templates/book/book.html:230
+#: bookwyrm/templates/book/book.html:261
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
@@ -955,67 +1187,68 @@ msgstr[1] "%(count)s edycje"
 msgstr[2] "%(count)s edycji"
 msgstr[3] "%(count)s edycji"
 
-#: bookwyrm/templates/book/book.html:244
+#: bookwyrm/templates/book/book.html:275
 msgid "You have shelved this edition in:"
 msgstr "Ta edycja została odłożona do:"
 
-#: bookwyrm/templates/book/book.html:259
+#: bookwyrm/templates/book/book.html:290
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
 msgstr "<a href=\"%(book_path)s\">Inna edycja</a> tej książki znajduje się już na Twojej półce <a href=\"%(shelf_path)s\">%(shelf_name)s</a>."
 
-#: bookwyrm/templates/book/book.html:270
+#: bookwyrm/templates/book/book.html:301
 msgid "Your reading activity"
 msgstr "Twoja aktywność czytania"
 
-#: bookwyrm/templates/book/book.html:276
+#: bookwyrm/templates/book/book.html:307
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
 msgstr "Dodaj daty czytania"
 
-#: bookwyrm/templates/book/book.html:284
+#: bookwyrm/templates/book/book.html:315
 msgid "You don't have any reading activity for this book."
 msgstr "Nie masz żadnej aktywności czytania dla tej książki."
 
-#: bookwyrm/templates/book/book.html:310
+#: bookwyrm/templates/book/book.html:341
 msgid "Your reviews"
 msgstr "Twoje opinie"
 
-#: bookwyrm/templates/book/book.html:316
+#: bookwyrm/templates/book/book.html:347
 msgid "Your comments"
 msgstr "Twoje komentarze"
 
-#: bookwyrm/templates/book/book.html:322
+#: bookwyrm/templates/book/book.html:353
 msgid "Your quotes"
 msgstr "Twoje cytaty"
 
-#: bookwyrm/templates/book/book.html:358
+#: bookwyrm/templates/book/book.html:389
 msgid "Subjects"
 msgstr "Tematy"
 
-#: bookwyrm/templates/book/book.html:370
+#: bookwyrm/templates/book/book.html:401
 msgid "Places"
 msgstr "Miejsca"
 
-#: bookwyrm/templates/book/book.html:381
+#: bookwyrm/templates/book/book.html:412
 #: bookwyrm/templates/groups/group.html:19
 #: bookwyrm/templates/guided_tour/lists.html:14
 #: bookwyrm/templates/guided_tour/user_books.html:102
 #: bookwyrm/templates/guided_tour/user_profile.html:78
-#: bookwyrm/templates/layout.html:90 bookwyrm/templates/lists/curate.html:8
+#: bookwyrm/templates/layout.html:88 bookwyrm/templates/lists/curate.html:8
 #: bookwyrm/templates/lists/list.html:12 bookwyrm/templates/lists/lists.html:5
 #: bookwyrm/templates/lists/lists.html:12
-#: bookwyrm/templates/search/layout.html:26
-#: bookwyrm/templates/search/layout.html:51
-#: bookwyrm/templates/user/layout.html:89
+#: bookwyrm/templates/search/layout.html:27
+#: bookwyrm/templates/search/layout.html:55
+#: bookwyrm/templates/settings/celery.html:77
+#: bookwyrm/templates/user/layout.html:101 bookwyrm/templates/user/lists.html:6
 msgid "Lists"
 msgstr "Listy"
 
-#: bookwyrm/templates/book/book.html:393
+#: bookwyrm/templates/book/book.html:424
 msgid "Add to list"
 msgstr "Dodaj do listy"
 
-#: bookwyrm/templates/book/book.html:403
+#: bookwyrm/templates/book/book.html:434
 #: bookwyrm/templates/book/cover_add_modal.html:32
 #: bookwyrm/templates/lists/add_item_modal.html:39
 #: bookwyrm/templates/lists/list.html:255
@@ -1028,42 +1261,61 @@ msgstr "Dodaj"
 msgid "ISBN:"
 msgstr "ISBN:"
 
-#: bookwyrm/templates/book/book_identifiers.html:15
-#: bookwyrm/templates/book/edit/edit_book_form.html:341
+#: bookwyrm/templates/book/book_identifiers.html:12
+#: bookwyrm/templates/book/book_identifiers.html:13
+msgid "Copy ISBN"
+msgstr "Kopiuj ISBN"
+
+#: bookwyrm/templates/book/book_identifiers.html:16
+msgid "Copied ISBN!"
+msgstr "Skopiowano ISBN!"
+
+#: bookwyrm/templates/book/book_identifiers.html:23
+#: bookwyrm/templates/book/edit/edit_book_form.html:354
+#: bookwyrm/templates/rss/edition.html:6
 msgid "OCLC Number:"
 msgstr "Numer OCLC:"
 
-#: bookwyrm/templates/book/book_identifiers.html:22
-#: bookwyrm/templates/book/edit/edit_book_form.html:350
+#: bookwyrm/templates/book/book_identifiers.html:30
+#: bookwyrm/templates/book/edit/edit_book_form.html:363
+#: bookwyrm/templates/rss/edition.html:7
 msgid "ASIN:"
 msgstr "ASIN:"
 
-#: bookwyrm/templates/book/book_identifiers.html:29
-#: bookwyrm/templates/book/edit/edit_book_form.html:359
+#: bookwyrm/templates/book/book_identifiers.html:37
+#: bookwyrm/templates/book/edit/edit_book_form.html:372
+#: bookwyrm/templates/rss/edition.html:8
 msgid "Audible ASIN:"
-msgstr ""
+msgstr "Dźwiękowy ASIN:"
 
-#: bookwyrm/templates/book/book_identifiers.html:36
-#: bookwyrm/templates/book/edit/edit_book_form.html:368
+#: bookwyrm/templates/book/book_identifiers.html:44
+#: bookwyrm/templates/book/edit/edit_book_form.html:381
+#: bookwyrm/templates/rss/edition.html:9
 msgid "ISFDB ID:"
-msgstr ""
+msgstr "ID ISFDB:"
 
-#: bookwyrm/templates/book/book_identifiers.html:43
+#: bookwyrm/templates/book/book_identifiers.html:51
+#: bookwyrm/templates/rss/edition.html:10
 msgid "Goodreads:"
-msgstr ""
+msgstr "Goodreads:"
+
+#: bookwyrm/templates/book/book_identifiers.html:58
+#: bookwyrm/templates/book/edit/edit_book_form.html:390
+msgid "Finna ID:"
+msgstr "ID Finna:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
 msgstr "Dodaj okładkę"
 
 #: bookwyrm/templates/book/cover_add_modal.html:17
-#: bookwyrm/templates/book/edit/edit_book_form.html:233
+#: bookwyrm/templates/book/edit/edit_book_form.html:246
 msgid "Upload cover:"
 msgstr "Prześlij okładkę:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:23
-#: bookwyrm/templates/book/edit/edit_book_form.html:239
-msgid "Load cover from url:"
+#: bookwyrm/templates/book/edit/edit_book_form.html:252
+msgid "Load cover from URL:"
 msgstr "Wczytaj okładkę z adresu URL:"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
@@ -1093,7 +1345,7 @@ msgstr "Dodaj książkę"
 
 #: bookwyrm/templates/book/edit/edit_book.html:43
 msgid "Failed to save book, see errors below for more information."
-msgstr ""
+msgstr "Nie udało się zapisać książki z powodu poniższych błędów."
 
 #: bookwyrm/templates/book/edit/edit_book.html:70
 msgid "Confirm Book Info"
@@ -1136,7 +1388,7 @@ msgid "This is a new work"
 msgstr "To jest nowe dzieło"
 
 #: bookwyrm/templates/book/edit/edit_book.html:139
-#: bookwyrm/templates/feed/status.html:19
+#: bookwyrm/templates/feed/status.html:17
 #: bookwyrm/templates/guided_tour/book.html:44
 #: bookwyrm/templates/guided_tour/book.html:68
 #: bookwyrm/templates/guided_tour/book.html:91
@@ -1180,130 +1432,138 @@ msgstr "To jest nowe dzieło"
 #: bookwyrm/templates/guided_tour/user_profile.html:89
 #: bookwyrm/templates/guided_tour/user_profile.html:112
 #: bookwyrm/templates/guided_tour/user_profile.html:135
-#: bookwyrm/templates/user/user.html:87 bookwyrm/templates/user_menu.html:18
+#: bookwyrm/templates/user/user.html:102 bookwyrm/templates/user_menu.html:18
 msgid "Back"
 msgstr "Wstecz"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:24
+#: bookwyrm/templates/book/edit/edit_book_form.html:26
 #: bookwyrm/templates/snippets/create_status/review.html:15
 msgid "Title:"
 msgstr "Tytuł:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:33
+#: bookwyrm/templates/book/edit/edit_book_form.html:36
+msgid "Sort Title:"
+msgstr "Sortuj Według Tytułu:"
+
+#: bookwyrm/templates/book/edit/edit_book_form.html:46
 msgid "Subtitle:"
 msgstr "Podtytuł:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:53
+#: bookwyrm/templates/book/edit/edit_book_form.html:66
 msgid "Series:"
 msgstr "Seria:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:63
+#: bookwyrm/templates/book/edit/edit_book_form.html:76
 msgid "Series number:"
 msgstr "Numer serii:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:74
+#: bookwyrm/templates/book/edit/edit_book_form.html:87
 msgid "Languages:"
 msgstr "Języki:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:86
+#: bookwyrm/templates/book/edit/edit_book_form.html:99
 msgid "Subjects:"
 msgstr "Tematy:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:90
+#: bookwyrm/templates/book/edit/edit_book_form.html:103
 msgid "Add subject"
 msgstr "Dodaj temat"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:108
+#: bookwyrm/templates/book/edit/edit_book_form.html:121
 msgid "Remove subject"
 msgstr "Usuń temat"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:131
+#: bookwyrm/templates/book/edit/edit_book_form.html:144
 msgid "Add Another Subject"
 msgstr "Dodaj inny temat"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:139
+#: bookwyrm/templates/book/edit/edit_book_form.html:152
 msgid "Publication"
 msgstr "Publikacja"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:144
+#: bookwyrm/templates/book/edit/edit_book_form.html:157
 msgid "Publisher:"
 msgstr "Wydawca:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:156
+#: bookwyrm/templates/book/edit/edit_book_form.html:169
 msgid "First published date:"
 msgstr "Data pierwszej publikacji:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:164
+#: bookwyrm/templates/book/edit/edit_book_form.html:177
 msgid "Published date:"
 msgstr "Data publikacji:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:175
+#: bookwyrm/templates/book/edit/edit_book_form.html:188
+#: bookwyrm/templates/import/user_import_status.html:155
+#: bookwyrm/templates/search/layout.html:23
+#: bookwyrm/templates/search/layout.html:47
 msgid "Authors"
 msgstr "Autorzy"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:186
+#: bookwyrm/templates/book/edit/edit_book_form.html:199
 #, python-format
 msgid "Remove %(name)s"
 msgstr "Usuń %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:189
+#: bookwyrm/templates/book/edit/edit_book_form.html:202
 #, python-format
 msgid "Author page for %(name)s"
 msgstr "Strona autora dla %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:197
+#: bookwyrm/templates/book/edit/edit_book_form.html:210
 msgid "Add Authors:"
 msgstr "Dodaj autorów:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:200
-#: bookwyrm/templates/book/edit/edit_book_form.html:203
+#: bookwyrm/templates/book/edit/edit_book_form.html:213
+#: bookwyrm/templates/book/edit/edit_book_form.html:216
 msgid "Add Author"
 msgstr "Dodaj autora"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:201
-#: bookwyrm/templates/book/edit/edit_book_form.html:204
+#: bookwyrm/templates/book/edit/edit_book_form.html:214
+#: bookwyrm/templates/book/edit/edit_book_form.html:217
 msgid "Jane Doe"
 msgstr "Jan Kowalski"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:210
+#: bookwyrm/templates/book/edit/edit_book_form.html:223
 msgid "Add Another Author"
 msgstr "Dodaj kolejnego autora"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:220
-#: bookwyrm/templates/shelf/shelf.html:147
+#: bookwyrm/templates/book/edit/edit_book_form.html:233
+#: bookwyrm/templates/shelf/shelf.html:155
 msgid "Cover"
 msgstr "Okładka"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:252
+#: bookwyrm/templates/book/edit/edit_book_form.html:265
 msgid "Physical Properties"
 msgstr "Właściwości fizyczne"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:259
+#: bookwyrm/templates/book/edit/edit_book_form.html:272
 #: bookwyrm/templates/book/editions/format_filter.html:6
 msgid "Format:"
 msgstr "Format:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:269
+#: bookwyrm/templates/book/edit/edit_book_form.html:282
 msgid "Format details:"
 msgstr "Szczegóły formatu:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:280
+#: bookwyrm/templates/book/edit/edit_book_form.html:293
 msgid "Pages:"
 msgstr "Strony:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:291
+#: bookwyrm/templates/book/edit/edit_book_form.html:304
 msgid "Book Identifiers"
 msgstr "Identyfikatory książki"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:296
+#: bookwyrm/templates/book/edit/edit_book_form.html:309
+#: bookwyrm/templates/rss/edition.html:5
 msgid "ISBN 13:"
 msgstr "ISBN 13:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:305
+#: bookwyrm/templates/book/edit/edit_book_form.html:318
 msgid "ISBN 10:"
 msgstr "ISBN 10:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:314
+#: bookwyrm/templates/book/edit/edit_book_form.html:327
 msgid "Openlibrary ID:"
 msgstr "ID Openlibrary:"
 
@@ -1314,14 +1574,14 @@ msgstr "Edycje %(book_title)s"
 
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
-msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
-msgstr "Edycje <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
+msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
+msgstr "Edycje <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
 msgstr "Nie możesz znaleźć edycji, której szukasz?"
 
-#: bookwyrm/templates/book/editions/editions.html:75
+#: bookwyrm/templates/book/editions/editions.html:76
 msgid "Add another edition"
 msgstr "Dodaj inną edycję"
 
@@ -1331,7 +1591,7 @@ msgid "Any"
 msgstr "Dowolna"
 
 #: bookwyrm/templates/book/editions/language_filter.html:6
-#: bookwyrm/templates/preferences/edit_user.html:95
+#: bookwyrm/templates/preferences/edit_user.html:101
 msgid "Language:"
 msgstr "Język:"
 
@@ -1392,22 +1652,31 @@ msgid "Domain"
 msgstr "Domena"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:36
-#: bookwyrm/templates/import/import.html:133
+#: bookwyrm/templates/import/import.html:149
 #: bookwyrm/templates/import/import_status.html:134
+#: bookwyrm/templates/import/import_user.html:192
+#: bookwyrm/templates/import/user_import_status.html:162
+#: bookwyrm/templates/import/user_troubleshoot.html:62
+#: bookwyrm/templates/preferences/export-user.html:113
 #: bookwyrm/templates/settings/announcements/announcements.html:37
+#: bookwyrm/templates/settings/files.html:137
+#: bookwyrm/templates/settings/files.html:319
+#: bookwyrm/templates/settings/imports/imports.html:304
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:48
 #: bookwyrm/templates/settings/invites/status_filter.html:5
+#: bookwyrm/templates/settings/themes.html:111
 #: bookwyrm/templates/settings/users/user_admin.html:56
-#: bookwyrm/templates/settings/users/user_info.html:24
+#: bookwyrm/templates/settings/users/user_info.html:35
 msgid "Status"
 msgstr "Status"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:37
 #: bookwyrm/templates/settings/announcements/announcements.html:41
 #: bookwyrm/templates/settings/federation/instance.html:112
-#: bookwyrm/templates/settings/imports/imports.html:141
+#: bookwyrm/templates/settings/imports/imports.html:223
+#: bookwyrm/templates/settings/imports/imports.html:302
 #: bookwyrm/templates/settings/reports/report_links_table.html:6
-#: bookwyrm/templates/settings/themes.html:99
+#: bookwyrm/templates/settings/themes.html:108
 msgid "Actions"
 msgstr "Czynności"
 
@@ -1451,8 +1720,8 @@ msgstr "Opuszczasz BookWyrm"
 msgid "This link is taking you to: <code>%(link_url)s</code>.<br> Is that where you'd like to go?"
 msgstr "Ten odnośnik przekieruje Cię do: <code>%(link_url)s</code>.<br> Czy chcesz się tam udać?"
 
-#: bookwyrm/templates/book/file_links/verification_modal.html:26
-#: bookwyrm/templates/setup/config.html:139
+#: bookwyrm/templates/book/file_links/verification_modal.html:27
+#: bookwyrm/templates/setup/config.html:134
 msgid "Continue"
 msgstr "Kontynuuj"
 
@@ -1471,44 +1740,56 @@ msgstr "%(pages)s stron"
 msgid "%(languages)s language"
 msgstr "Język %(languages)s"
 
-#: bookwyrm/templates/book/publisher_info.html:65
+#: bookwyrm/templates/book/publisher_info.html:63
 #, python-format
 msgid "Published %(date)s by %(publisher)s."
 msgstr "Opublikowane %(date)s przez %(publisher)s."
+
+#: bookwyrm/templates/book/publisher_info.html:65
+#, python-format
+msgid "Published by %(publisher)s."
+msgstr "Opublikowane przez %(publisher)s."
 
 #: bookwyrm/templates/book/publisher_info.html:67
 #, python-format
 msgid "Published %(date)s"
 msgstr "Opublikowane %(date)s"
 
-#: bookwyrm/templates/book/publisher_info.html:69
-#, python-format
-msgid "Published by %(publisher)s."
-msgstr "Opublikowane przez %(publisher)s."
-
-#: bookwyrm/templates/book/rating.html:13
+#: bookwyrm/templates/book/rating.html:19
 msgid "rated it"
 msgstr "ocenia to"
 
 #: bookwyrm/templates/book/series.html:11
 msgid "Series by"
-msgstr ""
+msgstr "Seria autorstwa"
 
-#: bookwyrm/templates/book/series.html:27
+#: bookwyrm/templates/book/series.html:28
 #, python-format
 msgid "Book %(series_number)s"
-msgstr ""
+msgstr "Książka %(series_number)s"
 
-#: bookwyrm/templates/book/series.html:27
+#: bookwyrm/templates/book/series.html:28
 msgid "Unsorted Book"
-msgstr ""
+msgstr "Niesortowana książka"
 
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this book which aren't present here. Existing metadata will not be overwritten."
 msgstr "Wczytywanie danych wywoła połączenie z <strong>%(source_name)s</strong> oraz sprawdzenie jakichkolwiek metadanych o tej książce, które nie są tutaj obecne. Istniejące metadane nie zostaną zastąpione."
 
-#: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
+#: bookwyrm/templates/compose.html:7 bookwyrm/templates/compose.html:21
+msgid "Edit review"
+msgstr "Edytuj opinię"
+
+#: bookwyrm/templates/compose.html:9 bookwyrm/templates/compose.html:23
+msgid "Edit quote"
+msgstr "Edytuj cytat"
+
+#: bookwyrm/templates/compose.html:11 bookwyrm/templates/compose.html:25
+msgid "Edit comment"
+msgstr "Edytuj komentarz"
+
+#: bookwyrm/templates/compose.html:13 bookwyrm/templates/compose.html:27
 msgid "Edit status"
 msgstr "Edytuj status"
 
@@ -1535,7 +1816,7 @@ msgstr "Kod potwierdzający:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/layout.html:81
-#: bookwyrm/templates/settings/dashboard/dashboard.html:102
+#: bookwyrm/templates/settings/dashboard/dashboard.html:107
 #: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Submit"
 msgstr "Prześlij"
@@ -1617,12 +1898,13 @@ msgstr "Polecane"
 
 #: bookwyrm/templates/directory/user_card.html:17
 #: bookwyrm/templates/directory/user_card.html:18
-#: bookwyrm/templates/ostatus/remote_follow.html:21
-#: bookwyrm/templates/ostatus/remote_follow.html:22
+#: bookwyrm/templates/ostatus/remote_follow.html:23
+#: bookwyrm/templates/ostatus/remote_follow.html:24
 #: bookwyrm/templates/ostatus/subscribe.html:41
 #: bookwyrm/templates/ostatus/subscribe.html:42
-#: bookwyrm/templates/ostatus/success.html:17
-#: bookwyrm/templates/ostatus/success.html:18
+#: bookwyrm/templates/ostatus/success.html:21
+#: bookwyrm/templates/ostatus/success.html:22
+#: bookwyrm/templates/user/moved.html:19 bookwyrm/templates/user/moved.html:20
 #: bookwyrm/templates/user/user_preview.html:16
 #: bookwyrm/templates/user/user_preview.html:17
 msgid "Locked account"
@@ -1701,7 +1983,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a> cytuje <a href=\"%(book_path)
 
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
-#: bookwyrm/templates/layout.html:93
+#: bookwyrm/templates/layout.html:91
 msgid "Discover"
 msgstr "Odkrywaj"
 
@@ -1746,8 +2028,8 @@ msgstr "Cześć,"
 
 #: bookwyrm/templates/email/html_layout.html:21
 #, python-format
-msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a>"
-msgstr "BookWyrm jest hostowane na <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a>"
+msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"%(base_url)s\">%(site_name)s</a>"
+msgstr "BookWyrm hostowane na <a style=\"color: #3273dc;\" href=\"%(base_url)s\">%(site_name)s</a>"
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
@@ -1765,8 +2047,8 @@ msgstr "Dołącz"
 
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
-msgid "Learn more <a href=\"https://%(domain)s%(about_path)s\">about %(site_name)s</a>."
-msgstr "Dowiedz się więcej <a href=\"https://%(domain)s%(about_path)s\">o %(site_name)s</a>."
+msgid "Learn more <a href=\"%(base_url)s%(about_path)s\">about %(site_name)s</a>."
+msgstr "Uzyskaj więcej <a href=\"%(base_url)s%(about_path)s\">informacji o %(site_name)s</a>."
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
@@ -1807,6 +2089,8 @@ msgid "You requested to reset your %(site_name)s password. Click the link below 
 msgstr "Poproszono o wyzerowanie hasła na %(site_name)s. Naciśnij na poniższy odnośnik, aby ustawić nowe hasło i zalogować się na swoje konto."
 
 #: bookwyrm/templates/email/password_reset/html_content.html:9
+#: bookwyrm/templates/landing/force_password_reset.html:9
+#: bookwyrm/templates/landing/force_password_reset.html:28
 #: bookwyrm/templates/landing/password_reset.html:4
 #: bookwyrm/templates/landing/password_reset.html:10
 #: bookwyrm/templates/landing/password_reset_request.html:4
@@ -1833,7 +2117,9 @@ msgstr "To jest wiadomość testowa."
 msgid "Test email"
 msgstr "Wiadomość testowa"
 
-#: bookwyrm/templates/embed-layout.html:20 bookwyrm/templates/layout.html:31
+#: bookwyrm/templates/embed-layout.html:21
+#: bookwyrm/templates/landing/force_password_reset.html:18
+#: bookwyrm/templates/layout.html:33 bookwyrm/templates/layout.html:163
 #: bookwyrm/templates/setup/layout.html:15
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:18
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:18
@@ -1841,12 +2127,12 @@ msgstr "Wiadomość testowa"
 msgid "%(site_name)s home page"
 msgstr "Strona główna %(site_name)s"
 
-#: bookwyrm/templates/embed-layout.html:39
+#: bookwyrm/templates/embed-layout.html:40
 #: bookwyrm/templates/snippets/footer.html:12
 msgid "Contact site admin"
 msgstr "Kontakt z administratorem"
 
-#: bookwyrm/templates/embed-layout.html:45
+#: bookwyrm/templates/embed-layout.html:46
 msgid "Join BookWyrm"
 msgstr "Dołącz do BookWyrm"
 
@@ -1856,7 +2142,7 @@ msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgstr "Wiadomości bezpośrednie z <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/feed/direct_messages.html:10
-#: bookwyrm/templates/user_menu.html:44
+#: bookwyrm/templates/user_menu.html:39
 msgid "Direct Messages"
 msgstr "Wiadomości bezpośrednie"
 
@@ -1894,7 +2180,7 @@ msgstr "Aktualizacje"
 
 #: bookwyrm/templates/feed/suggested_books.html:6
 #: bookwyrm/templates/guided_tour/home.html:127
-#: bookwyrm/templates/user_menu.html:39
+#: bookwyrm/templates/layout.html:94
 msgid "Your Books"
 msgstr "Twoje książki"
 
@@ -1942,29 +2228,29 @@ msgid "Add to your books"
 msgstr "Dodaj do swoich książek"
 
 #: bookwyrm/templates/get_started/book_preview.html:10
-#: bookwyrm/templates/shelf/shelf.html:86 bookwyrm/templates/user/user.html:37
-#: bookwyrm/templatetags/shelf_tags.py:14
+#: bookwyrm/templates/shelf/shelf.html:93 bookwyrm/templates/user/user.html:46
+#: bookwyrm/templatetags/shelf_tags.py:15
 msgid "To Read"
 msgstr "Do przeczytania"
 
 #: bookwyrm/templates/get_started/book_preview.html:11
-#: bookwyrm/templates/shelf/shelf.html:87 bookwyrm/templates/user/user.html:38
-#: bookwyrm/templatetags/shelf_tags.py:15
+#: bookwyrm/templates/shelf/shelf.html:94 bookwyrm/templates/user/user.html:47
+#: bookwyrm/templatetags/shelf_tags.py:16
 msgid "Currently Reading"
 msgstr "Obecnie czytane"
 
 #: bookwyrm/templates/get_started/book_preview.html:12
-#: bookwyrm/templates/shelf/shelf.html:88
+#: bookwyrm/templates/shelf/shelf.html:95
 #: bookwyrm/templates/snippets/shelf_selector.html:46
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:24
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:12
-#: bookwyrm/templates/user/user.html:39 bookwyrm/templatetags/shelf_tags.py:16
+#: bookwyrm/templates/user/user.html:48 bookwyrm/templatetags/shelf_tags.py:17
 msgid "Read"
 msgstr "Przeczytane"
 
 #: bookwyrm/templates/get_started/book_preview.html:13
-#: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:40
-#: bookwyrm/templatetags/shelf_tags.py:17
+#: bookwyrm/templates/shelf/shelf.html:96 bookwyrm/templates/user/user.html:49
+#: bookwyrm/templatetags/shelf_tags.py:18
 msgid "Stopped Reading"
 msgstr "Zaprzestano czytania"
 
@@ -1973,7 +2259,7 @@ msgid "What are you reading?"
 msgstr "Co teraz czytasz?"
 
 #: bookwyrm/templates/get_started/books.html:9
-#: bookwyrm/templates/layout.html:39 bookwyrm/templates/lists/list.html:213
+#: bookwyrm/templates/layout.html:41 bookwyrm/templates/lists/list.html:213
 msgid "Search for a book"
 msgstr "Szukaj książkę"
 
@@ -1989,14 +2275,14 @@ msgstr "Możesz dodawać książki, gdy zaczniesz używać %(site_name)s."
 
 #: bookwyrm/templates/get_started/books.html:16
 #: bookwyrm/templates/get_started/books.html:17
-#: bookwyrm/templates/get_started/users.html:18
-#: bookwyrm/templates/get_started/users.html:19
+#: bookwyrm/templates/get_started/users.html:22
+#: bookwyrm/templates/get_started/users.html:23
 #: bookwyrm/templates/groups/members.html:15
-#: bookwyrm/templates/groups/members.html:16 bookwyrm/templates/layout.html:45
-#: bookwyrm/templates/layout.html:46 bookwyrm/templates/lists/list.html:217
+#: bookwyrm/templates/groups/members.html:16 bookwyrm/templates/layout.html:47
+#: bookwyrm/templates/layout.html:48 bookwyrm/templates/lists/list.html:217
 #: bookwyrm/templates/search/layout.html:5
 #: bookwyrm/templates/search/layout.html:10
-#: bookwyrm/templates/search/layout.html:32
+#: bookwyrm/templates/search/layout.html:33
 msgid "Search"
 msgstr "Szukaj"
 
@@ -2006,7 +2292,7 @@ msgstr "Proponowane książki"
 
 #: bookwyrm/templates/get_started/books.html:33
 msgid "Search results"
-msgstr ""
+msgstr "Wyniki wyszukiwania"
 
 #: bookwyrm/templates/get_started/books.html:46
 #, python-format
@@ -2086,22 +2372,26 @@ msgstr "Pokazuj to konto wśród proponowanych użytkowników:"
 msgid "Your account will show up in the directory, and may be recommended to other BookWyrm users."
 msgstr "Twoje konto będzie wyświetlane w katalogu i może być proponowane innym użytkownikom BookWyrm."
 
-#: bookwyrm/templates/get_started/users.html:8
+#: bookwyrm/templates/get_started/users.html:9
 msgid "You can follow users on other BookWyrm instances and federated services like Mastodon."
-msgstr ""
+msgstr "Możesz obserwować użytkowników na pozostałych instancjach BookWyrm i sfederowanych usługach, takich jak Mastodon."
 
 #: bookwyrm/templates/get_started/users.html:11
+msgid "You can follow other users on this BookWyrm instance."
+msgstr ""
+
+#: bookwyrm/templates/get_started/users.html:15
 msgid "Search for a user"
 msgstr "Szukaj użytkownika"
 
-#: bookwyrm/templates/get_started/users.html:13
+#: bookwyrm/templates/get_started/users.html:17
 #, python-format
 msgid "No users found for \"%(query)s\""
 msgstr "Brak wyników dla \"%(query)s\""
 
 #: bookwyrm/templates/groups/create_form.html:5
 #: bookwyrm/templates/guided_tour/user_groups.html:32
-#: bookwyrm/templates/user/groups.html:17
+#: bookwyrm/templates/user/groups.html:22
 msgid "Create group"
 msgstr "Utwórz grupę"
 
@@ -2215,6 +2505,10 @@ msgstr "Brak wyników dla \"%(user_query)s\""
 #: bookwyrm/templates/groups/user_groups.html:15
 msgid "Manager"
 msgstr "Menedżer"
+
+#: bookwyrm/templates/groups/user_groups.html:35
+msgid "No groups found."
+msgstr "Nie znaleziono grup."
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
@@ -2334,7 +2628,7 @@ msgstr "Zamieść komentarz"
 
 #: bookwyrm/templates/guided_tour/book.html:175
 msgid "Just read some perfect prose? Let the world know by sharing a quote!"
-msgstr ""
+msgstr "Olśniła Cię epicka proza? Daj światu znać, dzieląc się cytatem!"
 
 #: bookwyrm/templates/guided_tour/book.html:176
 msgid "Share a quote"
@@ -2406,11 +2700,11 @@ msgstr "Członkowie grupy"
 
 #: bookwyrm/templates/guided_tour/group.html:77
 msgid "As well as creating lists from the Lists page, you can create a group-curated list here on the group's homepage. Any member of the group can create a list curated by group members."
-msgstr ""
+msgstr "Oprócz tworzenia list z dedykowanej strony możesz tworzyć listy edytowalne przez grupy na ich stronie głównej. Każdy użytkownik grupy może utworzyć listę edytowalną przez członków grupy."
 
 #: bookwyrm/templates/guided_tour/group.html:78
 msgid "Group lists"
-msgstr ""
+msgstr "Listy grupowe"
 
 #: bookwyrm/templates/guided_tour/group.html:100
 msgid "Congratulations, you've finished the tour! Now you know the basics, but there is lots more to explore on your own. Happy reading!"
@@ -2460,8 +2754,8 @@ msgid "Barcode reader"
 msgstr "Czytnik kodów kreskowych"
 
 #: bookwyrm/templates/guided_tour/home.html:102
-msgid "Use the <strong>Feed</strong>, <strong>Lists</strong> and <strong>Discover</strong> links to discover the latest news from your feed, lists of books by topic, and the latest happenings on this Bookwyrm server!"
-msgstr ""
+msgid "Use the <strong>Lists</strong>, <strong>Discover</strong>, and <strong>Your Books</strong> links to discover reading suggestions and the latest happenings on this server, or to see your catalogued books!"
+msgstr "Użyj odnośników <strong>Listy</strong>, <strong>Odkrywaj</strong> oraz <strong>Twoje książki</strong>, aby odkrywać sugestie czytania i najnowsze wydarzenia na tym serwerze lub zobaczyć swoje skatalogowane książki!"
 
 #: bookwyrm/templates/guided_tour/home.html:103
 msgid "Navigation Bar"
@@ -2473,31 +2767,31 @@ msgstr "Książki na Twoich półkach statusu czytania zostaną pokazane tutaj."
 
 #: bookwyrm/templates/guided_tour/home.html:151
 msgid "Updates from people you are following will appear in your <strong>Home</strong> timeline.<br><br>The <strong>Books</strong> tab shows activity from anyone, related to your books."
-msgstr ""
+msgstr "Aktualizacje od obserwowanych osób zostaną pokazane na osi <strong>Głowna</strong>.<br><br>W karcie <strong>Książki</strong> pokazywana jest aktywność każdej osoby związana z Twoimi książkami."
 
 #: bookwyrm/templates/guided_tour/home.html:152
 msgid "Timelines"
-msgstr ""
+msgstr "Osie czasu"
 
 #: bookwyrm/templates/guided_tour/home.html:176
 msgid "The bell will light up when you have a new notification. When it does, click on it to find out what exciting thing has happened!"
-msgstr "Dzwonek podświetli się, gdy dostaniesz nowe powiadomienie. Gdy tak się stanie, naciśnij na niego, aby zobaczyć co ciekawego się wydarzyło!"
+msgstr "Dzwonek zostanie podświetlony, gdy dostaniesz nowe powiadomienie. Gdy tak się stanie, naciśnij na niego, aby zobaczyć, co ciekawego się wydarzyło!"
 
 #: bookwyrm/templates/guided_tour/home.html:177
-#: bookwyrm/templates/layout.html:75 bookwyrm/templates/layout.html:106
-#: bookwyrm/templates/layout.html:107
+#: bookwyrm/templates/layout.html:77 bookwyrm/templates/layout.html:107
+#: bookwyrm/templates/layout.html:108
 #: bookwyrm/templates/notifications/notifications_page.html:5
 #: bookwyrm/templates/notifications/notifications_page.html:10
 msgid "Notifications"
 msgstr "Powiadomienia"
 
 #: bookwyrm/templates/guided_tour/home.html:200
-msgid "Your profile, books, direct messages, and settings can be accessed by clicking on your name in the menu here."
-msgstr "Dostęp do swojego profilu, książek, wiadomości oraz ustawień możesz uzyskać po naciśnięciu na swoją nazwę w menu."
+msgid "Your profile, user directory, direct messages, and settings can be accessed by clicking on your name in the menu here."
+msgstr "Dostęp do swojego profilu, katalogu użytkownika, wiadomości bezpośrednich oraz ustawień możesz uzyskać, naciskając na swoją nazwę w tym menu."
 
 #: bookwyrm/templates/guided_tour/home.html:200
 msgid "Try selecting <strong>Profile</strong> from the drop down menu to continue the tour."
-msgstr "Wybierz <strong>Profil</strong> z listy rozwijanej menu, aby kontynuować."
+msgstr "Wybierz <strong>Profil</strong> z rozwijanego menu, aby kontynuować."
 
 #: bookwyrm/templates/guided_tour/home.html:201
 msgid "Profile and settings menu"
@@ -2538,11 +2832,11 @@ msgstr "Prywatność listy"
 
 #: bookwyrm/templates/guided_tour/lists.html:105
 msgid "You can also decide how your list is to be curated - only by you, by anyone, or by a group."
-msgstr ""
+msgstr "Możesz zdecydować, przez kogo może być edytowana Twoja lista — tylko przez Ciebie, przez kogokolwiek lub przez grupę."
 
 #: bookwyrm/templates/guided_tour/lists.html:106
 msgid "List curation"
-msgstr ""
+msgstr "Edytowanie listy"
 
 #: bookwyrm/templates/guided_tour/lists.html:128
 msgid "Next in our tour we will explore Groups!"
@@ -2591,7 +2885,7 @@ msgstr "Jeśli nadal nie możesz znaleźć swojej książki, możesz dodać pozy
 
 #: bookwyrm/templates/guided_tour/search.html:122
 msgid "Add a record manually"
-msgstr ""
+msgstr "Dodaj wpis ręcznie"
 
 #: bookwyrm/templates/guided_tour/search.html:147
 msgid "Import, manually add, or view an existing book to continue the tour."
@@ -2603,7 +2897,7 @@ msgstr "Kontynuuj"
 
 #: bookwyrm/templates/guided_tour/user_books.html:10
 msgid "This is the page where your books are listed, organised into shelves."
-msgstr ""
+msgstr "Na tej stronie Twoje książki są uporządkowane na półkach."
 
 #: bookwyrm/templates/guided_tour/user_books.html:11
 #: bookwyrm/templates/user/books_header.html:4
@@ -2612,11 +2906,11 @@ msgstr "Twoje książki"
 
 #: bookwyrm/templates/guided_tour/user_books.html:31
 msgid "<strong>To Read</strong>, <strong>Currently Reading</strong>, <strong>Read</strong>, and <strong>Stopped Reading</strong> are default shelves. When you change the reading status of a book it will automatically be moved to the matching shelf. A book can only be on one default shelf at a time."
-msgstr ""
+msgstr "<strong>Do przeczytania</strong>, <strong>Obecnie czytane</strong>, <strong>Przeczytane</strong> oraz <strong>Wstrzymane</strong> to domyślne półki. Po zmianie statusu czytania książki zostanie ona automatycznie przeniesiona na odpowiednią półkę. Książka może być umieszczona jednocześnie tylko na jednej z domyślnych półek."
 
 #: bookwyrm/templates/guided_tour/user_books.html:32
 msgid "Reading status shelves"
-msgstr ""
+msgstr "Półki statusu czytania"
 
 #: bookwyrm/templates/guided_tour/user_books.html:55
 msgid "You can create additional custom shelves to organise your books. A book on a custom shelf can be on any number of other shelves simultaneously, including one of the default reading status shelves"
@@ -2648,7 +2942,8 @@ msgstr "Możesz utworzyć lub dołączyć do grupy z pozostałymi użytkownikami
 
 #: bookwyrm/templates/guided_tour/user_groups.html:11
 #: bookwyrm/templates/guided_tour/user_profile.html:55
-#: bookwyrm/templates/user/layout.html:83
+#: bookwyrm/templates/preferences/export-user.html:37
+#: bookwyrm/templates/user/groups.html:6 bookwyrm/templates/user/layout.html:95
 msgid "Groups"
 msgstr "Grupy"
 
@@ -2693,7 +2988,7 @@ msgid "This is your user profile. All your latest activities will be listed here
 msgstr "To jest Twój profil użytkownika. Wszystkie Twoje najnowsze aktywności będą tutaj widoczne. Pozostali użytkownicy BookWyrm mogą również widzieć części tej strony - to, co mogą zobaczyć zależy od Twoich ustawień prywatności."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:11
-#: bookwyrm/templates/user/layout.html:19 bookwyrm/templates/user/user.html:14
+#: bookwyrm/templates/user/layout.html:20 bookwyrm/templates/user/user.html:14
 msgid "User Profile"
 msgstr "Profil użytkownika"
 
@@ -2702,7 +2997,7 @@ msgid "This tab shows everything you have read towards your annual reading goal,
 msgstr "Ta karta zawiera wszystko, co zostało przez Ciebie przeczytane w dążeniu do rocznego celu oraz umożliwia jego ustawienie. Nie musisz tego robić, jeśli to nie w Twoim stylu!"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:32
-#: bookwyrm/templates/user/layout.html:77
+#: bookwyrm/templates/user/goal.html:6 bookwyrm/templates/user/layout.html:89
 msgid "Reading Goal"
 msgstr "Cel czytania"
 
@@ -2733,116 +3028,144 @@ msgstr "Znajdź książkę"
 #: bookwyrm/templates/hashtag.html:12
 #, python-format
 msgid "See tagged statuses in the local %(site_name)s community"
-msgstr ""
+msgstr "Zobacz oznaczone statusy w lokalnej społeczności %(site_name)s"
 
 #: bookwyrm/templates/hashtag.html:25
 msgid "No activities for this hashtag yet!"
-msgstr ""
+msgstr "Brak aktywności dla tego znacznika!"
 
 #: bookwyrm/templates/import/import.html:5
-#: bookwyrm/templates/import/import.html:9
-#: bookwyrm/templates/shelf/shelf.html:64
-msgid "Import Books"
-msgstr "Importuj książki"
+#: bookwyrm/templates/import/import.html:6
+#: bookwyrm/templates/preferences/layout.html:43
+msgid "Import Book List"
+msgstr "Importuj listę książek"
 
-#: bookwyrm/templates/import/import.html:13
+#: bookwyrm/templates/import/import.html:12
 msgid "Not a valid CSV file"
 msgstr "To nie jest prawidłowy plik CSV"
 
 #: bookwyrm/templates/import/import.html:20
 #, python-format
-msgid "Currently you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days."
-msgstr ""
+msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
+msgid_plural "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s days."
+msgstr[0] "Obecnie możesz importować %(display_size)s książek co %(import_limit_reset)s dzień."
+msgstr[1] "Obecnie możesz importować %(display_size)s książek co %(import_limit_reset)s dni."
+msgstr[2] "Obecnie możesz importować %(display_size)s książek co %(import_limit_reset)s dni."
+msgstr[3] "Obecnie możesz importować %(display_size)s książek co %(import_limit_reset)s dni."
 
-#: bookwyrm/templates/import/import.html:21
+#: bookwyrm/templates/import/import.html:26
 #, python-format
-msgid "You have %(allowed_imports)s left."
-msgstr ""
+msgid "You have %(display_left)s left."
+msgstr "Pozostało %(display_left)s."
 
-#: bookwyrm/templates/import/import.html:28
+#: bookwyrm/templates/import/import.html:33
+#: bookwyrm/templates/import/import_user.html:40
 #, python-format
 msgid "On average, recent imports have taken %(hours)s hours."
 msgstr "Ostatnie importy zajmowały średnio %(hours)s godzin."
 
-#: bookwyrm/templates/import/import.html:32
+#: bookwyrm/templates/import/import.html:37
+#: bookwyrm/templates/import/import_user.html:44
 #, python-format
 msgid "On average, recent imports have taken %(minutes)s minutes."
 msgstr "Ostatnie importy zajmowały średnio %(minutes)s minut."
 
-#: bookwyrm/templates/import/import.html:47
+#: bookwyrm/templates/import/import.html:52
 msgid "Data source:"
 msgstr "Źródło danych:"
 
-#: bookwyrm/templates/import/import.html:53
+#: bookwyrm/templates/import/import.html:58
 msgid "Goodreads (CSV)"
 msgstr "Goodreads (CSV)"
 
-#: bookwyrm/templates/import/import.html:56
+#: bookwyrm/templates/import/import.html:61
 msgid "Storygraph (CSV)"
 msgstr "Storygraph (CSV)"
 
-#: bookwyrm/templates/import/import.html:59
+#: bookwyrm/templates/import/import.html:64
 msgid "LibraryThing (TSV)"
 msgstr "LibraryThing (TSV)"
 
-#: bookwyrm/templates/import/import.html:62
+#: bookwyrm/templates/import/import.html:67
 msgid "OpenLibrary (CSV)"
 msgstr "OpenLibrary (CSV)"
 
-#: bookwyrm/templates/import/import.html:65
+#: bookwyrm/templates/import/import.html:70
+msgid "OpenReads (CSV)"
+msgstr "OpenReads (CSV)"
+
+#: bookwyrm/templates/import/import.html:73
 msgid "Calibre (CSV)"
 msgstr "Calibre (CSV)"
 
-#: bookwyrm/templates/import/import.html:71
-msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
-msgstr ""
+#: bookwyrm/templates/import/import.html:76
+msgid "BookWyrm (CSV)"
+msgstr "BookWyrm (CSV)"
 
-#: bookwyrm/templates/import/import.html:80
+#: bookwyrm/templates/import/import.html:82
+msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
+msgstr "Możesz pobrać swoje dane Goodreads ze strony <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Importuj/Eksportuj</a> na swoim koncie Goodreads."
+
+#: bookwyrm/templates/import/import.html:91
+#: bookwyrm/templates/import/import_user.html:64
 msgid "Data file:"
 msgstr "Plik danych:"
 
-#: bookwyrm/templates/import/import.html:88
+#: bookwyrm/templates/import/import.html:99
 msgid "Include reviews"
 msgstr "Uwzględnij recenzje"
 
-#: bookwyrm/templates/import/import.html:93
-msgid "Privacy setting for imported reviews:"
-msgstr "Ustawienia prywatności dla importowanych recenzji:"
+#: bookwyrm/templates/import/import.html:104
+msgid "Create new shelves if they do not exist"
+msgstr "Utwórz nowe półki, jeśli nie istnieją"
 
-#: bookwyrm/templates/import/import.html:100
-#: bookwyrm/templates/import/import.html:102
-#: bookwyrm/templates/preferences/layout.html:35
+#: bookwyrm/templates/import/import.html:109
+msgid "Privacy setting for imported reviews and shelves:"
+msgstr "Ustawienie prywatności dla importowanych opinii i półek:"
+
+#: bookwyrm/templates/import/import.html:116
+#: bookwyrm/templates/import/import.html:118
+#: bookwyrm/templates/import/import_user.html:170
+#: bookwyrm/templates/import/import_user.html:172
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:78
 msgid "Import"
 msgstr "Importuj"
 
-#: bookwyrm/templates/import/import.html:103
+#: bookwyrm/templates/import/import.html:119
+#: bookwyrm/templates/import/import_user.html:173
 msgid "You've reached the import limit."
-msgstr ""
+msgstr "Limit importów osiągnięty."
 
-#: bookwyrm/templates/import/import.html:112
+#: bookwyrm/templates/import/import.html:128
+#: bookwyrm/templates/import/import_user.html:27
 msgid "Imports are temporarily disabled; thank you for your patience."
 msgstr "Importowanie jest tymczasowo wyłączone; dziękujemy za Twoją cierpliwość."
 
-#: bookwyrm/templates/import/import.html:119
+#: bookwyrm/templates/import/import.html:135
+#: bookwyrm/templates/import/import_user.html:181
 msgid "Recent Imports"
 msgstr "Najnowsze recenzje"
 
-#: bookwyrm/templates/import/import.html:124
-#: bookwyrm/templates/settings/imports/imports.html:120
+#: bookwyrm/templates/import/import.html:140
+#: bookwyrm/templates/import/import_user.html:186
+#: bookwyrm/templates/settings/imports/imports.html:202
+#: bookwyrm/templates/settings/imports/imports.html:292
 msgid "Date Created"
-msgstr ""
+msgstr "Data utworzenia"
 
-#: bookwyrm/templates/import/import.html:127
+#: bookwyrm/templates/import/import.html:143
+#: bookwyrm/templates/import/import_user.html:189
 msgid "Last Updated"
 msgstr "Najnowsza aktualizacja"
 
-#: bookwyrm/templates/import/import.html:130
-#: bookwyrm/templates/settings/imports/imports.html:129
+#: bookwyrm/templates/import/import.html:146
+#: bookwyrm/templates/settings/imports/imports.html:211
 msgid "Items"
-msgstr ""
+msgstr "Elementy"
 
-#: bookwyrm/templates/import/import.html:139
+#: bookwyrm/templates/import/import.html:155
+#: bookwyrm/templates/import/import_user.html:198
+#: bookwyrm/templates/preferences/export-user.html:122
 msgid "No recent imports"
 msgstr "Brak ostatnich importów"
 
@@ -2855,30 +3178,35 @@ msgstr "Status importu"
 #: bookwyrm/templates/import/import_status.html:13
 #: bookwyrm/templates/import/import_status.html:27
 msgid "Retry Status"
-msgstr ""
+msgstr "Ponów status"
 
 #: bookwyrm/templates/import/import_status.html:22
-#: bookwyrm/templates/settings/celery.html:44
+#: bookwyrm/templates/settings/celery.html:45
 #: bookwyrm/templates/settings/imports/imports.html:6
 #: bookwyrm/templates/settings/imports/imports.html:9
-#: bookwyrm/templates/settings/layout.html:82
+#: bookwyrm/templates/settings/layout.html:97
 msgid "Imports"
 msgstr "Importowanie"
 
 #: bookwyrm/templates/import/import_status.html:39
+#: bookwyrm/templates/import/user_import_status.html:35
 msgid "Import started:"
 msgstr "Import rozpoczęty:"
 
 #: bookwyrm/templates/import/import_status.html:48
+#: bookwyrm/templates/import/user_import_status.html:99
 msgid "In progress"
 msgstr "W trakcie"
 
 #: bookwyrm/templates/import/import_status.html:50
+#: bookwyrm/templates/import/user_import_status.html:101
 msgid "Refresh"
 msgstr "Odśwież"
 
 #: bookwyrm/templates/import/import_status.html:72
-#: bookwyrm/templates/settings/imports/imports.html:161
+#: bookwyrm/templates/import/user_import_status.html:123
+#: bookwyrm/templates/settings/imports/imports.html:243
+#: bookwyrm/templates/settings/imports/imports.html:320
 msgid "Stop import"
 msgstr "Wstrzymaj import"
 
@@ -2894,9 +3222,10 @@ msgstr[3] "%(display_counter)s elementów wymaga ręcznego zatwierdzenia."
 #: bookwyrm/templates/import/import_status.html:83
 #: bookwyrm/templates/import/manual_review.html:8
 msgid "Review items"
-msgstr ""
+msgstr "Przejrzyj elementy"
 
 #: bookwyrm/templates/import/import_status.html:89
+#: bookwyrm/templates/import/user_import_status.html:129
 #, python-format
 msgid "%(display_counter)s item failed to import."
 msgid_plural "%(display_counter)s items failed to import."
@@ -2906,6 +3235,7 @@ msgstr[2] "Błąd importowania %(display_counter)s elementów."
 msgstr[3] "Błąd importowania %(display_counter)s elementów."
 
 #: bookwyrm/templates/import/import_status.html:95
+#: bookwyrm/templates/import/user_import_status.html:135
 msgid "View and troubleshoot failed items"
 msgstr "Wyświetl i rozwiąż problemy z importowaniem"
 
@@ -2914,12 +3244,14 @@ msgid "Row"
 msgstr "Wiersz"
 
 #: bookwyrm/templates/import/import_status.html:110
-#: bookwyrm/templates/shelf/shelf.html:148
-#: bookwyrm/templates/shelf/shelf.html:170
+#: bookwyrm/templates/import/user_import_status.html:149
+#: bookwyrm/templates/shelf/shelf.html:156
+#: bookwyrm/templates/shelf/shelf.html:178
 msgid "Title"
 msgstr "Tytuł"
 
 #: bookwyrm/templates/import/import_status.html:113
+#: bookwyrm/templates/import/user_import_status.html:152
 msgid "ISBN"
 msgstr "ISBN"
 
@@ -2928,8 +3260,8 @@ msgid "Openlibrary key"
 msgstr "Klucz Openlibrary"
 
 #: bookwyrm/templates/import/import_status.html:121
-#: bookwyrm/templates/shelf/shelf.html:149
-#: bookwyrm/templates/shelf/shelf.html:173
+#: bookwyrm/templates/shelf/shelf.html:157
+#: bookwyrm/templates/shelf/shelf.html:181
 msgid "Author"
 msgstr "Autor"
 
@@ -2937,13 +3269,9 @@ msgstr "Autor"
 msgid "Shelf"
 msgstr "Półka"
 
-#: bookwyrm/templates/import/import_status.html:127
-#: bookwyrm/templates/import/manual_review.html:13
-#: bookwyrm/templates/snippets/create_status.html:16
-msgid "Review"
-msgstr "Recenzja"
-
 #: bookwyrm/templates/import/import_status.html:131
+#: bookwyrm/templates/import/user_import_status.html:159
+#: bookwyrm/templates/import/user_troubleshoot.html:59
 #: bookwyrm/templates/settings/link_domains/link_table.html:9
 msgid "Book"
 msgstr "Książka"
@@ -2961,8 +3289,10 @@ msgid "View imported review"
 msgstr "Pokaż importowaną recenzję"
 
 #: bookwyrm/templates/import/import_status.html:200
+#: bookwyrm/templates/import/user_import_status.html:68
+#: bookwyrm/templates/import/user_import_status.html:191
 msgid "Imported"
-msgstr ""
+msgstr "Zaimportowane"
 
 #: bookwyrm/templates/import/import_status.html:206
 msgid "Needs manual review"
@@ -2974,20 +3304,152 @@ msgstr "Ponów"
 
 #: bookwyrm/templates/import/import_status.html:237
 msgid "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format."
-msgstr ""
+msgstr "Ten import jest zapisany w starym formacie, który nie jest już obsługiwany. Jeśli chcesz rozwiązać problemy z brakującymi elementami z tego importu, naciśnij na poniższy przycisk, aby zaktualizować format importu."
 
 #: bookwyrm/templates/import/import_status.html:239
 msgid "Update import"
-msgstr ""
+msgstr "Zaktualizuj import"
+
+#: bookwyrm/templates/import/import_user.html:5
+#: bookwyrm/templates/import/import_user.html:6
+#: bookwyrm/templates/preferences/layout.html:51
+msgid "Import BookWyrm Account"
+msgstr "Importuj konto BookWyrm"
+
+#: bookwyrm/templates/import/import_user.html:13
+msgid "Not a valid import file"
+msgstr "To nie jest prawidłowy plik importu"
+
+#: bookwyrm/templates/import/import_user.html:18
+msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set this account as an <strong>alias</strong> of the one you are migrating from, or <strong>move</strong> that account to this one, before you import your user data."
+msgstr "Jeśli chcesz przenieść jakiekolwiek statusy (komentarze, recenzje lub cytaty), należy ustawić to konto jako <strong>alias</strong> konta, z którego chcesz coś przenieść lub <strong>przenieś</strong> to konto do tego przed importowaniem swoich danych użytkownika."
+
+#: bookwyrm/templates/import/import_user.html:32
+#, python-format
+msgid "Currently you are allowed to import one user every %(hours)s hours."
+msgstr "Obecnie możesz importować jednego użytkownika co %(hours)s godzin."
+
+#: bookwyrm/templates/import/import_user.html:33
+#, python-format
+msgid "You will next be able to import a user file at %(next_time)s"
+msgstr "Możesz importować następny plik użytkownika o %(next_time)s"
+
+#: bookwyrm/templates/import/import_user.html:56
+msgid "Step 1:"
+msgstr "Krok 1:"
+
+#: bookwyrm/templates/import/import_user.html:58
+msgid "Select an export file generated from another BookWyrm account. The file format should be <code>.tar.gz</code>."
+msgstr "Wybierz plik eksportu wygenerowany z innego konta BookWyrm. Plik powinien być w formacie <code>.tar.gz</code>."
+
+#: bookwyrm/templates/import/import_user.html:73
+msgid "Step 2:"
+msgstr "Krok 2:"
+
+#: bookwyrm/templates/import/import_user.html:75
+msgid "Deselect any checkboxes for data you do not wish to include in your import."
+msgstr "Odznacz wszelkie pola wyboru danych, których nie chcesz zawrzeć w swoim imporcie."
+
+#: bookwyrm/templates/import/import_user.html:86
+#: bookwyrm/templates/preferences/export-user.html:21
+#: bookwyrm/templates/shelf/shelf.html:31
+#: bookwyrm/templates/user/relationships/followers.html:18
+#: bookwyrm/templates/user/relationships/following.html:18
+msgid "User profile"
+msgstr "Profil użytkownika"
+
+#: bookwyrm/templates/import/import_user.html:89
+msgid "Overwrites display name, summary, and avatar"
+msgstr "Nadpisuje nazwę wyświetlaną, podsumowanie oraz awatar"
+
+#: bookwyrm/templates/import/import_user.html:95
+msgid "User settings"
+msgstr "Ustawienia użytkownika"
+
+#: bookwyrm/templates/import/import_user.html:98
+msgid "Overwrites:"
+msgstr "Nadpisuje:"
+
+#: bookwyrm/templates/import/import_user.html:101
+msgid "Whether manual approval is required for other users to follow your account"
+msgstr "Czy wymagana jest ręczna weryfikacja osób chcących obserwować twoje konto"
+
+#: bookwyrm/templates/import/import_user.html:104
+msgid "Whether following/followers are shown on your profile"
+msgstr "Czy obserwowani/obserwujący mają być wyświetlani na twoim profilu"
+
+#: bookwyrm/templates/import/import_user.html:107
+msgid "Whether your reading goal is shown on your profile"
+msgstr "Czy twój cel czytania ma być wyświetlany na twoim profilu"
+
+#: bookwyrm/templates/import/import_user.html:110
+msgid "Whether you see user follow suggestions"
+msgstr "Czy chcesz widzieć sugestie obserwowania"
+
+#: bookwyrm/templates/import/import_user.html:113
+msgid "Whether your account is suggested to others"
+msgstr "Czy twoje konto ma być sugerowane pozostałym"
+
+#: bookwyrm/templates/import/import_user.html:116
+msgid "Your timezone"
+msgstr "Twoja strefa czasowa"
+
+#: bookwyrm/templates/import/import_user.html:119
+msgid "Your default post privacy setting"
+msgstr "Twoje domyślne ustawienie prywatności wpisów"
+
+#: bookwyrm/templates/import/import_user.html:127
+msgid "Followers and following"
+msgstr "Obserwowani i obserwujący"
+
+#: bookwyrm/templates/import/import_user.html:131
+msgid "User blocks"
+msgstr "Blokowanie osób"
+
+#: bookwyrm/templates/import/import_user.html:138
+#: bookwyrm/templates/preferences/export-user.html:23
+msgid "Reading goals"
+msgstr "Cele czytania"
+
+#: bookwyrm/templates/import/import_user.html:141
+msgid "Overwrites reading goals for all years listed in the import file"
+msgstr "Nadpisuje cele czytania dla wszystkich lat zawartych w pliku importu"
+
+#: bookwyrm/templates/import/import_user.html:145
+#: bookwyrm/templates/preferences/export-user.html:24
+msgid "Shelves"
+msgstr "Półki"
+
+#: bookwyrm/templates/import/import_user.html:148
+#: bookwyrm/templates/preferences/export-user.html:25
+msgid "Reading history"
+msgstr "Historia czytania"
+
+#: bookwyrm/templates/import/import_user.html:151
+#: bookwyrm/templates/preferences/export-user.html:26
+msgid "Book reviews"
+msgstr "Recenzje książek"
+
+#: bookwyrm/templates/import/import_user.html:157
+msgid "Comments about books"
+msgstr "Komentarze o książkach"
+
+#: bookwyrm/templates/import/import_user.html:160
+msgid "Book lists"
+msgstr "Listy książek"
+
+#: bookwyrm/templates/import/import_user.html:163
+msgid "Saved lists"
+msgstr "Zapisane listy"
 
 #: bookwyrm/templates/import/manual_review.html:5
 #: bookwyrm/templates/import/troubleshoot.html:4
 msgid "Import Troubleshooting"
-msgstr ""
+msgstr "Rozwiązywanie problemów z importowaniem"
 
 #: bookwyrm/templates/import/manual_review.html:21
 msgid "Approving a suggestion will permanently add the suggested book to your shelves and associate your reading dates, reviews, and ratings with that book."
-msgstr ""
+msgstr "Zatwierdzenie sugestii spowoduje dodanie na stałe sugerowanej książki do twoich półek oraz powiązanie daty czytania, recenzji i ocen z tą książką."
 
 #: bookwyrm/templates/import/manual_review.html:58
 #: bookwyrm/templates/lists/curate.html:71
@@ -3000,15 +3462,18 @@ msgid "Reject"
 msgstr "Odrzuć"
 
 #: bookwyrm/templates/import/troubleshoot.html:7
-#: bookwyrm/templates/settings/imports/imports.html:138
+#: bookwyrm/templates/import/user_troubleshoot.html:8
+#: bookwyrm/templates/settings/imports/imports.html:220
 msgid "Failed items"
-msgstr ""
+msgstr "Elementy z błędami"
 
 #: bookwyrm/templates/import/troubleshoot.html:12
+#: bookwyrm/templates/import/user_troubleshoot.html:13
 msgid "Troubleshooting"
-msgstr ""
+msgstr "Rozwiązywanie problemów"
 
 #: bookwyrm/templates/import/troubleshoot.html:20
+#: bookwyrm/templates/import/user_troubleshoot.html:23
 msgid "Re-trying an import can fix missing items in cases such as:"
 msgstr "Ponowienie importu może naprawić problemy, takie jak:"
 
@@ -3017,27 +3482,118 @@ msgid "The book has been added to the instance since this import"
 msgstr "Książka została dodana do tej instancji od czasu tego importu"
 
 #: bookwyrm/templates/import/troubleshoot.html:24
+#: bookwyrm/templates/import/user_troubleshoot.html:27
 msgid "A transient error or timeout caused the external data source to be unavailable."
-msgstr ""
+msgstr "Tymczasowy błąd lub przekroczenie czasu połączenia spowodowały brak dostępu do zewnętrznego źródła danych."
 
 #: bookwyrm/templates/import/troubleshoot.html:25
+#: bookwyrm/templates/import/user_troubleshoot.html:28
 msgid "BookWyrm has been updated since this import with a bug fix"
-msgstr ""
+msgstr "BookWyrm zostało zaktualizowane z poprawką od czasu tego importu"
 
 #: bookwyrm/templates/import/troubleshoot.html:28
+#: bookwyrm/templates/import/user_troubleshoot.html:38
 msgid "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items."
+msgstr "Skontaktuj się ze swoim administratorem lub <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>zgłoś problem</a>, jeśli widzisz nieoczekiwane elementy z błędami."
+
+#: bookwyrm/templates/import/user_import_status.html:6
+#: bookwyrm/templates/import/user_import_status.html:15
+#: bookwyrm/templates/import/user_import_status.html:26
+msgid "User Import Status"
+msgstr "Status importu użytkownika"
+
+#: bookwyrm/templates/import/user_import_status.html:13
+msgid "User Import Retry Status"
+msgstr "Status ponownego importu użytkownika"
+
+#: bookwyrm/templates/import/user_import_status.html:22
+#: bookwyrm/templates/settings/imports/imports.html:264
+msgid "User Imports"
 msgstr ""
+
+#: bookwyrm/templates/import/user_import_status.html:70
+#: bookwyrm/templates/settings/dashboard/user_chart.html:11
+msgid "Total"
+msgstr ""
+
+#: bookwyrm/templates/import/user_import_status.html:79
+#: bookwyrm/templates/preferences/export-user.html:27
+#: bookwyrm/templates/settings/dashboard/dashboard.html:27
+msgid "Statuses"
+msgstr "Statusów"
+
+#: bookwyrm/templates/import/user_import_status.html:85
+msgid "Follows & Blocks"
+msgstr "Obserwowani i blokowani"
+
+#: bookwyrm/templates/import/user_import_status.html:144
+msgid "Imported books"
+msgstr "Zaimportowane książki"
+
+#: bookwyrm/templates/import/user_troubleshoot.html:5
+msgid "User Import Troubleshooting"
+msgstr "Rozwiązywanie problemów z importem użytkownika"
+
+#: bookwyrm/templates/import/user_troubleshoot.html:26
+msgid "Your account was not set as an alias of the original user account"
+msgstr "Twoje konto nie zostało ustawione jako alias dla oryginalnego konta użytkownika"
+
+#: bookwyrm/templates/import/user_troubleshoot.html:31
+msgid "Re-trying an import will not work in cases such as:"
+msgstr "Ponowienie importu użytkownika jest zbędne, gdy:"
+
+#: bookwyrm/templates/import/user_troubleshoot.html:34
+msgid "A user, status, or BookWyrm server was deleted after your import file was created"
+msgstr "Użytkownik, status lub serwer BookWyrm został usunięty po utworzeniu pliku importu"
+
+#: bookwyrm/templates/import/user_troubleshoot.html:35
+msgid "Importing statuses when your old account has been deleted"
+msgstr "Importujesz statusy po usunięciu starego konta"
+
+#: bookwyrm/templates/import/user_troubleshoot.html:43
+#, python-format
+msgid "Currently you are allowed to import or retry one user every %(hours)s hours."
+msgstr "Obecnie możesz importować lub ponowić import jednego użytkownika co %(hours)s godzin."
+
+#: bookwyrm/templates/import/user_troubleshoot.html:44
+#, python-format
+msgid "You will be able to retry this import at %(next_time)s"
+msgstr "Możesz ponowić ten import o %(next_time)s"
+
+#: bookwyrm/templates/import/user_troubleshoot.html:65
+msgid "Relationship"
+msgstr "Relacja"
+
+#: bookwyrm/templates/import/user_troubleshoot.html:68
+msgid "Reason"
+msgstr "Powód"
+
+#: bookwyrm/templates/landing/force_password_reset.html:30
+msgid "You must set a new password before logging in."
+msgstr ""
+
+#: bookwyrm/templates/landing/force_password_reset.html:50
+#: bookwyrm/templates/preferences/change_password.html:22
+msgid "Current password:"
+msgstr "Obecne hasło:"
+
+#: bookwyrm/templates/landing/force_password_reset.html:68
+#: bookwyrm/templates/preferences/change_password.html:28
+msgid "New password:"
+msgstr "Nowe hasło:"
+
+#: bookwyrm/templates/landing/force_password_reset.html:85
+#: bookwyrm/templates/landing/password_reset.html:43
+#: bookwyrm/templates/preferences/change_password.html:33
+msgid "Confirm password:"
+msgstr "Potwierdź hasło:"
 
 #: bookwyrm/templates/landing/invite.html:4
 #: bookwyrm/templates/landing/invite.html:8
-#: bookwyrm/templates/landing/login.html:48
-#: bookwyrm/templates/landing/reactivate.html:41
+#: bookwyrm/templates/landing/login.html:50
+#: bookwyrm/templates/landing/reactivate.html:43
 msgid "Create an Account"
 msgstr "Utwórz konto"
-
-#: bookwyrm/templates/landing/invite.html:21
-msgid "Permission Denied"
-msgstr "Odmowa dostępu"
 
 #: bookwyrm/templates/landing/invite.html:22
 msgid "Sorry! This invite code is no longer valid."
@@ -3045,19 +3601,19 @@ msgstr "Niestety, ale ten kod zaproszenia jest już nieważny."
 
 #: bookwyrm/templates/landing/landing.html:9
 msgid "Recent Books"
-msgstr ""
+msgstr "Ostatnie książki"
 
 #: bookwyrm/templates/landing/layout.html:17
 msgid "Decentralized"
-msgstr ""
+msgstr "Zdecentralizowane"
 
 #: bookwyrm/templates/landing/layout.html:23
 msgid "Friendly"
-msgstr ""
+msgstr "Przyjazne"
 
 #: bookwyrm/templates/landing/layout.html:29
 msgid "Anti-Corporate"
-msgstr ""
+msgstr "Antykorporacyjne"
 
 #: bookwyrm/templates/landing/layout.html:46
 #, python-format
@@ -3086,7 +3642,7 @@ msgid "Login"
 msgstr "Login"
 
 #: bookwyrm/templates/landing/login.html:7
-#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:136
+#: bookwyrm/templates/landing/login.html:38 bookwyrm/templates/layout.html:142
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
 msgstr "Zaloguj się"
@@ -3097,35 +3653,29 @@ msgstr "Udało się! Adres e-mail został potwierdzony."
 
 #: bookwyrm/templates/landing/login.html:21
 #: bookwyrm/templates/landing/reactivate.html:17
-#: bookwyrm/templates/layout.html:127 bookwyrm/templates/ostatus/error.html:28
+#: bookwyrm/templates/layout.html:128 bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
 msgstr "Nazwa użytkownika:"
 
-#: bookwyrm/templates/landing/login.html:27
+#: bookwyrm/templates/landing/login.html:28
 #: bookwyrm/templates/landing/password_reset.html:26
-#: bookwyrm/templates/landing/reactivate.html:23
-#: bookwyrm/templates/layout.html:131 bookwyrm/templates/ostatus/error.html:32
-#: bookwyrm/templates/preferences/2fa.html:91
+#: bookwyrm/templates/landing/reactivate.html:24
+#: bookwyrm/templates/layout.html:132 bookwyrm/templates/ostatus/error.html:32
+#: bookwyrm/templates/preferences/security.html:94
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
 msgstr "Hasło:"
 
-#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:133
+#: bookwyrm/templates/landing/login.html:41 bookwyrm/templates/layout.html:139
 #: bookwyrm/templates/ostatus/error.html:34
 msgid "Forgot your password?"
 msgstr "Zapomniano hasła?"
 
-#: bookwyrm/templates/landing/login.html:61
-#: bookwyrm/templates/landing/reactivate.html:54
+#: bookwyrm/templates/landing/login.html:63
+#: bookwyrm/templates/landing/reactivate.html:56
 msgid "More about this site"
 msgstr "Więcej o tej stronie"
-
-#: bookwyrm/templates/landing/password_reset.html:43
-#: bookwyrm/templates/preferences/change_password.html:33
-#: bookwyrm/templates/preferences/delete_user.html:35
-msgid "Confirm password:"
-msgstr "Potwierdź hasło:"
 
 #: bookwyrm/templates/landing/password_reset_request.html:14
 #, python-format
@@ -3145,7 +3695,7 @@ msgstr "Wyzeruj hasło"
 msgid "Reactivate Account"
 msgstr "Ponownie aktywuj konto"
 
-#: bookwyrm/templates/landing/reactivate.html:32
+#: bookwyrm/templates/landing/reactivate.html:34
 msgid "Reactivate account"
 msgstr "Ponownie aktywuj konto"
 
@@ -3154,35 +3704,35 @@ msgstr "Ponownie aktywuj konto"
 msgid "%(site_name)s search"
 msgstr "Przeszukaj %(site_name)s"
 
-#: bookwyrm/templates/layout.html:37
-msgid "Search for a book, user, or list"
-msgstr "Szukaj książki, użytkownika lub listy"
+#: bookwyrm/templates/layout.html:39
+msgid "Search for a book, author, user, or list"
+msgstr "Szukaj książek, autorów, użytkowników lub list"
 
-#: bookwyrm/templates/layout.html:52 bookwyrm/templates/layout.html:53
+#: bookwyrm/templates/layout.html:54 bookwyrm/templates/layout.html:55
 msgid "Scan Barcode"
 msgstr "Skanuj kod kreskowy"
 
-#: bookwyrm/templates/layout.html:67
+#: bookwyrm/templates/layout.html:69
 msgid "Main navigation menu"
 msgstr "Główne menu nawigacji"
 
-#: bookwyrm/templates/layout.html:87
-msgid "Feed"
-msgstr "Kanał"
-
-#: bookwyrm/templates/layout.html:132 bookwyrm/templates/ostatus/error.html:33
+#: bookwyrm/templates/layout.html:134 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
 msgstr "hasło"
 
-#: bookwyrm/templates/layout.html:144
+#: bookwyrm/templates/layout.html:136
+msgid "Show/Hide password"
+msgstr "Pokaż/Ukryj hasło"
+
+#: bookwyrm/templates/layout.html:150
 msgid "Join"
 msgstr "Dołącz"
 
-#: bookwyrm/templates/layout.html:179
+#: bookwyrm/templates/layout.html:196
 msgid "Successfully posted status"
 msgstr "Status został zamieszczony"
 
-#: bookwyrm/templates/layout.html:180
+#: bookwyrm/templates/layout.html:197
 msgid "Error posting status"
 msgstr "Błąd zamieszczania statusu"
 
@@ -3349,7 +3899,7 @@ msgstr "Pomyślnie dodano książkę do tej listy!"
 
 #: bookwyrm/templates/lists/list.html:54
 msgid "This list is currently empty."
-msgstr ""
+msgstr "Obecnie ta lista jest pusta."
 
 #: bookwyrm/templates/lists/list.html:104
 msgid "Edit notes"
@@ -3366,14 +3916,17 @@ msgstr "Dodane przez <a href=\"%(user_path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/list.html:146
 msgid "List position"
-msgstr ""
+msgstr "Pozycja listy"
 
 #: bookwyrm/templates/lists/list.html:152
+#: bookwyrm/templates/settings/connectors/connector.html:28
+#: bookwyrm/templates/settings/connectors/update.html:27
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:23
 msgid "Set"
-msgstr ""
+msgstr "Ustaw"
 
 #: bookwyrm/templates/lists/list.html:167
+#: bookwyrm/templates/snippets/remove_follower_button.html:4
 #: bookwyrm/templates/snippets/remove_from_group_button.html:20
 msgid "Remove"
 msgstr "Usuń"
@@ -3381,11 +3934,11 @@ msgstr "Usuń"
 #: bookwyrm/templates/lists/list.html:181
 #: bookwyrm/templates/lists/list.html:198
 msgid "Sort List"
-msgstr ""
+msgstr "Sortowanie listy"
 
 #: bookwyrm/templates/lists/list.html:191
 msgid "Direction"
-msgstr ""
+msgstr "Kierunek"
 
 #: bookwyrm/templates/lists/list.html:205
 msgid "Add Books"
@@ -3425,7 +3978,11 @@ msgstr "%(list_name)s, lista autorstwa %(owner)s na %(site_name)s"
 msgid "Saved"
 msgstr "Zapisane"
 
-#: bookwyrm/templates/lists/lists.html:14 bookwyrm/templates/user/lists.html:9
+#: bookwyrm/templates/lists/list_items.html:50
+msgid "No lists found."
+msgstr "Brak list."
+
+#: bookwyrm/templates/lists/lists.html:14 bookwyrm/templates/user/lists.html:14
 msgid "Your Lists"
 msgstr "Twoje listy"
 
@@ -3436,6 +3993,23 @@ msgstr "Wszystkie listy"
 #: bookwyrm/templates/lists/lists.html:40
 msgid "Saved Lists"
 msgstr "Zapisane listy"
+
+#: bookwyrm/templates/moved.html:27
+#, python-format
+msgid "<strong>You have moved your account</strong> to <a href=\"%(moved_to)s\">%(username)s</a>"
+msgstr "<strong>Przeniesiono swoje konto</strong> do <a href=\"%(moved_to)s\">%(username)s</a>"
+
+#: bookwyrm/templates/moved.html:32
+msgid "You can undo the move to restore full functionality, but some followers may have already unfollowed this account."
+msgstr "Możesz cofnąć przeniesienie, aby przywrócić pełną funkcjonalność, ale niektóre osoby mogły już anulować obserwację tego konta."
+
+#: bookwyrm/templates/moved.html:42
+msgid "Undo move"
+msgstr "Cofnij przeniesienie"
+
+#: bookwyrm/templates/moved.html:46 bookwyrm/templates/user_menu.html:77
+msgid "Log out"
+msgstr "Wyloguj się"
 
 #: bookwyrm/templates/notifications/items/accept.html:18
 #, python-format
@@ -3475,7 +4049,7 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> proponuje dodanie
 #: bookwyrm/templates/notifications/items/add.html:66
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added a book to one of your lists"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> dodaje książkę do jednej z Twoich list"
 
 #: bookwyrm/templates/notifications/items/add.html:72
 #, python-format
@@ -3645,6 +4219,15 @@ msgstr "Twój <a href=\"%(url)s\">import</a> został zakończony."
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> invited you to join the group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> zaprasza Cię do grupy \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 
+#: bookwyrm/templates/notifications/items/invite_request.html:15
+#, python-format
+msgid "New <a href=\"%(path)s\">invite request</a> awaiting response"
+msgid_plural "%(display_count)s new <a href=\"%(path)s\">invite requests</a> awaiting response"
+msgstr[0] "Nowa <a href=\"%(path)s\">prośba o zaproszenie</a> oczekuje na odpowiedź"
+msgstr[1] "%(display_count)s nowe <a href=\"%(path)s\">prośby o zaproszenie</a> oczekują na odpowiedź"
+msgstr[2] "%(display_count)s nowych <a href=\"%(path)s\">próśb o zaproszenie</a> oczekuje na odpowiedź"
+msgstr[3] "%(display_count)s nowych <a href=\"%(path)s\">próśb o zaproszenie</a> oczekuje na odpowiedź"
+
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
 msgid "has joined your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
@@ -3668,11 +4251,11 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i jeszcze %(other
 #: bookwyrm/templates/notifications/items/link_domain.html:15
 #, python-format
 msgid "A new <a href=\"%(path)s\">link domain</a> needs review"
-msgid_plural "%(display_count)s new <a href=\"%(path)s\">link domains</a> need moderation"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgid_plural "%(display_count)s new <a href=\"%(path)s\">link domains</a> need review"
+msgstr[0] "Nowy <a href=\"%(path)s\">odnośnik domeny</a> wymaga sprawdzenia"
+msgstr[1] "%(display_count)s nowe <a href=\"%(path)s\">odnośniki domeny</a> wymagają sprawdzenia"
+msgstr[2] "%(display_count)s nowych <a href=\"%(path)s\">odnośników domeny</a> wymaga sprawdzenia"
+msgstr[3] "%(display_count)s nowych <a href=\"%(path)s\">odnośników domeny</a> wymaga sprawdzenia"
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
@@ -3693,6 +4276,16 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> wspomina Cię w <
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">status</a>"
 msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> wspomina Cię w <a href=\"%(related_path)s\">statusie</a>"
+
+#: bookwyrm/templates/notifications/items/move_user.html:18
+#, python-format
+msgid "%(related_user)s has moved to <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
+msgstr "%(related_user)s przenosi się do <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
+
+#: bookwyrm/templates/notifications/items/move_user.html:25
+#, python-format
+msgid "%(related_user)s has undone their move"
+msgstr "%(related_user)s anuluje swoje przeniesienie"
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
@@ -3734,9 +4327,9 @@ msgstr[2] "%(display_count)s nowych <a href=\"%(path)s\">zgłoszeń</a> wymaga u
 msgstr[3] "%(display_count)s nowych <a href=\"%(path)s\">zgłoszeń</a> wymaga uwagi"
 
 #: bookwyrm/templates/notifications/items/status_preview.html:4
-#: bookwyrm/templates/snippets/status/content_status.html:73
+#: bookwyrm/templates/snippets/status/content_status.html:62
 msgid "Content warning"
-msgstr ""
+msgstr "Ostrzeżenie o treści"
 
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
@@ -3752,6 +4345,16 @@ msgstr "zmienia nazwę dla <a href=\"%(group_path)s\">%(group_name)s</a>"
 #, python-format
 msgid "has changed the description of <a href=\"%(group_path)s\">%(group_name)s</a>"
 msgstr "zmienia opis dla <a href=\"%(group_path)s\">%(group_name)s</a>"
+
+#: bookwyrm/templates/notifications/items/user_export.html:14
+#, python-format
+msgid "Your <a href=\"%(url)s\">user export</a> is ready."
+msgstr "Twój <a href=\"%(url)s\">eksport użytkownika</a> jest gotowy."
+
+#: bookwyrm/templates/notifications/items/user_import.html:14
+#, python-format
+msgid "Your <a href=\"%(import_url)s\">user import</a> is complete."
+msgstr "Twój <a href=\"%(import_url)s\">import użytkownika</a> został ukończony."
 
 #: bookwyrm/templates/notifications/notifications_page.html:19
 msgid "Delete notifications"
@@ -3823,23 +4426,23 @@ msgstr "Obserwujesz już <strong>%(account)s</strong>"
 msgid "You have already requested to follow <strong>%(account)s</strong>"
 msgstr "Wysłano już prośbę o obserwowanie <strong>%(account)s</strong>"
 
-#: bookwyrm/templates/ostatus/remote_follow.html:6
+#: bookwyrm/templates/ostatus/remote_follow.html:7
 #, python-format
 msgid "Follow %(username)s on the fediverse"
 msgstr "Obserwuj %(username)s na fediverse"
 
-#: bookwyrm/templates/ostatus/remote_follow.html:33
+#: bookwyrm/templates/ostatus/remote_follow.html:35
 #, python-format
 msgid "Follow %(username)s from another Fediverse account like BookWyrm, Mastodon, or Pleroma."
 msgstr "Obserwuj %(username)s z innego konta w Fediverse, takiego jak BookWyrm, Mastodon lub Pleroma."
 
-#: bookwyrm/templates/ostatus/remote_follow.html:40
+#: bookwyrm/templates/ostatus/remote_follow.html:42
 msgid "User handle to follow from:"
 msgstr ""
 
-#: bookwyrm/templates/ostatus/remote_follow.html:42
+#: bookwyrm/templates/ostatus/remote_follow.html:44
 msgid "Follow!"
-msgstr ""
+msgstr "Obserwuj!"
 
 #: bookwyrm/templates/ostatus/remote_follow_button.html:15
 msgid "Follow on Fediverse"
@@ -3857,13 +4460,13 @@ msgstr "Zaloguj do %(sitename)s"
 #: bookwyrm/templates/ostatus/subscribe.html:10
 #, python-format
 msgid "Error following from %(sitename)s"
-msgstr ""
+msgstr "Błąd obserwowania z %(sitename)s"
 
 #: bookwyrm/templates/ostatus/subscribe.html:12
 #: bookwyrm/templates/ostatus/subscribe.html:22
 #, python-format
 msgid "Follow from %(sitename)s"
-msgstr ""
+msgstr "Obserwowanie z %(sitename)s"
 
 #: bookwyrm/templates/ostatus/subscribe.html:18
 msgid "Uh oh..."
@@ -3871,90 +4474,64 @@ msgstr "Ups..."
 
 #: bookwyrm/templates/ostatus/subscribe.html:20
 msgid "Let's log in first..."
-msgstr ""
+msgstr "Najpierw, logowanie..."
 
 #: bookwyrm/templates/ostatus/subscribe.html:51
 #, python-format
 msgid "Follow %(username)s"
 msgstr "Obserwuj %(username)s"
 
-#: bookwyrm/templates/ostatus/success.html:28
+#: bookwyrm/templates/ostatus/success.html:6
+#: bookwyrm/templates/ostatus/success.html:32
 #, python-format
 msgid "You are now following %(display_name)s!"
 msgstr "Obserwujesz %(display_name)s!"
 
-#: bookwyrm/templates/preferences/2fa.html:4
-#: bookwyrm/templates/preferences/2fa.html:7
-#: bookwyrm/templates/preferences/layout.html:24
-msgid "Two Factor Authentication"
-msgstr "Uwierzytelnianie dwuskładnikowe"
+#: bookwyrm/templates/preferences/alias_user.html:4
+#: bookwyrm/templates/preferences/move_user.html:4
+#: bookwyrm/templates/preferences/move_user.html:7
+#: bookwyrm/templates/preferences/move_user.html:39
+msgid "Move Account"
+msgstr "Przenieś konto"
 
-#: bookwyrm/templates/preferences/2fa.html:16
-msgid "Successfully updated 2FA settings"
-msgstr "Zaktualizowano ustawienia uwierzytelniania"
+#: bookwyrm/templates/preferences/alias_user.html:7
+#: bookwyrm/templates/preferences/alias_user.html:34
+msgid "Create Alias"
+msgstr "Utwórz alias"
 
-#: bookwyrm/templates/preferences/2fa.html:24
-msgid "Write down or copy and paste these codes somewhere safe."
-msgstr "Zapisz gdzieś lub skopiuj i wklej te kody do bezpiecznego miejsca."
+#: bookwyrm/templates/preferences/alias_user.html:12
+msgid "Add another account as an alias"
+msgstr "Dodaj inne konto jako alias"
 
-#: bookwyrm/templates/preferences/2fa.html:25
-msgid "You must use them in order, and they will not be displayed again."
-msgstr "Należy ich użyć w dokładnie takiej kolejności i nie zobaczysz ich już nigdy więcej."
+#: bookwyrm/templates/preferences/alias_user.html:16
+msgid "Marking another account as an alias is required if you want to move that account to this one."
+msgstr "Oznaczenie innego konta jako alias jest wymagane, jeśli chcesz przenieść tamto konto do tego konta."
 
-#: bookwyrm/templates/preferences/2fa.html:35
-msgid "Two Factor Authentication is active on your account."
-msgstr "Uwierzytelnianie dwuskładnikowe jest aktywne dla Twojego konta."
-
-#: bookwyrm/templates/preferences/2fa.html:36
-#: bookwyrm/templates/preferences/disable-2fa.html:4
-#: bookwyrm/templates/preferences/disable-2fa.html:7
-msgid "Disable 2FA"
-msgstr "Wyłącz 2FA"
-
-#: bookwyrm/templates/preferences/2fa.html:39
-msgid "You can generate backup codes to use in case you do not have access to your authentication app. If you generate new codes, any backup codes previously generated will no longer work."
-msgstr "Możesz wygenerować kody zapasowe do użycia, gdy nie będziesz mieć dostępu do aplikacji uwierzytelniającej. Po wygenerowaniu nowych kodów, wszelkie poprzednie kody zapasowe utracą ważność."
-
-#: bookwyrm/templates/preferences/2fa.html:40
-msgid "Generate backup codes"
-msgstr "Wygeneruj kody zapasowe"
-
-#: bookwyrm/templates/preferences/2fa.html:45
-msgid "Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up."
-msgstr "Zeskanuj kod QR w aplikacji uwierzytelniającej i wprowadź kod z aplikacji do pola poniżej, aby skonfigurować aplikację."
-
-#: bookwyrm/templates/preferences/2fa.html:52
-msgid "Use setup key"
+#: bookwyrm/templates/preferences/alias_user.html:19
+msgid "This is a reversable action and will not change the functionality of this account."
 msgstr ""
 
-#: bookwyrm/templates/preferences/2fa.html:58
-msgid "Account name:"
+#: bookwyrm/templates/preferences/alias_user.html:25
+msgid "Enter the username for the account you want to add as an alias e.g. <em>user@example.com </em>:"
 msgstr ""
 
-#: bookwyrm/templates/preferences/2fa.html:65
-msgid "Code:"
-msgstr "Kod:"
+#: bookwyrm/templates/preferences/alias_user.html:30
+#: bookwyrm/templates/preferences/move_user.html:35
+msgid "Confirm your password:"
+msgstr "Potwierdź swoje hasło:"
 
-#: bookwyrm/templates/preferences/2fa.html:73
-msgid "Enter the code from your app:"
-msgstr "Wprowadź kod z aplikacji:"
+#: bookwyrm/templates/preferences/alias_user.html:39
+#: bookwyrm/templates/preferences/layout.html:28
+msgid "Aliases"
+msgstr "Aliasy"
 
-#: bookwyrm/templates/preferences/2fa.html:83
-msgid "You can make your account more secure by using Two Factor Authentication (2FA). This will require you to enter a one-time code using a phone app like <em>Authy</em>, <em>Google Authenticator</em> or <em>Microsoft Authenticator</em> each time you log in."
-msgstr "Możesz zwiększyć bezpieczeństwo swojego konta aktywując uwierzytelnianie dwuskładnikowe (2FA). Polega to na wpisywaniu jednorazowego kodu z aplikacji na telefonie, takiej jak <em>Authy</em>, <em>Google Authenticator</em> lub <em>Microsoft Authenticator</em> przy każdym logowaniu."
-
-#: bookwyrm/templates/preferences/2fa.html:85
-msgid "Confirm your password to begin setting up 2FA."
-msgstr "Potwierdź hasło, aby skonfigurować 2FA."
-
-#: bookwyrm/templates/preferences/2fa.html:95
-#: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:37
-msgid "Set up 2FA"
-msgstr "Skonfiguruj 2FA"
+#: bookwyrm/templates/preferences/alias_user.html:49
+msgid "Remove alias"
+msgstr "Usuń alias"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
-#: bookwyrm/templates/preferences/layout.html:46
+#: bookwyrm/templates/preferences/layout.html:62
 msgid "Blocked Users"
 msgstr "Zablokowani użytkownicy"
 
@@ -3973,18 +4550,10 @@ msgstr "Zmień hasło"
 msgid "Successfully changed password"
 msgstr "Hasło zostało zmienione"
 
-#: bookwyrm/templates/preferences/change_password.html:22
-msgid "Current password:"
-msgstr "Obecne hasło:"
-
-#: bookwyrm/templates/preferences/change_password.html:28
-msgid "New password:"
-msgstr "Nowe hasło:"
-
 #: bookwyrm/templates/preferences/delete_user.html:4
 #: bookwyrm/templates/preferences/delete_user.html:7
-#: bookwyrm/templates/preferences/delete_user.html:40
-#: bookwyrm/templates/preferences/layout.html:28
+#: bookwyrm/templates/preferences/delete_user.html:41
+#: bookwyrm/templates/preferences/layout.html:36
 #: bookwyrm/templates/settings/users/delete_user_form.html:22
 msgid "Delete Account"
 msgstr "Usuń konto"
@@ -4009,6 +4578,16 @@ msgstr "Trwale usuń konto"
 msgid "Deleting your account cannot be undone. The username will not be available to register in the future."
 msgstr "Usunięcia konta nie można cofnąć. Nazwy użytkownika nie będzie można użyć w przyszłości."
 
+#: bookwyrm/templates/preferences/delete_user.html:36
+msgid "I understand that my account cannot be recovered:"
+msgstr ""
+
+#: bookwyrm/templates/preferences/disable-2fa.html:4
+#: bookwyrm/templates/preferences/disable-2fa.html:7
+#: bookwyrm/templates/preferences/security.html:39
+msgid "Disable 2FA"
+msgstr "Wyłącz 2FA"
+
 #: bookwyrm/templates/preferences/disable-2fa.html:12
 msgid "Disable Two Factor Authentication"
 msgstr "Wyłącz uwierzytelnianie dwuskładnikowe"
@@ -4029,7 +4608,7 @@ msgstr "Edytuj profil"
 
 #: bookwyrm/templates/preferences/edit_user.html:12
 #: bookwyrm/templates/preferences/edit_user.html:25
-#: bookwyrm/templates/settings/users/user_info.html:7
+#: bookwyrm/templates/settings/users/user_info.html:8
 #: bookwyrm/templates/user_menu.html:29
 msgid "Profile"
 msgstr "Profil"
@@ -4038,65 +4617,184 @@ msgstr "Profil"
 #: bookwyrm/templates/preferences/edit_user.html:64
 #: bookwyrm/templates/settings/site.html:11
 #: bookwyrm/templates/settings/site.html:89
-#: bookwyrm/templates/setup/config.html:91
+#: bookwyrm/templates/setup/config.html:85
 msgid "Display"
 msgstr "Wyświetlanie"
 
 #: bookwyrm/templates/preferences/edit_user.html:14
-#: bookwyrm/templates/preferences/edit_user.html:112
+#: bookwyrm/templates/preferences/edit_user.html:118
 msgid "Privacy"
 msgstr "Prywatność"
 
 #: bookwyrm/templates/preferences/edit_user.html:69
 msgid "Show reading goal prompt in feed"
-msgstr ""
+msgstr "Pokaż monit o cel czytania na kanale"
 
 #: bookwyrm/templates/preferences/edit_user.html:75
+msgid "Show ratings"
+msgstr "Pokaż oceny"
+
+#: bookwyrm/templates/preferences/edit_user.html:81
 msgid "Show suggested users"
 msgstr "Pokazuj sugerowanych użytkowników"
 
-#: bookwyrm/templates/preferences/edit_user.html:81
+#: bookwyrm/templates/preferences/edit_user.html:87
 msgid "Show this account in suggested users"
 msgstr "Pokazuj to konto wśród proponowanych użytkowników"
 
-#: bookwyrm/templates/preferences/edit_user.html:85
+#: bookwyrm/templates/preferences/edit_user.html:91
 #, python-format
 msgid "Your account will show up in the <a href=\"%(path)s\">directory</a>, and may be recommended to other BookWyrm users."
 msgstr "Twoje konto będzie pokazywanie w <a href=\"%(path)s\">katalogu</a> i może być proponowane pozostałym użytkownikom BookWyrm."
 
-#: bookwyrm/templates/preferences/edit_user.html:89
+#: bookwyrm/templates/preferences/edit_user.html:95
 msgid "Preferred Timezone: "
 msgstr "Preferowana strefa czasowa: "
 
-#: bookwyrm/templates/preferences/edit_user.html:101
+#: bookwyrm/templates/preferences/edit_user.html:107
 msgid "Theme:"
 msgstr "Motyw:"
 
-#: bookwyrm/templates/preferences/edit_user.html:117
+#: bookwyrm/templates/preferences/edit_user.html:123
 msgid "Manually approve followers"
 msgstr "Ręcznie zatwierdzaj obserwujących"
 
-#: bookwyrm/templates/preferences/edit_user.html:123
+#: bookwyrm/templates/preferences/edit_user.html:129
 msgid "Hide followers and following on profile"
 msgstr "Ukryj obserwujących i obserwowanych na profilu"
 
-#: bookwyrm/templates/preferences/edit_user.html:128
+#: bookwyrm/templates/preferences/edit_user.html:134
 msgid "Default post privacy:"
 msgstr "Domyślna prywatność wpisu:"
 
-#: bookwyrm/templates/preferences/edit_user.html:136
+#: bookwyrm/templates/preferences/edit_user.html:142
 #, python-format
 msgid "Looking for shelf privacy? You can set a separate visibility level for each of your shelves. Go to <a href=\"%(path)s\">Your Books</a>, pick a shelf from the tab bar, and click \"Edit shelf.\""
+msgstr "Szukasz ustawień prywatności półki? Możesz ustawić oddzielne poziomy widoczności dla każdej ze swoich półek. Przejdź do <a href=\"%(path)s\">Twoje książki</a>, wybierz półkę z paska kart i naciśnij na \"Edytuj półkę\"."
+
+#: bookwyrm/templates/preferences/export-user.html:6
+#: bookwyrm/templates/preferences/export-user.html:9
+#: bookwyrm/templates/preferences/layout.html:55
+msgid "Export BookWyrm Account"
+msgstr "Eksportuj konto BookWyrm"
+
+#: bookwyrm/templates/preferences/export-user.html:15
+msgid "You can create an export file here. This will allow you to migrate your data to another BookWyrm account."
+msgstr "Tutaj możesz utworzyć plik eksportu. Umożliwi to przeniesienie twoich danych na inne konto BookWyrm."
+
+#: bookwyrm/templates/preferences/export-user.html:19
+msgid "Your file will include:"
+msgstr "Twój plik będzie zawierać:"
+
+#: bookwyrm/templates/preferences/export-user.html:22
+msgid "Most user settings"
+msgstr "Większość ustawień użytkownika"
+
+#: bookwyrm/templates/preferences/export-user.html:28
+msgid "Your own lists and saved lists"
+msgstr "Twoje własne listy i zapisane listy"
+
+#: bookwyrm/templates/preferences/export-user.html:29
+msgid "Which users you follow and block"
+msgstr "Listę obserwowanych i blokowanych użytkowników"
+
+#: bookwyrm/templates/preferences/export-user.html:33
+msgid "Your file will not include:"
+msgstr "Twój plik nie będzie zawierać:"
+
+#: bookwyrm/templates/preferences/export-user.html:35
+msgid "Direct messages"
+msgstr "Wiadomości bezpośrednich"
+
+#: bookwyrm/templates/preferences/export-user.html:36
+msgid "Replies to your statuses"
+msgstr "Odpowiedzi na twoje statusy"
+
+#: bookwyrm/templates/preferences/export-user.html:38
+msgid "Favorites"
+msgstr "Ulubionych"
+
+#: bookwyrm/templates/preferences/export-user.html:42
+msgid "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported."
+msgstr "Na swoim nowym koncie BookWyrm możesz wybrać elementy do importu: nie musisz importować wszystkiego, co zostało wyeksportowane."
+
+#: bookwyrm/templates/preferences/export-user.html:45
+msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set the account you are moving to as an <strong>alias</strong> of this one, or <strong>move</strong> this account to the new account, before you import your user data."
 msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:50
+msgid "New user exports are currently disabled."
+msgstr "Nowe eksporty użytkownika są obecnie wyłączone."
+
+#: bookwyrm/templates/preferences/export-user.html:54
+#, python-format
+msgid "User exports settings can be changed from <a href=\"%(url)s\">the Imports page</a> in the Admin dashboard."
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:61
+#, python-format
+msgid "You will be able to create a new export file at %(next_available)s"
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:72
+#, python-format
+msgid "On average, recent exports have taken %(hours)s hours."
+msgstr "Ostatnie eksporty zajęły średnio %(hours)s godzin."
+
+#: bookwyrm/templates/preferences/export-user.html:76
+#, python-format
+msgid "On average, recent exports have taken %(minutes)s minutes."
+msgstr "Ostatnie eksporty zajęły średnio %(minutes)s minut."
+
+#: bookwyrm/templates/preferences/export-user.html:88
+msgid "Create user export file"
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:95
+msgid "Recent Exports"
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:97
+msgid "User export files will show 'complete' once ready. This may take a little while. Click the link to download your file."
+msgstr ""
+
+#: bookwyrm/templates/preferences/export-user.html:100
+#, python-format
+msgid "Export files will be deleted after %(expiry_hours)s hour."
+msgid_plural "Export files will be deleted after %(expiry_hours)s hours."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: bookwyrm/templates/preferences/export-user.html:110
+#: bookwyrm/templates/preferences/security.html:126
+#: bookwyrm/templates/settings/files.html:136
+#: bookwyrm/templates/settings/files.html:318
+msgid "Date"
+msgstr "Data"
+
+#: bookwyrm/templates/preferences/export-user.html:116
+msgid "Size"
+msgstr "Rozmiar"
+
+#: bookwyrm/templates/preferences/export-user.html:160
+msgid "Download your export"
+msgstr "Pobierz swój eksport"
+
+#: bookwyrm/templates/preferences/export-user.html:164
+msgid "Archive is no longer available"
+msgstr "Archiwum nie jest już dostępne"
 
 #: bookwyrm/templates/preferences/export.html:4
 #: bookwyrm/templates/preferences/export.html:7
-msgid "CSV Export"
-msgstr "Eksport CSV"
+#: bookwyrm/templates/preferences/layout.html:47
+msgid "Export Book List"
+msgstr "Eksportuj listę książek"
 
 #: bookwyrm/templates/preferences/export.html:13
-msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
-msgstr "Twój eksport będzie zawierał wszystkie książki na Twoich półkach, książki z Twoimi recenzjami oraz książki z aktywnością czytania."
+msgid "Your CSV export file will include all the books on your shelves, books you have reviewed, and books with reading activity. <br/>Use this to import into a service like Goodreads."
+msgstr ""
 
 #: bookwyrm/templates/preferences/export.html:20
 msgid "Download file"
@@ -4106,17 +4804,160 @@ msgstr "Pobierz plik"
 msgid "Account"
 msgstr "Konto"
 
-#: bookwyrm/templates/preferences/layout.html:31
+#: bookwyrm/templates/preferences/layout.html:24
+msgid "Security Settings"
+msgstr ""
+
+#: bookwyrm/templates/preferences/layout.html:32
+msgid "Move  Account"
+msgstr "Przenieś konto"
+
+#: bookwyrm/templates/preferences/layout.html:39
 msgid "Data"
 msgstr "Dane"
 
-#: bookwyrm/templates/preferences/layout.html:39
-msgid "CSV export"
-msgstr "Eksport CSV"
-
-#: bookwyrm/templates/preferences/layout.html:42
+#: bookwyrm/templates/preferences/layout.html:58
 msgid "Relationships"
 msgstr "Relacje"
+
+#: bookwyrm/templates/preferences/move_user.html:12
+msgid "Migrate account to another server"
+msgstr "Przenieś konto na inny serwer"
+
+#: bookwyrm/templates/preferences/move_user.html:16
+msgid "Moving your account will notify all your followers and direct them to follow the new account."
+msgstr ""
+
+#: bookwyrm/templates/preferences/move_user.html:19
+#, python-format
+msgid "<strong>%(user)s</strong> will be marked as moved and will not be discoverable or usable unless you undo the move."
+msgstr ""
+
+#: bookwyrm/templates/preferences/move_user.html:25
+msgid "Remember to add this user as an alias of the target account before you try to move."
+msgstr ""
+
+#: bookwyrm/templates/preferences/move_user.html:30
+msgid "Enter the username for the account you want to move to e.g. <em>user@example.com </em>:"
+msgstr ""
+
+#: bookwyrm/templates/preferences/security.html:4
+#: bookwyrm/templates/preferences/security.html:7
+msgid "Account Security"
+msgstr ""
+
+#: bookwyrm/templates/preferences/security.html:13
+msgid "Two Factor Authentication"
+msgstr "Uwierzytelnianie dwuskładnikowe"
+
+#: bookwyrm/templates/preferences/security.html:19
+msgid "Successfully updated 2FA settings"
+msgstr "Zaktualizowano ustawienia uwierzytelniania"
+
+#: bookwyrm/templates/preferences/security.html:27
+msgid "Write down or copy and paste these codes somewhere safe."
+msgstr "Zapisz gdzieś lub skopiuj i wklej te kody do bezpiecznego miejsca."
+
+#: bookwyrm/templates/preferences/security.html:28
+msgid "You must use them in order, and they will not be displayed again."
+msgstr "Należy ich użyć w dokładnie takiej kolejności i nie zobaczysz ich już nigdy więcej."
+
+#: bookwyrm/templates/preferences/security.html:38
+msgid "Two Factor Authentication is active on your account."
+msgstr "Uwierzytelnianie dwuskładnikowe jest aktywne dla Twojego konta."
+
+#: bookwyrm/templates/preferences/security.html:42
+msgid "You can generate backup codes to use in case you do not have access to your authentication app. If you generate new codes, any backup codes previously generated will no longer work."
+msgstr "Możesz wygenerować kody zapasowe do użycia, gdy nie będziesz mieć dostępu do aplikacji uwierzytelniającej. Po wygenerowaniu nowych kodów, wszelkie poprzednie kody zapasowe utracą ważność."
+
+#: bookwyrm/templates/preferences/security.html:43
+msgid "Generate backup codes"
+msgstr "Wygeneruj kody zapasowe"
+
+#: bookwyrm/templates/preferences/security.html:48
+msgid "Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up."
+msgstr "Zeskanuj kod QR w aplikacji uwierzytelniającej i wprowadź kod z aplikacji do pola poniżej, aby skonfigurować aplikację."
+
+#: bookwyrm/templates/preferences/security.html:55
+msgid "Use setup key"
+msgstr ""
+
+#: bookwyrm/templates/preferences/security.html:61
+msgid "Account name:"
+msgstr "Nazwa konta:"
+
+#: bookwyrm/templates/preferences/security.html:68
+msgid "Code:"
+msgstr "Kod:"
+
+#: bookwyrm/templates/preferences/security.html:76
+msgid "Enter the code from your app:"
+msgstr "Wprowadź kod z aplikacji:"
+
+#: bookwyrm/templates/preferences/security.html:86
+msgid "You can make your account more secure by using Two Factor Authentication (2FA). This will require you to enter a one-time code using a phone app like <em>Authy</em>, <em>Google Authenticator</em> or <em>Microsoft Authenticator</em> each time you log in."
+msgstr "Możesz zwiększyć bezpieczeństwo swojego konta aktywując uwierzytelnianie dwuskładnikowe (2FA). Polega to na wpisywaniu jednorazowego kodu z aplikacji na telefonie, takiej jak <em>Authy</em>, <em>Google Authenticator</em> lub <em>Microsoft Authenticator</em> przy każdym logowaniu."
+
+#: bookwyrm/templates/preferences/security.html:88
+msgid "Confirm your password to begin setting up 2FA."
+msgstr "Potwierdź hasło, aby skonfigurować 2FA."
+
+#: bookwyrm/templates/preferences/security.html:98
+#: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:37
+msgid "Set up 2FA"
+msgstr "Skonfiguruj 2FA"
+
+#: bookwyrm/templates/preferences/security.html:111
+msgid "Sessions"
+msgstr ""
+
+#: bookwyrm/templates/preferences/security.html:114
+msgid "Some legacy sessions may not be displayed."
+msgstr ""
+
+#: bookwyrm/templates/preferences/security.html:119
+msgid "You are logged in to the following sessions:"
+msgstr ""
+
+#: bookwyrm/templates/preferences/security.html:126
+msgid "Date first logged in"
+msgstr ""
+
+#: bookwyrm/templates/preferences/security.html:127
+msgid "IP address"
+msgstr ""
+
+#: bookwyrm/templates/preferences/security.html:127
+msgid "IP"
+msgstr ""
+
+#: bookwyrm/templates/preferences/security.html:128
+msgid "Operating System"
+msgstr ""
+
+#: bookwyrm/templates/preferences/security.html:128
+msgid "OS"
+msgstr ""
+
+#: bookwyrm/templates/preferences/security.html:129
+msgid "Web Browser"
+msgstr ""
+
+#: bookwyrm/templates/preferences/security.html:129
+msgid "Browser"
+msgstr ""
+
+#: bookwyrm/templates/preferences/security.html:143
+msgid "You"
+msgstr ""
+
+#: bookwyrm/templates/preferences/security.html:147
+msgid "Log Out"
+msgstr ""
+
+#: bookwyrm/templates/preferences/security.html:161
+msgid "Currently your logged-in sessions are unable to be displayed."
+msgstr ""
 
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
@@ -4163,6 +5004,7 @@ msgstr "Rozpoczęto czytanie"
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:18
 #: bookwyrm/templates/readthrough/readthrough_modal.html:56
+#: bookwyrm/templates/settings/files.html:139
 msgid "Progress"
 msgstr "Postęp"
 
@@ -4295,8 +5137,8 @@ msgstr "Zapytanie"
 msgid "Search type"
 msgstr "Typ wyszukiwania"
 
-#: bookwyrm/templates/search/layout.html:24
-#: bookwyrm/templates/search/layout.html:47
+#: bookwyrm/templates/search/layout.html:25
+#: bookwyrm/templates/search/layout.html:51
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:27
 #: bookwyrm/templates/settings/federation/instance_list.html:52
 #: bookwyrm/templates/settings/layout.html:36
@@ -4306,12 +5148,12 @@ msgstr "Typ wyszukiwania"
 msgid "Users"
 msgstr "Użytkownicy"
 
-#: bookwyrm/templates/search/layout.html:59
+#: bookwyrm/templates/search/layout.html:63
 #, python-format
 msgid "No results found for \"%(query)s\""
 msgstr "Nie znaleziono wyników dla \"%(query)s\""
 
-#: bookwyrm/templates/search/layout.html:61
+#: bookwyrm/templates/search/layout.html:65
 #, python-format
 msgid "%(result_count)s result found"
 msgid_plural "%(result_count)s results found"
@@ -4335,7 +5177,7 @@ msgstr "Edytuj"
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:99
+#: bookwyrm/templates/settings/layout.html:126
 msgid "Announcements"
 msgstr "Ogłoszenia"
 
@@ -4353,13 +5195,13 @@ msgstr "Nie"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:57
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:79
-#: bookwyrm/templates/settings/dashboard/dashboard.html:80
+#: bookwyrm/templates/settings/dashboard/dashboard.html:85
 msgid "Start date:"
 msgstr "Data rozpoczęcia:"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:62
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:89
-#: bookwyrm/templates/settings/dashboard/dashboard.html:86
+#: bookwyrm/templates/settings/dashboard/dashboard.html:91
 msgid "End date:"
 msgstr "Data zakończenia:"
 
@@ -4428,7 +5270,6 @@ msgstr "Kolor:"
 
 #: bookwyrm/templates/settings/automod/rules.html:7
 #: bookwyrm/templates/settings/automod/rules.html:11
-#: bookwyrm/templates/settings/layout.html:61
 msgid "Auto-moderation rules"
 msgstr "Reguły automatycznej moderacji"
 
@@ -4441,35 +5282,52 @@ msgid "Users or statuses that have already been reported (regardless of whether 
 msgstr "Użytkownicy lub statusy, które zostały już zgłoszone (niezależenie od tego, czy zgłoszenie zostało rozwiązane) nie zostaną oznaczone."
 
 #: bookwyrm/templates/settings/automod/rules.html:26
+#: bookwyrm/templates/settings/files.html:28
+#: bookwyrm/templates/settings/files.html:221
 msgid "Schedule:"
 msgstr "Harmonogram:"
 
 #: bookwyrm/templates/settings/automod/rules.html:33
+#: bookwyrm/templates/settings/files.html:35
+#: bookwyrm/templates/settings/files.html:228
 msgid "Last run:"
 msgstr "Ostatnie uruchomienie:"
 
 #: bookwyrm/templates/settings/automod/rules.html:40
+#: bookwyrm/templates/settings/files.html:42
+#: bookwyrm/templates/settings/files.html:235
 msgid "Total run count:"
 msgstr "Uruchomień w sumie:"
 
 #: bookwyrm/templates/settings/automod/rules.html:47
+#: bookwyrm/templates/settings/files.html:49
+#: bookwyrm/templates/settings/files.html:242
 msgid "Enabled:"
 msgstr "Włączone:"
 
 #: bookwyrm/templates/settings/automod/rules.html:59
+#: bookwyrm/templates/settings/files.html:61
+#: bookwyrm/templates/settings/files.html:254
 msgid "Delete schedule"
 msgstr "Usuń harmonogram"
 
 #: bookwyrm/templates/settings/automod/rules.html:63
+#: bookwyrm/templates/settings/files.html:65
+#: bookwyrm/templates/settings/files.html:258
+#: bookwyrm/templates/settings/files.html:305
 msgid "Run now"
 msgstr "Uruchom teraz"
 
 #: bookwyrm/templates/settings/automod/rules.html:64
+#: bookwyrm/templates/settings/files.html:66
+#: bookwyrm/templates/settings/files.html:259
 msgid "Last run date will not be updated"
 msgstr "Data ostatniego uruchomienia nie zostanie zaktualizowana"
 
 #: bookwyrm/templates/settings/automod/rules.html:69
 #: bookwyrm/templates/settings/automod/rules.html:92
+#: bookwyrm/templates/settings/files.html:96
+#: bookwyrm/templates/settings/files.html:290
 msgid "Schedule scan"
 msgstr "Zaplanuj skanowanie"
 
@@ -4514,6 +5372,7 @@ msgstr "Usuń regułę"
 
 #: bookwyrm/templates/settings/celery.html:6
 #: bookwyrm/templates/settings/celery.html:8
+#: bookwyrm/templates/settings/layout.html:101
 msgid "Celery Status"
 msgstr "Status Celery"
 
@@ -4523,77 +5382,177 @@ msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:22
 msgid "Queues"
-msgstr ""
+msgstr "Kolejki"
 
 #: bookwyrm/templates/settings/celery.html:26
+msgid "Streams"
+msgstr "Transmisje"
+
+#: bookwyrm/templates/settings/celery.html:32
+msgid "Broadcast"
+msgstr "Transmituj"
+
+#: bookwyrm/templates/settings/celery.html:38
+msgid "Inbox"
+msgstr "Odebrane"
+
+#: bookwyrm/templates/settings/celery.html:51
+msgid "Import triggered"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:57
+#: bookwyrm/templates/settings/layout.html:113
+msgid "Connectors"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:64
+#: bookwyrm/templates/settings/site.html:91
+msgid "Images"
+msgstr "Obrazy"
+
+#: bookwyrm/templates/settings/celery.html:70
+msgid "Suggested Users"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:83
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:43
+#: bookwyrm/templates/settings/users/email_filter.html:5
+msgid "Email"
+msgstr "E-mail"
+
+#: bookwyrm/templates/settings/celery.html:89
+msgid "Misc"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:96
 msgid "Low priority"
 msgstr "Niski priorytet"
 
-#: bookwyrm/templates/settings/celery.html:32
+#: bookwyrm/templates/settings/celery.html:102
 msgid "Medium priority"
 msgstr "Średni priorytet"
 
-#: bookwyrm/templates/settings/celery.html:38
+#: bookwyrm/templates/settings/celery.html:108
 msgid "High priority"
 msgstr "Wysoki priorytet"
 
-#: bookwyrm/templates/settings/celery.html:50
-msgid "Broadcasts"
-msgstr ""
-
-#: bookwyrm/templates/settings/celery.html:60
+#: bookwyrm/templates/settings/celery.html:118
 msgid "Could not connect to Redis broker"
 msgstr ""
 
-#: bookwyrm/templates/settings/celery.html:68
+#: bookwyrm/templates/settings/celery.html:126
 msgid "Active Tasks"
 msgstr "Aktywne zadania"
 
-#: bookwyrm/templates/settings/celery.html:73
-#: bookwyrm/templates/settings/imports/imports.html:113
+#: bookwyrm/templates/settings/celery.html:131
+#: bookwyrm/templates/settings/imports/imports.html:195
+#: bookwyrm/templates/settings/imports/imports.html:285
+#: bookwyrm/templates/settings/schedules.html:95
 msgid "ID"
 msgstr "ID"
 
-#: bookwyrm/templates/settings/celery.html:74
+#: bookwyrm/templates/settings/celery.html:132
 msgid "Task name"
 msgstr "Nazwa zadania"
 
-#: bookwyrm/templates/settings/celery.html:75
+#: bookwyrm/templates/settings/celery.html:133
 msgid "Run time"
 msgstr "Czas wykonywania"
 
-#: bookwyrm/templates/settings/celery.html:76
+#: bookwyrm/templates/settings/celery.html:134
+#: bookwyrm/templates/settings/connectors/connector.html:22
+#: bookwyrm/templates/settings/connectors/update.html:21
 msgid "Priority"
 msgstr "Priorytet"
 
-#: bookwyrm/templates/settings/celery.html:81
+#: bookwyrm/templates/settings/celery.html:139
 msgid "No active tasks"
 msgstr "Brak aktywnych zadań"
 
-#: bookwyrm/templates/settings/celery.html:99
+#: bookwyrm/templates/settings/celery.html:157
 msgid "Workers"
 msgstr ""
 
-#: bookwyrm/templates/settings/celery.html:104
+#: bookwyrm/templates/settings/celery.html:162
 msgid "Uptime:"
 msgstr ""
 
-#: bookwyrm/templates/settings/celery.html:114
+#: bookwyrm/templates/settings/celery.html:172
 msgid "Could not connect to Celery"
 msgstr "Błąd połączenia z Celery"
 
-#: bookwyrm/templates/settings/celery.html:120
-#: bookwyrm/templates/settings/celery.html:143
+#: bookwyrm/templates/settings/celery.html:178
+#: bookwyrm/templates/settings/celery.html:201
 msgid "Clear Queues"
 msgstr ""
 
-#: bookwyrm/templates/settings/celery.html:124
+#: bookwyrm/templates/settings/celery.html:182
 msgid "Clearing queues can cause serious problems including data loss! Only play with this if you really know what you're doing. You must shut down the Celery worker before you do this."
 msgstr ""
 
-#: bookwyrm/templates/settings/celery.html:150
+#: bookwyrm/templates/settings/celery.html:208
 msgid "Errors"
 msgstr "Błędy"
+
+#: bookwyrm/templates/settings/connectors/available.html:15
+msgid "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof."
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/available.html:28
+msgid "Create new connector"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connector.html:35
+#: bookwyrm/templates/settings/connectors/update.html:33
+#: bookwyrm/templates/settings/users/user_info.html:87
+msgid "Deactivation reason:"
+msgstr "Powód dezaktywacji:"
+
+#: bookwyrm/templates/settings/connectors/connector.html:50
+#: bookwyrm/templates/settings/connectors/update.html:47
+msgid "Deactivate"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connector.html:61
+#: bookwyrm/templates/settings/connectors/update.html:58
+msgid "Activate"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connectors.html:4
+#: bookwyrm/templates/settings/connectors/connectors.html:6
+msgid "Connector Settings"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connectors.html:11
+msgid "Connectors are sources of data about books and authors."
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connectors.html:12
+msgid "The priority determines the order in which search results appear. The highest priority is <code>1</code>. The default priority is <code>2</code>."
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connectors.html:14
+msgid "Connector settings only determine whether a connector will be used to deliver search results. To manage more interactions with other federated servers, including domain blocks, see"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connectors.html:14
+#: bookwyrm/templates/settings/federation/edit_instance.html:12
+#: bookwyrm/templates/settings/federation/instance.html:24
+#: bookwyrm/templates/settings/federation/instance_blocklist.html:12
+#: bookwyrm/templates/settings/federation/instance_list.html:3
+#: bookwyrm/templates/settings/federation/instance_list.html:5
+#: bookwyrm/templates/settings/layout.html:62
+msgid "Federated Instances"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/update.html:66
+msgid "should be updated. Check recent release notes for more information."
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/update.html:76
+#: bookwyrm/templates/snippets/create_status/post_options_block.html:19
+msgid "Update"
+msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
@@ -4602,7 +5561,7 @@ msgid "Dashboard"
 msgstr "Panel"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
-#: bookwyrm/templates/settings/dashboard/dashboard.html:109
+#: bookwyrm/templates/settings/dashboard/dashboard.html:114
 msgid "Total users"
 msgstr "Użytkowników w sumie"
 
@@ -4611,40 +5570,36 @@ msgstr "Użytkowników w sumie"
 msgid "Active this month"
 msgstr "Aktywnych w tym miesiącu"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:27
-msgid "Statuses"
-msgstr "Statusów"
-
 #: bookwyrm/templates/settings/dashboard/dashboard.html:33
 #: bookwyrm/templates/settings/dashboard/works_chart.html:11
 msgid "Works"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:74
+#: bookwyrm/templates/settings/dashboard/dashboard.html:79
 msgid "Instance Activity"
 msgstr "Aktywność instancji"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:92
+#: bookwyrm/templates/settings/dashboard/dashboard.html:97
 msgid "Interval:"
 msgstr "Częstotliwość:"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:96
+#: bookwyrm/templates/settings/dashboard/dashboard.html:101
 msgid "Days"
 msgstr "Dni"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:97
+#: bookwyrm/templates/settings/dashboard/dashboard.html:102
 msgid "Weeks"
 msgstr "Tygodnie"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:115
+#: bookwyrm/templates/settings/dashboard/dashboard.html:120
 msgid "User signup activity"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:121
+#: bookwyrm/templates/settings/dashboard/dashboard.html:126
 msgid "Status activity"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:127
+#: bookwyrm/templates/settings/dashboard/dashboard.html:132
 msgid "Works created"
 msgstr ""
 
@@ -4656,9 +5611,13 @@ msgstr ""
 msgid "Statuses posted"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/user_chart.html:11
-msgid "Total"
-msgstr ""
+#: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:12
+msgid "Would you like to automatically check for new BookWyrm releases? (recommended)"
+msgstr "Czy chcesz włączyć automatyczne sprawdzanie nowych wydań BookWyrm? (zalecane)"
+
+#: bookwyrm/templates/settings/dashboard/warnings/check_for_updates.html:20
+msgid "Schedule checks"
+msgstr "Zaplanuj sprawdzenie"
 
 #: bookwyrm/templates/settings/dashboard/warnings/domain_review.html:9
 #, python-format
@@ -4720,7 +5679,7 @@ msgstr "Domena:"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:7
-#: bookwyrm/templates/settings/layout.html:65
+#: bookwyrm/templates/settings/layout.html:80
 msgid "Email Blocklist"
 msgstr "Lista blokowania e-maili"
 
@@ -4748,20 +5707,20 @@ msgstr "Brak obecnie zablokowanych domen e-mail"
 
 #: bookwyrm/templates/settings/email_config.html:6
 #: bookwyrm/templates/settings/email_config.html:8
-#: bookwyrm/templates/settings/layout.html:90
+#: bookwyrm/templates/settings/layout.html:109
 msgid "Email Configuration"
-msgstr ""
+msgstr "Konfiguracja e-mail"
 
 #: bookwyrm/templates/settings/email_config.html:16
 msgid "Error sending test email:"
-msgstr ""
+msgstr "Błąd wysyłania testowego e-maila:"
 
 #: bookwyrm/templates/settings/email_config.html:24
 msgid "Successfully sent test email."
-msgstr ""
+msgstr "Wysłano testowego e-maila."
 
 #: bookwyrm/templates/settings/email_config.html:32
-#: bookwyrm/templates/setup/config.html:102
+#: bookwyrm/templates/setup/config.html:96
 msgid "Email sender:"
 msgstr "Nadawca e-maila:"
 
@@ -4792,11 +5751,11 @@ msgstr ""
 #: bookwyrm/templates/settings/email_config.html:83
 #, python-format
 msgid "Send test email to %(email)s"
-msgstr ""
+msgstr "Wyślij testowego e-maila do %(email)s"
 
 #: bookwyrm/templates/settings/email_config.html:90
 msgid "Send test email"
-msgstr ""
+msgstr "Wyślij testowego e-maila"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:3
 #: bookwyrm/templates/settings/federation/edit_instance.html:6
@@ -4808,15 +5767,6 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance_list.html:10
 msgid "Add instance"
 msgstr "Dodaj instancję"
-
-#: bookwyrm/templates/settings/federation/edit_instance.html:12
-#: bookwyrm/templates/settings/federation/instance.html:24
-#: bookwyrm/templates/settings/federation/instance_blocklist.html:12
-#: bookwyrm/templates/settings/federation/instance_list.html:3
-#: bookwyrm/templates/settings/federation/instance_list.html:5
-#: bookwyrm/templates/settings/layout.html:47
-msgid "Federated Instances"
-msgstr ""
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:28
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:28
@@ -4854,7 +5804,7 @@ msgid "Details"
 msgstr "Szczegóły"
 
 #: bookwyrm/templates/settings/federation/instance.html:53
-#: bookwyrm/templates/user/layout.html:67
+#: bookwyrm/templates/user/layout.html:79
 msgid "Activity"
 msgstr "Aktywność"
 
@@ -4892,12 +5842,6 @@ msgstr "Notatki"
 #: bookwyrm/templates/settings/federation/instance.html:97
 msgid "<em>No notes</em>"
 msgstr "<em>Brak notatek</em>"
-
-#: bookwyrm/templates/settings/federation/instance.html:116
-#: bookwyrm/templates/settings/link_domains/link_domains.html:87
-#: bookwyrm/templates/snippets/block_button.html:5
-msgid "Block"
-msgstr "Zablokuj"
 
 #: bookwyrm/templates/settings/federation/instance.html:117
 msgid "All users from this instance will be deactivated."
@@ -4951,9 +5895,124 @@ msgstr "Oprogramowanie"
 msgid "No instances found"
 msgstr "Brak instancji"
 
+#: bookwyrm/templates/settings/federation/settings.html:3
+#: bookwyrm/templates/settings/layout.html:58
+msgid "Federation Settings"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:5
+msgid "Federated Settings"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:12
+#: bookwyrm/templates/settings/registration.html:13
+#: bookwyrm/templates/settings/registration_limited.html:13
+#: bookwyrm/templates/settings/site.html:21
+msgid "Settings saved"
+msgstr "Ustawienia zapisane"
+
+#: bookwyrm/templates/settings/federation/settings.html:21
+#: bookwyrm/templates/settings/registration.html:22
+#: bookwyrm/templates/settings/registration_limited.html:22
+#: bookwyrm/templates/settings/site.html:30
+msgid "Unable to save settings"
+msgstr "Błąd zapisywania ustawień"
+
+#: bookwyrm/templates/settings/federation/settings.html:37
+msgid "Disable federation"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:40
+msgid "Prevents your instance from interacting with other federated services. Existing data from other instances will still be present."
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:7
+#: bookwyrm/templates/settings/files.html:11
+msgid "Files maintenance"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:17
+msgid "Schedule file deletion"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:21
+msgid "This job deletes uploaded user export and import files that have reached the expiry age."
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:102
+msgid "Export file expiration"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:109
+msgid "Maximum age of export files, in hours"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:122
+msgid "Files older than this will be deleted."
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:125
+msgid "Set expiry hours"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:138
+msgid "Expired files"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:186
+#: bookwyrm/templates/settings/imports/imports.html:184
+#: bookwyrm/templates/settings/imports/imports.html:274
+msgid "Completed"
+msgstr "Zakończone"
+
+#: bookwyrm/templates/settings/files.html:206
+msgid "Find book covers from connectors"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:209
+msgid "These jobs find cover images where they are missing or have incorrect filepaths."
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:212
+msgid "Find missing covers"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:215
+msgid "Schedule a regular scan to find cover images for editions without them. This can be resource intensive so the recommended schedule is no less than every seven days."
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:296
+msgid "Fix broken book cover filepaths"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:299
+msgid "If you have lost your cover image files (e.g. due to server migration failure) the scheduled job above will not replace them. Run this job instead to attempt to find covers for books where the current cover filepath does not resolve to a file."
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:306
+msgid "This job cannot be scheduled to run regularly"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:320
+msgid "Editions checked"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:321
+msgid "Covers fixed"
+msgstr ""
+
+#: bookwyrm/templates/settings/files.html:371
+msgid "Successfully updated expiry time"
+msgstr ""
+
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:4
+#: bookwyrm/templates/settings/imports/complete_user_import_modal.html:4
 msgid "Stop import?"
 msgstr "Wstrzymać import?"
+
+#: bookwyrm/templates/settings/imports/complete_user_import_modal.html:7
+msgid "This action will stop the user import before it is complete and cannot be un-done"
+msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:19
 msgid "Disable starting new imports"
@@ -4967,67 +6026,123 @@ msgstr ""
 msgid "While imports are disabled, users will not be allowed to start new imports, but existing imports will not be affected."
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:36
+#: bookwyrm/templates/settings/imports/imports.html:32
+msgid "This setting prevents both book imports and user imports."
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:37
 msgid "Disable imports"
-msgstr ""
+msgstr "Wyłącz importowanie"
 
-#: bookwyrm/templates/settings/imports/imports.html:50
+#: bookwyrm/templates/settings/imports/imports.html:51
 msgid "Users are currently unable to start new imports"
-msgstr ""
+msgstr "Użytkownicy nie mogą obecnie rozpoczynać nowych importów"
 
-#: bookwyrm/templates/settings/imports/imports.html:55
+#: bookwyrm/templates/settings/imports/imports.html:56
 msgid "Enable imports"
-msgstr ""
+msgstr "Włącz importowanie"
 
-#: bookwyrm/templates/settings/imports/imports.html:63
+#: bookwyrm/templates/settings/imports/imports.html:64
 msgid "Limit the amount of imports"
-msgstr ""
-
-#: bookwyrm/templates/settings/imports/imports.html:74
-msgid "Some users might try to import a large number of books, which you want to limit."
-msgstr ""
+msgstr "Ograniczenie liczby importów"
 
 #: bookwyrm/templates/settings/imports/imports.html:75
+msgid "Some users might try to import a large number of books, which you want to limit."
+msgstr "Część użytkowników może podjąć próbę importu dużej liczby książek, co możesz ograniczyć."
+
+#: bookwyrm/templates/settings/imports/imports.html:76
+#: bookwyrm/templates/settings/imports/imports.html:135
 msgid "Set the value to 0 to not enforce any limit."
-msgstr ""
+msgstr "Ustaw wartość na 0, aby nie wymuszać żadnego ograniczenia."
 
-#: bookwyrm/templates/settings/imports/imports.html:78
+#: bookwyrm/templates/settings/imports/imports.html:79
 msgid "Set import limit to"
-msgstr ""
+msgstr "Ustaw limit importów na"
 
-#: bookwyrm/templates/settings/imports/imports.html:80
+#: bookwyrm/templates/settings/imports/imports.html:81
 msgid "books every"
-msgstr ""
+msgstr "książek co"
 
-#: bookwyrm/templates/settings/imports/imports.html:82
+#: bookwyrm/templates/settings/imports/imports.html:83
 msgid "days."
-msgstr ""
+msgstr "dni."
 
-#: bookwyrm/templates/settings/imports/imports.html:86
+#: bookwyrm/templates/settings/imports/imports.html:87
 msgid "Set limit"
+msgstr "Ustaw ograniczenie"
+
+#: bookwyrm/templates/settings/imports/imports.html:98
+msgid "Disable starting new user exports"
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:102
-msgid "Completed"
-msgstr "Zakończone"
+#: bookwyrm/templates/settings/imports/imports.html:109
+msgid "This is only intended to be used when things have gone very wrong with exports and you need to pause the feature while addressing issues."
+msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:116
+#: bookwyrm/templates/settings/imports/imports.html:110
+msgid "While exports are disabled, users will not be allowed to start new user exports, but existing exports will not be affected."
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:115
+msgid "Disable user exports"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:123
+msgid "Limit how often users can import and export"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:134
+msgid "Some users might try to run user imports or exports very frequently, which you want to limit."
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:138
+msgid "Limit how often users can import and export user data"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:140
+msgid "hours"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:144
+msgid "Change limit"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:159
+msgid "Users are currently unable to start new user exports. This is the default setting."
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:161
+msgid "It is not currently possible to provide user exports when using Azure storage."
+msgstr "Obecnie nie jest możliwe dostarczenie eksportów użytkownika z użyciem magazynu Azure."
+
+#: bookwyrm/templates/settings/imports/imports.html:167
+msgid "Enable user exports"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:174
+msgid "Book Imports"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:198
+#: bookwyrm/templates/settings/imports/imports.html:288
 msgid "User"
 msgstr "Użytkownik"
 
-#: bookwyrm/templates/settings/imports/imports.html:125
+#: bookwyrm/templates/settings/imports/imports.html:207
+#: bookwyrm/templates/settings/imports/imports.html:297
 msgid "Date Updated"
 msgstr "Data przesłania"
 
-#: bookwyrm/templates/settings/imports/imports.html:132
+#: bookwyrm/templates/settings/imports/imports.html:214
 msgid "Pending items"
 msgstr "Oczekujące"
 
-#: bookwyrm/templates/settings/imports/imports.html:135
+#: bookwyrm/templates/settings/imports/imports.html:217
 msgid "Successful items"
 msgstr "Zakończone elementy"
 
-#: bookwyrm/templates/settings/imports/imports.html:170
+#: bookwyrm/templates/settings/imports/imports.html:252
+#: bookwyrm/templates/settings/imports/imports.html:344
 msgid "No matching imports found."
 msgstr "Nie znaleziono pasujących importów."
 
@@ -5042,7 +6157,7 @@ msgstr ""
 #: bookwyrm/templates/settings/invites/manage_invites.html:3
 #: bookwyrm/templates/settings/invites/manage_invites.html:15
 #: bookwyrm/templates/settings/layout.html:42
-#: bookwyrm/templates/user_menu.html:60
+#: bookwyrm/templates/user_menu.html:55
 msgid "Invites"
 msgstr "Zaproszenia"
 
@@ -5057,11 +6172,6 @@ msgstr "Data żądania"
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:40
 msgid "Date accepted"
 msgstr "Data akceptacji"
-
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:43
-#: bookwyrm/templates/settings/users/email_filter.html:5
-msgid "Email"
-msgstr "E-mail"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:45
 msgid "Answer"
@@ -5165,7 +6275,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:7
-#: bookwyrm/templates/settings/layout.html:69
+#: bookwyrm/templates/settings/layout.html:84
 msgid "IP Address Blocklist"
 msgstr "Lista blokowania adresów IP"
 
@@ -5189,42 +6299,60 @@ msgstr "Administracja"
 msgid "Manage Users"
 msgstr "Zarządzaj użytkownikami"
 
+#: bookwyrm/templates/settings/layout.html:47
+#: bookwyrm/templates/settings/users/force_password_reset.html:7
+#: bookwyrm/templates/settings/users/force_password_reset.html:11
+msgid "Force Password Reset"
+msgstr ""
+
 #: bookwyrm/templates/settings/layout.html:53
+msgid "Federation"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:68
 msgid "Moderation"
 msgstr "Moderacja"
 
-#: bookwyrm/templates/settings/layout.html:57
+#: bookwyrm/templates/settings/layout.html:72
 #: bookwyrm/templates/settings/reports/reports.html:8
 #: bookwyrm/templates/settings/reports/reports.html:17
 msgid "Reports"
 msgstr "Zgłoszenia"
 
-#: bookwyrm/templates/settings/layout.html:73
+#: bookwyrm/templates/settings/layout.html:76
+msgid "Auto-Moderation Rules"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:88
 #: bookwyrm/templates/settings/link_domains/link_domains.html:5
 #: bookwyrm/templates/settings/link_domains/link_domains.html:7
 msgid "Link Domains"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:78
+#: bookwyrm/templates/settings/layout.html:93
 msgid "System"
 msgstr "System"
 
-#: bookwyrm/templates/settings/layout.html:86
-msgid "Celery status"
-msgstr "Status Celery"
+#: bookwyrm/templates/settings/layout.html:105
+msgid "Scheduled Tasks"
+msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:95
+#: bookwyrm/templates/settings/layout.html:117
+msgid "Files Maintenance"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:122
 msgid "Instance Settings"
 msgstr "Ustawienia instancji"
 
-#: bookwyrm/templates/settings/layout.html:103
+#: bookwyrm/templates/settings/layout.html:130
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr "Ustawienia witryny"
 
-#: bookwyrm/templates/settings/layout.html:109
-#: bookwyrm/templates/settings/layout.html:112
+#: bookwyrm/templates/settings/layout.html:136
+#: bookwyrm/templates/settings/layout.html:139
 #: bookwyrm/templates/settings/registration.html:4
 #: bookwyrm/templates/settings/registration.html:6
 #: bookwyrm/templates/settings/registration_limited.html:4
@@ -5232,7 +6360,7 @@ msgstr "Ustawienia witryny"
 msgid "Registration"
 msgstr "Rejestracja"
 
-#: bookwyrm/templates/settings/layout.html:118
+#: bookwyrm/templates/settings/layout.html:145
 #: bookwyrm/templates/settings/site.html:107
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
@@ -5250,11 +6378,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/link_domains/link_domains.html:45
 msgid "Set display name"
-msgstr ""
+msgstr "Ustaw wyświetlaną nazwę"
 
 #: bookwyrm/templates/settings/link_domains/link_domains.html:53
 msgid "View links"
-msgstr ""
+msgstr "Wyświetl odnośniki"
 
 #: bookwyrm/templates/settings/link_domains/link_domains.html:96
 msgid "No domains currently approved"
@@ -5271,18 +6399,6 @@ msgstr "Brak obecnie zablokowanych domen"
 #: bookwyrm/templates/settings/link_domains/link_table.html:43
 msgid "No links available for this domain."
 msgstr "Brak dostępnych odnośników dla tej domeny."
-
-#: bookwyrm/templates/settings/registration.html:13
-#: bookwyrm/templates/settings/registration_limited.html:13
-#: bookwyrm/templates/settings/site.html:21
-msgid "Settings saved"
-msgstr "Ustawienia zapisane"
-
-#: bookwyrm/templates/settings/registration.html:22
-#: bookwyrm/templates/settings/registration_limited.html:22
-#: bookwyrm/templates/settings/site.html:30
-msgid "Unable to save settings"
-msgstr "Błąd zapisywania ustawień"
 
 #: bookwyrm/templates/settings/registration.html:38
 msgid "Allow registration"
@@ -5328,37 +6444,47 @@ msgstr ""
 msgid "Registration is enabled on this instance"
 msgstr ""
 
-#: bookwyrm/templates/settings/reports/report.html:12
+#: bookwyrm/templates/settings/reports/report.html:13
 msgid "Back to reports"
 msgstr ""
 
-#: bookwyrm/templates/settings/reports/report.html:24
+#: bookwyrm/templates/settings/reports/report.html:25
 msgid "Message reporter"
 msgstr ""
 
-#: bookwyrm/templates/settings/reports/report.html:28
+#: bookwyrm/templates/settings/reports/report.html:29
 msgid "Update on your report:"
 msgstr "Aktualizacja Twojego zgłoszenia:"
 
-#: bookwyrm/templates/settings/reports/report.html:36
+#: bookwyrm/templates/settings/reports/report.html:37
 msgid "Reported status"
 msgstr "Zgłoszony status"
 
-#: bookwyrm/templates/settings/reports/report.html:38
+#: bookwyrm/templates/settings/reports/report.html:39
 msgid "Status has been deleted"
 msgstr "Status został usunięty"
 
-#: bookwyrm/templates/settings/reports/report.html:47
+#: bookwyrm/templates/settings/reports/report.html:48
 msgid "Reported links"
 msgstr "Zgłoszone odnośniki"
 
-#: bookwyrm/templates/settings/reports/report.html:65
-msgid "Moderator Comments"
-msgstr "Komentarze moderatora"
+#: bookwyrm/templates/settings/reports/report.html:66
+msgid "Moderation Activity"
+msgstr ""
+
+#: bookwyrm/templates/settings/reports/report.html:73
+#, python-format
+msgid "<a href=\"%(user_link)s\">%(user)s</a> opened this report"
+msgstr ""
 
 #: bookwyrm/templates/settings/reports/report.html:86
-#: bookwyrm/templates/snippets/create_status.html:26
-msgid "Comment"
+#, python-format
+msgid "<a href=\"%(user_link)s\">%(user)s</a> commented on this report:"
+msgstr ""
+
+#: bookwyrm/templates/settings/reports/report.html:90
+#, python-format
+msgid "<a href=\"%(user_link)s\">%(user)s</a> took an action on this report:"
 msgstr ""
 
 #: bookwyrm/templates/settings/reports/report_header.html:6
@@ -5381,7 +6507,11 @@ msgstr "Zgłoszenie #%(report_id)s: Odnośnik domeny"
 msgid "Report #%(report_id)s: User @%(username)s"
 msgstr "Zgłoszenie #%(report_id)s: Użytkownik @%(username)s"
 
-#: bookwyrm/templates/settings/reports/report_links_table.html:17
+#: bookwyrm/templates/settings/reports/report_links_table.html:19
+msgid "Approve domain"
+msgstr ""
+
+#: bookwyrm/templates/settings/reports/report_links_table.html:26
 msgid "Block domain"
 msgstr ""
 
@@ -5423,6 +6553,61 @@ msgstr "Rozwiązane"
 #: bookwyrm/templates/settings/reports/reports.html:37
 msgid "No reports found."
 msgstr "Nie znaleziono zgłoszeń."
+
+#: bookwyrm/templates/settings/schedules.html:7
+#: bookwyrm/templates/settings/schedules.html:11
+msgid "Scheduled tasks"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:17
+#: bookwyrm/templates/settings/schedules.html:101
+msgid "Tasks"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:22
+msgid "Name"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:25
+msgid "Celery task"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:28
+msgid "Date changed"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:31
+msgid "Last run at"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:34
+#: bookwyrm/templates/settings/schedules.html:98
+msgid "Schedule"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:37
+msgid "Schedule ID"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:40
+msgid "Enabled"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:73
+msgid "Un-schedule"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:81
+msgid "No scheduled tasks"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:90
+msgid "Schedules"
+msgstr ""
+
+#: bookwyrm/templates/settings/schedules.html:119
+msgid "No schedules found"
+msgstr ""
 
 #: bookwyrm/templates/settings/site.html:10
 #: bookwyrm/templates/settings/site.html:43
@@ -5470,10 +6655,6 @@ msgstr ""
 msgid "Include impressum:"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:91
-msgid "Images"
-msgstr "Obrazy"
-
 #: bookwyrm/templates/settings/site.html:94
 msgid "Logo:"
 msgstr "Logo:"
@@ -5511,68 +6692,116 @@ msgid "Set instance default theme"
 msgstr "Ustaw domyślny motyw instancji"
 
 #: bookwyrm/templates/settings/themes.html:19
+msgid "One of your themes appears to be broken. Selecting this theme will make the application unusable."
+msgstr ""
+
+#: bookwyrm/templates/settings/themes.html:28
 msgid "Successfully added theme"
 msgstr "Motyw został dodany"
 
-#: bookwyrm/templates/settings/themes.html:26
+#: bookwyrm/templates/settings/themes.html:35
 msgid "How to add a theme"
 msgstr "Jak dodać motyw"
 
-#: bookwyrm/templates/settings/themes.html:29
+#: bookwyrm/templates/settings/themes.html:38
 msgid "Copy the theme file into the <code>bookwyrm/static/css/themes</code> directory on your server from the command line."
 msgstr "Skopiuj przez wiersz polecenia plik motywu do katalogu <code>bookwyrm/static/css/themes</code> na swoim serwerze."
 
-#: bookwyrm/templates/settings/themes.html:32
+#: bookwyrm/templates/settings/themes.html:41
 msgid "Run <code>./bw-dev compile_themes</code> and <code>./bw-dev collectstatic</code>."
 msgstr ""
 
-#: bookwyrm/templates/settings/themes.html:35
+#: bookwyrm/templates/settings/themes.html:44
 msgid "Add the file name using the form below to make it available in the application interface."
 msgstr "Dodaj nazwę plik używając formularza poniżej, aby udostępnić plik w interfejsie aplikacji."
 
-#: bookwyrm/templates/settings/themes.html:42
-#: bookwyrm/templates/settings/themes.html:82
+#: bookwyrm/templates/settings/themes.html:51
+#: bookwyrm/templates/settings/themes.html:91
 msgid "Add theme"
 msgstr "Dodaj motyw"
 
-#: bookwyrm/templates/settings/themes.html:48
+#: bookwyrm/templates/settings/themes.html:57
 msgid "Unable to save theme"
 msgstr "Nie można zapisać motywu"
 
-#: bookwyrm/templates/settings/themes.html:63
-#: bookwyrm/templates/settings/themes.html:93
+#: bookwyrm/templates/settings/themes.html:72
+#: bookwyrm/templates/settings/themes.html:102
 msgid "Theme name"
 msgstr "Nazwa motywu"
 
-#: bookwyrm/templates/settings/themes.html:73
+#: bookwyrm/templates/settings/themes.html:82
 msgid "Theme filename"
 msgstr "Nazwa pliku motywu"
 
-#: bookwyrm/templates/settings/themes.html:88
+#: bookwyrm/templates/settings/themes.html:97
 msgid "Available Themes"
 msgstr "Dostępne motywy"
 
-#: bookwyrm/templates/settings/themes.html:96
+#: bookwyrm/templates/settings/themes.html:105
 msgid "File"
 msgstr "Plik"
 
-#: bookwyrm/templates/settings/themes.html:111
+#: bookwyrm/templates/settings/themes.html:123
 msgid "Remove theme"
 msgstr "Usuń motyw"
 
+#: bookwyrm/templates/settings/themes.html:134
+msgid "Test theme"
+msgstr ""
+
+#: bookwyrm/templates/settings/themes.html:143
+msgid "Broken theme"
+msgstr ""
+
+#: bookwyrm/templates/settings/themes.html:152
+msgid "Loaded successfully"
+msgstr ""
+
 #: bookwyrm/templates/settings/users/delete_user_form.html:5
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:38
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:52
 msgid "Permanently delete user"
 msgstr "Trwale usuń użytkownika"
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:12
 #, python-format
-msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? This action cannot be undone. To proceed, please enter your password to confirm deletion."
-msgstr "Czy na pewno chcesz usunąć konto <strong>%(username)s</strong>? Tej czynności nie można cofnąć. Aby kontynuować, wprowadź swoje hasło, aby potwierdzić usunięcie."
+msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? This action cannot be undone."
+msgstr ""
 
-#: bookwyrm/templates/settings/users/delete_user_form.html:17
-msgid "Your password:"
-msgstr "Twoje hasło:"
+#: bookwyrm/templates/settings/users/delete_user_form.html:18
+msgid "I understand that this is a permanent action:"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:17
+msgid "All users in the selected category will be logged out and required to set a new password to log back in."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:18
+msgid "If your account is in the group, you will be logged out out after submitting."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:22
+msgid "Users given password resets:"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:35
+msgid "All users"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:39
+msgid "users"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:43
+msgid "Force password reset"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:48
+msgid "Number of users that will be effected:"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/force_password_reset.html:53
+msgid "Are you sure you want to force password reset for these users:"
+msgstr ""
 
 #: bookwyrm/templates/settings/users/user_admin.html:9
 #, python-format
@@ -5600,25 +6829,20 @@ msgstr "Ostatnia aktywność"
 msgid "Remote instance"
 msgstr "Zdalna instancja"
 
-#: bookwyrm/templates/settings/users/user_admin.html:86
-msgid "Deleted"
-msgstr "Usunięte"
-
-#: bookwyrm/templates/settings/users/user_admin.html:92
-#: bookwyrm/templates/settings/users/user_info.html:32
-msgid "Inactive"
-msgstr "Nieaktywne"
-
-#: bookwyrm/templates/settings/users/user_admin.html:101
+#: bookwyrm/templates/settings/users/user_admin.html:84
 #: bookwyrm/templates/settings/users/user_info.html:127
 msgid "Not set"
 msgstr ""
 
-#: bookwyrm/templates/settings/users/user_info.html:16
+#: bookwyrm/templates/settings/users/user_info.html:20
+msgid "This account is the instance actor for signing HTTP requests."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_info.html:24
 msgid "View user profile"
 msgstr "Wyświetl profil użytkownika"
 
-#: bookwyrm/templates/settings/users/user_info.html:19
+#: bookwyrm/templates/settings/users/user_info.html:30
 msgid "Go to user admin"
 msgstr ""
 
@@ -5662,10 +6886,6 @@ msgstr ""
 msgid "Discoverable:"
 msgstr ""
 
-#: bookwyrm/templates/settings/users/user_info.html:87
-msgid "Deactivation reason:"
-msgstr "Powód dezaktywacji:"
-
 #: bookwyrm/templates/settings/users/user_info.html:102
 msgid "Instance details"
 msgstr "Szczegóły instancji"
@@ -5674,27 +6894,39 @@ msgstr "Szczegóły instancji"
 msgid "View instance"
 msgstr "Zobacz instancję"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:5
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:6
 msgid "Permanently deleted"
 msgstr "Usunięte na zawsze"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:8
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:9
 msgid "User Actions"
 msgstr ""
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:21
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:15
+msgid "This is the instance admin actor"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:18
+msgid "You must not delete or disable this account as it is critical to the functioning of your server. This actor signs outgoing GET requests to smooth interaction with secure ActivityPub servers."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:19
+msgid "This account is not discoverable by ordinary users and does not have a profile page."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:35
 msgid "Activate user"
 msgstr ""
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:27
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:41
 msgid "Suspend user"
 msgstr "Zawieś użytkownika"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:32
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:46
 msgid "Un-suspend user"
 msgstr "Przywróć użytkownika"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:54
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:68
 msgid "Access level:"
 msgstr "Poziom dostępu:"
 
@@ -5747,10 +6979,10 @@ msgid "Your domain appears to be misconfigured. It should not include protocol o
 msgstr "Wygląda na to, że Twoja domena jest niepoprawnie skonfigurowana. Nie powinna zawierać protokołu oraz ukośników."
 
 #: bookwyrm/templates/setup/config.html:42
-msgid "You are running BookWyrm in production mode without https. <strong>USE_HTTPS</strong> should be enabled in production."
+msgid "You are running BookWyrm with <code>localhost</code>. This should <strong>never</strong> be used in a production environment."
 msgstr ""
 
-#: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:49
+#: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:44
 msgid "Settings"
 msgstr "Ustawienia"
 
@@ -5758,39 +6990,39 @@ msgstr "Ustawienia"
 msgid "Instance domain:"
 msgstr "Domena instancji:"
 
-#: bookwyrm/templates/setup/config.html:63
-msgid "Protocol:"
-msgstr "Protokół:"
+#: bookwyrm/templates/setup/config.html:62
+msgid "Instance base URL:"
+msgstr ""
 
-#: bookwyrm/templates/setup/config.html:81
+#: bookwyrm/templates/setup/config.html:75
 msgid "Using S3:"
 msgstr "Użycie S3:"
 
-#: bookwyrm/templates/setup/config.html:95
+#: bookwyrm/templates/setup/config.html:89
 msgid "Default interface language:"
 msgstr "Domyślny język interfejsu:"
 
-#: bookwyrm/templates/setup/config.html:109
+#: bookwyrm/templates/setup/config.html:103
 msgid "Enable preview images:"
 msgstr "Włącz podgląd obrazów:"
 
-#: bookwyrm/templates/setup/config.html:116
+#: bookwyrm/templates/setup/config.html:110
 msgid "Enable image thumbnails:"
 msgstr "Włącz miniatury obrazów:"
 
-#: bookwyrm/templates/setup/config.html:128
+#: bookwyrm/templates/setup/config.html:122
 msgid "Does everything look right?"
 msgstr "Czy wszystko wygląda poprawnie?"
 
-#: bookwyrm/templates/setup/config.html:130
+#: bookwyrm/templates/setup/config.html:125
 msgid "This is your last chance to set your domain and protocol."
 msgstr "To ostatnia szansa na ustawienie domeny i protokołu."
 
-#: bookwyrm/templates/setup/config.html:144
+#: bookwyrm/templates/setup/config.html:139
 msgid "You can change your instance settings in the <code>.env</code> file on your server."
 msgstr "Możesz zmienić ustawienia swojej instancji w pliku <code>.env</code> na swoim serwerze."
 
-#: bookwyrm/templates/setup/config.html:148
+#: bookwyrm/templates/setup/config.html:143
 msgid "View installation instructions"
 msgstr "Pokaż instrukcje instalacji"
 
@@ -5807,7 +7039,7 @@ msgid "Need help?"
 msgstr "Potrzebujesz pomocy?"
 
 #: bookwyrm/templates/shelf/create_shelf_form.html:5
-#: bookwyrm/templates/shelf/shelf.html:72
+#: bookwyrm/templates/shelf/shelf.html:79
 msgid "Create shelf"
 msgstr "Utwórz półkę"
 
@@ -5815,16 +7047,16 @@ msgstr "Utwórz półkę"
 msgid "Edit Shelf"
 msgstr "Edytuj półkę"
 
-#: bookwyrm/templates/shelf/shelf.html:24
-msgid "User profile"
-msgstr "Profil użytkownika"
-
-#: bookwyrm/templates/shelf/shelf.html:39
-#: bookwyrm/templatetags/shelf_tags.py:13 bookwyrm/views/shelf/shelf.py:53
+#: bookwyrm/templates/shelf/shelf.html:46
+#: bookwyrm/templatetags/shelf_tags.py:14 bookwyrm/views/shelf/shelf.py:60
 msgid "All books"
 msgstr "Wszystkie książki"
 
-#: bookwyrm/templates/shelf/shelf.html:97
+#: bookwyrm/templates/shelf/shelf.html:71
+msgid "Import Books"
+msgstr "Importuj książki"
+
+#: bookwyrm/templates/shelf/shelf.html:104
 #, python-format
 msgid "%(formatted_count)s book"
 msgid_plural "%(formatted_count)s books"
@@ -5833,42 +7065,55 @@ msgstr[1] "%(formatted_count)s książki"
 msgstr[2] "%(formatted_count)s książek"
 msgstr[3] "%(formatted_count)s książek"
 
-#: bookwyrm/templates/shelf/shelf.html:104
+#: bookwyrm/templates/shelf/shelf.html:110
 #, python-format
 msgid "(showing %(start)s-%(end)s)"
 msgstr "(wyświetlanie %(start)s-%(end)s)"
 
-#: bookwyrm/templates/shelf/shelf.html:116
+#: bookwyrm/templates/shelf/shelf.html:124
 msgid "Edit shelf"
 msgstr "Edytuj półkę"
 
-#: bookwyrm/templates/shelf/shelf.html:124
+#: bookwyrm/templates/shelf/shelf.html:132
 msgid "Delete shelf"
 msgstr "Usuń półkę"
 
-#: bookwyrm/templates/shelf/shelf.html:152
-#: bookwyrm/templates/shelf/shelf.html:178
+#: bookwyrm/templates/shelf/shelf.html:160
+#: bookwyrm/templates/shelf/shelf.html:186
 msgid "Shelved"
 msgstr "Na półce"
 
-#: bookwyrm/templates/shelf/shelf.html:153
-#: bookwyrm/templates/shelf/shelf.html:181
+#: bookwyrm/templates/shelf/shelf.html:161
+#: bookwyrm/templates/shelf/shelf.html:189
 msgid "Started"
 msgstr "Rozpoczęte"
 
-#: bookwyrm/templates/shelf/shelf.html:154
-#: bookwyrm/templates/shelf/shelf.html:184
+#: bookwyrm/templates/shelf/shelf.html:162
+#: bookwyrm/templates/shelf/shelf.html:192
 msgid "Finished"
 msgstr "Ukończone"
 
-#: bookwyrm/templates/shelf/shelf.html:154
-#: bookwyrm/templates/shelf/shelf.html:184
+#: bookwyrm/templates/shelf/shelf.html:162
+#: bookwyrm/templates/shelf/shelf.html:192
 msgid "Until"
 msgstr "Do"
 
-#: bookwyrm/templates/shelf/shelf.html:210
+#: bookwyrm/templates/shelf/shelf.html:221
+#, python-format
+msgid "We couldn't find any books that matched %(shelves_filter_query)s"
+msgstr ""
+
+#: bookwyrm/templates/shelf/shelf.html:225
 msgid "This shelf is empty."
 msgstr "Półka jest pusta."
+
+#: bookwyrm/templates/shelf/shelves_filter_field.html:6
+msgid "Filter by keyword"
+msgstr ""
+
+#: bookwyrm/templates/shelf/shelves_filter_field.html:7
+msgid "Enter text here"
+msgstr ""
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:16
 msgid "Invite"
@@ -5973,7 +7218,7 @@ msgstr "Zawiera treść fabuły!"
 msgid "Comment:"
 msgstr "Komentarz:"
 
-#: bookwyrm/templates/snippets/create_status/post_options_block.html:18
+#: bookwyrm/templates/snippets/create_status/post_options_block.html:21
 msgid "Post"
 msgstr ""
 
@@ -5998,7 +7243,7 @@ msgstr "Na stronie:"
 msgid "At percent:"
 msgstr ""
 
-#: bookwyrm/templates/snippets/create_status/quotation.html:69
+#: bookwyrm/templates/snippets/create_status/quotation.html:68
 msgid "to"
 msgstr ""
 
@@ -6038,25 +7283,21 @@ msgstr "Wyczyść filtry"
 msgid "Apply filters"
 msgstr "Zastosuj filtry"
 
-#: bookwyrm/templates/snippets/follow_button.html:20
+#: bookwyrm/templates/snippets/follow_button.html:22
 #, python-format
 msgid "Follow @%(username)s"
 msgstr "Obserwuj @%(username)s"
 
-#: bookwyrm/templates/snippets/follow_button.html:22
-msgid "Follow"
-msgstr "Obserwuj"
-
-#: bookwyrm/templates/snippets/follow_button.html:31
+#: bookwyrm/templates/snippets/follow_button.html:33
 msgid "Undo follow request"
 msgstr "Cofnij prośbę o obserwowanie"
 
-#: bookwyrm/templates/snippets/follow_button.html:36
+#: bookwyrm/templates/snippets/follow_button.html:38
 #, python-format
 msgid "Unfollow @%(username)s"
 msgstr "Nie obserwuj @%(username)s"
 
-#: bookwyrm/templates/snippets/follow_button.html:38
+#: bookwyrm/templates/snippets/follow_button.html:40
 msgid "Unfollow"
 msgstr "Nie obserwuj"
 
@@ -6079,7 +7320,7 @@ msgid "BookWyrm's source code is freely available. You can contribute or report 
 msgstr ""
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:20
-#: bookwyrm/templates/snippets/stars.html:13
+#: bookwyrm/templates/snippets/stars.html:38
 msgid "No rating"
 msgstr "Brak ocen"
 
@@ -6093,7 +7334,7 @@ msgstr[2] "%(half_rating)s gwiazdek"
 msgstr[3] "%(half_rating)s gwiazdek"
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:64
-#: bookwyrm/templates/snippets/stars.html:7
+#: bookwyrm/templates/snippets/stars.html:20
 #, python-format
 msgid "%(rating)s star"
 msgid_plural "%(rating)s stars"
@@ -6179,6 +7420,15 @@ msgstr "Przeczytano <a href=\"%(path)s\">%(read_count)s z %(goal_count)s książ
 #, python-format
 msgid "%(username)s has read <a href=\"%(path)s\">%(read_count)s of %(goal_count)s books</a>."
 msgstr "%(username)s ma przeczytane <a href=\"%(path)s\">%(read_count)s z %(goal_count)s książek</a>."
+
+#: bookwyrm/templates/snippets/move_user_buttons.html:10
+msgid "Follow at new account"
+msgstr ""
+
+#: bookwyrm/templates/snippets/moved_user_notice.html:7
+#, python-format
+msgid "<em>%(user)s</em> has moved to <a href=\"%(moved_to_link)s\">%(moved_to_name)s</a>"
+msgstr ""
 
 #: bookwyrm/templates/snippets/page_text.html:8
 #, python-format
@@ -6302,14 +7552,11 @@ msgid "Want to read"
 msgstr "Chcę przeczytać"
 
 #: bookwyrm/templates/snippets/shelf_selector.html:81
+#: bookwyrm/templates/snippets/shelf_selector.html:95
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:73
 #, python-format
 msgid "Remove from %(name)s"
 msgstr "Usuń z %(name)s"
-
-#: bookwyrm/templates/snippets/shelf_selector.html:94
-msgid "Remove from"
-msgstr "Usuń z"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown.html:5
 msgid "More shelves"
@@ -6324,35 +7571,39 @@ msgstr "Przerwij czytanie"
 msgid "Finish reading"
 msgstr "Ukończ czytanie"
 
-#: bookwyrm/templates/snippets/status/content_status.html:80
+#: bookwyrm/templates/snippets/stars.html:13
+msgid "Show rating"
+msgstr "Pokaż ocenę"
+
+#: bookwyrm/templates/snippets/status/content_status.html:69
 msgid "Show status"
 msgstr "Pokaż status"
 
-#: bookwyrm/templates/snippets/status/content_status.html:102
+#: bookwyrm/templates/snippets/status/content_status.html:91
 #, python-format
 msgid "(Page %(page)s"
-msgstr ""
+msgstr "(Strona %(page)s"
 
-#: bookwyrm/templates/snippets/status/content_status.html:102
+#: bookwyrm/templates/snippets/status/content_status.html:91
 #, python-format
 msgid "%(endpage)s"
-msgstr ""
+msgstr "%(endpage)s"
 
-#: bookwyrm/templates/snippets/status/content_status.html:104
+#: bookwyrm/templates/snippets/status/content_status.html:93
 #, python-format
 msgid "(%(percent)s%%"
-msgstr ""
+msgstr "(%(percent)s %%"
 
-#: bookwyrm/templates/snippets/status/content_status.html:104
+#: bookwyrm/templates/snippets/status/content_status.html:93
 #, python-format
 msgid " - %(endpercent)s%%"
-msgstr ""
+msgstr " - %(endpercent)s %%"
 
-#: bookwyrm/templates/snippets/status/content_status.html:127
+#: bookwyrm/templates/snippets/status/content_status.html:116
 msgid "Open image in new window"
 msgstr "Otwórz obraz w nowym oknie"
 
-#: bookwyrm/templates/snippets/status/content_status.html:148
+#: bookwyrm/templates/snippets/status/content_status.html:137
 msgid "Hide status"
 msgstr "Ukryj status"
 
@@ -6485,6 +7736,18 @@ msgstr "Pokaż więcej"
 msgid "Show less"
 msgstr "Pokaż mniej"
 
+#: bookwyrm/templates/snippets/user_active_tag.html:5
+msgid "Moved"
+msgstr ""
+
+#: bookwyrm/templates/snippets/user_active_tag.html:12
+msgid "Deleted"
+msgstr "Usunięte"
+
+#: bookwyrm/templates/snippets/user_active_tag.html:15
+msgid "Inactive"
+msgstr "Nieaktywne"
+
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:29
 msgid "2FA check"
 msgstr "Sprawdzanie 2FA"
@@ -6510,139 +7773,147 @@ msgstr "Możesz zabezpieczyć swoje konto konfigurując uwierzytelnianie dwuskł
 msgid "%(username)s's books"
 msgstr "Książki %(username)s"
 
-#: bookwyrm/templates/user/goal.html:8
+#: bookwyrm/templates/user/goal.html:12
 #, python-format
 msgid "%(year)s Reading Progress"
 msgstr "Postęp czytania roku %(year)s"
 
-#: bookwyrm/templates/user/goal.html:12
+#: bookwyrm/templates/user/goal.html:16
 msgid "Edit Goal"
 msgstr "Edytuj cel"
 
-#: bookwyrm/templates/user/goal.html:28
+#: bookwyrm/templates/user/goal.html:32
 #, python-format
 msgid "%(name)s hasn't set a reading goal for %(year)s."
 msgstr "%(name)s nie ma ustawionego celu na rok %(year)s."
 
-#: bookwyrm/templates/user/goal.html:40
+#: bookwyrm/templates/user/goal.html:44
 #, python-format
 msgid "Your %(year)s Books"
 msgstr "Twoje książki roku %(year)s"
 
-#: bookwyrm/templates/user/goal.html:42
+#: bookwyrm/templates/user/goal.html:46
 #, python-format
 msgid "%(username)s's %(year)s Books"
 msgstr "Książki %(username)s roku %(year)s"
 
-#: bookwyrm/templates/user/groups.html:9
+#: bookwyrm/templates/user/groups.html:14
 msgid "Your Groups"
 msgstr "Twoje grupy"
 
-#: bookwyrm/templates/user/groups.html:11
+#: bookwyrm/templates/user/groups.html:16
 #, python-format
 msgid "Groups: %(username)s"
 msgstr "Grupy: %(username)s"
 
-#: bookwyrm/templates/user/layout.html:48
+#: bookwyrm/templates/user/layout.html:59
 msgid "Follow Requests"
 msgstr "Prośby o obserwowanie"
 
-#: bookwyrm/templates/user/layout.html:71
-#: bookwyrm/templates/user/reviews_comments.html:10
+#: bookwyrm/templates/user/layout.html:83
+#: bookwyrm/templates/user/reviews_comments.html:6
+#: bookwyrm/templates/user/reviews_comments.html:12
 msgid "Reviews and Comments"
-msgstr ""
+msgstr "Recenzje i komentarze"
 
-#: bookwyrm/templates/user/lists.html:11
+#: bookwyrm/templates/user/lists.html:16
 #, python-format
 msgid "Lists: %(username)s"
 msgstr "Listy: %(username)s"
 
-#: bookwyrm/templates/user/lists.html:17 bookwyrm/templates/user/lists.html:29
+#: bookwyrm/templates/user/lists.html:22 bookwyrm/templates/user/lists.html:34
 msgid "Create list"
 msgstr "Utwórz listę"
 
-#: bookwyrm/templates/user/relationships/followers.html:12
-#, python-format
-msgid "%(username)s has no followers"
-msgstr "%(username)s nie ma obserwujących"
-
-#: bookwyrm/templates/user/relationships/following.html:6
-#: bookwyrm/templates/user/relationships/layout.html:15
-msgid "Following"
-msgstr "Obserwuje"
-
-#: bookwyrm/templates/user/relationships/following.html:12
-#, python-format
-msgid "%(username)s isn't following any users"
-msgstr "%(username)s nie obserwuje nikogo"
-
-#: bookwyrm/templates/user/reviews_comments.html:24
-msgid "No reviews or comments yet!"
-msgstr ""
-
-#: bookwyrm/templates/user/user.html:20
-msgid "Edit profile"
-msgstr "Edytuj profil"
-
-#: bookwyrm/templates/user/user.html:42
-#, python-format
-msgid "View all %(size)s"
-msgstr "Wyświetl wszystkie %(size)s"
-
-#: bookwyrm/templates/user/user.html:56
-msgid "View all books"
-msgstr "Wyświetl wszystkie książki"
-
-#: bookwyrm/templates/user/user.html:63
-#, python-format
-msgid "%(current_year)s Reading Goal"
-msgstr "Cel czytania roku %(current_year)s"
-
-#: bookwyrm/templates/user/user.html:70
-msgid "User Activity"
-msgstr "Aktywność użytkownika"
-
-#: bookwyrm/templates/user/user.html:76
-msgid "Show RSS Options"
-msgstr ""
-
-#: bookwyrm/templates/user/user.html:82
-msgid "RSS feed"
-msgstr "Kanał RSS"
-
-#: bookwyrm/templates/user/user.html:98
-msgid "Complete feed"
-msgstr ""
-
-#: bookwyrm/templates/user/user.html:103
-msgid "Reviews only"
-msgstr ""
-
-#: bookwyrm/templates/user/user.html:108
-msgid "Quotes only"
-msgstr ""
-
-#: bookwyrm/templates/user/user.html:113
-msgid "Comments only"
-msgstr ""
-
-#: bookwyrm/templates/user/user.html:129
-msgid "No activities yet!"
-msgstr "Jeszcze brak aktywności!"
-
+#: bookwyrm/templates/user/moved.html:25
 #: bookwyrm/templates/user/user_preview.html:22
 #, python-format
 msgid "Joined %(date)s"
 msgstr "Dołączono %(date)s"
 
+#: bookwyrm/templates/user/relationships/followers.html:36
+#, python-format
+msgid "%(username)s has no followers"
+msgstr "%(username)s nie ma obserwujących"
+
+#: bookwyrm/templates/user/relationships/following.html:6
+#: bookwyrm/templates/user/relationships/following.html:11
+#: bookwyrm/templates/user/relationships/following.html:21
+#: bookwyrm/templates/user/relationships/layout.html:15
+msgid "Following"
+msgstr "Obserwuje"
+
+#: bookwyrm/templates/user/relationships/following.html:30
+#, python-format
+msgid "%(username)s isn't following any users"
+msgstr "%(username)s nie obserwuje nikogo"
+
+#: bookwyrm/templates/user/reviews_comments.html:26
+msgid "No reviews or comments yet!"
+msgstr "Brak recenzji lub komentarzy!"
+
+#: bookwyrm/templates/user/user.html:20
+msgid "Edit profile"
+msgstr "Edytuj profil"
+
+#: bookwyrm/templates/user/user.html:29
+msgid "Federation is currently disabled, so you will not be able to interact with this user."
+msgstr ""
+
+#: bookwyrm/templates/user/user.html:51
+#, python-format
+msgid "View all %(size)s"
+msgstr "Wyświetl wszystkie %(size)s"
+
+#: bookwyrm/templates/user/user.html:70
+msgid "View all books"
+msgstr "Wyświetl wszystkie książki"
+
+#: bookwyrm/templates/user/user.html:78
+#, python-format
+msgid "%(current_year)s Reading Goal"
+msgstr "Cel czytania roku %(current_year)s"
+
+#: bookwyrm/templates/user/user.html:85
+msgid "User Activity"
+msgstr "Aktywność użytkownika"
+
+#: bookwyrm/templates/user/user.html:91
+msgid "Show RSS Options"
+msgstr "Pokaż opcje RSS"
+
+#: bookwyrm/templates/user/user.html:97
+msgid "RSS feed"
+msgstr "Kanał RSS"
+
+#: bookwyrm/templates/user/user.html:113
+msgid "Complete feed"
+msgstr "Wszystko"
+
+#: bookwyrm/templates/user/user.html:118
+msgid "Reviews only"
+msgstr "Tylko recenzje"
+
+#: bookwyrm/templates/user/user.html:123
+msgid "Quotes only"
+msgstr "Tylko cytaty"
+
+#: bookwyrm/templates/user/user.html:128
+msgid "Comments only"
+msgstr "Tylko komentarze"
+
+#: bookwyrm/templates/user/user.html:144
+msgid "No activities yet!"
+msgstr "Jeszcze brak aktywności!"
+
 #: bookwyrm/templates/user/user_preview.html:26
 #, python-format
-msgid "%(counter)s follower"
-msgid_plural "%(counter)s followers"
-msgstr[0] "%(counter)s obserwujący"
-msgstr[1] "%(counter)s obserwujących"
-msgstr[2] "%(counter)s obserwujących"
-msgstr[3] "%(counter)s obserwujących"
+msgid "%(display_count)s follower"
+msgid_plural "%(display_count)s followers"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: bookwyrm/templates/user/user_preview.html:31
 #, python-format
@@ -6666,20 +7937,17 @@ msgstr "Brak obserwujących, których obserwujesz"
 msgid "View profile and more"
 msgstr "Zobacz profil i więcej"
 
-#: bookwyrm/templates/user_menu.html:82
-msgid "Log out"
-msgstr "Wyloguj się"
-
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
-msgid "File exceeds maximum size: 10MB"
-msgstr "Rozmiar pliku przekracza maksymalny rozmiar: 10MB"
+#, python-format
+msgid "File exceeds maximum size: %(max_size)sMB"
+msgstr ""
 
-#: bookwyrm/templatetags/list_page_tags.py:14
+#: bookwyrm/templatetags/list_page_tags.py:15
 #, python-format
 msgid "Book List: %(name)s"
 msgstr ""
 
-#: bookwyrm/templatetags/list_page_tags.py:22
+#: bookwyrm/templatetags/list_page_tags.py:23
 #, python-format
 msgid "%(num)d book - by %(user)s"
 msgid_plural "%(num)d books - by %(user)s"
@@ -6688,32 +7956,16 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: bookwyrm/templatetags/utilities.py:39
+#: bookwyrm/templatetags/utilities.py:50
 #, python-format
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s: %(subtitle)s"
 
-#: bookwyrm/views/rss_feed.py:35
-#, python-brace-format
-msgid "Status updates from {obj.display_name}"
-msgstr "Aktualizacje statusu od {obj.display_name}"
-
-#: bookwyrm/views/rss_feed.py:72
-#, python-brace-format
-msgid "Reviews from {obj.display_name}"
+#: bookwyrm/templatetags/utilities.py:133
+msgid "a new user account"
 msgstr ""
 
-#: bookwyrm/views/rss_feed.py:110
-#, python-brace-format
-msgid "Quotes from {obj.display_name}"
-msgstr ""
-
-#: bookwyrm/views/rss_feed.py:148
-#, python-brace-format
-msgid "Comments from {obj.display_name}"
-msgstr ""
-
-#: bookwyrm/views/updates.py:45
+#: bookwyrm/views/updates.py:46
 #, python-format
 msgid "Load %(count)d unread status"
 msgid_plural "Load %(count)d unread statuses"

@@ -1,9 +1,10 @@
-""" testing import """
+"""testing import"""
+
 from collections import namedtuple
 import pathlib
+import io
 from unittest.mock import patch
 import datetime
-import pytz
 
 from django.test import TestCase
 import responses
@@ -16,32 +17,39 @@ from bookwyrm.models.import_job import handle_imported_book
 
 def make_date(*args):
     """helper function to easily generate a date obj"""
-    return datetime.datetime(*args, tzinfo=pytz.UTC)
+    return datetime.datetime(*args, tzinfo=datetime.timezone.utc)
 
 
-# pylint: disable=consider-using-with
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 class GenericImporter(TestCase):
     """importing from csv"""
 
-    # pylint: disable=invalid-name
     def setUp(self):
         """use a test csv"""
-
         self.importer = Importer()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/generic.csv")
+
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+
+    def tearDown(self):
+        """close test csv"""
+        self.csv.close()
+
+    @classmethod
+    def setUpTestData(cls):
+        """populate database"""
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
-        models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,
@@ -56,7 +64,9 @@ class GenericImporter(TestCase):
         self.assertEqual(import_job.include_reviews, False)
         self.assertEqual(import_job.privacy, "public")
 
-        import_items = models.ImportItem.objects.filter(job=import_job).all()
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")
+        )
         self.assertEqual(len(import_items), 4)
         self.assertEqual(import_items[0].index, 0)
         self.assertEqual(import_items[0].normalized_data["id"], "38")
@@ -83,7 +93,9 @@ class GenericImporter(TestCase):
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "unlisted"
         )
-        import_items = models.ImportItem.objects.filter(job=import_job).all()[:2]
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")[:2]
+        )
 
         retry = self.importer.create_retry_job(
             self.local_user, import_job, import_items
@@ -93,7 +105,7 @@ class GenericImporter(TestCase):
         self.assertEqual(retry.include_reviews, False)
         self.assertEqual(retry.privacy, "unlisted")
 
-        retry_items = models.ImportItem.objects.filter(job=retry).all()
+        retry_items = models.ImportItem.objects.filter(job=retry).all().order_by("id")
         self.assertEqual(len(retry_items), 2)
         self.assertEqual(retry_items[0].index, 0)
         self.assertEqual(retry_items[0].normalized_data["id"], "38")
@@ -150,22 +162,11 @@ class GenericImporter(TestCase):
 
     def test_complete_job(self, *_):
         """test notification"""
-        import_job = self.importer.create_job(
-            self.local_user, self.csv, False, "unlisted"
-        )
-        items = import_job.items.all()
-        for item in items[:3]:
-            item.fail_reason = "hello"
-            item.save()
-            item.update_job()
-            self.assertFalse(
-                models.Notification.objects.filter(
-                    user=self.local_user,
-                    related_import=import_job,
-                    notification_type="IMPORT",
-                ).exists()
-            )
 
+        # csv content not important
+        csv = io.StringIO("title,author_text,remote_id\nbeep,boop,blurp")
+        import_job = self.importer.create_job(self.local_user, csv, False, "unlisted")
+        items = import_job.items.all()
         item = items.last()
         item.fail_reason = "hello"
         item.save()
@@ -264,9 +265,11 @@ class GenericImporter(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            with patch("bookwyrm.models.Status.broadcast") as broadcast_mock:
-                handle_imported_book(import_item)
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.models.Status.broadcast") as broadcast_mock,
+        ):
+            handle_imported_book(import_item)
         kwargs = broadcast_mock.call_args.kwargs
         self.assertEqual(kwargs["software"], "bookwyrm")
         review = models.Review.objects.get(book=self.book, user=self.local_user)
@@ -363,7 +366,7 @@ class GenericImporter(TestCase):
 
     def test_import_limit(self, *_):
         """checks if import limit works"""
-        site_settings = models.SiteSettings.objects.get()
+        site_settings = models.SiteSettings.get()
         site_settings.import_size_limit = 2
         site_settings.import_limit_reset = 2
         site_settings.save()

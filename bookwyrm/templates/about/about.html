@@ -11,6 +11,7 @@
 
 {% block about_content %}
 {% get_current_language as LANGUAGE_CODE %}
+
 {# seven day cache #}
 {% cache 604800 about_page_superlatives LANGUAGE_CODE %}
 
@@ -31,10 +32,11 @@
         </p>
     </div>
 
-    <div class="columns">
+    <!--
+    <div class="columns is-multiline">
         {% if superlatives.top_rated %}
         {% with book=superlatives.top_rated.default_edition rating=superlatives.top_rated.rating %}
-        <div class="column is-one-third is-flex">
+        <div class="column is-half-tablet is-one-third-desktop is-flex-grow-1 is-flex">
             <div class="media notification is-clipped">
                 <div class="media-left">
                     <a href="{{ book.local_path }}">
@@ -53,7 +55,7 @@
 
         {% if superlatives.wanted %}
         {% with book=superlatives.wanted.default_edition %}
-        <div class="column is-one-third is-flex">
+        <div class="column is-half-tablet is-one-third-desktop is-flex-grow-1 is-flex">
             <div class="media notification is-clipped">
                 <div class="media-left">
                     <a href="{{ book.local_path }}">
@@ -72,7 +74,7 @@
 
         {% if superlatives.controversial %}
         {% with book=superlatives.controversial.default_edition %}
-        <div class="column is-one-third is-flex">
+        <div class="column is-half-tablet is-one-third-desktop is-flex-grow-1 is-flex">
             <div class="media notification is-clipped">
                 <div class="media-left">
                     <a href="{{ book.local_path }}">
@@ -89,7 +91,7 @@
         {% endwith %}
         {% endif %}
     </div>
-
+-->
     <p>
     {% blocktrans trimmed %}
     Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal.

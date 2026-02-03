@@ -1,39 +1,45 @@
-""" testing models """
-from io import BytesIO
+"""testing models"""
+
 import pathlib
 
 import pytest
 
 from dateutil.parser import parse
-from PIL import Image
-from django.core.files.base import ContentFile
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
 
 from bookwyrm import models, settings
-from bookwyrm.models.book import isbn_10_to_13, isbn_13_to_10
+from bookwyrm.models.book import (
+    isbn_10_to_13,
+    isbn_13_to_10,
+    normalize_isbn,
+    validate_isbn10,
+    validate_isbn13,
+)
 from bookwyrm.settings import ENABLE_THUMBNAIL_GENERATION
 
 
 class Book(TestCase):
     """not too much going on in the books model but here we are"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we'll need some books"""
-        self.work = models.Work.objects.create(
+        cls.work = models.Work.objects.create(
             title="Example Work", remote_id="https://example.com/book/1"
         )
-        self.first_edition = models.Edition.objects.create(
-            title="Example Edition", parent_work=self.work
+        cls.first_edition = models.Edition.objects.create(
+            title="Example Edition", parent_work=cls.work
         )
-        self.second_edition = models.Edition.objects.create(
+        cls.second_edition = models.Edition.objects.create(
             title="Another Example Edition",
-            parent_work=self.work,
+            parent_work=cls.work,
         )
 
     def test_remote_id(self):
         """fanciness with remote/origin ids"""
-        remote_id = f"https://{settings.DOMAIN}/book/{self.work.id}"
+        remote_id = f"{settings.BASE_URL}/book/{self.work.id}"
         self.assertEqual(self.work.get_remote_id(), remote_id)
         self.assertEqual(self.work.remote_id, remote_id)
 
@@ -62,6 +68,16 @@ class Book(TestCase):
         isbn_13 = isbn_10_to_13(isbn_10)
         self.assertEqual(isbn_13, "9781788161671")
 
+        # test checksum 0 case
+        isbn_10 = "1-788-16164-5"
+        isbn_13 = isbn_10_to_13(isbn_10)
+        self.assertEqual(isbn_13, "9781788161640")
+
+        # test checksum 11 case
+        isbn_10 = "2253002690"
+        isbn_13 = isbn_10_to_13(isbn_10)
+        self.assertEqual(isbn_13, "9782253002697")
+
     def test_isbn_13_to_10(self):
         """checksums and so on"""
         isbn_13 = "9781788161671"
@@ -71,6 +87,56 @@ class Book(TestCase):
         isbn_13 = "978-1788-16167-1"
         isbn_10 = isbn_13_to_10(isbn_13)
         self.assertEqual(isbn_10, "178816167X")
+
+        isbn_13 = "978-2253002697"
+        isbn_10 = isbn_13_to_10(isbn_13)
+        self.assertEqual(isbn_10, "2253002690")
+
+    def test_normalize_isbn(self):
+        """Remove misc characters from ISBNs"""
+        self.assertEqual(normalize_isbn("978-0-4633461-1-2"), "9780463346112")
+
+    def test_validate_isbn10(self):
+        """ISBN10 validation"""
+        invalid_isbn10 = [
+            ("0123", "too short"),
+            ("97801X45", "too short, invalid char"),
+            ("012345678999", "too long"),
+            ("01234V6789", "invalid char"),
+            ("0123456788", "invalid checksum"),
+            ("012345678Y", "invalid checksum char"),
+        ]
+        validate_isbn10("123456789")
+        validate_isbn10("0123456789")
+        validate_isbn10("123456789X")
+        validate_isbn10("0-201-53082-1")
+        validate_isbn10("2253002690")
+        validate_isbn10("0-596-52068-9")
+        validate_isbn10("0596520689")
+
+        for isbn, _desc in invalid_isbn10:
+            with self.subTest(isbn=isbn):
+                with self.assertRaises(ValidationError):
+                    validate_isbn10(isbn)
+
+    def test_validate_isbn13(self):
+        """ISBN13 validation"""
+        invalid_isbn13 = [
+            ("978-12-3456-789-X", "invalid char"),
+            ("9741234567897", "invalid prefix"),
+            ("978-84-17121-94-2", "invalid checksum"),
+        ]
+        validate_isbn13("9781234567897")
+        validate_isbn13("9781234567880")
+        validate_isbn13("9791234567889")
+        validate_isbn13("978-84-17121-94-5")
+        validate_isbn13("9791038704022")
+        validate_isbn13("978-2253002697")
+
+        for isbn, _desc in invalid_isbn13:
+            with self.subTest(isbn=isbn):
+                with self.assertRaises(ValidationError):
+                    validate_isbn13(isbn)
 
     def test_get_edition_info(self):
         """text slug about an edition"""
@@ -92,7 +158,23 @@ class Book(TestCase):
         book.published_date = timezone.make_aware(parse("2020"))
         book.save()
         self.assertEqual(book.edition_info, "worm, Glorbish language, 2020")
-        self.assertEqual(book.alt_text, "Test Edition (worm, Glorbish language, 2020)")
+
+    def test_alt_text(self):
+        """text slug used for cover images"""
+        book = models.Edition.objects.create(title="Test Edition")
+        author = models.Author.objects.create(name="Author Name")
+
+        self.assertEqual(book.alt_text, "Test Edition")
+
+        book.authors.set([author])
+        book.save()
+
+        self.assertEqual(book.alt_text, "Author Name: Test Edition")
+
+        book.physical_format = "worm"
+        book.published_date = timezone.make_aware(parse("2022"))
+
+        self.assertEqual(book.alt_text, "Author Name: Test Edition (worm, 2022)")
 
     def test_get_rank(self):
         """sets the data quality index for the book"""
@@ -109,15 +191,13 @@ class Book(TestCase):
     )
     def test_thumbnail_fields(self):
         """Just hit them"""
-        image_file = pathlib.Path(__file__).parent.joinpath(
+        image_path = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
         )
-        image = Image.open(image_file)
-        output = BytesIO()
-        image.save(output, format=image.format)
 
         book = models.Edition.objects.create(title="hello")
-        book.cover.save("test.jpg", ContentFile(output.getvalue()))
+        with open(image_path, "rb") as image_file:
+            book.cover.save("test.jpg", image_file)
 
         self.assertIsNotNone(book.cover_bw_book_xsmall_webp.url)
         self.assertIsNotNone(book.cover_bw_book_xsmall_jpg.url)
@@ -134,13 +214,19 @@ class Book(TestCase):
 
     def test_populate_sort_title(self):
         """The sort title should remove the initial article on save"""
-        books = (
-            models.Edition.objects.create(
-                title=f"{article} Test Edition", languages=[langauge]
-            )
-            for langauge, articles in settings.LANGUAGE_ARTICLES.items()
-            for article in articles
-        )
+        books = []
+        for k, v in settings.LANGUAGE_ARTICLES.items():
+            lang_books = [
+                models.Edition.objects.create(
+                    title=f"{article} Test Edition", languages=[string]
+                )
+                for string in v["variants"]
+                for article in v["articles"]
+            ]
+            books = books + lang_books
+
+        for book in books:
+            print(book.title, book.sort_title)
         self.assertTrue(all(book.sort_title == "test edition" for book in books))
 
     def test_repair_edition(self):

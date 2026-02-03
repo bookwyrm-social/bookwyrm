@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 
@@ -17,14 +18,15 @@ from bookwyrm.tests.validate_html import validate_html
 class FollowViews(TestCase):
     """follows"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        models.SiteSettings.objects.create()
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -33,7 +35,7 @@ class FollowViews(TestCase):
                 remote_id="https://example.com/users/mouse",
             )
         with patch("bookwyrm.models.user.set_remote_server"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@email.com",
                 "ratword",
@@ -42,20 +44,24 @@ class FollowViews(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        self.group = Group.objects.create(name="editor")
-        self.group.permissions.add(
+        cls.group = Group.objects.create(name="editor")
+        cls.group.permissions.add(
             Permission.objects.create(
                 name="edit_book",
                 codename="edit_book",
                 content_type=ContentType.objects.get_for_model(models.User),
             ).id
         )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.work = models.Work.objects.create(title="Test Work")
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
-            parent_work=self.work,
+            parent_work=cls.work,
         )
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_handle_follow_remote(self, *_):
         """send a follow request"""
@@ -74,9 +80,11 @@ class FollowViews(TestCase):
 
     def test_handle_follow_local_manually_approves(self, *_):
         """send a follow request"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             rat = models.User.objects.create_user(
                 "rat@local.com",
                 "rat@rat.com",
@@ -100,9 +108,11 @@ class FollowViews(TestCase):
 
     def test_handle_follow_local(self, *_):
         """send a follow request"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             rat = models.User.objects.create_user(
                 "rat@local.com",
                 "rat@rat.com",
@@ -173,10 +183,36 @@ class FollowViews(TestCase):
             user_subject=self.remote_user, user_object=self.local_user
         )
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as broadcast_mock:
             views.delete_follow_request(request)
+            # did we send the reject activity?
+            activity = json.loads(broadcast_mock.call_args[1]["args"][1])
+            self.assertEqual(activity["actor"], self.local_user.remote_id)
+            self.assertEqual(activity["object"]["object"], rel.user_object.remote_id)
+            self.assertEqual(activity["type"], "Reject")
         # request should be deleted
         self.assertEqual(models.UserFollowRequest.objects.filter(id=rel.id).count(), 0)
+        # follow relationship should not exist
+        self.assertEqual(models.UserFollows.objects.filter(id=rel.id).count(), 0)
+
+    def test_handle_reject_existing(self, *_):
+        """reject a follow previously approved"""
+        request = self.factory.post("", {"user": self.remote_user.username})
+        request.user = self.local_user
+        rel = models.UserFollows.objects.create(
+            user_subject=self.remote_user, user_object=self.local_user
+        )
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as broadcast_mock:
+            views.remove_follow(request, self.remote_user.id)
+            # did we send the reject activity?
+            activity = json.loads(broadcast_mock.call_args[1]["args"][1])
+            self.assertEqual(activity["actor"], self.local_user.remote_id)
+            self.assertEqual(activity["object"]["object"], rel.user_object.remote_id)
+            self.assertEqual(activity["type"], "Reject")
         # follow relationship should not exist
         self.assertEqual(models.UserFollows.objects.filter(id=rel.id).count(), 0)
 

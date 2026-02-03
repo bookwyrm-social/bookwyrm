@@ -3,6 +3,8 @@
 
 {% if request.user == user or not request.user.is_authenticated %}
 {# nothing to see here -- either it's yourself or your logged out #}
+{% elif site.disable_federation and not user.local %}
+{# can't follow remote users without federation #}
 {% else %}
 
 {% get_relationship user as relationship %}
@@ -43,7 +45,7 @@
     </div>
     {% if not minimal %}
     <div class="control">
-        {% include 'snippets/user_options.html' with user=user class="is-small" %}
+        {% include 'snippets/user_options.html' with user=user followers_page=followers_page class="is-small" %}
     </div>
     {% endif %}
 </div>

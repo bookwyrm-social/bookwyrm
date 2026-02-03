@@ -1,4 +1,5 @@
-""" instance overview """
+"""instance overview"""
+
 from datetime import timedelta
 import re
 
@@ -6,20 +7,21 @@ from dateutil.parser import parse
 from packaging import version
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.db import transaction
 from django.db.models import Q
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 from csp.decorators import csp_update
 
-from bookwyrm import models, settings
-from bookwyrm.connectors.abstract_connector import get_data
+from bookwyrm import forms, models, settings
 from bookwyrm.utils import regex
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.moderate_user", raise_exception=True),
@@ -33,7 +35,8 @@ class Dashboard(View):
     )
     def get(self, request):
         """list of users"""
-        data = get_charts_and_stats(request)
+        data = get_stats()
+        # data |= get_charts(request)
 
         # Make sure email looks properly configured
         email_config_error = re.findall(
@@ -41,13 +44,12 @@ class Dashboard(View):
         ) or not re.match(regex.DOMAIN, settings.EMAIL_SENDER_DOMAIN)
 
         data["email_config_error"] = email_config_error
-        # pylint: disable=line-too-long
-        data[
-            "email_sender"
-        ] = f"{settings.EMAIL_SENDER_NAME}@{settings.EMAIL_SENDER_DOMAIN}"
+        data["email_sender"] = (
+            f"{settings.EMAIL_SENDER_NAME}@{settings.EMAIL_SENDER_DOMAIN}"
+        )
 
-        site = models.SiteSettings.objects.get()
-        # pylint: disable=protected-access
+        site = models.SiteSettings.get()
+
         data["missing_conduct"] = (
             not site.code_of_conduct
             or site.code_of_conduct
@@ -59,23 +61,58 @@ class Dashboard(View):
             == site._meta.get_field("privacy_policy").get_default()
         )
 
-        # check version
+        if site.available_version and version.parse(
+            site.available_version
+        ) > version.parse(settings.VERSION):
+            data["current_version"] = settings.VERSION
+            data["available_version"] = site.available_version
 
-        try:
-            release = get_data(settings.RELEASE_API, timeout=3)
-            available_version = release.get("tag_name", None)
-            if available_version and version.parse(available_version) > version.parse(
-                settings.VERSION
-            ):
-                data["current_version"] = settings.VERSION
-                data["available_version"] = available_version
-        except:  # pylint: disable= bare-except
-            pass
+        if not PeriodicTask.objects.filter(name="check-for-updates").exists():
+            data["schedule_form"] = forms.IntervalScheduleForm(
+                {"every": 1, "period": "days"}
+            )
 
         return TemplateResponse(request, "settings/dashboard/dashboard.html", data)
 
+    def post(self, request):
+        """Create a schedule task to check for updates"""
+        schedule_form = forms.IntervalScheduleForm(request.POST)
+        if not schedule_form.is_valid():
+            raise schedule_form.ValidationError(schedule_form.errors)
 
-def get_charts_and_stats(request):
+        with transaction.atomic():
+            schedule, _ = IntervalSchedule.objects.get_or_create(
+                **schedule_form.cleaned_data
+            )
+            PeriodicTask.objects.update_or_create(
+                interval=schedule,
+                name="check-for-updates",
+                task="bookwyrm.models.site.check_for_updates_task",
+            )
+        return redirect("settings-dashboard")
+
+
+def get_stats():
+    """Defines the dashboard charts"""
+    now = timezone.now()
+    user_queryset = models.User.objects.filter(local=True)
+    status_queryset = models.Status.objects.filter(user__local=True, deleted=False)
+    return {
+        "users": user_queryset.filter(is_active=True).count(),
+        "active_users": user_queryset.filter(
+            is_active=True, last_active_date__gte=now - timedelta(days=31)
+        ).count(),
+        "statuses": status_queryset.count(),
+        "works": models.Work.objects.count(),
+        "reports": models.Report.objects.filter(resolved=False).count(),
+        "pending_domains": models.LinkDomain.objects.filter(status="pending").count(),
+        "invite_requests": models.InviteRequest.objects.filter(
+            ignored=False, invite__isnull=True
+        ).count(),
+    }
+
+
+def get_charts(request):
     """Defines the dashboard charts"""
     interval = int(request.GET.get("days", 1))
     now = timezone.now()
@@ -142,17 +179,6 @@ def get_charts_and_stats(request):
         "start": start.strftime("%Y-%m-%d"),
         "end": end.strftime("%Y-%m-%d"),
         "interval": interval,
-        "users": user_queryset.filter(is_active=True).count(),
-        "active_users": user_queryset.filter(
-            is_active=True, last_active_date__gte=now - timedelta(days=31)
-        ).count(),
-        "statuses": status_queryset.count(),
-        "works": models.Work.objects.count(),
-        "reports": models.Report.objects.filter(resolved=False).count(),
-        "pending_domains": models.LinkDomain.objects.filter(status="pending").count(),
-        "invite_requests": models.InviteRequest.objects.filter(
-            ignored=False, invite__isnull=True
-        ).count(),
         "user_stats": user_chart.get_chart(start, end, interval),
         "status_stats": status_chart.get_chart(start, end, interval),
         "register_stats": register_chart.get_chart(start, end, interval),
@@ -175,7 +201,7 @@ class Chart:
         chart = {k: [] for k in self.queries.keys()}
         chart["labels"] = []
         while interval_start <= end:
-            for (name, query) in self.queries.items():
+            for name, query in self.queries.items():
                 chart[name].append(query(self.queryset, interval_start, interval_end))
             chart["labels"].append(interval_start.strftime("%b %d"))
 

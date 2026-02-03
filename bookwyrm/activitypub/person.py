@@ -1,12 +1,12 @@
-""" actor serializer """
-from dataclasses import dataclass, field
+"""actor serializer"""
+
+from dataclasses import dataclass
 from typing import Dict
 
 from .base_activity import ActivityObject
 from .image import Image
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class PublicKey(ActivityObject):
     """public key block"""
@@ -21,7 +21,6 @@ class PublicKey(ActivityObject):
         return super().serialize(omit=omit)
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class Person(ActivityObject):
     """actor activitypub json"""
@@ -35,9 +34,11 @@ class Person(ActivityObject):
     endpoints: Dict = None
     name: str = None
     summary: str = None
-    icon: Image = field(default_factory=lambda: {})
+    icon: Image = None
     bookwyrmUser: bool = False
     manuallyApprovesFollowers: str = False
     discoverable: str = False
     hideFollows: str = False
+    movedTo: str = None
+    alsoKnownAs: dict[str] = None
     type: str = "Person"

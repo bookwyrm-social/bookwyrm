@@ -1,4 +1,5 @@
-""" quotation activity object serializer class """
+"""quotation activity object serializer class"""
+
 import json
 import pathlib
 from unittest.mock import patch
@@ -10,10 +11,11 @@ from bookwyrm import activitypub, models
 class Quotation(TestCase):
     """we have hecka ways to create statuses"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """model objects we'll need"""
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.user = models.User.objects.create_user(
+            cls.user = models.User.objects.create_user(
                 "mouse",
                 "mouse@mouse.mouse",
                 "mouseword",
@@ -22,10 +24,13 @@ class Quotation(TestCase):
                 outbox="https://example.com/user/mouse/outbox",
                 remote_id="https://example.com/user/mouse",
             )
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
         )
+
+    def setUp(self):
+        """other test data"""
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_quotation.json")
         self.status_data = json.loads(datafile.read_bytes())
 

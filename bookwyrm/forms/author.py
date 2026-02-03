@@ -1,11 +1,11 @@
-""" using django model forms """
+"""using django model forms"""
+
 from django import forms
 
 from bookwyrm import models
 from .custom_form import CustomForm
 
 
-# pylint: disable=missing-class-docstring
 class AuthorForm(CustomForm):
     class Meta:
         model = models.Author
@@ -15,6 +15,7 @@ class AuthorForm(CustomForm):
             "aliases",
             "bio",
             "wikipedia_link",
+            "wikidata",
             "website",
             "born",
             "died",
@@ -32,6 +33,7 @@ class AuthorForm(CustomForm):
             "wikipedia_link": forms.TextInput(
                 attrs={"aria-describedby": "desc_wikipedia_link"}
             ),
+            "wikidata": forms.TextInput(attrs={"aria-describedby": "desc_wikidata"}),
             "website": forms.TextInput(attrs={"aria-describedby": "desc_website"}),
             "born": forms.SelectDateWidget(attrs={"aria-describedby": "desc_born"}),
             "died": forms.SelectDateWidget(attrs={"aria-describedby": "desc_died"}),

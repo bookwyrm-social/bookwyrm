@@ -1,4 +1,5 @@
-""" activities that do things """
+"""activities that do things"""
+
 from dataclasses import dataclass, field
 from typing import List
 from django.apps import apps
@@ -22,7 +23,6 @@ class Verb(ActivityObject):
             self.object.to_model(allow_external_connections=allow_external_connections)
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class Create(Verb):
     """Create activity"""
@@ -33,7 +33,6 @@ class Create(Verb):
     type: str = "Create"
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class Delete(Verb):
     """Create activity"""
@@ -63,7 +62,6 @@ class Delete(Verb):
         # if we can't find it, we don't need to delete it because we don't have it
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class Update(Verb):
     """Update activity"""
@@ -171,9 +169,19 @@ class Reject(Verb):
     type: str = "Reject"
 
     def action(self, allow_external_connections=True):
-        """reject a follow request"""
-        obj = self.object.to_model(save=False, allow_create=False)
-        obj.reject()
+        """reject a follow or follow request"""
+
+        for model_name in ["UserFollowRequest", "UserFollows", None]:
+            model = apps.get_model(f"bookwyrm.{model_name}") if model_name else None
+            if obj := self.object.to_model(
+                model=model,
+                save=False,
+                allow_create=False,
+                allow_external_connections=allow_external_connections,
+            ):
+                # Reject the first model that can be built.
+                obj.reject()
+                break
 
 
 @dataclass(init=False)
@@ -217,7 +225,6 @@ class Like(Verb):
         self.to_model(allow_external_connections=allow_external_connections)
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class Announce(Verb):
     """boosting a status"""
@@ -231,3 +238,30 @@ class Announce(Verb):
     def action(self, allow_external_connections=True):
         """boost"""
         self.to_model(allow_external_connections=allow_external_connections)
+
+
+@dataclass(init=False)
+class Move(Verb):
+    """a user moving an object"""
+
+    object: str
+    type: str = "Move"
+    origin: str = None
+    target: str = None
+
+    def action(self, allow_external_connections=True):
+        """move"""
+
+        object_is_user = resolve_remote_id(remote_id=self.object, model="User")
+
+        if object_is_user:
+            model = apps.get_model("bookwyrm.MoveUser")
+
+            self.to_model(
+                model=model,
+                save=True,
+                allow_external_connections=allow_external_connections,
+            )
+        else:
+            # we might do something with this to move other objects at some point
+            pass

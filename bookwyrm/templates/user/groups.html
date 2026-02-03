@@ -1,5 +1,10 @@
 {% extends 'user/layout.html' %}
+{% load utilities %}
 {% load i18n %}
+
+{% block title %}
+{% trans "Groups" %} - {{ user|username }}
+{% endblock %}
 
 {% block header %}
 <div class="columns is-mobile">
@@ -25,9 +30,11 @@
 {% block panel %}
 <section class="block">
 
+    {% if request.user.is_authenticated %}
     <div class="block">
         {% include 'groups/create_form.html' with controls_text="create_group" %}
     </div>
+    {% endif %}
 
     {% include 'groups/user_groups.html' with memberships=memberships %}
 </section>

@@ -1,14 +1,16 @@
-FROM python:3.9
+FROM bookwyrm_web
+WORKDIR /app/dev-tools
 
-ENV PYTHONUNBUFFERED 1
+ENV PATH="/app/dev-tools/node_modules/.bin:$PATH"
+ENV PYTHONUNBUFFERED=1
+ENV NPM_CONFIG_UPDATE_NOTIFIER=false
+ENV PIP_ROOT_USER_ACTION=ignore
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 
-RUN mkdir /app
-WORKDIR /app
+COPY --from=node:18-slim /usr/local/bin /usr/local/bin
+COPY --from=node:18-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
+COPY package.json .stylelintrc.js .stylelintignore /app/dev-tools/
 
-COPY package.json requirements.txt .stylelintrc.js .stylelintignore /app/
-RUN pip install -r requirements.txt
-
-RUN apt-get update && apt-get install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
-RUN apt-get install -y nodejs && apt-get clean
 RUN npm install .
+
+WORKDIR /app

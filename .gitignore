@@ -16,6 +16,8 @@
 # BookWyrm
 .env
 /images/
+/exports/
+/static/
 bookwyrm/static/css/bookwyrm.css
 bookwyrm/static/css/themes/
 !bookwyrm/static/css/themes/bookwyrm-*.scss
@@ -36,3 +38,9 @@ nginx/default.conf
 
 #macOS
 **/.DS_Store
+
+#QTS (system in QNAP NAS)
+**/.@__thumb/
+
+# Docker
+docker-compose.override.yml

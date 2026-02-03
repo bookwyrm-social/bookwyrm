@@ -1,5 +1,7 @@
-""" activitypub-aware django model fields """
+"""activitypub-aware django model fields"""
+
 from dataclasses import MISSING
+from datetime import datetime
 import re
 from uuid import uuid4
 from urllib.parse import urljoin
@@ -19,7 +21,12 @@ from markdown import markdown
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_image
 from bookwyrm.utils.sanitizer import clean
-from bookwyrm.settings import MEDIA_FULL_URL
+from bookwyrm.utils.partial_date import (
+    PartialDate,
+    PartialDateModel,
+    from_partial_isoformat,
+)
+from bookwyrm.settings import MEDIA_FULL_URL, DATA_UPLOAD_MAX_MEMORY_SIZE
 
 
 def validate_remote_id(value):
@@ -80,7 +87,9 @@ class ActivitypubFieldMixin:
                 raise
             value = getattr(data, "actor")
         formatted = self.field_from_activity(
-            value, allow_external_connections=allow_external_connections
+            value,
+            allow_external_connections=allow_external_connections,
+            trigger=instance,
         )
         if formatted is None or formatted is MISSING or formatted == {}:
             return False
@@ -121,8 +130,7 @@ class ActivitypubFieldMixin:
             return {self.activitypub_wrapper: value}
         return value
 
-    # pylint: disable=unused-argument
-    def field_from_activity(self, value, allow_external_connections=True):
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
         """formatter to convert activitypub into a model value"""
         if value and hasattr(self, "activitypub_wrapper"):
             value = value.get(self.activitypub_wrapper)
@@ -144,7 +152,9 @@ class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
         self.load_remote = load_remote
         super().__init__(*args, **kwargs)
 
-    def field_from_activity(self, value, allow_external_connections=True):
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
+        """trigger: the object that triggered this deserialization.
+        For example the Edition for which self is the parent Work"""
         if not value:
             return None
 
@@ -154,7 +164,7 @@ class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
                 # only look in the local database
                 return related_model.find_existing(value.serialize())
             # this is an activitypub object, which we can deserialize
-            return value.to_model(model=related_model)
+            return value.to_model(model=related_model, trigger=trigger)
         try:
             # make sure the value looks like a remote id
             validate_remote_id(value)
@@ -187,8 +197,7 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
 
     def __init__(self, activitypub_field="preferredUsername", **kwargs):
         self.activitypub_field = activitypub_field
-        # I don't totally know why pylint is mad at this, but it makes it work
-        super(ActivitypubFieldMixin, self).__init__(  # pylint: disable=bad-super-call
+        super(ActivitypubFieldMixin, self).__init__(
             _("username"),
             max_length=150,
             unique=True,
@@ -228,7 +237,6 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, max_length=255, choices=PrivacyLevels, default="public")
 
-    # pylint: disable=invalid-name
     def set_field_from_activity(
         self, instance, data, overwrite=True, allow_external_connections=True
     ):
@@ -254,12 +262,12 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
 
         if to == [self.public]:
             setattr(instance, self.name, "public")
+        elif self.public in cc:
+            setattr(instance, self.name, "unlisted")
         elif to == [user.followers_url]:
             setattr(instance, self.name, "followers")
         elif cc == []:
             setattr(instance, self.name, "direct")
-        elif self.public in cc:
-            setattr(instance, self.name, "unlisted")
         else:
             setattr(instance, self.name, "followers")
         return original == getattr(instance, self.name)
@@ -270,7 +278,6 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
         if hasattr(instance, "mention_users"):
             mentions = [u.remote_id for u in instance.mention_users.all()]
         # this is a link to the followers list
-        # pylint: disable=protected-access
         followers = instance.user.followers_url
         if instance.privacy == "public":
             activity["to"] = [self.public]
@@ -286,7 +293,10 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
             activity["cc"] = []
 
 
-class ForeignKey(ActivitypubRelatedFieldMixin, models.ForeignKey):
+class ForeignKey(
+    ActivitypubRelatedFieldMixin,
+    models.ForeignKey,
+):
     """activitypub-aware foreign key field"""
 
     def field_to_activity(self, value):
@@ -333,7 +343,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
             return f"{value.instance.remote_id}/{self.name}"
         return [i.remote_id for i in value.all()]
 
-    def field_from_activity(self, value, allow_external_connections=True):
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
         if value is None or value is MISSING:
             return None
         if not isinstance(value, list):
@@ -345,13 +355,13 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
                 validate_remote_id(remote_id)
             except ValidationError:
                 continue
-            items.append(
-                activitypub.resolve_remote_id(
-                    remote_id,
-                    model=self.related_model,
-                    allow_external_connections=allow_external_connections,
-                )
+            item = activitypub.resolve_remote_id(
+                remote_id,
+                model=self.related_model,
+                allow_external_connections=allow_external_connections,
             )
+            if item is not None:
+                items.append(item)
         return items
 
 
@@ -383,7 +393,7 @@ class TagField(ManyToManyField):
             )
         return tags
 
-    def field_from_activity(self, value, allow_external_connections=True):
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
         if not isinstance(value, list):
             # GoToSocial DMs and single-user mentions are
             # sent as objects, not as an array of objects
@@ -409,13 +419,13 @@ class TagField(ManyToManyField):
                 items.append(hashtag)
             else:
                 # for other tag types we fetch them remotely
-                items.append(
-                    activitypub.resolve_remote_id(
-                        link.href,
-                        model=self.related_model,
-                        allow_external_connections=allow_external_connections,
-                    )
+                item = activitypub.resolve_remote_id(
+                    link.href,
+                    model=self.related_model,
+                    allow_external_connections=allow_external_connections,
                 )
+                if item is not None:
+                    items.append(item)
         return items
 
 
@@ -423,6 +433,16 @@ class ClearableFileInputWithWarning(ClearableFileInput):
     """max file size warning"""
 
     template_name = "widgets/clearable_file_input_with_warning.html"
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["widget"]["attrs"].update(
+            {
+                "data-max-upload": DATA_UPLOAD_MAX_MEMORY_SIZE,
+                "max_mb": DATA_UPLOAD_MAX_MEMORY_SIZE >> 20,
+            }
+        )
+        return context
 
 
 class CustomImageField(DjangoImageField):
@@ -438,7 +458,6 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         self.alt_field = alt_field
         super().__init__(*args, **kwargs)
 
-    # pylint: disable=arguments-differ,arguments-renamed,too-many-arguments
     def set_field_from_activity(
         self, instance, data, save=True, overwrite=True, allow_external_connections=True
     ):
@@ -476,16 +495,18 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         if not url:
             return None
 
-        return activitypub.Document(url=url, name=alt)
+        return activitypub.Image(url=url, name=alt)
 
-    def field_from_activity(self, value, allow_external_connections=True):
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
         image_slug = value
         # when it's an inline image (User avatar/icon, Book cover), it's a json
         # blob, but when it's an attached image, it's just a url
-        if hasattr(image_slug, "url"):
-            url = image_slug.url
-        elif isinstance(image_slug, str):
+        if isinstance(image_slug, str):
             url = image_slug
+        elif isinstance(image_slug, dict):
+            url = image_slug.get("url")
+        elif hasattr(image_slug, "url"):  # Serialized to Image/Document object?
+            url = image_slug.url
         else:
             return None
 
@@ -533,9 +554,10 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
             return None
         return value.isoformat()
 
-    def field_from_activity(self, value, allow_external_connections=True):
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
+        missing_fields = datetime(1970, 1, 1)  # "2022-10" => "2022-10-01"
         try:
-            date_value = dateutil.parser.parse(value)
+            date_value = dateutil.parser.parse(value, default=missing_fields)
             try:
                 return timezone.make_aware(date_value)
             except ValueError:
@@ -544,10 +566,40 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
             return None
 
 
+class PartialDateField(ActivitypubFieldMixin, PartialDateModel):
+    """activitypub-aware partial date field"""
+
+    def field_to_activity(self, value) -> str:
+        return value.partial_isoformat() if value else None
+
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
+        try:
+            return from_partial_isoformat(value)
+        except ValueError:
+            pass
+
+        # fallback to full ISO-8601 parsing
+        try:
+            parsed = dateutil.parser.isoparse(value)
+        except (ValueError, ParserError):
+            return None
+
+        if timezone.is_aware(parsed):
+            return PartialDate.from_datetime(parsed)
+        else:
+            # Should not happen on the wire, but truncate down to date parts.
+            return PartialDate.from_date_parts(parsed.year, parsed.month, parsed.day)
+
+        # FIXME: decide whether to fix timestamps like "2023-09-30T21:00:00-03":
+        # clearly Oct 1st, not Sep 30th (an unwanted side-effect of USE_TZ). It's
+        # basically the remnants of #3028; there is a data migration pending (see …)
+        # but over the wire we might get these for an indeterminate amount of time.
+
+
 class HtmlField(ActivitypubFieldMixin, models.TextField):
     """a text field for storing html"""
 
-    def field_from_activity(self, value, allow_external_connections=True):
+    def field_from_activity(self, value, allow_external_connections=True, trigger=None):
         if not value or value == MISSING:
             return None
         return clean(value)

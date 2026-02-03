@@ -1,4 +1,5 @@
-""" test populating user streams """
+"""test populating user streams"""
+
 from django.contrib.auth.models import Group, Permission
 from django.test import TestCase
 

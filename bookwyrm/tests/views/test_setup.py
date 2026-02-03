@@ -1,6 +1,8 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
+from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -13,10 +15,16 @@ from bookwyrm.tests.validate_html import validate_html
 class SetupViews(TestCase):
     """activity feed, statuses, dms"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
+        cls.site = models.SiteSettings.get()
+        cls.site.install_mode = True
+        cls.site.save()
+
+    def setUp(self):
+        """individual test setup"""
         self.factory = RequestFactory()
-        self.site = models.SiteSettings.objects.create(install_mode=True)
 
     def test_instance_config_permission_denied(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -65,6 +73,11 @@ class SetupViews(TestCase):
         form.data["email"] = "aaa@bbb.ccc"
         request = self.factory.post("", form.data)
 
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+        request.session["session_key"] = "1234abcd"
+        request.session.save()
+
         with patch("bookwyrm.views.setup.login") as mock:
             view(request)
         self.assertTrue(mock.called)
@@ -72,7 +85,7 @@ class SetupViews(TestCase):
         self.site.refresh_from_db()
         self.assertFalse(self.site.install_mode)
 
-        user = models.User.objects.get()
+        user = models.User.objects.first()
         self.assertTrue(user.is_active)
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)

@@ -1,4 +1,6 @@
-""" non-interactive pages """
+"""non-interactive pages"""
+
+from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -8,6 +10,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import activitystreams, forms, models
 from bookwyrm.models.user import FeedFilterChoices
@@ -19,7 +22,6 @@ from .helpers import is_api_request, is_bookwyrm_request, maybe_redirect_local_p
 from .annual_summary import get_annual_summary_year
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Feed(View):
     """activity stream"""
@@ -52,6 +54,19 @@ class Feed(View):
 
         suggestions = suggested_users.get_suggestions(request.user)
 
+        cutoff = (
+            date(get_annual_summary_year(), 12, 31)
+            if get_annual_summary_year()
+            else None
+        )
+        readthroughs = (
+            models.ReadThrough.objects.filter(
+                user=request.user, finish_date__lte=cutoff
+            )
+            if get_annual_summary_year()
+            else []
+        )
+
         data = {
             **feed_page_data(request.user),
             **{
@@ -66,6 +81,7 @@ class Feed(View):
                 "path": f"/{tab['key']}",
                 "annual_summary_year": get_annual_summary_year(),
                 "has_tour": True,
+                "has_summary_read_throughs": len(readthroughs),
             },
         }
         return TemplateResponse(request, "feed/feed.html", data)
@@ -114,7 +130,7 @@ class DirectMessage(View):
 class Status(View):
     """get posting"""
 
-    # pylint: disable=unused-argument
+    @vary_on_headers("Accept")
     def get(self, request, username, status_id, slug=None):
         """display a particular status (and replies, etc)"""
         user = get_user_from_username(request.user, username)
@@ -185,19 +201,15 @@ class Status(View):
             params=[status.id, visible_thread, visible_thread],
         )
 
-        preview = None
-        if hasattr(status, "book"):
-            preview = status.book.preview_image
-        elif status.mention_books.exists():
-            preview = status.mention_books.first().preview_image
-
         data = {
             **feed_page_data(request.user),
             **{
                 "status": status,
                 "children": children,
                 "ancestors": ancestors,
-                "preview": preview,
+                "title": status.page_title,
+                "description": status.page_description,
+                "page_image": status.page_image,
             },
         }
         return TemplateResponse(request, "feed/status.html", data)
@@ -206,6 +218,7 @@ class Status(View):
 class Replies(View):
     """replies page (a json view of status)"""
 
+    @vary_on_headers("Accept")
     def get(self, request, username, status_id):
         """ordered collection of replies to a status"""
         # the html view is the same as Status
