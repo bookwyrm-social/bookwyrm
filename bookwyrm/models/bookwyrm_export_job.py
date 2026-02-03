@@ -112,12 +112,10 @@ def create_archive_task(**kwargs):
         archive_filename = f"{export_task_id}.tar.gz"
         export_json_bytes = DjangoJSONEncoder().encode(job.export_json).encode("utf-8")
         user = job.user
+        exports_storage = storages["exports"]
 
-        if settings.USE_S3:
-            # Storage for writing temporary files
-            exports_storage = storages["exports"]
-
-            # Handle for creating the final archive
+        if settings.USE_S3_FOR_EXPORTS:
+            # Handle creating the final archive
             s3_tar = S3Tar(
                 exports_storage.bucket_name,
                 os.path.join(exports_storage.location, archive_filename),
@@ -149,6 +147,9 @@ def create_archive_task(**kwargs):
             exports_storage.delete(export_json_tmp_file)
 
         else:
+            # exports saved to local storage
+            # this is the default even when using S3 for other files
+            # use the scheduled task to periodically delete these
             job.export_data = archive_filename
             with job.export_data.open("wb") as tar_file:
                 with BookwyrmTarFile.open(mode="w:gz", fileobj=tar_file) as tar:

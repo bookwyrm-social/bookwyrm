@@ -237,7 +237,7 @@ class ExportArchive(View):
         """download user export file"""
         export = BookwyrmExportJob.objects.get(task_id=archive_id, user=request.user)
 
-        if settings.USE_S3:
+        if settings.USE_S3_FOR_EXPORTS:
             # make custom_domain None so we can sign the url
             # see https://github.com/jschneier/django-storages/issues/944
             storage = S3Storage(querystring_auth=True, custom_domain=None)
