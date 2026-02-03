@@ -914,7 +914,7 @@ class BookAuthor(BookWyrmModel):
     book = fields.ForeignKey("Book", on_delete=models.CASCADE)
     author = fields.ForeignKey("Author", on_delete=models.CASCADE)
     author_type = models.CharField(
-        max_length=255, choices=AuthorTypes, default="author"
+        max_length=255, choices=AuthorTypes, blank=True, null=True
     )
     author_type_detail = models.CharField(max_length=100, blank=True, null=True)
 
