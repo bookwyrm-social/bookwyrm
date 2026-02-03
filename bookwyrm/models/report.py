@@ -46,7 +46,6 @@ class Report(ActivityMixin, BookWyrmModel):
     )
     statuses = models.ManyToManyField(
         "Status",
-        null=True,
         blank=True,
     )
     links = fields.ManyToManyField("Link", blank=True)
