@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("bookwyrm", "0179_merge_20230426_0011"),
+        ("bookwyrm", "0156_alter_bookauthor_table"),
     ]
 
     operations = [
