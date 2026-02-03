@@ -1,4 +1,5 @@
-""" base model with default fields """
+"""base model with default fields"""
+
 import base64
 from Crypto import Random
 
@@ -8,14 +9,16 @@ from django.db.models import Q
 from django.dispatch import receiver
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
+from django.utils.text import slugify
 
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 from .fields import RemoteIdField
 
 
 DeactivationReason = [
     ("pending", _("Pending")),
     ("self_deletion", _("Self deletion")),
+    ("self_deactivation", _("Self deactivation")),
     ("moderator_suspension", _("Moderator suspension")),
     ("moderator_deletion", _("Moderator deletion")),
     ("domain_block", _("Domain block")),
@@ -35,10 +38,11 @@ class BookWyrmModel(models.Model):
     remote_id = RemoteIdField(null=True, activitypub_field="id")
 
     def get_remote_id(self):
-        """generate a url that resolves to the local object"""
-        base_path = f"https://{DOMAIN}"
+        """generate the url that resolves to the local object, without a slug"""
+        base_path = BASE_URL
         if hasattr(self, "user"):
             base_path = f"{base_path}{self.user.local_path}"
+
         model_name = type(self).__name__.lower()
         return f"{base_path}/{model_name}/{self.id}"
 
@@ -49,8 +53,20 @@ class BookWyrmModel(models.Model):
 
     @property
     def local_path(self):
-        """how to link to this object in the local app"""
-        return self.get_remote_id().replace(f"https://{DOMAIN}", "")
+        """how to link to this object in the local app, with a slug"""
+        local = self.get_remote_id().replace(BASE_URL, "")
+
+        name = None
+        if hasattr(self, "name_field"):
+            name = getattr(self, self.name_field)
+        elif hasattr(self, "name"):
+            name = self.name
+
+        if name:
+            slug = slugify(name, allow_unicode=True)
+            local = f"{local}/s/{slug}"
+
+        return local
 
     def raise_visible_to_user(self, viewer):
         """is a user authorized to view an object?"""
@@ -78,12 +94,12 @@ class BookWyrmModel(models.Model):
                 self.privacy in ["direct", "followers"]
                 and self.mention_users.filter(id=viewer.id).first()
             ):
-
                 return
 
         # you can see groups of which you are a member
         if (
             hasattr(self, "memberships")
+            and viewer.is_authenticated
             and self.memberships.filter(user=viewer).exists()
         ):
             return
@@ -117,7 +133,7 @@ class BookWyrmModel(models.Model):
             return
 
         # but generally moderators can delete other people's stuff
-        if self.user == viewer or viewer.has_perm("moderate_post"):
+        if self.user == viewer or viewer.has_perm("bookwyrm.moderate_post"):
             return
 
         raise PermissionDenied()
@@ -133,7 +149,7 @@ class BookWyrmModel(models.Model):
         # you can't see followers only or direct messages if you're not logged in
         if viewer.is_anonymous:
             privacy_levels = [
-                p for p in privacy_levels if not p in ["followers", "direct"]
+                p for p in privacy_levels if p not in ["followers", "direct"]
             ]
         else:
             # exclude blocks from both directions
@@ -170,7 +186,6 @@ class BookWyrmModel(models.Model):
 
 
 @receiver(models.signals.post_save)
-# pylint: disable=unused-argument
 def set_remote_id(sender, instance, created, *args, **kwargs):
     """set the remote_id after save (when the id is available)"""
     if not created or not hasattr(instance, "get_remote_id"):

@@ -1,0 +1,81 @@
+{% load i18n %}
+{% load feed_page_tags %}
+
+{% suggested_books as suggested_books %}
+<section id="tour-suggested-books" class="block">
+    <h2 class="title is-4">{% trans "Your Books" %}</h2>
+    {% if not suggested_books %}
+
+    <div class="content">
+        <p>{% trans "There are no books here right now! Try searching for a book to get started" %}</p>
+
+        <div class="box has-background-link-light">
+            <p>{% trans "Do you have book data from another service like GoodReads?" %}</p>
+            <a href="{% url 'import' %}">
+                <span class="icon icon-list" aria-hidden="true"></span>
+                {% trans "Import your reading history" %}
+            </a>
+        </div>
+    </div>
+
+    {% else %}
+    {% with active_book=request.GET.book %}
+    <div class="tab-group">
+        <div class="bw-tabs is-small is-toggle has-aside-text" role="tablist">
+        {% for shelf in suggested_books %}
+        {% if shelf.books %}
+        {% with shelf_counter=forloop.counter %}
+            {% for book in shelf.books %}
+            <a
+                class="{% if active_book == book.id|stringformat:'d' %}is-active{% elif not active_book and shelf_counter == 1 and forloop.first %}is-active{% endif %}"
+                href="{{ request.path }}?book={{ book.id }}"
+                id="tab_book_{{ book.id }}"
+                role="tab"
+                aria-label="{{ book.title }}"
+                aria-selected="{% if active_book == book.id|stringformat:'d' %}true{% elif not active_book and shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}"
+                aria-controls="book_{{ book.id }}">
+                {% if forloop.first %}
+                    <span class="aside-text">
+                        {% include "snippets/translated_shelf_name.html" with shelf=shelf %}
+                    </span>
+                {% endif %}
+                {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m' %}
+            </a>
+            {% endfor %}
+        {% endwith %}
+        {% endif %}
+        {% endfor %}
+        </div>
+        {% for shelf in suggested_books %}
+        {% with shelf_counter=forloop.counter %}
+        {% for book in shelf.books %}
+        <div
+            class="suggested-tabs card"
+            role="tabpanel"
+            id="book_{{ book.id }}"
+            {% if active_book and active_book == book.id|stringformat:'d' %}{% elif not active_book and shelf_counter == 1 and forloop.first %}{% else %} hidden{% endif %}
+            aria-labelledby="tab_book_{{ book.id }}">
+
+            <div class="card-header">
+                <div class="card-header-title">
+                    <div>
+                        <p class="mb-2">{% include 'snippets/book_titleby.html' with book=book %}</p>
+                        {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
+                    </div>
+                </div>
+                <div class="card-header-icon is-hidden-tablet">
+                    {% trans "Close" as button_text %}
+                    {% include 'snippets/toggle/toggle_button.html' with label=button_text controls_text="book" controls_uid=book.id class="delete" nonbutton=True pressed=True %}
+                </div>
+            </div>
+            <div class="card-content">
+            {% include 'snippets/create_status.html' with book=book %}
+            </div>
+        </div>
+        {% endfor %}
+        {% endwith %}
+        {% endfor %}
+    </div>
+    {% endwith %}
+    {% endif %}
+</section>

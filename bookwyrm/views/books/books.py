@@ -1,8 +1,6 @@
-""" the good stuff! the books! """
-from uuid import uuid4
+"""the good stuff! the books!"""
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
 from django.db.models import Avg, Q
 from django.http import Http404
@@ -10,20 +8,25 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.views import View
 from django.views.decorators.http import require_POST
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.connectors import connector_manager
-from bookwyrm.connectors.abstract_connector import get_image
+from bookwyrm.connectors import connector_manager, ConnectorException
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request
+from bookwyrm.utils.images import remove_uploaded_image_exif, set_cover_from_url
+from bookwyrm.views.helpers import (
+    is_api_request,
+    maybe_redirect_local_path,
+    get_mergeable_object_or_404,
+)
 
 
-# pylint: disable=no-self-use
 class Book(View):
     """a book! this is the stuff"""
 
-    def get(self, request, book_id, user_statuses=False):
+    @vary_on_headers("Accept")
+    def get(self, request, book_id, **kwargs):
         """info about a book"""
         if is_api_request(request):
             book = get_object_or_404(
@@ -31,21 +34,34 @@ class Book(View):
             )
             return ActivitypubResponse(book.to_activity())
 
-        user_statuses = user_statuses if request.user.is_authenticated else False
+        user_statuses = (
+            kwargs.get("user_statuses", False)
+            if request.user.is_authenticated
+            else False
+        )
 
         # it's safe to use this OR because edition and work and subclasses of the same
         # table, so they never have clashing IDs
         book = (
             models.Edition.viewer_aware_objects(request.user)
-            .filter(Q(id=book_id) | Q(parent_work__id=book_id))
+            .filter(
+                Q(id=book_id)
+                | Q(parent_work__id=book_id)
+                | Q(absorbed__deleted_id=book_id)
+            )
             .order_by("-edition_rank")
             .select_related("parent_work")
-            .prefetch_related("authors")
+            .prefetch_related("authors", "file_links")
             .first()
         )
 
         if not book or not book.parent_work:
             raise Http404()
+
+        if redirect_local_path := not user_statuses and maybe_redirect_local_path(
+            request, book
+        ):
+            return redirect_local_path
 
         # all reviews for all editions of the book
         reviews = models.Review.privacy_filter(request.user).filter(
@@ -66,7 +82,9 @@ class Book(View):
         queryset = queryset.select_related("user").order_by("-published_date")
         paginated = Paginator(queryset, PAGE_LENGTH)
 
-        lists = models.List.privacy_filter(request.user,).filter(
+        lists = models.List.privacy_filter(
+            request.user,
+        ).filter(
             listitem__approved=True,
             listitem__book__in=book.parent_work.editions.all(),
         )
@@ -74,16 +92,22 @@ class Book(View):
             "book": book,
             "statuses": paginated.get_page(request.GET.get("page")),
             "review_count": reviews.count(),
-            "ratings": reviews.filter(
-                Q(content__isnull=True) | Q(content="")
-            ).select_related("user")
-            if not user_statuses
-            else None,
+            "ratings": (
+                reviews.filter(Q(content__isnull=True) | Q(content="")).select_related(
+                    "user"
+                )
+                if not user_statuses
+                else None
+            ),
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
             "lists": lists,
+            "update_error": kwargs.get("update_error", False),
         }
 
         if request.user.is_authenticated:
+            data["list_options"] = request.user.list_set.exclude(id__in=data["lists"])
+            data["list_form"] = forms.ListForm()
+            data["file_link_form"] = forms.FileLinkForm()
             readthroughs = models.ReadThrough.objects.filter(
                 user=request.user,
                 book=book,
@@ -119,7 +143,7 @@ class Book(View):
 @require_POST
 def upload_cover(request, book_id):
     """upload a new cover"""
-    book = get_object_or_404(models.Edition, id=book_id)
+    book = get_mergeable_object_or_404(models.Edition, id=book_id)
     book.last_edited_by = request.user
 
     url = request.POST.get("cover-url")
@@ -134,23 +158,10 @@ def upload_cover(request, book_id):
     if not form.is_valid() or not form.files.get("cover"):
         return redirect(book.local_path)
 
-    book.cover = form.files["cover"]
+    book.cover = remove_uploaded_image_exif(form.files["cover"])
     book.save()
 
     return redirect(book.local_path)
-
-
-def set_cover_from_url(url):
-    """load it from a url"""
-    try:
-        image_file = get_image(url)
-    except:  # pylint: disable=bare-except
-        return None
-    if not image_file:
-        return None
-    image_name = str(uuid4()) + "." + url.split(".")[-1]
-    image_content = ContentFile(image_file.content)
-    return [image_name, image_content]
 
 
 @login_required
@@ -158,7 +169,7 @@ def set_cover_from_url(url):
 @permission_required("bookwyrm.edit_book", raise_exception=True)
 def add_description(request, book_id):
     """upload a new cover"""
-    book = get_object_or_404(models.Edition, id=book_id)
+    book = get_mergeable_object_or_404(models.Edition, id=book_id)
 
     description = request.POST.get("description")
 
@@ -176,5 +187,26 @@ def resolve_book(request):
     remote_id = request.POST.get("remote_id")
     connector = connector_manager.get_or_create_connector(remote_id)
     book = connector.get_or_create_book(remote_id)
+
+    return redirect("book", book.id)
+
+
+@login_required
+@require_POST
+@permission_required("bookwyrm.edit_book", raise_exception=True)
+def update_book_from_remote(request, book_id, connector_identifier):
+    """load the remote data for this book"""
+    connector = connector_manager.load_connector(
+        get_object_or_404(models.Connector, identifier=connector_identifier)
+    )
+    book = get_mergeable_object_or_404(
+        models.Book.objects.select_subclasses(), id=book_id
+    )
+
+    try:
+        connector.update_book_from_remote(book)
+    except ConnectorException:
+        # the remote source isn't available or doesn't know this book
+        return Book().get(request, book_id, update_error=True)
 
     return redirect("book", book.id)

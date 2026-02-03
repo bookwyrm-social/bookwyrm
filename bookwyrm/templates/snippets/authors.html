@@ -13,7 +13,7 @@
 {% for author in book.authors.all|slice:limit %}
     <a
         href="{{ author.local_path }}"
-        class="author"
+        class="author {{ link_class }}"
         itemprop="author"
         itemscope
         itemtype="https://schema.org/Thing"

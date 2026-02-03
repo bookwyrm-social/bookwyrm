@@ -18,7 +18,7 @@
     </p>
     <form name="directory" method="POST" action="{% url 'directory' %}">
         {% csrf_token %}
-        <button class="button is-primary" type="submit">Join Directory</button>
+        <button class="button is-primary" type="submit">{% trans "Join Directory" %}</button>
         <p class="help">
             {% url 'prefs-profile' as path %}
             {% blocktrans with path=path %}You can opt-out at any time in your <a href="{{ path }}">profile settings.</a>{% endblocktrans %}
@@ -28,7 +28,7 @@
     <div class="column is-narrow">
         {% trans "Dismiss message" as button_text %}
         <button type="button" class="delete set-display" data-id="hide_join_directory" data-value="true">
-            <span>Dismiss message</span>
+            <span>{% trans "Dismiss message" %}</span>
         </button>
     </div>
 </div></div>

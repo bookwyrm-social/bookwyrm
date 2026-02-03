@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load utilities %}
+<div class="container my-6">
+    <div class="notification is-info has-text-centered">
+        <p>
+            {% id_to_username user.moved_to as moved_to_name %}
+            {% blocktrans trimmed with user=user|username moved_to_link=user.moved_to %}
+            <em>{{ user }}</em> has moved to <a href="{{ moved_to_link }}">{{ moved_to_name }}</a>
+            {% endblocktrans %}
+        </p>
+    </div>
+</div>

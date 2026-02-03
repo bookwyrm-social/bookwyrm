@@ -1,50 +1,71 @@
 /* exported BookWyrm */
-/* globals TabGroup */
+/* globals TabGroup, Quagga */
 
-let BookWyrm = new class {
+let BookWyrm = new (class {
     constructor() {
-        this.MAX_FILE_SIZE_BYTES = 10 * 1000000;
         this.initOnDOMLoaded();
-        this.initReccuringTasks();
+        this.initRecurringTasks();
         this.initEventListeners();
     }
 
     initEventListeners() {
-        document.querySelectorAll('[data-controls]')
-            .forEach(button => button.addEventListener(
-                'click',
-                this.toggleAction.bind(this))
+        document
+            .querySelectorAll("[data-controls]")
+            .forEach((button) => button.addEventListener("click", this.toggleAction.bind(this)));
+
+        document
+            .querySelectorAll("[data-disappear]")
+            .forEach((button) => button.addEventListener("click", this.hideSelf.bind(this)));
+
+        document
+            .querySelectorAll(".interaction")
+            .forEach((button) => button.addEventListener("submit", this.interact.bind(this)));
+
+        document
+            .querySelectorAll(".hidden-form input")
+            .forEach((button) => button.addEventListener("change", this.revealForm.bind(this)));
+
+        document
+            .querySelectorAll("[data-hides]")
+            .forEach((button) => button.addEventListener("change", this.hideForm.bind(this)));
+
+        document
+            .querySelectorAll("[data-back]")
+            .forEach((button) => button.addEventListener("click", this.back));
+
+        document
+            .querySelectorAll("[data-password-icon]")
+            .forEach((button) =>
+                button.addEventListener("click", this.togglePasswordVisibility.bind(this))
             );
 
-        document.querySelectorAll('.interaction')
-            .forEach(button => button.addEventListener(
-                'submit',
-                this.interact.bind(this))
+        document
+            .querySelectorAll('input[type="file"]')
+            .forEach((node) => node.addEventListener("change", this.disableIfTooLarge.bind(this)));
+
+        document
+            .querySelectorAll("[data-modal-open]")
+            .forEach((node) => node.addEventListener("click", this.handleModalButton.bind(this)));
+
+        document.querySelectorAll("details.dropdown").forEach((node) => {
+            node.addEventListener("toggle", this.handleDetailsDropdown.bind(this));
+        });
+
+        document
+            .querySelector("#barcode-scanner-modal")
+            .addEventListener("open", this.openBarcodeScanner.bind(this));
+
+        document
+            .querySelectorAll('form[name="register"]')
+            .forEach((form) =>
+                form.addEventListener("submit", (e) => this.setPreferredTimezone(e, form))
             );
 
-        document.querySelectorAll('.hidden-form input')
-            .forEach(button => button.addEventListener(
-                'change',
-                this.revealForm.bind(this))
+        document
+            .querySelectorAll("button[name='button-book-list']")
+            .forEach((button) =>
+                button.addEventListener("click", this.checkListSelection.bind(this))
             );
-
-        document.querySelectorAll('[data-hides]')
-            .forEach(button => button.addEventListener(
-                'change',
-                this.hideForm.bind(this))
-            );
-
-        document.querySelectorAll('[data-back]')
-            .forEach(button => button.addEventListener(
-                'click',
-                this.back)
-            );
-
-        document.querySelectorAll('input[type="file"]')
-            .forEach(node => node.addEventListener(
-                'change',
-                this.disableIfTooLarge.bind(this)
-            ));
     }
 
     /**
@@ -53,22 +74,27 @@ let BookWyrm = new class {
     initOnDOMLoaded() {
         const bookwyrm = this;
 
-        window.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.tab-group')
-                .forEach(tabs => new TabGroup(tabs));
-            document.querySelectorAll('input[type="file"]').forEach(
-                bookwyrm.disableIfTooLarge.bind(bookwyrm)
-            );
+        window.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".tab-group").forEach((tabs) => new TabGroup(tabs));
+            document
+                .querySelectorAll('input[type="file"]')
+                .forEach(bookwyrm.disableIfTooLarge.bind(bookwyrm));
+            document.querySelectorAll("[data-copytext]").forEach(bookwyrm.copyText.bind(bookwyrm));
+            document
+                .querySelectorAll("[data-copywithtooltip]")
+                .forEach(bookwyrm.copyWithTooltip.bind(bookwyrm));
+            document
+                .querySelectorAll(".modal.is-active")
+                .forEach(bookwyrm.handleActiveModal.bind(bookwyrm));
         });
     }
 
     /**
      * Execute recurring tasks.
      */
-    initReccuringTasks() {
+    initRecurringTasks() {
         // Polling
-        document.querySelectorAll('[data-poll]')
-            .forEach(liveArea => this.polling(liveArea));
+        document.querySelectorAll("[data-poll]").forEach((liveArea) => this.polling(liveArea));
     }
 
     /**
@@ -84,7 +110,6 @@ let BookWyrm = new class {
 
     /**
      * Update a counter with recurring requests to the API
-     * The delay is slightly randomized and increased on each cycle.
      *
      * @param  {Object} counter - DOM node
      * @param  {int}    delay   - frequency for polling in ms
@@ -93,16 +118,23 @@ let BookWyrm = new class {
     polling(counter, delay) {
         const bookwyrm = this;
 
-        delay = delay || 10000;
-        delay += (Math.random() * 1000);
+        delay = delay || 5 * 60 * 1000 + (Math.random() - 0.5) * 30 * 1000;
 
-        setTimeout(function() {
-            fetch('/api/updates/' + counter.dataset.poll)
-                .then(response => response.json())
-                .then(data => bookwyrm.updateCountElement(counter, data));
-
-            bookwyrm.polling(counter, delay * 1.25);
-        }, delay, counter);
+        setTimeout(
+            function () {
+                fetch("/api/updates/" + counter.dataset.poll)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        bookwyrm.updateCountElement(counter, data);
+                        bookwyrm.polling(counter);
+                    })
+                    .catch(() => {
+                        bookwyrm.polling(counter, delay * 1.1);
+                    });
+            },
+            delay,
+            counter
+        );
     }
 
     /**
@@ -113,29 +145,34 @@ let BookWyrm = new class {
      * @return {undefined}
      */
     updateCountElement(counter, data) {
+        let count = data.count;
+
+        if (count === undefined) {
+            return;
+        }
+
         const currentCount = counter.innerText;
-        const count = data.count;
         const hasMentions = data.has_mentions;
 
         if (count != currentCount) {
-            this.addRemoveClass(counter.closest('[data-poll-wrapper]'), 'is-hidden', count < 1);
+            this.addRemoveClass(counter.closest("[data-poll-wrapper]"), "is-hidden", count < 1);
             counter.innerText = count;
-            this.addRemoveClass(counter.closest('[data-poll-wrapper]'), 'is-danger', hasMentions);
+            this.addRemoveClass(counter.closest("[data-poll-wrapper]"), "is-danger", hasMentions);
         }
     }
 
     /**
      * Show form.
-     * 
+     *
      * @param  {Event} event
      * @return {undefined}
      */
     revealForm(event) {
         let trigger = event.currentTarget;
-        let hidden = trigger.closest('.hidden-form').querySelectorAll('.is-hidden')[0];
+        let hidden = trigger.closest(".hidden-form").querySelectorAll(".is-hidden")[0];
 
         if (hidden) {
-            this.addRemoveClass(hidden, 'is-hidden', !hidden);
+            this.addRemoveClass(hidden, "is-hidden", !hidden);
         }
     }
 
@@ -147,10 +184,22 @@ let BookWyrm = new class {
      */
     hideForm(event) {
         let trigger = event.currentTarget;
-        let targetId = trigger.dataset.hides
-        let visible = document.getElementById(targetId)
+        let targetId = trigger.dataset.hides;
+        let visible = document.getElementById(targetId);
 
-        this.addRemoveClass(visible, 'is-hidden', true);
+        this.addRemoveClass(visible, "is-hidden", true);
+    }
+
+    /**
+     * Hide the element you just clicked
+     *
+     * @param {Event} event
+     * @return {undefined}
+     */
+    hideSelf(event) {
+        let trigger = event.currentTarget;
+
+        this.addRemoveClass(trigger, "is-hidden", true);
     }
 
     /**
@@ -165,31 +214,34 @@ let BookWyrm = new class {
         if (!trigger.dataset.allowDefault || event.currentTarget == event.target) {
             event.preventDefault();
         }
-        let pressed = trigger.getAttribute('aria-pressed') === 'false';
+        let pressed = trigger.getAttribute("aria-pressed") === "false";
         let targetId = trigger.dataset.controls;
 
         // Toggle pressed status on all triggers controlling the same target.
-        document.querySelectorAll('[data-controls="' + targetId + '"]')
-            .forEach(otherTrigger => otherTrigger.setAttribute(
-                'aria-pressed',
-                otherTrigger.getAttribute('aria-pressed') === 'false'
-            ));
+        document
+            .querySelectorAll('[data-controls="' + targetId + '"]')
+            .forEach((otherTrigger) =>
+                otherTrigger.setAttribute(
+                    "aria-pressed",
+                    otherTrigger.getAttribute("aria-pressed") === "false"
+                )
+            );
 
         // @todo Find a better way to handle the exception.
-        if (targetId && ! trigger.classList.contains('pulldown-menu')) {
+        if (targetId && !trigger.classList.contains("pulldown-menu")) {
             let target = document.getElementById(targetId);
 
-            this.addRemoveClass(target, 'is-hidden', !pressed);
-            this.addRemoveClass(target, 'is-active', pressed);
+            this.addRemoveClass(target, "is-hidden", !pressed);
+            this.addRemoveClass(target, "is-active", pressed);
         }
 
         // Show/hide pulldown-menus.
-        if (trigger.classList.contains('pulldown-menu')) {
+        if (trigger.classList.contains("pulldown-menu")) {
             this.toggleMenu(trigger, targetId);
         }
 
         // Show/hide container.
-        let container = document.getElementById('hide_' + targetId);
+        let container = document.getElementById("hide_" + targetId);
 
         if (container) {
             this.toggleContainer(container, pressed);
@@ -226,14 +278,14 @@ let BookWyrm = new class {
      * @return {undefined}
      */
     toggleMenu(trigger, targetId) {
-        let expanded = trigger.getAttribute('aria-expanded') == 'false';
+        let expanded = trigger.getAttribute("aria-expanded") == "false";
 
-        trigger.setAttribute('aria-expanded', expanded);
+        trigger.setAttribute("aria-expanded", expanded);
 
         if (targetId) {
             let target = document.getElementById(targetId);
 
-            this.addRemoveClass(target, 'is-active', expanded);
+            this.addRemoveClass(target, "is-active", expanded);
         }
     }
 
@@ -245,7 +297,7 @@ let BookWyrm = new class {
      * @return {undefined}
      */
     toggleContainer(container, pressed) {
-        this.addRemoveClass(container, 'is-hidden', pressed);
+        this.addRemoveClass(container, "is-hidden", pressed);
     }
 
     /**
@@ -282,7 +334,7 @@ let BookWyrm = new class {
 
         node.focus();
 
-        setTimeout(function() {
+        setTimeout(function () {
             node.selectionStart = node.selectionEnd = 10000;
         }, 0);
     }
@@ -302,15 +354,17 @@ let BookWyrm = new class {
         const relatedforms = document.querySelectorAll(`.${form.dataset.id}`);
 
         // Toggle class on all related forms.
-        relatedforms.forEach(relatedForm => bookwyrm.addRemoveClass(
-            relatedForm,
-            'is-hidden',
-            relatedForm.className.indexOf('is-hidden') == -1
-        ));
+        relatedforms.forEach((relatedForm) =>
+            bookwyrm.addRemoveClass(
+                relatedForm,
+                "is-hidden",
+                relatedForm.className.indexOf("is-hidden") == -1
+            )
+        );
 
-        this.ajaxPost(form).catch(error => {
+        this.ajaxPost(form).catch((error) => {
             // @todo Display a notification in the UI instead.
-            console.warn('Request failed:', error);
+            console.warn("Request failed:", error);
         });
     }
 
@@ -322,11 +376,11 @@ let BookWyrm = new class {
      */
     ajaxPost(form) {
         return fetch(form.action, {
-            method : "POST",
+            method: "POST",
             body: new FormData(form),
             headers: {
-                'Accept': 'application/json',
-            }
+                Accept: "application/json",
+            },
         });
     }
 
@@ -347,25 +401,502 @@ let BookWyrm = new class {
     }
 
     disableIfTooLarge(eventOrElement) {
-        const { addRemoveClass, MAX_FILE_SIZE_BYTES } = this;
+        const { addRemoveClass } = this;
         const element = eventOrElement.currentTarget || eventOrElement;
+        const limit = element.dataset.maxUpload;
 
         const submits = element.form.querySelectorAll('[type="submit"]');
-        const warns = element.parentElement.querySelectorAll('.file-too-big');
-        const isTooBig = element.files &&
-            element.files[0] &&
-            element.files[0].size > MAX_FILE_SIZE_BYTES;
+        const warns = element.parentElement.querySelectorAll(".file-too-big");
+        const isTooBig =
+            element.files && limit && element.files[0] && element.files[0].size > limit;
 
         if (isTooBig) {
-            submits.forEach(submitter => submitter.disabled = true);
-            warns.forEach(
-                sib => addRemoveClass(sib, 'is-hidden', false)
-            );
+            submits.forEach((submitter) => (submitter.disabled = true));
+            warns.forEach((sib) => addRemoveClass(sib, "is-hidden", false));
         } else {
-            submits.forEach(submitter => submitter.disabled = false);
-            warns.forEach(
-                sib => addRemoveClass(sib, 'is-hidden', true)
-            );
+            submits.forEach((submitter) => (submitter.disabled = false));
+            warns.forEach((sib) => addRemoveClass(sib, "is-hidden", true));
         }
     }
-}();
+
+    /**
+     * Handle the modal component with a button trigger.
+     *
+     * @param  {Event} event - Event fired by an element
+     *                         with the `data-modal-open` attribute
+     *                         pointing to a modal by its id.
+     * @return {undefined}
+     *
+     * See https://github.com/bookwyrm-social/bookwyrm/pull/1633
+     *  for information about using the modal.
+     */
+    handleModalButton(event) {
+        const { handleFocusTrap } = this;
+        const modalButton = event.currentTarget;
+        const targetModalId = modalButton.dataset.modalOpen;
+        const htmlElement = document.querySelector("html");
+        const modal = document.getElementById(targetModalId);
+
+        if (!modal) {
+            return;
+        }
+
+        // Helper functions
+        function handleModalOpen(modalElement) {
+            event.preventDefault();
+
+            htmlElement.classList.add("is-clipped");
+            modalElement.classList.add("is-active");
+            modalElement.getElementsByClassName("modal-card")[0].focus();
+
+            const closeButtons = modalElement.querySelectorAll("[data-modal-close]");
+
+            closeButtons.forEach((button) => {
+                button.addEventListener("click", function () {
+                    handleModalClose(modalElement);
+                });
+            });
+
+            document.addEventListener("keydown", function (event) {
+                if (event.key === "Escape") {
+                    handleModalClose(modalElement);
+                }
+            });
+
+            modalElement.addEventListener("keydown", handleFocusTrap);
+            modalElement.dispatchEvent(new Event("open"));
+        }
+
+        function handleModalClose(modalElement) {
+            modalElement.dispatchEvent(new Event("close"));
+            modalElement.removeEventListener("keydown", handleFocusTrap);
+            htmlElement.classList.remove("is-clipped");
+            modalElement.classList.remove("is-active");
+            modalButton.focus();
+        }
+
+        // Open modal
+        handleModalOpen(modal);
+    }
+
+    /**
+     * Handle the modal component when opened at page load.
+     *
+     * @param  {Element} modalElement - Active modal element
+     * @return {undefined}
+     *
+     */
+    handleActiveModal(modalElement) {
+        if (!modalElement) {
+            return;
+        }
+
+        const { handleFocusTrap } = this;
+
+        modalElement.getElementsByClassName("modal-card")[0].focus();
+
+        const closeButtons = modalElement.querySelectorAll("[data-modal-close]");
+
+        closeButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+                handleModalClose(modalElement);
+            });
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                handleModalClose(modalElement);
+            }
+        });
+
+        modalElement.addEventListener("keydown", handleFocusTrap);
+
+        function handleModalClose(modalElement) {
+            modalElement.removeEventListener("keydown", handleFocusTrap);
+            history.back();
+        }
+    }
+
+    /**
+     * Display pop up window.
+     *
+     * @param {string} url Url to open
+     * @param {string} windowName windowName
+     * @return {undefined}
+     */
+    displayPopUp(url, windowName) {
+        window.open(url, windowName, "left=100,top=100,width=430,height=600");
+    }
+
+    /**
+     * Set up a "click-to-copy" component from a textarea element
+     * with `data-copytext`, `data-copytext-label`, `data-copytext-success`
+     * attributes.
+     *
+     * @param  {object}  node - DOM node of the text container
+     * @return {undefined}
+     */
+
+    copyText(textareaEl) {
+        const text = textareaEl.textContent;
+
+        const copyButtonEl = document.createElement("button");
+
+        copyButtonEl.textContent = textareaEl.dataset.copytextLabel;
+        copyButtonEl.classList.add("button", "is-small", "is-primary", "is-light");
+        copyButtonEl.addEventListener("click", () => {
+            navigator.clipboard.writeText(text).then(function () {
+                textareaEl.classList.add("is-success");
+                copyButtonEl.classList.replace("is-primary", "is-success");
+                copyButtonEl.textContent = textareaEl.dataset.copytextSuccess;
+            });
+        });
+
+        textareaEl.parentNode.appendChild(copyButtonEl);
+    }
+
+    copyWithTooltip(copyButtonEl) {
+        const text = document.getElementById(copyButtonEl.dataset.contentId).innerHTML;
+        const tooltipEl = document.getElementById(copyButtonEl.dataset.tooltipId);
+
+        copyButtonEl.addEventListener("click", () => {
+            navigator.clipboard.writeText(text);
+            tooltipEl.style.visibility = "visible";
+            tooltipEl.style.opacity = 1;
+            setTimeout(function () {
+                tooltipEl.style.visibility = "hidden";
+                tooltipEl.style.opacity = 0;
+            }, 3000);
+        });
+    }
+
+    /**
+     * Handle the details dropdown component.
+     *
+     * @param  {Event} event - Event fired by a `details` element
+     *                         with the `dropdown` class name, on toggle.
+     * @return {undefined}
+     */
+    handleDetailsDropdown(event) {
+        const detailsElement = event.target;
+        const summaryElement = detailsElement.querySelector("summary");
+        const menuElement = detailsElement.querySelector(".dropdown-menu");
+        const htmlElement = document.querySelector("html");
+
+        if (detailsElement.open) {
+            // Focus first menu element
+            menuElement
+                .querySelectorAll("a[href]:not([disabled]), button:not([disabled])")[0]
+                .focus();
+
+            // Enable focus trap
+            menuElement.addEventListener("keydown", this.handleFocusTrap);
+
+            // Close on Esc
+            detailsElement.addEventListener("keydown", handleEscKey);
+
+            // Clip page if Mobile
+            if (this.isMobile()) {
+                htmlElement.classList.add("is-clipped");
+            }
+        } else {
+            summaryElement.focus();
+
+            // Disable focus trap
+            menuElement.removeEventListener("keydown", this.handleFocusTrap);
+
+            // Unclip page
+            if (this.isMobile()) {
+                htmlElement.classList.remove("is-clipped");
+            }
+        }
+
+        function handleEscKey(event) {
+            if (event.key !== "Escape") {
+                return;
+            }
+
+            summaryElement.click();
+        }
+    }
+
+    /**
+     * Check if windows matches mobile media query.
+     *
+     * @return {Boolean}
+     */
+    isMobile() {
+        return window.matchMedia("(max-width: 768px)").matches;
+    }
+
+    /**
+     * Focus trap handler
+     *
+     * @param  {Event} event - Keydown event.
+     * @return {undefined}
+     */
+    handleFocusTrap(event) {
+        if (event.key !== "Tab") {
+            return;
+        }
+
+        const focusableEls = event.currentTarget.querySelectorAll(
+            [
+                "a[href]:not([disabled])",
+                "button:not([disabled])",
+                "textarea:not([disabled])",
+                'input:not([type="hidden"]):not([disabled])',
+                "select:not([disabled])",
+                "details:not([disabled])",
+                '[tabindex]:not([tabindex="-1"]):not([disabled])',
+            ].join(",")
+        );
+        const firstFocusableEl = focusableEls[0];
+        const lastFocusableEl = focusableEls[focusableEls.length - 1];
+
+        if (event.shiftKey) {
+            /* Shift + tab */ if (document.activeElement === firstFocusableEl) {
+                lastFocusableEl.focus();
+                event.preventDefault();
+            }
+        } /* Tab */ else {
+            if (document.activeElement === lastFocusableEl) {
+                firstFocusableEl.focus();
+                event.preventDefault();
+            }
+        }
+    }
+
+    openBarcodeScanner(event) {
+        const scannerNode = document.getElementById("barcode-scanner");
+        const statusNode = document.getElementById("barcode-status");
+        const cameraListNode = document.querySelector("#barcode-camera-list > select");
+
+        cameraListNode.addEventListener("change", onChangeCamera);
+
+        function onChangeCamera(event) {
+            initBarcodes(event.target.value);
+        }
+
+        function toggleStatus(status) {
+            const template = document.querySelector(`#barcode-${status}`);
+
+            statusNode.replaceChildren(template ? template.content.cloneNode(true) : null);
+        }
+
+        function initBarcodes(cameraId = null) {
+            toggleStatus("grant-access");
+
+            if (!cameraId) {
+                cameraId = sessionStorage.getItem("preferredCam");
+            } else {
+                sessionStorage.setItem("preferredCam", cameraId);
+            }
+
+            scannerNode.replaceChildren();
+            Quagga.stop();
+            Quagga.init(
+                {
+                    inputStream: {
+                        name: "Live",
+                        type: "LiveStream",
+                        target: scannerNode,
+                        constraints: {
+                            facingMode: "environment",
+                            deviceId: cameraId,
+                        },
+                    },
+                    decoder: {
+                        readers: [
+                            "ean_reader",
+                            {
+                                format: "ean_reader",
+                                config: {
+                                    supplements: ["ean_2_reader", "ean_5_reader"],
+                                },
+                            },
+                        ],
+                        multiple: false,
+                    },
+                },
+                (err) => {
+                    if (err) {
+                        scannerNode.replaceChildren();
+                        console.log(err);
+                        toggleStatus("access-denied");
+
+                        return;
+                    }
+
+                    let activeId = null;
+                    const track = Quagga.CameraAccess.getActiveTrack();
+
+                    if (track) {
+                        activeId = track.getSettings().deviceId;
+                    }
+
+                    Quagga.CameraAccess.enumerateVideoDevices().then((devices) => {
+                        cameraListNode.replaceChildren();
+
+                        for (const device of devices) {
+                            const child = document.createElement("option");
+
+                            child.value = device.deviceId;
+                            child.innerText = device.label.slice(0, 30);
+
+                            if (activeId === child.value) {
+                                child.selected = true;
+                            }
+
+                            cameraListNode.appendChild(child);
+                        }
+                    });
+
+                    toggleStatus("scanning");
+                    Quagga.start();
+                }
+            );
+        }
+
+        function cleanup(clearDrawing = true) {
+            Quagga.stop();
+            cameraListNode.removeEventListener("change", onChangeCamera);
+
+            if (clearDrawing) {
+                scannerNode.replaceChildren();
+            }
+        }
+
+        Quagga.onProcessed((result) => {
+            const drawingCtx = Quagga.canvas.ctx.overlay;
+            const drawingCanvas = Quagga.canvas.dom.overlay;
+
+            if (result) {
+                if (result.boxes) {
+                    drawingCtx.clearRect(
+                        0,
+                        0,
+                        parseInt(drawingCanvas.getAttribute("width")),
+                        parseInt(drawingCanvas.getAttribute("height"))
+                    );
+                    result.boxes
+                        .filter((box) => box !== result.box)
+                        .forEach((box) => {
+                            Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
+                                color: "green",
+                                lineWidth: 2,
+                            });
+                        });
+                }
+
+                if (result.box) {
+                    Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, {
+                        color: "#00F",
+                        lineWidth: 2,
+                    });
+                }
+
+                if (result.codeResult && result.codeResult.code) {
+                    Quagga.ImageDebug.drawPath(result.line, { x: "x", y: "y" }, drawingCtx, {
+                        color: "red",
+                        lineWidth: 3,
+                    });
+                }
+            }
+        });
+
+        let lastDetection = null;
+        let numDetected = 0;
+
+        Quagga.onDetected((result) => {
+            // Detect the same code 3 times as an extra check to avoid bogus scans.
+            if (lastDetection === null || lastDetection !== result.codeResult.code) {
+                numDetected = 1;
+                lastDetection = result.codeResult.code;
+
+                return;
+            } else if (numDetected++ < 3) {
+                return;
+            }
+
+            const code = result.codeResult.code;
+
+            statusNode.querySelector(".isbn").innerText = code;
+            toggleStatus("found");
+
+            const search = new URL("/search", document.location);
+
+            search.searchParams.set("q", code);
+
+            cleanup(false);
+            location.assign(search);
+        });
+
+        event.target.addEventListener("close", cleanup, { once: true });
+
+        initBarcodes();
+    }
+
+    /**
+     * Set preferred timezone in register form.
+     *
+     * @param  {Event} event - `submit` event fired by the register form.
+     * @return {undefined}
+     */
+    setPreferredTimezone(event, form) {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        form.querySelector('input[name="preferred_timezone"]').value = tz;
+    }
+
+    togglePasswordVisibility(event) {
+        const iconElement = event.currentTarget.getElementsByTagName("button")[0];
+        const passwordElementId = event.currentTarget.dataset.for;
+        const passwordInputElement = document.getElementById(passwordElementId);
+
+        if (!passwordInputElement) return;
+
+        if (passwordInputElement.type === "password") {
+            passwordInputElement.type = "text";
+            this.addRemoveClass(iconElement, "icon-eye-blocked");
+            this.addRemoveClass(iconElement, "icon-eye", true);
+        } else {
+            passwordInputElement.type = "password";
+            this.addRemoveClass(iconElement, "icon-eye");
+            this.addRemoveClass(iconElement, "icon-eye-blocked", true);
+        }
+
+        this.toggleFocus(passwordElementId);
+    }
+
+    /**
+     * When user want to add book to list, it checks if the list needs
+     * to be created and if so open a modal to do it. Otherwise it submit
+     * the form to add the book to the selected list.
+     *
+     * @param {Event} event - The click event from the button
+     * @returns {undefined}
+     */
+    checkListSelection(event) {
+        const selectElement = document.getElementById("id_list");
+        const formElement = document.querySelector("form[name='list-add']");
+        const modalElement = document.getElementById("modal-create-list-with-book");
+
+        if (!selectElement || !formElement) {
+            console.error("List management elements not found. Check your HTML IDs.");
+
+            return;
+        }
+
+        if (selectElement.value === "NEW_LIST_CREATION") {
+            if (modalElement) {
+                event.currentTarget.dataset.modalOpen = "modal-create-list-with-book";
+                this.handleModalButton(event);
+            } else {
+                console.error("Modal element not found with ID: modal-create-list-with-book");
+            }
+        } else {
+            formElement.submit();
+        }
+    }
+})();

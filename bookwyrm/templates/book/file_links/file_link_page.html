@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}
+{% trans "File Links" %}
+{% endblock %}
+
+{% block content %}
+{% include "book/file_links/add_link_modal.html" with book=book active=True static=True id="file-link" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static "js/autocomplete.js" %}?v={{ js_cache }}"></script>
+{% endblock %}

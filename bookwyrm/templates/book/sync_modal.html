@@ -1,0 +1,28 @@
+{% extends 'components/modal.html' %}
+{% load i18n %}
+
+{% block modal-title %}
+{% trans "Load data" %}
+{% endblock %}
+
+{% block modal-form-open %}
+<form name="{{ source }}-update" method="POST" action="{% url 'book-update-remote' book.id source %}">
+    {% csrf_token %}
+{% endblock %}
+
+{% block modal-body %}
+<p>
+    {% blocktrans trimmed %}
+    Loading data will connect to <strong>{{ source_name }}</strong> and check for any metadata about this book which aren't present here. Existing metadata will not be overwritten.
+    {% endblocktrans %}
+</p>
+{% endblock %}
+
+{% block modal-footer %}
+<div class="buttons is-right is-flex-grow-1">
+    <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+    <button class="button is-primary" type="submit">{% trans "Confirm" %}</button>
+</div>
+{% endblock %}
+
+{% block modal-form-close %}</form>{% endblock %}

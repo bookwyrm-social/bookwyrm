@@ -1,11 +1,17 @@
-""" make a list of books!! """
-from django.apps import apps
+"""make a list of books!!"""
+
+from typing import Optional, Iterable
+import uuid
+
+from django.contrib.postgres.indexes import Index
+from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 
 from bookwyrm import activitypub
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
+from bookwyrm.utils.db import add_update_fields
 
 from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
 from .base_model import BookWyrmModel
@@ -43,11 +49,12 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         through="ListItem",
         through_fields=("book_list", "book"),
     )
+    embed_key = models.UUIDField(unique=True, null=True, editable=False)
     activity_serializer = activitypub.BookList
 
     def get_remote_id(self):
         """don't want the user to be in there in this case"""
-        return f"https://{DOMAIN}/list/{self.id}"
+        return f"{BASE_URL}/list/{self.id}"
 
     @property
     def collection_queryset(self):
@@ -58,6 +65,8 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         """default sorting"""
 
         ordering = ("-updated_date",)
+
+        indexes = [Index(fields=["privacy", "-updated_date"])]
 
     def raise_not_editable(self, viewer):
         """the associated user OR the list owner can edit"""
@@ -70,6 +79,22 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         if is_group_member:
             return
         super().raise_not_editable(viewer)
+
+    def raise_not_submittable(self, viewer):
+        """can the user submit a book to the list?"""
+        # if you can't view the list you can't submit to it
+        self.raise_visible_to_user(viewer)
+
+        # all good if you're the owner or the list is open
+        if self.user == viewer or self.curation in ["open", "curated"]:
+            return
+        if self.curation == "group":
+            is_group_member = GroupMember.objects.filter(
+                group=self.group, user=viewer
+            ).exists()
+            if is_group_member:
+                return
+        raise PermissionDenied()
 
     @classmethod
     def followers_filter(cls, queryset, viewer):
@@ -105,6 +130,14 @@ class List(OrderedCollectionMixin, BookWyrmModel):
             group=None, curation="closed"
         )
 
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
+        """on save, update embed_key and avoid clash with existing code"""
+        if not self.embed_key:
+            self.embed_key = uuid.uuid4()
+            update_fields = add_update_fields(update_fields, "embed_key")
+
+        super().save(*args, update_fields=update_fields, **kwargs)
+
 
 class ListItem(CollectionItemMixin, BookWyrmModel):
     """ok"""
@@ -116,7 +149,7 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor"
     )
-    notes = fields.TextField(blank=True, null=True)
+    notes = fields.HtmlField(blank=True, null=True, max_length=300)
     approved = models.BooleanField(default=True)
     order = fields.IntegerField()
     endorsement = models.ManyToManyField("User", related_name="endorsers")
@@ -125,33 +158,11 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
     collection_field = "book_list"
 
     def save(self, *args, **kwargs):
-        """create a notification too"""
-        created = not bool(self.id)
+        """Update the list's date"""
         super().save(*args, **kwargs)
         # tick the updated date on the parent list
         self.book_list.updated_date = timezone.now()
-        self.book_list.save(broadcast=False)
-
-        list_owner = self.book_list.user
-        model = apps.get_model("bookwyrm.Notification", require_ready=True)
-        # create a notification if somoene ELSE added to a local user's list
-        if created and list_owner.local and list_owner != self.user:
-            model.objects.create(
-                user=list_owner,
-                related_user=self.user,
-                related_list_item=self,
-                notification_type="ADD",
-            )
-
-        if self.book_list.group:
-            for membership in self.book_list.group.memberships.all():
-                if membership.user != self.user:
-                    model.objects.create(
-                        user=membership.user,
-                        related_user=self.user,
-                        related_list_item=self,
-                        notification_type="ADD",
-                    )
+        self.book_list.save(broadcast=False, update_fields=["updated_date"])
 
     def raise_not_deletable(self, viewer):
         """the associated user OR the list owner can delete"""

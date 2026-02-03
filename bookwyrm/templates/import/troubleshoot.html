@@ -1,0 +1,36 @@
+{% extends 'import/import_status.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Import Troubleshooting" %}{% endblock %}
+
+{% block page_title %}
+{% trans "Failed items" %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<li class="is-active">
+    <a href="#" aria-current="page">{% trans "Troubleshooting" %}</a>
+</li>
+{% endblock %}
+
+{% block actions %}
+<div class="block">
+    <div class="notification content">
+        <p>
+            {% trans "Re-trying an import can fix missing items in cases such as:" %}
+        </p>
+        <ul>
+            <li>{% trans "The book has been added to the instance since this import" %}</li>
+            <li>{% trans "A transient error or timeout caused the external data source to be unavailable." %}</li>
+            <li>{% trans "BookWyrm has been updated since this import with a bug fix" %}</li>
+        </ul>
+        <p>
+        {% trans "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items." %}
+        </p>
+    </div>
+    <form name="retry" method="post" action="{% url 'import-troubleshoot' job.id %}">
+        {% csrf_token %}
+        <button type="submit" class="button">Retry all</button>
+    </form>
+</div>
+{% endblock %}

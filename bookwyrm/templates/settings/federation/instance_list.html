@@ -12,57 +12,65 @@
 {% endblock %}
 
 {% block panel %}
+
+{% include 'settings/federation/instance_filters.html' %}
+
 <div class="tabs">
     <ul>
         {% url 'settings-federation' status='federated' as url %}
         <li {% if request.path in url %}class="is-active" aria-current="page"{% endif %}>
-            <a href="{{ url }}">{% trans "Federated" %}</a>
+            <a href="{{ url }}">{% trans "Federated" %} ({{ federated_count }})</a>
         </li>
         {% url 'settings-federation' status='blocked' as url %}
         <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
-            <a href="{{ url }}">{% trans "Blocked" %}</a>
+            <a href="{{ url }}">{% trans "Blocked" %} ({{ blocked_count }})</a>
         </li>
     </ul>
 </div>
 
-<table class="table is-striped">
-    <tr>
-        {% url 'settings-federation' as url %}
-        <th>
-            {% trans "Instance name" as text %}
-            {% include 'snippets/table-sort-header.html' with field="server_name" sort=sort text=text %}
-        </th>
-        <th>
-            {% trans "Date added" as text %}
-            {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
-        </th>
-        <th>
-            {% trans "Software" as text %}
-            {% include 'snippets/table-sort-header.html' with field="application_type" sort=sort text=text %}
-        </th>
-        <th>
-            {% trans "Users" %}
-        </th>
-        <th>{% trans "Status" %}</th>
-    </tr>
-    {% for server in servers %}
-    <tr>
-        <td><a href="{% url 'settings-federated-server' server.id %}">{{ server.server_name }}</a></td>
-        <td>{{ server.created_date }}</td>
-        <td>
-        {% if server.application_type %}
-            {{ server.application_type }}
-            {% if server.application_version %}({{ server.application_version }}){% endif %}
+<div class="table-container scroll-x">
+    <table class="table is-striped is-fullwidth">
+        <tr>
+            {% url 'settings-federation' as url %}
+            <th>
+                {% trans "Instance name" as text %}
+                {% include 'snippets/table-sort-header.html' with field="server_name" sort=sort text=text %}
+            </th>
+            <th>
+                {% trans "Date added" as text %}
+                {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
+            </th>
+            <th>
+                {% trans "Last updated" as text %}
+                {% include 'snippets/table-sort-header.html' with field="updated_date" sort=sort text=text %}
+            </th>
+            <th>
+                {% trans "Software" as text %}
+                {% include 'snippets/table-sort-header.html' with field="application_type" sort=sort text=text %}
+            </th>
+            <th>
+                {% trans "Users" %}
+            </th>
+        </tr>
+        {% for server in servers %}
+        <tr>
+            <td><a href="{% url 'settings-federated-server' server.id %}">{{ server.server_name }}</a></td>
+            <td>{{ server.created_date|date:'Y-m-d' }}</td>
+            <td>{{ server.updated_date|date:'Y-m-d' }}</td>
+            <td>
+            {% if server.application_type %}
+                {{ server.application_type }}
+                {% if server.application_version %}({{ server.application_version }}){% endif %}
+            {% endif %}
+            </td>
+            <td>{{ server.user_set.count }}</td>
+        </tr>
+        {% endfor %}
+        {% if not servers %}
+        <tr><td colspan="5"><em>{% trans "No instances found" %}</em></td></tr>
         {% endif %}
-        </td>
-        <td>{{ server.user_set.count }}</td>
-        <td>{{ server.get_status_display }}</td>
-    </tr>
-    {% endfor %}
-    {% if not servers %}
-    <tr><td colspan="5"><em>{% trans "No instances found" %}</em></td></tr>
-    {% endif %}
-</table>
+    </table>
+</div>
 
 
 {% include 'snippets/pagination.html' with page=servers path=request.path %}

@@ -1,8 +1,11 @@
-""" models for storing different kinds of Activities """
+"""models for storing different kinds of Activities"""
+
 from dataclasses import MISSING
+from typing import Optional, Iterable
 import re
 
 from django.apps import apps
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -10,16 +13,18 @@ from django.db.models import Q
 from django.dispatch import receiver
 from django.template.loader import get_template
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext_lazy
 from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
 from bookwyrm.preview_images import generate_edition_preview_image_task
 from bookwyrm.settings import ENABLE_PREVIEW_IMAGES
+from bookwyrm.utils.db import add_update_fields
 from .activitypub_mixin import ActivitypubMixin, ActivityMixin
 from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
-from .fields import image_serializer
 from .readthrough import ProgressMode
 from . import fields
 
@@ -34,6 +39,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     raw_content = models.TextField(blank=True, null=True)
     mention_users = fields.TagField("User", related_name="mention_user")
     mention_books = fields.TagField("Edition", related_name="mention_book")
+    mention_hashtags = fields.TagField("Hashtag", related_name="mention_hashtag")
     local = models.BooleanField(default=True)
     content_warning = fields.CharField(
         max_length=500, blank=True, null=True, activitypub_field="summary"
@@ -63,6 +69,9 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         activitypub_field="inReplyTo",
     )
     thread_id = models.IntegerField(blank=True, null=True)
+    # statuses get saved a few times, this indicates if they're set
+    ready = models.BooleanField(default=True)
+
     objects = InheritanceManager()
 
     activity_serializer = activitypub.Note
@@ -73,19 +82,24 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """default sorting"""
 
         ordering = ("-published_date",)
+        indexes = [
+            models.Index(fields=["remote_id"]),
+            models.Index(fields=["thread_id"]),
+        ]
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
         """save and notify"""
-        if self.reply_parent:
-            self.thread_id = self.reply_parent.thread_id or self.reply_parent.id
+        if self.thread_id is None and self.reply_parent:
+            self.thread_id = self.reply_parent.thread_id or self.reply_parent_id
+            update_fields = add_update_fields(update_fields, "thread_id")
 
-        super().save(*args, **kwargs)
+        super().save(*args, update_fields=update_fields, **kwargs)
 
         if not self.reply_parent:
             self.thread_id = self.id
-        super().save(broadcast=False, update_fields=["thread_id"])
+            super().save(broadcast=False, update_fields=["thread_id"])
 
-    def delete(self, *args, **kwargs):  # pylint: disable=unused-argument
+    def delete(self, *args, **kwargs):
         """ "delete" a status"""
         if hasattr(self, "boosted_status"):
             # okay but if it's a boost really delete it
@@ -95,31 +109,32 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         # clear user content
         self.content = None
         if hasattr(self, "quotation"):
-            self.quotation = None  # pylint: disable=attribute-defined-outside-init
+            self.quotation = None
         self.deleted_date = timezone.now()
-        self.save()
+        self.save(*args, **kwargs)
 
     @property
     def recipients(self):
         """tagged users who definitely need to get this status in broadcast"""
-        mentions = [u for u in self.mention_users.all() if not u.local]
+        mentions = {u for u in self.mention_users.all() if not u.local}
         if (
             hasattr(self, "reply_parent")
             and self.reply_parent
             and not self.reply_parent.user.local
         ):
-            mentions.append(self.reply_parent.user)
-        return list(set(mentions))
+            mentions.add(self.reply_parent.user)
+        return list(mentions)
 
     @classmethod
-    def ignore_activity(cls, activity):  # pylint: disable=too-many-return-statements
+    def ignore_activity(cls, activity, allow_external_connections=True):
         """keep notes if they are replies to existing statuses"""
         if activity.type == "Announce":
-            try:
-                boosted = activitypub.resolve_remote_id(
-                    activity.object, get_activity=True
-                )
-            except activitypub.ActivitySerializerError:
+            boosted = activitypub.resolve_remote_id(
+                activity.object,
+                get_activity=True,
+                allow_external_connections=allow_external_connections,
+            )
+            if not boosted:
                 # if we can't load the status, definitely ignore it
                 return True
             # keep the boost if we would keep the status
@@ -135,10 +150,17 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         # keep notes if they mention local users
         if activity.tag == MISSING or activity.tag is None:
             return True
-        tags = [l["href"] for l in activity.tag if l["type"] == "Mention"]
+        # GoToSocial sends single tags as objects
+        # not wrapped in a list
+        tags = activity.tag if isinstance(activity.tag, list) else [activity.tag]
         user_model = apps.get_model("bookwyrm.User", require_ready=True)
         for tag in tags:
-            if user_model.objects.filter(remote_id=tag, local=True).exists():
+            if (
+                tag["type"] == "Mention"
+                and user_model.objects.filter(
+                    remote_id=tag["href"], local=True
+                ).exists()
+            ):
                 # we found a mention of a known use boost
                 return False
         return True
@@ -163,6 +185,24 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """you can't boost dms"""
         return self.privacy in ["unlisted", "public"]
 
+    @property
+    def page_title(self):
+        """title of the page when only this status is shown"""
+        return _("%(display_name)s's status") % {"display_name": self.user.display_name}
+
+    @property
+    def page_description(self):
+        """description of the page in meta tags when only this status is shown"""
+        return None
+
+    @property
+    def page_image(self):
+        """image to use as preview in meta tags when only this status is shown"""
+        if self.mention_books.exists():
+            book = self.mention_books.first()
+            return book.preview_image or book.cover
+        return self.user.preview_image
+
     def to_replies(self, **kwargs):
         """helper function for loading AP serialized replies to a status"""
         return self.to_ordered_collection(
@@ -172,7 +212,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             **kwargs,
         ).serialize()
 
-    def to_activity_dataclass(self, pure=False):  # pylint: disable=arguments-differ
+    def to_activity_dataclass(self, pure=False):
         """return tombstone if the status is deleted"""
         if self.deleted:
             return activitypub.Tombstone(
@@ -190,18 +230,29 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             if hasattr(activity, "name"):
                 activity.name = self.pure_name
             activity.type = self.pure_type
-            activity.attachment = [
-                image_serializer(b.cover, b.alt_text)
-                for b in self.mention_books.all()[:4]
-                if b.cover
-            ]
-            if hasattr(self, "book") and self.book.cover:
-                activity.attachment.append(
-                    image_serializer(self.book.cover, self.book.alt_text)
-                )
+            book = getattr(self, "book", None)
+            books = [book] if book else []
+            books += list(self.mention_books.all())
+            if len(books) == 1 and getattr(books[0], "preview_image", None):
+                covers = [
+                    activitypub.Document(
+                        url=fields.get_absolute_url(books[0].preview_image),
+                        name=books[0].alt_text,
+                    )
+                ]
+            else:
+                covers = [
+                    activitypub.Document(
+                        url=fields.get_absolute_url(b.cover),
+                        name=b.alt_text,
+                    )
+                    for b in books
+                    if b and b.cover
+                ]
+            activity.attachment = covers
         return activity
 
-    def to_activity(self, pure=False):  # pylint: disable=arguments-differ
+    def to_activity(self, pure=False):
         """json serialized activitypub class"""
         return self.to_activity_dataclass(pure=pure).serialize()
 
@@ -209,13 +260,14 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """certain types of status aren't editable"""
         # first, the standard raise
         super().raise_not_editable(viewer)
-        if isinstance(self, (GeneratedNote, ReviewRating)):
+        # if it's an edit (not a create) you can only edit content statuses
+        if self.id and isinstance(self, (GeneratedNote, ReviewRating)):
             raise PermissionDenied()
 
     @classmethod
     def privacy_filter(cls, viewer, privacy_levels=None):
         queryset = super().privacy_filter(viewer, privacy_levels=privacy_levels)
-        return queryset.filter(deleted=False)
+        return queryset.filter(deleted=False, user__is_active=True)
 
     @classmethod
     def direct_filter(cls, queryset, viewer):
@@ -243,7 +295,7 @@ class GeneratedNote(Status):
         """indicate the book in question for mastodon (or w/e) users"""
         message = self.content
         books = ", ".join(
-            f'<a href="{book.remote_id}">"{book.title}"</a>'
+            f'<a href="{book.remote_id}"><i>{book.title}</i></a>'
             for book in self.mention_books.all()
         )
         return f"{self.user.display_name} {message} {books}"
@@ -253,7 +305,7 @@ class GeneratedNote(Status):
 
 
 ReadingStatusChoices = models.TextChoices(
-    "ReadingStatusChoices", ["to-read", "reading", "read"]
+    "ReadingStatusChoices", ["to-read", "reading", "read", "stopped-reading"]
 )
 
 
@@ -273,6 +325,10 @@ class BookStatus(Status):
         """not a real model, sorry"""
 
         abstract = True
+
+    @property
+    def page_image(self):
+        return self.book.preview_image or self.book.cover or super().page_image
 
 
 class Comment(BookStatus):
@@ -294,12 +350,22 @@ class Comment(BookStatus):
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
-        return (
-            f'{self.content}<p>(comment on <a href="{self.book.remote_id}">'
-            f'"{self.book.title}"</a>)</p>'
+        progress = self.progress or 0
+        citation = (
+            f'comment on <a href="{self.book.remote_id}"><i>{self.book.title}</i></a>'
         )
+        if self.progress_mode == "PG" and progress > 0:
+            citation += f", p. {progress}"
+        return f"{self.content}<p>({citation})</p>"
 
     activity_serializer = activitypub.Comment
+
+    @property
+    def page_title(self):
+        return _("%(display_name)s's comment on %(book_title)s") % {
+            "display_name": self.user.display_name,
+            "book_title": self.book.title,
+        }
 
 
 class Quotation(BookStatus):
@@ -307,8 +373,13 @@ class Quotation(BookStatus):
 
     quote = fields.HtmlField()
     raw_quote = models.TextField(blank=True, null=True)
-    position = models.IntegerField(
-        validators=[MinValueValidator(0)], null=True, blank=True
+    position = models.TextField(
+        null=True,
+        blank=True,
+    )
+    endposition = models.TextField(
+        null=True,
+        blank=True,
     )
     position_mode = models.CharField(
         max_length=3,
@@ -318,17 +389,34 @@ class Quotation(BookStatus):
         blank=True,
     )
 
+    def _format_position(self) -> Optional[str]:
+        """serialize page position"""
+        beg = self.position
+        end = self.endposition
+        if self.position_mode != "PG" or not beg:
+            return None
+        return f"pp. {beg}-{end}" if end else f"p. {beg}"
+
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
         quote = re.sub(r"^<p>", '<p>"', self.quote)
         quote = re.sub(r"</p>$", '"</p>', quote)
-        return (
-            f'{quote} <p>-- <a href="{self.book.remote_id}">'
-            f'"{self.book.title}"</a></p>{self.content}'
-        )
+        title, href = self.book.title, self.book.remote_id
+        author = f"{name}: " if (name := self.book.author_text) else ""
+        citation = f'— {author}<a href="{href}"><i>{title}</i></a>'
+        if position := self._format_position():
+            citation += f", {position}"
+        return f"{quote} <p>{citation}</p>{self.content}"
 
     activity_serializer = activitypub.Quotation
+
+    @property
+    def page_title(self):
+        return _("%(display_name)s's quote from %(book_title)s") % {
+            "display_name": self.user.display_name,
+            "book_title": self.book.title,
+        }
 
 
 class Review(BookStatus):
@@ -339,7 +427,7 @@ class Review(BookStatus):
         default=None,
         null=True,
         blank=True,
-        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        validators=[MinValueValidator(0.5), MaxValueValidator(5)],
         decimal_places=2,
         max_digits=3,
     )
@@ -359,8 +447,22 @@ class Review(BookStatus):
         """indicate the book in question for mastodon (or w/e) users"""
         return self.content
 
+    @property
+    def page_title(self):
+        return _("%(display_name)s's review of %(book_title)s") % {
+            "display_name": self.user.display_name,
+            "book_title": self.book.title,
+        }
+
     activity_serializer = activitypub.Review
     pure_type = "Article"
+
+    def save(self, *args, **kwargs):
+        """clear rating caches"""
+        super().save(*args, **kwargs)
+
+        if self.book.parent_work:
+            cache.delete(f"book-rating-{self.book.parent_work.id}")
 
 
 class ReviewRating(Review):
@@ -369,12 +471,24 @@ class ReviewRating(Review):
     def save(self, *args, **kwargs):
         if not self.rating:
             raise ValueError("ReviewRating object must include a numerical rating")
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     @property
     def pure_content(self):
         template = get_template("snippets/generated_status/rating.html")
         return template.render({"book": self.book, "rating": self.rating}).strip()
+
+    @property
+    def page_description(self):
+        return ngettext_lazy(
+            "%(display_name)s rated %(book_title)s: %(display_rating).1f star",
+            "%(display_name)s rated %(book_title)s: %(display_rating).1f stars",
+            "display_rating",
+        ) % {
+            "display_name": self.user.display_name,
+            "book_title": self.book.title,
+            "display_rating": self.rating,
+        }
 
     activity_serializer = activitypub.Rating
     pure_type = "Note"
@@ -417,7 +531,6 @@ class Boost(ActivityMixin, Status):
         self.deserialize_reverse_fields = []
 
 
-# pylint: disable=unused-argument
 @receiver(models.signals.post_save)
 def preview_image(instance, sender, *args, **kwargs):
     """Updates book previews if the rating has changed"""

@@ -8,13 +8,14 @@ reply_parent: if applicable, the Status object that this post is in reply to
 mention: a user who is @ mentioned by default in the post
 draft: an existing Status object that is providing default values for input fields
 {% endcomment %}
-<textarea
-    name="content"
-    class="textarea save-draft"
-    {% if not draft %}data-cache-draft="id_content_{{ type }}_{{ book.id }}{{ reply_parent.id }}"{% endif %}
-    id="id_content_{{ type }}_{{ book.id }}{{ reply_parent.id }}{{ uuid }}"
-    placeholder="{{ placeholder }}"
-    aria-label="{% if reply_parent %}{% trans 'Reply' %}{% else %}{% trans 'Content' %}{% endif %}"
-    {% if not optional and type != "quotation" and type != "review" %}required{% endif %}
->{% if reply_parent %}{{ reply_parent|mentions:request.user }}{% endif %}{% if mention %}@{{ mention|username }} {% endif %}{% firstof draft.raw_content draft.content '' %}</textarea>
-
+<div class="control">
+    <textarea
+        name="content"
+        class="textarea save-draft"
+        {% if not draft %}data-cache-draft="id_content_{{ type }}_{{ book.id }}{{ reply_parent.id }}"{% endif %}
+        id="id_content_{{ type }}_{{ book.id }}{{ reply_parent.id }}{{ uuid }}"
+        placeholder="{{ placeholder }}"
+        aria-label="{% if reply_parent %}{% trans 'Reply' %}{% else %}{% trans 'Content' %}{% endif %}"
+        {% if not optional and type != "quotation" and type != "review" %}required{% endif %}
+        >{% if reply_parent %}{{ reply_parent|mentions:request.user }}{% endif %}{% if mention %}@{{ mention|username }} {% endif %}{{ prepared_content }}{% firstof draft.raw_content draft.content '' %}</textarea>
+</div>

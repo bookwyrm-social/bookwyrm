@@ -1,11 +1,13 @@
 {% extends 'feed/layout.html' %}
 {% load i18n %}
+{% load static %}
 
 {% block panel %}
 
 <h1 class="title">
     {{ tab.name }}
 </h1>
+
 <div class="tabs">
     <ul>
         {% for stream in streams %}
@@ -16,26 +18,42 @@
     </ul>
 </div>
 
+{# feed settings #}
+{% with "/"|add:tab.key|add:"#feed" as action %}
+{% include 'feed/feed_filters.html' with size="small" method="post" action=action %}
+{% endwith %}
+
 {# announcements and system messages #}
 {% if not activities.number > 1 %}
-<a href="{{ request.path }}" class="transition-y is-hidden notification is-primary is-block" data-poll-wrapper>
-    {% blocktrans with tab_key=tab.key %}load <span data-poll="stream/{{ tab_key }}">0</span> unread status(es){% endblocktrans %}
+<a
+    href="{{ request.path }}"
+    class="transition-y is-hidden notification is-primary is-block"
+    data-poll-wrapper
+>
+    <span data-poll="stream/{{ tab.key }}"></span>
 </a>
 
-{% if request.user.show_goal and not goal and tab.key == 'home' %}
-{% now 'Y' as year %}
-<section class="block">
-    {% include 'feed/goal_card.html' with year=year %}
-    <hr>
-</section>
-{% endif %}
+    {% if request.user.show_goal and not goal and tab.key == 'home' %}
+    {% now 'Y' as year %}
+    <section class="block">
+        {% include 'feed/goal_card.html' with year=year %}
+        <hr>
+    </section>
+    {% endif %}
 
+    {% if annual_summary_year and tab.key == 'home' and has_summary_read_throughs %}
+    <section class="block is-hidden" data-hide="hide_annual_summary_{{ annual_summary_year }}">
+        {% include 'feed/summary_card.html' with year=annual_summary_year %}
+        <hr>
+    </section>
+    {% endif %}
 {% endif %}
 
 {# activity feed #}
 {% if not activities %}
 <div class="block content">
     <p>{% trans "There aren't any activities right now! Try following a user to get started" %}</p>
+    <p>{% if user.feed_status_types|length < 4 %}{% trans "Alternatively, you can try enabling more status types" %}{% endif %}</p>
 
     {% if request.user.show_suggested_users and suggested_users %}
     {# suggested users for when things are very lonely #}
@@ -54,5 +72,14 @@
     {% include 'snippets/status/status.html' with status=activity %}
 </div>
 {% endfor %}
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static "js/tabs.js" %}?v={{ js_cache }}"></script>
+
+{% if request.user.show_guided_tour %}
+    {% include 'guided_tour/home.html' %}
+{% endif %}
 
 {% endblock %}

@@ -5,8 +5,8 @@
             type="number"
             name="progress"
             class="input"
-            id="id_progress_{{ readthrough.id }}{{ controls_uid }}"
-            value="{{ readthrough.progress }}"
+            id="{{ field_id }}"
+            value="{{ readthrough.progress|default_if_none:'' }}"
             {% if progress_required %}required{% endif %}
         >
     </div>

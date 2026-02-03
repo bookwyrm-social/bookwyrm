@@ -1,0 +1,15 @@
+{% extends 'settings/dashboard/warnings/layout.html' %}
+{% load i18n %}
+{% load humanize %}
+
+{% block warning_link %}{% url 'settings-reports' %}{% endblock %}
+
+{% block warning_text %}
+
+{% blocktrans trimmed count counter=reports with display_count=reports|intcomma %}
+{{ display_count }} open report
+{% plural %}
+{{ display_count }} open reports
+{% endblocktrans %}
+
+{% endblock %}

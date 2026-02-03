@@ -1,13 +1,13 @@
 /* exported LocalStorageTools */
 /* globals BookWyrm */
 
-let LocalStorageTools = new class {
+let LocalStorageTools = new (class {
     constructor() {
-        document.querySelectorAll('[data-hide]')
-            .forEach(t => this.setDisplay(t));
+        document.querySelectorAll("[data-hide]").forEach((t) => this.setDisplay(t));
 
-        document.querySelectorAll('.set-display')
-            .forEach(t => t.addEventListener('click', this.updateDisplay.bind(this)));
+        document
+            .querySelectorAll(".set-display")
+            .forEach((t) => t.addEventListener("click", this.updateDisplay.bind(this)));
     }
 
     /**
@@ -23,8 +23,9 @@ let LocalStorageTools = new class {
 
         window.localStorage.setItem(key, value);
 
-        document.querySelectorAll('[data-hide="' + key + '"]')
-            .forEach(node => this.setDisplay(node));
+        document
+            .querySelectorAll('[data-hide="' + key + '"]')
+            .forEach((node) => this.setDisplay(node));
     }
 
     /**
@@ -38,6 +39,6 @@ let LocalStorageTools = new class {
         let key = node.dataset.hide;
         let value = window.localStorage.getItem(key);
 
-        BookWyrm.addRemoveClass(node, 'is-hidden', value);
+        BookWyrm.addRemoveClass(node, "is-hidden", value);
     }
-}();
+})();

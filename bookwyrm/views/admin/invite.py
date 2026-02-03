@@ -1,4 +1,5 @@
-""" invites when registration is closed """
+"""invites when registration is closed"""
+
 from functools import reduce
 import operator
 from urllib.parse import urlencode
@@ -16,10 +17,8 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import emailing, forms, models
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views import helpers
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.create_invites", raise_exception=True),
@@ -53,7 +52,7 @@ class ManageInvites(View):
         if not form.is_valid():
             return HttpResponseBadRequest(f"ERRORS: {form.errors}")
 
-        invite = form.save(commit=False)
+        invite = form.save(request, commit=False)
         invite.user = request.user
         invite.save()
 
@@ -86,6 +85,11 @@ class Invite(View):
     # post handling is in views.register.Register
 
 
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.create_invites", raise_exception=True),
+    name="dispatch",
+)
 class ManageInviteRequests(View):
     """grant invites like the benevolent lord you are"""
 
@@ -97,9 +101,10 @@ class ManageInviteRequests(View):
             "created_date",
             "invite__times_used",
             "invite__invitees__created_date",
+            "answer",
         ]
-        # pylint: disable=consider-using-f-string
-        if not sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
+
+        if sort not in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
             sort = "-created_date"
 
         requests = models.InviteRequest.objects.filter(ignored=ignored).order_by(sort)
@@ -144,6 +149,7 @@ class ManageInviteRequests(View):
         invite_request = get_object_or_404(
             models.InviteRequest, id=request.POST.get("invite-request")
         )
+
         # only create a new invite if one doesn't exist already (resending)
         if not invite_request.invite:
             invite_request.invite = models.SiteInvite.objects.create(
@@ -152,7 +158,7 @@ class ManageInviteRequests(View):
             )
             invite_request.save()
         emailing.invite_email(invite_request)
-        # pylint: disable=consider-using-f-string
+
         return redirect(
             "{:s}?{:s}".format(
                 reverse("settings-invite-requests"), urlencode(request.GET.dict())
@@ -169,17 +175,14 @@ class InviteRequest(View):
         received = False
         if form.is_valid():
             received = True
-            form.save()
+            form.save(request)
 
-        data = {
-            "request_form": form,
-            "request_received": received,
-            "books": helpers.get_landing_books(),
-        }
+        data = {"request_form": form, "request_received": received}
         return TemplateResponse(request, "landing/landing.html", data)
 
 
 @require_POST
+@permission_required("bookwyrm.create_invites", raise_exception=True)
 def ignore_invite_request(request):
     """hide an invite request"""
     invite_request = get_object_or_404(

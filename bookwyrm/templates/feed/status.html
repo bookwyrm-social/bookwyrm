@@ -1,6 +1,14 @@
 {% extends 'feed/layout.html' %}
+{% load feed_page_tags %}
 {% load i18n %}
-{% load bookwyrm_tags %}
+
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block opengraph %}
+    {% include 'snippets/opengraph.html' with image=page_image %}
+{% endblock %}
+
 
 {% block panel %}
 <header class="block">
@@ -19,8 +27,8 @@
         </div>
         {% endif %}
         {% endfor %}
-        <div class="is-main block" id="anchor-{{ status.id }}">
-            {% include 'snippets/status/status.html' with status=status main=True %}
+        <div class="is-main block">
+            {% include 'snippets/status/status.html' with status=status main=True expand=True %}
         </div>
 
         {% for child in children %}
@@ -32,4 +40,3 @@
 </div>
 
 {% endblock %}
-

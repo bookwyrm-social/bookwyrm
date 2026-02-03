@@ -1,15 +1,20 @@
 {% extends 'layout.html' %}
-{% load bookwyrm_tags %}
+{% load shelf_tags %}
 {% load utilities %}
 {% load humanize %}
 {% load i18n %}
 
 {% block title %}
-{% include 'user/books_header.html' %}
+{% include 'user/books_header.html' with shelf=shelf %}
 {% endblock %}
 
-{% block opengraph_images %}
-    {% include 'snippets/opengraph_images.html' with image=user.preview_image %}
+{% block opengraph %}
+    {% include 'snippets/opengraph.html' with image=user.preview_image %}
+{% endblock %}
+
+
+{% block head_links %}
+    <link rel="alternate" type="application/rss+xml" href="{{ request.get_full_path }}/rss" title="{{ user.display_name }} - {{ shelf.name }}" />
 {% endblock %}
 
 {% block content %}
@@ -18,10 +23,23 @@
         {% include 'user/books_header.html' %}
     </h1>
 </header>
+{% if user.moved_to %}
+    {% include "snippets/moved_user_notice.html" with user=user %}
+{% else %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'user-feed' user|username %}">{% trans "User profile" %}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {% include "snippets/translated_shelf_name.html" with shelf=shelf %}
+            </a>
+        </li>
+    </ul>
+</nav>
 
 <nav class="block columns is-mobile scroll-x">
     <div class="column pr-0">
-        <div class="tabs">
+        <div class="tabs" id="tour-user-shelves">
             <ul>
                 <li class="{% if shelf.identifier == 'all' %}is-active{% endif %}">
                     <a href="{% url 'user-shelves' user|username %}"{% if shelf.identifier == 'all' %} aria-current="page"{% endif %}>
@@ -34,15 +52,7 @@
                         href="{{ shelf_tab.local_path }}"
                         {% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}
                     >
-                        {% if shelf_tab.identifier == 'to-read' %}
-                            {% trans "To Read" %}
-                        {% elif shelf_tab.identifier == 'reading' %}
-                            {% trans "Currently Reading" %}
-                        {% elif shelf_tab.identifier == 'read' %}
-                            {% trans "Read" %}
-                        {% else %}
-                            {{ shelf_tab.name }}
-                        {% endif %}
+                        {% include "snippets/translated_shelf_name.html" with shelf=shelf_tab %}
                     </a>
                 </li>
                 {% endfor %}
@@ -56,7 +66,7 @@
         <div class="tabs">
             <ul>
                 <li>
-                    <a href="{% url 'import' %}">
+                    <a href="{% url 'import' %}" id="tour-import-books">
                         <span class="icon icon-list" aria-hidden="true"></span>
                         <span>{% trans "Import Books" %}</span>
                     </a>
@@ -65,7 +75,7 @@
         </div>
     </div>
 
-    <div class="column is-narrow">
+    <div class="column is-narrow" id="tour-create-shelf">
         {% trans "Create shelf" as button_text %}
         {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" controls_text="create_shelf_form" focus="create_shelf_form_header" %}
     </div>
@@ -80,28 +90,33 @@
     <div class="block columns is-mobile">
         <div class="column">
             <h2 class="title is-3">
-                {{ shelf.name }}
+                {% if shelf.identifier == 'to-read' %}{% trans "To Read" %}
+                {% elif shelf.identifier == 'reading' %}{% trans "Currently Reading" %}
+                {% elif shelf.identifier == 'read' %}{% trans "Read" %}
+                {% elif shelf.identifier == 'stopped-reading' %}{% trans "Stopped Reading" %}
+                {% else %}{{ shelf.name }}{% endif %}
                 <span class="subtitle">
                     {% include 'snippets/privacy-icons.html' with item=shelf %}
                 </span>
                 {% with count=books.paginator.count %}
                 {% if count %}
-                <p class="help">
+                <span class="help">
                     {% blocktrans trimmed count counter=count with formatted_count=count|intcomma %}
                         {{ formatted_count }} book
                     {% plural %}
                         {{ formatted_count }} books
                     {% endblocktrans %}
-
                     {% if books.has_other_pages %}
                         {% blocktrans trimmed with start=books.start_index end=books.end_index %}
                         (showing {{ start }}-{{ end }})
                         {% endblocktrans %}
                     {% endif %}
-                </p>
+                </span>
                 {% endif %}
                 {% endwith %}
             </h2>
+            {% include 'shelf/shelves_filters.html' with user=user query=query %}
+
         </div>
         {% if is_self and shelf.id %}
         <div class="column is-narrow">
@@ -127,7 +142,7 @@
     {% endif %}
 </div>
 
-<div class="block">
+<div class="block mt-2">
     {% include 'shelf/edit_shelf_form.html' with controls_text="edit_shelf_form" %}
 </div>
 
@@ -138,13 +153,13 @@
             <thead>
                 <tr>
                     <th>{% trans "Cover"%}</th>
-                    <th>{% trans "Title"  as text %}{% include 'snippets/table-sort-header.html' with field="title" sort=sort text=text %}</th>
+                    <th>{% trans "Title"  as text %}{% include 'snippets/table-sort-header.html' with field="sort_title" sort=sort text=text %}</th>
                     <th>{% trans "Author"  as text %}{% include 'snippets/table-sort-header.html' with field="author" sort=sort text=text %}</th>
                     {% if request.user.is_authenticated %}
                         {% if is_self %}
                     <th>{% trans "Shelved"  as text %}{% include 'snippets/table-sort-header.html' with field="shelved_date" sort=sort text=text %}</th>
                     <th>{% trans "Started"  as text %}{% include 'snippets/table-sort-header.html' with field="start_date" sort=sort text=text %}</th>
-                    <th>{% trans "Finished"  as text %}{% include 'snippets/table-sort-header.html' with field="finish_date" sort=sort text=text %}</th>
+                    <th>{% if shelf.identifier == 'read' %}{% trans "Finished"  as text %}{% else %}{% trans "Until"  as text %}{% endif %}{% include 'snippets/table-sort-header.html' with field="finish_date" sort=sort text=text %}</th>
                         {% endif %}
                     <th>{% trans "Rating" as text %}{% include 'snippets/table-sort-header.html' with field="rating" sort=sort text=text %}</th>
                     {% endif %}
@@ -174,7 +189,7 @@
                     <td data-title="{% trans "Started" %}">
                         {{ book.start_date|naturalday|default_if_none:""}}
                     </td>
-                    <td data-title="{% trans "Finished" %}">
+                    <td data-title="{% if shelf.identifier == 'read' %}{% trans "Finished"  as text %}{% else %}{% trans "Until" as text %}{% endif %}">
                         {{ book.finish_date|naturalday|default_if_none:""}}
                     </td>
                         {% endif %}
@@ -200,7 +215,17 @@
             </tbody>
         </table>
         {% else %}
-        <p><em>{% trans "This shelf is empty." %}</em></p>
+        <p>
+            <em>
+                {% if shelves_filter_query %}
+                    {% blocktrans trimmed %}
+                        We couldn't find any books that matched {{ shelves_filter_query }}
+                    {% endblocktrans %}
+                {% else %}
+                    {% trans "This shelf is empty." %}
+                {% endif %}
+            </em>
+        </p>
         {% endif %}
 
     </div>
@@ -208,4 +233,11 @@
 <div>
     {% include 'snippets/pagination.html' with page=books path=request.path %}
 </div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if request.user.show_guided_tour %}
+    {% include 'guided_tour/user_books.html' %}
+{% endif %}
 {% endblock %}

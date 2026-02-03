@@ -2,15 +2,17 @@
 {% load i18n %}
 
 {% block filter %}
-<label class="label is-block" for="id_format">{% trans "Format:" %}</label>
-<div class="select">
-    <select id="id_format" name="format">
-        <option value="">{% trans "Any" %}</option>
-        {% for format in formats %}{% if format %}
-        <option value="{{ format }}" {% if request.GET.format == format %}selected{% endif %}>
-            {{ format|title }}
-        </option>
-        {% endif %}{% endfor %}
-    </select>
+<div class="control">
+    <label class="label is-block" for="id_format">{% trans "Format:" %}</label>
+    <div class="select">
+        <select id="id_format" name="format">
+            <option value="">{% trans "Any" %}</option>
+            {% for format in formats %}{% if format %}
+            <option value="{{ format }}" {% if request.GET.format == format %}selected{% endif %}>
+                {{ format|title }}
+            </option>
+            {% endif %}{% endfor %}
+        </select>
+    </div>
 </div>
 {% endblock %}

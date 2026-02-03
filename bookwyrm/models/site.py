@@ -1,18 +1,45 @@
-""" the particulars for this instance of BookWyrm """
-import datetime
+"""the particulars for this instance of BookWyrm"""
 
+from __future__ import annotations
+import datetime
+from typing import Any, Optional, Iterable
+from urllib.parse import urljoin
+import uuid
+
+import django.contrib.auth.models as auth_models
+from django.core.exceptions import PermissionDenied
 from django.db import models, IntegrityError
 from django.dispatch import receiver
 from django.utils import timezone
 from model_utils import FieldTracker
 
+from bookwyrm.connectors.abstract_connector import get_data
 from bookwyrm.preview_images import generate_site_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES
+from bookwyrm.settings import BASE_URL, ENABLE_PREVIEW_IMAGES, STATIC_FULL_URL
+from bookwyrm.settings import RELEASE_API
+from bookwyrm.tasks import app, MISC
+from bookwyrm.utils.db import add_update_fields
 from .base_model import BookWyrmModel, new_access_code
 from .user import User
+from .fields import get_absolute_url
 
 
-class SiteSettings(models.Model):
+class SiteModel(models.Model):
+    """we just need edit perms"""
+
+    class Meta:
+        """this is just here to provide default fields for other models"""
+
+        abstract = True
+
+    def raise_not_editable(self, viewer: User) -> None:
+        """Check if the user has the right permissions"""
+        if viewer.has_perm("bookwyrm.edit_instance_settings"):
+            return
+        raise PermissionDenied()
+
+
+class SiteSettings(SiteModel):
     """customized settings for this instance"""
 
     name = models.CharField(default="BookWyrm", max_length=100)
@@ -21,6 +48,14 @@ class SiteSettings(models.Model):
     )
     instance_description = models.TextField(default="This instance has no description.")
     instance_short_description = models.CharField(max_length=255, blank=True, null=True)
+    default_theme = models.ForeignKey(
+        "Theme", null=True, blank=True, on_delete=models.SET_NULL
+    )
+    available_version = models.CharField(null=True, blank=True, max_length=10)
+
+    # admin setup options
+    install_mode = models.BooleanField(default=False)
+    admin_code = models.CharField(max_length=50, default=uuid.uuid4)
 
     # about page
     registration_closed_text = models.TextField(
@@ -34,11 +69,21 @@ class SiteSettings(models.Model):
     )
     code_of_conduct = models.TextField(default="Add a code of conduct here.")
     privacy_policy = models.TextField(default="Add a privacy policy here.")
+    impressum = models.TextField(default="Add a impressum here.")
+    show_impressum = models.BooleanField(default=False)
 
     # registration
-    allow_registration = models.BooleanField(default=True)
+    allow_registration = models.BooleanField(default=False)
     allow_invite_requests = models.BooleanField(default=True)
+    invite_request_question = models.BooleanField(default=False)
     require_confirm_email = models.BooleanField(default=True)
+    default_user_auth_group = models.ForeignKey(
+        auth_models.Group, null=True, blank=True, on_delete=models.RESTRICT
+    )
+
+    invite_question_text = models.CharField(
+        max_length=255, blank=True, default="What is your favourite book?"
+    )
 
     # images
     logo = models.ImageField(upload_to="logos/", null=True, blank=True)
@@ -54,10 +99,19 @@ class SiteSettings(models.Model):
     admin_email = models.EmailField(max_length=255, null=True, blank=True)
     footer_item = models.TextField(null=True, blank=True)
 
+    # controls
+    imports_enabled = models.BooleanField(default=True)
+    import_size_limit = models.IntegerField(default=0)
+    import_limit_reset = models.IntegerField(default=0)
+    user_exports_enabled = models.BooleanField(default=False)
+    user_import_time_limit = models.IntegerField(default=48)
+    disable_federation = models.BooleanField(default=False)
+    export_files_lifetime_hours = models.IntegerField(default=72)
+
     field_tracker = FieldTracker(fields=["name", "instance_tagline", "logo"])
 
     @classmethod
-    def get(cls):
+    def get(cls) -> SiteSettings:
         """gets the site settings db entry or defaults"""
         try:
             return cls.objects.get(id=1)
@@ -65,6 +119,62 @@ class SiteSettings(models.Model):
             default_settings = SiteSettings(id=1)
             default_settings.save()
             return default_settings
+
+    @classmethod
+    def raise_federation_disabled(cls) -> None:
+        """Don't connect to the outside world"""
+        if cls.get().disable_federation:
+            raise PermissionDenied("Federation is disabled")
+
+    @property
+    def logo_url(self) -> Any:
+        """helper to build the logo url"""
+        return self.get_url("logo", "images/logo.png")
+
+    @property
+    def logo_small_url(self) -> Any:
+        """helper to build the logo url"""
+        return self.get_url("logo_small", "images/logo-small.png")
+
+    @property
+    def favicon_url(self) -> Any:
+        """helper to build the logo url"""
+        return self.get_url("favicon", "images/favicon.png")
+
+    def get_url(self, field: str, default_path: str) -> Any:
+        """get a media url or a default static path"""
+        uploaded = getattr(self, field, None)
+        if uploaded:
+            return get_absolute_url(uploaded)
+        return urljoin(STATIC_FULL_URL, default_path)
+
+    def save(
+        self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs
+    ) -> None:
+        """if require_confirm_email is disabled, make sure no users are pending,
+        if enabled, make sure invite_question_text is not empty"""
+        if not self.invite_question_text:
+            self.invite_question_text = "What is your favourite book?"
+            update_fields = add_update_fields(update_fields, "invite_question_text")
+
+        super().save(*args, update_fields=update_fields, **kwargs)
+
+        if not self.require_confirm_email:
+            User.objects.filter(is_active=False, deactivation_reason="pending").update(
+                is_active=True, deactivation_reason=None
+            )
+
+
+class Theme(SiteModel):
+    """Theme files"""
+
+    created_date = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=50, unique=True)
+    path = models.CharField(max_length=50, unique=True)
+    loads = models.BooleanField(null=True, blank=True)
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class SiteInvite(models.Model):
@@ -78,16 +188,22 @@ class SiteInvite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     invitees = models.ManyToManyField(User, related_name="invitees")
 
-    def valid(self):
+    def raise_not_editable(self, viewer: User) -> None:
+        """Admins only"""
+        if viewer.has_perm("bookwyrm.create_invites"):
+            return
+        raise PermissionDenied()
+
+    def valid(self) -> bool:
         """make sure it hasn't expired or been used"""
         return (self.expiry is None or self.expiry > timezone.now()) and (
             self.use_limit is None or self.times_used < self.use_limit
         )
 
     @property
-    def link(self):
+    def link(self) -> str:
         """formats the invite link"""
-        return f"https://{DOMAIN}/invite/{self.code}"
+        return f"{BASE_URL}/invite/{self.code}"
 
 
 class InviteRequest(BookWyrmModel):
@@ -97,17 +213,24 @@ class InviteRequest(BookWyrmModel):
     invite = models.ForeignKey(
         SiteInvite, on_delete=models.SET_NULL, null=True, blank=True
     )
+    answer = models.TextField(max_length=255, unique=False, null=True, blank=True)
     invite_sent = models.BooleanField(default=False)
     ignored = models.BooleanField(default=False)
 
-    def save(self, *args, **kwargs):
+    def raise_not_editable(self, viewer: User) -> None:
+        """Only check perms on edit, not create"""
+        if not self.id or viewer.has_perm("bookwyrm.create_invites"):
+            return
+        raise PermissionDenied()
+
+    def save(self, *args, **kwargs) -> None:
         """don't create a request for a registered email"""
         if not self.id and User.objects.filter(email=self.email).exists():
             raise IntegrityError()
         super().save(*args, **kwargs)
 
 
-def get_passowrd_reset_expiry():
+def get_password_reset_expiry() -> datetime.datetime:
     """give people a limited time to use the link"""
     now = timezone.now()
     return now + datetime.timedelta(days=1)
@@ -117,22 +240,21 @@ class PasswordReset(models.Model):
     """gives someone access to create an account on the instance"""
 
     code = models.CharField(max_length=32, default=new_access_code)
-    expiry = models.DateTimeField(default=get_passowrd_reset_expiry)
+    expiry = models.DateTimeField(default=get_password_reset_expiry)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    def valid(self):
+    def valid(self) -> bool:
         """make sure it hasn't expired or been used"""
         return self.expiry > timezone.now()
 
     @property
-    def link(self):
+    def link(self) -> str:
         """formats the invite link"""
-        return f"https://{DOMAIN}/password-reset/{self.code}"
+        return f"{BASE_URL}/password-reset/{self.code}"
 
 
-# pylint: disable=unused-argument
 @receiver(models.signals.post_save, sender=SiteSettings)
-def preview_image(instance, *args, **kwargs):
+def preview_image(instance: SiteSettings, *args, **kwargs) -> None:
     """Update image preview for the default site image"""
     if not ENABLE_PREVIEW_IMAGES:
         return
@@ -140,3 +262,14 @@ def preview_image(instance, *args, **kwargs):
 
     if len(changed_fields) > 0:
         generate_site_preview_image_task.delay()
+
+
+@app.task(queue=MISC)
+def check_for_updates_task() -> None:
+    """See if git remote knows about a new version"""
+    site = SiteSettings.get()
+    release = get_data(RELEASE_API, timeout=3, is_activitypub=False)
+    available_version = release.get("tag_name", None)
+    if available_version:
+        site.available_version = available_version
+        site.save(update_fields=["available_version"])

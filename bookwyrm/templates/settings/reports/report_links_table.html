@@ -1,0 +1,30 @@
+{% extends "settings/link_domains/link_table.html" %}
+{% load i18n %}
+
+{% block additional_headers %}
+<th>{% trans "Domain" %}</th>
+<th>{% trans "Actions" %}</th>
+{% endblock %}
+
+{% block additional_data %}
+<td>
+    <a href="{% url 'settings-link-domain' 'pending' %}#{{ link.domain.id }}">
+        {{ link.domain.domain }}
+    </a>
+</td>
+<td>
+    {% if link.domain.status != "approved" %}
+    <form method="POST" action="{% url 'settings-link-domain-status' link.domain.id 'approved' report.id %}">
+        {% csrf_token %}
+        <button type="submit" class="button is-success is-light">{% trans "Approve domain" %}</button>
+    </form>
+    {% endif %}
+
+    {% if link.domain.status != "blocked" %}
+    <form method="POST" action="{% url 'settings-link-domain-status' link.domain.id 'blocked' report.id %}">
+        {% csrf_token %}
+        <button type="submit" class="button is-danger is-light">{% trans "Block domain" %}</button>
+    </form>
+    {% endif %}
+</td>
+{% endblock %}

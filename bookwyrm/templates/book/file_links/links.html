@@ -1,0 +1,58 @@
+{% load i18n %}
+{% load book_display_tags %}
+{% load utilities %}
+
+{% get_book_file_links book as links %}
+{% if links.exists or request.user.is_authenticated %}
+<header class="columns is-mobile mb-0">
+    <div class="column">
+        <h2 class="title is-5">{% trans "Get a copy" %}</h2>
+    </div>
+    {% if can_edit_book %}
+    <div class="column is-narrow">
+        {% url 'file-link-add' book.id as fallback_url %}
+        <form name="add-link" method="get" action="{{ fallback_url }}">
+            <button class="button is-small" type="submit" data-modal-open="add-links">
+                <span class="icon icon-plus">
+                    <span class="is-sr-only">
+                        {% trans "Add link to file" %}
+                    </span>
+                </span>
+            </button>
+        </form>
+    </div>
+    {% endif %}
+</header>
+{% if links %}
+<ul class="mt-0">
+    {% for link in links.all %}
+    {% join "verify" link.id as verify_modal %}
+    <li>
+        <a href="{{ link.url }}" rel="nofollow noopener noreferrer" target="_blank" title="{{ link.url }}" data-modal-open="{{ verify_modal }}">{{ link.name }}</a>
+        ({{ link.filetype }})
+
+        {% if link.availability != "free" %}
+        <p class="help">
+            {{ link.get_availability_display }}
+        </p>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% for link in links.all %}
+{% join "verify" link.id as verify_modal %}
+{% include "book/file_links/verification_modal.html" with id=verify_modal %}
+{% endfor %}
+{% else %}
+<em>{% trans "No links available" %}</em>
+{% endif %}
+
+{% if can_edit_book and links.exists %}
+<a href="{% url 'file-link' book.id %}" class="is-pulled-right">
+    <span class="icon icon-pencil" aria-hidden="true"></span>
+    <span>{% trans "Edit links" %}</span>
+</a>
+{% endif %}
+{% include 'book/file_links/add_link_modal.html' with book=book id="add-links" %}
+
+{% endif %}

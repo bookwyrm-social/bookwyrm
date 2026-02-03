@@ -1,50 +1,46 @@
 {% load layout %}
+{% load sass_tags %}
 {% load i18n %}
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="{% get_lang %}">
 <head>
     <title>{% block title %}BookWyrm{% endblock %} - {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{% static "css/vendor/bulma.min.css" %}">
-    <link rel="stylesheet" href="{% static "css/vendor/icons.css" %}">
-    <link rel="stylesheet" href="{% static "css/bookwyrm.css" %}">
+    <link href="{% sass_src site_theme %}" rel="stylesheet" type="text/css" />
 
     <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch' %}" title="{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}" />
 
     <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
+    <link rel="apple-touch-icon" href="{% if site.logo %}{{ media_full_url }}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
+    <link rel="manifest" href="/manifest.json" />
 
-    {% if preview_images_enabled is True %}
-    <meta name="twitter:card" content="summary_large_image">
-    {% else %}
-    <meta name="twitter:card" content="summary">
-    {% endif %}
-    <meta name="twitter:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
-    <meta name="og:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
-    <meta name="twitter:description" content="{{ site.instance_tagline }}">
-    <meta name="og:description" content="{{ site.instance_tagline }}">
-
-    {% block opengraph_images %}
-        {% include 'snippets/opengraph_images.html' %}
+    {% block opengraph %}
+        {% include 'snippets/opengraph.html' %}
     {% endblock %}
-    <meta name="twitter:image:alt" content="BookWyrm Logo">
+
+    {% block head_links %}{% endblock %}
 </head>
 <body>
+{% block body %}
 <nav class="navbar" aria-label="main navigation">
     <div class="container">
+        {% with notification_count=request.user.unread_notification_count has_unread_mentions=request.user.has_unread_mentions %}
+        {% if not request.user.moved_to %}
         <div class="navbar-brand">
             <a class="navbar-item" href="/">
-                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="Home page">
+                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}" loading="lazy" decoding="async">
             </a>
-            <form class="navbar-item column" action="{% url 'search' %}">
+            <form class="navbar-item column is-align-items-start pt-5" action="{% url 'search' %}">
                 <div class="field has-addons">
                     <div class="control">
-                        {% if user.is_authenticated %}
-                            {% trans "Search for a book, user, or list" as search_placeholder %}
+                        {% if request.user.is_authenticated %}
+                            {% trans "Search for a book, author, user, or list" as search_placeholder %}
                         {% else %}
                             {% trans "Search for a book" as search_placeholder %}
                         {% endif %}
-                        <input aria-label="{{ search_placeholder }}" id="search_input" class="input" type="text" name="q" placeholder="{{ search_placeholder }}" value="{{ query }}">
+                        <input aria-label="{{ search_placeholder }}" id="tour-search" class="input" type="text" name="q" placeholder="{{ search_placeholder }}" value="{{ query }}" spellcheck="false">
                     </div>
                     <div class="control">
                         <button class="button" type="submit">
@@ -53,113 +49,75 @@
                             </span>
                         </button>
                     </div>
-                </div>
-            </form>
-
-            <div role="button" tabindex="0" class="navbar-burger pulldown-menu" data-controls="main_nav" aria-expanded="false">
-                <div class="navbar-item mt-3">
-                    <div class="icon icon-dots-three-vertical" title="{% trans 'Main navigation menu' %}">
-                        <span class="is-sr-only">{% trans "Main navigation menu" %}</span>
+                    <div class="control">
+                        <button class="button" type="button" data-modal-open="barcode-scanner-modal">
+                            <span class="icon icon-barcode" title="{% trans 'Scan Barcode' %}" id="tour-barcode">
+                                <span class="is-sr-only">{% trans "Scan Barcode" %}</span>
+                            </span>
+                        </button>
                     </div>
                 </div>
-            </div>
-        </div>
+            </form>
+            {% include "search/barcode_modal.html" with id="barcode-scanner-modal" %}
 
+            <button
+                type="button"
+                tabindex="0"
+                class="navbar-burger pulldown-menu my-4 is-flex-touch is-align-items-center is-justify-content-center"
+                data-controls="main_nav"
+                aria-expanded="false"
+                aria-label="{% trans 'Main navigation menu' %}"
+            >
+                <i class="icon-dots-three-vertical" aria-hidden="true"></i>
+
+                <strong
+                    class="{% if not notification_count %}is-hidden {% elif has_unread_mentions %}is-danger {% else %}is-primary {% endif %} tag is-small px-1"
+                    data-poll-wrapper
+                >
+                    <span class="is-sr-only">{% trans "Notifications" %}</span>
+                    <strong data-poll="notifications" class="has-text-white">
+                        {{ notification_count }}
+                    </strong>
+                </strong>
+            </button>
+        </div>
         <div class="navbar-menu" id="main_nav">
-            <div class="navbar-start">
+            <div class="navbar-start" id="tour-navbar-start">
                 {% if request.user.is_authenticated %}
-                <a href="/#feed" class="navbar-item">
-                    {% trans "Feed" %}
-                </a>
-                <a href="{% url 'lists' %}" class="navbar-item">
+                <a href="{% url 'lists' %}" class="navbar-item mt-3 py-0">
                     {% trans "Lists" %}
                 </a>
-                <a href="{% url 'discover' %}" class="navbar-item">
+                <a href="{% url 'discover' %}" class="navbar-item mt-3 py-0">
                     {% trans "Discover" %}
+                </a>
+                <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item mt-3 py-0">
+                    {% trans "Your Books" %}
                 </a>
                 {% endif %}
             </div>
 
             <div class="navbar-end">
             {% if request.user.is_authenticated %}
-                <div class="navbar-item has-dropdown is-hoverable">
-                    <a
-                        href="{{ request.user.local_path }}"
-                        class="navbar-link pulldown-menu"
-                        role="button"
-                        aria-expanded="false"
-                        tabindex="0"
-                        aria-haspopup="true"
-                        aria-controls="navbar-dropdown"
-                    >
-                        {% include 'snippets/avatar.html' with user=request.user %}
-                        <span class="ml-2">{{ request.user.display_name }}</span>
-                    </a>
-                    <ul class="navbar-dropdown" id="navbar_dropdown">
-                        <li>
-                            <a href="{% url 'directory' %}" class="navbar-item">
-                                {% trans "Directory" %}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item">
-                                {% trans 'Your Books' %}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'direct-messages' %}" class="navbar-item">
-                                {% trans "Direct Messages" %}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'prefs-profile' %}" class="navbar-item">
-                                {% trans 'Settings' %}
-                            </a>
-                        </li>
-                        {% if perms.bookwyrm.create_invites or perms.moderate_user %}
-                        <li class="navbar-divider" role="presentation">&nbsp;</li>
-                        {% endif %}
-                        {% if perms.bookwyrm.create_invites and not site.allow_registration %}
-                        <li>
-                            <a href="{% url 'settings-invite-requests' %}" class="navbar-item">
-                                {% trans 'Invites' %}
-                            </a>
-                        </li>
-                        {% endif %}
-                        {% if perms.bookwyrm.moderate_user %}
-                        <li>
-                            <a href="{% url 'settings-dashboard' %}" class="navbar-item">
-                                {% trans 'Admin' %}
-                            </a>
-                        </li>
-                        {% endif %}
-                        <li class="navbar-divider" role="presentation">&nbsp;</li>
-                        <li>
-                            <a href="{% url 'logout' %}" class="navbar-item">
-                                {% trans 'Log out' %}
-                            </a>
-                        </li>
-                    </ul>
+                <div class="navbar-item mt-3 py-0">
+                    {% include 'user_menu.html' %}
                 </div>
-                <div class="navbar-item">
-                    <a href="{% url 'notifications' %}" class="tags has-addons">
+                <div class="navbar-item mt-3 py-0">
+                    <a href="{% url 'notifications' %}" class="tags has-addons" id="tour-notifications">
                         <span class="tag is-medium">
                             <span class="icon icon-bell" title="{% trans 'Notifications' %}">
                                 <span class="is-sr-only">{% trans "Notifications" %}</span>
                             </span>
                         </span>
-                        {% with request.user.unread_notification_count as notification_count %}
                         <span
-                            class="{% if not notification_count %}is-hidden {% elif request.user.has_unread_mentions %}is-danger {% endif %}tag is-medium transition-x"
+                            class="{% if not notification_count %}is-hidden {% elif has_unread_mentions %}is-danger {% endif %}tag is-medium transition-x"
                             data-poll-wrapper
                         >
                             <span data-poll="notifications">{{ notification_count }}</span>
                         </span>
-                        {% endwith %}
                     </a>
                 </div>
                 {% else %}
-                <div class="navbar-item">
+                <div class="navbar-item pt-5 pb-0">
                     {% if request.path != '/login' and request.path != '/login/' %}
                     <div class="columns">
                         <div class="column">
@@ -172,7 +130,12 @@
                                     </div>
                                     <div class="column">
                                         <label class="is-sr-only" for="id_password">{% trans "Password:" %}</label>
-                                        <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="{% trans 'password' %}">
+                                        <div class="control has-icons-right">
+                                            <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="{% trans 'password' %}">
+                                            <span data-password-icon data-for="id_password" class="icon is-right is-clickable">
+                                                <button type="button" aria-controls="id_password" class="icon-eye-blocked" title="{% trans 'Show/Hide password' %}"></button>
+                                            </span>
+                                        </div>
                                         <p class="help"><a href="{% url 'password-reset' %}">{% trans "Forgot your password?" %}</a></p>
                                     </div>
                                     <div class="column is-narrow">
@@ -194,11 +157,19 @@
                 {% endif %}
             </div>
         </div>
+        {% else %}
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}" loading="lazy" decoding="async">
+            </a>
+        </div>
+        {% endif %}
+        {% endwith %}
     </div>
 </nav>
 
 {% if request.user.is_authenticated and active_announcements.exists %}
-<div class="block is-flex-grow-1">
+<div class="is-flex-grow-1">
     <div class="container">
         {% for announcement in active_announcements %}
         {% include 'snippets/announcement.html' with announcement=announcement %}
@@ -207,65 +178,40 @@
 </div>
 {% endif %}
 
-<div class="section is-flex-grow-1">
+<main class="section is-flex-grow-1">
     <div class="container">
-        {# almost every view needs to know the user shelves #}
-        {% with request.user.shelf_set.all as user_shelves %}
-        {% block content %}
-        {% endblock %}
-        {% endwith %}
+        {% if request.user.moved_to %}
+            {% include "moved.html" %}
+        {% else %}
+            {# almost every view needs to know the user shelves #}
+            {% with request.user.shelf_set.all as user_shelves %}
+            {% block content %}
+            {% endblock %}
+            {% endwith %}
+        {% endif %}
     </div>
-</div>
+</main>
 
 <div role="region" aria-live="polite" id="live-messages">
     <p id="status-success-message" class="live-message is-sr-only is-hidden">{% trans "Successfully posted status" %}</p>
     <p id="status-error-message" class="live-message notification is-danger p-3 pr-5 pl-5 is-hidden">{% trans "Error posting status" %}</p>
 </div>
 
-<footer class="footer">
-    <div class="container">
-        <div class="columns">
-            <div class="column is-one-fifth">
-                <p>
-                <a href="{% url 'about' %}">{% blocktrans with site_name=site.name %}About {{ site_name }}{% endblocktrans %}</a>
-                </p>
-                {% if site.admin_email %}
-                <p>
-                    <a href="mailto:{{ site.admin_email }}">{% trans "Contact site admin" %}</a>
-                </p>
-                {% endif %}
-                <p>
-                    <a href="https://docs.joinbookwyrm.com/">{% trans "Documentation" %}</a>
-                </p>
-            </div>
-            <div class="column content is-two-fifth">
-                {% if site.support_link %}
-                <p>
-                    <span class="icon icon-heart"></span>
-                    {% blocktrans with site_name=site.name support_link=site.support_link support_title=site.support_title %}Support {{ site_name }} on <a href="{{ support_link }}" target="_blank">{{ support_title }}</a>{% endblocktrans %}
-                </p>
-                {% endif %}
-                <p>
-                {% blocktrans %}BookWyrm's source code is freely available. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.{% endblocktrans %}
-                </p>
-            </div>
-            {% if site.footer_item %}
-            <div class="column">
-                <p>{{ site.footer_item|safe }}</p>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-</footer>
+{% include 'snippets/footer.html' %}
+{% endblock %}
 
-<script>
+<script nonce="{{request.csp_nonce}}">
     var csrf_token = '{{ csrf_token }}';
 </script>
 
 <script src="{% static "js/bookwyrm.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/localstorage.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/status_cache.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/vendor/quagga.min.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/vendor/shepherd.min.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/guided_tour.js" %}?v={{ js_cache }}"></script>
 
 {% block scripts %}{% endblock %}
+
 </body>
 </html>

@@ -1,0 +1,21 @@
+{% load i18n %}
+<div class="field">
+    <label
+        for="id_notes_{{ form_id }}"
+        class="{% if show_label %}label{% else %}is-sr-only{% endif %}"
+    >
+        {% trans "Notes:" %}
+    </label>
+    <div class="control">
+        <textarea
+            class="textarea"
+            id="id_notes_{{ form_id }}"
+            maxlength="300"
+            name="notes"
+            aria-describedby="notes_description_{{ form_id }}"
+        >{{ item.notes|default:'' }}</textarea>
+    </div>
+    <p class="help" id="notes_description_{{ form_id }}">
+        {% trans "An optional note that will be displayed with the book." %}
+    </p>
+</div>

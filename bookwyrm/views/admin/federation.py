@@ -1,4 +1,5 @@
-""" manage federated servers """
+"""manage federated servers"""
+
 import json
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
@@ -11,9 +12,9 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.models.user import get_or_create_remote_server
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.control_federation", raise_exception=True),
@@ -24,24 +25,46 @@ class Federation(View):
 
     def get(self, request, status="federated"):
         """list of servers"""
-        servers = models.FederatedServer.objects.filter(status=status)
+
+        filters = {}
+        if software := request.GET.get("application_type"):
+            filters["application_type"] = software
+        if server := request.GET.get("server"):
+            filters["server_name"] = server
+
+        servers = models.FederatedServer.objects.filter(status=status, **filters)
 
         sort = request.GET.get("sort")
-        sort_fields = ["created_date", "application_type", "server_name"]
-        # pylint: disable=consider-using-f-string
-        if not sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
+        sort_fields = [
+            "created_date",
+            "updated_date",
+            "application_type",
+            "server_name",
+        ]
+        if sort not in sort_fields + [f"-{f}" for f in sort_fields]:
             sort = "-created_date"
-        servers = servers.order_by(sort)
+        servers = servers.order_by(sort, "-created_date")
 
         paginated = Paginator(servers, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
 
         data = {
+            "federated_count": models.FederatedServer.objects.filter(
+                status="federated"
+            ).count(),
+            "blocked_count": models.FederatedServer.objects.filter(
+                status="blocked"
+            ).count(),
             "servers": page,
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
             "sort": sort,
+            "software_options": models.FederatedServer.objects.values_list(
+                "application_type", flat=True
+            )
+            .distinct()
+            .order_by("application_type"),
             "form": forms.ServerForm(),
         }
         return TemplateResponse(request, "settings/federation/instance_list.html", data)
@@ -63,7 +86,7 @@ class AddFederatedServer(View):
             return TemplateResponse(
                 request, "settings/federation/edit_instance.html", data
             )
-        server = form.save()
+        server = form.save(request)
         return redirect("settings-federated-server", server.id)
 
 
@@ -129,18 +152,17 @@ class FederatedServer(View):
         }
         return TemplateResponse(request, "settings/federation/instance.html", data)
 
-    def post(self, request, server):  # pylint: disable=unused-argument
+    def post(self, request, server):
         """update note"""
         server = get_object_or_404(models.FederatedServer, id=server)
         server.notes = request.POST.get("notes")
-        server.save()
+        server.save(request)
         return redirect("settings-federated-server", server.id)
 
 
 @login_required
 @require_POST
 @permission_required("bookwyrm.control_federation", raise_exception=True)
-# pylint: disable=unused-argument
 def block_server(request, server):
     """block a server"""
     server = get_object_or_404(models.FederatedServer, id=server)
@@ -151,9 +173,18 @@ def block_server(request, server):
 @login_required
 @require_POST
 @permission_required("bookwyrm.control_federation", raise_exception=True)
-# pylint: disable=unused-argument
 def unblock_server(request, server):
     """unblock a server"""
     server = get_object_or_404(models.FederatedServer, id=server)
     server.unblock()
+    return redirect("settings-federated-server", server.id)
+
+
+@login_required
+@require_POST
+@permission_required("bookwyrm.control_federation", raise_exception=True)
+def refresh_server(request, server):
+    """unblock a server"""
+    server = get_object_or_404(models.FederatedServer, id=server)
+    get_or_create_remote_server(server.server_name, refresh=True)
     return redirect("settings-federated-server", server.id)

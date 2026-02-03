@@ -3,5 +3,7 @@
 
 {% block filter %}
 <label class="label" for="id_server">{% trans "Instance name" %}</label>
-<input type="text" class="input" name="server" value="{{ request.GET.server|default:'' }}" id="id_server" placeholder="example.server.com">
+<div class="control">
+    <input type="text" class="input" name="server" value="{{ request.GET.server|default:'' }}" id="id_server" placeholder="example.server.com">
+</div>
 {% endblock %}

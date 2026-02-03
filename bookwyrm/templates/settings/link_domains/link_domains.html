@@ -1,0 +1,105 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block title %}{% trans "Link Domains" %}{% endblock %}
+
+{% block header %}{% trans "Link Domains" %}{% endblock %}
+
+{% block panel %}
+<p class="notification block">
+    {% trans "Link domains must be approved before they are shown on book pages. Please make sure that the domains are not hosting spam, malicious code, or deceptive links before approving." %}
+</p>
+
+<div class="block">
+    <div class="tabs">
+        <ul>
+            {% url 'settings-link-domain' status='pending' as url %}
+            <li {% if request.path in url %}class="is-active" aria-current="page"{% endif %}>
+                <a href="{{ url }}">{% trans "Pending" %} ({{ counts.pending }})</a>
+            </li>
+            {% url 'settings-link-domain' status='approved' as url %}
+            <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+                <a href="{{ url }}">{% trans "Approved" %} ({{ counts.approved }})</a>
+            </li>
+            {% url 'settings-link-domain' status='blocked' as url %}
+            <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+                <a href="{{ url }}">{% trans "Blocked" %} ({{ counts.blocked }})</a>
+            </li>
+        </ul>
+    </div>
+
+    {% for domain in domains %}
+    {% join "domain" domain.id as domain_modal %}
+    <div class="box content" id="{{ domain.id }}">
+        <div class="columns is-mobile">
+            <header class="column">
+                <h2 class="title is-5">
+                    {{ domain.name }}
+                    (<a href="http://{{ domain.domain }}" target="_blank" rel="nofollow noopener noreferrer">{{ domain.domain }}</a>)
+                </h2>
+            </header>
+            <div class="column is-narrow">
+                <button type="button" class="button is-small" data-modal-open="{{ domain_modal }}">
+                    <span class="icon icon-pencil m-0-mobile" aria-hidden="true"></span>
+                    <span class="is-sr-only-mobile">{% trans "Set display name" %}</span>
+                </button>
+            </div>
+        </div>
+        <div class="block">
+            <details class="details-panel box">
+                <summary>
+                    <span role="heading" aria-level="3" class="title is-6">
+                        {% trans "View links" %}
+                        ({{ domain.links.count }})
+                    </span>
+                    <span class="details-close icon icon-x" aria-hidden="true"></span>
+                </summary>
+
+                <div class="table-container pt-0">
+                    {% include "settings/link_domains/link_table.html" with links=domain.links.all|slice:10 %}
+                </div>
+            </details>
+        </div>
+
+        {% include "settings/link_domains/edit_domain_modal.html" with domain=domain id=domain_modal %}
+
+        <div class="field has-addons">
+            {% if status != "approved" %}
+            <form
+                name="domain-{{ domains.id }}-approve"
+                class="control"
+                method="post"
+                action="{% url 'settings-link-domain-status' domain.id 'approved' %}"
+            >
+                {% csrf_token %}
+                <button type="submit" class="button is-success is-light">{% trans "Approve" %}</button>
+            </form>
+            {% endif %}
+            {% if status != "blocked" %}
+            <form
+                name="domain-{{ domains.id }}-block"
+                class="control"
+                method="post"
+                action="{% url 'settings-link-domain-status' domain.id 'blocked' %}"
+            >
+                {% csrf_token %}
+                <button type="submit" class="button is-danger is-light">{% trans "Block" %}</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if not domains.exists %}
+        {% if status == "approved" %}
+        <em>{% trans "No domains currently approved" %}</em>
+        {% elif status == "pending" %}
+        <em>{% trans "No domains currently pending" %}</em>
+        {% else %}
+        <em>{% trans "No domains currently blocked" %}</em>
+        {% endif %}
+    {% endif %}
+</div>
+
+{% endblock %}

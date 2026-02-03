@@ -1,0 +1,28 @@
+{% load i18n %}
+{% load utilities %}
+
+{% csrf_token %}
+<input type="hidden" name="id" value="{{ readthrough.id }}">
+<input type="hidden" name="book" value="{{ book.id }}">
+<input type="hidden" name="user" value="{{ request.user.id }}">
+<div class="field">
+    <label class="label" tabindex="0" id="add_readthrough_focus_{{ readthrough.id }}" for="id_start_date_{{ readthrough.id }}">
+        {% trans "Started reading" %}
+    </label>
+    <input type="date" name="start_date" class="input" id="id_start_date_{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
+</div>
+{# Only show progress for editing existing readthroughs #}
+{% if readthrough.id and not readthrough.finish_date %}
+{% join "id_progress" readthrough.id as field_id %}
+<label class="label" for="{{ field_id }}">
+    {% trans "Progress" %}
+</label>
+{% include "snippets/progress_field.html" with id=field_id %}
+{% endif %}
+
+<div class="field">
+    <label class="label" for="id_finish_date_{{ readthrough.id }}">
+        {% trans "Finished reading" %}
+    </label>
+    <input type="date" name="finish_date" class="input" id="id_finish_date_{{ readthrough.id }}" value="{{ readthrough.finish_date | date:"Y-m-d" }}">
+</div>

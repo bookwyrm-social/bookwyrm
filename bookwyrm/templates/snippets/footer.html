@@ -1,0 +1,62 @@
+{% load i18n %}
+
+<footer class="footer">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-2">
+                <p>
+                    <a href="{% url 'about' %}">{% blocktrans with site_name=site.name %}About {{ site_name }}{% endblocktrans %}</a>
+                </p>
+                {% if site.admin_email %}
+                <p>
+                    <a href="mailto:{{ site.admin_email }}">{% trans "Contact site admin" %}</a>
+                </p>
+                {% endif %}
+                <p>
+                    <a href="https://docs.joinbookwyrm.com/">{% trans "Documentation" %}</a>
+                </p>
+                {% if request.user.is_authenticated %}
+                <p id="tour-begin">
+                    <a href="/guided-tour/True">{% trans "Guided Tour" %}</a>
+                    <noscript>(requires JavaScript)</noscript>
+                </p>
+                {% endif %}
+            </div>
+            <div class="column is-2">
+                <p>
+                    <a href ="{% url 'conduct' %}">{% trans "Code of Conduct" %}</a>
+                </p>
+                <p>
+                    <a href ="{% url 'privacy' %}">{% trans "Privacy Policy" %}</a>
+                </p>
+                {% if site.show_impressum %}
+                <p>
+                    <a href ="{% url 'impressum' %}">{% trans "Impressum" %}</a>
+                </p>
+                {% endif %}
+            </div>
+            <div class="column content">
+                {% if site.support_link %}
+                <p>
+                    <span class="icon icon-heart"></span>
+                    {% blocktrans trimmed with site_name=site.name support_link=site.support_link support_title=site.support_title %}
+                        Support {{ site_name }} on
+                        <a href="{{ support_link }}" target="_blank" rel="nofollow noopener noreferrer">{{ support_title }}</a>
+                    {% endblocktrans %}
+                </p>
+                {% endif %}
+                <p>
+                {% blocktrans trimmed %}
+                    BookWyrm's source code is freely available. You can contribute or report issues on
+                    <a href="https://github.com/bookwyrm-social/bookwyrm" target="_blank" rel="nofollow noopener noreferrer">GitHub</a>.
+                {% endblocktrans %}
+                </p>
+            </div>
+            {% if site.footer_item %}
+            <div class="column is-4">
+                <p>{{ site.footer_item|safe }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</footer>

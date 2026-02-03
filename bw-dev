@@ -1,7 +1,18 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # exit on errors
 set -e
+
+# check if we're in DEBUG mode
+DEBUG=$(sed <.env -ne 's/^DEBUG=//p')
+
+# disallow certain commands when debug is false
+function prod_error {
+    if [ "$DEBUG" != "true" ]; then
+        echo "This command is not safe to run in production environments"
+        exit 1
+    fi
+}
 
 # import our ENV variables
 # catch exits and give a friendly error message
@@ -12,30 +23,39 @@ trap showerr EXIT
 source .env
 trap - EXIT
 
+if docker compose &> /dev/null ; then
+	DOCKER_COMPOSE="docker compose"
+else
+	DOCKER_COMPOSE="docker-compose"
+fi
+
 function clean {
-    docker-compose stop
-    docker-compose rm -f
+    $DOCKER_COMPOSE stop
+    $DOCKER_COMPOSE rm -f
 }
 
 function runweb {
-    docker-compose run --rm web "$@"
+    $DOCKER_COMPOSE run --rm web "$@"
 }
 
 function execdb {
-    docker-compose exec db $@
+    $DOCKER_COMPOSE exec db $@
 }
 
 function execweb {
-    docker-compose exec web "$@"
+    $DOCKER_COMPOSE exec web "$@"
 }
 
 function initdb {
-    execweb python manage.py migrate
-    execweb python manage.py initdb
+    runweb python manage.py initdb "$@"
 }
 
-function makeitblack {
-    docker-compose run --rm web black celerywyrm bookwyrm
+function migrate {
+    runweb python manage.py migrate "$@"
+}
+
+function admin_code {
+    runweb python manage.py admin_code
 }
 
 function awscommand {
@@ -49,6 +69,34 @@ function awscommand {
         amazon/aws-cli $2
 }
 
+function create_secrets {
+
+    set +x
+    if python3 -c 'import secrets' &>/dev/null; then
+        SECRETS_COMMAND="python3 -c 'import secrets; print(secrets.token_urlsafe(50))'"
+    elif openssl &>null; then
+        SECRETS_COMMAND="openssl rand -hex 50"
+    else
+        echo "you need either python or openssl executable to generate secrets with this script"
+        exit 1
+    fi
+    for env_variable in SECRET_KEY POSTGRES_PASSWORD REDIS_ACTIVITY_PASSWORD REDIS_BROKER_PASSWORD FLOWER_PASSWORD; do
+        if grep -q -qi "^$env_variable" .env; then
+            echo -e "${env_variable} already configured, skipping"
+        else
+            echo -e "generating random secret in ${env_variable}"
+            generated_secret=$(eval "${SECRETS_COMMAND}")
+
+            if grep -q -qi "^#[[:blank:]]*$env_variable" .env; then
+                sed -i.bak -e "s/#[[:blank:]]*${env_variable}=.*/${env_variable}=\"${generated_secret}\"/" .env
+            else
+                echo "${env_variable}=\"${generated_secret}\"" >>.env
+            fi
+        fi
+    done
+    set -x
+}
+
 CMD=$1
 if [ -n "$CMD" ]; then
     shift
@@ -59,30 +107,42 @@ set -x
 
 case "$CMD" in
     up)
-        docker-compose up --build "$@"
+        $DOCKER_COMPOSE up "$@"
         ;;
-    run)
-        docker-compose run --rm --service-ports web
+    down)
+        $DOCKER_COMPOSE down
+        ;;
+    service_ports_web)
+        prod_error
+        $DOCKER_COMPOSE run --rm --service-ports web
         ;;
     initdb)
-        initdb
+        initdb "$@"
+        ;;
+    init_ssl)
+        $DOCKER_COMPOSE --file ./docker-compose-init_letsencrypt.yml up --exit-code-from=certbot
+        ;;
+    upgrade_db_version)
+        $DOCKER_COMPOSE --file docker-compose-upgrade-db.yml run --rm db_update
         ;;
     resetdb)
-        clean
-        # Start just the DB so no one else is using it
-        docker-compose up --build -d db
-        execdb dropdb -U ${POSTGRES_USER} ${POSTGRES_DB}
-        execdb createdb -U ${POSTGRES_USER} ${POSTGRES_DB}
-        # Now start up web so we can run the migrations
-        docker-compose up --build -d web
+        prod_error
+        $DOCKER_COMPOSE rm -svf
+        docker volume rm -f bookwyrm_media_volume bookwyrm_pgdata bookwyrm_redis_activity_data bookwyrm_redis_broker_data bookwyrm_static_volume
+        $DOCKER_COMPOSE build
+        migrate
+        migrate django_celery_beat
         initdb
-        clean
+        runweb python manage.py compile_themes
+        runweb python manage.py collectstatic --no-input
+        admin_code
         ;;
     makemigrations)
+        prod_error
         runweb python manage.py makemigrations "$@"
         ;;
     migrate)
-        runweb python manage.py migrate "$@"
+        migrate "$@"
         ;;
     bash)
         runweb bash
@@ -94,34 +154,107 @@ case "$CMD" in
         execdb psql -U ${POSTGRES_USER} ${POSTGRES_DB}
         ;;
     restart_celery)
-        docker-compose restart celery_worker
-        ;;
-    test)
-        runweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
+        $DOCKER_COMPOSE restart celery_worker
         ;;
     pytest)
-        execweb pytest --no-cov-on-fail "$@"
+        prod_error
+        runweb pytest --no-cov-on-fail "$@"
+        ;;
+    pytest_coverage_report)
+        prod_error
+        runweb pytest -n 3 --cov-report term-missing "$@"
+        ;;
+    compile_themes)
+        runweb python manage.py compile_themes
         ;;
     collectstatic)
         runweb python manage.py collectstatic --no-input
         ;;
     makemessages)
+        prod_error
         runweb django-admin makemessages --no-wrap --ignore=venv -l en_US $@
         ;;
     compilemessages)
         runweb django-admin compilemessages --ignore venv $@
         ;;
+    update_locales)
+        prod_error
+        runweb django-admin makemessages --no-wrap --ignore=venv -l en_US $@
+        runweb django-admin compilemessages --ignore venv
+        ;;
     build)
-        docker-compose build
+        $DOCKER_COMPOSE build
         ;;
     clean)
+        prod_error
         clean
         ;;
-    black)
-        makeitblack
+    ruff)
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools ruff format celerywyrm bookwyrm
+        $DOCKER_COMPOSE run --rm dev-tools ruff check celerywyrm bookwyrm
+        ;;
+    ruff-format)
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools ruff format celerywyrm bookwyrm
+        ;;
+    ruff-check)
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools ruff check celerywyrm bookwyrm
+        ;;
+    ruff-fix)
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools ruff check --fix celerywyrm bookwyrm
+        ;;
+    prettier)
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools prettier --write bookwyrm/static/js/*.js
+        ;;
+    eslint)
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools eslint bookwyrm/static --ext .js
+        ;;
+    stylelint)
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools stylelint --fix bookwyrm/static/css \
+            --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
+        ;;
+    formatters)
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools ruff format celerywyrm bookwyrm
+        $DOCKER_COMPOSE run --rm dev-tools ruff check --fix celerywyrm bookwyrm
+        $DOCKER_COMPOSE run --rm dev-tools prettier --write bookwyrm/static/js/*.js
+        $DOCKER_COMPOSE run --rm dev-tools eslint bookwyrm/static --ext .js
+        $DOCKER_COMPOSE run --rm dev-tools stylelint --fix bookwyrm/static/css \
+            --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
+        ;;
+    mypy)
+        prod_error
+        runweb mypy celerywyrm bookwyrm
+        ;;
+    create_secrets)
+        create_secrets
+        ;;
+    collectstatic_watch)
+        prod_error
+        npm run --prefix dev-tools watch:static
+        ;;
+    update)
+        git pull
+        $DOCKER_COMPOSE build
+        # ./update.sh
+        runweb python manage.py migrate
+        runweb python manage.py compile_themes
+        runweb python manage.py collectstatic --no-input
+        $DOCKER_COMPOSE up -d
+        $DOCKER_COMPOSE restart web
+        $DOCKER_COMPOSE restart celery_worker
         ;;
     populate_streams)
-        runweb python manage.py populate_streams $@
+        runweb python manage.py populate_streams "$@"
+        ;;
+    populate_lists_streams)
+        runweb python manage.py populate_lists_streams $@
         ;;
     populate_suggestions)
         runweb python manage.py populate_suggestions
@@ -130,56 +263,107 @@ case "$CMD" in
         runweb python manage.py generateimages
         ;;
     generate_preview_images)
-        runweb python manage.py generate_preview_images $@
+        runweb python manage.py generate_preview_images "$@"
+        ;;
+    remove_remote_user_preview_images)
+        runweb python manage.py remove_remote_user_preview_images
+        ;;
+    erase_deleted_user_data)
+        runweb python manage.py erase_deleted_user_data "$@"
         ;;
     copy_media_to_s3)
         awscommand "bookwyrm_media_volume:/images"\
             "s3 cp /images s3://${AWS_STORAGE_BUCKET_NAME}/images\
             --endpoint-url ${AWS_S3_ENDPOINT_URL}\
-            --recursive --acl public-read"
+            --recursive --acl public-read" "$@"
+        ;;
+    sync_media_to_s3)
+        awscommand "bookwyrm_media_volume:/images"\
+            "s3 sync /images s3://${AWS_STORAGE_BUCKET_NAME}/images\
+            --endpoint-url ${AWS_S3_ENDPOINT_URL}\
+            --acl public-read" "$@"
         ;;
     set_cors_to_s3)
+        set +x
+        config_file=$1
+        if [ -z "$config_file" ]; then
+            echo "This command requires a JSON file containing a CORS configuration as an argument"
+            exit 1
+        fi
+        set -x
         awscommand "$(pwd):/bw"\
             "s3api put-bucket-cors\
             --bucket ${AWS_STORAGE_BUCKET_NAME}\
             --endpoint-url ${AWS_S3_ENDPOINT_URL}\
-            --cors-configuration file:///bw/$@"
+            --cors-configuration file:///bw/$config_file" "$@"
+        ;;
+    admin_code)
+        admin_code
+        ;;
+    setup)
+        migrate
+        migrate django_celery_beat
+        initdb
+        runweb python manage.py compile_themes
+        runweb python manage.py collectstatic --no-input
+        admin_code
         ;;
     runweb)
         runweb "$@"
         ;;
-    rundb)
-        rundb "$@"
+    remove_2fa)
+        runweb python manage.py remove_2fa "$@"
+        ;;
+    confirm_email)
+        runweb python manage.py confirm_email "$@"
         ;;
     *)
         set +x # No need to echo echo
         echo "Unrecognised command. Try:"
+        echo "    setup"
         echo "    up [container]"
-        echo "    run"
+        echo "    down"
+        echo "    service_ports_web"
+        echo "    upgrade_db_version"
         echo "    initdb"
         echo "    resetdb"
+        echo "    init_ssl"
         echo "    makemigrations [migration]"
         echo "    migrate [migration]"
+        echo "    create_secrets"
         echo "    bash"
         echo "    shell"
         echo "    dbshell"
         echo "    restart_celery"
-        echo "    test [path]"
         echo "    pytest [path]"
+        echo "    compile_themes"
         echo "    collectstatic"
-        echo "    add_locale [locale]"
         echo "    makemessages"
         echo "    compilemessages [locale]"
+        echo "    update_locales"
         echo "    build"
         echo "    clean"
-        echo "    black"
+        echo "    ruff (format and check)"
+        echo "    ruff-format (format code only)"
+        echo "    ruff-check (check code only)"
+        echo "    ruff-fix (auto-fix ruff issues)"
+        echo "    prettier"
+        echo "    eslint"
+        echo "    stylelint"
+        echo "    formatters"
+        echo "    mypy"
+        echo "    collectstatic_watch"
         echo "    populate_streams [--stream=<stream name>]"
+        echo "    populate_lists_streams"
         echo "    populate_suggestions"
         echo "    generate_thumbnails"
         echo "    generate_preview_images [--all]"
+        echo "    remove_remote_user_preview_images"
         echo "    copy_media_to_s3"
+        echo "    sync_media_to_s3"
         echo "    set_cors_to_s3 [cors file]"
         echo "    runweb [command]"
-        echo "    rundb [command]"
+        echo "    remove_2fa"
+        echo "    confirm_email"
         ;;
 esac

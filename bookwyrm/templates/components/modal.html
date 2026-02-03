@@ -1,40 +1,33 @@
 {% load i18n %}
-<div
-    role="dialog"
-    class="modal {% if active %}is-active{% else %}is-hidden{% endif %}"
-    id="{{ controls_text }}_{{ controls_uid }}"
-    aria-labelledby="modal_card_title_{{ controls_text }}_{{ controls_uid }}"
-    aria-modal="true"
->
-    {# @todo Implement focus traps to prevent tabbing out of the modal. #}
-    <div class="modal-background"></div>
-    {% trans "Close" as label %}
-    <div class="modal-card">
-        <header class="modal-card-head" tabindex="0" id="modal_title_{{ controls_text }}_{{ controls_uid }}">
-            <h2 class="modal-card-title is-flex-shrink-1" id="modal_card_title_{{ controls_text }}_{{ controls_uid }}">
+
+<div class="modal {% if active %}is-active{% endif %}" id="{{ id }}">
+    <div class="modal-background" data-modal-close></div>
+    <div class="modal-card" role="dialog" aria-modal="true" tabindex="-1" aria-described-by="{{ id }}_header">
+        <header class="modal-card-head">
+            <h2 class="modal-card-title mb-0" id="{{ id }}_header">
                 {% block modal-title %}{% endblock %}
             </h2>
-            {% if static %}
-                <a href="/" class="delete">{{ label }}</a>
-            {% else %}
-                {% include 'snippets/toggle/toggle_button.html' with label=label class="delete" nonbutton=True %}
-            {% endif %}
+            <button
+                type="button"
+                class="delete"
+                aria-label="{% trans 'Close' %}"
+                data-modal-close
+            ></button>
         </header>
+
         {% block modal-form-open %}{% endblock %}
-        {% if not no_body %}
         <section class="modal-card-body">
             {% block modal-body %}{% endblock %}
         </section>
-        {% endif %}
         <footer class="modal-card-foot">
             {% block modal-footer %}{% endblock %}
         </footer>
         {% block modal-form-close %}{% endblock %}
     </div>
-    {% if static %}
-        <a href="/" class="modal-close is-large">{{ label }}</a>
-    {% else %}
-        {% include 'snippets/toggle/toggle_button.html' with label=label class="modal-close is-large" nonbutton=True %}
-    {% endif %}
+    <button
+        type="button"
+        class="modal-close is-large"
+        aria-label="{% trans 'Close' %}"
+        data-modal-close
+    ></button>
 </div>
-

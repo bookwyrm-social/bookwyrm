@@ -1,4 +1,6 @@
-""" non-interactive pages """
+"""non-interactive pages"""
+
+from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -8,21 +10,35 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import activitystreams, forms, models
+from bookwyrm.models.user import FeedFilterChoices
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH, STREAMS
 from bookwyrm.suggested_users import suggested_users
-from .helpers import get_user_from_username
-from .helpers import is_api_request, is_bookwyrm_request
+from .helpers import filter_stream_by_status_type, get_user_from_username
+from .helpers import is_api_request, is_bookwyrm_request, maybe_redirect_local_path
+from .annual_summary import get_annual_summary_year
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Feed(View):
     """activity stream"""
 
-    def get(self, request, tab):
+    def post(self, request, tab):
+        """save feed settings form, with a silent validation fail"""
+        filters_applied = False
+        form = forms.FeedStatusTypesForm(request.POST, instance=request.user)
+        if form.is_valid():
+            # workaround to avoid broadcasting this change
+            user = form.save(request, commit=False)
+            user.save(broadcast=False, update_fields=["feed_status_types"])
+            filters_applied = True
+
+        return self.get(request, tab, filters_applied)
+
+    def get(self, request, tab, filters_applied=False):
         """user's homepage with activity feed"""
         tab = [s for s in STREAMS if s["key"] == tab]
         tab = tab[0] if tab else STREAMS[0]
@@ -30,9 +46,26 @@ class Feed(View):
         activities = activitystreams.streams[tab["key"]].get_activity_stream(
             request.user
         )
-        paginated = Paginator(activities, PAGE_LENGTH)
+        filtered_activities = filter_stream_by_status_type(
+            activities,
+            allowed_types=request.user.feed_status_types,
+        )
+        paginated = Paginator(filtered_activities, PAGE_LENGTH)
 
         suggestions = suggested_users.get_suggestions(request.user)
+
+        cutoff = (
+            date(get_annual_summary_year(), 12, 31)
+            if get_annual_summary_year()
+            else None
+        )
+        readthroughs = (
+            models.ReadThrough.objects.filter(
+                user=request.user, finish_date__lte=cutoff
+            )
+            if get_annual_summary_year()
+            else []
+        )
 
         data = {
             **feed_page_data(request.user),
@@ -43,7 +76,12 @@ class Feed(View):
                 "tab": tab,
                 "streams": STREAMS,
                 "goal_form": forms.GoalForm(),
+                "feed_status_types_options": FeedFilterChoices,
+                "filters_applied": filters_applied,
                 "path": f"/{tab['key']}",
+                "annual_summary_year": get_annual_summary_year(),
+                "has_tour": True,
+                "has_summary_read_throughs": len(readthroughs),
             },
         }
         return TemplateResponse(request, "feed/feed.html", data)
@@ -92,7 +130,8 @@ class DirectMessage(View):
 class Status(View):
     """get posting"""
 
-    def get(self, request, username, status_id):
+    @vary_on_headers("Accept")
+    def get(self, request, username, status_id, slug=None):
         """display a particular status (and replies, etc)"""
         user = get_user_from_username(request.user, username)
         status = get_object_or_404(
@@ -108,6 +147,9 @@ class Status(View):
             return ActivitypubResponse(
                 status.to_activity(pure=not is_bookwyrm_request(request))
             )
+
+        if redirect_local_path := maybe_redirect_local_path(request, status):
+            return redirect_local_path
 
         visible_thread = (
             models.Status.privacy_filter(request.user)
@@ -165,6 +207,9 @@ class Status(View):
                 "status": status,
                 "children": children,
                 "ancestors": ancestors,
+                "title": status.page_title,
+                "description": status.page_description,
+                "page_image": status.page_image,
             },
         }
         return TemplateResponse(request, "feed/status.html", data)
@@ -173,6 +218,7 @@ class Status(View):
 class Replies(View):
     """replies page (a json view of status)"""
 
+    @vary_on_headers("Accept")
     def get(self, request, username, status_id):
         """ordered collection of replies to a status"""
         # the html view is the same as Status
@@ -196,7 +242,6 @@ def feed_page_data(user):
 
     goal = models.AnnualGoal.objects.filter(user=user, year=timezone.now().year).first()
     return {
-        "suggested_books": get_suggested_books(user),
         "goal": goal,
         "goal_form": forms.GoalForm(),
     }
@@ -205,16 +250,24 @@ def feed_page_data(user):
 def get_suggested_books(user, max_books=5):
     """helper to get a user's recent books"""
     book_count = 0
-    preset_shelves = [("reading", max_books), ("read", 2), ("to-read", max_books)]
+    preset_shelves = {"reading": max_books, "read": 2, "to-read": max_books}
     suggested_books = []
-    for (preset, shelf_max) in preset_shelves:
+
+    user_shelves = {
+        shelf.identifier: shelf
+        for shelf in user.shelf_set.filter(
+            identifier__in=preset_shelves.keys()
+        ).exclude(books__isnull=True)
+    }
+
+    for preset, shelf_max in preset_shelves.items():
         limit = (
             shelf_max
             if shelf_max < (max_books - book_count)
             else max_books - book_count
         )
-        shelf = user.shelf_set.get(identifier=preset)
-        if not shelf.books.exists():
+        shelf = user_shelves.get(preset, None)
+        if not shelf:
             continue
 
         shelf_preview = {
@@ -224,6 +277,7 @@ def get_suggested_books(user, max_books=5):
             .filter(
                 shelfbook__shelf=shelf,
             )
+            .order_by("-shelfbook__shelved_date")
             .prefetch_related("authors")[:limit],
         }
         suggested_books.append(shelf_preview)

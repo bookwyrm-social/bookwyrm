@@ -1,29 +1,114 @@
 {% extends 'components/dropdown.html' %}
+{% load shelf_tags %}
+{% load utilities %}
 {% load i18n %}
+
 {% block dropdown-trigger %}
 <span>{% trans "Move book" %}</span>
 <span class="icon icon-arrow-down" aria-hidden="true"></span>
 {% endblock %}
 
 {% block dropdown-list %}
+{% with book.id|uuid as uuid %}
+{% active_shelf book as active_shelf %}
+{% latest_read_through book request.user as readthrough %}
+
 {% for shelf in user_shelves %}
+
+{% if shelf.editable %}
 <li role="menuitem" class="dropdown-item p-0">
-    <form name="shelve" action="/shelve/" method="post">
+    <form name="editable-shelve-{{ uuid }}" action="/shelve/" method="post">
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}">
         <input type="hidden" name="change-shelf-from" value="{{ current.identifier }}">
         <input type="hidden" name="shelf" value="{{ shelf.identifier }}">
-        <button class="button is-fullwidth is-small shelf-option is-radiusless is-white" type="submit" {% if shelf.identifier == current.identifier %}disabled{% endif %}><span>{{ shelf.name }}</span></button>
+        <button class="button is-fullwidth is-small shelf-option is-radiusless has-background-body" type="submit" {% if shelf.identifier == current.identifier %}disabled{% endif %}>
+            <span>
+                {% include "snippets/translated_shelf_name.html" with shelf=shelf %}
+            </span>
+        </button>
     </form>
 </li>
-{% endfor %}
-<li class="navbar-divider" role="separator"></li>
+{% else%}
+{% comparison_bool shelf.identifier active_shelf.shelf.identifier as is_current %}
+{% with button_class="is-fullwidth is-small shelf-option is-radiusless has-background-body" %}
 <li role="menuitem" class="dropdown-item p-0">
-    <form name="shelve" action="/unshelve/" method="post">
+{% if shelf.identifier == 'reading' %}
+
+{% trans "Start reading" as button_text %}
+{% url 'reading-status' 'start' book.id as fallback_url %}
+{% join "start_reading" uuid as modal_id %}
+{% include 'snippets/shelve_button/modal_button.html' with class=button_class fallback_url=fallback_url %}
+
+
+{% elif shelf.identifier == 'read' %}
+
+{% trans "Read" as button_text %}
+{% url 'reading-status' 'finish' book.id as fallback_url %}
+{% join "finish_reading" uuid as modal_id %}
+{% include 'snippets/shelve_button/modal_button.html' with class=button_class fallback_url=fallback_url %}
+
+{% elif shelf.identifier == 'stopped-reading' %}
+
+{% trans "Stopped reading" as button_text %}
+{% url 'reading-status' 'stop' book.id as fallback_url %}
+{% join "stop_reading" uuid as modal_id %}
+{% include 'snippets/shelve_button/modal_button.html' with class=button_class fallback_url=fallback_url %}
+
+{% elif shelf.identifier == 'to-read' %}
+
+{% trans "Want to read" as button_text %}
+{% url 'reading-status' 'want' book.id as fallback_url %}
+{% join "want_to_read" uuid as modal_id %}
+{% include 'snippets/shelve_button/modal_button.html' with class=button_class fallback_url=fallback_url %}
+
+{% endif %}
+</li>
+{% endwith %}
+{% endif %}
+{% endfor %}
+
+{% if shelf.identifier == 'all' %}
+{% for user_shelf in user_shelves %}
+{% if user_shelf in book.shelves.all %}
+<li class="navbar-divider m-0" role="separator" ></li>
+<li role="menuitem" class="dropdown-item p-0">
+    <form name="shelve-{{ user_shelf.identifier }}-{{ book.id }}-{{ uuid }}" action="/unshelve/" method="post">
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}">
-        <input type="hidden" name="shelf" value="{{ current.id }}">
-        <button class="button is-fullwidth is-small is-radiusless is-danger is-light" type="submit">{% trans "Remove" %}</button>
+        <input type="hidden" name="shelf" value="{{ user_shelf.id }}">
+        <button class="button is-fullwidth is-small is-radiusless is-danger is-light" type="submit">
+            {% blocktrans with name=user_shelf|translate_shelf_name %}Remove from {{ name }}{% endblocktrans %}
+        </button>
     </form>
 </li>
+{% endif %}
+{% endfor %}
+{% else %}
+<li class="navbar-divider" role="separator" ></li>
+<li role="menuitem" class="dropdown-item p-0">
+    <form name="un-shelve-{{ shelf.identifier }}-{{ book.id }}-{{ uuid }}" action="/unshelve/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="book" value="{{ book.id }}">
+        <input type="hidden" name="shelf" value="{{ shelf.id }}">
+        <button class="button is-fullwidth is-small is-radiusless is-danger is-light" type="submit">
+            {% blocktrans with name=shelf|translate_shelf_name %}Remove from {{ name }}{% endblocktrans %}
+        </button>
+    </form>
+</li>
+{% endif %}
+
+{% join "want_to_read" uuid as modal_id %}
+{% include 'snippets/reading_modals/want_to_read_modal.html' with book=active_shelf.book id=modal_id move_from=current.id refresh=True class="" %}
+
+{% join "start_reading" uuid as modal_id %}
+{% include 'snippets/reading_modals/start_reading_modal.html' with book=active_shelf.book id=modal_id move_from=current.id refresh=True class="" %}
+
+{% join "finish_reading" uuid as modal_id %}
+{% include 'snippets/reading_modals/finish_reading_modal.html' with book=active_shelf.book id=modal_id move_from=current.id readthrough=readthrough refresh=True class="" %}
+
+{% join "stop_reading" uuid as modal_id %}
+{% include 'snippets/reading_modals/stop_reading_modal.html' with book=active_shelf.book id=modal_id move_from=current.id readthrough=readthrough refresh=True class="" %}
+
+{% endwith %}
 {% endblock %}

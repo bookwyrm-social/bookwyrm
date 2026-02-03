@@ -1,0 +1,12 @@
+{% extends 'settings/dashboard/warnings/layout.html' %}
+{% load i18n %}
+
+{% block warning_link %}https://docs.joinbookwyrm.com/updating.html{% endblock %}
+
+{% block warning_text %}
+
+{% blocktrans trimmed with current=current_version available=available_version %}
+An update is available! You're running v{{ current }} and the latest release is {{ available }}.
+{% endblocktrans %}
+
+{% endblock %}

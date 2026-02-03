@@ -1,20 +1,22 @@
-""" testing book data connectors """
+"""testing book data connectors"""
+
 from unittest.mock import patch
 from django.test import TestCase
 import responses
 
 from bookwyrm import models
-from bookwyrm.connectors import abstract_connector
-from bookwyrm.connectors.abstract_connector import Mapping
-from bookwyrm.settings import DOMAIN
+from bookwyrm.connectors import abstract_connector, ConnectorException
+from bookwyrm.connectors.abstract_connector import Mapping, get_data
+from bookwyrm.settings import BASE_URL
 
 
 class AbstractConnector(TestCase):
     """generic code for connecting to outside data sources"""
 
-    def setUp(self):
-        """we need an example connector"""
-        self.connector_info = models.Connector.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        """we need an example connector in the database"""
+        models.Connector.objects.create(
             identifier="example.com",
             connector_file="openlibrary",
             base_url="https://example.com",
@@ -22,32 +24,36 @@ class AbstractConnector(TestCase):
             covers_url="https://example.com/covers",
             search_url="https://example.com/search?q=",
         )
+        cls.book = models.Edition.objects.create(
+            title="Test Book",
+            remote_id="https://example.com/book/1234",
+            openlibrary_key="OL1234M",
+        )
+
+    def setUp(self):
+        """test data"""
         work_data = {
             "id": "abc1",
             "title": "Test work",
             "type": "work",
             "openlibraryKey": "OL1234W",
         }
-        self.work_data = work_data
         edition_data = {
             "id": "abc2",
             "title": "Test edition",
             "type": "edition",
             "openlibraryKey": "OL1234M",
         }
+        self.work_data = work_data
         self.edition_data = edition_data
 
         class TestConnector(abstract_connector.AbstractConnector):
             """nothing added here"""
 
-            def format_search_result(self, search_result):
-                return search_result
+            generated_remote_link_field = "openlibrary_link"
 
-            def parse_search_data(self, data):
+            def parse_search_data(self, data, min_confidence):
                 return data
-
-            def format_isbn_search_result(self, search_result):
-                return search_result
 
             def parse_isbn_search_data(self, data):
                 return data
@@ -74,12 +80,6 @@ class AbstractConnector(TestCase):
             Mapping("openlibraryKey"),
         ]
 
-        self.book = models.Edition.objects.create(
-            title="Test Book",
-            remote_id="https://example.com/book/1234",
-            openlibrary_key="OL1234M",
-        )
-
     def test_abstract_connector_init(self):
         """barebones connector for search with defaults"""
         self.assertIsInstance(self.connector.book_mappings, list)
@@ -87,9 +87,7 @@ class AbstractConnector(TestCase):
     def test_get_or_create_book_existing(self):
         """find an existing book by remote/origin id"""
         self.assertEqual(models.Book.objects.count(), 1)
-        self.assertEqual(
-            self.book.remote_id, "https://%s/book/%d" % (DOMAIN, self.book.id)
-        )
+        self.assertEqual(self.book.remote_id, f"{BASE_URL}/book/{self.book.id}")
         self.assertEqual(self.book.origin_id, "https://example.com/book/1234")
 
         # dedupe by origin id
@@ -98,9 +96,8 @@ class AbstractConnector(TestCase):
         self.assertEqual(result, self.book)
 
         # dedupe by remote id
-        result = self.connector.get_or_create_book(
-            "https://%s/book/%d" % (DOMAIN, self.book.id)
-        )
+        result = self.connector.get_or_create_book(f"{BASE_URL}/book/{self.book.id}")
+
         self.assertEqual(models.Book.objects.count(), 1)
         self.assertEqual(result, self.book)
 
@@ -119,7 +116,7 @@ class AbstractConnector(TestCase):
     @responses.activate
     def test_get_or_create_author(self):
         """load an author"""
-        self.connector.author_mappings = [  # pylint: disable=attribute-defined-outside-init  # pylint: disable=attribute-defined-outside-init
+        self.connector.author_mappings = [
             Mapping("id"),
             Mapping("name"),
         ]
@@ -139,3 +136,33 @@ class AbstractConnector(TestCase):
         author = models.Author.objects.create(name="Test Author")
         result = self.connector.get_or_create_author(author.remote_id)
         self.assertEqual(author, result)
+
+    @responses.activate
+    def test_update_author_from_remote(self):
+        """trigger the function that looks up the remote data"""
+        author = models.Author.objects.create(name="Test", openlibrary_key="OL123A")
+        self.connector.author_mappings = [
+            Mapping("id"),
+            Mapping("name"),
+            Mapping("isni"),
+        ]
+
+        responses.add(
+            responses.GET,
+            "https://openlibrary.org/authors/OL123A",
+            json={"id": "https://www.example.com/author", "name": "Beep", "isni": "hi"},
+        )
+
+        self.connector.update_author_from_remote(author)
+
+        author.refresh_from_db()
+        self.assertEqual(author.name, "Test")
+        self.assertEqual(author.isni, "hi")
+
+    def test_get_data_invalid_url(self):
+        """load json data from an arbitrary url"""
+        with self.assertRaises(ConnectorException):
+            get_data("file://hello.com/image/jpg")
+
+        with self.assertRaises(ConnectorException):
+            get_data("http://127.0.0.1/image/jpg")

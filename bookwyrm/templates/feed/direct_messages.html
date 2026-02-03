@@ -1,5 +1,6 @@
 {% extends 'feed/layout.html' %}
 {% load i18n %}
+{% load static %}
 {% block panel %}
 
 <header class="block">
@@ -14,7 +15,7 @@
 </header>
 
 <div class="box">
-    {% include 'snippets/create_status/status.html' with type="direct" uuid=1 mention=partner no_script=True %}
+    {% include 'snippets/create_status/status.html' with type="direct" uuid=1 mention=partner %}
 </div>
 
 <section class="block">
@@ -29,4 +30,12 @@
 
 </section>
 
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static "js/tabs.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/autocomplete.js" %}?v={{ js_cache }}"></script>
+{% if request.user.show_guided_tour %}
+    {% include 'guided_tour/book.html' %}
+{% endif %}
 {% endblock %}

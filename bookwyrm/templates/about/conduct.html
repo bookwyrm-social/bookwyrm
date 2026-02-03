@@ -1,0 +1,15 @@
+{% extends 'about/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Code of Conduct" %}{% endblock %}
+
+
+{% block about_content %}
+<div class="block content">
+    <h2>{% trans "Code of Conduct" %}</h2>
+    <div class="content">
+        {{ site.code_of_conduct | safe }}
+    </div>
+</div>
+
+{% endblock %}

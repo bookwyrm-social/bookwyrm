@@ -1,0 +1,125 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+
+{% block header %}
+    {% if announcement %}
+        {% trans "Edit Announcement" %}
+    {% else %}
+        {% trans "Create Announcement" %}
+    {% endif %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'settings-announcements' %}">{% trans "Announcements" %}</a></li>
+        {% if announcement %}
+        <li>
+            <a href="{% url 'settings-announcements' announcement.id %}">
+                {{ announcement.preview|truncatechars:30 }}
+            </a>
+        </li>
+        {% endif %}
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                Edit
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+
+{% block panel %}
+<form
+    name="edit-announcement"
+    method="POST"
+    {% if announcement.id %}
+    action="{% url 'settings-announcements-edit' announcement.id %}"
+    {% else %}
+    action="{% url 'settings-announcements-edit' %}"
+    {% endif %}
+    class="block"
+>
+    {% csrf_token %}
+    <input type="hidden" name="user" value="{{ request.user.id }}">
+    <h2 class="title is-4">{% trans "Announcement content" %}</h2>
+    <div class="box">
+        <p class="field">
+            <label class="label" for="id_preview">
+                {% trans "Summary:" %}
+            </label>
+            {{ form.preview }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.preview.errors id="desc_preview" %}
+        </p>
+        <p class="field">
+            <label class="label" for="id_content">
+                {% trans "Details:" %}
+            </label>
+            {{ form.content }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.content.errors id="desc_content" %}
+        </p>
+        <p class="field">
+            <label class="label" for="id_event_date">
+                {% trans "Event date:" %}
+            </label>
+            <input type="date" name="event_date" value="{{ form.event_date.value|date:'Y-m-d' }}" class="input" id="id_event_date">
+
+            {% include 'snippets/form_errors.html' with errors_list=form.event_date.errors id="desc_event_date" %}
+        </p>
+    </div>
+
+    <h2 class="title is-4">{% trans "Display settings" %}</h2>
+    <div class="box">
+        <div class="columns">
+            <div class="column">
+                <p>
+                    <label class="label" for="id_start_date">
+                        {% trans "Start date:" %}
+                    </label>
+                    <input type="date" name="start_date" class="input" value="{{ form.start_date.value|date:'Y-m-d' }}" id="id_start_date">
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.start_date.errors id="desc_start_date" %}
+                </p>
+            </div>
+            <div class="column">
+                <p>
+                    <label class="label" for="id_end_date">
+                        {% trans "End date:" %}
+                    </label>
+                    <input type="date" name="end_date" class="input" id="id_end_date" value="{{ form.end_date.value|date:'Y-m-d' }}">
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.end_date.errors id="desc_end_date" %}
+                </p>
+            </div>
+            <div class="column is-narrow">
+                <label class="label" for="id_active">
+                    {% trans "Color:" %}
+                </label>
+                <div class="select">
+                    {{ form.display_type }}
+                </div>
+
+                {% include 'snippets/form_errors.html' with errors_list=form.active.errors id="desc_display_type" %}
+            </div>
+        </div>
+        <p class="field">
+            <label class="label" for="id_active">
+                {% trans "Active:" %}
+                {{ form.active }}
+            </label>
+
+            {% include 'snippets/form_errors.html' with errors_list=form.active.errors id="desc_active" %}
+        </p>
+    </div>
+
+    <div class="field has-addons">
+        <div class="control">
+            <button type="submit" class="button is-primary">
+                {% trans "Save" %}
+            </button>
+        </div>
+    </div>
+</form>
+{% endblock %}

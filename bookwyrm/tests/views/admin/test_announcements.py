@@ -1,22 +1,26 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 class AnnouncementViews(TestCase):
     """every response to a get request, html or json"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
         ):
-            self.local_user = models.User.objects.create_user(
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
                 "password",
@@ -24,7 +28,9 @@ class AnnouncementViews(TestCase):
                 localname="mouse",
             )
 
-        models.SiteSettings.objects.create()
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_announcements_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -38,7 +44,7 @@ class AnnouncementViews(TestCase):
         result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_announcements_page_empty(self):
@@ -51,7 +57,7 @@ class AnnouncementViews(TestCase):
         result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_announcement_page(self):
@@ -68,16 +74,17 @@ class AnnouncementViews(TestCase):
         result = view(request, announcement.id)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_create_announcement(self):
         """create a new announcement"""
-        view = views.Announcements.as_view()
+        view = views.EditAnnouncement.as_view()
         form = forms.AnnouncementForm()
         form.data["preview"] = "hi hi"
         form.data["start_date"] = "2021-05-20"
         form.data["user"] = self.local_user.id
+        form.data["display_type"] = "warning-light"
 
         request = self.factory.post("", form.data)
         request.user = self.local_user
@@ -96,11 +103,12 @@ class AnnouncementViews(TestCase):
         announcement = models.Announcement.objects.create(
             preview="hi", user=self.local_user
         )
-        view = views.Announcement.as_view()
+        view = views.EditAnnouncement.as_view()
         form = forms.AnnouncementForm(instance=announcement)
         form.data["preview"] = "hi hi"
         form.data["start_date"] = "2021-05-20"
         form.data["user"] = self.local_user.id
+        form.data["display_type"] = "warning-light"
 
         request = self.factory.post("", form.data)
         request.user = self.local_user
@@ -138,5 +146,5 @@ class AnnouncementViews(TestCase):
         result = view(request, self.local_user.localname)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)

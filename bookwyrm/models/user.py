@@ -1,33 +1,50 @@
-""" database schema for user data """
-from urllib.parse import urlparse
+"""database schema for user data"""
+
+import datetime
+from importlib import import_module
 import re
+import zoneinfo
+from typing import Optional, Iterable
+from urllib.parse import urlparse
+from uuid import uuid4
 
 from django.apps import apps
-from django.contrib.auth.models import AbstractUser, Group
-from django.contrib.postgres.fields import CICharField
-from django.core.validators import MinValueValidator
+from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+from django.contrib.postgres.fields import ArrayField as DjangoArrayField
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.dispatch import receiver
-from django.db import models, transaction
+from django.db import models, transaction, IntegrityError
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
-import pytz
 
 from bookwyrm import activitypub
 from bookwyrm.models.shelf import Shelf
-from bookwyrm.models.status import Status, Review
+from bookwyrm.models.status import Status
 from bookwyrm.preview_images import generate_user_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES
+from bookwyrm.settings import BASE_URL, ENABLE_PREVIEW_IMAGES, LANGUAGES
+from bookwyrm.tasks import MISC
 from bookwyrm.utils import regex
+from bookwyrm.utils.db import add_update_fields
 from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .actor import ActorModel
 from . import fields
 
+SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
-def site_link():
-    """helper for generating links to the site"""
-    protocol = "https" if USE_HTTPS else "http"
-    return f"{protocol}://{DOMAIN}"
+FeedFilterChoices = [
+    ("review", _("Reviews")),
+    ("comment", _("Comments")),
+    ("quotation", _("Quotations")),
+    ("everything", _("Everything else")),
+]
+
+
+def get_feed_filter_choices():
+    """return a list of filter choice keys"""
+    return [f[0] for f in FeedFilterChoices]
 
 
 class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
@@ -35,6 +52,8 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
 
     username = fields.UsernameField()
     email = models.EmailField(unique=True, null=True)
+    is_deleted = models.BooleanField(default=False)
+    force_password_reset = models.BooleanField(default=False)
 
     bookwyrm_user = fields.BooleanField(default=True)
     localname = CICharField(
@@ -49,6 +68,7 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
         deduplication_field=False,
         null=True,
     )
+
     # name is your display name, which you can change at will
     name = fields.CharField(max_length=100, null=True, blank=True)
     avatar = fields.ImageField(
@@ -97,14 +117,39 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     last_active_date = models.DateTimeField(default=timezone.now)
+    theme = models.ForeignKey("Theme", null=True, blank=True, on_delete=models.SET_NULL)
+    hide_follows = fields.BooleanField(default=False)
+
+    # migration fields
+    moved_to = fields.RemoteIdField(
+        null=True, unique=False, activitypub_field="movedTo", deduplication_field=False
+    )
+    also_known_as = fields.ManyToManyField(
+        "self",
+        symmetrical=False,
+        unique=False,
+        activitypub_field="alsoKnownAs",
+        deduplication_field=False,
+    )
 
     # options to turn features on and off
     show_goal = models.BooleanField(default=True)
     show_suggested_users = models.BooleanField(default=True)
+    show_guided_tour = models.BooleanField(default=True)
+    show_ratings = models.BooleanField(default=True)
+
+    # feed options
+    feed_status_types = DjangoArrayField(
+        models.CharField(max_length=10, blank=False, choices=FeedFilterChoices),
+        size=8,
+        default=get_feed_filter_choices,
+    )
+    # annual summary keys
+    summary_keys = models.JSONField(null=True)
 
     preferred_timezone = models.CharField(
-        choices=[(str(tz), str(tz)) for tz in pytz.all_timezones],
-        default=str(pytz.utc),
+        choices=[(str(tz), str(tz)) for tz in sorted(zoneinfo.available_timezones())],
+        default=str(datetime.timezone.utc),
         max_length=255,
     )
     preferred_language = models.CharField(
@@ -117,16 +162,35 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
         max_length=255, choices=DeactivationReason, null=True, blank=True
     )
     deactivation_date = models.DateTimeField(null=True, blank=True)
+    allow_reactivation = models.BooleanField(default=False)
     confirmation_code = models.CharField(max_length=32, default=new_access_code)
 
     name_field = "username"
     field_tracker = FieldTracker(fields=["name", "avatar"])
 
+    # two factor authentication
+    two_factor_auth = models.BooleanField(default=None, blank=True, null=True)
+    otp_secret = models.CharField(max_length=32, default=None, blank=True, null=True)
+    hotp_secret = models.CharField(max_length=32, default=None, blank=True, null=True)
+    hotp_count = models.IntegerField(default=0, blank=True, null=True)
+
+    class Meta(AbstractUser.Meta):
+        """indexes"""
+
+        indexes = [
+            models.Index(fields=["username"]),
+            models.Index(fields=["is_active", "local"]),
+        ]
+
+    @property
+    def active_follower_requests(self):
+        """Follow requests from active users"""
+        return self.follower_requests.filter(is_active=True)
+
     @property
     def confirmation_link(self):
         """helper for generating confirmation links"""
-        link = site_link()
-        return f"{link}/confirm-email/{self.confirmation_code}"
+        return f"{BASE_URL}/confirm-email/{self.confirmation_code}"
 
     @property
     def following_link(self):
@@ -136,7 +200,7 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
     @property
     def alt_text(self):
         """alt text with username"""
-        # pylint: disable=consider-using-f-string
+
         return "avatar for {:s}".format(self.localname or self.username)
 
     @property
@@ -202,9 +266,10 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
         return self.to_ordered_collection(
             self.following.order_by("-updated_date").all(),
             remote_id=remote_id,
+            collection_only=True,
             id_only=True,
             **kwargs,
-        )
+        ).serialize()
 
     def to_followers_activity(self, **kwargs):
         """activitypub followers list"""
@@ -212,9 +277,10 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
         return self.to_ordered_collection(
             self.followers.order_by("-updated_date").all(),
             remote_id=remote_id,
+            collection_only=True,
             id_only=True,
             **kwargs,
-        )
+        ).serialize()
 
     def to_activity(self, **kwargs):
         """override default AP serializer to add context object
@@ -228,20 +294,24 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
             "https://w3id.org/security/v1",
             {
                 "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+                "Hashtag": "as:Hashtag",
                 "schema": "http://schema.org#",
                 "PropertyValue": "schema:PropertyValue",
                 "value": "schema:value",
+                "alsoKnownAs": {"@id": "as:alsoKnownAs", "@type": "@id"},
+                "movedTo": {"@id": "as:movedTo", "@type": "@id"},
             },
         ]
         return activity_object
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
         """populate fields for new local users"""
         created = not bool(self.id)
         if not self.local and not re.match(regex.FULL_USERNAME, self.username):
             # parse out the username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
-            self.username = f"{self.username}@{actor_parts.netloc}"
+            self.username = f"{self.username}@{actor_parts.hostname}"
+            update_fields = add_update_fields(update_fields, "username")
 
         # this user already exists, no need to populate fields
         if not created:
@@ -251,36 +321,103 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
             elif not self.deactivation_date:
                 self.deactivation_date = timezone.now()
 
-            super().save(*args, **kwargs)
+            super().save(*args, update_fields=update_fields, **kwargs)
             return
 
         with transaction.atomic():
             # populate fields for local users
-            link = site_link()
-            self.remote_id = f"{link}/user/{self.localname}"
-            self.shared_inbox = f"{link}/inbox"
+            self.remote_id = f"{BASE_URL}/user/{self.localname}"
+            self.shared_inbox = f"{BASE_URL}/inbox"
+            update_fields = add_update_fields(
+                update_fields,
+                "remote_id",
+                "shared_inbox",
+            )
+
             # an id needs to be set before we can proceed with related models
-            super().save(*args, **kwargs)
+            super().save(*args, update_fields=update_fields, **kwargs)
 
             # make users editors by default
             try:
-                self.groups.add(Group.objects.get(name="editor"))
-            except Group.DoesNotExist:
+                group = (
+                    apps.get_model("bookwyrm.SiteSettings")
+                    .objects.get()
+                    .default_user_auth_group
+                )
+                if group:
+                    self.groups.add(group)
+            except ObjectDoesNotExist:
                 # this should only happen in tests
                 pass
 
             self.create_shelves()
 
     def delete(self, *args, **kwargs):
-        """deactivate rather than delete a user"""
+        """We don't actually delete the database entry"""
         self.is_active = False
+        self.allow_reactivation = False
+        self.is_deleted = True
+        self.set_unusable_password()
+
+        self.erase_user_data()
+        self.erase_user_statuses()
+
         # skip the logic in this class's save()
-        super().save(*args, **kwargs)
+        super().save(
+            *args,
+            **kwargs,
+        )
+
+    def erase_user_data(self):
+        """Wipe a user's custom data"""
+        if not self.is_deleted:
+            raise IntegrityError(
+                "Trying to erase user data on user that is not deleted"
+            )
+
+        # mangle email address
+        self.email = f"{uuid4()}@deleted.user"
+
+        # erase data fields
+        self.avatar = ""
+        self.preview_image = ""
+        self.summary = None
+        self.name = None
+        self.favorites.set([])
+
+    def erase_user_statuses(self, broadcast=True):
+        """Wipe the data on all the user's statuses"""
+        if not self.is_deleted:
+            raise IntegrityError(
+                "Trying to erase user data on user that is not deleted"
+            )
+
+        for status in self.status_set.all():
+            status.delete(broadcast=broadcast)
+
+    def deactivate(self):
+        """Disable the user but allow them to reactivate"""
+        self.is_active = False
+        self.deactivation_reason = "self_deactivation"
+        self.allow_reactivation = True
+        super().save(broadcast=False)
+
+    def reactivate(self):
+        """Now you want to come back, huh?"""
+        if not self.allow_reactivation:
+            return
+        self.is_active = True
+        self.deactivation_reason = None
+        self.allow_reactivation = False
+        super().save(
+            broadcast=False,
+            update_fields=["deactivation_reason", "is_active", "allow_reactivation"],
+        )
 
     @property
     def local_path(self):
         """this model doesn't inherit bookwyrm model, so here we are"""
-        # pylint: disable=consider-using-f-string
+
         return "/user/{:s}".format(self.localname or self.username)
 
     def create_shelves(self):
@@ -298,6 +435,10 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
                 "name": "Read",
                 "identifier": "read",
             },
+            {
+                "name": "Stopped Reading",
+                "identifier": "stopped-reading",
+            },
         ]
 
         for shelf in shelves:
@@ -308,48 +449,24 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
                 editable=False,
             ).save(broadcast=False)
 
+    def raise_not_editable(self, viewer):
+        """Who can edit the user object?"""
+        if self == viewer or viewer.has_perm("bookwyrm.moderate_user"):
+            return
+        raise PermissionDenied()
+
+    def refresh_user_sessions(self):
+        """Check sessions still exist
+        We delete them on logout but not when sessions expire"""
+
+        cache_session = SessionStore()
+        for sess in self.sessions.all():
+            if not cache_session.exists(session_key=sess.session_key):
+                sess.delete()
+
 
 class AnnualGoal(BookWyrmModel):
     """set a goal for how many books you read in a year"""
-
-    user = models.ForeignKey("User", on_delete=models.PROTECT)
-    goal = models.IntegerField(validators=[MinValueValidator(1)])
-    year = models.IntegerField(default=timezone.now().year)
-    privacy = models.CharField(
-        max_length=255, default="public", choices=fields.PrivacyLevels.choices
-    )
-
-    class Meta:
-        """unqiueness constraint"""
-
-        unique_together = ("user", "year")
-
-    def get_remote_id(self):
-        """put the year in the path"""
-        return f"{self.user.remote_id}/goal/{self.year}"
-
-    @property
-    def books(self):
-        """the books you've read this year"""
-        return (
-            self.user.readthrough_set.filter(
-                finish_date__year__gte=self.year,
-                finish_date__year__lt=self.year + 1,
-            )
-            .order_by("-finish_date")
-            .all()
-        )
-
-    @property
-    def ratings(self):
-        """ratings for books read this year"""
-        book_ids = [r.book.id for r in self.books]
-        reviews = Review.objects.filter(
-            user=self.user,
-            book__in=book_ids,
-        )
-        return {r.book.id: r.rating for r in reviews}
-
     @property
     def progress(self):
         """how many books you've read this year"""
@@ -362,13 +479,16 @@ class AnnualGoal(BookWyrmModel):
             "percent": int(float(count / self.goal) * 100),
         }
 
-
-# pylint: disable=unused-argument
 @receiver(models.signals.post_save, sender=User)
 def preview_image(instance, *args, **kwargs):
     """create preview images when user is updated"""
     if not ENABLE_PREVIEW_IMAGES:
         return
+
+    # don't call the task for remote users
+    if not instance.local:
+        return
+
     changed_fields = instance.field_tracker.changed()
 
     if len(changed_fields) > 0:

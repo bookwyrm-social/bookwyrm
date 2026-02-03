@@ -4,6 +4,7 @@
 *.swp
 **/__pycache__
 .local
+/nginx/nginx.conf
 
 # VSCode
 /.vscode
@@ -15,6 +16,11 @@
 # BookWyrm
 .env
 /images/
+/exports/
+/static/
+bookwyrm/static/css/bookwyrm.css
+bookwyrm/static/css/themes/
+!bookwyrm/static/css/themes/bookwyrm-*.scss
 
 # Testing
 .coverage
@@ -23,10 +29,18 @@
 .idea
 
 #Node tools
-/node_modules/
+node_modules/
+package-lock.json
+yarn.lock
 
 #nginx
 nginx/default.conf
 
 #macOS
 **/.DS_Store
+
+#QTS (system in QNAP NAS)
+**/.@__thumb/
+
+# Docker
+docker-compose.override.yml

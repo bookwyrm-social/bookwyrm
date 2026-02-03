@@ -1,4 +1,5 @@
-""" non-interactive pages """
+"""non-interactive pages"""
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
@@ -14,7 +15,6 @@ from bookwyrm.status import create_generated_note
 from .helpers import get_user_from_username
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Goal(View):
     """track books for the year"""
@@ -48,8 +48,6 @@ class Goal(View):
         year = int(year)
         user = get_user_from_username(request.user, username)
         goal = models.AnnualGoal.objects.filter(year=year, user=user).first()
-        if goal:
-            goal.raise_not_editable(request.user)
 
         form = forms.GoalForm(request.POST, instance=goal)
         if not form.is_valid():
@@ -59,7 +57,7 @@ class Goal(View):
                 "year": year,
             }
             return TemplateResponse(request, "user/goal.html", data)
-        goal = form.save()
+        goal = form.save(request)
 
         if request.POST.get("post-status"):
             # create status, if appropriate
@@ -70,7 +68,7 @@ class Goal(View):
                 privacy=goal.privacy,
             )
 
-        return redirect(request.headers.get("Referer", "/"))
+        return redirect("user-goal", request.user.localname, year)
 
 
 @require_POST
@@ -79,4 +77,4 @@ def hide_goal(request):
     """don't keep bugging people to set a goal"""
     request.user.show_goal = False
     request.user.save(broadcast=False, update_fields=["show_goal"])
-    return redirect(request.headers.get("Referer", "/"))
+    return redirect("/")

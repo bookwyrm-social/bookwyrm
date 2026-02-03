@@ -10,7 +10,7 @@
 {% block profile-tabs %}
 <ul class="menu-list">
     <li><a href="#profile">{% trans "Profile" %}</a></li>
-    <li><a href="#display-preferences">{% trans "Display preferences" %}</a></li>
+    <li><a href="#display-preferences">{% trans "Display" %}</a></li>
     <li><a href="#privacy">{% trans "Privacy" %}</a></li>
 </ul>
 {% endblock %}
@@ -33,31 +33,27 @@
                 {% endif %}
                 <div class="column">
                     {{ form.avatar }}
-                    {% for error in form.avatar.errors %}
-                    <p class="help is-danger">{{ error | escape }}</p>
-                    {% endfor %}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.avatar.errors id="desc_avatar" %}
                 </div>
             </div>
             <div class="field">
                 <label class="label" for="id_name">{% trans "Display name:" %}</label>
                 {{ form.name }}
-                {% for error in form.name.errors %}
-                <p class="help is-danger">{{ error | escape }}</p>
-                {% endfor %}
+
+                {% include 'snippets/form_errors.html' with errors_list=form.name.errors id="desc_name" %}
             </div>
             <div class="field">
                 <label class="label" for="id_summary">{% trans "Summary:" %}</label>
                 {{ form.summary }}
-                {% for error in form.summary.errors %}
-                <p class="help is-danger">{{ error | escape }}</p>
-                {% endfor %}
+
+                {% include 'snippets/form_errors.html' with errors_list=form.summary.errors id="desc_summary" %}
             </div>
             <div class="field">
                 <label class="label" for="id_email">{% trans "Email address:" %}</label>
                 {{ form.email }}
-                {% for error in form.email.errors %}
-                <p class="help is-danger">{{ error | escape }}</p>
-                {% endfor %}
+
+                {% include 'snippets/form_errors.html' with errors_list=form.email.errors id="desc_email" %}
             </div>
         </div>
     </section>
@@ -65,23 +61,33 @@
     <hr aria-hidden="true">
 
     <section class="block" id="display-preferences">
-        <h2 class="title is-4">{% trans "Display preferences" %}</h2>
+        <h2 class="title is-4">{% trans "Display" %}</h2>
         <div class="box">
             <div class="field">
                 <label class="checkbox label" for="id_show_goal">
-                    {% trans "Show reading goal prompt in feed:" %}
                     {{ form.show_goal }}
+                    {% trans "Show reading goal prompt in feed" %}
                 </label>
+            </div>
+            <div class="field">
+                <label class="checkbox label" for="id_show_ratings">
+                    {{ form.show_ratings }}
+                    {% trans "Show ratings" %}
+                </label>
+            </div>
+            <div class="field">
                 <label class="checkbox label" for="id_show_suggested_users">
-                    {% trans "Show suggested users:" %}
                     {{ form.show_suggested_users }}
+                    {% trans "Show suggested users" %}
                 </label>
+            </div>
+            <div class="field">
                 <label class="checkbox label" for="id_discoverable">
-                    {% trans "Show this account in suggested users:" %}
                     {{ form.discoverable }}
+                    {% trans "Show this account in suggested users" %}
                 </label>
                 {% url 'directory' as path %}
-                <p class="help">
+                <p class="help" id="desc_discoverable">
                     {% blocktrans %}Your account will show up in the <a href="{{ path }}">directory</a>, and may be recommended to other BookWyrm users.{% endblocktrans %}
                 </p>
             </div>
@@ -97,6 +103,12 @@
                     {{ form.preferred_language }}
                 </div>
             </div>
+            <div class="field">
+                <label class="label" for="id_them">{% trans "Theme:" %}</label>
+                <div class="select">
+                    {{ form.theme }}
+                </div>
+            </div>
         </div>
     </section>
 
@@ -107,8 +119,14 @@
         <div class="box">
             <div class="field">
                 <label class="checkbox label" for="id_manually_approves_followers">
-                    {% trans "Manually approve followers:" %}
                     {{ form.manually_approves_followers }}
+                    {% trans "Manually approve followers" %}
+                </label>
+            </div>
+            <div class="field">
+                <label class="checkbox label" for="id_hide_follows">
+                    {{ form.hide_follows }}
+                    {% trans "Hide followers and following on profile" %}
                 </label>
             </div>
             <div class="field">
@@ -119,6 +137,10 @@
                     {{ form.default_post_privacy }}
                 </div>
             </div>
+            {% url 'user-shelves' request.user.localname as path %}
+            <p class="notification is-light">
+                {% blocktrans %}Looking for shelf privacy? You can set a separate visibility level for each of your shelves. Go to <a href="{{ path }}">Your Books</a>, pick a shelf from the tab bar, and click "Edit shelf."{% endblocktrans %}
+            </p>
         </div>
     </section>
     <div class="field"><button class="button is-primary" type="submit">{% trans "Save" %}</button></div>

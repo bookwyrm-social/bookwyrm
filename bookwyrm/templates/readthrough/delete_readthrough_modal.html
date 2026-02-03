@@ -1,0 +1,33 @@
+{% extends 'components/modal.html' %}
+{% load i18n %}
+
+{% block modal-title %}{% trans "Delete these read dates?" %}{% endblock %}
+
+{% block modal-body %}
+{% if readthrough.progress_updates|length > 0 %}
+    {% blocktrans trimmed with count=readthrough.progress_updates|length %}
+    You are deleting this readthrough and its {{ count }} associated progress updates.
+    {% endblocktrans %}
+{% else %}
+    {% trans "This action cannot be un-done" %}
+{% endif %}
+{% endblock %}
+
+{% block modal-footer %}
+<form
+    name="delete-readthrough-{{ readthrough.id }}"
+    action="/delete-readthrough"
+    method="POST"
+    class="is-flex-grow-1"
+>
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{ readthrough.id }}">
+
+    <div class="buttons is-right">
+        <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+        <button class="button is-danger" type="submit">
+            {% trans "Delete" %}
+        </button>
+    </div>
+</form>
+{% endblock %}

@@ -1,4 +1,5 @@
-""" Helping new users figure out the lay of the land """
+"""Helping new users figure out the lay of the land"""
+
 import re
 
 from django.contrib.auth.decorators import login_required
@@ -11,11 +12,12 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import book_search, forms, models
+from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
 from bookwyrm.suggested_users import suggested_users
+from bookwyrm.views.helpers import get_mergeable_object_or_404
 from .preferences.edit_user import save_user_form
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class GetStartedProfile(View):
     """tell us about yourself"""
@@ -38,7 +40,7 @@ class GetStartedProfile(View):
         if not form.is_valid():
             data = {"form": form, "next": "get-started-books"}
             return TemplateResponse(request, "get_started/profile.html", data)
-        save_user_form(form)
+        save_user_form(request, form)
         return redirect(self.next_view)
 
 
@@ -57,14 +59,7 @@ class GetStartedBooks(View):
         if len(book_results) < 5:
             popular_books = (
                 models.Edition.objects.exclude(
-                    # exclude already shelved
-                    Q(
-                        parent_work__in=[
-                            b.book.parent_work
-                            for b in request.user.shelfbook_set.distinct().all()
-                        ]
-                    )
-                    | Q(  # and exclude if it's already in search results
+                    Q(  # exclude if it's already in search results
                         parent_work__in=[b.parent_work for b in book_results]
                     )
                 )
@@ -86,10 +81,9 @@ class GetStartedBooks(View):
             for k, v in request.POST.items()
             if re.match(r"\d+", k) and re.match(r"\d+", v)
         ]
-        for (book_id, shelf_id) in shelve_actions:
-            book = get_object_or_404(models.Edition, id=book_id)
+        for book_id, shelf_id in shelve_actions:
+            book = get_mergeable_object_or_404(models.Edition, id=book_id)
             shelf = get_object_or_404(models.Shelf, id=shelf_id)
-            shelf.raise_not_editable(request.user)
 
             models.ShelfBook.objects.create(book=book, shelf=shelf, user=request.user)
         return redirect(self.next_view)
@@ -113,13 +107,17 @@ class GetStartedUsers(View):
             .filter(
                 similarity__gt=0.5,
             )
+            .exclude(
+                id=request.user.id,
+            )
+            .exclude(localname=INSTANCE_ACTOR_USERNAME)
             .order_by("-similarity")[:5]
         )
         data = {"no_results": not user_results}
 
         if user_results.count() < 5:
-            user_results = list(user_results) + suggested_users.get_suggestions(
-                request.user
+            user_results = list(user_results) + list(
+                suggested_users.get_suggestions(request.user)
             )
 
         data["suggested_users"] = user_results

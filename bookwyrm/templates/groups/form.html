@@ -5,17 +5,25 @@
     <div class="column is-two-thirds">
         <input type="hidden" name="user" value="{{ request.user.id }}" />
         <div class="field">
-            <label class="label" for="id_name">{% trans "Group Name:" %}</label>
+            <label class="label" for="group_form_id_name" id="tour-group-name">{% trans "Group Name:" %}</label>
             {{ group_form.name }}
         </div>
         <div class="field">
-            <label class="label" for="id_description">{% trans "Group Description:" %}</label>
+            <label class="label" for="group_form_id_description">{% trans "Group Description:" %}</label>
             {{ group_form.description }}
         </div>
     </div>
 </div>
-<div class="columns is-mobile">
-    <div class="column">
+<div class="is-flex">
+    {% if group.id %}
+    <div>
+        <button type="button" data-modal-open="delete_group" class="button is-danger">
+            {% trans "Delete group" %}
+        </button>
+    </div>
+    {% endif %}
+
+    <div class="is-flex is-flex-grow-1 is-justify-content-flex-end">
         <div class="field has-addons">
             <div class="control">
                 {% include 'snippets/privacy_select_no_followers.html' with current=group.privacy %}
@@ -25,10 +33,4 @@
             </div>
         </div>
     </div>
-    {% if group.id %}
-    <div class="column is-narrow">
-        {% trans "Delete group" as button_text %}
-        {% include 'snippets/toggle/toggle_button.html' with class="is-danger" text=button_text icon_with_text="x" controls_text="delete_group" controls_uid=group.id focus="modal_title_delete_group" %}
-    </div>
-    {% endif %}
 </div>

@@ -1,0 +1,96 @@
+{% extends 'settings/layout.html' %}
+{% load humanize %}
+{% load i18n %}
+{% load celery_tags %}
+
+{% block title %}{% trans "Email Configuration" %}{% endblock %}
+
+{% block header %}{% trans "Email Configuration" %}{% endblock %}
+
+{% block panel %}
+
+{% if error %}
+<div class="notification is-danger is-light">
+    <span class="icon icon-x" aria-hidden="true"></span>
+    <span>
+    {% trans "Error sending test email:" %}
+    {{ error }}
+    </span>
+</div>
+{% elif success %}
+<div class="notification is-success is-light">
+    <span class="icon icon-check" aria-hidden="true"></span>
+    <span>
+        {% trans "Successfully sent test email." %}
+    </span>
+</div>
+{% endif %}
+
+<section class="block content">
+    <dl>
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">
+            {% trans "Email sender:" %}
+        </dt>
+        <dd>
+            {{ email_sender }}
+        </dd>
+
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">
+            {% trans "Email backend:" %}
+        </dt>
+        <dd>
+            <code>{{ email_backend }}</code>
+        </dd>
+
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">
+            {% trans "Host:" %}
+        </dt>
+        <dd>
+            <code>{{ email_host }}</code>
+        </dd>
+
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">
+            {% trans "Host user:" %}
+        </dt>
+        <dd>
+            <code>{% firstof email_host_user "-" %}</code>
+        </dd>
+
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">
+            {% trans "Port:" %}
+        </dt>
+        <dd>
+            <code>{{ email_port }}</code>
+        </dd>
+
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">
+            {% trans "Use TLS:" %}
+        </dt>
+        <dd>
+            {{ email_use_tls|yesno }}
+        </dd>
+
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">
+            {% trans "Use SSL:" %}
+        </dt>
+        <dd>
+            {{ email_use_ssl|yesno }}
+        </dd>
+    </dl>
+</section>
+<section class="block content box">
+    <p>
+        {% blocktrans trimmed with email=request.user.email %}
+        Send test email to {{ email }}
+        {% endblocktrans %}
+    </p>
+    <form action="{% url 'settings-email-config' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="button is-success">
+            {% trans "Send test email" %}
+        </button>
+    </form>
+</section>
+
+{% endblock %}
+

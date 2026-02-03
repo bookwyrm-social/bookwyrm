@@ -1,5 +1,5 @@
 # @url https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
-name: Lint Frontend
+name: Lint Frontend (run `./bw-dev stylelint` to fix css errors)
 
 on:
   push:
@@ -8,31 +8,31 @@ on:
       - '.github/workflows/**'
       - 'static/**'
       - '.eslintrc'
-      - '.stylelintrc'
+      - '.stylelintrc.js'
   pull_request:
     branches: [ main, ci, frontend ]
 
 jobs:
   lint:
     name: Lint with stylelint and ESLint.
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Install modules
-        run: yarn
+      #  run: npm install stylelint stylelint-config-recommended stylelint-config-standard stylelint-order eslint
+        run: npm install eslint@^8.9.0
 
       # See .stylelintignore for files that are not linted.
-      - name: Run stylelint
-        run: >
-          yarn stylelint bookwyrm/static/**/*.css \
-            --report-needless-disables \
-            --report-invalid-scope-disables
+      # - name: Run stylelint
+      #   run: >
+      #     npx stylelint bookwyrm/static/css/*.scss bookwyrm/static/css/bookwyrm/**/*.scss \
+      #       --config dev-tools/.stylelintrc.js
 
       # See .eslintignore for files that are not linted.
       - name: Run ESLint
         run: >
-          yarn eslint bookwyrm/static \
+          npx eslint bookwyrm/static \
             --ext .js,.jsx,.ts,.tsx

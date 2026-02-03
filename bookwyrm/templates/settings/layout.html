@@ -9,12 +9,14 @@
     <div class="columns is-mobile">
         <div class="column">
             <h1 class="title">{% block header %}{% endblock %}</h1>
+            {% block breadcrumbs %}{% endblock %}
         </div>
         <div class="column is-narrow">
             {% block edit-button %}{% endblock %}
         </div>
     </div>
 </header>
+
 
 <div class="block columns">
     <nav class="menu column is-one-quarter">
@@ -39,7 +41,22 @@
                 {% url 'settings-invites' as alt_url %}
                 <a href="{{ url }}"{% if url in request.path or request.path in alt_url %} class="is-active" aria-selected="true"{% endif %}>{% trans "Invites" %}</a>
             </li>
+            {% if perms.bookwyrm.moderate_user %}
+            <li>
+                {% url 'settings-force-password-reset' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Force Password Reset" %}</a>
+            </li>
+            {% endif %}
+        </ul>
+        {% endif %}
+        {% if perms.bookwyrm.control_federation %}
+        <h2 class="menu-label">{% trans "Federation" %}</h2>
+        <ul class="menu-list">
             {% if perms.bookwyrm.control_federation %}
+            <li>
+                {% url 'settings-federation-settings' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Federation Settings" %}</a>
+            </li>
             <li>
                 {% url 'settings-federation' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Federated Instances" %}</a>
@@ -55,12 +72,49 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Reports" %}</a>
             </li>
             <li>
+                {% url 'settings-automod' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Auto-Moderation Rules" %}</a>
+            </li>
+            <li>
                 {% url 'settings-email-blocks' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Email Blocklist" %}</a>
             </li>
             <li>
                 {% url 'settings-ip-blocks' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "IP Address Blocklist" %}</a>
+            </li>
+            <li>
+                {% url 'settings-link-domain' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Link Domains" %}</a>
+            </li>
+        </ul>
+        {% endif %}
+        {% if perms.bookwyrm.edit_instance_settings %}
+        <h2 class="menu-label">{% trans "System" %}</h2>
+        <ul class="menu-list">
+            <li>
+                {% url 'settings-imports' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Imports" %}</a>
+            </li>
+            <li>
+                {% url 'settings-celery' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Celery Status" %}</a>
+            </li>
+            <li>
+                {% url 'settings-schedules' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Scheduled Tasks" %}</a>
+            </li>
+            <li>
+                {% url 'settings-email-config' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Email Configuration" %}</a>
+            </li>
+            <li>
+                {% url 'settings-connectors' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Connectors" %}</a>
+            </li>
+            <li>
+                {% url 'settings-files' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Files Maintenance" %}</a>
             </li>
         </ul>
         {% endif %}
@@ -76,10 +130,25 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Site Settings" %}</a>
                 {% block site-subtabs %}{% endblock %}
             </li>
+            <li>
+            {% if perms.bookwyrm.manage_registration %}
+                {% url 'settings-registration' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Registration" %}</a>
+            {% else %}
+                {% url 'settings-registration-limited' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Registration" %}</a>
+            {% endif %}
+            </li>
+            {% if perms.bookwyrm.system_administration %}
+            <li>
+                {% url 'settings-themes' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Themes" %}</a>
+            </li>
+            {% endif %}
         </ul>
         {% endif %}
     </nav>
-    <div class="column">
+    <div class="column is-clipped">
         {% block panel %}{% endblock %}
     </div>
 </div>

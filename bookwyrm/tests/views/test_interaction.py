@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 from django.test import TestCase
@@ -7,18 +8,20 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
 class InteractionViews(TestCase):
     """viewing and creating statuses"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
         ):
-            self.local_user = models.User.objects.create_user(
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -27,7 +30,7 @@ class InteractionViews(TestCase):
                 remote_id="https://example.com/users/mouse",
             )
         with patch("bookwyrm.models.user.set_remote_server"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@email.com",
                 "ratword",
@@ -36,13 +39,16 @@ class InteractionViews(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-
         work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,
         )
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_favorite(self, *_):
         """create and broadcast faving a status"""
@@ -60,7 +66,7 @@ class InteractionViews(TestCase):
         notification = models.Notification.objects.get()
         self.assertEqual(notification.notification_type, "FAVORITE")
         self.assertEqual(notification.user, self.local_user)
-        self.assertEqual(notification.related_user, self.remote_user)
+        self.assertEqual(notification.related_users.first(), self.remote_user)
 
     def test_unfavorite(self, *_):
         """unfav a status"""
@@ -74,7 +80,7 @@ class InteractionViews(TestCase):
         self.assertEqual(models.Favorite.objects.count(), 1)
         self.assertEqual(models.Notification.objects.count(), 1)
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             view(request, status.id)
         self.assertEqual(models.Favorite.objects.count(), 0)
         self.assertEqual(models.Notification.objects.count(), 0)
@@ -98,7 +104,7 @@ class InteractionViews(TestCase):
         notification = models.Notification.objects.get()
         self.assertEqual(notification.notification_type, "BOOST")
         self.assertEqual(notification.user, self.local_user)
-        self.assertEqual(notification.related_user, self.remote_user)
+        self.assertEqual(notification.related_users.first(), self.remote_user)
         self.assertEqual(notification.related_status, status)
 
     def test_self_boost(self, *_):
@@ -110,12 +116,12 @@ class InteractionViews(TestCase):
             status = models.Status.objects.create(user=self.local_user, content="hi")
 
             with patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
             ) as broadcast_mock:
                 view(request, status.id)
 
         self.assertEqual(broadcast_mock.call_count, 1)
-        activity = json.loads(broadcast_mock.call_args[0][1])
+        activity = json.loads(broadcast_mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Announce")
 
         boost = models.Boost.objects.get()

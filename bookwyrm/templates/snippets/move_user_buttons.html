@@ -1,0 +1,13 @@
+{% load i18n %}
+{% load utilities %}
+
+
+{% if related_user_moved_to|user_from_remote_id not in request.user.following.all %}
+<div class="field is-grouped">
+    <form action="{% url 'follow' %}" method="POST" class="interaction follow_{{ related_users.0.id }}" data-id="follow_{{ related_users.0.id }}">
+        {% csrf_token %}
+        <input type="hidden" name="user" value="{% id_to_username related_user_moved_to %}">
+        <button class="button is-link is-small" type="submit">{% trans "Follow at new account" %}</button>
+    </form>
+</div>
+{% endif %}

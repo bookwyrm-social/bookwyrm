@@ -1,17 +1,25 @@
-""" interface with whatever connectors the app has """
-from datetime import datetime
+"""interface with whatever connectors the app has"""
+
+from __future__ import annotations
+import asyncio
 import importlib
+import ipaddress
 import logging
-import re
+from asyncio import Future
+from typing import Iterator, Any, Optional, Union, overload, Literal
 from urllib.parse import urlparse
 
+import aiohttp
 from django.dispatch import receiver
 from django.db.models import signals
 
 from requests import HTTPError
 
 from bookwyrm import book_search, models
-from bookwyrm.tasks import app
+from bookwyrm.book_search import SearchResult
+from bookwyrm.connectors import abstract_connector
+from bookwyrm.settings import SEARCH_TIMEOUT
+from bookwyrm.tasks import app, CONNECTORS
 
 logger = logging.getLogger(__name__)
 
@@ -20,58 +28,77 @@ class ConnectorException(HTTPError):
     """when the connector can't do what was asked"""
 
 
-def search(query, min_confidence=0.1, return_first=False):
-    """find books based on arbitary keywords"""
-    if not query:
-        return []
-    results = []
-
-    # Have we got a ISBN ?
-    isbn = re.sub(r"[\W_]", "", query)
-    maybe_isbn = len(isbn) in [10, 13]  # ISBN10 or ISBN13
-
-    timeout = 15
-    start_time = datetime.now()
-    for connector in get_connectors():
-        result_set = None
-        if maybe_isbn and connector.isbn_search_url and connector.isbn_search_url != "":
-            # Search on ISBN
-            try:
-                result_set = connector.isbn_search(isbn)
-            except Exception as err:  # pylint: disable=broad-except
-                logger.exception(err)
-                # if this fails, we can still try regular search
-
-        # if no isbn search results, we fallback to generic search
-        if not result_set:
-            try:
-                result_set = connector.search(query, min_confidence=min_confidence)
-            except Exception as err:  # pylint: disable=broad-except
-                # we don't want *any* error to crash the whole search page
-                logger.exception(err)
-                continue
-
-        if return_first and result_set:
-            # if we found anything, return it
-            return result_set[0]
-
-        if result_set:
-            results.append(
-                {
-                    "connector": connector,
-                    "results": result_set,
-                }
+async def async_connector_search(
+    query: str,
+    items: list[tuple[str, abstract_connector.AbstractConnector]],
+    min_confidence: float,
+) -> list[Optional[abstract_connector.ConnectorResults]]:
+    """Try a number of requests simultaneously"""
+    timeout = aiohttp.ClientTimeout(total=SEARCH_TIMEOUT)
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+        tasks: list[Future[Optional[abstract_connector.ConnectorResults]]] = []
+        for url, connector in items:
+            tasks.append(
+                asyncio.ensure_future(
+                    connector.get_results(session, url, min_confidence, query)
+                )
             )
-        if (datetime.now() - start_time).seconds >= timeout:
-            break
+
+        results = await asyncio.gather(*tasks)
+        return list(results)
+
+
+@overload
+def search(
+    query: str, *, min_confidence: float = 0.1, return_first: Literal[False]
+) -> list[abstract_connector.ConnectorResults]: ...
+
+
+@overload
+def search(
+    query: str, *, min_confidence: float = 0.1, return_first: Literal[True]
+) -> Optional[SearchResult]: ...
+
+
+def search(
+    query: str, *, min_confidence: float = 0.1, return_first: bool = False
+) -> Union[list[abstract_connector.ConnectorResults], Optional[SearchResult]]:
+    """find books based on arbitrary keywords"""
+    if not query:
+        return None if return_first else []
+
+    items = []
+    for connector in get_connectors():
+        # get the search url from the connector before sending
+        url = connector.get_search_url(query)
+        try:
+            raise_not_valid_url(url)
+        except ConnectorException:
+            # if this URL is invalid we should skip it and move on
+            logger.info("Request denied to blocked domain: %s", url)
+            continue
+        items.append((url, connector))
+
+    # load as many results as we can
+    # failed requests will return None, so filter those out
+    results = [
+        r
+        for r in asyncio.run(async_connector_search(query, items, min_confidence))
+        if r
+    ]
 
     if return_first:
-        return None
+        # find the best result from all the responses and return that
+        all_results = [r for con in results for r in con["results"]]
+        all_results = sorted(all_results, key=lambda r: r.confidence, reverse=True)
+        return all_results[0] if all_results else None
 
     return results
 
 
-def first_search_result(query, min_confidence=0.1):
+def first_search_result(
+    query: str, min_confidence: float = 0.1
+) -> Union[models.Edition, SearchResult, None]:
     """search until you find a result that fits"""
     # try local search first
     result = book_search.search(query, min_confidence=min_confidence, return_first=True)
@@ -81,18 +108,24 @@ def first_search_result(query, min_confidence=0.1):
     return search(query, min_confidence=min_confidence, return_first=True) or None
 
 
-def get_connectors():
+def get_connectors() -> Iterator[abstract_connector.AbstractConnector]:
     """load all connectors"""
-    for info in models.Connector.objects.filter(active=True).order_by("priority").all():
+    queryset = models.Connector.objects.filter(active=True)
+    if models.SiteSettings.get().disable_federation:
+        queryset = queryset.exclude(connector_file="bookwyrm_connector")
+
+    for info in queryset.order_by("priority").all():
         yield load_connector(info)
 
 
-def get_or_create_connector(remote_id):
+def get_or_create_connector(remote_id: str) -> abstract_connector.AbstractConnector:
     """get the connector related to the object's server"""
     url = urlparse(remote_id)
-    identifier = url.netloc
+    identifier = url.hostname
     if not identifier:
-        raise ValueError("Invalid remote id")
+        raise ValueError(f"Invalid remote id: {remote_id}")
+
+    base_url = f"{url.scheme}://{url.netloc}"
 
     try:
         connector_info = models.Connector.objects.get(identifier=identifier)
@@ -100,36 +133,116 @@ def get_or_create_connector(remote_id):
         connector_info = models.Connector.objects.create(
             identifier=identifier,
             connector_file="bookwyrm_connector",
-            base_url=f"https://{identifier}",
-            books_url=f"https://{identifier}/book",
-            covers_url=f"https://{identifier}/images/covers",
-            search_url=f"https://{identifier}/search?q=",
+            base_url=base_url,
+            books_url=f"{base_url}/book",
+            covers_url=f"{base_url}/images/covers",
+            search_url=f"{base_url}/search?q=",
             priority=2,
         )
 
     return load_connector(connector_info)
 
 
-@app.task(queue="low_priority")
-def load_more_data(connector_id, book_id):
+@app.task(queue=CONNECTORS)
+def load_more_data(connector_id: str, book_id: str) -> None:
     """background the work of getting all 10,000 editions of LoTR"""
     connector_info = models.Connector.objects.get(id=connector_id)
     connector = load_connector(connector_info)
-    book = models.Book.objects.select_subclasses().get(id=book_id)
+    book = models.Book.objects.select_subclasses().get(  # type: ignore[no-untyped-call]
+        id=book_id
+    )
     connector.expand_book_data(book)
 
 
-def load_connector(connector_info):
+@app.task(queue=CONNECTORS)
+def create_edition_task(
+    connector_id: int, work_id: int, data: Union[str, abstract_connector.JsonDict]
+) -> None:
+    """separate task for each of the 10,000 editions of LoTR"""
+    connector_info = models.Connector.objects.get(id=connector_id)
+    connector = load_connector(connector_info)
+    work = models.Work.objects.select_subclasses().get(  # type: ignore[no-untyped-call]
+        id=work_id
+    )
+    connector.create_edition_from_data(work, data)
+
+
+def load_connector(
+    connector_info: models.Connector,
+) -> abstract_connector.AbstractConnector:
     """instantiate the connector class"""
     connector = importlib.import_module(
         f"bookwyrm.connectors.{connector_info.connector_file}"
     )
-    return connector.Connector(connector_info.identifier)
+    return connector.Connector(connector_info.identifier)  # type: ignore[no-any-return]
 
 
 @receiver(signals.post_save, sender="bookwyrm.FederatedServer")
-# pylint: disable=unused-argument
-def create_connector(sender, instance, created, *args, **kwargs):
+def create_connector(
+    sender: Any,
+    instance: models.FederatedServer,
+    created: Any,
+    *args: Any,
+    **kwargs: Any,
+) -> None:
     """create a connector to an external bookwyrm server"""
     if instance.application_type == "bookwyrm":
         get_or_create_connector(f"https://{instance.server_name}")
+
+
+def raise_not_valid_url(url: str) -> None:
+    """do some basic reality checks on the url"""
+    parsed = urlparse(url)
+    if parsed.scheme not in ["http", "https"]:
+        raise ConnectorException("Invalid scheme: ", url)
+
+    if not parsed.hostname:
+        raise ConnectorException("Hostname missing: ", url)
+
+    try:
+        ipaddress.ip_address(parsed.hostname)
+        raise ConnectorException("Provided url is an IP address: ", url)
+    except ValueError:
+        # it's not an IP address, which is good
+        pass
+
+    if models.FederatedServer.is_blocked(url):
+        raise ConnectorException(f"Attempting to load data from blocked url: {url}")
+
+
+def create_finna_connector() -> None:
+    """create a Finna connector"""
+
+    models.Connector.objects.create(
+        identifier="api.finna.fi",
+        name="Finna API",
+        connector_file="finna",
+        base_url="https://www.finna.fi",
+        books_url="https://api.finna.fi/api/v1/record?id=",
+        covers_url="https://api.finna.fi",
+        search_url="https://api.finna.fi/api/v1/search?limit=20"
+        "&filter[]=format%3a%220%2fBook%2f%22"
+        "&field[]=title&field[]=recordPage&field[]=authors"
+        "&field[]=year&field[]=id&field[]=formats&field[]=images"
+        "&lookfor=",
+        isbn_search_url="https://api.finna.fi/api/v1/search?limit=1"
+        "&filter[]=format%3a%220%2fBook%2f%22"
+        "&field[]=title&field[]=recordPage&field[]=authors&field[]=year"
+        "&field[]=id&field[]=formats&field[]=images"
+        "&lookfor=isbn:",
+    )
+
+
+def create_libris_connector() -> None:
+    """create a Libris connector"""
+
+    models.Connector.objects.create(
+        identifier="libris.kb.se",
+        name="Libris",
+        connector_file="libris",
+        base_url="https://libris.kb.se",
+        books_url="http://libris.kb.se/xsearch?format=json&format_level=full&n=1&query=",
+        covers_url="https://libris.kb.se",
+        search_url="http://libris.kb.se/xsearch?format=json&format_level=full&n=20&query=",
+        isbn_search_url="http://libris.kb.se/xsearch?format=json&format_level=full&n=5&query=isbn:",
+    )

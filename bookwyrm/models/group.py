@@ -1,8 +1,8 @@
-""" do book related things with other users """
-from django.apps import apps
+"""do book related things with other users"""
+
 from django.db import models, IntegrityError, transaction
 from django.db.models import Q
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 from .base_model import BookWyrmModel
 from . import fields
 from .relationship import UserBlocks
@@ -18,7 +18,7 @@ class Group(BookWyrmModel):
 
     def get_remote_id(self):
         """don't want the user to be in there in this case"""
-        return f"https://{DOMAIN}/group/{self.id}"
+        return f"{BASE_URL}/group/{self.id}"
 
     @classmethod
     def followers_filter(cls, queryset, viewer):
@@ -73,7 +73,7 @@ class GroupMember(models.Model):
             )
         ).exists():
             raise IntegrityError()
-        # accepts and requests are handled by the GroupInvitation model
+        # accepts and requests are handled by the GroupMemberInvitation model
         super().save(*args, **kwargs)
 
     @classmethod
@@ -140,43 +140,33 @@ class GroupMemberInvitation(models.Model):
         # make an invitation
         super().save(*args, **kwargs)
 
-        # now send the invite
-        model = apps.get_model("bookwyrm.Notification", require_ready=True)
-        notification_type = "INVITE"
-        model.objects.create(
-            user=self.user,
-            related_user=self.group.user,
-            related_group=self.group,
-            notification_type=notification_type,
-        )
-
+    @transaction.atomic
     def accept(self):
         """turn this request into the real deal"""
 
-        with transaction.atomic():
-            GroupMember.from_request(self)
+        from .notification import Notification, NotificationType  # circular dependency
 
-            model = apps.get_model("bookwyrm.Notification", require_ready=True)
-            # tell the group owner
-            model.objects.create(
-                user=self.group.user,
-                related_user=self.user,
-                related_group=self.group,
-                notification_type="ACCEPT",
-            )
+        GroupMember.from_request(self)
 
-            # let the other members know about it
-            for membership in self.group.memberships.all():
-                member = membership.user
-                if member not in (self.user, self.group.user):
-                    model.objects.create(
-                        user=member,
-                        related_user=self.user,
-                        related_group=self.group,
-                        notification_type="JOIN",
-                    )
+        # tell the group owner
+        Notification.notify(
+            self.group.user,
+            self.user,
+            related_group=self.group,
+            notification_type=NotificationType.ACCEPT,
+        )
+
+        # let the other members know about it
+        for membership in self.group.memberships.all():
+            member = membership.user
+            if member not in (self.user, self.group.user):
+                Notification.notify(
+                    member,
+                    self.user,
+                    related_group=self.group,
+                    notification_type=NotificationType.JOIN,
+                )
 
     def reject(self):
         """generate a Reject for this membership request"""
-
         self.delete()

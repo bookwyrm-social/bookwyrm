@@ -13,6 +13,8 @@
                 src="{{ book.cover }}"
                 itemprop="thumbnailUrl"
                 alt="{{ book.alt_text|default:'' }}"
+                loading="lazy"
+                decoding="async"
             >
         {% else %}
 

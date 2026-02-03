@@ -1,4 +1,5 @@
-""" tests incoming activities"""
+"""tests incoming activities"""
+
 import json
 import pathlib
 from unittest.mock import patch
@@ -8,26 +9,28 @@ from django.test import TestCase
 from bookwyrm import models, views
 
 
-# pylint: disable=too-many-public-methods
 class InboxUpdate(TestCase):
     """inbox tests"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """basic user and book data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
         ):
-            self.local_user = models.User.objects.create_user(
+            cls.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
                 "mouseword",
                 local=True,
                 localname="mouse",
             )
-        self.local_user.remote_id = "https://example.com/user/mouse"
-        self.local_user.save(broadcast=False, update_fields=["remote_id"])
+        cls.local_user.remote_id = "https://example.com/user/mouse"
+        cls.local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -37,6 +40,8 @@ class InboxUpdate(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
+    def setUp(self):
+        """individual test setup"""
         self.update_json = {
             "id": "hi",
             "type": "Update",
@@ -46,11 +51,12 @@ class InboxUpdate(TestCase):
             "object": {},
         }
 
-        models.SiteSettings.objects.create()
-
     def test_update_list(self):
         """a new list"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+        ):
             book_list = models.List.objects.create(
                 name="hi", remote_id="https://example.com/list/22", user=self.local_user
             )
@@ -69,7 +75,8 @@ class InboxUpdate(TestCase):
             "curation": "curated",
             "@context": "https://www.w3.org/ns/activitystreams",
         }
-        views.inbox.activity_task(activity)
+        with patch("bookwyrm.lists_stream.remove_list_task.delay"):
+            views.inbox.activity_task(activity)
         book_list.refresh_from_db()
         self.assertEqual(book_list.name, "Test List")
         self.assertEqual(book_list.curation, "curated")
@@ -78,6 +85,7 @@ class InboxUpdate(TestCase):
 
     @patch("bookwyrm.suggested_users.rerank_user_task.delay")
     @patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
+    @patch("bookwyrm.lists_stream.add_user_lists_task.delay")
     def test_update_user(self, *_):
         """update an existing user"""
         models.UserFollows.objects.create(
@@ -146,6 +154,47 @@ class InboxUpdate(TestCase):
         self.assertEqual(book.title, "Piranesi")
         self.assertEqual(book.last_edited_by, self.remote_user)
 
+    def test_update_edition_links(self):
+        """add links to edition"""
+        datafile = pathlib.Path(__file__).parent.joinpath("../../data/bw_edition.json")
+        bookdata = json.loads(datafile.read_bytes())
+        del bookdata["authors"]
+        link_data = {
+            "href": "https://openlibrary.org/books/OL11645413M/Queen_Victoria/daisy",
+            "mediaType": "Daisy",
+            "attributedTo": self.remote_user.remote_id,
+        }
+        bookdata["fileLinks"] = [link_data]
+
+        models.Work.objects.create(
+            title="Test Work", remote_id="https://bookwyrm.social/book/5988"
+        )
+        book = models.Edition.objects.create(
+            title="Test Book", remote_id="https://bookwyrm.social/book/5989"
+        )
+        self.assertFalse(book.file_links.exists())
+
+        with patch(
+            "bookwyrm.activitypub.base_activity.set_related_field.delay"
+        ) as mock:
+            views.inbox.activity_task(
+                {
+                    "type": "Update",
+                    "to": [],
+                    "cc": [],
+                    "actor": "hi",
+                    "id": "sdkjf",
+                    "object": bookdata,
+                }
+            )
+        args = mock.call_args[0]
+        self.assertEqual(args[0], "FileLink")
+        self.assertEqual(args[1], "Edition")
+        self.assertEqual(args[2], "book")
+        self.assertEqual(args[3], book.remote_id)
+        self.assertEqual(args[4], link_data)
+        # idk how to test that related name works, because of the transaction
+
     def test_update_work(self):
         """update an existing edition"""
         datafile = pathlib.Path(__file__).parent.joinpath("../../data/bw_work.json")
@@ -171,7 +220,7 @@ class InboxUpdate(TestCase):
         book = models.Work.objects.get(id=book.id)
         self.assertEqual(book.title, "Piranesi")
 
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_update_status(self, *_):
         """edit a status"""

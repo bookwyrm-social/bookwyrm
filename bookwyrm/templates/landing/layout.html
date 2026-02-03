@@ -31,6 +31,7 @@
     </div>
 </section>
 
+{% block about_panel %}
 <section class="tile is-ancestor">
     <div class="tile is-7 is-parent">
         <div class="tile is-child box">
@@ -65,11 +66,18 @@
                         {% csrf_token %}
                         <div class="block">
                             <label for="id_request_email" class="label">{% trans "Email address:" %}</label>
-                            <input type="email" name="email" maxlength="255" class="input" required="" id="id_request_email">
-                            {% for error in request_form.email.errors %}
-                            <p class="help is-danger">{{ error|escape }}</p>
-                            {% endfor %}
+                            <input type="email" name="email" maxlength="255" class="input" required="" id="id_request_email" aria-describedby="desc_request_email">
+
+                            {% include 'snippets/form_errors.html' with errors_list=request_form.email.errors id="desc_request_email" %}
                         </div>
+                        {% if site.invite_request_question %}
+                            <div class="block">
+                                <label for="id_answer_register" class="label">{{ site.invite_question_text }}</label>
+                                <input type="text" name="answer" maxlength="255" class="input" required="true" id="id_answer_register" aria-describedby="desc_answer_register">
+                                {% include 'snippets/form_errors.html' with errors_list=request_form.answer.errors id="desc_answer_register" %}
+                            </div>
+                        {% endif %}
+
                         <button type="submit" class="button is-link">{% trans "Submit" %}</button>
                     </form>
                 {% endif %}
@@ -78,7 +86,7 @@
             {% endif %}
         </div>
         {% else %}
-        <div class="tile is-child box has-background-white-bis">
+        <div class="tile is-child box has-background-tertiary">
             <h2 class="title is-4">{% trans "Your Account" %}</h2>
             {% include 'user/user_preview.html' with user=request.user %}
             {% if request.user.summary %}
@@ -90,6 +98,7 @@
         {% endif %}
     </div>
 </section>
+{% endblock %}
 
 {% block panel %}{% endblock %}
 

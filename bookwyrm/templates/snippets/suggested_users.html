@@ -4,14 +4,14 @@
 <div class="columns is-mobile scroll-x mb-0">
     {% for user in suggested_users %}
     <div class="column is-flex is-flex-grow-0">
-        <div class="box has-text-centered is-shadowless has-background-white-bis m-0">
-            <a href="{{ user.local_path }}" class="has-text-black">
+        <div class="box has-text-centered is-shadowless has-background-tertiary m-0">
+            <a href="{{ user.local_path }}" class="has-text-default">
                 {% include 'snippets/avatar.html' with user=user large=True %}
                 <span title="{{ user.display_name }}" class="is-block is-6 has-text-weight-bold">{{ user.display_name|truncatechars:10 }}</span>
                 <span title="@{{ user|username }}" class="is-block pb-3">@{{ user|username|truncatechars:8 }}</span>
             </a>
             {% include 'snippets/follow_button.html' with user=user minimal=True %}
-            {% if user.mutuals %}
+            {% if user.mutuals and not user.hide_follows %}
             <p class="help">
                 {% blocktrans trimmed with mutuals=user.mutuals|intcomma count counter=user.mutuals %}
                 {{ mutuals }} follower you follow

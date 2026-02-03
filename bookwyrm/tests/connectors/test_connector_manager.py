@@ -1,4 +1,5 @@
-""" interface between the app and various connectors """
+"""interface between the app and various connectors"""
+
 from django.test import TestCase
 import responses
 
@@ -10,18 +11,19 @@ from bookwyrm.connectors.bookwyrm_connector import Connector as BookWyrmConnecto
 class ConnectorManager(TestCase):
     """interface between the app and various connectors"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we'll need some books and a connector info entry"""
-        self.work = models.Work.objects.create(title="Example Work")
+        cls.work = models.Work.objects.create(title="Example Work")
 
         models.Edition.objects.create(
-            title="Example Edition", parent_work=self.work, isbn_10="0000000000"
+            title="Example Edition", parent_work=cls.work, isbn_10="0000000000"
         )
-        self.edition = models.Edition.objects.create(
-            title="Another Edition", parent_work=self.work, isbn_10="1111111111"
+        cls.edition = models.Edition.objects.create(
+            title="Another Edition", parent_work=cls.work, isbn_10="1111111111"
         )
 
-        self.remote_connector = models.Connector.objects.create(
+        cls.remote_connector = models.Connector.objects.create(
             identifier="test_connector_remote",
             priority=1,
             connector_file="bookwyrm_connector",
@@ -49,38 +51,10 @@ class ConnectorManager(TestCase):
         self.assertEqual(len(connectors), 1)
         self.assertIsInstance(connectors[0], BookWyrmConnector)
 
-    @responses.activate
-    def test_search_plaintext(self):
-        """search all connectors"""
-        responses.add(
-            responses.GET,
-            "http://fake.ciom/search/Example?min_confidence=0.1",
-            json=[{"title": "Hello", "key": "https://www.example.com/search/1"}],
-        )
-        results = connector_manager.search("Example")
-        self.assertEqual(len(results), 1)
-        self.assertEqual(len(results[0]["results"]), 1)
-        self.assertEqual(results[0]["connector"].identifier, "test_connector_remote")
-        self.assertEqual(results[0]["results"][0].title, "Hello")
-
     def test_search_empty_query(self):
         """don't panic on empty queries"""
         results = connector_manager.search("")
         self.assertEqual(results, [])
-
-    @responses.activate
-    def test_search_isbn(self):
-        """special handling if a query resembles an isbn"""
-        responses.add(
-            responses.GET,
-            "http://fake.ciom/isbn/0000000000",
-            json=[{"title": "Hello", "key": "https://www.example.com/search/1"}],
-        )
-        results = connector_manager.search("0000000000")
-        self.assertEqual(len(results), 1)
-        self.assertEqual(len(results[0]["results"]), 1)
-        self.assertEqual(results[0]["connector"].identifier, "test_connector_remote")
-        self.assertEqual(results[0]["results"][0].title, "Hello")
 
     def test_first_search_result(self):
         """only get one search result"""
@@ -107,3 +81,31 @@ class ConnectorManager(TestCase):
         """load a connector object from the database entry"""
         connector = connector_manager.load_connector(self.remote_connector)
         self.assertEqual(connector.identifier, "test_connector_remote")
+
+    def test_create_finna_connector(self):
+        """does the finna connector work?"""
+
+        self.assertEqual(
+            0, models.Connector.objects.filter(connector_file="finna").count()
+        )
+        connector_manager.create_finna_connector()
+        self.assertEqual(
+            1, models.Connector.objects.filter(connector_file="finna").count()
+        )
+
+        finna = models.Connector.objects.get(connector_file="finna")
+        self.assertEqual("https://www.finna.fi", finna.base_url)
+
+    def test_create_libris_connector(self):
+        """does the libris connector work?"""
+
+        self.assertEqual(
+            0, models.Connector.objects.filter(connector_file="libris").count()
+        )
+        connector_manager.create_libris_connector()
+        self.assertEqual(
+            1, models.Connector.objects.filter(connector_file="libris").count()
+        )
+
+        libris = models.Connector.objects.get(connector_file="libris")
+        self.assertEqual("https://libris.kb.se", libris.base_url)

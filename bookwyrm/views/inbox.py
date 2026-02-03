@@ -1,24 +1,33 @@
-""" incoming activities """
+"""incoming activities"""
+
 import json
 import re
-from urllib.parse import urldefrag
+import logging
 
-from django.http import HttpResponse, Http404
+import requests
+
+from django.http import HttpResponse, HttpResponseForbidden, Http404
 from django.core.exceptions import BadRequest, PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-import requests
 
 from bookwyrm import activitypub, models
-from bookwyrm.tasks import app
+from bookwyrm.decorators import require_federation
+from bookwyrm.tasks import app, INBOX
 from bookwyrm.signatures import Signature
 from bookwyrm.utils import regex
 
+logger = logging.getLogger(__name__)
+
+
+class UserIsGoneError(Exception):
+    """error class for when a user is banned or deleted"""
+
 
 @method_decorator(csrf_exempt, name="dispatch")
-# pylint: disable=no-self-use
+@method_decorator(require_federation, name="dispatch")
 class Inbox(View):
     """requests sent by outside servers"""
 
@@ -37,13 +46,17 @@ class Inbox(View):
         except json.decoder.JSONDecodeError:
             raise BadRequest()
 
-        # let's be extra sure we didn't block this domain
-        raise_is_blocked_activity(activity_json)
+        try:
+            # let's be extra sure we didn't block this domain
+            raise_is_blocked_activity(activity_json)
+        except UserIsGoneError:
+            # banned or deleted users are not allowed to send us Activities
+            return HttpResponseForbidden()
 
         if (
-            not "object" in activity_json
-            or not "type" in activity_json
-            or not activity_json["type"] in activitypub.activity_objects
+            "object" not in activity_json
+            or "type" not in activity_json
+            or activity_json["type"] not in activitypub.activity_objects
         ):
             raise Http404()
 
@@ -56,7 +69,7 @@ class Inbox(View):
                 return HttpResponse()
             return HttpResponse(status=401)
 
-        activity_task.delay(activity_json)
+        sometimes_async_activity_task(activity_json)
         return HttpResponse()
 
 
@@ -71,6 +84,7 @@ def raise_is_blocked_user_agent(request):
         return
     url = url.group()
     if models.FederatedServer.is_blocked(url):
+        logger.debug("%s is blocked, denying request based on user agent", url)
         raise PermissionDenied()
 
 
@@ -78,20 +92,36 @@ def raise_is_blocked_activity(activity_json):
     """get the sender out of activity json and check if it's blocked"""
     actor = activity_json.get("actor")
 
-    # check if the user is banned/deleted
-    existing = models.User.find_existing_by_remote_id(actor)
-    if existing and existing.deleted:
-        raise PermissionDenied()
-
     if not actor:
         # well I guess it's not even a valid activity so who knows
         return
 
+    # check if the user is banned/deleted in our database
+    existing = models.User.find_existing_by_remote_id(actor)
+    if existing and existing.deleted:
+        logger.debug("%s is banned/deleted, denying request based on actor", actor)
+        raise UserIsGoneError()
+
+    # check if we have blocked the whole server
     if models.FederatedServer.is_blocked(actor):
+        logger.debug("%s is blocked, denying request based on actor", actor)
         raise PermissionDenied()
 
 
-@app.task(queue="medium_priority")
+def sometimes_async_activity_task(activity_json):
+    """Sometimes we can effectively respond to a request without queuing a new task,
+    and whenever that is possible, we should do it."""
+    activity = activitypub.parse(activity_json)
+
+    # try resolving this activity without making any http requests
+    try:
+        activity.action(allow_external_connections=False)
+    except activitypub.ActivitySerializerError:
+        # if that doesn't work, run it asynchronously
+        activity_task.apply_async(args=(activity_json,))
+
+
+@app.task(queue=INBOX)
 def activity_task(activity_json):
     """do something with this json we think is legit"""
     # lets see if the activitypub module can make sense of this json
@@ -106,14 +136,17 @@ def has_valid_signature(request, activity):
     """verify incoming signature"""
     try:
         signature = Signature.parse(request)
-
-        key_actor = urldefrag(signature.key_id).url
-        if key_actor != activity.get("actor"):
-            raise ValueError("Wrong actor created signature.")
-
-        remote_user = activitypub.resolve_remote_id(key_actor, model=models.User)
+        remote_user = activitypub.resolve_remote_id(
+            activity.get("actor"), model=models.User
+        )
         if not remote_user:
             return False
+
+        if signature.key_id != remote_user.key_pair.remote_id:
+            if (
+                signature.key_id != f"{remote_user.remote_id}#main-key"
+            ):  # legacy Bookwyrm
+                raise ValueError("Wrong actor created signature.")
 
         try:
             signature.verify(remote_user.key_pair.public_key, request)

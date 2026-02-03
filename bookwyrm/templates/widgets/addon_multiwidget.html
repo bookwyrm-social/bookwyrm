@@ -1,0 +1,9 @@
+{% spaceless %}
+<div class="field has-addons">
+{% for widget in widget.subwidgets %}
+<div class="control{% if forloop.last %} is-expanded{% endif %}">
+    {% include widget.template_name %}
+    </div>
+{% endfor %}
+</div>
+{% endspaceless %}

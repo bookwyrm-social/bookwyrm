@@ -1,9 +1,11 @@
-""" Generate social media preview images for twitter/mastodon/etc """
+"""Generate social media preview images for twitter/mastodon/etc"""
+
 import math
 import os
 import textwrap
 from io import BytesIO
 from uuid import uuid4
+import logging
 
 import colorsys
 from colorthief import ColorThief
@@ -15,38 +17,84 @@ from django.core.files.storage import default_storage
 from django.db.models import Avg
 
 from bookwyrm import models, settings
-from bookwyrm.tasks import app
+from bookwyrm.tasks import app, IMAGES
 
+logger = logging.getLogger(__name__)
 
 IMG_WIDTH = settings.PREVIEW_IMG_WIDTH
 IMG_HEIGHT = settings.PREVIEW_IMG_HEIGHT
 BG_COLOR = settings.PREVIEW_BG_COLOR
 TEXT_COLOR = settings.PREVIEW_TEXT_COLOR
 DEFAULT_COVER_COLOR = settings.PREVIEW_DEFAULT_COVER_COLOR
+DEFAULT_FONT = settings.PREVIEW_DEFAULT_FONT
 TRANSPARENT_COLOR = (0, 0, 0, 0)
 
 margin = math.floor(IMG_HEIGHT / 10)
 gutter = math.floor(margin / 2)
 inner_img_height = math.floor(IMG_HEIGHT * 0.8)
 inner_img_width = math.floor(inner_img_height * 0.7)
-font_dir = os.path.join(settings.STATIC_ROOT, "fonts/public_sans")
 
 
-def get_font(font_name, size=28):
-    """Loads custom font"""
-    if font_name == "light":
-        font_path = os.path.join(font_dir, "PublicSans-Light.ttf")
-    if font_name == "regular":
-        font_path = os.path.join(font_dir, "PublicSans-Regular.ttf")
-    elif font_name == "bold":
-        font_path = os.path.join(font_dir, "PublicSans-Bold.ttf")
+def get_imagefont(name, size):
+    """Loads an ImageFont based on config"""
+    try:
+        config = settings.FONTS[name]
+        path = os.path.join(settings.FONT_DIR, config["directory"], config["filename"])
+        return ImageFont.truetype(path, size)
+    except KeyError:
+        logger.error("Font %s not found in config", name)
+    except OSError as err:
+        logger.error("Could not load font %s from file: %s", name, err)
+
+    return ImageFont.load_default()
+
+
+def get_font(weight, size=28):
+    """Gets a custom font with the given weight and size"""
+    font = get_imagefont(DEFAULT_FONT, size)
 
     try:
-        font = ImageFont.truetype(font_path, size)
+        if weight == "light":
+            font.set_variation_by_name("Light")
+        if weight == "bold":
+            font.set_variation_by_name("Bold")
+        if weight == "regular":
+            font.set_variation_by_name("Regular")
     except OSError:
-        font = ImageFont.load_default()
+        pass
 
     return font
+
+
+def get_wrapped_text(text, font, content_width):
+    """text wrap length depends on the max width of the content"""
+
+    low = 0
+    high = len(text)
+
+    draw = ImageDraw.Draw(Image.new("RGB", (100, 100)))
+
+    try:
+        # ideal length is determined via binary search
+        while low < high:
+            mid = math.floor(low + high)
+            wrapped_text = textwrap.fill(text, width=mid)
+
+            left, top, right, bottom = draw.multiline_textbbox(
+                (0, 0), wrapped_text, font=font
+            )
+            width = right - left
+            height = bottom - top
+
+            if width < content_width:
+                low = mid
+            else:
+                high = mid - 1
+    except AttributeError:
+        wrapped_text = text
+        height = 26
+
+    return wrapped_text, height
 
 
 def generate_texts_layer(texts, content_width):
@@ -62,44 +110,56 @@ def generate_texts_layer(texts, content_width):
     text_y = 0
 
     if "text_zero" in texts and texts["text_zero"]:
-        # Text one (Book title)
-        text_zero = textwrap.fill(texts["text_zero"], width=72)
+        # Text zero (Site preview domain name)
+        text_zero, text_height = get_wrapped_text(
+            texts["text_zero"], font_text_zero, content_width
+        )
+
         text_layer_draw.multiline_text(
             (0, text_y), text_zero, font=font_text_zero, fill=TEXT_COLOR
         )
 
         try:
-            text_y = text_y + font_text_zero.getsize_multiline(text_zero)[1] + 16
+            text_y = text_y + text_height + 16
         except (AttributeError, IndexError):
             text_y = text_y + 26
 
     if "text_one" in texts and texts["text_one"]:
-        # Text one (Book title)
-        text_one = textwrap.fill(texts["text_one"], width=28)
+        # Text one (Book/Site title, User display name)
+        text_one, text_height = get_wrapped_text(
+            texts["text_one"], font_text_one, content_width
+        )
+
         text_layer_draw.multiline_text(
             (0, text_y), text_one, font=font_text_one, fill=TEXT_COLOR
         )
 
         try:
-            text_y = text_y + font_text_one.getsize_multiline(text_one)[1] + 16
+            text_y = text_y + text_height + 16
         except (AttributeError, IndexError):
             text_y = text_y + 26
 
     if "text_two" in texts and texts["text_two"]:
-        # Text one (Book subtitle)
-        text_two = textwrap.fill(texts["text_two"], width=36)
+        # Text two (Book subtitle)
+        text_two, text_height = get_wrapped_text(
+            texts["text_two"], font_text_two, content_width
+        )
+
         text_layer_draw.multiline_text(
             (0, text_y), text_two, font=font_text_two, fill=TEXT_COLOR
         )
 
         try:
-            text_y = text_y + font_text_one.getsize_multiline(text_two)[1] + 16
+            text_y = text_y + text_height + 16
         except (AttributeError, IndexError):
             text_y = text_y + 26
 
     if "text_three" in texts and texts["text_three"]:
-        # Text three (Book authors)
-        text_three = textwrap.fill(texts["text_three"], width=36)
+        # Text three (Book authors, Site tagline, User address)
+        text_three, _ = get_wrapped_text(
+            texts["text_three"], font_text_three, content_width
+        )
+
         text_layer_draw.multiline_text(
             (0, text_y), text_three, font=font_text_three, fill=TEXT_COLOR
         )
@@ -112,14 +172,16 @@ def generate_instance_layer(content_width):
     """Places components for instance preview"""
     font_instance = get_font("light", size=28)
 
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
 
     if site.logo_small:
-        logo_img = Image.open(site.logo_small)
+        with Image.open(site.logo_small) as logo_img:
+            logo_img.load()
     else:
         try:
             static_path = os.path.join(settings.STATIC_ROOT, "images/logo-small.png")
-            logo_img = Image.open(static_path)
+            with Image.open(static_path) as logo_img:
+                logo_img.load()
         except FileNotFoundError:
             logo_img = None
 
@@ -128,7 +190,7 @@ def generate_instance_layer(content_width):
     instance_text_x = 0
 
     if logo_img:
-        logo_img.thumbnail((50, 50), Image.ANTIALIAS)
+        logo_img.thumbnail((50, 50), Image.Resampling.LANCZOS)
 
         instance_layer.paste(logo_img, (0, 0))
 
@@ -139,7 +201,7 @@ def generate_instance_layer(content_width):
         (instance_text_x, 10), site.name, font=font_instance, fill=TEXT_COLOR
     )
 
-    line_width = 50 + 10 + font_instance.getsize(site.name)[0]
+    line_width = 50 + 10 + round(font_instance.getlength(site.name))
 
     line_layer = Image.new(
         "RGBA", (line_width, 2), color=(*(ImageColor.getrgb(TEXT_COLOR)), 50)
@@ -151,18 +213,9 @@ def generate_instance_layer(content_width):
 
 def generate_rating_layer(rating, content_width):
     """Places components for rating preview"""
-    try:
-        icon_star_full = Image.open(
-            os.path.join(settings.STATIC_ROOT, "images/icons/star-full.png")
-        )
-        icon_star_empty = Image.open(
-            os.path.join(settings.STATIC_ROOT, "images/icons/star-empty.png")
-        )
-        icon_star_half = Image.open(
-            os.path.join(settings.STATIC_ROOT, "images/icons/star-half.png")
-        )
-    except FileNotFoundError:
-        return None
+    path_star_full = os.path.join(settings.STATIC_ROOT, "images/icons/star-full.png")
+    path_star_empty = os.path.join(settings.STATIC_ROOT, "images/icons/star-empty.png")
+    path_star_half = os.path.join(settings.STATIC_ROOT, "images/icons/star-half.png")
 
     icon_size = 64
     icon_margin = 10
@@ -177,17 +230,23 @@ def generate_rating_layer(rating, content_width):
 
     position_x = 0
 
-    for _ in range(math.floor(rating)):
-        rating_layer_mask.alpha_composite(icon_star_full, (position_x, 0))
-        position_x = position_x + icon_size + icon_margin
+    try:
+        with Image.open(path_star_full) as icon_star_full:
+            for _ in range(math.floor(rating)):
+                rating_layer_mask.alpha_composite(icon_star_full, (position_x, 0))
+                position_x = position_x + icon_size + icon_margin
 
-    if math.floor(rating) != math.ceil(rating):
-        rating_layer_mask.alpha_composite(icon_star_half, (position_x, 0))
-        position_x = position_x + icon_size + icon_margin
+        if math.floor(rating) != math.ceil(rating):
+            with Image.open(path_star_half) as icon_star_half:
+                rating_layer_mask.alpha_composite(icon_star_half, (position_x, 0))
+                position_x = position_x + icon_size + icon_margin
 
-    for _ in range(5 - math.ceil(rating)):
-        rating_layer_mask.alpha_composite(icon_star_empty, (position_x, 0))
-        position_x = position_x + icon_size + icon_margin
+        with Image.open(path_star_empty) as icon_star_empty:
+            for _ in range(5 - math.ceil(rating)):
+                rating_layer_mask.alpha_composite(icon_star_empty, (position_x, 0))
+                position_x = position_x + icon_size + icon_margin
+    except FileNotFoundError:
+        return None
 
     rating_layer_mask = rating_layer_mask.getchannel("A")
     rating_layer_mask = ImageOps.invert(rating_layer_mask)
@@ -209,18 +268,18 @@ def generate_default_inner_img():
     default_cover_draw = ImageDraw.Draw(default_cover)
 
     text = "no image :("
-    text_dimensions = font_cover.getsize(text)
+    text_left, text_top, text_right, text_bottom = font_cover.getbbox(text)
+    text_width, text_height = text_right - text_left, text_bottom - text_top
+
     text_coords = (
-        math.floor((inner_img_width - text_dimensions[0]) / 2),
-        math.floor((inner_img_height - text_dimensions[1]) / 2),
+        math.floor((inner_img_width - text_width) / 2),
+        math.floor((inner_img_height - text_height) / 2),
     )
     default_cover_draw.text(text_coords, text, font=font_cover, fill="white")
 
     return default_cover
 
 
-# pylint: disable=too-many-locals
-# pylint: disable=too-many-statements
 def generate_preview_image(
     texts=None, picture=None, rating=None, show_instance_layer=True
 ):
@@ -228,11 +287,14 @@ def generate_preview_image(
     texts = texts or {}
     # Cover
     try:
-        inner_img_layer = Image.open(picture)
-        inner_img_layer.thumbnail((inner_img_width, inner_img_height), Image.ANTIALIAS)
+        with Image.open(picture) as inner_img_layer:
+            inner_img_layer.load()
+        inner_img_layer.thumbnail(
+            (inner_img_width, inner_img_height), Image.Resampling.LANCZOS
+        )
         color_thief = ColorThief(picture)
         dominant_color = color_thief.get_color(quality=1)
-    except:  # pylint: disable=bare-except
+    except:
         inner_img_layer = generate_default_inner_img()
         dominant_color = ImageColor.getrgb(DEFAULT_COVER_COLOR)
 
@@ -317,15 +379,21 @@ def save_and_cleanup(image, instance=None):
     """Save and close the file"""
     if not isinstance(instance, (models.Book, models.User, models.SiteSettings)):
         return False
-    uuid = uuid4()
-    file_name = f"{instance.id}-{uuid}.jpg"
     image_buffer = BytesIO()
 
     try:
         try:
-            old_path = instance.preview_image.name
+            file_name = instance.preview_image.name
         except ValueError:
-            old_path = None
+            file_name = None
+
+        if not file_name or file_name == "":
+            uuid = uuid4()
+            file_name = f"{instance.id}-{uuid}.jpg"
+
+        # Clean up old file before saving
+        if file_name and default_storage.exists(file_name):
+            default_storage.delete(file_name)
 
         # Save
         image.save(image_buffer, format="jpeg", quality=75)
@@ -345,23 +413,18 @@ def save_and_cleanup(image, instance=None):
         else:
             instance.save(update_fields=["preview_image"])
 
-        # Clean up old file after saving
-        if old_path and default_storage.exists(old_path):
-            default_storage.delete(old_path)
-
     finally:
         image_buffer.close()
     return True
 
 
-# pylint: disable=invalid-name
-@app.task(queue="low_priority")
+@app.task(queue=IMAGES)
 def generate_site_preview_image_task():
     """generate preview_image for the website"""
     if not settings.ENABLE_PREVIEW_IMAGES:
         return
 
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
 
     if site.logo:
         logo = site.logo
@@ -379,8 +442,7 @@ def generate_site_preview_image_task():
     save_and_cleanup(image, instance=site)
 
 
-# pylint: disable=invalid-name
-@app.task(queue="low_priority")
+@app.task(queue=IMAGES)
 def generate_edition_preview_image_task(book_id):
     """generate preview_image for a book"""
     if not settings.ENABLE_PREVIEW_IMAGES:
@@ -405,13 +467,16 @@ def generate_edition_preview_image_task(book_id):
     save_and_cleanup(image, instance=book)
 
 
-@app.task(queue="low_priority")
+@app.task(queue=IMAGES)
 def generate_user_preview_image_task(user_id):
-    """generate preview_image for a book"""
+    """generate preview_image for a user"""
     if not settings.ENABLE_PREVIEW_IMAGES:
         return
 
     user = models.User.objects.get(id=user_id)
+
+    if not user.local:
+        return
 
     texts = {
         "text_one": user.display_name,
@@ -426,3 +491,25 @@ def generate_user_preview_image_task(user_id):
     image = generate_preview_image(texts=texts, picture=avatar)
 
     save_and_cleanup(image, instance=user)
+
+
+@app.task(queue=IMAGES)
+def remove_user_preview_image_task(user_id):
+    """remove preview_image for a user"""
+    if not settings.ENABLE_PREVIEW_IMAGES:
+        return
+
+    user = models.User.objects.get(id=user_id)
+
+    try:
+        file_name = user.preview_image.name
+    except ValueError:
+        file_name = None
+
+    # Delete image in model
+    user.preview_image.delete(save=False)
+    user.save(broadcast=False, update_fields=["preview_image"])
+
+    # Delete image file
+    if file_name and default_storage.exists(file_name):
+        default_storage.delete(file_name)

@@ -1,0 +1,13 @@
+{% extends 'settings/dashboard/warnings/layout.html' %}
+{% load i18n %}
+
+{% block warning_link %}https://docs.joinbookwyrm.com/install-prod.html{% endblock %}
+
+{% block warning_text %}
+
+{% blocktrans trimmed %}
+Your outgoing email address, <code>{{ email_sender }}</code>, may be misconfigured.
+{% endblocktrans %}
+{% trans "Check the <code>EMAIL_SENDER_NAME</code> and <code>EMAIL_SENDER_DOMAIN</code> in your <code>.env</code> file." %}
+
+{% endblock %}

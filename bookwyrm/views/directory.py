@@ -1,4 +1,5 @@
-""" who all's here? """
+"""who all's here?"""
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import redirect
@@ -8,7 +9,7 @@ from django.utils.decorators import method_decorator
 
 from bookwyrm import suggested_users
 
-# pylint: disable=no-self-use
+
 @method_decorator(login_required, name="dispatch")
 class Directory(View):
     """display of known bookwyrm users"""
@@ -19,7 +20,12 @@ class Directory(View):
         software = request.GET.get("software")
         if not software or software == "bookwyrm":
             filters["bookwyrm_user"] = True
-        scope = request.GET.get("scope")
+        users_connection = request.GET.get("connection")
+        if users_connection == "following":
+            filters["following"] = True
+        elif users_connection == "not_following":
+            filters["following"] = False
+        scope = request.GET.get("scope", "federated")
         if scope == "local":
             filters["local"] = True
 
@@ -38,6 +44,8 @@ class Directory(View):
                 page.number, on_each_side=2, on_ends=1
             ),
             "users": page,
+            "sort": sort,
+            "scope": scope,
         }
         return TemplateResponse(request, "directory/directory.html", data)
 

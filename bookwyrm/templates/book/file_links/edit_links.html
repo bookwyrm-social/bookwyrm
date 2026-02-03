@@ -1,0 +1,119 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block title %}{% trans "Edit links" %}{% endblock %}
+
+{% block content %}
+
+<header class="block">
+    <h1 class="title">
+        {% blocktrans trimmed with title=book|book_title %}
+        Links for "<em>{{ title }}</em>"
+        {% endblocktrans %}
+    </h1>
+
+    <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="{% url 'book' book.id book.name|slugify %}">{{ book|book_title }}</a></li>
+            <li class="is-active">
+                <a href="#" aria-current="page">
+                    {% trans "Edit links" %}
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<section class="block content">
+    <div class="table-container">
+        <table class="is-striped is-fullwidth">
+            <tr>
+                <th>{% trans "URL" %}</th>
+                <th>{% trans "Added by" %}</th>
+                <th>{% trans "Filetype" %}</th>
+                <th>{% trans "Domain" %}</th>
+                <th>{% trans "Status" %}</th>
+                <th colspan="2">{% trans "Actions" %}</th>
+            </tr>
+            {% for link in links %}
+            <tr>
+                <td class="overflow-wrap-anywhere">
+                    <a href="{{ link.url }}" target="_blank" rel="nofollow noopener noreferrer">{{ link.url }}</a>
+                </td>
+                <td>
+                    {% if link.added_by %}
+                    <a href="{% url 'user-feed' link.added_by.id %}">{{ link.added_by.display_name }}</a>
+                    {% else %}
+                    <em>{% trans "Unknown user" %}</em>
+                    {% endif %}
+                </td>
+                <td>
+                    {{ link.filelink.filetype }}
+                </td>
+                <td>
+                    {{ link.domain.name }}
+                    <p>
+                        <a href="{% url 'report-link' link.id %}">{% trans "Report spam" %}</a>
+                    </p>
+                </td>
+                <td>
+                    {% with status=link.domain.status %}
+                    <span class="tag {% if status == 'blocked' %}has-background-danger{% elif status == 'approved' %}has-background-primary{% endif %}">
+                        <span class="icon" aria-hidden="true">
+                            <span class="icon-{% if status == 'blocked' %}x{% elif status == 'approved' %}check{% else %}lock{% endif %}"></span>
+                        </span>
+                        <span>
+                            {{ link.domain.get_status_display }}
+                        </span>
+                    </span>
+                    {% endwith %}
+                </td>
+                <td>
+                    <form name="edit-link" class="control" method="post" action="{% url 'file-link' book.id link.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="url" value="{{ link.form.url.value }}">
+                        <input type="hidden" name="filetype" value="{{ link.form.filetype.value }}">
+                        <input type="hidden" name="added_by" value="{{ link.form.added_by.value }}">
+                        <input type="hidden" name="book" value="{{ link.form.book.value }}">
+                        <div class="field has-addons">
+                            <div class="control">
+                                <div class="select">
+                                    {{ link.form.availability }}
+                                </div>
+                            </div>
+                            <div class="control">
+                                <button class="button is-primary" type="submit">{% trans "Save" %}</button>
+                            </div>
+                        </div>
+                        {% include 'snippets/form_errors.html' with errors_list=link.form.availability.errors id="desc_availability" %}
+                    </form>
+                </td>
+                <td>
+                    <form name="delete-link-{{ link.id }}" class="control" method="post" action="{% url 'file-link-delete' book.id link.id %}">
+                        {% csrf_token %}
+                        <button class="button is-danger is-light" type="submit">Delete link</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not book.file_links.exists %}
+            <tr>
+                <td colspan="5"><em>{% trans "No links available for this book." %}</em></td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    {% url 'file-link-add' book.id as fallback_url %}
+    <form name="add-link" method="get" action="{{ fallback_url }}">
+        <button class="button" type="submit" data-modal-open="add-links">
+            <span class="icon icon-plus m-0-mobile" aria-hidden="true"></span>
+            <span class="is-sr-only-mobile">
+                {% trans "Add link to file" %}
+            </span>
+        </button>
+    </form>
+</section>
+
+{% endblock %}

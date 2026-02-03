@@ -1,0 +1,45 @@
+#/usr/bin/env bash
+autoload bashcompinit
+bashcompinit
+complete -W "up
+service_ports_web
+initdb
+resetdb
+makemigrations
+migrate
+bash
+shell
+dbshell
+restart_celery
+pytest
+pytest_coverage_report
+compile_themes
+collectstatic
+makemessages
+compilemessages
+update_locales
+build
+clean
+ruff
+ruff-format
+ruff-check
+ruff-fix
+prettier
+eslint
+stylelint
+formatters
+mypy
+collectstatic_watch
+populate_streams
+populate_lists_streams
+populate_suggestions
+generate_thumbnails
+generate_preview_images
+remove_remote_user_preview_images
+copy_media_to_s3
+set_cors_to_s3
+setup
+admin_code
+remove_2fa
+confirm_email
+runweb" -o bashdefault -o default bw-dev

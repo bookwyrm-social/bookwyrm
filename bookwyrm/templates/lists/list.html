@@ -1,13 +1,28 @@
 {% extends 'lists/layout.html' %}
 {% load i18n %}
-{% load bookwyrm_tags %}
-{% load bookwyrm_group_tags %}
+{% load rating_tags %}
+{% load group_tags %}
+{% load book_display_tags %}
 {% load markdown %}
+{% load utilities %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'lists' %}">{% trans "Lists" %}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {{ list.name|truncatechars:30 }}
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
 
 {% block panel %}
 {% if request.user == list.user and pending_count %}
 <div class="block content">
-    <p>
+    <p class="notification">
         <a href="{% url 'list-curate' list.id %}">{{ pending_count }} book{{ pending_count|pluralize }} awaiting your approval</a>
     </p>
 </div>
@@ -15,38 +30,43 @@
 
 <div class="columns mt-3">
     <section class="column is-three-quarters">
-        {% if request.GET.updated %}
-        <div class="notification is-primary">
-            {% if list.curation != "open" and request.user != list.user and not list.group|is_member:request.user %}
-            {% trans "You successfully suggested a book for this list!" %}
-            {% else %}
-            {% trans "You successfully added a book to this list!" %}
-            {% endif %}
+        {% if add_failed %}
+        <div class="notification is-danger is-light">
+            <span class="icon icon-x" aria-hidden="true"></span>
+            <span>
+                {% trans "That book is already on this list." %}
+            </span>
+        </div>
+        {% elif add_succeeded %}
+        <div class="notification is-success is-light">
+            <span class="icon icon-check" aria-hidden="true"></span>
+            <span>
+                {% if list.curation != "open" and request.user != list.user and not list.group|is_member:request.user %}
+                    {% trans "You successfully suggested a book for this list!" %}
+                {% else %}
+                    {% trans "You successfully added a book to this list!" %}
+                {% endif %}
+            </span>
         </div>
         {% endif %}
 
         {% if not items.object_list.exists %}
-        <p>{% trans "This list is currently empty" %}</p>
+        <p class="block">{% trans "This list is currently empty." %}</p>
         {% else %}
         <ol start="{{ items.start_index }}" class="ordered-list">
         {% for item in items %}
             <li class="block mb-5">
                 <div class="card">
-                    {% with book=item.book %}
-                        <div
-                            class="
-                                card-content p-0 mb-0
-                                columns is-gapless
-                                is-mobile
-                            "
-                        >
-                            <div class="column is-3-mobile is-2-tablet is-cover align to-t">
+                    <div class="card-content">
+                        {% with book=item.book %}
+                        <div class="columns is-mobile">
+                            <div class="column is-narrow is-cover">
                                 <a href="{{ item.book.local_path }}" aria-hidden="true">
-                                    {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-tablet is-align-items-flex-start' size='medium' %}
+                                    {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-mobile is-h-m-tablet is-align-items-flex-start' size='medium' %}
                                 </a>
                             </div>
 
-                            <div class="column mx-3 my-2">
+                            <div class="column">
                                 <p>
                                     {% include 'snippets/book_titleby.html' %}
                                 </p>
@@ -56,37 +76,92 @@
                                 <div>
                                     {{ book|book_description|to_markdown|default:""|safe|truncatewords_html:20 }}
                                 </div>
-                                {% include 'snippets/shelve_button/shelve_button.html' %}
+                                {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
                             </div>
                         </div>
-                    {% endwith %}
+                        {% endwith %}
 
-                    <div class="card-footer is-stacked-mobile has-background-white-bis is-align-items-stretch">
-                        <div class="card-footer-item">
-                            <div>
-                            <p>{% blocktrans with username=item.user.display_name user_path=item.user.local_path %}Added by <a href="{{ user_path }}">{{ username }}</a>{% endblocktrans %}</p>
+                        {% if item.notes %}
+                        <div class="media notification">
+                            <figure class="media-left" aria-hidden="true">
+                                {% include "snippets/avatar.html" with user=item.user %}
+                            </figure>
+                            <div class="media-content">
+                                <div class="content">
+                                    <header>
+                                        {% url 'user-feed' item.user|username as user_path %}
+                                        {% blocktrans trimmed with username=item.user.display_name %}
+                                        <a href="{{ user_path }}">{{ username }}</a> says:
+                                        {% endblocktrans %}
+                                    </header>
+                                    {{ item.notes|to_markdown|safe }}
+                                </div>
+                                {% if item.user == request.user %}
+                                <div>
+                                    <details class="details-panel box">
+                                        <summary>
+                                            <span role="heading" aria-level="3">
+                                                {% trans "Edit notes" %}
+                                                <span class="details-close icon icon-pencil" aria-hidden="true"></span>
+                                            </span>
+                                        </summary>
+                                        {% include "lists/edit_item_form.html" with book=item.book %}
+                                    </details>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
-                        {% if list.user == request.user or list.group|is_member:request.user %}
-                        <div class="card-footer-item">
-                            <form name="set-position" method="post" action="{% url 'list-set-book-position' item.id %}">
-                                {% csrf_token %}
-                                <div class="field has-addons mb-0">
-                                    <div class="control">
-                                        <label for="input-list-position" class="button is-transparent is-small">{% trans "List position" %}</label>
-                                    </div>
-                                    <div class="control">
-                                        <input id="input_list_position" class="input is-small" type="number" min="1" name="position" value="{{ item.order }}">
-                                    </div>
-                                    <div class="control">
-                                        <button type="submit" class="button is-info is-small is-tablet">{% trans "Set" %}</button>
-                                    </div>
-                                </div>
-                            </form>
+                        {% elif item.user == request.user %}
+                        <div>
+                            <details class="details-panel box">
+                                <summary>
+                                    <span role="heading" aria-level="3">
+                                        {% trans "Add notes" %}
+                                        <span class="details-close icon icon-x" aria-hidden="true"></span>
+                                    </span>
+                                </summary>
+                                {% include "lists/edit_item_form.html" with book=item.book %}
+                            </details>
                         </div>
                         {% endif %}
+                    </div>
+                    <div class="card-footer is-stacked-mobile has-background-tertiary is-align-items-stretch">
+                        <div class="card-footer-item">
+                            <p>
+                                {% blocktrans trimmed with username=item.user.display_name user_path=item.user.local_path %}
+                                Added by <a href="{{ user_path }}">{{ username }}</a>
+                                {% endblocktrans %}
+                            </p>
+                        </div>
+                        {% if list.user == request.user or list.group|is_member:request.user %}
+                        <form
+                            name="set-position-{{ item.id }}"
+                            method="post"
+                            action="{% url 'list-set-book-position' item.id %}"
+                            class="card-footer-item"
+                        >
+                            {% csrf_token %}
+                            <div class="field has-addons mb-0">
+                                <div class="control">
+                                    <label for="input-list-position" class="button is-transparent is-small">{% trans "List position" %}</label>
+                                </div>
+                                <div class="control">
+                                    <input id="input_list_position_{{ item.id }}" class="input is-small" type="number" min="1" name="position" value="{{ item.order }}">
+                                </div>
+                                <div class="control">
+                                    <button type="submit" class="button is-info is-small is-tablet">{% trans "Set" %}</button>
+                                </div>
+                            </div>
+                        </form>
+                        {% endif %}
+
                         {% if list.user == request.user or list.curation == 'open' and item.user == request.user or list.group|is_member:request.user %}
-                        <form name="remove-book" method="post" action="{% url 'list-remove-book' list.id %}" class="card-footer-item">
+                        <form
+                            name="remove-book-{{ item.id }}"
+                            method="post"
+                            action="{% url 'list-remove-book' list.id %}"
+                            class="card-footer-item"
+                        >
                             {% csrf_token %}
                             <input type="hidden" name="item" value="{{ item.id }}">
                             <button type="submit" class="button is-small is-danger">{% trans "Remove" %}</button>
@@ -105,7 +180,7 @@
         <h2 class="title is-5">
             {% trans "Sort List" %}
         </h2>
-        <form name="sort" action="{% url 'list' list.id %}" method="GET" class="block">
+        <form name="sort" action="{% url 'list' list_id=list.id slug=list.name|slugify %}" method="GET" class="block">
             <div class="field">
                 <label class="label" for="id_sort_by">{% trans "Sort By" %}</label>
                 <div class="select is-fullwidth">
@@ -132,10 +207,10 @@
                 {% trans "Suggest Books" %}
             {% endif %}
         </h2>
-        <form name="search" action="{% url 'list' list.id %}" method="GET" class="block">
+        <form name="search" action="{% url 'list' list_id=list.id slug=list.name|slugify %}" method="GET" class="block">
             <div class="field has-addons">
                 <div class="control">
-                    <input aria-label="{% trans 'Search for a book' %}" class="input" type="text" name="q" placeholder="{% trans 'Search for a book' %}" value="{{ query }}">
+                    <input aria-label="{% trans 'Search for a book' %}" class="input" type="text" name="q" placeholder="{% trans 'Search for a book' %}" value="{{ query }}" spellcheck="false">
                 </div>
                 <div class="control">
                     <button class="button" type="submit">
@@ -146,7 +221,7 @@
                 </div>
             </div>
             {% if query %}
-            <p class="help"><a href="{% url 'list' list.id %}">{% trans "Clear search" %}</a></p>
+            <p class="help"><a href="{% url 'list' list_id=list.id slug=list.name|slugify %}">{% trans "Clear search" %}</a></p>
             {% endif %}
         </form>
         {% if not suggested_books %}
@@ -170,22 +245,42 @@
                     <div class="column ml-3">
                         <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
 
-                        <form
-                            class="mt-1"
-                            name="add-book"
-                            method="post"
-                            action="{% url 'list-add-book' %}{% if query %}?q={{ query }}{% endif %}"
+                        {% join "add_item" list.id book.id as modal_id %}
+                        <button
+                            type="button"
+                            class="button is-small is-link"
+                            data-modal-open="{{ modal_id }}"
                         >
-                            {% csrf_token %}
-                            <input type="hidden" name="book" value="{{ book.id }}">
-                            <input type="hidden" name="list" value="{{ list.id }}">
-                            <button type="submit" class="button is-small is-link">{% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}{% trans "Add" %}{% else %}{% trans "Suggest" %}{% endif %}</button>
-                        </form>
+                            {% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
+                                {% trans "Add" %}
+                            {% else %}
+                                {% trans "Suggest" %}
+                            {% endif %}
+                        </button>
+                        {% include "lists/add_item_modal.html" with id=modal_id %}
                     </div>
                 </div>
             {% endfor %}
         {% endif %}
     {% endif %}
+        <div>
+            <h2 class="title is-5 mt-6" id="embed-label">
+                {% trans "Embed this list on a website" %}
+            </h2>
+            <div class="vertical-copy">
+                <textarea
+                    readonly
+                    class="textarea is-small"
+                    aria-describedby="embed-label"
+                    data-copytext
+                    data-copytext-label="{% trans 'Copy embed code' %}"
+                    data-copytext-success="{% trans 'Copied!' %}"
+                >&lt;iframe style="border-width:0;" id="bookwyrm_list_embed" width="400" height="600" title="{% blocktrans trimmed with list_name=list.name site_name=site.name owner=list.user.display_name %}
+                    {{ list_name }}, a list by {{owner}} on {{ site_name }}
+                {% endblocktrans %}" src="{{ embed_url }}"&gt;&lt;/iframe&gt;</textarea>
+            </div>
+        </div>
+
     </section>
 </div>
 {% endblock %}

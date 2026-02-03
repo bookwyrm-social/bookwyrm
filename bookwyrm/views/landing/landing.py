@@ -1,19 +1,11 @@
-""" non-interactive pages """
+"""non-interactive pages"""
+
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views import View
 
-from bookwyrm import forms
-from bookwyrm.views import helpers
+from bookwyrm import forms, models
 from bookwyrm.views.feed import Feed
-
-
-# pylint: disable= no-self-use
-class About(View):
-    """create invites"""
-
-    def get(self, request):
-        """more information about the instance"""
-        return TemplateResponse(request, "landing/about.html")
 
 
 class Home(View):
@@ -24,6 +16,11 @@ class Home(View):
         if request.user.is_authenticated:
             feed_view = Feed.as_view()
             return feed_view(request, "home")
+        site = models.SiteSettings.get()
+
+        if site.install_mode:
+            return redirect("setup")
+
         landing_view = Landing.as_view()
         return landing_view(request)
 
@@ -36,6 +33,5 @@ class Landing(View):
         data = {
             "register_form": forms.RegisterForm(),
             "request_form": forms.InviteRequestForm(),
-            "books": helpers.get_landing_books(),
         }
         return TemplateResponse(request, "landing/landing.html", data)

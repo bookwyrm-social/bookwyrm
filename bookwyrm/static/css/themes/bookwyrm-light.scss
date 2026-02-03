@@ -1,0 +1,83 @@
+@import "../vendor/bulma/sass/utilities/derived-variables";
+
+/* Colors
+ ******************************************************************************/
+
+/* states */
+$primary: $turquoise;
+$info: $cyan;
+$success: $green;
+$warning: $yellow;
+$danger: $red;
+
+/* book cover standins */
+$no-cover-color: #002549;
+
+/* background colors */
+$scheme-main: $white;
+$scheme-main: $white-bis;
+$background-body: $white;
+$background-secondary: $white-ter;
+$background-tertiary: $white-bis;
+$scrollbar-track: $background-secondary;
+$scrollbar-thumb: $grey-lighter;
+
+/* highlight colors */
+$primary-highlight: $primary-light;
+$info-highlight: $info-light;
+$success-highlight: $success-light;
+
+/* borders */
+$border: $grey-lighter;
+$border-hover: $grey-light;
+$border-light: $grey-lightest;
+$border-light-hover: $grey-light;
+
+/* text */
+$text: $grey-dark;
+$text-light: $grey;
+$text-strong: $grey-darker;
+
+/* links */
+$link: #3273dc;
+$link-background: $link;
+$link-hover: $grey-darker;
+$link-focus: $grey-darker;
+$link-active: $grey-darker;
+
+/* bulma overrides */
+$background: $background-secondary;
+$menu-item-active-background-color: $link-background;
+
+/* misc */
+$invisible-overlay-background-color: rgba($scheme-invert, 0.66);
+
+/* Fonts
+ ******************************************************************************/
+$family-primary: $family-sans-serif;
+$family-secondary: $family-sans-serif;
+
+.has-text-muted {
+    color: $grey-dark !important;
+}
+
+.has-text-more-muted {
+    color: $grey !important;
+}
+
+.tabs li:not(.is-active) a {
+    color: #3273dc !important;
+}
+
+.tabs li:not(.is-active) a:hover {
+    border-bottom-color: #3273dc !important;
+}
+
+.tabs li.is-active a {
+    color: #4a4a4a !important;
+    border-bottom-color: #4a4a4a !important;
+}
+
+@import "../bookwyrm";
+@import "../vendor/icons.css";
+@import "../vendor/shepherd";

@@ -1,4 +1,6 @@
-""" handle reading a csv from goodreads """
+"""handle reading a csv from goodreads"""
+
+from typing import Optional
 from . import Importer
 
 
@@ -8,9 +10,9 @@ class GoodreadsImporter(Importer):
 
     service = "Goodreads"
 
-    def parse_fields(self, entry):
-        """handle the specific fields in goodreads csvs"""
-        entry.update({"import_source": self.service})
-        # add missing 'Date Started' field
-        entry.update({"Date Started": None})
-        return entry
+    def normalize_row(
+        self, entry: dict[str, str], mappings: dict[str, Optional[str]]
+    ) -> dict[str, Optional[str]]:
+        normalized = super().normalize_row(entry, mappings)
+        normalized["goodreads_key"] = normalized["id"]
+        return normalized

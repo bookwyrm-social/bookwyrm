@@ -1,38 +1,42 @@
-""" tests updating reading progress """
-from datetime import datetime
+"""tests updating reading progress"""
+
+from datetime import datetime, timezone
 from unittest.mock import patch
 from django.test import TestCase, Client
-from django.utils import timezone
 
 from bookwyrm import models
 
 
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 @patch("bookwyrm.activitystreams.remove_book_statuses_task.delay")
 class ReadThrough(TestCase):
     """readthrough tests"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """basic user and book data"""
-        self.client = Client()
+        cls.work = models.Work.objects.create(title="Example Work")
 
-        self.work = models.Work.objects.create(title="Example Work")
-
-        self.edition = models.Edition.objects.create(
-            title="Example Edition", parent_work=self.work
+        cls.edition = models.Edition.objects.create(
+            title="Example Edition", parent_work=cls.work
         )
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
         ):
-            self.user = models.User.objects.create_user(
+            cls.user = models.User.objects.create_user(
                 "cinco", "cinco@example.com", "seissiete", local=True, localname="cinco"
             )
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+    def setUp(self):
+        """individual test setup"""
+        self.client = Client()
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             self.client.force_login(self.user)
 
     @patch("bookwyrm.activitystreams.remove_user_statuses_task.delay")
@@ -41,10 +45,8 @@ class ReadThrough(TestCase):
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
         self.client.post(
-            "/reading-status/start/{}".format(self.edition.id),
-            {
-                "start_date": "2020-11-27",
-            },
+            f"/reading-status/start/{self.edition.id}",
+            {"start_date": "2020-11-27"},
         )
 
         readthroughs = self.edition.readthrough_set.all()
@@ -62,10 +64,8 @@ class ReadThrough(TestCase):
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
         self.client.post(
-            "/reading-status/start/{}".format(self.edition.id),
-            {
-                "start_date": "2020-11-27",
-            },
+            f"/reading-status/start/{self.edition.id}",
+            {"start_date": "2020-11-27"},
         )
 
         readthroughs = self.edition.readthrough_set.all()

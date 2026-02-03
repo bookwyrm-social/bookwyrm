@@ -1,18 +1,11 @@
-{% load bookwyrm_tags %}
+{% load book_display_tags %}
+{% load rating_tags %}
 {% load markdown %}
 {% load i18n %}
 {% load static %}
 {% load humanize %}
 
 {% with status_type=status.status_type %}
-<div
-    class="block"
-    {% if status_type == "Review" %}
-        itemprop="rating"
-        itemtype="https://schema.org/Rating"
-    {% endif %}
->
-
     <div class="columns is-gapless">
         {% if not hide_book %}
             {% with book=status.book|default:status.mention_books.first %}
@@ -36,7 +29,7 @@
             {% endwith %}
         {% endif %}
 
-        <article class="column ml-3-tablet my-3-mobile">
+        <article class="column ml-3-tablet my-3-mobile is-clipped">
             {% if status_type == 'Review' %}
             <header class="mb-2">
                 <h3
@@ -57,9 +50,6 @@
                         {% endif %}
                     >
                         <meta itemprop="ratingValue" content="{{ status.rating|floatformat }}">
-
-                        {# @todo Is it possible to not hard-code the value? #}
-                        <meta itemprop="bestRating" content="5">
                     </span>
                     {% include 'snippets/stars.html' with rating=status.rating %}
                 </h4>
@@ -98,9 +88,9 @@
                             &mdash; {% include 'snippets/book_titleby.html' with book=status.book %}
                             {% if status.position %}
                                 {% if status.position_mode == 'PG' %}
-                                    {% blocktrans with page=status.position|intcomma %}(Page {{ page }}){% endblocktrans %}
+                                    {% blocktrans with page=status.position|intcomma %}(Page {{ page }}{% endblocktrans%}{% if status.endposition and status.endposition != status.position %} - {% blocktrans with endpage=status.endposition|intcomma %}{{ endpage }}{% endblocktrans %}{% endif%})
                                 {% else %}
-                                    {% blocktrans with percent=status.position %}({{ percent }}%){% endblocktrans %}
+                                    {% blocktrans with percent=status.position %}({{ percent }}%{% endblocktrans %}{% if status.endposition and status.endposition != status.position %}{% blocktrans with endpercent=status.endposition|intcomma %} - {{ endpercent }}%{% endblocktrans %}{% endif %})
                                 {% endif %}
                             {% endif %}
                         </p>
@@ -108,7 +98,7 @@
                 {% endif %}
 
                 {% if status.content and status_type != 'GeneratedNote' and status_type != 'Announce' %}
-                    {% with full=status.content|safe no_trim=status.content_warning itemprop="reviewBody" %}
+                    {% with full=status.content|safe no_trim=status.content_warning|default:expand itemprop="reviewBody" %}
                         {% include 'snippets/trimmed_text.html' %}
                     {% endwith %}
                 {% endif %}
@@ -122,6 +112,7 @@
                                         <a
                                             href="{% get_media_prefix %}{{ attachment.image }}"
                                             target="_blank"
+                                            rel="nofollow noopener noreferrer"
                                             aria-label="{% trans 'Open image in new window' %}"
                                         >
                                             <img
@@ -131,6 +122,8 @@
                                                     alt="{{ attachment.caption }}"
                                                     title="{{ attachment.caption }}"
                                                 {% endif %}
+                                                loading="lazy"
+                                                decoding="async"
                                             >
                                         </a>
                                     </figure>
@@ -150,7 +143,5 @@
             </div>
         </article>
     </div>
-</div>
 
 {% endwith %}
-

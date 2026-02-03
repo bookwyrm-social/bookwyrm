@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
@@ -11,21 +12,24 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.tests.validate_html import validate_html
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+@patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 @patch("bookwyrm.activitystreams.remove_book_statuses_task.delay")
 class ShelfViews(TestCase):
     """tag views"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
         ):
-            self.local_user = models.User.objects.create_user(
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -33,28 +37,82 @@ class ShelfViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.work = models.Work.objects.create(title="Test Work")
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
-            parent_work=self.work,
+            parent_work=cls.work,
         )
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            self.shelf = models.Shelf.objects.create(
-                name="Test Shelf", identifier="test-shelf", user=self.local_user
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            cls.shelf = models.Shelf.objects.create(
+                name="Test Shelf", identifier="test-shelf", user=cls.local_user
             )
-        models.SiteSettings.objects.create()
 
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
 
     def test_shelf_page_all_books(self, *_):
         """there are so many views, this just makes sure it LOADS"""
+        models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.shelf,
+            user=self.local_user,
+        )
         view = views.Shelf.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
+            result = view(request, self.local_user.username)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_shelf_page_all_books_empty(self, *_):
+        """No books shelved"""
+        view = views.Shelf.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.local_user.username)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_shelf_page_all_books_avoid_duplicates(self, *_):
+        """Make sure books aren't showing up twice on the all shelves view"""
+        models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.shelf,
+            user=self.local_user,
+        )
+        models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.local_user.shelf_set.first(),
+            user=self.local_user,
+        )
+        view = views.Shelf.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.local_user.username)
+        self.assertEqual(result.context_data["books"].object_list.count(), 1)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_shelf_page_all_books_json(self, *_):
+        """there is no json view here"""
+        view = views.Shelf.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = True
             result = view(request, self.local_user.username)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
@@ -142,7 +200,7 @@ class ShelfViews(TestCase):
             "", {"privacy": "public", "user": self.local_user.id, "name": "cool name"}
         )
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             view(request, request.user.username, shelf.identifier)
         shelf.refresh_from_db()
 
@@ -159,7 +217,52 @@ class ShelfViews(TestCase):
             "", {"privacy": "public", "user": self.local_user.id, "name": "cool name"}
         )
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             view(request, request.user.username, shelf.identifier)
 
         self.assertEqual(shelf.name, "To Read")
+
+    def test_filter_shelf_found(self, *_):
+        """display books that match a filter keyword"""
+        models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.shelf,
+            user=self.local_user,
+        )
+        shelf_book = models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.local_user.shelf_set.first(),
+            user=self.local_user,
+        )
+        view = views.Shelf.as_view()
+        request = self.factory.get("", {"filter": shelf_book.book.title})
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.local_user.username)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(len(result.context_data["books"].object_list), 1)
+        self.assertEqual(
+            result.context_data["books"].object_list[0].title,
+            shelf_book.book.title,
+        )
+
+    def test_filter_shelf_none(self, *_):
+        """display a message when no books match a filter keyword"""
+        models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.shelf,
+            user=self.local_user,
+        )
+        view = views.Shelf.as_view()
+        request = self.factory.get("", {"filter": "NOPE"})
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.local_user.username)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(len(result.context_data["books"].object_list), 0)

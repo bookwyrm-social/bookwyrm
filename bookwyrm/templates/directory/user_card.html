@@ -33,7 +33,7 @@
     </div>
     <footer class="card-footer">
         {% if user != request.user %}
-        {% if user.mutuals %}
+        {% if user.mutuals and not user.hide_follows %}
         <div class="card-footer-item">
             <div class="has-text-centered">
                 <p class="title is-6 mb-0">{{ user.mutuals }}</p>

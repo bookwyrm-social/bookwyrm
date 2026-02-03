@@ -1,4 +1,5 @@
-""" connections to external ActivityPub servers """
+"""connections to external ActivityPub servers"""
+
 from urllib.parse import urlparse
 
 from django.apps import apps
@@ -16,7 +17,7 @@ FederationStatus = [
 class FederatedServer(BookWyrmModel):
     """store which servers we federate with"""
 
-    server_name = models.CharField(max_length=255, unique=True)
+    server_name = models.CharField(max_length=255, unique=True)  # domain
     status = models.CharField(
         max_length=255, default="federated", choices=FederationStatus
     )
@@ -61,8 +62,7 @@ class FederatedServer(BookWyrmModel):
             ).update(active=True, deactivation_reason=None)
 
     @classmethod
-    def is_blocked(cls, url):
+    def is_blocked(cls, url: str) -> bool:
         """look up if a domain is blocked"""
         url = urlparse(url)
-        domain = url.netloc
-        return cls.objects.filter(server_name=domain, status="blocked").exists()
+        return cls.objects.filter(server_name=url.hostname, status="blocked").exists()

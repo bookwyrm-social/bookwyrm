@@ -1,0 +1,25 @@
+/** Animations and transitions
+ ******************************************************************************/
+
+@keyframes turning {
+    from { transform: rotateZ(0deg); }
+    to { transform: rotateZ(360deg); }
+}
+
+.is-processing .icon-spinner::before {
+    animation: turning 1.5s infinite linear;
+}
+
+.icon-spinner {
+    display: none;
+}
+
+.is-processing .icon-spinner {
+    display: flex;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .is-processing .icon::before {
+        transition-duration: 0.001ms !important;
+    }
+}

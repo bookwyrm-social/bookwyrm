@@ -1,5 +1,6 @@
 {% load i18n %}
-{% load bookwyrm_group_tags %}
+{% load group_tags %}
+
 {% if request.user == user or not request.user == group.user or not request.user.is_authenticated %}
 {% elif user in request.user.blocks.all %}
 {% include 'snippets/block_button.html' with blocks=True %}

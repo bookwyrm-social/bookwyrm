@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block title %}
+{% blocktrans trimmed with title=book|book_title %}
+Update read dates for "<em>{{ title }}</em>"
+{% endblocktrans %}
+{% endblock %}
+
+{% block content %}
+
+{% include "readthrough/readthrough_modal.html" with book=book active=True static=True %}
+
+{% endblock %}

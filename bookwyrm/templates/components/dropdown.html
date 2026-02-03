@@ -2,23 +2,19 @@
 {% load utilities %}
 
 {% with 0|uuid as uuid %}
-<div
+<details
     id="menu_{{ uuid }}"
     class="
         dropdown control
         {% if right %}is-right{% endif %}
+        has-text-left
     "
 >
-    <button
-        class="button dropdown-trigger pulldown-menu {{ class }}"
-        type="button"
-        aria-expanded="false"
-        aria-haspopup="true"
-        aria-controls="menu_options_{{ uuid }}"
-        data-controls="menu_{{ uuid }}"
+    <summary
+        class="button control dropdown-trigger pulldown-menu {{ class }}"
     >
         {% block dropdown-trigger %}{% endblock %}
-    </button>
+    </summary>
 
     <div class="dropdown-menu">
         <ul
@@ -29,6 +25,6 @@
             {% block dropdown-list %}{% endblock %}
         </ul>
     </div>
-</div>
+</details>
 {% endwith %}
 {% endspaceless %}

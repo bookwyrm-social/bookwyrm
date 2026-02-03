@@ -1,12 +1,11 @@
-""" access the activity stores stored in redis """
+"""access the activity stores stored in redis"""
+
 from abc import ABC, abstractmethod
 import redis
 
 from bookwyrm import settings
 
-r = redis.Redis(
-    host=settings.REDIS_ACTIVITY_HOST, port=settings.REDIS_ACTIVITY_PORT, db=0
-)
+r = redis.from_url(settings.REDIS_ACTIVITY_URL)
 
 
 class RedisStore(ABC):
@@ -18,27 +17,32 @@ class RedisStore(ABC):
         """the object and rank"""
         return {obj.id: self.get_rank(obj)}
 
-    def add_object_to_related_stores(self, obj, execute=True):
-        """add an object to all suitable stores"""
+    def add_object_to_stores(self, obj, stores, execute=True):
+        """add an object to a given set of stores"""
         value = self.get_value(obj)
         # we want to do this as a bulk operation, hence "pipeline"
         pipeline = r.pipeline()
-        for store in self.get_stores_for_object(obj):
+        for store in stores:
             # add the status to the feed
             pipeline.zadd(store, value)
             # trim the store
-            pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
+            if self.max_length:
+                pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
         if not execute:
             return pipeline
         # and go!
         return pipeline.execute()
 
-    def remove_object_from_related_stores(self, obj, stores=None):
+    def remove_object_from_stores(self, obj, stores):
         """remove an object from all stores"""
-        stores = self.get_stores_for_object(obj) if stores is None else stores
+        # if the stores are provided, the object can just be an id
+        if stores and isinstance(obj, int):
+            obj_id = obj
+        else:
+            obj_id = obj.id
         pipeline = r.pipeline()
         for store in stores:
-            pipeline.zrem(store, -1, obj.id)
+            pipeline.zrem(store, -1, obj_id)
         pipeline.execute()
 
     def bulk_add_objects_to_store(self, objs, store):
@@ -46,7 +50,7 @@ class RedisStore(ABC):
         pipeline = r.pipeline()
         for obj in objs[: self.max_length]:
             pipeline.zadd(store, self.get_value(obj))
-        if objs:
+        if objs and self.max_length:
             pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
         pipeline.execute()
 
@@ -57,7 +61,7 @@ class RedisStore(ABC):
             pipeline.zrem(store, -1, obj.id)
         pipeline.execute()
 
-    def get_store(self, store, **kwargs):  # pylint: disable=no-self-use
+    def get_store(self, store, **kwargs):
         """load the values in a store"""
         return r.zrevrange(store, 0, -1, **kwargs)
 
@@ -70,17 +74,13 @@ class RedisStore(ABC):
             pipeline.zadd(store, self.get_value(obj))
 
         # only trim the store if objects were added
-        if queryset.exists():
+        if queryset.exists() and self.max_length:
             pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
         pipeline.execute()
 
     @abstractmethod
     def get_objects_for_store(self, store):
         """a queryset of what should go in a store, used for populating it"""
-
-    @abstractmethod
-    def get_stores_for_object(self, obj):
-        """the stores that an object belongs in"""
 
     @abstractmethod
     def get_rank(self, obj):

@@ -1,0 +1,23 @@
+{% extends 'email/html_layout.html' %}
+{% load i18n %}
+
+{% block content %}
+<p>
+{% if link_domain %}
+
+    {% blocktrans trimmed %}
+    @{{ reporter }} has flagged a link domain for moderation.
+    {% endblocktrans %}
+
+{% else %}
+
+    {% blocktrans trimmed %}
+    @{{ reporter }} has flagged behavior by @{{ reportee }} for moderation.
+    {% endblocktrans %}
+
+{% endif %}
+</p>
+
+{% trans "View report" as text %}
+{% include 'email/snippets/action.html' with path=report_link text=text %}
+{% endblock %}

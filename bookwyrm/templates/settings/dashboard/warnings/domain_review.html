@@ -1,0 +1,15 @@
+{% extends 'settings/dashboard/warnings/layout.html' %}
+{% load i18n %}
+{% load humanize %}
+
+{% block warning_link %}{% url 'settings-link-domain' %}{% endblock %}
+
+{% block warning_text %}
+
+{% blocktrans trimmed count counter=pending_domains with display_count=pending_domains|intcomma %}
+{{ display_count }} domain needs review
+{% plural %}
+{{ display_count }} domains need review
+{% endblocktrans %}
+
+{% endblock %}

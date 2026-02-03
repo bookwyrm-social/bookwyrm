@@ -1,4 +1,5 @@
-""" edit your own account """
+"""edit your own account"""
+
 from io import BytesIO
 from uuid import uuid4
 from PIL import Image
@@ -14,7 +15,6 @@ from bookwyrm import forms
 from bookwyrm.views.helpers import set_language
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class EditUser(View):
     """edit user view"""
@@ -34,14 +34,14 @@ class EditUser(View):
             data = {"form": form, "user": request.user}
             return TemplateResponse(request, "preferences/edit_user.html", data)
 
-        user = save_user_form(form)
+        user = save_user_form(request, form)
 
         return set_language(user, redirect("user-feed", request.user.localname))
 
 
-def save_user_form(form):
+def save_user_form(request, form):
     """special handling for the user form"""
-    user = form.save(commit=False)
+    user = form.save(request, commit=False)
 
     if "avatar" in form.files:
         # crop and resize avatar upload

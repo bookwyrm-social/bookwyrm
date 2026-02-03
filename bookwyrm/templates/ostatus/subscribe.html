@@ -1,0 +1,63 @@
+{% extends 'ostatus/template.html' %}
+{% load i18n %}
+{% load utilities %}
+{% load markdown %}
+
+{% block title %}
+{% if not request.user.is_authenticated %}
+{% blocktrans with sitename=site.name %}Log in to {{ sitename }}{% endblocktrans %}
+{% elif error %}
+{% blocktrans with sitename=site.name %}Error following from {{ sitename }}{% endblocktrans %}
+{% else %}
+{% blocktrans with sitename=site.name %}Follow from {{ sitename }}{% endblocktrans %}
+{% endif %}
+{% endblock %}
+
+{% block heading %}
+{% if error %}
+{% trans 'Uh oh...' %} 
+{% elif not request.user.is_authenticated %}
+{% trans "Let's log in first..." %}
+{% else %}
+{% blocktrans with sitename=site.name %}Follow from {{ sitename }}{% endblocktrans %}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if error or not request.user.is_authenticated %}
+    {% include 'ostatus/error.html' with error=error user=user account=account %}
+{% else %}
+<div class="block card">
+    <div class="card-content">
+        <div class="media">
+            <a href="{{ user.local_path }}" class="media-left">
+                {% include 'snippets/avatar.html' with user=user large=True %}
+            </a>
+            <div class="media-content">
+                <a href="{{ user.local_path }}" class="is-block mb-2">
+                    <span class="title is-4 is-block">
+                        {{ user.display_name }}
+                        {% if user.manually_approves_followers %}
+                        <span class="icon icon-lock is-size-7" title="{% trans 'Locked account' %}">
+                            <span class="is-sr-only">{% trans 'Locked account' %}</span>
+                        </span>
+                        {% endif %}
+                    </span>
+                    <span class="subtitle is-7 is-block">@{{ user|username }}</span>
+                </a>
+                <form name="follow" method="post" action="{% url 'follow' %}/?next={% url 'ostatus-success' %}?following={{ user.username }}">
+                    {% csrf_token %}
+                    <input name="user" value="{{ user.username }}" hidden>
+                    <button class="button is-link" type="submit">{% blocktrans with username=user.display_name %}Follow {{ username }}{% endblocktrans %}</button>
+                </form>
+            </div>
+        </div>
+        <div>
+        {% if user.summary %}
+            {{ user.summary|to_markdown|safe|truncatechars_html:120 }}
+        {% else %}&nbsp;{% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

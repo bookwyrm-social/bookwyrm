@@ -3,6 +3,7 @@
 
 {% block filter %}
 <label class="label" for="id_username">{% trans "Username" %}</label>
-<input type="text" class="input" name="username" value="{{ request.GET.username|default:'' }}" id="id_username" placeholder="user@domain.com">
+<div class="control">
+    <input type="text" class="input" name="username" value="{{ request.GET.username|default:'' }}" id="id_username" placeholder="user@domain.com">
+</div>
 {% endblock %}
-

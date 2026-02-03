@@ -1,156 +1,181 @@
-""" handle reading a csv from an external service, defaults are from Goodreads """
+"""handle reading a csv from an external service, defaults are from Goodreads"""
+
 import csv
-import logging
+from datetime import timedelta
+from typing import Iterable, Optional
 
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
-
-from bookwyrm import models
-from bookwyrm.models import ImportJob, ImportItem
-from bookwyrm.tasks import app
-
-logger = logging.getLogger(__name__)
+from bookwyrm.models import ImportJob, ImportItem, SiteSettings, User
 
 
 class Importer:
     """Generic class for csv data import from an outside service"""
 
-    service = "Unknown"
+    service = "Import"
     delimiter = ","
     encoding = "UTF-8"
-    mandatory_fields = ["Title", "Author"]
 
-    def create_job(self, user, csv_file, include_reviews, privacy):
+    # these are from Goodreads
+    row_mappings_guesses = [
+        ("id", ["id", "book id"]),
+        ("title", ["title"]),
+        ("authors", ["author_text", "author", "authors", "primary author"]),
+        ("isbn_10", ["isbn_10", "isbn10", "isbn", "isbn/uid"]),
+        ("isbn_13", ["isbn_13", "isbn13", "isbn", "isbns", "isbn/uid"]),
+        ("shelf", ["shelf", "exclusive shelf", "read status", "bookshelf"]),
+        ("review_name", ["review_name", "review name"]),
+        ("review_body", ["review_content", "my review", "review"]),
+        ("rating", ["my rating", "rating", "star rating"]),
+        (
+            "date_added",
+            ["shelf_date", "date_added", "date added", "entry date", "added"],
+        ),
+        ("date_started", ["start_date", "date started", "started"]),
+        (
+            "date_finished",
+            ["finish_date", "date finished", "last date read", "date read", "finished"],
+        ),
+    ]
+
+    # TODO: stopped
+
+    date_fields = ["date_added", "date_started", "date_finished"]
+    shelf_mapping_guesses = {
+        "to-read": ["to-read", "want to read"],
+        "read": ["read", "already read"],
+        "reading": ["currently-reading", "reading", "currently reading"],
+    }
+
+    def create_job(
+        self,
+        user: User,
+        csv_file: Iterable[str],
+        include_reviews: bool,
+        privacy: str,
+        create_shelves: bool = True,
+    ) -> ImportJob:
         """check over a csv and creates a database entry for the job"""
-        job = ImportJob.objects.create(
-            user=user, include_reviews=include_reviews, privacy=privacy
+        csv_reader = csv.DictReader(csv_file, delimiter=self.delimiter)
+        rows = list(csv_reader)
+        if len(rows) < 1:
+            raise ValueError("CSV file is empty")
+
+        mappings = (
+            self.create_row_mappings(list(fieldnames))
+            if (fieldnames := csv_reader.fieldnames)
+            else {}
         )
-        for index, entry in enumerate(
-            list(csv.DictReader(csv_file, delimiter=self.delimiter))
-        ):
-            if not all(x in entry for x in self.mandatory_fields):
-                raise ValueError("Author and title must be in data.")
-            entry = self.parse_fields(entry)
-            self.save_item(job, index, entry)
+
+        job = ImportJob.objects.create(
+            user=user,
+            include_reviews=include_reviews,
+            create_shelves=create_shelves,
+            privacy=privacy,
+            mappings=mappings,
+            source=self.service,
+        )
+
+        enforce_limit, allowed_imports = self.get_import_limit(user)
+        if enforce_limit and allowed_imports <= 0:
+            job.complete_job()
+            return job
+        for index, entry in enumerate(rows):
+            if enforce_limit and index >= allowed_imports:
+                break
+            self.create_item(job, index, entry)
         return job
 
-    def save_item(self, job, index, data):  # pylint: disable=no-self-use
+    def update_legacy_job(self, job: ImportJob) -> None:
+        """patch up a job that was in the old format"""
+        items = job.items
+        first_item = items.first()
+        if first_item is None:
+            return
+
+        headers = list(first_item.data.keys())
+        job.mappings = self.create_row_mappings(headers)
+        job.updated_date = timezone.now()
+        job.save()
+
+        for item in items.all():
+            normalized = self.normalize_row(item.data, job.mappings)
+            normalized["shelf"] = self.get_shelf(normalized)
+            item.normalized_data = normalized
+            item.save()
+
+    def create_row_mappings(self, headers: list[str]) -> dict[str, Optional[str]]:
+        """guess what the headers mean"""
+        mappings = {}
+        for key, guesses in self.row_mappings_guesses:
+            values = [h for h in headers if h.lower() in guesses]
+            value = values[0] if len(values) else None
+            if value:
+                headers.remove(value)
+            mappings[key] = value
+        return mappings
+
+    def create_item(self, job: ImportJob, index: int, data: dict[str, str]) -> None:
         """creates and saves an import item"""
-        ImportItem(job=job, index=index, data=data).save()
+        normalized = self.normalize_row(data, job.mappings)
+        normalized["shelf"] = self.get_shelf(normalized)
+        ImportItem(job=job, index=index, data=data, normalized_data=normalized).save()
 
-    def parse_fields(self, entry):
-        """updates csv data with additional info"""
-        entry.update({"import_source": self.service})
-        return entry
+    def get_shelf(self, normalized_row: dict[str, Optional[str]]) -> Optional[str]:
+        """determine which shelf to use"""
+        shelf_name = normalized_row.get("shelf")
+        if not shelf_name:
+            return None
+        shelf_name = shelf_name.lower()
+        shelf = [
+            s for (s, gs) in self.shelf_mapping_guesses.items() if shelf_name in gs
+        ]
+        return shelf[0] if shelf else normalized_row.get("shelf") or None
 
-    def create_retry_job(self, user, original_job, items):
+    def normalize_row(
+        self, entry: dict[str, str], mappings: dict[str, Optional[str]]
+    ) -> dict[str, Optional[str]]:
+        """use the dataclass to create the formatted row of data"""
+        return {k: entry.get(v) if v else None for k, v in mappings.items()}
+
+    def get_import_limit(self, user: User) -> tuple[int, int]:
+        """check if import limit is set and return how many imports are left"""
+        site_settings = SiteSettings.get()
+        import_size_limit = site_settings.import_size_limit
+        import_limit_reset = site_settings.import_limit_reset
+        enforce_limit = import_size_limit and import_limit_reset
+        allowed_imports = 0
+
+        if enforce_limit:
+            time_range = timezone.now() - timedelta(days=import_limit_reset)
+            import_jobs = ImportJob.objects.filter(
+                user=user, created_date__gte=time_range
+            )
+
+            imported_books = sum([job.successful_item_count for job in import_jobs])
+            allowed_imports = import_size_limit - imported_books
+        return enforce_limit, allowed_imports
+
+    def create_retry_job(
+        self, user: User, original_job: ImportJob, items: list[ImportItem]
+    ) -> ImportJob:
         """retry items that didn't import"""
         job = ImportJob.objects.create(
             user=user,
             include_reviews=original_job.include_reviews,
+            create_shelves=original_job.create_shelves,
             privacy=original_job.privacy,
+            source=original_job.source,
+            # TODO: allow users to adjust mappings
+            mappings=original_job.mappings,
             retry=True,
         )
-        for item in items:
-            self.save_item(job, item.index, item.data)
+        enforce_limit, allowed_imports = self.get_import_limit(user)
+        if enforce_limit and allowed_imports <= 0:
+            job.complete_job()
+            return job
+        for index, item in enumerate(items):
+            if enforce_limit and index >= allowed_imports:
+                break
+            # this will re-normalize the raw data
+            self.create_item(job, item.index, item.data)
         return job
-
-    def start_import(self, job):
-        """initalizes a csv import job"""
-        result = import_data.delay(self.service, job.id)
-        job.task_id = result.id
-        job.save()
-
-
-@app.task(queue="low_priority")
-def import_data(source, job_id):
-    """does the actual lookup work in a celery task"""
-    job = ImportJob.objects.get(id=job_id)
-    try:
-        for item in job.items.all():
-            try:
-                item.resolve()
-            except Exception as err:  # pylint: disable=broad-except
-                logger.exception(err)
-                item.fail_reason = _("Error loading book")
-                item.save()
-                continue
-
-            if item.book or item.book_guess:
-                item.save()
-
-            if item.book:
-                # shelves book and handles reviews
-                handle_imported_book(
-                    source, job.user, item, job.include_reviews, job.privacy
-                )
-            else:
-                item.fail_reason = _("Could not find a match for book")
-                item.save()
-    finally:
-        job.complete = True
-        job.save()
-
-
-def handle_imported_book(source, user, item, include_reviews, privacy):
-    """process a csv and then post about it"""
-    if isinstance(item.book, models.Work):
-        item.book = item.book.default_edition
-    if not item.book:
-        return
-
-    existing_shelf = models.ShelfBook.objects.filter(book=item.book, user=user).exists()
-
-    # shelve the book if it hasn't been shelved already
-    if item.shelf and not existing_shelf:
-        desired_shelf = models.Shelf.objects.get(identifier=item.shelf, user=user)
-        shelved_date = item.date_added or timezone.now()
-        models.ShelfBook.objects.create(
-            book=item.book, shelf=desired_shelf, user=user, shelved_date=shelved_date
-        )
-
-    for read in item.reads:
-        # check for an existing readthrough with the same dates
-        if models.ReadThrough.objects.filter(
-            user=user,
-            book=item.book,
-            start_date=read.start_date,
-            finish_date=read.finish_date,
-        ).exists():
-            continue
-        read.book = item.book
-        read.user = user
-        read.save()
-
-    if include_reviews and (item.rating or item.review):
-        # we don't know the publication date of the review,
-        # but "now" is a bad guess
-        published_date_guess = item.date_read or item.date_added
-        if item.review:
-            # pylint: disable=consider-using-f-string
-            review_title = (
-                "Review of {!r} on {!r}".format(
-                    item.book.title,
-                    source,
-                )
-                if item.review
-                else ""
-            )
-            models.Review.objects.create(
-                user=user,
-                book=item.book,
-                name=review_title,
-                content=item.review,
-                rating=item.rating,
-                published_date=published_date_guess,
-                privacy=privacy,
-            )
-        else:
-            # just a rating
-            models.ReviewRating.objects.create(
-                user=user,
-                book=item.book,
-                rating=item.rating,
-                published_date=published_date_guess,
-                privacy=privacy,
-            )

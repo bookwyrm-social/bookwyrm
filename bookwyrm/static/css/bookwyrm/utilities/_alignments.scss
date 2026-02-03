@@ -1,0 +1,76 @@
+/* Alignments
+ *
+ * Use them with `.align.to-(c|t|r|b|l)[-(mobile|tablet)]`
+ ******************************************************************************/
+
+/* Flex item position
+ * -------------------------------------------------------------------------- */
+
+.align {
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+.align.to-c {
+    justify-content: center !important;
+}
+
+.align.to-t {
+    align-items: flex-start !important;
+}
+
+.align.to-r {
+    justify-content: flex-end !important;
+}
+
+.align.to-b {
+    align-items: flex-end !important;
+}
+
+.align.to-l {
+    justify-content: flex-start !important;
+}
+
+@media screen and (max-width: 768px) {
+    .align.to-c-mobile {
+        justify-content: center !important;
+    }
+
+    .align.to-t-mobile {
+        align-items: flex-start !important;
+    }
+
+    .align.to-r-mobile {
+        justify-content: flex-end !important;
+    }
+
+    .align.to-b-mobile {
+        align-items: flex-end !important;
+    }
+
+    .align.to-l-mobile {
+        justify-content: flex-start !important;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .align.to-c-tablet {
+        justify-content: center !important;
+    }
+
+    .align.to-t-tablet {
+        align-items: flex-start !important;
+    }
+
+    .align.to-r-tablet {
+        justify-content: flex-end !important;
+    }
+
+    .align.to-b-tablet {
+        align-items: flex-end !important;
+    }
+
+    .align.to-l-tablet {
+        justify-content: flex-start !important;
+    }
+}

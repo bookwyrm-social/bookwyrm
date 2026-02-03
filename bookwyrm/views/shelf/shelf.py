@@ -1,7 +1,8 @@
-""" shelf views """
+"""shelf views"""
+
 from collections import namedtuple
 
-from django.db.models import OuterRef, Subquery, F
+from django.db.models import OuterRef, Subquery, F, Max
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest
@@ -10,17 +11,19 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import is_api_request, get_user_from_username
+from bookwyrm.book_search import search
 
 
-# pylint: disable=no-self-use
 class Shelf(View):
     """shelf page"""
 
+    @vary_on_headers("Accept")
     def get(self, request, username, shelf_identifier=None):
         """display a shelf"""
         user = get_user_from_username(request.user, username)
@@ -32,6 +35,8 @@ class Shelf(View):
         else:
             shelves = models.Shelf.privacy_filter(request.user).filter(user=user).all()
 
+        shelves_filter_query = request.GET.get("filter")
+
         # get the shelf and make sure the logged in user should be able to see it
         if shelf_identifier:
             shelf = get_object_or_404(user.shelf_set, identifier=shelf_identifier)
@@ -42,6 +47,7 @@ class Shelf(View):
             FakeShelf = namedtuple(
                 "Shelf", ("identifier", "name", "user", "books", "privacy")
             )
+
             books = (
                 models.Edition.viewer_aware_objects(request.user)
                 .filter(
@@ -50,9 +56,10 @@ class Shelf(View):
                 )
                 .distinct()
             )
+
             shelf = FakeShelf("all", _("All books"), user, books, "public")
 
-        if is_api_request(request):
+        if is_api_request(request) and shelf_identifier:
             return ActivitypubResponse(shelf.to_activity(**request.GET))
 
         reviews = models.Review.objects
@@ -72,9 +79,9 @@ class Shelf(View):
             "start_date"
         )
 
+        books = books.annotate(shelved_date=Max("shelfbook__shelved_date"))
         books = books.annotate(
             rating=Subquery(reviews.values("rating")[:1]),
-            shelved_date=F("shelfbook__shelved_date"),
             start_date=Subquery(reading.values("start_date")[:1]),
             finish_date=Subquery(reading.values("finish_date")[:1]),
             author=Subquery(
@@ -85,6 +92,9 @@ class Shelf(View):
         ).prefetch_related("authors")
 
         books = sort_books(books, request.GET.get("sort"))
+
+        if shelves_filter_query:
+            books = search(shelves_filter_query, books=books)
 
         paginated = Paginator(
             books,
@@ -103,17 +113,17 @@ class Shelf(View):
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
+            "shelves_filter_query": shelves_filter_query,
+            "size": "small",
         }
 
         return TemplateResponse(request, "shelf/shelf.html", data)
 
     @method_decorator(login_required, name="dispatch")
-    # pylint: disable=unused-argument
     def post(self, request, username, shelf_identifier):
         """edit a shelf"""
         user = get_user_from_username(request.user, username)
         shelf = get_object_or_404(user.shelf_set, identifier=shelf_identifier)
-        shelf.raise_not_editable(request.user)
 
         # you can't change the name of the default shelves
         if not shelf.editable and request.POST.get("name") != shelf.name:
@@ -122,14 +132,14 @@ class Shelf(View):
         form = forms.ShelfForm(request.POST, instance=shelf)
         if not form.is_valid():
             return redirect(shelf.local_path)
-        shelf = form.save()
+        shelf = form.save(request)
         return redirect(shelf.local_path)
 
 
 def sort_books(books, sort):
     """Books in shelf sorting"""
     sort_fields = [
-        "title",
+        "sort_title",
         "author",
         "shelved_date",
         "start_date",

@@ -1,5 +1,8 @@
-""" the good stuff! the books! """
+"""the good stuff! the books!"""
+
+import logging
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
 from django.db import transaction
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
@@ -8,14 +11,17 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 
-from bookwyrm import models
+from bookwyrm import forms, models
+from bookwyrm.views.helpers import get_mergeable_object_or_404
+from bookwyrm.views.shelf.shelf_actions import unshelve
 from .status import CreateStatus
 from .helpers import get_edition, handle_reading_status, is_api_request
-from .helpers import load_date_in_user_tz_as_utc
+from .helpers import load_date_in_user_tz_as_utc, redirect_to_referer
+
+logger = logging.getLogger(__name__)
 
 
 @method_decorator(login_required, name="dispatch")
-# pylint: disable=no-self-use
 class ReadingStatus(View):
     """consider reading a book"""
 
@@ -26,20 +32,24 @@ class ReadingStatus(View):
             "want": "want.html",
             "start": "start.html",
             "finish": "finish.html",
+            "stop": "stop.html",
         }.get(status)
         if not template:
             return HttpResponseNotFound()
         # redirect if we're already on this shelf
         return TemplateResponse(request, f"reading_progress/{template}", {"book": book})
 
+    @transaction.atomic
     def post(self, request, status, book_id):
         """Change the state of a book by shelving it and adding reading dates"""
         identifier = {
             "want": models.Shelf.TO_READ,
             "start": models.Shelf.READING,
             "finish": models.Shelf.READ_FINISHED,
+            "stop": models.Shelf.STOPPED_READING,
         }.get(status)
         if not identifier:
+            logger.exception("Invalid reading status type: %s", status)
             return HttpResponseBadRequest()
 
         desired_shelf = get_object_or_404(
@@ -52,6 +62,14 @@ class ReadingStatus(View):
             .get(id=book_id)
         )
 
+        # invalidate related caches
+        cache.delete_many(
+            [
+                f"active_shelf-{request.user.id}-{ed}"
+                for ed in book.parent_work.editions.values_list("id", flat=True)
+            ]
+        )
+
         # gets the first shelf that indicates a reading status, or None
         shelves = [
             s
@@ -61,13 +79,11 @@ class ReadingStatus(View):
         current_status_shelfbook = shelves[0] if shelves else None
 
         # checking the referer prevents redirecting back to the modal page
-        referer = request.headers.get("Referer", "/")
-        referer = "/" if "reading-status" in referer else referer
         if current_status_shelfbook is not None:
             if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
                 current_status_shelfbook.delete()
             else:  # It already was on the shelf
-                return redirect(referer)
+                return redirect_to_referer(request)
 
         models.ShelfBook.objects.create(
             book=book, shelf=desired_shelf, user=request.user
@@ -79,6 +95,7 @@ class ReadingStatus(View):
             desired_shelf.identifier,
             start_date=request.POST.get("start_date"),
             finish_date=request.POST.get("finish_date"),
+            stopped_date=request.POST.get("stopped_date"),
         )
 
         # post about it (if you want)
@@ -89,14 +106,66 @@ class ReadingStatus(View):
             privacy = request.POST.get("privacy")
             handle_reading_status(request.user, desired_shelf, book, privacy)
 
+        # if the request includes a "shelf" value we are using the 'move' button
+        if bool(request.POST.get("shelf")):
+            # unshelve the existing shelf
+            this_shelf = request.POST.get("shelf")
+            if (
+                bool(current_status_shelfbook)
+                and int(this_shelf) != int(current_status_shelfbook.shelf.id)
+                and current_status_shelfbook.shelf.identifier
+                != desired_shelf.identifier
+            ):
+                return unshelve(request, book_id=book_id)
+
         if is_api_request(request):
             return HttpResponse()
-        return redirect(referer)
+
+        return redirect_to_referer(request)
+
+
+@method_decorator(login_required, name="dispatch")
+class ReadThrough(View):
+    """Add new read dates"""
+
+    def get(self, request, book_id, readthrough_id=None):
+        """standalone form in case of errors"""
+        book = get_mergeable_object_or_404(models.Edition, id=book_id)
+        form = forms.ReadThroughForm()
+        data = {"form": form, "book": book}
+        if readthrough_id:
+            data["readthrough"] = get_object_or_404(
+                models.ReadThrough, id=readthrough_id
+            )
+        return TemplateResponse(request, "readthrough/readthrough.html", data)
+
+    def post(self, request):
+        """can't use the form normally because the dates are too finnicky"""
+        book_id = request.POST.get("book")
+        normalized_post = request.POST.copy()
+
+        normalized_post["start_date"] = load_date_in_user_tz_as_utc(
+            request.POST.get("start_date"), request.user
+        )
+        normalized_post["finish_date"] = load_date_in_user_tz_as_utc(
+            request.POST.get("finish_date"), request.user
+        )
+        form = forms.ReadThroughForm(request.POST)
+        if not form.is_valid():
+            book = get_mergeable_object_or_404(models.Edition, id=book_id)
+            data = {"form": form, "book": book}
+            if request.POST.get("id"):
+                data["readthrough"] = get_object_or_404(
+                    models.ReadThrough, id=request.POST.get("id")
+                )
+            return TemplateResponse(request, "readthrough/readthrough.html", data)
+        form.save(request)
+        return redirect("book", book_id)
 
 
 @transaction.atomic
 def update_readthrough_on_shelve(
-    user, annotated_book, status, start_date=None, finish_date=None
+    user, annotated_book, status, start_date=None, finish_date=None, stopped_date=None
 ):
     """update the current readthrough for a book when it is re-shelved"""
     # there *should* only be one of current active readthrough, but it's a list
@@ -116,10 +185,11 @@ def update_readthrough_on_shelve(
         active_readthrough = models.ReadThrough.objects.create(
             user=user, book=annotated_book
         )
-    # santiize and set dates
+    # sanitize and set dates
     active_readthrough.start_date = load_date_in_user_tz_as_utc(start_date, user)
-    # if the finish date is set, the readthrough will be automatically set as inactive
+    # if the stop or finish date is set, the readthrough will be set as inactive
     active_readthrough.finish_date = load_date_in_user_tz_as_utc(finish_date, user)
+    active_readthrough.stopped_date = load_date_in_user_tz_as_utc(stopped_date, user)
 
     active_readthrough.save()
 
@@ -132,28 +202,7 @@ def delete_readthrough(request):
     readthrough.raise_not_deletable(request.user)
 
     readthrough.delete()
-    return redirect(request.headers.get("Referer", "/"))
-
-
-@login_required
-@require_POST
-def create_readthrough(request):
-    """can't use the form because the dates are too finnicky"""
-    book = get_object_or_404(models.Edition, id=request.POST.get("book"))
-
-    start_date = load_date_in_user_tz_as_utc(
-        request.POST.get("start_date"), request.user
-    )
-    finish_date = load_date_in_user_tz_as_utc(
-        request.POST.get("finish_date"), request.user
-    )
-    models.ReadThrough.objects.create(
-        user=request.user,
-        book=book,
-        start_date=start_date,
-        finish_date=finish_date,
-    )
-    return redirect("book", book.id)
+    return redirect_to_referer(request)
 
 
 @login_required
@@ -164,4 +213,4 @@ def delete_progressupdate(request):
     update.raise_not_deletable(request.user)
 
     update.delete()
-    return redirect(request.headers.get("Referer", "/"))
+    return redirect_to_referer(request)

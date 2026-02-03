@@ -1,9 +1,20 @@
-""" admin announcements """
+"""admin announcements"""
+
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from .base_model import BookWyrmModel
+
+
+DisplayTypes = [
+    ("primary-light", _("Primary")),
+    ("success-light", _("Success")),
+    ("link-light", _("Link")),
+    ("warning-light", _("Warning")),
+    ("danger-light", _("Danger")),
+]
 
 
 class Announcement(BookWyrmModel):
@@ -16,6 +27,9 @@ class Announcement(BookWyrmModel):
     start_date = models.DateTimeField(blank=True, null=True)
     end_date = models.DateTimeField(blank=True, null=True)
     active = models.BooleanField(default=True)
+    display_type = models.CharField(
+        max_length=20, choices=DisplayTypes, null=True, blank=True
+    )
 
     @classmethod
     def active_announcements(cls):

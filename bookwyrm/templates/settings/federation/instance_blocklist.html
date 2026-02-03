@@ -4,7 +4,19 @@
 
 {% block header %}
 {% trans "Import Blocklist" %}
-<a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to instance list" %}</a>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'settings-federation' %}">{% trans "Federated Instances" %}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {% trans "Import Blocklist" %}
+            </a>
+        </li>
+    </ul>
+</nav>
 {% endblock %}
 
 {% block panel %}
@@ -47,7 +59,9 @@
     <div class="field">
         <label class="label" for="id_file">JSON data:</label>
         <aside class="help">
-            Expects a json file in the format provided by <a href="https://fediblock.org/" target="_blank" rel="noopener">FediBlock</a>, with a list of entries that have <code>instance</code> and <code>url</code> fields. For example:
+            {% blocktrans trimmed %}
+            Expects a json file in the format provided by FediBlock, with a list of entries that have <code>instance</code> and <code>url</code> fields. For example:
+            {% endblocktrans %}
             <pre>
 [
     {
