@@ -1,7 +1,8 @@
-""" do book related things with other users """
+"""do book related things with other users"""
+
 from django.db import models, IntegrityError, transaction
 from django.db.models import Q
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 from .base_model import BookWyrmModel
 from . import fields
 from .relationship import UserBlocks
@@ -17,7 +18,7 @@ class Group(BookWyrmModel):
 
     def get_remote_id(self):
         """don't want the user to be in there in this case"""
-        return f"https://{DOMAIN}/group/{self.id}"
+        return f"{BASE_URL}/group/{self.id}"
 
     @classmethod
     def followers_filter(cls, queryset, viewer):
@@ -142,7 +143,7 @@ class GroupMemberInvitation(models.Model):
     @transaction.atomic
     def accept(self):
         """turn this request into the real deal"""
-        # pylint: disable-next=import-outside-toplevel
+
         from .notification import Notification, NotificationType  # circular dependency
 
         GroupMember.from_request(self)

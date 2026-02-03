@@ -1,4 +1,5 @@
-""" getting and verifying signatures """
+"""getting and verifying signatures"""
+
 import time
 from collections import namedtuple
 from urllib.parse import urlsplit
@@ -15,7 +16,7 @@ from django.utils.http import http_date
 
 from bookwyrm import models
 from bookwyrm.activitypub import Follow
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import DOMAIN, NETLOC
 from bookwyrm.signatures import create_key_pair, make_signature, make_digest
 
 
@@ -56,10 +57,10 @@ class Signature(TestCase):
             cls.cat = models.User.objects.create_user(
                 f"cat@{DOMAIN}", "cat@example.com", "", local=True, localname="cat"
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """test data"""
+        self.site = models.SiteSettings.get()
         private_key, public_key = create_key_pair()
         self.fake_remote = Sender(
             "http://localhost/user/remote", KeyPair(private_key, public_key)
@@ -72,16 +73,16 @@ class Signature(TestCase):
             urlsplit(self.rat.inbox).path,
             data=data,
             content_type="application/json",
-            **{
-                "HTTP_DATE": now,
-                "HTTP_SIGNATURE": signature,
-                "HTTP_DIGEST": digest,
-                "HTTP_CONTENT_TYPE": "application/activity+json; charset=utf-8",
-                "HTTP_HOST": DOMAIN,
+            headers={
+                "date": now,
+                "signature": signature,
+                "digest": digest,
+                "content-type": "application/activity+json; charset=utf-8",
+                "host": NETLOC,
             },
         )
 
-    def send_test_request(  # pylint: disable=too-many-arguments
+    def send_test_request(
         self, sender, signer=None, send_data=None, digest=None, date=None
     ):
         """sends a follow request to the "rat" user"""

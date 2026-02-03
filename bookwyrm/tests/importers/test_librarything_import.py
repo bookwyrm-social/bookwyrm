@@ -1,8 +1,8 @@
-""" testing import """
+"""testing import"""
+
 import pathlib
 from unittest.mock import patch
 import datetime
-import pytz
 
 from django.test import TestCase
 
@@ -13,7 +13,7 @@ from bookwyrm.models.import_job import handle_imported_book
 
 def make_date(*args):
     """helper function to easily generate a date obj"""
-    return datetime.datetime(*args, tzinfo=pytz.UTC)
+    return datetime.datetime(*args, tzinfo=datetime.timezone.utc)
 
 
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -28,7 +28,7 @@ class LibrarythingImport(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath("../data/librarything.tsv")
 
         # Librarything generates latin encoded exports...
-        # pylint: disable-next=consider-using-with
+
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
 
     def tearDown(self):
@@ -46,7 +46,6 @@ class LibrarythingImport(TestCase):
             cls.local_user = models.User.objects.create_user(
                 "mmai", "mmai@mmai.mmai", "password", local=True
             )
-        models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
         cls.book = models.Edition.objects.create(
             title="Example Edition",
@@ -63,7 +62,9 @@ class LibrarythingImport(TestCase):
         self.assertEqual(import_job.include_reviews, False)
         self.assertEqual(import_job.privacy, "public")
 
-        import_items = models.ImportItem.objects.filter(job=import_job).all()
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")
+        )
         self.assertEqual(len(import_items), 3)
         self.assertEqual(import_items[0].index, 0)
         self.assertEqual(import_items[0].data["Book Id"], "5498194")
@@ -85,7 +86,9 @@ class LibrarythingImport(TestCase):
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "unlisted"
         )
-        import_items = models.ImportItem.objects.filter(job=import_job).all()[:2]
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")[:2]
+        )
 
         retry = self.importer.create_retry_job(
             self.local_user, import_job, import_items
@@ -95,7 +98,7 @@ class LibrarythingImport(TestCase):
         self.assertEqual(retry.include_reviews, False)
         self.assertEqual(retry.privacy, "unlisted")
 
-        retry_items = models.ImportItem.objects.filter(job=retry).all()
+        retry_items = models.ImportItem.objects.filter(job=retry).all().order_by("id")
         self.assertEqual(len(retry_items), 2)
         self.assertEqual(retry_items[0].index, 0)
         self.assertEqual(import_items[0].data["Book Id"], "5498194")

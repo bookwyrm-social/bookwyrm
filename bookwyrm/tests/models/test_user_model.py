@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 import json
 
 from unittest.mock import patch
@@ -9,15 +10,10 @@ import responses
 
 from bookwyrm import models
 from bookwyrm.management.commands import initdb
-from bookwyrm.settings import USE_HTTPS, DOMAIN
+from bookwyrm.settings import DOMAIN, BASE_URL
 
 
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
 class User(TestCase):
-
-    protocol = "https://" if USE_HTTPS else "http://"
-
     @classmethod
     def setUpTestData(cls):
         with (
@@ -49,11 +45,11 @@ class User(TestCase):
 
     def test_computed_fields(self):
         """username instead of id here"""
-        expected_id = f"{self.protocol}{DOMAIN}/user/mouse"
+        expected_id = f"{BASE_URL}/user/mouse"
         self.assertEqual(self.user.remote_id, expected_id)
         self.assertEqual(self.user.username, f"mouse@{DOMAIN}")
         self.assertEqual(self.user.localname, "mouse")
-        self.assertEqual(self.user.shared_inbox, f"{self.protocol}{DOMAIN}/inbox")
+        self.assertEqual(self.user.shared_inbox, f"{BASE_URL}/inbox")
         self.assertEqual(self.user.inbox, f"{expected_id}/inbox")
         self.assertEqual(self.user.outbox, f"{expected_id}/outbox")
         self.assertEqual(self.user.followers_url, f"{expected_id}/followers")
@@ -98,6 +94,7 @@ class User(TestCase):
                     "PropertyValue": "schema:PropertyValue",
                     "alsoKnownAs": {"@id": "as:alsoKnownAs", "@type": "@id"},
                     "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+                    "Hashtag": "as:Hashtag",
                     "movedTo": {"@id": "as:movedTo", "@type": "@id"},
                     "schema": "http://schema.org#",
                     "value": "schema:value",
@@ -130,7 +127,7 @@ class User(TestCase):
             patch("bookwyrm.lists_stream.populate_lists_task.delay"),
         ):
             user = models.User.objects.create_user(
-                f"test2{DOMAIN}",
+                "test2",
                 "test2@bookwyrm.test",
                 localname="test2",
                 **user_attrs,
@@ -145,7 +142,7 @@ class User(TestCase):
             patch("bookwyrm.lists_stream.populate_lists_task.delay"),
         ):
             user = models.User.objects.create_user(
-                f"test1{DOMAIN}",
+                "test1",
                 "test1@bookwyrm.test",
                 localname="test1",
                 **user_attrs,

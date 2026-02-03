@@ -2,10 +2,31 @@
 {% load i18n %}
 {% load utilities %}
 
-{% block title %}{% trans "Edit status" %}{% endblock %}
+{% block title %}
+    {% if draft.status_type == "Review" %}
+        {% trans "Edit review" %}
+    {% elif draft.status_type == "Quotation" %}
+        {% trans "Edit quote" %}
+    {% elif draft.status_type == "Comment" %}
+        {% trans "Edit comment" %}
+    {% else %}
+        {% trans "Edit status" %}
+    {% endif %}
+{% endblock %}
+
 {% block content %}
 <header class="block content">
-    <h1>{% trans "Edit status" %}</h1>
+    <h1>
+        {% if draft.status_type == "Review" %}
+            {% trans "Edit review" %}
+        {% elif draft.status_type == "Quotation" %}
+            {% trans "Edit quote" %}
+        {% elif draft.status_type == "Comment" %}
+            {% trans "Edit comment" %}
+        {% else %}
+            {% trans "Edit status" %}
+        {% endif %}
+    </h1>
 </header>
 
 {% with 0|uuid as uuid %}

@@ -1,14 +1,16 @@
-""" search views"""
+"""search views"""
 
 import re
 
 from django.contrib.postgres.search import TrigramSimilarity, SearchRank, SearchQuery
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import F
 from django.db.models.functions import Greatest
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.views import View
+from django.views.decorators.vary import vary_on_headers
 
 from csp.decorators import csp_update
 
@@ -21,11 +23,11 @@ from .helpers import is_api_request
 from .helpers import handle_remote_webfinger
 
 
-# pylint: disable= no-self-use
 class Search(View):
     """search users or books"""
 
     @csp_update(IMG_SRC="*")
+    @vary_on_headers("Accept")
     def get(self, request):
         """that search bar up top"""
         if is_api_request(request):
@@ -45,7 +47,7 @@ class Search(View):
             "user": user_search,
             "list": list_search,
         }
-        if not search_type in endpoints:
+        if search_type not in endpoints:
             search_type = "book"
 
         return endpoints[search_type](request)
@@ -53,9 +55,9 @@ class Search(View):
 
 def api_book_search(request):
     """Return books via API response"""
-    query = request.GET.get("q")
+    query = request.GET.get("q").strip()
     query = isbn_check_and_format(query)
-    min_confidence = request.GET.get("min_confidence", 0)
+    min_confidence = float(request.GET.get("min_confidence", 0.1))
     # only return local book results via json so we don't cascade
     book_results = search(query, min_confidence=min_confidence)
     return JsonResponse(
@@ -65,10 +67,10 @@ def api_book_search(request):
 
 def book_search(request):
     """the real business is elsewhere"""
-    query = request.GET.get("q")
+    query = request.GET.get("q").strip()
     # check if query is isbn
     query = isbn_check_and_format(query)
-    min_confidence = request.GET.get("min_confidence", 0)
+    min_confidence = float(request.GET.get("min_confidence", 0.1))
     search_remote = request.GET.get("remote", False) and request.user.is_authenticated
 
     # try a local-only search
@@ -101,7 +103,7 @@ def author_search(request):
 
     results = (
         models.Author.objects.filter(search_vector=search_query)
-        .annotate(rank=SearchRank(F("search_vector"), search_query))
+        .annotate(rank=SearchRank(F("search_vector"), search_query, normalization=32))
         .filter(rank__gt=min_confidence)
         .order_by("-rank")
     )
@@ -123,14 +125,16 @@ def author_search(request):
 def user_search(request):
     """user search: search for a user"""
     viewer = request.user
-    query = request.GET.get("q")
-    query = query.strip()
+    query = request.GET.get("q").strip()
     data = {"type": "user", "query": query}
 
     # use webfinger for mastodon style account@domain.com username to load the user if
     # they don't exist locally (handle_remote_webfinger will check the db)
     if re.match(regex.FULL_USERNAME, query) and viewer.is_authenticated:
-        handle_remote_webfinger(query)
+        try:
+            handle_remote_webfinger(query)
+        except PermissionDenied:
+            return TemplateResponse(request, "search/user.html", data)
 
     results = (
         models.User.viewer_aware_objects(viewer)
@@ -162,7 +166,7 @@ def user_search(request):
 
 def list_search(request):
     """any relevent lists?"""
-    query = request.GET.get("q")
+    query = request.GET.get("q").strip()
     data = {"query": query, "type": "list"}
     results = (
         models.List.privacy_filter(

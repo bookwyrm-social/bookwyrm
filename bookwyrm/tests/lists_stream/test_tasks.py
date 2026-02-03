@@ -1,4 +1,5 @@
-""" testing lists_stream """
+"""testing lists_stream"""
+
 from unittest.mock import patch
 from django.test import TestCase
 from bookwyrm import lists_stream, models

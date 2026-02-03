@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.template.response import TemplateResponse
@@ -27,7 +28,6 @@ class ChangePasswordViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        models.SiteSettings.objects.create(id=1)
 
     def setUp(self):
         """individual test setup"""

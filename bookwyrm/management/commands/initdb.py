@@ -1,4 +1,5 @@
-""" What you need in the database to make it work """
+"""What you need in the database to make it work"""
+
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
@@ -77,7 +78,7 @@ def init_permissions():
 
 def init_connectors():
     """access book data sources"""
-    models.Connector.objects.create(
+    models.Connector.objects.get_or_create(
         identifier="bookwyrm.social",
         name="Bookwyrm.social",
         connector_file="bookwyrm_connector",
@@ -89,8 +90,7 @@ def init_connectors():
         priority=2,
     )
 
-    # pylint: disable=line-too-long
-    models.Connector.objects.create(
+    models.Connector.objects.get_or_create(
         identifier="inventaire.io",
         name="Inventaire",
         connector_file="inventaire",
@@ -99,10 +99,10 @@ def init_connectors():
         covers_url="https://inventaire.io",
         search_url="https://inventaire.io/api/search?types=works&types=works&search=",
         isbn_search_url="https://inventaire.io/api/entities?action=by-uris&uris=isbn%3A",
-        priority=1,
+        priority=3,
     )
 
-    models.Connector.objects.create(
+    models.Connector.objects.get_or_create(
         identifier="openlibrary.org",
         name="OpenLibrary",
         connector_file="openlibrary",
@@ -111,19 +111,20 @@ def init_connectors():
         covers_url="https://covers.openlibrary.org",
         search_url="https://openlibrary.org/search?q=",
         isbn_search_url="https://openlibrary.org/api/books?jscmd=data&format=json&bibkeys=ISBN:",
-        priority=1,
+        priority=3,
     )
 
 
 def init_settings():
     """info about the instance"""
     group_editor = Group.objects.filter(name="editor").first()
-    models.SiteSettings.objects.create(
-        support_link="https://www.patreon.com/bookwyrm",
-        support_title="Patreon",
-        install_mode=True,
-        default_user_auth_group=group_editor,
-    )
+    if not models.SiteSettings.objects.all().first():
+        models.SiteSettings.objects.create(
+            support_link="https://www.patreon.com/bookwyrm",
+            support_title="Patreon",
+            install_mode=True,
+            default_user_auth_group=group_editor,
+        )
 
 
 def init_link_domains():
@@ -136,15 +137,13 @@ def init_link_domains():
         ("theanarchistlibrary.org", "The Anarchist Library"),
     ]
     for domain, name in domains:
-        models.LinkDomain.objects.create(
+        models.LinkDomain.objects.get_or_create(
             domain=domain,
             name=name,
             status="approved",
         )
 
 
-# pylint: disable=no-self-use
-# pylint: disable=unused-argument
 class Command(BaseCommand):
     """command-line options"""
 

@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="readthrough",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     ("finish_date__gte", django.db.models.expressions.F("start_date"))
                 ),
                 name="chronology",

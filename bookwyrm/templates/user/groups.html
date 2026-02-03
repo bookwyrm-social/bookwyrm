@@ -30,9 +30,11 @@
 {% block panel %}
 <section class="block">
 
+    {% if request.user.is_authenticated %}
     <div class="block">
         {% include 'groups/create_form.html' with controls_text="create_group" %}
     </div>
+    {% endif %}
 
     {% include 'groups/user_groups.html' with memberships=memberships %}
 </section>

@@ -1,4 +1,5 @@
-""" interface between the app and various connectors """
+"""interface between the app and various connectors"""
+
 from django.test import TestCase
 import responses
 
@@ -80,3 +81,31 @@ class ConnectorManager(TestCase):
         """load a connector object from the database entry"""
         connector = connector_manager.load_connector(self.remote_connector)
         self.assertEqual(connector.identifier, "test_connector_remote")
+
+    def test_create_finna_connector(self):
+        """does the finna connector work?"""
+
+        self.assertEqual(
+            0, models.Connector.objects.filter(connector_file="finna").count()
+        )
+        connector_manager.create_finna_connector()
+        self.assertEqual(
+            1, models.Connector.objects.filter(connector_file="finna").count()
+        )
+
+        finna = models.Connector.objects.get(connector_file="finna")
+        self.assertEqual("https://www.finna.fi", finna.base_url)
+
+    def test_create_libris_connector(self):
+        """does the libris connector work?"""
+
+        self.assertEqual(
+            0, models.Connector.objects.filter(connector_file="libris").count()
+        )
+        connector_manager.create_libris_connector()
+        self.assertEqual(
+            1, models.Connector.objects.filter(connector_file="libris").count()
+        )
+
+        libris = models.Connector.objects.get(connector_file="libris")
+        self.assertEqual("https://libris.kb.se", libris.base_url)

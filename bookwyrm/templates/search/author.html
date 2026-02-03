@@ -8,6 +8,9 @@
     <li class="">
         <a href="{{ author.local_path }}" class="author" itemprop="author" itemscope itemtype="https://schema.org/Thing">
             <span itemprop="name">{{ author.name }}</span>
+            {% if author.born or author.died %}
+            <span>({{ author.born|date:"Y" }}-{{ author.died|date:"Y" }})</span>
+            {% endif %}
         </a>
     </li>
 {% endfor %}

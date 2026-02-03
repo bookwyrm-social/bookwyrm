@@ -1,24 +1,30 @@
-""" Let users export their book data """
+"""Let users export their book data"""
+
 from datetime import timedelta
 import csv
+import datetime
 import io
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Avg, ExpressionWrapper, F
+from django.db.models.fields import DurationField
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseServerError, Http404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views import View
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.shortcuts import redirect
 
-from bookwyrm import models
+from storages.backends.s3 import S3Storage
+
+from bookwyrm import models, settings
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
-from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.utils.cache import get_or_set
 
 
-# pylint: disable=no-self-use,too-many-locals
 @method_decorator(login_required, name="dispatch")
 class Export(View):
     """Let users export data"""
@@ -49,13 +55,14 @@ class Export(View):
 
         deduplication_fields = [
             f.name
-            for f in models.Edition._meta.get_fields()  # pylint: disable=protected-access
+            for f in models.Edition._meta.get_fields()
             if getattr(f, "deduplication_field", False)
         ]
         fields = (
             ["title", "author_text"]
             + deduplication_fields
             + [
+                "pages",
                 "start_date",
                 "finish_date",
                 "stopped_date",
@@ -141,28 +148,56 @@ class Export(View):
         )
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class ExportUser(View):
-    """Let users export user data to import into another Bookwyrm instance"""
+    """
+    Let users request and download an archive of user data to import into
+    another Bookwyrm instance.
+    """
+
+    user_jobs = None
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+
+        self.user_jobs = BookwyrmExportJob.objects.filter(user=request.user).order_by(
+            "-created_date"
+        )
+
+    def new_export_blocked_until(self):
+        """whether the user is allowed to request a new export"""
+        last_job = self.user_jobs.first()
+        if not last_job:
+            return None
+        site = models.SiteSettings.get()
+        blocked_until = last_job.created_date + timedelta(
+            hours=site.user_import_time_limit
+        )
+        return blocked_until if blocked_until > timezone.now() else None
 
     def get(self, request):
         """Request tar file"""
 
-        jobs = BookwyrmExportJob.objects.filter(user=request.user).order_by(
-            "-created_date"
-        )
+        exports = []
+        for job in self.user_jobs:
+            export = {"job": job}
+
+            if job.export_data:
+                try:
+                    export["size"] = job.export_data.size
+                    export["url"] = reverse("prefs-export-file", args=[job.task_id])
+                except (
+                    FileNotFoundError,
+                    Exception,
+                ):
+                    # file no longer exists
+                    export["url"] = None
+
+            exports.append(export)
+
+        next_available = self.new_export_blocked_until()
+        paginated = Paginator(exports, settings.PAGE_LENGTH)
         site = models.SiteSettings.objects.get()
-        hours = site.user_import_time_limit
-        allowed = (
-            jobs.first().created_date < timezone.now() - timedelta(hours=hours)
-            if jobs.first()
-            else True
-        )
-        next_available = (
-            jobs.first().created_date + timedelta(hours=hours) if not allowed else False
-        )
-        paginated = Paginator(jobs, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "jobs": page,
@@ -170,12 +205,23 @@ class ExportUser(View):
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
+            "expiry_hours": site.export_files_lifetime_hours,
         }
+
+        seconds = get_or_set(
+            "avg-user-export-time", get_average_export_time, timeout=86400
+        )
+        if seconds and seconds > 60**2:
+            data["recent_avg_hours"] = seconds / (60**2)
+        elif seconds:
+            data["recent_avg_minutes"] = seconds / 60
 
         return TemplateResponse(request, "preferences/export-user.html", data)
 
     def post(self, request):
-        """Download the json file of a user's data"""
+        """Trigger processing of a new user export file"""
+        if self.new_export_blocked_until() is not None:
+            return HttpResponse(status=429)  # Too Many Requests
 
         job = BookwyrmExportJob.objects.create(user=request.user)
         job.start_job()
@@ -190,10 +236,55 @@ class ExportArchive(View):
     def get(self, request, archive_id):
         """download user export file"""
         export = BookwyrmExportJob.objects.get(task_id=archive_id, user=request.user)
-        return HttpResponse(
-            export.export_data,
-            content_type="application/gzip",
-            headers={
-                "Content-Disposition": 'attachment; filename="bookwyrm-account-export.tar.gz"'  # pylint: disable=line-too-long
-            },
+
+        if settings.USE_S3:
+            # make custom_domain None so we can sign the url
+            # see https://github.com/jschneier/django-storages/issues/944
+            storage = S3Storage(querystring_auth=True, custom_domain=None)
+            try:
+                url = S3Storage.url(
+                    storage,
+                    f"/exports/{export.task_id}.tar.gz",
+                    expire=settings.S3_SIGNED_URL_EXPIRY,
+                )
+            except Exception:
+                raise Http404()
+            return redirect(url)
+
+        if settings.USE_AZURE:
+            # not implemented
+            return HttpResponseServerError()
+
+        try:
+            return HttpResponse(
+                export.export_data,
+                content_type="application/gzip",
+                headers={
+                    "Content-Disposition": 'attachment; filename="bookwyrm-account-export.tar.gz"'
+                },
+            )
+        except FileNotFoundError:
+            raise Http404()
+
+
+def get_average_export_time() -> float:
+    """Helper to figure out how long exports are taking (returns seconds)"""
+    last_week = timezone.now() - datetime.timedelta(days=7)
+    recent_avg = (
+        models.BookwyrmExportJob.objects.filter(
+            created_date__gte=last_week, complete=True
         )
+        .exclude(status="stopped")
+        .annotate(
+            runtime=ExpressionWrapper(
+                F("updated_date") - F("created_date"),
+                output_field=DurationField(),
+            )
+        )
+        .aggregate(Avg("runtime"))
+        .get("runtime__avg")
+    )
+
+    if recent_avg:
+        return recent_avg.total_seconds()
+    return None

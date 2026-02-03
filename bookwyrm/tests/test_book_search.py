@@ -1,8 +1,10 @@
-""" test searching for books """
+"""test searching for books"""
+
 import datetime
+from datetime import timezone
+
 from django.db import connection
 from django.test import TestCase
-from django.utils import timezone
 
 from bookwyrm import book_search, models
 from bookwyrm.connectors.abstract_connector import AbstractMinimalConnector
@@ -281,7 +283,6 @@ class SearchVectorTest(TestCase):
         book.refresh_from_db()
         self.assertEqual(
             book.search_vector,
-            # pylint: disable-next=line-too-long
             "'cool':5B 'goodby':3A 'long':2A 'name':9 'rays':7C 'seri':8 'the':6C 'wow':4B",
         )
 

@@ -1,4 +1,5 @@
-""" inventaire data connector """
+"""inventaire data connector"""
+
 import re
 from typing import Any, Union, Optional, Iterator, Iterable
 
@@ -66,7 +67,7 @@ class Connector(AbstractConnector):
         return f"{self.books_url}?action=by-uris&uris={value}"
 
     def get_book_data(self, remote_id: str) -> JsonDict:
-        data = get_data(remote_id)
+        data = get_data(remote_id, is_activitypub=False)
         extracted = list(data.get("entities", {}).values())
         try:
             data = extracted[0]
@@ -85,12 +86,15 @@ class Connector(AbstractConnector):
     def parse_search_data(
         self, data: JsonDict, min_confidence: float
     ) -> Iterator[SearchResult]:
+        best_score = None
         for search_result in data.get("results", []):
-            images = search_result.get("image")
-            cover = f"{self.covers_url}/img/entities/{images[0]}" if images else None
+            image = search_result.get("image")
+            cover = f"{self.covers_url}{image}" if image else None
             # a deeply messy translation of inventaire's scores
             confidence = float(search_result.get("_score", 0.1))
-            confidence = 0.1 if confidence < 150 else 0.999
+            if best_score is None:
+                best_score = confidence
+            confidence = (confidence / best_score) - 0.001
             if confidence < min_confidence:
                 continue
             yield SearchResult(
@@ -126,9 +130,9 @@ class Connector(AbstractConnector):
 
     def load_edition_data(self, work_uri: str) -> JsonDict:
         """get a list of editions for a work"""
-        # pylint: disable=line-too-long
+
         url = f"{self.books_url}?action=reverse-claims&property=wdt:P629&value={work_uri}&sort=true"
-        return get_data(url)
+        return get_data(url, is_activitypub=False)
 
     def get_edition_from_work_data(self, data: JsonDict) -> JsonDict:
         work_uri = data.get("uri")
@@ -222,14 +226,15 @@ class Connector(AbstractConnector):
     def get_description(self, links: JsonDict) -> str:
         """grab an extracted excerpt from wikipedia"""
         link = links.get("enwiki")
-        if not link:
+        if not link or not link.get("title"):
             return ""
-        url = f"{self.base_url}/api/data?action=wp-extract&lang=en&title={link}"
+        title = link.get("title")
+        url = f"{self.base_url}/api/data?action=wp-extract&lang=en&title={title}"
         try:
-            data = get_data(url)
+            data = get_data(url, is_activitypub=False)
         except ConnectorException:
             return ""
-        return data.get("extract", "")
+        return str(data.get("extract", ""))
 
     def get_remote_id_from_model(self, obj: models.BookDataModel) -> str:
         """use get_remote_id to figure out the link from a model obj"""

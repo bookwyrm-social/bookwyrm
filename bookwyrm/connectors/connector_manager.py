@@ -1,4 +1,5 @@
-""" interface with whatever connectors the app has """
+"""interface with whatever connectors the app has"""
+
 from __future__ import annotations
 import asyncio
 import importlib
@@ -50,15 +51,13 @@ async def async_connector_search(
 @overload
 def search(
     query: str, *, min_confidence: float = 0.1, return_first: Literal[False]
-) -> list[abstract_connector.ConnectorResults]:
-    ...
+) -> list[abstract_connector.ConnectorResults]: ...
 
 
 @overload
 def search(
     query: str, *, min_confidence: float = 0.1, return_first: Literal[True]
-) -> Optional[SearchResult]:
-    ...
+) -> Optional[SearchResult]: ...
 
 
 def search(
@@ -111,16 +110,22 @@ def first_search_result(
 
 def get_connectors() -> Iterator[abstract_connector.AbstractConnector]:
     """load all connectors"""
-    for info in models.Connector.objects.filter(active=True).order_by("priority").all():
+    queryset = models.Connector.objects.filter(active=True)
+    if models.SiteSettings.get().disable_federation:
+        queryset = queryset.exclude(connector_file="bookwyrm_connector")
+
+    for info in queryset.order_by("priority").all():
         yield load_connector(info)
 
 
 def get_or_create_connector(remote_id: str) -> abstract_connector.AbstractConnector:
     """get the connector related to the object's server"""
     url = urlparse(remote_id)
-    identifier = url.netloc
+    identifier = url.hostname
     if not identifier:
-        raise ValueError("Invalid remote id")
+        raise ValueError(f"Invalid remote id: {remote_id}")
+
+    base_url = f"{url.scheme}://{url.netloc}"
 
     try:
         connector_info = models.Connector.objects.get(identifier=identifier)
@@ -128,10 +133,10 @@ def get_or_create_connector(remote_id: str) -> abstract_connector.AbstractConnec
         connector_info = models.Connector.objects.create(
             identifier=identifier,
             connector_file="bookwyrm_connector",
-            base_url=f"https://{identifier}",
-            books_url=f"https://{identifier}/book",
-            covers_url=f"https://{identifier}/images/covers",
-            search_url=f"https://{identifier}/search?q=",
+            base_url=base_url,
+            books_url=f"{base_url}/book",
+            covers_url=f"{base_url}/images/covers",
+            search_url=f"{base_url}/search?q=",
             priority=2,
         )
 
@@ -143,7 +148,9 @@ def load_more_data(connector_id: str, book_id: str) -> None:
     """background the work of getting all 10,000 editions of LoTR"""
     connector_info = models.Connector.objects.get(id=connector_id)
     connector = load_connector(connector_info)
-    book = models.Book.objects.select_subclasses().get(id=book_id)
+    book = models.Book.objects.select_subclasses().get(  # type: ignore[no-untyped-call]
+        id=book_id
+    )
     connector.expand_book_data(book)
 
 
@@ -154,7 +161,9 @@ def create_edition_task(
     """separate task for each of the 10,000 editions of LoTR"""
     connector_info = models.Connector.objects.get(id=connector_id)
     connector = load_connector(connector_info)
-    work = models.Work.objects.select_subclasses().get(id=work_id)
+    work = models.Work.objects.select_subclasses().get(  # type: ignore[no-untyped-call]
+        id=work_id
+    )
     connector.create_edition_from_data(work, data)
 
 
@@ -169,7 +178,6 @@ def load_connector(
 
 
 @receiver(signals.post_save, sender="bookwyrm.FederatedServer")
-# pylint: disable=unused-argument
 def create_connector(
     sender: Any,
     instance: models.FederatedServer,
@@ -185,11 +193,14 @@ def create_connector(
 def raise_not_valid_url(url: str) -> None:
     """do some basic reality checks on the url"""
     parsed = urlparse(url)
-    if not parsed.scheme in ["http", "https"]:
+    if parsed.scheme not in ["http", "https"]:
         raise ConnectorException("Invalid scheme: ", url)
 
+    if not parsed.hostname:
+        raise ConnectorException("Hostname missing: ", url)
+
     try:
-        ipaddress.ip_address(parsed.netloc)
+        ipaddress.ip_address(parsed.hostname)
         raise ConnectorException("Provided url is an IP address: ", url)
     except ValueError:
         # it's not an IP address, which is good
@@ -197,3 +208,41 @@ def raise_not_valid_url(url: str) -> None:
 
     if models.FederatedServer.is_blocked(url):
         raise ConnectorException(f"Attempting to load data from blocked url: {url}")
+
+
+def create_finna_connector() -> None:
+    """create a Finna connector"""
+
+    models.Connector.objects.create(
+        identifier="api.finna.fi",
+        name="Finna API",
+        connector_file="finna",
+        base_url="https://www.finna.fi",
+        books_url="https://api.finna.fi/api/v1/record?id=",
+        covers_url="https://api.finna.fi",
+        search_url="https://api.finna.fi/api/v1/search?limit=20"
+        "&filter[]=format%3a%220%2fBook%2f%22"
+        "&field[]=title&field[]=recordPage&field[]=authors"
+        "&field[]=year&field[]=id&field[]=formats&field[]=images"
+        "&lookfor=",
+        isbn_search_url="https://api.finna.fi/api/v1/search?limit=1"
+        "&filter[]=format%3a%220%2fBook%2f%22"
+        "&field[]=title&field[]=recordPage&field[]=authors&field[]=year"
+        "&field[]=id&field[]=formats&field[]=images"
+        "&lookfor=isbn:",
+    )
+
+
+def create_libris_connector() -> None:
+    """create a Libris connector"""
+
+    models.Connector.objects.create(
+        identifier="libris.kb.se",
+        name="Libris",
+        connector_file="libris",
+        base_url="https://libris.kb.se",
+        books_url="http://libris.kb.se/xsearch?format=json&format_level=full&n=1&query=",
+        covers_url="https://libris.kb.se",
+        search_url="http://libris.kb.se/xsearch?format=json&format_level=full&n=20&query=",
+        isbn_search_url="http://libris.kb.se/xsearch?format=json&format_level=full&n=5&query=isbn:",
+    )

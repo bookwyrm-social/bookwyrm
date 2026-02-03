@@ -1,4 +1,5 @@
-""" Forms for the landing pages """
+"""Forms for the landing pages"""
+
 from django import forms
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -12,7 +13,6 @@ from bookwyrm.settings import TWO_FACTOR_LOGIN_VALIDITY_WINDOW
 from .custom_form import CustomForm
 
 
-# pylint: disable=missing-class-docstring
 class LoginForm(CustomForm):
     class Meta:
         model = models.User
@@ -34,7 +34,6 @@ class LoginForm(CustomForm):
 
     def add_invalid_password_error(self):
         """We don't want to be too specific about this"""
-        # pylint: disable=attribute-defined-outside-init
         self.non_field_errors = _("Username or password are incorrect")
 
 
@@ -65,6 +64,10 @@ class InviteRequestForm(CustomForm):
         if email and models.User.objects.filter(email=email).exists():
             self.add_error("email", _("A user with this email already exists."))
 
+        email_domain = email.split("@")[-1]
+        if email and models.EmailBlocklist.objects.filter(domain=email_domain).exists():
+            self.add_error("email", _("This email address cannot be registered."))
+
     class Meta:
         model = models.InviteRequest
         fields = ["email", "answer"]
@@ -93,6 +96,24 @@ class PasswordResetForm(CustomForm):
             validate_password(new_password)
         except ValidationError as err:
             self.add_error("password", err)
+        return cleaned_data
+
+
+class ForcePasswordResetForm(PasswordResetForm):
+    current_password = forms.CharField(widget=forms.PasswordInput)
+
+    def clean(self):
+        """Make sure we aren't re-using the same password"""
+        cleaned_data = super().clean()
+        current_password = cleaned_data.get("current_password")
+        new_password = cleaned_data.get("password")
+
+        if current_password == new_password:
+            self.add_error(
+                "password",
+                _("Password cannot be the same as your current password"),
+            )
+        return cleaned_data
 
 
 class Confirm2FAForm(CustomForm):
@@ -110,7 +131,6 @@ class Confirm2FAForm(CustomForm):
         totp = pyotp.TOTP(self.instance.otp_secret)
 
         if not totp.verify(otp, valid_window=TWO_FACTOR_LOGIN_VALIDITY_WINDOW):
-
             if self.instance.hotp_secret:
                 # maybe it's a backup code?
                 hotp = pyotp.HOTP(self.instance.hotp_secret)

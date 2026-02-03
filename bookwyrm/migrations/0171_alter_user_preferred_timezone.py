@@ -10,6 +10,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        # The new timezones are "Factory" and "localtime"
         migrations.AlterField(
             model_name="user",
             name="preferred_timezone",

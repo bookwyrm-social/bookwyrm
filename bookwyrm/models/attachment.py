@@ -1,4 +1,5 @@
-""" media that is posted in the app """
+"""media that is posted in the app"""
+
 from django.db import models
 
 from bookwyrm import activitypub

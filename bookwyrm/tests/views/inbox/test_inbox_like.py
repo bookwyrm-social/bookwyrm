@@ -1,4 +1,5 @@
-""" tests incoming activities"""
+"""tests incoming activities"""
+
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -6,7 +7,6 @@ from django.test import TestCase
 from bookwyrm import models, views
 
 
-# pylint: disable=too-many-public-methods
 class InboxActivities(TestCase):
     """inbox tests"""
 
@@ -47,8 +47,6 @@ class InboxActivities(TestCase):
                 content="Test status",
                 remote_id="https://example.com/status/1",
             )
-
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

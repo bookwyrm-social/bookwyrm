@@ -1,8 +1,8 @@
-""" testing import """
+"""testing import"""
+
 import pathlib
 from unittest.mock import patch
 import datetime
-import pytz
 
 from django.test import TestCase
 
@@ -13,7 +13,7 @@ from bookwyrm.models.import_job import handle_imported_book
 
 def make_date(*args):
     """helper function to easily generate a date obj"""
-    return datetime.datetime(*args, tzinfo=pytz.UTC)
+    return datetime.datetime(*args, tzinfo=datetime.timezone.utc)
 
 
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -26,7 +26,7 @@ class OpenLibraryImport(TestCase):
         """use a test csv"""
         self.importer = OpenLibraryImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/openlibrary.csv")
-        # pylint: disable-next=consider-using-with
+
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
 
     def tearDown(self):
@@ -44,7 +44,6 @@ class OpenLibraryImport(TestCase):
             cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
-        models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
         cls.book = models.Edition.objects.create(
             title="Example Edition",

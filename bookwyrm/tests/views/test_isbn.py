@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 
@@ -8,7 +9,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 
 
 class IsbnViews(TestCase):
@@ -37,7 +38,6 @@ class IsbnViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=cls.work,
         )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""
@@ -55,7 +55,7 @@ class IsbnViews(TestCase):
         data = json.loads(response.content)
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["title"], "Test Book")
-        self.assertEqual(data[0]["key"], f"https://{DOMAIN}/book/{self.book.id}")
+        self.assertEqual(data[0]["key"], f"{BASE_URL}/book/{self.book.id}")
 
     def test_isbn_html_response(self):
         """searches local data only and returns book data in json format"""

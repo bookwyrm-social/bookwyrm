@@ -1,4 +1,5 @@
-""" access the activity streams stored in redis """
+"""access the activity streams stored in redis"""
+
 from datetime import timedelta
 from django.dispatch import receiver
 from django.db import transaction
@@ -32,7 +33,7 @@ class ActivityStream(RedisStore):
         stream_id = self.stream_id(user_id)
         return f"{stream_id}-unread-by-type"
 
-    def get_rank(self, obj):  # pylint: disable=no-self-use
+    def get_rank(self, obj):
         """statuses are sorted by date published"""
         return obj.published_date.timestamp()
 
@@ -106,7 +107,7 @@ class ActivityStream(RedisStore):
         self.populate_store(self.stream_id(user.id))
 
     @tracer.start_as_current_span("ActivityStream._get_audience")
-    def _get_audience(self, status):  # pylint: disable=no-self-use
+    def _get_audience(self, status):
         """given a status, what users should see it, excluding the author"""
         trace.get_current_span().set_attribute("status_type", status.status_type)
         trace.get_current_span().set_attribute("status_privacy", status.privacy)
@@ -139,14 +140,14 @@ class ActivityStream(RedisStore):
                 | (
                     Q(following=status.user) & Q(following=status.reply_parent.user)
                 )  # if the user is following both authors
-            ).distinct()
+            )
 
         # only visible to the poster's followers and tagged users
         elif status.privacy == "followers":
             audience = audience.filter(
                 Q(following=status.user)  # if the user is following the author
             )
-        return audience.distinct()
+        return audience.distinct("id")
 
     @tracer.start_as_current_span("ActivityStream.get_audience")
     def get_audience(self, status):
@@ -156,13 +157,13 @@ class ActivityStream(RedisStore):
         status_author = models.User.objects.filter(
             is_active=True, local=True, id=status.user.id
         ).values_list("id", flat=True)
-        return list(set(list(audience) + list(status_author)))
+        return list(set(audience) | set(status_author))
 
     def get_stores_for_users(self, user_ids):
         """convert a list of user ids into redis store ids"""
         return [self.stream_id(user_id) for user_id in user_ids]
 
-    def get_statuses_for_user(self, user):  # pylint: disable=no-self-use
+    def get_statuses_for_user(self, user):
         """given a user, what statuses should they see on this stream"""
         return models.Status.privacy_filter(
             user,
@@ -183,15 +184,13 @@ class HomeStream(ActivityStream):
     def get_audience(self, status):
         trace.get_current_span().set_attribute("stream_id", self.key)
         audience = super()._get_audience(status)
-        if not audience:
-            return []
         # if the user is following the author
         audience = audience.filter(following=status.user).values_list("id", flat=True)
         # if the user is the post's author
         status_author = models.User.objects.filter(
             is_active=True, local=True, id=status.user.id
         ).values_list("id", flat=True)
-        return list(set(list(audience) + list(status_author)))
+        return list(set(audience) | set(status_author))
 
     def get_statuses_for_user(self, user):
         return models.Status.privacy_filter(
@@ -239,9 +238,7 @@ class BooksStream(ActivityStream):
         )
 
         audience = super()._get_audience(status)
-        if not audience:
-            return models.User.objects.none()
-        return audience.filter(shelfbook__book__parent_work=work).distinct()
+        return audience.filter(shelfbook__book__parent_work=work)
 
     def get_audience(self, status):
         # only show public statuses on the books feed,
@@ -318,7 +315,6 @@ streams = {
 
 
 @receiver(signals.post_save)
-# pylint: disable=unused-argument
 def add_status_on_create(sender, instance, created, *args, **kwargs):
     """add newly created statuses to activity feeds"""
     # we're only interested in new statuses
@@ -369,7 +365,6 @@ def add_status_on_create_command(sender, instance, created):
 
 
 @receiver(signals.post_delete, sender=models.Boost)
-# pylint: disable=unused-argument
 def remove_boost_on_delete(sender, instance, *args, **kwargs):
     """boosts are deleted"""
     # remove the boost
@@ -379,7 +374,6 @@ def remove_boost_on_delete(sender, instance, *args, **kwargs):
 
 
 @receiver(signals.post_save, sender=models.UserFollows)
-# pylint: disable=unused-argument
 def add_statuses_on_follow(sender, instance, created, *args, **kwargs):
     """add a newly followed user's statuses to feeds"""
     if not created or not instance.user_subject.local:
@@ -390,7 +384,6 @@ def add_statuses_on_follow(sender, instance, created, *args, **kwargs):
 
 
 @receiver(signals.post_delete, sender=models.UserFollows)
-# pylint: disable=unused-argument
 def remove_statuses_on_unfollow(sender, instance, *args, **kwargs):
     """remove statuses from a feed on unfollow"""
     if not instance.user_subject.local:
@@ -401,7 +394,6 @@ def remove_statuses_on_unfollow(sender, instance, *args, **kwargs):
 
 
 @receiver(signals.post_save, sender=models.UserBlocks)
-# pylint: disable=unused-argument
 def remove_statuses_on_block(sender, instance, *args, **kwargs):
     """remove statuses from all feeds on block"""
     # blocks apply ot all feeds
@@ -418,7 +410,6 @@ def remove_statuses_on_block(sender, instance, *args, **kwargs):
 
 
 @receiver(signals.post_delete, sender=models.UserBlocks)
-# pylint: disable=unused-argument
 def add_statuses_on_unblock(sender, instance, *args, **kwargs):
     """add statuses back to all feeds on unblock"""
     # make sure there isn't a block in the other direction
@@ -448,7 +439,6 @@ def add_statuses_on_unblock(sender, instance, *args, **kwargs):
 
 
 @receiver(signals.post_save, sender=models.User)
-# pylint: disable=unused-argument
 def populate_streams_on_account_create(sender, instance, created, *args, **kwargs):
     """build a user's feeds when they join"""
     if not created or not instance.local:
@@ -465,7 +455,6 @@ def populate_streams_on_account_create_command(instance_id):
 
 
 @receiver(signals.pre_save, sender=models.ShelfBook)
-# pylint: disable=unused-argument
 def add_statuses_on_shelve(sender, instance, *args, **kwargs):
     """update books stream when user shelves a book"""
     if not instance.user.local:
@@ -481,7 +470,6 @@ def add_statuses_on_shelve(sender, instance, *args, **kwargs):
 
 
 @receiver(signals.post_delete, sender=models.ShelfBook)
-# pylint: disable=unused-argument
 def remove_statuses_on_unshelve(sender, instance, *args, **kwargs):
     """update books stream when user unshelves a book"""
     if not instance.user.local:

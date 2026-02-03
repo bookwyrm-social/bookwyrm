@@ -1,4 +1,5 @@
-""" Installation wizard 🧙 """
+"""Installation wizard 🧙"""
+
 import re
 
 from django.contrib.auth import login
@@ -15,30 +16,31 @@ from bookwyrm import settings
 from bookwyrm.utils import regex
 
 
-# pylint: disable= no-self-use
 class InstanceConfig(View):
     """make sure the instance looks correct before adding any data"""
 
     def get(self, request):
         """Check out this cool instance"""
         # only allow this view when an instance is being configured
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         if not site.install_mode:
             raise PermissionDenied()
 
         # check for possible problems with the instance configuration
         warnings = {}
         warnings["debug"] = settings.DEBUG
-        warnings["invalid_domain"] = not re.match(rf"^{regex.DOMAIN}$", settings.DOMAIN)
-        warnings["protocol"] = not settings.DEBUG and not settings.USE_HTTPS
+        warnings["invalid_domain"] = not (
+            re.match(rf"^{regex.DOMAIN}$", settings.DOMAIN)
+            or (settings.DOMAIN == "localhost")
+        )
+        warnings["localhost"] = settings.DOMAIN == "localhost"
 
-        # pylint: disable=line-too-long
         data = {
             "warnings": warnings,
             "info": {
                 "domain": settings.DOMAIN,
+                "base_url": settings.BASE_URL,
                 "version": settings.VERSION,
-                "use_https": settings.USE_HTTPS,
                 "language": settings.LANGUAGE_CODE,
                 "use_s3": settings.USE_S3,
                 "email_sender": f"{settings.EMAIL_SENDER_NAME}@{settings.EMAIL_SENDER_DOMAIN}",
@@ -55,7 +57,7 @@ class CreateAdmin(View):
     def get(self, request):
         """Create admin user form"""
         # only allow this view when an instance is being configured
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         if not site.install_mode:
             raise PermissionDenied()
 
@@ -65,7 +67,7 @@ class CreateAdmin(View):
     @transaction.atomic
     def post(self, request):
         """Create that user"""
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         # you can't create an admin user if you're in config mode
         if not site.install_mode:
             raise PermissionDenied()
@@ -95,6 +97,21 @@ class CreateAdmin(View):
             pass
 
         login(request, user)
+
+        # record session
+        forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        if forwarded_for:
+            ip_address = forwarded_for.split(",")[0]
+        else:
+            ip_address = request.META.get("REMOTE_ADDR", "")
+        agent_string = request.META.get("HTTP_USER_AGENT", "")
+        models.create_user_session(
+            user_id=user.id,
+            session_key=request.session.session_key,
+            ip_address=ip_address,
+            agent_string=agent_string,
+        )
+
         site.install_mode = False
         site.save()
         get_representative()  # create the instance user

@@ -1,4 +1,5 @@
-""" tests functionality specifically for the Note ActivityPub dataclass"""
+"""tests functionality specifically for the Note ActivityPub dataclass"""
+
 from unittest.mock import patch
 
 from django.test import TestCase

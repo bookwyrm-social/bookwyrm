@@ -1,4 +1,5 @@
-""" using a bookwyrm instance as a source of book data """
+"""using a bookwyrm instance as a source of book data"""
+
 from __future__ import annotations
 from dataclasses import asdict, dataclass
 from functools import reduce
@@ -21,8 +22,7 @@ def search(
     min_confidence: float = 0,
     filters: Optional[list[Any]] = None,
     return_first: Literal[False],
-) -> QuerySet[models.Edition]:
-    ...
+) -> QuerySet[models.Edition]: ...
 
 
 @overload
@@ -32,11 +32,9 @@ def search(
     min_confidence: float = 0,
     filters: Optional[list[Any]] = None,
     return_first: Literal[True],
-) -> Optional[models.Edition]:
-    ...
+) -> Optional[models.Edition]: ...
 
 
-# pylint: disable=arguments-differ
 def search(
     query: str,
     *,
@@ -54,7 +52,7 @@ def search(
     results = None
     # first, try searching unique identifiers
     # unique identifiers never have spaces, title/author usually do
-    if not " " in query:
+    if " " not in query:
         results = search_identifiers(
             query, *filters, return_first=return_first, books=books
         )
@@ -116,7 +114,11 @@ def search_identifiers(
         # Oh did you think the 'S' in ISBN stood for 'standard'?
         normalized_isbn = query.strip().upper().rjust(10, "0")
         query = normalized_isbn
-    # pylint: disable=W0212
+        # Try first searching just for ISBN10 and ISBN13, assuming those are the most common
+        results = books.filter(*filters, Q(isbn_10=query) | Q(isbn_13=query)).distinct()
+        if results.exists():
+            return results
+
     or_filters = [
         {f.name: query}
         for f in models.Edition._meta.get_fields()
@@ -143,7 +145,7 @@ def search_title_author(
     query = SearchQuery(query, config="simple") | SearchQuery(query, config="english")
     results = (
         books.filter(*filters, search_vector=query)
-        .annotate(rank=SearchRank(F("search_vector"), query))
+        .annotate(rank=SearchRank(F("search_vector"), query, normalization=32))
         .filter(rank__gt=min_confidence)
         .order_by("-rank")
     )
@@ -180,7 +182,6 @@ class SearchResult:
     confidence: float = 1.0
 
     def __repr__(self):
-        # pylint: disable=consider-using-f-string
         return "<SearchResult key={!r} title={!r} author={!r} confidence={!r}>".format(
             self.key, self.title, self.author, self.confidence
         )

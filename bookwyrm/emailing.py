@@ -1,19 +1,21 @@
-""" send emails """
+"""send emails"""
+
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 
 from bookwyrm import models, settings
 from bookwyrm.tasks import app, EMAIL
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import DOMAIN, BASE_URL
 
 
 def email_data():
     """fields every email needs"""
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
     return {
         "site_name": site.name,
         "logo": site.logo_small_url,
         "domain": DOMAIN,
+        "base_url": BASE_URL,
         "user": None,
     }
 

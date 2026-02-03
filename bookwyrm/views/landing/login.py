@@ -1,8 +1,10 @@
-""" class views for login/register views """
+"""class views for login/register views"""
+
 import time
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -13,7 +15,6 @@ from bookwyrm import forms, models
 from bookwyrm.views.helpers import set_language
 
 
-# pylint: disable=no-self-use
 class Login(View):
     """authenticate an existing user"""
 
@@ -29,7 +30,6 @@ class Login(View):
         }
         return TemplateResponse(request, "landing/login.html", data)
 
-    # pylint: disable=too-many-return-statements
     @sensitive_variables("password")
     @method_decorator(sensitive_post_parameters("password"))
     def post(self, request):
@@ -46,6 +46,11 @@ class Login(View):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
+            # do they need to reset their password?
+            if user.force_password_reset:
+                request.session["force_reset_password_user"] = user.username
+                return redirect("force-password-reset")
+
             # if 2fa is set, don't log them in until they enter the right code
             if user.two_factor_auth:
                 request.session["2fa_user"] = user.username
@@ -55,6 +60,21 @@ class Login(View):
             # otherwise, successful login
             login(request, user)
             user.update_active_date()
+
+            # record session
+            forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+            if forwarded_for:
+                ip_address = forwarded_for.split(",")[0]
+            else:
+                ip_address = request.META.get("REMOTE_ADDR", "")
+            agent_string = request.META.get("HTTP_USER_AGENT", "")
+            models.create_user_session(
+                user_id=user.id,
+                session_key=request.session.session_key,
+                ip_address=ip_address,
+                agent_string=agent_string,
+            )
+
             if request.POST.get("first_login"):
                 return set_language(user, redirect("get-started-profile"))
 
@@ -95,5 +115,12 @@ class Logout(View):
 
     def post(self, request):
         """done with this place! outa here!"""
+        session_key = request.session.get("session_key")
         logout(request)
+        try:
+            sess = models.UserSession.objects.get(session_key=session_key)
+            sess.delete()
+        except ObjectDoesNotExist:
+            pass
+
         return redirect("/")

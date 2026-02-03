@@ -4,7 +4,6 @@ from django.db import migrations, models
 from django.db import connection
 from django.db.models import Q
 import django.db.models.deletion
-from psycopg2.extras import execute_values
 
 
 def convert_review_rating(app_registry, schema_editor):
@@ -19,8 +18,7 @@ def convert_review_rating(app_registry, schema_editor):
 
     with connection.cursor() as cursor:
         values = [(r.id,) for r in reviews]
-        execute_values(
-            cursor,
+        cursor.executemany(
             """
 INSERT INTO bookwyrm_reviewrating(review_ptr_id)
 VALUES %s""",

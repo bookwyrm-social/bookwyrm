@@ -1,4 +1,5 @@
-""" tests incoming activities"""
+"""tests incoming activities"""
+
 import json
 import pathlib
 from unittest.mock import patch
@@ -11,7 +12,6 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 
 
-# pylint: disable=too-many-public-methods
 class Inbox(TestCase):
     """readthrough tests"""
 
@@ -55,7 +55,6 @@ class Inbox(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        models.SiteSettings.objects.create()
 
     def test_inbox_invalid_get(self):
         """shouldn't try to handle if the user is not found"""
@@ -134,7 +133,9 @@ class Inbox(TestCase):
         """check for blocked servers"""
         request = self.factory.post(
             "",
-            HTTP_USER_AGENT="http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
+            headers={
+                "user-agent": "http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
+            },
         )
         self.assertIsNone(views.inbox.raise_is_blocked_user_agent(request))
 

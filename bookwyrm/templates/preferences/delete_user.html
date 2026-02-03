@@ -32,10 +32,11 @@
         <form name="delete-user" action="{% url 'prefs-delete' %}" method="post">
             {% csrf_token %}
             <div class="field">
-                <label class="label" for="id_password">{% trans "Confirm password:" %}</label>
-                <input class="input {% if form.password.errors %}is-danger{% endif %}" type="password" name="password" id="id_password" required aria-describedby="desc_password">
+                <label class="label" for="id_confirm">
+                    {% trans "I understand that my account cannot be recovered:" %}
+                    <input class="checkbox" type="checkbox" name="confirm" id="id_confirm" required>
+                </label>
 
-                {% include 'snippets/form_errors.html' with errors_list=form.password.errors id="desc_password" %}
             </div>
             <button type="submit" class="button is-danger">{% trans "Delete Account" %}</button>
         </form>

@@ -1,4 +1,5 @@
 """tests incoming activities"""
+
 from datetime import datetime
 from unittest.mock import patch
 
@@ -7,7 +8,6 @@ from django.test import TestCase
 from bookwyrm import models, views
 
 
-# pylint: disable=too-many-public-methods
 class InboxActivities(TestCase):
     """inbox tests"""
 
@@ -44,8 +44,6 @@ class InboxActivities(TestCase):
                 content="Test status",
                 remote_id="https://example.com/status/1",
             )
-
-        models.SiteSettings.objects.create()
 
     def test_delete_status(self):
         """remove a status"""

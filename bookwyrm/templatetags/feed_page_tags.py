@@ -1,4 +1,5 @@
-""" tags used on the feed pages """
+"""tags used on the feed pages"""
+
 from django import template
 from bookwyrm.views.feed import get_suggested_books
 

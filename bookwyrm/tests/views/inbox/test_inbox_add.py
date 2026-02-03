@@ -1,4 +1,5 @@
-""" tests incoming activities"""
+"""tests incoming activities"""
+
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -7,7 +8,6 @@ import responses
 from bookwyrm import models, views
 
 
-# pylint: disable=too-many-public-methods
 class InboxAdd(TestCase):
     """inbox tests"""
 
@@ -45,8 +45,6 @@ class InboxAdd(TestCase):
             remote_id="https://example.com/book/37292",
             parent_work=work,
         )
-
-        models.SiteSettings.objects.create()
 
     @responses.activate
     def test_handle_add_book_to_shelf(self):

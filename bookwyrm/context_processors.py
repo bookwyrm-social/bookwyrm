@@ -1,14 +1,15 @@
-""" customize the info available in context for rendering templates """
+"""customize the info available in context for rendering templates"""
+
 from bookwyrm import models, settings
 
 
-def site_settings(request):  # pylint: disable=unused-argument
+def site_settings(request):
     """include the custom info about the site"""
     request_protocol = "https://"
     if not request.is_secure():
         request_protocol = "http://"
 
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
     theme = "css/themes/bookwyrm-light.scss"
     if (
         hasattr(request, "user")

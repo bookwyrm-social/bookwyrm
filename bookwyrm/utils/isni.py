@@ -1,4 +1,5 @@
 """ISNI author checking utilities"""
+
 import xml.etree.ElementTree as ET
 from typing import Union, Optional
 
@@ -109,7 +110,6 @@ def find_authors_by_name(
     # build list of possible authors
     possible_authors = []
     for element in root.iter("responseRecord"):
-
         # TODO: we don't seem to do anything with the
         # personal_name variable - is this code block needed?
         personal_name = element.find(".//forename/..")
@@ -123,7 +123,6 @@ def find_authors_by_name(
             continue
 
         if bool(description):
-
             titles = []
             # prefer title records from LoC+ coop, Australia, Ireland, or Singapore
             # in that order

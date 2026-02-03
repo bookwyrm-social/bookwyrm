@@ -21,9 +21,10 @@ Is that where you'd like to go?
 <div class="is-flex-grow-1">
     <a href="{% url 'report-link' link.id %}">{% trans "Report spam" %}</a>
 </div>
+{% endif %}
 
 <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
 <a href="{{ link.url }}" target="_blank" rel="nofollow noopener noreferrer" noreferrer" class="button is-primary">{% trans "Continue" %}</a>
-{% endif %}
+
 
 {% endblock %}

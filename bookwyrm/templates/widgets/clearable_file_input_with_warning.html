@@ -24,8 +24,8 @@
     {% endif %}
 
     <input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
-    <span class="help file-cta is-hidden file-too-big">
-        {% trans "File exceeds maximum size: 10MB" %}
+    <span class="help file-cta is-hidden file-too-big has-background-danger-light">
+        {% blocktrans with max_size=widget.attrs.max_mb %}File exceeds maximum size: {{ max_size }}MB{% endblocktrans %}
     </span>
 </p>
 

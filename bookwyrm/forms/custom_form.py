@@ -1,4 +1,5 @@
-""" Overrides django's default form class """
+"""Overrides django's default form class"""
+
 from collections import defaultdict
 from django.forms import ModelForm
 from django.forms.widgets import Textarea
@@ -15,9 +16,9 @@ class StyledForm(ModelForm):
         css_classes["number"] = "input"
         css_classes["checkbox"] = "checkbox"
         css_classes["textarea"] = "textarea"
-        # pylint: disable=super-with-arguments
         super().__init__(*args, **kwargs)
         for visible in self.visible_fields():
+            input_type = ""
             if hasattr(visible.field.widget, "input_type"):
                 input_type = visible.field.widget.input_type
             if isinstance(visible.field.widget, Textarea):
@@ -29,7 +30,6 @@ class StyledForm(ModelForm):
 class CustomForm(StyledForm):
     """Check permissions on save"""
 
-    # pylint: disable=arguments-differ
     def save(self, request, *args, **kwargs):
         """Save and check perms"""
         self.instance.raise_not_editable(request.user)

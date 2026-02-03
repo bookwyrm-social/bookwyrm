@@ -1,4 +1,5 @@
-""" testing book data connectors """
+"""testing book data connectors"""
+
 from django.test import TestCase
 
 from bookwyrm import models

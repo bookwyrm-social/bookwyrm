@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 
@@ -11,7 +12,6 @@ from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
 
 
-# pylint: disable=unused-argument
 class ListViews(TestCase):
     """list view"""
 
@@ -43,8 +43,6 @@ class ListViews(TestCase):
             patch("bookwyrm.lists_stream.remove_list_task.delay"),
         ):
             cls.list = models.List.objects.create(name="Test List", user=cls.local_user)
-
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

@@ -1,4 +1,5 @@
-""" views for actions you can take in the application """
+"""views for actions you can take in the application"""
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -8,7 +9,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import models
 
-# pylint: disable= no-self-use
+
 @method_decorator(login_required, name="dispatch")
 class Block(View):
     """blocking users"""

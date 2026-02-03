@@ -15,6 +15,6 @@
     {% blocktrans trimmed count counter=notification.related_link_domains.count with display_count=notification.related_link_domains.count|intcomma %}
     A new <a href="{{ path }}">link domain</a> needs review
     {% plural %}
-    {{ display_count }} new <a href="{{ path }}">link domains</a> need moderation
+    {{ display_count }} new <a href="{{ path }}">link domains</a> need review
     {% endblocktrans %}
 {% endblock %}

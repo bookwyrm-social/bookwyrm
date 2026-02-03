@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import datetime
 import pathlib
 from unittest.mock import patch
@@ -31,7 +32,6 @@ class ImportViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""
@@ -123,8 +123,8 @@ class ImportViews(TestCase):
         """Give people a sense of the timing"""
         models.ImportJob.objects.create(
             user=self.local_user,
-            created_date=datetime.datetime(2000, 1, 1),
-            updated_date=datetime.datetime(2001, 1, 1),
+            created_date=datetime.datetime(2000, 1, 1, tzinfo=datetime.timezone.utc),
+            updated_date=datetime.datetime(2001, 1, 1, tzinfo=datetime.timezone.utc),
             status="complete",
             complete=True,
             mappings={},

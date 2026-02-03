@@ -1,4 +1,5 @@
-""" test for user export app functionality """
+"""test for user export app functionality"""
+
 from unittest.mock import patch
 
 from django.http import HttpResponse
@@ -13,8 +14,8 @@ class ExportUserViews(TestCase):
     """exporting user data"""
 
     def setUp(self):
+        self.site = models.SiteSettings.get()
         self.factory = RequestFactory()
-        models.SiteSettings.objects.create()
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
             patch("bookwyrm.activitystreams.populate_stream_task.delay"),
@@ -42,7 +43,7 @@ class ExportUserViews(TestCase):
 
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.models.bookwyrm_export_job.start_export_task.delay"):
+        with patch("bookwyrm.models.bookwyrm_export_job.BookwyrmExportJob.start_job"):
             export = views.ExportUser.as_view()(request)
         self.assertIsInstance(export, HttpResponse)
         self.assertEqual(export.status_code, 302)

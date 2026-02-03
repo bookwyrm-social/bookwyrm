@@ -1,4 +1,5 @@
-""" quotation activity object serializer class """
+"""quotation activity object serializer class"""
+
 import json
 import pathlib
 from unittest.mock import patch

@@ -35,13 +35,13 @@
     </div>
     {% endif %}
 
-    {% if warnings.protocol %}
+    {% if warnings.localhost %}
     <div class="notification is-danger is-flex is-align-items-start">
         <span class="icon icon-warning is-size-4 pr-3" aria-hidden="true"></span>
         <span>
             {% blocktrans trimmed %}
-            You are running BookWyrm in production mode without https.
-            <strong>USE_HTTPS</strong> should be enabled in production.
+            You are running BookWyrm with <code>localhost</code>.
+            This should <strong>never</strong> be used in a production environment.
             {% endblocktrans %}
         </span>
     </div>
@@ -58,18 +58,12 @@
                     <dd>
                         {{ info.domain }}
                     </dd>
-
-                    <dt class="is-pulled-left mr-5 has-text-weight-bold">
-                        {% trans "Protocol:" %}
+                    <dt class="is-pulled-left mr-3 has-text-weight-bold">
+                        {% trans "Instance base URL:" %}
                     </dt>
                     <dd>
-                        {% if info.use_https %}
-                        <span class="tag is-success">https</span>
-                        {% else %}
-                        <span class="tag is-danger">http</span>
-                        {% endif %}
+                        {{ info.base_url }}
                     </dd>
-
                     <dt class="is-pulled-left mr-5 has-text-weight-bold">
                         {% trans "Software version:" %}
                     </dt>
@@ -126,12 +120,13 @@
 
 <div class="block content">
     <h2 class="title is-4">{% trans "Does everything look right?" %}</h2>
-    <p class="subtitle help">
-        {% blocktrans trimmed %}
-            This is your last chance to set your domain and protocol.
-        {% endblocktrans %}
-    </p>
-
+    <div class="notification is-warning">
+        <p>
+            {% blocktrans trimmed %}
+                This is your last chance to set your domain and protocol.
+            {% endblocktrans %}
+        </p>
+    </div>
     <div class="box">
         <div class="control">
             <a class="button is-primary" href="{% url 'setup-admin' %}">

@@ -481,7 +481,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="notification",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     notification_type__in=[
                         "FAVORITE",
                         "REPLY",
@@ -496,7 +496,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="userblocks",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     _negated=True,
                     user_subject=django.db.models.expressions.F("user_object"),
                 ),
@@ -506,7 +506,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="userfollowrequest",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     _negated=True,
                     user_subject=django.db.models.expressions.F("user_object"),
                 ),
@@ -516,7 +516,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="userfollows",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     _negated=True,
                     user_subject=django.db.models.expressions.F("user_object"),
                 ),
@@ -610,7 +610,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="connector",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     connector_file__in=bookwyrm.models.connector.ConnectorFiles
                 ),
                 name="connector_file_valid",
@@ -841,7 +841,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="notification",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     notification_type__in=[
                         "FAVORITE",
                         "REPLY",
@@ -1099,7 +1099,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="notification",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     notification_type__in=[
                         "FAVORITE",
                         "REPLY",
@@ -1182,7 +1182,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="notification",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     notification_type__in=[
                         "FAVORITE",
                         "REPLY",
@@ -1644,7 +1644,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="notification",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     notification_type__in=[
                         "FAVORITE",
                         "REPLY",

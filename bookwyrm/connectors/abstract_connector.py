@@ -1,14 +1,14 @@
-""" functionality outline for a book data connector """
+"""functionality outline for a book data connector"""
+
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Optional, TypedDict, Any, Callable, Union, Iterator
 from urllib.parse import quote_plus
 
-# pylint: disable-next=deprecated-module
-import imghdr  # Deprecated in 3.11 for removal in 3.13; no good alternative yet
 import logging
 import re
 import asyncio
+from PIL import Image, UnidentifiedImageError
 import requests
 from requests.exceptions import RequestException
 import aiohttp
@@ -79,14 +79,14 @@ class AbstractMinimalConnector(ABC):
         query: str,
     ) -> Optional[ConnectorResults]:
         """try this specific connector"""
-        # pylint: disable=line-too-long
+
         headers = {
             "Accept": (
                 'application/json, application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8'
             ),
             "User-Agent": USER_AGENT,
         }
-        params = {"min_confidence": min_confidence}
+        params = {"min_confidence": str(min_confidence)}
         try:
             async with session.get(url, headers=headers, params=params) as response:
                 if not response.ok:
@@ -189,9 +189,9 @@ class AbstractConnector(AbstractMinimalConnector):
         load_more_data.delay(self.connector.id, work.id)
         return edition
 
-    def get_book_data(self, remote_id: str) -> JsonDict:  # pylint: disable=no-self-use
+    def get_book_data(self, remote_id: str) -> JsonDict:
         """this allows connectors to override the default behavior"""
-        return get_data(remote_id)
+        return get_data(remote_id, is_activitypub=False)
 
     def create_edition_from_data(
         self,
@@ -310,8 +310,13 @@ def get_data(
     url: str,
     params: Optional[dict[str, str]] = None,
     timeout: int = settings.QUERY_TIMEOUT,
+    is_activitypub: bool = True,
 ) -> JsonDict:
     """wrapper for request.get"""
+    # make sure this isn't a forbidden federated request
+    if is_activitypub:
+        models.SiteSettings.raise_federation_disabled()
+
     # check if the url is blocked
     raise_not_valid_url(url)
 
@@ -319,7 +324,7 @@ def get_data(
         resp = requests.get(
             url,
             params=params,
-            headers={  # pylint: disable=line-too-long
+            headers={
                 "Accept": (
                     'application/json, application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8'
                 ),
@@ -370,12 +375,13 @@ def get_image(
         return None, None
 
     image_content = ContentFile(resp.content)
-    extension = imghdr.what(None, image_content.read())
-    if not extension:
+    try:
+        with Image.open(image_content) as im:
+            extension = str(im.format).lower()
+            return image_content, extension
+    except UnidentifiedImageError:
         logger.info("File requested was not an image: %s", url)
         return None, None
-
-    return image_content, extension
 
 
 class Mapping:
@@ -400,7 +406,7 @@ class Mapping:
             return None
         try:
             return self.formatter(value)
-        except:  # pylint: disable=bare-except
+        except:
             return None
 
 

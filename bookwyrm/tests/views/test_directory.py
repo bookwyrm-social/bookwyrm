@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
@@ -9,7 +10,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
 
-# pylint: disable=unused-argument
+
 class DirectoryViews(TestCase):
     """tag views"""
 
@@ -29,7 +30,6 @@ class DirectoryViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

@@ -1,4 +1,5 @@
-""" the good stuff! the books! """
+"""the good stuff! the books!"""
+
 from functools import reduce
 import operator
 
@@ -7,24 +8,25 @@ from django.core.cache import cache as django_cache
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views import View
 from django.views.decorators.http import require_POST
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request
+from bookwyrm.views.helpers import is_api_request, get_mergeable_object_or_404
 
 
-# pylint: disable=no-self-use
 class Editions(View):
     """list of editions"""
 
+    @vary_on_headers("Accept")
     def get(self, request, book_id):
         """list of editions of a book"""
-        work = get_object_or_404(models.Work, id=book_id)
+        work = get_mergeable_object_or_404(models.Work, id=book_id)
 
         if is_api_request(request):
             return ActivitypubResponse(work.to_edition_list(**request.GET))
@@ -71,7 +73,9 @@ class Editions(View):
             "work_form": forms.EditionFromWorkForm(instance=work),
             "languages": languages,
             "formats": set(
-                e.physical_format.lower() for e in editions if e.physical_format
+                e.get_physical_format_display().lower()
+                for e in editions
+                if e.physical_format
             ),
         }
         return TemplateResponse(request, "book/editions/editions.html", data)
@@ -83,7 +87,7 @@ class Editions(View):
 def switch_edition(request):
     """switch your copy of a book to a different edition"""
     edition_id = request.POST.get("edition")
-    new_edition = get_object_or_404(models.Edition, id=edition_id)
+    new_edition = get_mergeable_object_or_404(models.Edition, id=edition_id)
     shelfbooks = models.ShelfBook.objects.filter(
         book__parent_work=new_edition.parent_work, shelf__user=request.user
     )

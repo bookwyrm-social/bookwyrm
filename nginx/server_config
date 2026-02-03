@@ -1,4 +1,4 @@
-client_max_body_size 10m;
+client_max_body_size ${MAX_UPLOAD_MiB}m;
 limit_req_zone $binary_remote_addr zone=loginlimit:10m rate=1r/s;
 
 # include the cache status in the log message
@@ -20,3 +20,7 @@ proxy_cache_path
 # since activitypub endpoints have both HTML and JSON
 # on the same URI.
 proxy_cache_key $scheme$proxy_host$uri$is_args$args$http_accept;
+# only let one request to populate cache, see https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_cache_lock
+proxy_cache_lock on;
+proxy_cache_lock_age 10s;
+proxy_cache_lock_timeout 10s;

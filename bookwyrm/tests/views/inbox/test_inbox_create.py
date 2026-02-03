@@ -1,4 +1,5 @@
-""" tests incoming activities"""
+"""tests incoming activities"""
+
 import json
 import pathlib
 from unittest.mock import patch
@@ -9,7 +10,6 @@ from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitySerializerError
 
 
-# pylint: disable=too-many-public-methods
 class TransactionInboxCreate(TransactionTestCase):
     """readthrough tests"""
 
@@ -48,7 +48,6 @@ class TransactionInboxCreate(TransactionTestCase):
             "cc": ["https://example.com/user/mouse/followers"],
             "object": {},
         }
-        models.SiteSettings.objects.create()
 
     def test_create_status_transaction(self, *_):
         """the "it justs works" mode"""
