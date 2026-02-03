@@ -1,4 +1,5 @@
-""" redis cache status """
+"""redis cache status"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -8,6 +9,7 @@ import redis
 from bookwyrm import models, settings
 
 r = redis.from_url(settings.REDIS_ACTIVITY_URL)
+
 
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
