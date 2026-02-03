@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-03 18:12+0000\n"
-"PO-Revision-Date: 2026-02-03 19:48\n"
+"PO-Revision-Date: 2026-02-03 22:51\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -67,11 +67,11 @@ msgstr "De einddatum van lezen kan niet in de toekomst liggen."
 
 #: bookwyrm/forms/landing.py:37
 msgid "Username or password are incorrect"
-msgstr "Gebruikersnaam of wachtwoord is onjuist"
+msgstr "Gebruikersnaam of wachtwoord onjuist"
 
 #: bookwyrm/forms/landing.py:56
 msgid "User with this username already exists"
-msgstr "Er bestaat al een gebruiker met deze gebruikersnaam"
+msgstr "Deze gebruikersnaam is al bezet"
 
 #: bookwyrm/forms/landing.py:65
 msgid "A user with this email already exists."
@@ -79,7 +79,7 @@ msgstr "Er bestaat al een gebruiker met dit e-mailadres."
 
 #: bookwyrm/forms/landing.py:69
 msgid "This email address cannot be registered."
-msgstr "Dit e-mailadres kan niet geregistreerd worden."
+msgstr "Dit e-mailadres kan niet gebruikt worden."
 
 #: bookwyrm/forms/landing.py:114
 msgid "Password cannot be the same as your current password"
@@ -91,11 +91,11 @@ msgstr "Ongeldige code"
 
 #: bookwyrm/forms/links.py:35
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
-msgstr "Dit domein is geblokkeerd. Neem contact op met uw beheerder als u denkt dat dit een fout is."
+msgstr "Dit domein is geblokkeerd. Neem contact op met je beheerder als je denkt dat dit een fout is."
 
 #: bookwyrm/forms/links.py:50
 msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr "Deze koppeling met het bestandstype is al toegevoegd voor dit boek. Als deze niet zichtbaar is, is het domein nog steeds in behandeling."
+msgstr "Deze koppeling met dit bestandstype is al toegevoegd voor dit boek. Als deze niet zichtbaar is, is het domein nog steeds in behandeling."
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
@@ -181,7 +181,7 @@ msgstr "Luisterboek"
 
 #: bookwyrm/models/book.py:501
 msgid "eBook"
-msgstr "eBook"
+msgstr "E-book"
 
 #: bookwyrm/models/book.py:502
 msgid "Graphic novel"
@@ -1151,7 +1151,7 @@ msgstr "Bekijk op Finna"
 
 #: bookwyrm/templates/book/book.html:205
 msgid "View on Libris"
-msgstr ""
+msgstr "Bekijk op Libris"
 
 #: bookwyrm/templates/book/book.html:229
 #, python-format
@@ -1240,7 +1240,7 @@ msgstr "Toevoegen aan lijst"
 
 #: bookwyrm/templates/book/book.html:438
 msgid "Create new list..."
-msgstr ""
+msgstr "Nieuwe lijst aanmaken..."
 
 #: bookwyrm/templates/book/book.html:442
 #: bookwyrm/templates/book/cover_add_modal.html:32
@@ -1301,7 +1301,7 @@ msgstr "Finna-ID:"
 #: bookwyrm/templates/book/book_identifiers.html:65
 #: bookwyrm/templates/book/edit/edit_book_form.html:399
 msgid "Libris ID:"
-msgstr ""
+msgstr "Libris-ID:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1936,11 +1936,11 @@ msgstr "Relatie"
 
 #: bookwyrm/templates/directory/user_connection_filter.html:8
 msgid "Following users"
-msgstr ""
+msgstr "Volgende gebruikers"
 
 #: bookwyrm/templates/directory/user_connection_filter.html:12
 msgid "Not following users"
-msgstr ""
+msgstr "Niet-volgende gebruikers"
 
 #: bookwyrm/templates/directory/user_type_filter.html:5
 msgid "User type"
@@ -3751,7 +3751,7 @@ msgstr "Vergeten"
 
 #: bookwyrm/templates/lists/create_list_modal.html:6
 msgid "Create new list"
-msgstr ""
+msgstr "Nieuwe lijst aanmaken"
 
 #: bookwyrm/templates/lists/created_text.html:5
 #, python-format
