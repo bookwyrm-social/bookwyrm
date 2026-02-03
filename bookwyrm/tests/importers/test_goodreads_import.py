@@ -1,8 +1,8 @@
-""" testing import """
+"""testing import"""
+
 import pathlib
 from unittest.mock import patch
 import datetime
-import pytz
 
 from django.test import TestCase
 
@@ -13,10 +13,9 @@ from bookwyrm.models.import_job import handle_imported_book
 
 def make_date(*args):
     """helper function to easily generate a date obj"""
-    return datetime.datetime(*args, tzinfo=pytz.UTC)
+    return datetime.datetime(*args, tzinfo=datetime.timezone.utc)
 
 
-# pylint: disable=consider-using-with
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
@@ -27,20 +26,26 @@ class GoodreadsImport(TestCase):
         """use a test csv"""
         self.importer = GoodreadsImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
+
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
 
+    def tearDown(self):
+        """close test csv"""
+        self.csv.close()
+
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """populate database"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
-        models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,
@@ -52,12 +57,15 @@ class GoodreadsImport(TestCase):
             self.local_user, self.csv, False, "public"
         )
 
-        import_items = models.ImportItem.objects.filter(job=import_job).all()
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")
+        )
         self.assertEqual(len(import_items), 3)
         self.assertEqual(import_items[0].index, 0)
         self.assertEqual(import_items[0].data["Book Id"], "42036538")
         self.assertEqual(import_items[0].normalized_data["isbn_13"], '="9781250313195"')
         self.assertEqual(import_items[0].normalized_data["isbn_10"], '="1250313198"')
+        self.assertEqual(import_items[0].normalized_data["goodreads_key"], "42036538")
 
         self.assertEqual(import_items[1].index, 1)
         self.assertEqual(import_items[1].data["Book Id"], "52691223")
@@ -69,7 +77,9 @@ class GoodreadsImport(TestCase):
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "unlisted"
         )
-        import_items = models.ImportItem.objects.filter(job=import_job).all()[:2]
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")[:2]
+        )
 
         retry = self.importer.create_retry_job(
             self.local_user, import_job, import_items
@@ -79,7 +89,7 @@ class GoodreadsImport(TestCase):
         self.assertEqual(retry.include_reviews, False)
         self.assertEqual(retry.privacy, "unlisted")
 
-        retry_items = models.ImportItem.objects.filter(job=retry).all()
+        retry_items = models.ImportItem.objects.filter(job=retry).all().order_by("id")
         self.assertEqual(len(retry_items), 2)
         self.assertEqual(retry_items[0].index, 0)
         self.assertEqual(retry_items[0].data["Book Id"], "42036538")

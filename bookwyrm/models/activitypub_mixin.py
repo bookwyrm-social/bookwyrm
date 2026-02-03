@@ -1,4 +1,5 @@
-""" activitypub model functionality """
+"""activitypub model functionality"""
+
 import asyncio
 from base64 import b64encode
 from collections import namedtuple
@@ -15,6 +16,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 from django.apps import apps
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.utils.http import http_date
@@ -31,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 PropertyField = namedtuple("PropertyField", ("set_activity_from_field"))
 
-# pylint: disable=invalid-name
+
 def set_activity_from_property_field(activity, obj, field):
     """assign a model property value to the activity json"""
     activity[field[1]] = getattr(obj, field[0])
@@ -66,7 +68,6 @@ class ActivitypubMixin:
         )
         if hasattr(self, "property_fields"):
             self.activity_fields += [
-                # pylint: disable=cell-var-from-loop
                 PropertyField(lambda a, o: set_activity_from_property_field(a, o, f))
                 for f in self.property_fields
             ]
@@ -129,7 +130,25 @@ class ActivitypubMixin:
 
     def broadcast(self, activity, sender, software=None, queue=BROADCAST):
         """send out an activity"""
+        site_model = apps.get_model("bookwyrm.SiteSettings", require_ready=True)
+        try:
+            site_model.raise_federation_disabled()
+        except PermissionDenied:
+            return
+
+        # if we're posting about ShelfBooks, set a delay to give the base activity
+        # time to add the book on remote servers first to avoid race conditions
+        countdown = (
+            10
+            if (
+                isinstance(activity, object)
+                and not isinstance(activity["object"], str)
+                and activity["object"].get("type", None) in ["GeneratedNote", "Comment"]
+            )
+            else 0
+        )
         broadcast_task.apply_async(
+            countdown=countdown,
             args=(
                 sender.id,
                 json.dumps(activity, cls=activitypub.ActivityEncoder),
@@ -169,7 +188,7 @@ class ActivitypubMixin:
             # filter users first by whether they're using the desired software
             # this lets us send book updates only to other bw servers
             if software:
-                queryset = queryset.filter(bookwyrm_user=(software == "bookwyrm"))
+                queryset = queryset.filter(bookwyrm_user=software == "bookwyrm")
             # if there's a user, we only want to send to the user's followers
             if user:
                 queryset = queryset.filter(following=user)
@@ -192,7 +211,7 @@ class ActivitypubMixin:
         activity = generate_activity(self)
         return self.activity_serializer(**activity)
 
-    def to_activity(self, **kwargs):  # pylint: disable=unused-argument
+    def to_activity(self, **kwargs):
         """convert from a model to a json activity"""
         return self.to_activity_dataclass().serialize()
 
@@ -206,14 +225,10 @@ class ObjectMixin(ActivitypubMixin):
         created: Optional[bool] = None,
         software: Any = None,
         priority: str = BROADCAST,
+        broadcast: bool = True,
         **kwargs: Any,
     ) -> None:
         """broadcast created/updated/deleted objects as appropriate"""
-        broadcast = kwargs.get("broadcast", True)
-        # this bonus kwarg would cause an error in the base save method
-        if "broadcast" in kwargs:
-            del kwargs["broadcast"]
-
         created = created or not bool(self.id)
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
@@ -231,6 +246,7 @@ class ObjectMixin(ActivitypubMixin):
                 return
 
             try:
+                # TODO: here is where we might use an ActivityPub extension instead
                 # do we have a "pure" activitypub version of this for mastodon?
                 if software != "bookwyrm" and hasattr(self, "pure_content"):
                     pure_activity = self.to_create_activity(user, pure=True)
@@ -518,6 +534,11 @@ def unfurl_related_field(related_field, sort_field=None):
 @app.task(queue=BROADCAST)
 def broadcast_task(sender_id: int, activity: str, recipients: list[str]):
     """the celery task for broadcast"""
+    # checking this here ought to be redundant unless there are already-spawned tasks
+    # when federation is turned off. In that case this should prevent them from running.
+    site_model = apps.get_model("bookwyrm.SiteSettings", require_ready=True)
+    site_model.raise_federation_disabled()
+
     user_model = apps.get_model("bookwyrm.User", require_ready=True)
     sender = user_model.objects.select_related("key_pair").get(id=sender_id)
     asyncio.run(async_broadcast(recipients, sender, activity))
@@ -586,7 +607,6 @@ async def sign_and_send(
         logger.exception(err)
 
 
-# pylint: disable=unused-argument
 def to_ordered_collection_page(
     queryset, remote_id, id_only=False, page=1, pure=False, **kwargs
 ):

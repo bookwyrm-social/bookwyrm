@@ -13,6 +13,9 @@
     {% include 'snippets/opengraph.html' with title=book.title description=book|book_description image=book_image %}
 {% endblock %}
 
+{% block head_links %}
+    {% include 'snippets/dublincore.html' with book=book %}
+{% endblock %}
 {% block content %}
 {% if update_error %}
 <div class="notification is-danger is-light">
@@ -45,18 +48,22 @@
                     {% endif %}
 
                     {% if book.series %}
-                        <meta itemprop="position" content="{{ book.series_number }}">
+                        {% spaceless %}
                         <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
                         {% if book.authors.exists %}
                             <a href="{% url 'book-series-by' book.authors.first.id %}?series_name={{ book.series | urlencode }}"
                                itemprop="url">
                         {% endif %}
                         <span itemprop="name">{{ book.series }}</span>
-                        {% if book.series_number %} #{{ book.series_number }}{% endif %}
                         {% if book.authors.exists %}
                             </a>
                         {% endif %}
                         </span>
+                        {% if book.series_number %}
+                            <span>, #</span>
+                            <span itemprop="position">{{ book.series_number }}</span>
+                        {% endif %}
+                        {% endspaceless %}
                     {% endif %}
                 </p>
             {% endif %}
@@ -177,6 +184,28 @@
                     </a>
                 </p>
                 {% endif %}
+                {% if book.finna_key %}
+                <p>
+                    <a href="{{ book.finna_link }}" target="_blank" rel="nofollow noopener noreferrer">
+                        {% trans "View on Finna" %}
+                    </a>
+
+                    {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+                    <button class="button is-small button-paragraph" type="button" data-modal-open="finna_sync">
+                        <span class="icon icon-download" title="{{ button_text }}"></span>
+                        <span class="is-sr-only-mobile">{{ button_text }}</span>
+                    </button>
+                    {% include "book/sync_modal.html" with source="api.finna.fi" source_name="Finna" id="finna_sync" %}
+                    {% endif %}
+                </p>
+                {% endif %}
+                {% if book.libris_key %}
+                <p>
+                    <a href="{{ book.libris_link }}" target="_blank" rel="nofollow noopener noreferrer">
+                        {% trans "View on Libris" %}
+                    </a>
+                </p>
+                {% endif %}
             </section>
         </div>
 
@@ -190,7 +219,10 @@
                 >
                     <meta itemprop="ratingValue" content="{{ rating|floatformat }}">
                     <meta itemprop="reviewCount" content="{{ review_count }}">
-
+                    
+                    {% if review_count > 0 %}
+                    <a href="#reviews" class="has-text-link">
+                    {% endif %}
                     <span>
                         {% include 'snippets/stars.html' with rating=rating %}
 
@@ -200,6 +232,9 @@
                             ({{ review_count }} reviews)
                         {% endblocktrans %}
                     </span>
+                    {% if review_count > 0 %}
+                    </a>
+                    {% endif %}
                 </div>
 
                 {% with full=book|book_description itemprop='abstract' %}
@@ -400,13 +435,15 @@
                                 {% for list in list_options %}
                                 <option value="{{ list.id }}">{{ list.name }}</option>
                                 {% endfor %}
+                                <option value="NEW_LIST_CREATION">+ {% trans "Create new list..." %}</option>
                             </select>
                         </div>
                         <div class="control">
-                            <button type="submit" class="button is-link">{% trans "Add" %}</button>
+                            <button type="button" class="button is-link" name="button-book-list">{% trans "Add" %}</button>
                         </div>
                     </div>
                 </form>
+                {% include "lists/create_list_modal.html" with id="modal-create-list-with-book" %}
                 {% endif %}
             </section>
             {% endif %}

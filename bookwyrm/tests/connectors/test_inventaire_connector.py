@@ -1,4 +1,5 @@
-""" testing book data connectors """
+"""testing book data connectors"""
+
 import json
 import pathlib
 from unittest.mock import patch
@@ -15,7 +16,7 @@ class Inventaire(TestCase):
     """test loading data from inventaire.io"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """creates the connector in the database"""
         models.Connector.objects.create(
             identifier="inventaire.io",
@@ -212,11 +213,14 @@ class Inventaire(TestCase):
             json={"entities": {}},
         )
         data = {"uri": "blah"}
-        with patch(
-            "bookwyrm.connectors.inventaire.Connector.load_edition_data"
-        ) as loader_mock, patch(
-            "bookwyrm.connectors.inventaire.Connector.get_book_data"
-        ) as getter_mock:
+        with (
+            patch(
+                "bookwyrm.connectors.inventaire.Connector.load_edition_data"
+            ) as loader_mock,
+            patch(
+                "bookwyrm.connectors.inventaire.Connector.get_book_data"
+            ) as getter_mock,
+        ):
             loader_mock.return_value = {"uris": ["hello"]}
             self.connector.get_edition_from_work_data(data)
         self.assertTrue(getter_mock.called)
@@ -270,7 +274,9 @@ class Inventaire(TestCase):
             json={"extract": "hi hi"},
         )
 
-        extract = self.connector.get_description({"enwiki": "test_path"})
+        extract = self.connector.get_description(
+            {"enwiki": {"title": "test_path", "badges": "hello"}}
+        )
         self.assertEqual(extract, "hi hi")
 
     def test_remote_id_from_model(self):

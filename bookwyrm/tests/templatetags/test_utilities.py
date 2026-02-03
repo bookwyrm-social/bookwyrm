@@ -1,4 +1,5 @@
-""" style fixes and lookups for templates """
+"""style fixes and lookups for templates"""
+
 from collections import namedtuple
 import re
 from unittest.mock import patch
@@ -15,12 +16,14 @@ class UtilitiesTags(TestCase):
     """lotta different things here"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """create some filler objects"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.mouse",
                 "mouseword",
@@ -28,15 +31,15 @@ class UtilitiesTags(TestCase):
                 localname="mouse",
             )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.rat",
                 "ratword",
                 remote_id="http://example.com/rat",
                 local=False,
             )
-        self.author = models.Author.objects.create(name="Jessica", isni="4")
-        self.book = models.Edition.objects.create(title="Test Book")
+        cls.author = models.Author.objects.create(name="Jessica", isni="4")
+        cls.book = models.Edition.objects.create(title="Test Book")
 
     def test_get_uuid(self, *_):
         """uuid functionality"""
@@ -87,3 +90,17 @@ class UtilitiesTags(TestCase):
 
         result = utilities.get_isni_bio(data, self.author)
         self.assertEqual(result, "Author of <em>One\\Dtwo</em>")
+
+    def test_id_to_username(self, *_):
+        """given an arbitrary remote id, return the username"""
+        self.assertEqual(
+            utilities.id_to_username("http://example.com/rat"), "rat@example.com"
+        )
+        self.assertEqual(utilities.id_to_username(None), "a new user account")
+
+    def test_get_file_size(self, *_):
+        """display the size of a file in human readable terms"""
+        self.assertEqual(utilities.get_file_size(5), "5.0 bytes")
+        self.assertEqual(utilities.get_file_size(5120), "5.00 KB")
+        self.assertEqual(utilities.get_file_size(5242880), "5.00 MB")
+        self.assertEqual(utilities.get_file_size(5368709000), "5.00 GB")

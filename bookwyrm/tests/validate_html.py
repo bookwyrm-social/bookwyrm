@@ -1,4 +1,5 @@
-""" html validation on rendered templates """
+"""html validation on rendered templates"""
+
 from html.parser import HTMLParser
 from tidylib import tidy_document
 
@@ -35,14 +36,14 @@ def validate_html(html):
         e for e in errors.split("\n") if not any(exclude in e for exclude in excluded)
     )
     if errors:
-        raise Exception(errors)
+        raise ValueError(errors)
 
     validator = HtmlValidator()
     # will raise exceptions
     validator.feed(str(html.content))
 
 
-class HtmlValidator(HTMLParser):  # pylint: disable=abstract-method
+class HtmlValidator(HTMLParser):
     """Checks for custom html validation requirements"""
 
     def __init__(self):
@@ -62,6 +63,6 @@ class HtmlValidator(HTMLParser):  # pylint: disable=abstract-method
                 and "noreferrer" in value
             ):
                 return
-        raise Exception(
+        raise ValueError(
             'Links to a new tab must have rel="nofollow noopener noreferrer"'
         )

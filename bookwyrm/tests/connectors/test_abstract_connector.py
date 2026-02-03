@@ -1,4 +1,5 @@
-""" testing book data connectors """
+"""testing book data connectors"""
+
 from unittest.mock import patch
 from django.test import TestCase
 import responses
@@ -6,14 +7,14 @@ import responses
 from bookwyrm import models
 from bookwyrm.connectors import abstract_connector, ConnectorException
 from bookwyrm.connectors.abstract_connector import Mapping, get_data
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
 
 
 class AbstractConnector(TestCase):
     """generic code for connecting to outside data sources"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need an example connector in the database"""
         models.Connector.objects.create(
             identifier="example.com",
@@ -23,7 +24,7 @@ class AbstractConnector(TestCase):
             covers_url="https://example.com/covers",
             search_url="https://example.com/search?q=",
         )
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Test Book",
             remote_id="https://example.com/book/1234",
             openlibrary_key="OL1234M",
@@ -86,7 +87,7 @@ class AbstractConnector(TestCase):
     def test_get_or_create_book_existing(self):
         """find an existing book by remote/origin id"""
         self.assertEqual(models.Book.objects.count(), 1)
-        self.assertEqual(self.book.remote_id, f"https://{DOMAIN}/book/{self.book.id}")
+        self.assertEqual(self.book.remote_id, f"{BASE_URL}/book/{self.book.id}")
         self.assertEqual(self.book.origin_id, "https://example.com/book/1234")
 
         # dedupe by origin id
@@ -95,9 +96,7 @@ class AbstractConnector(TestCase):
         self.assertEqual(result, self.book)
 
         # dedupe by remote id
-        result = self.connector.get_or_create_book(
-            f"https://{DOMAIN}/book/{self.book.id}"
-        )
+        result = self.connector.get_or_create_book(f"{BASE_URL}/book/{self.book.id}")
 
         self.assertEqual(models.Book.objects.count(), 1)
         self.assertEqual(result, self.book)
@@ -117,7 +116,6 @@ class AbstractConnector(TestCase):
     @responses.activate
     def test_get_or_create_author(self):
         """load an author"""
-        # pylint: disable=attribute-defined-outside-init
         self.connector.author_mappings = [
             Mapping("id"),
             Mapping("name"),
@@ -143,7 +141,6 @@ class AbstractConnector(TestCase):
     def test_update_author_from_remote(self):
         """trigger the function that looks up the remote data"""
         author = models.Author.objects.create(name="Test", openlibrary_key="OL123A")
-        # pylint: disable=attribute-defined-outside-init
         self.connector.author_mappings = [
             Mapping("id"),
             Mapping("name"),

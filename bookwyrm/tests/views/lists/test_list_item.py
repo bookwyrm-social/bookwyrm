@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -7,18 +8,18 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 
 
-# pylint: disable=unused-argument
-# pylint: disable=too-many-public-methods
 class ListItemViews(TestCase):
     """list view"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -27,19 +28,16 @@ class ListItemViews(TestCase):
                 remote_id="https://example.com/users/mouse",
             )
         work = models.Work.objects.create(title="Work")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,
         )
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
-            self.list = models.List.objects.create(
-                name="Test List", user=self.local_user
-            )
-
-        models.SiteSettings.objects.create()
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+        ):
+            cls.list = models.List.objects.create(name="Test List", user=cls.local_user)
 
     def setUp(self):
         """individual test setup"""

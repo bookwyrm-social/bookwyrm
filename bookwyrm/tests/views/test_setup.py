@@ -1,6 +1,8 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
+from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -14,9 +16,11 @@ class SetupViews(TestCase):
     """activity feed, statuses, dms"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.site = models.SiteSettings.objects.create(install_mode=True)
+        cls.site = models.SiteSettings.get()
+        cls.site.install_mode = True
+        cls.site.save()
 
     def setUp(self):
         """individual test setup"""
@@ -68,6 +72,11 @@ class SetupViews(TestCase):
         form.data["password"] = "mouseword"
         form.data["email"] = "aaa@bbb.ccc"
         request = self.factory.post("", form.data)
+
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+        request.session["session_key"] = "1234abcd"
+        request.session.save()
 
         with patch("bookwyrm.views.setup.login") as mock:
             view(request)

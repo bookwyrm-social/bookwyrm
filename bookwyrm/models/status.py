@@ -1,6 +1,7 @@
-""" models for storing different kinds of Activities """
+"""models for storing different kinds of Activities"""
+
 from dataclasses import MISSING
-from typing import Optional
+from typing import Optional, Iterable
 import re
 
 from django.apps import apps
@@ -20,6 +21,7 @@ from model_utils.managers import InheritanceManager
 from bookwyrm import activitypub
 from bookwyrm.preview_images import generate_edition_preview_image_task
 from bookwyrm.settings import ENABLE_PREVIEW_IMAGES
+from bookwyrm.utils.db import add_update_fields
 from .activitypub_mixin import ActivitypubMixin, ActivityMixin
 from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
@@ -80,19 +82,24 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """default sorting"""
 
         ordering = ("-published_date",)
+        indexes = [
+            models.Index(fields=["remote_id"]),
+            models.Index(fields=["thread_id"]),
+        ]
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
         """save and notify"""
-        if self.reply_parent:
+        if self.thread_id is None and self.reply_parent:
             self.thread_id = self.reply_parent.thread_id or self.reply_parent_id
+            update_fields = add_update_fields(update_fields, "thread_id")
 
-        super().save(*args, **kwargs)
+        super().save(*args, update_fields=update_fields, **kwargs)
 
         if not self.reply_parent:
             self.thread_id = self.id
             super().save(broadcast=False, update_fields=["thread_id"])
 
-    def delete(self, *args, **kwargs):  # pylint: disable=unused-argument
+    def delete(self, *args, **kwargs):
         """ "delete" a status"""
         if hasattr(self, "boosted_status"):
             # okay but if it's a boost really delete it
@@ -102,7 +109,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         # clear user content
         self.content = None
         if hasattr(self, "quotation"):
-            self.quotation = None  # pylint: disable=attribute-defined-outside-init
+            self.quotation = None
         self.deleted_date = timezone.now()
         self.save(*args, **kwargs)
 
@@ -119,9 +126,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return list(mentions)
 
     @classmethod
-    def ignore_activity(
-        cls, activity, allow_external_connections=True
-    ):  # pylint: disable=too-many-return-statements
+    def ignore_activity(cls, activity, allow_external_connections=True):
         """keep notes if they are replies to existing statuses"""
         if activity.type == "Announce":
             boosted = activitypub.resolve_remote_id(
@@ -207,7 +212,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             **kwargs,
         ).serialize()
 
-    def to_activity_dataclass(self, pure=False):  # pylint: disable=arguments-differ
+    def to_activity_dataclass(self, pure=False):
         """return tombstone if the status is deleted"""
         if self.deleted:
             return activitypub.Tombstone(
@@ -247,7 +252,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             activity.attachment = covers
         return activity
 
-    def to_activity(self, pure=False):  # pylint: disable=arguments-differ
+    def to_activity(self, pure=False):
         """json serialized activitypub class"""
         return self.to_activity_dataclass(pure=pure).serialize()
 
@@ -347,8 +352,7 @@ class Comment(BookStatus):
         """indicate the book in question for mastodon (or w/e) users"""
         progress = self.progress or 0
         citation = (
-            f'comment on <a href="{self.book.remote_id}">'
-            f"<i>{self.book.title}</i></a>"
+            f'comment on <a href="{self.book.remote_id}"><i>{self.book.title}</i></a>'
         )
         if self.progress_mode == "PG" and progress > 0:
             citation += f", p. {progress}"
@@ -388,10 +392,10 @@ class Quotation(BookStatus):
     def _format_position(self) -> Optional[str]:
         """serialize page position"""
         beg = self.position
-        end = self.endposition or 0
+        end = self.endposition
         if self.position_mode != "PG" or not beg:
             return None
-        return f"pp. {beg}-{end}" if end > beg else f"p. {beg}"
+        return f"pp. {beg}-{end}" if end else f"p. {beg}"
 
     @property
     def pure_content(self):
@@ -455,9 +459,10 @@ class Review(BookStatus):
 
     def save(self, *args, **kwargs):
         """clear rating caches"""
+        super().save(*args, **kwargs)
+
         if self.book.parent_work:
             cache.delete(f"book-rating-{self.book.parent_work.id}")
-        super().save(*args, **kwargs)
 
 
 class ReviewRating(Review):
@@ -526,7 +531,6 @@ class Boost(ActivityMixin, Status):
         self.deserialize_reverse_fields = []
 
 
-# pylint: disable=unused-argument
 @receiver(models.signals.post_save)
 def preview_image(instance, sender, *args, **kwargs):
     """Updates book previews if the rating has changed"""

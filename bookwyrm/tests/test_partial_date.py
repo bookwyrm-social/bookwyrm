@@ -1,10 +1,10 @@
-""" test partial_date module """
+"""test partial_date module"""
 
 import datetime
+from datetime import timezone
 import unittest
 
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 from django.utils import translation
 
 from bookwyrm.utils import partial_date
@@ -12,8 +12,6 @@ from bookwyrm.utils import partial_date
 
 class PartialDateTest(unittest.TestCase):
     """test PartialDate class in isolation"""
-
-    # pylint: disable=missing-function-docstring
 
     def setUp(self):
         self._dt = datetime.datetime(2023, 10, 20, 17, 33, 10, tzinfo=timezone.utc)
@@ -104,8 +102,6 @@ class PartialDateTest(unittest.TestCase):
 
 class PartialDateFormFieldTest(unittest.TestCase):
     """test form support for PartialDate objects"""
-
-    # pylint: disable=missing-function-docstring
 
     def setUp(self):
         self._dt = datetime.datetime(2022, 11, 21, 17, 1, 0, tzinfo=timezone.utc)

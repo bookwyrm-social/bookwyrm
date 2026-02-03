@@ -6,7 +6,7 @@
             name="progress"
             class="input"
             id="{{ field_id }}"
-            value="{{ readthrough.progress }}"
+            value="{{ readthrough.progress|default_if_none:'' }}"
             {% if progress_required %}required{% endif %}
         >
     </div>

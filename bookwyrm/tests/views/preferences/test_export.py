@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.http import HttpResponse
@@ -18,14 +19,13 @@ class ExportViews(TestCase):
     """viewing and creating statuses"""
 
     @classmethod
-    def setUpTestData(
-        self,
-    ):  # pylint: disable=bad-classmethod-argument, disable=invalid-name
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
         ):
-            self.local_user = models.User.objects.create_user(
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -33,16 +33,16 @@ class ExportViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.work = models.Work.objects.create(title="Test Work")
+        cls.book = models.Edition.objects.create(
             title="Test Book",
             remote_id="https://example.com/book/1",
-            parent_work=self.work,
+            parent_work=cls.work,
             isbn_13="9781234567890",
+            pages=123,
             bnf_id="beep",
         )
 
-    # pylint: disable=invalid-name
     def setUp(self):
         """individual test setup"""
         self.factory = RequestFactory()
@@ -67,10 +67,10 @@ class ExportViews(TestCase):
         export = views.Export.as_view()(request)
         self.assertIsInstance(export, HttpResponse)
         self.assertEqual(export.status_code, 200)
-        # pylint: disable=line-too-long
+
         self.assertEqual(
             export.content,
-            b"title,author_text,remote_id,openlibrary_key,inventaire_id,librarything_key,goodreads_key,bnf_id,viaf,wikidata,asin,aasin,isfdb,isbn_10,isbn_13,oclc_number,start_date,finish_date,stopped_date,rating,review_name,review_cw,review_content,review_published,shelf,shelf_name,shelf_date\r\n"
-            + b"Test Book,,%b,,,,,beep,,,,,,123456789X,9781234567890,,,,,,,,,,to-read,To Read,%b\r\n"
+            b"title,author_text,remote_id,openlibrary_key,finna_key,libris_key,inventaire_id,librarything_key,goodreads_key,bnf_id,viaf,wikidata,asin,aasin,isfdb,isbn_10,isbn_13,oclc_number,pages,start_date,finish_date,stopped_date,rating,review_name,review_cw,review_content,review_published,shelf,shelf_name,shelf_date\r\n"
+            + b"Test Book,,%b,,,,,,,beep,,,,,,123456789X,9781234567890,,123,,,,,,,,,to-read,To Read,%b\r\n"
             % (self.book.remote_id.encode("utf-8"), book_date),
         )

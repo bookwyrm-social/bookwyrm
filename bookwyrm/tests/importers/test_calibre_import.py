@@ -1,4 +1,5 @@
-""" testing import """
+"""testing import"""
+
 import pathlib
 from unittest.mock import patch
 
@@ -9,7 +10,6 @@ from bookwyrm.importers import CalibreImporter
 from bookwyrm.models.import_job import handle_imported_book
 
 
-# pylint: disable=consider-using-with
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
@@ -20,20 +20,26 @@ class CalibreImport(TestCase):
         """use a test csv"""
         self.importer = CalibreImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/calibre.csv")
+
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
 
+    def tearDown(self):
+        """close test csv"""
+        self.csv.close()
+
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """populate database"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
-        models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,
@@ -46,7 +52,10 @@ class CalibreImport(TestCase):
         )
 
         import_items = (
-            models.ImportItem.objects.filter(job=import_job).order_by("index").all()
+            models.ImportItem.objects.filter(job=import_job)
+            .order_by("index")
+            .all()
+            .order_by("id")
         )
         self.assertEqual(len(import_items), 1)
         self.assertEqual(import_items[0].index, 0)

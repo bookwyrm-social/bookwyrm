@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -13,26 +14,25 @@ class NotificationViews(TestCase):
     """notifications"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
                 "password",
                 local=True,
                 localname="mouse",
             )
-            self.another_user = models.User.objects.create_user(
+            cls.another_user = models.User.objects.create_user(
                 "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
             )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            self.status = models.Status.objects.create(
-                content="hi", user=self.local_user
-            )
-        models.SiteSettings.objects.create()
+            cls.status = models.Status.objects.create(content="hi", user=cls.local_user)
 
     def setUp(self):
         """individual test setup"""
@@ -148,9 +148,10 @@ class NotificationViews(TestCase):
     def test_notifications_page_list(self):
         """Adding books to lists"""
         book = models.Edition.objects.create(title="shape")
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+        ):
             book_list = models.List.objects.create(user=self.local_user, name="hi")
             item = models.ListItem.objects.create(
                 book=book, user=self.another_user, book_list=book_list, order=1

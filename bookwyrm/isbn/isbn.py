@@ -1,4 +1,5 @@
-""" Use the range message from isbn-international to hyphenate ISBNs """
+"""Use the range message from isbn-international to hyphenate ISBNs"""
+
 import os
 from typing import Optional
 from xml.etree import ElementTree

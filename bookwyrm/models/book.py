@@ -1,29 +1,36 @@
-""" database schema for books and shelves """
+"""database schema for books and shelves"""
+
 from itertools import chain
+from functools import reduce
 import re
-from typing import Any
+import operator
+from typing import Any, Dict, Optional, Iterable
+from typing_extensions import Self
 
 from django.contrib.postgres.search import SearchVectorField
-from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.indexes import GinIndex, BloomIndex, Index
 from django.core.cache import cache
+from django.core.exceptions import ValidationError
 from django.db import models, transaction
-from django.db.models import Prefetch
+from django.db.models import Prefetch, ManyToManyField, Q
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
 from imagekit.models import ImageSpecField
+import pgtrigger
 
 from bookwyrm import activitypub
 from bookwyrm.isbn.isbn import hyphenator_singleton as hyphenator
 from bookwyrm.preview_images import generate_edition_preview_image_task
 from bookwyrm.settings import (
-    DOMAIN,
+    BASE_URL,
     DEFAULT_LANGUAGE,
     LANGUAGE_ARTICLES,
     ENABLE_PREVIEW_IMAGES,
     ENABLE_THUMBNAIL_GENERATION,
 )
+from bookwyrm.utils.db import format_trigger, add_update_fields
 
 from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
@@ -35,6 +42,12 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
 
     origin_id = models.CharField(max_length=255, null=True, blank=True)
     openlibrary_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
+    finna_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
+    libris_key = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
     inventaire_id = fields.CharField(
@@ -87,28 +100,146 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         """generate the url from the isfdb id"""
         return f"https://www.isfdb.org/cgi-bin/title.cgi?{self.isfdb}"
 
+    @property
+    def finna_link(self):
+        """generate the url from the finna key"""
+        return f"http://finna.fi/Record/{self.finna_key}"
+
+    @property
+    def libris_link(self):
+        """generate the url from the libris key"""
+        return f"https://libris.kb.se/bib/{self.libris_key}"
+
     class Meta:
         """can't initialize this model, that wouldn't make sense"""
 
         abstract = True
 
-    def save(self, *args: Any, **kwargs: Any) -> None:
+    def save(
+        self, *args: Any, update_fields: Optional[Iterable[str]] = None, **kwargs: Any
+    ) -> None:
         """ensure that the remote_id is within this instance"""
         if self.id:
             self.remote_id = self.get_remote_id()
+            update_fields = add_update_fields(update_fields, "remote_id")
         else:
             self.origin_id = self.remote_id
             self.remote_id = None
-        return super().save(*args, **kwargs)
+            update_fields = add_update_fields(update_fields, "origin_id", "remote_id")
 
-    # pylint: disable=arguments-differ
+        super().save(*args, update_fields=update_fields, **kwargs)
+
     def broadcast(self, activity, sender, software="bookwyrm", **kwargs):
         """only send book data updates to other bookwyrm instances"""
         super().broadcast(activity, sender, software=software, **kwargs)
 
+    def merge_into(self, canonical: Self, dry_run=False) -> Dict[str, Any]:
+        """merge this entity into another entity"""
+        if canonical.id == self.id:
+            raise ValueError(f"Cannot merge {self} into itself")
+
+        absorbed_fields = canonical.absorb_data_from(self, dry_run=dry_run)
+
+        if dry_run:
+            return absorbed_fields
+
+        canonical.save()
+
+        self.merged_model.objects.create(deleted_id=self.id, merged_into=canonical)
+
+        # move related models to canonical
+        related_models = [
+            (r.remote_field.name, r.related_model) for r in self._meta.related_objects
+        ]
+        for related_field, related_model in related_models:
+            # Skip the ManyToMany fields that aren’t auto-created. These
+            # should have a corresponding OneToMany field in the model for
+            # the linking table anyway. If we update it through that model
+            # instead then we won’t lose the extra fields in the linking
+            # table.
+
+            related_field_obj = related_model._meta.get_field(related_field)
+            if isinstance(related_field_obj, ManyToManyField):
+                through = related_field_obj.remote_field.through
+                if not through._meta.auto_created:
+                    continue
+            related_objs = related_model.objects.filter(**{related_field: self})
+            for related_obj in related_objs:
+                try:
+                    setattr(related_obj, related_field, canonical)
+                    related_obj.save()
+                except TypeError:
+                    getattr(related_obj, related_field).add(canonical)
+                    getattr(related_obj, related_field).remove(self)
+
+        self.delete()
+        return absorbed_fields
+
+    def absorb_data_from(self, other: Self, dry_run=False) -> Dict[str, Any]:
+        """fill empty fields with values from another entity"""
+        absorbed_fields = {}
+        for data_field in self._meta.get_fields():
+            if not hasattr(data_field, "activitypub_field"):
+                continue
+            canonical_value = getattr(self, data_field.name)
+            other_value = getattr(other, data_field.name)
+            if not other_value:
+                continue
+            if isinstance(data_field, fields.ArrayField):
+                if new_values := list(set(other_value) - set(canonical_value)):
+                    # append at the end (in no particular order)
+                    if not dry_run:
+                        setattr(self, data_field.name, canonical_value + new_values)
+                    absorbed_fields[data_field.name] = new_values
+            elif isinstance(data_field, fields.PartialDateField):
+                if (
+                    (not canonical_value)
+                    or (other_value.has_day and not canonical_value.has_day)
+                    or (other_value.has_month and not canonical_value.has_month)
+                ):
+                    if not dry_run:
+                        setattr(self, data_field.name, other_value)
+                    absorbed_fields[data_field.name] = other_value
+            else:
+                if not canonical_value:
+                    if not dry_run:
+                        setattr(self, data_field.name, other_value)
+                    absorbed_fields[data_field.name] = other_value
+        return absorbed_fields
+
+
+class MergedBookDataModel(models.Model):
+    """a BookDataModel instance that has been merged into another instance. kept
+    to be able to redirect old URLs"""
+
+    deleted_id = models.IntegerField(primary_key=True)
+
+    class Meta:
+        """abstract just like BookDataModel"""
+
+        abstract = True
+
+
+class MergedBook(MergedBookDataModel):
+    """an Book that has been merged into another one"""
+
+    merged_into = models.ForeignKey(
+        "Book", on_delete=models.PROTECT, related_name="absorbed"
+    )
+
+
+class MergedAuthor(MergedBookDataModel):
+    """an Author that has been merged into another one"""
+
+    merged_into = models.ForeignKey(
+        "Author", on_delete=models.PROTECT, related_name="absorbed"
+    )
+
 
 class Book(BookDataModel):
     """a generic book, which can mean either an edition or a work"""
+
+    merged_model = MergedBook
 
     connector = models.ForeignKey("Connector", on_delete=models.PROTECT, null=True)
 
@@ -190,9 +321,13 @@ class Book(BookDataModel):
         """properties of this edition, as a string"""
         items = [
             self.physical_format if hasattr(self, "physical_format") else None,
-            f"{self.languages[0]} language"
-            if self.languages and self.languages[0] and self.languages[0] != "English"
-            else None,
+            (
+                f"{self.languages[0]} language"
+                if self.languages
+                and self.languages[0]
+                and self.languages[0] != "English"
+                else None
+            ),
             str(self.published_date.year) if self.published_date else None,
             ", ".join(self.publishers) if hasattr(self, "publishers") else None,
         ]
@@ -210,21 +345,44 @@ class Book(BookDataModel):
         if not isinstance(self, (Edition, Work)):
             raise ValueError("Books should be added as Editions or Works")
 
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
-        return f"https://{DOMAIN}/book/{self.id}"
+        return f"{BASE_URL}/book/{self.id}"
 
-    def guess_sort_title(self):
+    def guess_sort_title(self, user=None):
         """Get a best-guess sort title for the current book"""
+
+        if self.languages not in ([], None):
+            lang_codes = set(
+                k
+                for (k, v) in LANGUAGE_ARTICLES.items()
+                for language in tuple(self.languages)
+                if language.lower() in v["variants"]
+            )
+
+        elif user and user.preferred_language:
+            lang_codes = set(
+                k
+                for (k, v) in LANGUAGE_ARTICLES.items()
+                if user.preferred_language.lower() in v["variants"]
+            )
+
+        else:
+            lang_codes = set(
+                k
+                for (k, v) in LANGUAGE_ARTICLES.items()
+                if DEFAULT_LANGUAGE.lower() in v["variants"]
+            )
+
         articles = chain(
-            *(LANGUAGE_ARTICLES.get(language, ()) for language in tuple(self.languages))
+            *(LANGUAGE_ARTICLES[language].get("articles") for language in lang_codes)
         )
-        return re.sub(f'^{" |^".join(articles)} ', "", str(self.title).lower())
+
+        return re.sub(f"^{' |^'.join(articles)} ", "", str(self.title).lower())
 
     def __repr__(self):
-        # pylint: disable=consider-using-f-string
         return "<{} key={!r} title={!r}>".format(
             self.__class__,
             self.openlibrary_key,
@@ -232,9 +390,68 @@ class Book(BookDataModel):
         )
 
     class Meta:
-        """sets up postgres GIN index field"""
+        """set up indexes and triggers"""
 
-        indexes = (GinIndex(fields=["search_vector"]),)
+        indexes = [
+            GinIndex(fields=["search_vector"]),
+            # Add bloom index for all deduplication_fields
+            BloomIndex(
+                fields=[
+                    "origin_id",
+                    "remote_id",
+                    "openlibrary_key",
+                    "finna_key",
+                    "libris_key",
+                    "inventaire_id",
+                    "librarything_key",
+                    "goodreads_key",
+                    "bnf_id",
+                    "viaf",
+                    "wikidata",
+                    "asin",
+                    "aasin",
+                    "isfdb",
+                ]
+            ),
+        ]
+        triggers = [
+            pgtrigger.Trigger(
+                name="update_search_vector_on_book_edit",
+                when=pgtrigger.Before,
+                operation=pgtrigger.Insert
+                | pgtrigger.UpdateOf("title", "subtitle", "series", "search_vector"),
+                func=format_trigger(
+                    """
+                    WITH author_names AS (
+                        SELECT array_to_string(bookwyrm_author.name || bookwyrm_author.aliases, ' ') AS name_and_aliases
+                            FROM bookwyrm_author
+                        LEFT JOIN bookwyrm_book_authors
+                            ON bookwyrm_author.id = bookwyrm_book_authors.author_id
+                        WHERE bookwyrm_book_authors.book_id = new.id
+                    )
+                    SELECT
+                        -- title, with priority A (parse in English, default to simple if empty)
+                        setweight(COALESCE(nullif(
+                            to_tsvector('english', new.title), ''),
+                            to_tsvector('simple', new.title)), 'A') ||
+
+                        -- subtitle, with priority B (always in English?)
+                        setweight(to_tsvector('english', COALESCE(new.subtitle, '')), 'B') ||
+
+                        -- list of authors names and aliases (with priority C)
+                        (SELECT setweight(to_tsvector('simple', COALESCE(array_to_string(ARRAY_AGG(name_and_aliases), ' '), '')), 'C')
+                            FROM author_names
+                        ) ||
+
+                        --- last: series name, with lowest priority
+                        setweight(to_tsvector('english', COALESCE(new.series, '')), 'D')
+
+                        INTO new.search_vector;
+                    RETURN new;
+                    """
+                ),
+            )
+        ]
 
 
 class Work(OrderedCollectionPageMixin, Book):
@@ -247,10 +464,11 @@ class Work(OrderedCollectionPageMixin, Book):
 
     def save(self, *args, **kwargs):
         """set some fields on the edition object"""
+        super().save(*args, **kwargs)
+
         # set rank
         for edition in self.editions.all():
             edition.save()
-        return super().save(*args, **kwargs)
 
     @property
     def default_edition(self):
@@ -287,15 +505,107 @@ FormatChoices = [
 ]
 
 
+def validate_isbn10(maybe_isbn: str) -> None:
+    """Check if isbn10 mathes some expectations"""
+
+    if not (normalized_isbn := normalize_isbn(maybe_isbn)):
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    normalized_isbn = normalized_isbn.zfill(10)
+    # len should be 10 with poddible 0 in front
+    if len(normalized_isbn) != 10:
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    # Last character can be X for checksum mark
+    if not normalized_isbn.upper()[:-1].isnumeric():
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    if (isbn13_version := isbn_10_to_13(normalized_isbn)) is None:
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    if (checksum_version := isbn_13_to_10(isbn13_version)) is None:
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    if checksum_version != normalized_isbn:
+        raise ValidationError(
+            _(
+                "%(value)s doesn't have correct ISBN checksum, "
+                "we expected %(check_version)s"
+            ),
+            params={"value": maybe_isbn, "check_version": checksum_version},
+        )
+
+
+def validate_isbn13(maybe_isbn: str) -> None:
+    """Check if isbn13 mathes some expectations"""
+
+    if maybe_isbn[:3] not in ["978", "979"]:
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    normalized_isbn = normalize_isbn(maybe_isbn)
+    if len(normalized_isbn) != 13:
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    if not normalized_isbn.isnumeric():
+        raise ValidationError(
+            _("%(value)s doesn't look like an ISBN"), params={"value": maybe_isbn}
+        )
+
+    # calculate checksum version
+    checksum_version = normalized_isbn[:-1]
+    checksum = sum(int(i) for i in checksum_version[::2]) + sum(
+        int(i) * 3 for i in checksum_version[1::2]
+    )
+    checkdigit = checksum % 10
+    if checkdigit != 0:
+        checkdigit = 10 - checkdigit
+    checksum_version += str(checkdigit)
+
+    # Check if we got same checksum
+    if checksum_version != normalized_isbn:
+        raise ValidationError(
+            _(
+                "%(value)s doesn't have correct ISBN checksum, "
+                "we expected %(check_version)s"
+            ),
+            params={
+                "value": maybe_isbn,
+                "check_version": maybe_isbn[:3] + checksum_version[3:],
+            },
+        )
+
+
 class Edition(Book):
     """an edition of a book"""
 
     # these identifiers only apply to editions, not works
     isbn_10 = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        validators=[validate_isbn10],
     )
     isbn_13 = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        validators=[validate_isbn13],
     )
     oclc_number = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
@@ -328,6 +638,89 @@ class Edition(Book):
     serialize_reverse_fields = [("file_links", "fileLinks", "-created_date")]
     deserialize_reverse_fields = [("file_links", "fileLinks")]
 
+    class Meta:
+        indexes = [
+            BloomIndex(
+                fields=[
+                    "isbn_10",
+                    "isbn_13",
+                    "oclc_number",
+                ]
+            ),
+            Index(fields=["parent_work", "-edition_rank"]),
+        ]
+
+    @classmethod
+    def find_existing(cls, data):
+        """compare data to fields that can be used for deduplication.
+        This always includes remote_id, but can also be unique identifiers
+        like an isbn for an edition"""
+        filters = []
+        # grabs all the data from the model to create django queryset filters
+        for field in cls._meta.get_fields():
+            if (
+                not hasattr(field, "deduplication_field")
+                or not field.deduplication_field
+            ):
+                continue
+
+            value = data.get(field.get_activitypub_field())
+            if not value:
+                continue
+            filters.append({field.name: value})
+
+        if "id" in data:
+            # kinda janky, but this handles special case for books
+            filters.append({"origin_id": data["id"]})
+
+        if not filters:
+            # if there are no deduplication fields, it will match the first
+            # item no matter what. this shouldn't happen but just in case.
+            return None
+
+        # For books, we want to first check with isbn10/13/oclc fields if possible
+        # as it hits Edition table bloom index
+        book_filters = []
+        for filter_item in filters:
+            filter_fields = {
+                field_name: field_value
+                for field_name, field_value in filter_item.items()
+                if field_name in ["isbn_10", "isbn_13", "oclc_number"]
+            }
+            if filter_fields:
+                book_filters.append(filter_fields)
+        objects = cls.objects
+        if hasattr(objects, "select_subclasses"):
+            objects = objects.select_subclasses()
+
+        if book_filters:
+            possible_book = objects.filter(
+                reduce(operator.or_, (Q(**f) for f in book_filters))
+            )
+            if (book := possible_book.first()) is not None:
+                return book
+
+        # if no match, drop isbn10/13/oclc_number from filters so bloom index hits from Book-table
+        book_filters = []
+        for filter_item in filters:
+            filter_fields = {
+                field_name: field_value
+                for field_name, field_value in filter_item.items()
+                if field_name not in ["isbn_10", "isbn_13", "oclc_number"]
+            }
+            if filter_fields:
+                book_filters.append(filter_fields)
+
+        filters = book_filters
+
+        if not filters:
+            return None
+
+        # an OR operation on all the match fields, sorry for the dense syntax
+        match = objects.filter(reduce(operator.or_, (Q(**f) for f in filters)))
+        # there OUGHT to be only one match
+        return match.first()
+
     @property
     def hyphenated_isbn13(self):
         """generate the hyphenated version of the ISBN-13"""
@@ -356,33 +749,48 @@ class Edition(Book):
         # max rank is 9
         return rank
 
-    def save(self, *args: Any, **kwargs: Any) -> None:
+    def save(
+        self, *args: Any, update_fields: Optional[Iterable[str]] = None, **kwargs: Any
+    ) -> None:
         """set some fields on the edition object"""
         # calculate isbn 10/13
-        if self.isbn_13 and self.isbn_13[:3] == "978" and not self.isbn_10:
+        if (
+            self.isbn_10 is None
+            and self.isbn_13 is not None
+            and self.isbn_13[:3] == "978"
+        ):
             self.isbn_10 = isbn_13_to_10(self.isbn_13)
-        if self.isbn_10 and not self.isbn_13:
+            update_fields = add_update_fields(update_fields, "isbn_10")
+        if self.isbn_13 is None and self.isbn_10 is not None:
             self.isbn_13 = isbn_10_to_13(self.isbn_10)
+            update_fields = add_update_fields(update_fields, "isbn_13")
 
         # normalize isbn format
-        if self.isbn_10:
+        if self.isbn_10 is not None:
             self.isbn_10 = normalize_isbn(self.isbn_10)
-        if self.isbn_13:
+        if self.isbn_13 is not None:
             self.isbn_13 = normalize_isbn(self.isbn_13)
 
         # set rank
-        self.edition_rank = self.get_rank()
-
-        # clear author cache
-        if self.id:
-            for author_id in self.authors.values_list("id", flat=True):
-                cache.delete(f"author-books-{author_id}")
+        if (new := self.get_rank()) != self.edition_rank:
+            self.edition_rank = new
+            update_fields = add_update_fields(update_fields, "edition_rank")
 
         # Create sort title by removing articles from title
         if self.sort_title in [None, ""]:
             self.sort_title = self.guess_sort_title()
+            update_fields = add_update_fields(update_fields, "sort_title")
 
-        return super().save(*args, **kwargs)
+        super().save(*args, update_fields=update_fields, **kwargs)
+
+        # clear author cache
+        if self.id:
+            cache.delete_many(
+                [
+                    f"author-books-{author_id}"
+                    for author_id in self.authors.values_list("id", flat=True)
+                ]
+            )
 
     @transaction.atomic
     def repair(self):
@@ -443,7 +851,7 @@ def isbn_10_to_13(isbn_10):
 
 def isbn_13_to_10(isbn_13):
     """convert isbn 13 to 10, if possible"""
-    if isbn_13[:3] != "978":
+    if isbn_13[:3] not in ["978"]:
         return None
 
     isbn_13 = re.sub(r"[^0-9X]", "", isbn_13)
@@ -457,7 +865,9 @@ def isbn_13_to_10(isbn_13):
     except ValueError:
         return None
     checkdigit = checksum % 11
-    checkdigit = 11 - checkdigit
+    checkdigit = (
+        11 - checkdigit
+    ) % 11  # we calculate checkdigit to make the whole sum % 11 == 0
     if checkdigit == 10:
         checkdigit = "X"
     return converted + str(checkdigit)
@@ -468,7 +878,6 @@ def normalize_isbn(isbn):
     return re.sub(r"[^0-9X]", "", isbn)
 
 
-# pylint: disable=unused-argument
 @receiver(models.signals.post_save, sender=Edition)
 def preview_image(instance, *args, **kwargs):
     """create preview image on book create"""

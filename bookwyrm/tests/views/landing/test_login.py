@@ -1,6 +1,9 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
+from importlib import import_module
 from unittest.mock import patch
 
+from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.template.response import TemplateResponse
@@ -10,20 +13,23 @@ from django.test.client import RequestFactory
 from bookwyrm import forms, models, views
 from bookwyrm.tests.validate_html import validate_html
 
+SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
-# pylint: disable=too-many-public-methods
+
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 class LoginViews(TestCase):
     """login and password management"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@your.domain.here",
                 "mouse@mouse.com",
                 "password",
@@ -31,14 +37,14 @@ class LoginViews(TestCase):
                 localname="mouse",
                 two_factor_auth=False,
             )
-            self.rat = models.User.objects.create_user(
+            cls.rat = models.User.objects.create_user(
                 "rat@your.domain.here",
                 "rat@rat.com",
                 "password",
                 local=True,
                 localname="rat",
             )
-            self.badger = models.User.objects.create_user(
+            cls.badger = models.User.objects.create_user(
                 "badger@your.domain.here",
                 "badger@badger.com",
                 "password",
@@ -46,7 +52,9 @@ class LoginViews(TestCase):
                 localname="badger",
                 two_factor_auth=True,
             )
-        models.SiteSettings.objects.create(id=1, require_confirm_email=False)
+        site = models.SiteSettings.get()
+        site.require_confirm_email = False
+        site.save()
 
     def setUp(self):
         """individual test setup"""
@@ -77,6 +85,10 @@ class LoginViews(TestCase):
         form.data["localname"] = "mouse@mouse.com"
         form.data["password"] = "password"
         request = self.factory.post("", form.data)
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+        request.session["session_key"] = "1234abcd"
+        request.session.save()
         request.user = self.anonymous_user
 
         with patch("bookwyrm.views.landing.login.login"):
@@ -91,6 +103,10 @@ class LoginViews(TestCase):
         form.data["localname"] = "mouse@your.domain.here"
         form.data["password"] = "password"
         request = self.factory.post("", form.data)
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+        request.session["session_key"] = "1234abcd"
+        request.session.save()
         request.user = self.anonymous_user
 
         with patch("bookwyrm.views.landing.login.login"):
@@ -105,6 +121,10 @@ class LoginViews(TestCase):
         form.data["localname"] = "mouse"
         form.data["password"] = "password"
         request = self.factory.post("", form.data)
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+        request.session["session_key"] = "1234abcd"
+        request.session.save()
         request.user = self.anonymous_user
 
         with patch("bookwyrm.views.landing.login.login"):
@@ -119,6 +139,10 @@ class LoginViews(TestCase):
         form.data["localname"] = "mouse"
         form.data["password"] = "password1"
         request = self.factory.post("", form.data)
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+        request.session["session_key"] = "1234abcd"
+        request.session.save()
         request.user = self.anonymous_user
 
         with patch("bookwyrm.views.landing.login.login"):
@@ -137,6 +161,10 @@ class LoginViews(TestCase):
         form.data["localname"] = "rat"
         form.data["password"] = "password"
         request = self.factory.post("", form.data)
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+        request.session["session_key"] = "1234abcd"
+        request.session.save()
         request.user = self.anonymous_user
 
         with patch("bookwyrm.views.landing.login.login"):
@@ -151,6 +179,10 @@ class LoginViews(TestCase):
         form.data["localname"] = "badger"
         form.data["password"] = "password"
         request = self.factory.post("", form.data)
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+        request.session["session_key"] = "1234abcd"
+        request.session.save()
         request.user = self.anonymous_user
         middleware = SessionMiddleware(request)
         middleware.process_request(request)
@@ -160,3 +192,78 @@ class LoginViews(TestCase):
             result = view(request)
         self.assertEqual(result.url, "/2fa-check")
         self.assertEqual(result.status_code, 302)
+
+    def test_login_records_session(self, *_):
+        """does login record a session in the user object?"""
+
+        self.assertEqual(self.local_user.sessions.count(), 0)
+
+        view = views.Login.as_view()
+        form = forms.LoginForm()
+        form.data["localname"] = "mouse@mouse.com"
+        form.data["password"] = "password"
+        request = self.factory.post("", form.data)
+
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+        request.session["session_key"] = "1234abcd"
+        request.session.save()
+
+        request.user = self.anonymous_user
+
+        with patch("bookwyrm.views.landing.login.login"):
+            view(request)
+
+        self.assertEqual(self.local_user.sessions.count(), 1)
+
+
+class LogoutViews(TestCase):
+    """logout and session management"""
+
+    @classmethod
+    def setUpTestData(cls):
+        """we need basic test data and mocks"""
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
+                "mouse@your.domain.here",
+                "mouse@mouse.com",
+                "password",
+                local=True,
+                localname="mouse",
+                two_factor_auth=False,
+            )
+
+        models.UserSession.objects.create(
+            user=cls.local_user,
+            session_key="1234abcd",
+            operating_system="CSIRAC",
+            browser_type="Lynx",
+        )
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
+
+    def test_logout_clears_session(self, *_):
+        """when we log out we should also delete the user session"""
+
+        self.assertEqual(self.local_user.sessions.count(), 1)
+
+        view = views.Logout.as_view()
+        request = self.factory.post("")
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+        request.session["session_key"] = "1234abcd"
+        request.session.save()
+
+        request.user = self.local_user
+
+        with patch("bookwyrm.views.landing.login.login"):
+            view(request)
+
+        self.local_user.refresh_from_db()
+        self.assertEqual(self.local_user.sessions.count(), 0)

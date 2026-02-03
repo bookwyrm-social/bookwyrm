@@ -1,23 +1,19 @@
-""" testing models """
+"""testing models"""
+
 from unittest.mock import patch
-from io import BytesIO
 import pathlib
 import re
 
 from django.http import Http404
-from django.core.files.base import ContentFile
 from django.db import IntegrityError
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django.utils import timezone
-from PIL import Image
 import responses
 
 from bookwyrm import activitypub, models, settings
 
 
-# pylint: disable=too-many-public-methods
-# pylint: disable=line-too-long
 @patch("bookwyrm.models.Status.broadcast")
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
@@ -25,16 +21,18 @@ class Status(TestCase):
     """lotta types of statuses"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """useful things for creating a status"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -43,25 +41,25 @@ class Status(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        self.book = models.Edition.objects.create(title="Test Edition")
+        cls.book = models.Edition.objects.create(title="Test Edition")
 
     def setUp(self):
         """individual test setup"""
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
-        image_file = pathlib.Path(__file__).parent.joinpath(
+        image_path = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
         )
-        image = Image.open(image_file)
-        output = BytesIO()
-        with patch("bookwyrm.models.Status.broadcast"):
-            image.save(output, format=image.format)
-            self.book.cover.save("test.jpg", ContentFile(output.getvalue()))
+        with (
+            patch("bookwyrm.models.Status.broadcast"),
+            open(image_path, "rb") as image_file,
+        ):
+            self.book.cover.save("test.jpg", image_file)
 
     def test_status_generated_fields(self, *_):
         """setting remote id"""
         status = models.Status.objects.create(content="bleh", user=self.local_user)
-        expected_id = f"https://{settings.DOMAIN}/user/mouse/status/{status.id}"
+        expected_id = f"{settings.BASE_URL}/user/mouse/status/{status.id}"
         self.assertEqual(status.remote_id, expected_id)
         self.assertEqual(status.privacy, "public")
 
@@ -152,7 +150,7 @@ class Status(TestCase):
         self.assertEqual(activity["tag"][0]["type"], "Hashtag")
         self.assertEqual(activity["tag"][0]["name"], "#content")
         self.assertEqual(
-            activity["tag"][0]["href"], f"https://{settings.DOMAIN}/hashtag/{tag.id}"
+            activity["tag"][0]["href"], f"{settings.BASE_URL}/hashtag/{tag.id}"
         )
 
     def test_status_with_mention_to_activity(self, *_):
@@ -228,11 +226,9 @@ class Status(TestCase):
         self.assertEqual(activity["sensitive"], False)
         self.assertIsInstance(activity["attachment"], list)
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test(_[A-z0-9]+)?.jpg",
-                activity["attachment"][0]["url"],
-            )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test(_[A-z0-9]+)?.jpg$",
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
@@ -264,12 +260,10 @@ class Status(TestCase):
             ),
         )
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        # self.assertTrue(
-        #    re.match(
-        #        r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-        #        activity["attachment"][0].url,
-        #    )
-        # )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test_[A-z0-9]+.jpg$",
+        )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
     def test_quotation_to_activity(self, *_):
@@ -307,11 +301,9 @@ class Status(TestCase):
             ),
         )
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test(_[A-z0-9]+)?.jpg",
-                activity["attachment"][0]["url"],
-            )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test(_[A-z0-9]+)?.jpg$",
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
@@ -341,8 +333,11 @@ class Status(TestCase):
     def test_quotation_page_serialization(self, *_):
         """serialization of quotation page position"""
         tests = [
-            ("single pos", 7, None, "p. 7"),
-            ("page range", 7, 10, "pp. 7-10"),
+            ("single pos", "7", "", "p. 7"),
+            ("missing beg", "", "10", None),
+            ("page range", "7", "10", "pp. 7-10"),
+            ("page range roman", "xv", "xvi", "pp. xv-xvi"),
+            ("page range reverse", "14", "10", "pp. 14-10"),
         ]
         for desc, beg, end, pages in tests:
             with self.subTest(desc):
@@ -356,10 +351,12 @@ class Status(TestCase):
                     position_mode="PG",
                 )
                 activity = status.to_activity(pure=True)
-                self.assertRegex(
-                    activity["content"],
-                    f'^<p>"my quote"</p> <p>— <a .+</a>, {pages}</p>$',
-                )
+                if pages:
+                    pages_re = re.escape(pages)
+                    expect_re = f'^<p>"my quote"</p> <p>— <a .+</a>, {pages_re}</p>$'
+                else:
+                    expect_re = '^<p>"my quote"</p> <p>— <a .+</a></p>$'
+                self.assertRegex(activity["content"], expect_re)
 
     def test_review_to_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""
@@ -396,11 +393,9 @@ class Status(TestCase):
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-                activity["attachment"][0]["url"],
-            )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test_[A-z0-9]+.jpg$",
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
@@ -421,11 +416,9 @@ class Status(TestCase):
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-                activity["attachment"][0]["url"],
-            )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test_[A-z0-9]+.jpg$",
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
@@ -444,11 +437,9 @@ class Status(TestCase):
             f'rated <em><a href="{self.book.remote_id}">{self.book.title}</a></em>: 3 stars',
         )
         self.assertEqual(activity["attachment"][0]["type"], "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-                activity["attachment"][0]["url"],
-            )
+        self.assertRegex(
+            activity["attachment"][0]["url"],
+            rf"^{settings.BASE_URL}/images/covers/test_[A-z0-9]+.jpg$",
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
@@ -485,7 +476,6 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Announce")
         self.assertEqual(activity, boost.to_activity(pure=True))
 
-    # pylint: disable=unused-argument
     def test_create_broadcast(self, one, two, broadcast_mock, *_):
         """should send out two versions of a status on create"""
         models.Comment.objects.create(

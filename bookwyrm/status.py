@@ -1,4 +1,5 @@
-""" Handle user activity """
+"""Handle user activity"""
+
 from django.db import transaction
 
 from bookwyrm import models

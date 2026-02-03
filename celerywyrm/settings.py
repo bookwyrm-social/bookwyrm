@@ -1,11 +1,10 @@
-""" bookwyrm settings and configuration """
-# pylint: disable=wildcard-import
-# pylint: disable=unused-wildcard-import
+"""bookwyrm settings and configuration"""
+
 from bookwyrm.settings import *
 
 QUERY_TIMEOUT = env.int("CELERY_QUERY_TIMEOUT", env.int("QUERY_TIMEOUT", 30))
 
-# pylint: disable=line-too-long
+
 REDIS_BROKER_PASSWORD = requests.compat.quote(env("REDIS_BROKER_PASSWORD", ""))
 REDIS_BROKER_HOST = env("REDIS_BROKER_HOST", "redis_broker")
 REDIS_BROKER_PORT = env.int("REDIS_BROKER_PORT", 6379)
@@ -15,8 +14,12 @@ REDIS_BROKER_URL = env(
     f"redis://:{REDIS_BROKER_PASSWORD}@{REDIS_BROKER_HOST}:{REDIS_BROKER_PORT}/{REDIS_BROKER_DB_INDEX}",
 )
 
-CELERY_BROKER_URL = REDIS_BROKER_URL.replace("unix:", "redis+socket:")
-CELERY_RESULT_BACKEND = REDIS_BROKER_URL.replace("unix:", "redis+socket:")
+CELERY_BROKER_URL = env(
+    "CELERY_BROKER_URL", REDIS_BROKER_URL.replace("unix:", "redis+socket:")
+)
+CELERY_RESULT_BACKEND = env(
+    "CELERY_RESULT_BACKEND", REDIS_BROKER_URL.replace("unix:", "redis+socket:")
+)
 
 CELERY_DEFAULT_QUEUE = "low_priority"
 CELERY_CREATE_MISSING_QUEUES = True

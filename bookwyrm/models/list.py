@@ -1,13 +1,17 @@
-""" make a list of books!! """
+"""make a list of books!!"""
+
+from typing import Optional, Iterable
 import uuid
 
+from django.contrib.postgres.indexes import Index
 from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 
 from bookwyrm import activitypub
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import BASE_URL
+from bookwyrm.utils.db import add_update_fields
 
 from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
 from .base_model import BookWyrmModel
@@ -50,7 +54,7 @@ class List(OrderedCollectionMixin, BookWyrmModel):
 
     def get_remote_id(self):
         """don't want the user to be in there in this case"""
-        return f"https://{DOMAIN}/list/{self.id}"
+        return f"{BASE_URL}/list/{self.id}"
 
     @property
     def collection_queryset(self):
@@ -61,6 +65,8 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         """default sorting"""
 
         ordering = ("-updated_date",)
+
+        indexes = [Index(fields=["privacy", "-updated_date"])]
 
     def raise_not_editable(self, viewer):
         """the associated user OR the list owner can edit"""
@@ -124,11 +130,13 @@ class List(OrderedCollectionMixin, BookWyrmModel):
             group=None, curation="closed"
         )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
         """on save, update embed_key and avoid clash with existing code"""
         if not self.embed_key:
             self.embed_key = uuid.uuid4()
-        super().save(*args, **kwargs)
+            update_fields = add_update_fields(update_fields, "embed_key")
+
+        super().save(*args, update_fields=update_fields, **kwargs)
 
 
 class ListItem(CollectionItemMixin, BookWyrmModel):

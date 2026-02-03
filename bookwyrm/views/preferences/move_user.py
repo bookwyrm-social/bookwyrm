@@ -1,4 +1,4 @@
-""" move your account somewhere else """
+"""move your account somewhere else"""
 
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
@@ -12,7 +12,6 @@ from bookwyrm import forms, models
 from bookwyrm.views.helpers import handle_remote_webfinger
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class MoveUser(View):
     """move user view"""
@@ -32,7 +31,7 @@ class MoveUser(View):
 
         if form.is_valid() and user.check_password(form.cleaned_data["password"]):
             username = form.cleaned_data["target"]
-            target = handle_remote_webfinger(username)
+            target = handle_remote_webfinger(username, refresh=True)
 
             try:
                 models.MoveUser.objects.create(
@@ -53,7 +52,6 @@ class MoveUser(View):
         return TemplateResponse(request, "preferences/move_user.html", data)
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class AliasUser(View):
     """alias user view"""
@@ -81,6 +79,7 @@ class AliasUser(View):
                 return TemplateResponse(request, "preferences/alias_user.html", data)
 
             user.also_known_as.add(remote_user.id)
+            user.save(broadcast=True)  # broadcast the alias
 
             return redirect("prefs-alias")
 

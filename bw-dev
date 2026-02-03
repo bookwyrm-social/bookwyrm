@@ -69,7 +69,33 @@ function awscommand {
         amazon/aws-cli $2
 }
 
+function create_secrets {
 
+    set +x
+    if python3 -c 'import secrets' &>/dev/null; then
+        SECRETS_COMMAND="python3 -c 'import secrets; print(secrets.token_urlsafe(50))'"
+    elif openssl &>null; then
+        SECRETS_COMMAND="openssl rand -hex 50"
+    else
+        echo "you need either python or openssl executable to generate secrets with this script"
+        exit 1
+    fi
+    for env_variable in SECRET_KEY POSTGRES_PASSWORD REDIS_ACTIVITY_PASSWORD REDIS_BROKER_PASSWORD FLOWER_PASSWORD; do
+        if grep -q -qi "^$env_variable" .env; then
+            echo -e "${env_variable} already configured, skipping"
+        else
+            echo -e "generating random secret in ${env_variable}"
+            generated_secret=$(eval "${SECRETS_COMMAND}")
+
+            if grep -q -qi "^#[[:blank:]]*$env_variable" .env; then
+                sed -i.bak -e "s/#[[:blank:]]*${env_variable}=.*/${env_variable}=\"${generated_secret}\"/" .env
+            else
+                echo "${env_variable}=\"${generated_secret}\"" >>.env
+            fi
+        fi
+    done
+    set -x
+}
 
 CMD=$1
 if [ -n "$CMD" ]; then
@@ -81,7 +107,7 @@ set -x
 
 case "$CMD" in
     up)
-        $DOCKER_COMPOSE up --build "$@"
+        $DOCKER_COMPOSE up "$@"
         ;;
     down)
         $DOCKER_COMPOSE down
@@ -92,6 +118,12 @@ case "$CMD" in
         ;;
     initdb)
         initdb "$@"
+        ;;
+    init_ssl)
+        $DOCKER_COMPOSE --file ./docker-compose-init_letsencrypt.yml up --exit-code-from=certbot
+        ;;
+    upgrade_db_version)
+        $DOCKER_COMPOSE --file docker-compose-upgrade-db.yml run --rm db_update
         ;;
     resetdb)
         prod_error
@@ -147,28 +179,6 @@ case "$CMD" in
         ;;
     update_locales)
         prod_error
-        git fetch origin l10n_main:l10n_main
-        git checkout l10n_main locale/ca_ES
-        git checkout l10n_main locale/de_DE
-        git checkout l10n_main locale/eo_UY
-        git checkout l10n_main locale/es_ES
-        git checkout l10n_main locale/eu_ES
-        git checkout l10n_main locale/fi_FI
-        git checkout l10n_main locale/fr_FR
-        git checkout l10n_main locale/gl_ES
-        git checkout l10n_main locale/ko_KR
-        git checkout l10n_main locale/it_IT
-        git checkout l10n_main locale/lt_LT
-        git checkout l10n_main locale/nl_NL
-        git checkout l10n_main locale/no_NO
-        git checkout l10n_main locale/pl_PL
-        git checkout l10n_main locale/pt_PT
-        git checkout l10n_main locale/pt_BR
-        git checkout l10n_main locale/ro_RO
-        git checkout l10n_main locale/sv_SE
-        git checkout l10n_main locale/uk_UA
-        git checkout l10n_main locale/zh_Hans
-        git checkout l10n_main locale/zh_Hant
         runweb django-admin makemessages --no-wrap --ignore=venv -l en_US $@
         runweb django-admin compilemessages --ignore venv
         ;;
@@ -179,14 +189,22 @@ case "$CMD" in
         prod_error
         clean
         ;;
-    black)
+    ruff)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools black celerywyrm bookwyrm
+        $DOCKER_COMPOSE run --rm dev-tools ruff format celerywyrm bookwyrm
+        $DOCKER_COMPOSE run --rm dev-tools ruff check celerywyrm bookwyrm
         ;;
-    pylint)
+    ruff-format)
         prod_error
-        # pylint depends on having the app dependencies in place, so we run it in the web container
-        runweb pylint bookwyrm/
+        $DOCKER_COMPOSE run --rm dev-tools ruff format celerywyrm bookwyrm
+        ;;
+    ruff-check)
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools ruff check celerywyrm bookwyrm
+        ;;
+    ruff-fix)
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools ruff check --fix celerywyrm bookwyrm
         ;;
     prettier)
         prod_error
@@ -203,8 +221,8 @@ case "$CMD" in
         ;;
     formatters)
         prod_error
-        runweb pylint bookwyrm/
-        $DOCKER_COMPOSE run --rm dev-tools black celerywyrm bookwyrm
+        $DOCKER_COMPOSE run --rm dev-tools ruff format celerywyrm bookwyrm
+        $DOCKER_COMPOSE run --rm dev-tools ruff check --fix celerywyrm bookwyrm
         $DOCKER_COMPOSE run --rm dev-tools prettier --write bookwyrm/static/js/*.js
         $DOCKER_COMPOSE run --rm dev-tools eslint bookwyrm/static --ext .js
         $DOCKER_COMPOSE run --rm dev-tools stylelint --fix bookwyrm/static/css \
@@ -213,6 +231,9 @@ case "$CMD" in
     mypy)
         prod_error
         runweb mypy celerywyrm bookwyrm
+        ;;
+    create_secrets)
+        create_secrets
         ;;
     collectstatic_watch)
         prod_error
@@ -303,10 +324,13 @@ case "$CMD" in
         echo "    up [container]"
         echo "    down"
         echo "    service_ports_web"
+        echo "    upgrade_db_version"
         echo "    initdb"
         echo "    resetdb"
+        echo "    init_ssl"
         echo "    makemigrations [migration]"
         echo "    migrate [migration]"
+        echo "    create_secrets"
         echo "    bash"
         echo "    shell"
         echo "    dbshell"
@@ -319,7 +343,10 @@ case "$CMD" in
         echo "    update_locales"
         echo "    build"
         echo "    clean"
-        echo "    black"
+        echo "    ruff (format and check)"
+        echo "    ruff-format (format code only)"
+        echo "    ruff-check (check code only)"
+        echo "    ruff-fix (auto-fix ruff issues)"
         echo "    prettier"
         echo "    eslint"
         echo "    stylelint"

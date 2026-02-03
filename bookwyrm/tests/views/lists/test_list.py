@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 
@@ -13,18 +14,18 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.tests.validate_html import validate_html
 
 
-# pylint: disable=unused-argument
-# pylint: disable=too-many-public-methods
 class ListViews(TestCase):
     """list view"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -32,7 +33,7 @@ class ListViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-            self.rat = models.User.objects.create_user(
+            cls.rat = models.User.objects.create_user(
                 "rat@local.com",
                 "rat@rat.com",
                 "ratword",
@@ -41,38 +42,35 @@ class ListViews(TestCase):
                 remote_id="https://example.com/users/rat",
             )
         work = models.Work.objects.create(title="Work")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,
         )
         work_two = models.Work.objects.create(title="Labori")
-        self.book_two = models.Edition.objects.create(
+        cls.book_two = models.Edition.objects.create(
             title="Example Edition 2",
             remote_id="https://example.com/book/2",
             parent_work=work_two,
         )
         work_three = models.Work.objects.create(title="Trabajar")
-        self.book_three = models.Edition.objects.create(
+        cls.book_three = models.Edition.objects.create(
             title="Example Edition 3",
             remote_id="https://example.com/book/3",
             parent_work=work_three,
         )
         work_four = models.Work.objects.create(title="Travailler")
-        self.book_four = models.Edition.objects.create(
+        cls.book_four = models.Edition.objects.create(
             title="Example Edition 4",
             remote_id="https://example.com/book/4",
             parent_work=work_four,
         )
 
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
-            self.list = models.List.objects.create(
-                name="Test List", user=self.local_user
-            )
-
-        models.SiteSettings.objects.create()
+        with (
+            patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+        ):
+            cls.list = models.List.objects.create(name="Test List", user=cls.local_user)
 
     def setUp(self):
         """individual test setup"""
@@ -119,7 +117,7 @@ class ListViews(TestCase):
         """there are so many views, this just makes sure it LOADS"""
         view = views.List.as_view()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            for (i, book) in enumerate([self.book, self.book_two, self.book_three]):
+            for i, book in enumerate([self.book, self.book_two, self.book_three]):
                 models.ListItem.objects.create(
                     book_list=self.list,
                     user=self.local_user,
@@ -248,9 +246,12 @@ class ListViews(TestCase):
         )
         request.user = self.local_user
 
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ) as mock, patch("bookwyrm.lists_stream.remove_list_task.delay"):
+        with (
+            patch(
+                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            ) as mock,
+            patch("bookwyrm.lists_stream.remove_list_task.delay"),
+        ):
             result = view(request, self.list.id)
 
         self.assertEqual(mock.call_count, 1)
@@ -286,9 +287,12 @@ class ListViews(TestCase):
             )
         request = self.factory.post("")
         request.user = self.local_user
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ) as mock, patch("bookwyrm.lists_stream.remove_list_task.delay") as redis_mock:
+        with (
+            patch(
+                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            ) as mock,
+            patch("bookwyrm.lists_stream.remove_list_task.delay") as redis_mock,
+        ):
             views.delete_list(request, self.list.id)
         self.assertTrue(redis_mock.called)
         activity = json.loads(mock.call_args[1]["args"][1])

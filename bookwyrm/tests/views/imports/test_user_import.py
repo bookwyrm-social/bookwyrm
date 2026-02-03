@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import pathlib
 from unittest.mock import patch
 
@@ -14,13 +15,15 @@ from bookwyrm.tests.validate_html import validate_html
 class ImportUserViews(TestCase):
     """user import views"""
 
-    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
+        self.site = models.SiteSettings.get()
         self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -28,7 +31,6 @@ class ImportUserViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        models.SiteSettings.objects.create()
 
     def test_get_user_import_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -45,16 +47,16 @@ class ImportUserViews(TestCase):
 
         view = views.UserImport.as_view()
         form = forms.ImportUserForm()
-        archive_file = pathlib.Path(__file__).parent.joinpath(
+        archive_path = pathlib.Path(__file__).parent.joinpath(
             "../../data/bookwyrm_account_export.tar.gz"
         )
 
-        form.data["archive_file"] = SimpleUploadedFile(
-            # pylint: disable=consider-using-with
-            archive_file,
-            open(archive_file, "rb").read(),
-            content_type="application/gzip",
-        )
+        with open(archive_path, "rb") as archive_file:
+            form.data["archive_file"] = SimpleUploadedFile(
+                archive_path,
+                archive_file.read(),
+                content_type="application/gzip",
+            )
 
         form.data["include_user_settings"] = ""
         form.data["include_goals"] = "on"

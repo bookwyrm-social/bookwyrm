@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 
@@ -17,19 +18,21 @@ class DeleteUserViews(TestCase):
     """view user and edit profile"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@your.domain.here",
                 "mouse@mouse.mouse",
                 "password",
                 local=True,
                 localname="mouse",
             )
-            self.rat = models.User.objects.create_user(
+            cls.rat = models.User.objects.create_user(
                 "rat@your.domain.here",
                 "rat@rat.rat",
                 "password",
@@ -37,19 +40,18 @@ class DeleteUserViews(TestCase):
                 localname="rat",
             )
 
-            self.book = models.Edition.objects.create(
+            cls.book = models.Edition.objects.create(
                 title="test", parent_work=models.Work.objects.create(title="test work")
             )
-            with patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-            ), patch("bookwyrm.activitystreams.add_book_statuses_task.delay"):
+            with (
+                patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
+                patch("bookwyrm.activitystreams.add_book_statuses_task.delay"),
+            ):
                 models.ShelfBook.objects.create(
-                    book=self.book,
-                    user=self.local_user,
-                    shelf=self.local_user.shelf_set.first(),
+                    book=cls.book,
+                    user=cls.local_user,
+                    shelf=cls.local_user.shelf_set.first(),
                 )
-
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""
@@ -71,11 +73,9 @@ class DeleteUserViews(TestCase):
     def test_delete_user(self, *_):
         """use a form to update a user"""
         view = views.DeleteUser.as_view()
-        form = forms.DeleteUserForm()
-        form.data["password"] = "password"
-        request = self.factory.post("", form.data)
+        request = self.factory.post("")
         request.user = self.local_user
-        middleware = SessionMiddleware()
+        middleware = SessionMiddleware(request)
         middleware.process_request(request)
         request.session.save()
 
@@ -94,6 +94,7 @@ class DeleteUserViews(TestCase):
 
         self.local_user.refresh_from_db()
         self.assertFalse(self.local_user.is_active)
+        self.assertFalse(self.local_user.has_usable_password())
         self.assertEqual(self.local_user.deactivation_reason, "self_deletion")
 
     def test_deactivate_user(self, _):
@@ -102,7 +103,7 @@ class DeleteUserViews(TestCase):
         view = views.DeactivateUser.as_view()
         request = self.factory.post("")
         request.user = self.local_user
-        middleware = SessionMiddleware()
+        middleware = SessionMiddleware(request)
         middleware.process_request(request)
         request.session.save()
 
@@ -110,6 +111,7 @@ class DeleteUserViews(TestCase):
 
         self.local_user.refresh_from_db()
         self.assertFalse(self.local_user.is_active)
+        self.assertTrue(self.local_user.has_usable_password())
         self.assertEqual(self.local_user.deactivation_reason, "self_deactivation")
 
     def test_reactivate_user_get(self, _):
@@ -134,7 +136,7 @@ class DeleteUserViews(TestCase):
         form.data["password"] = "password"
         request = self.factory.post("", form.data)
         request.user = self.local_user
-        middleware = SessionMiddleware()
+        middleware = SessionMiddleware(request)
         middleware.process_request(request)
         request.session.save()
 
@@ -156,7 +158,7 @@ class DeleteUserViews(TestCase):
         form.data["password"] = "password"
         request = self.factory.post("", form.data)
         request.user = self.local_user
-        middleware = SessionMiddleware()
+        middleware = SessionMiddleware(request)
         middleware.process_request(request)
         request.session.save()
 

@@ -66,8 +66,14 @@
                             <option value="OpenLibrary" {% if current == 'OpenLibrary' %}selected{% endif %}>
                                 {% trans "OpenLibrary (CSV)" %}
                             </option>
+                            <option value="OpenReads" {% if current == 'OpenLibrary' %}selected{% endif %}>
+                                {% trans "OpenReads (CSV)" %}
+                            </option>
                             <option value="Calibre" {% if current == 'Calibre' %}selected{% endif %}>
                                 {% trans "Calibre (CSV)" %}
+                            </option>
+                            <option value="BookWyrm" {% if current == 'BookWyrm' %}selected{% endif %}>
+                                {% trans "BookWyrm (CSV)" %}
                             </option>
                         </select>
                     </div>
@@ -94,8 +100,13 @@
                     </label>
                 </div>
                 <div class="field">
+                    <label class="label">
+                        <input type="checkbox" name="create_shelves" checked> {% trans "Create new shelves if they do not exist" %}
+                    </label>
+                </div>
+                <div class="field">
                     <label class="label" for="privacy_import">
-                        {% trans "Privacy setting for imported reviews:" %}
+                        {% trans "Privacy setting for imported reviews and shelves:" %}
                     </label>
                     {% include 'snippets/privacy_select.html' with no_label=True privacy_uuid="import" %}
                 </div>
