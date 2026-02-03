@@ -1,8 +1,8 @@
-""" testing activitystreams """
-from datetime import datetime
+"""testing activitystreams"""
+
+from datetime import datetime, timezone
 from unittest.mock import patch
 from django.test import TestCase
-from django.utils import timezone
 
 from bookwyrm import activitystreams, models
 
@@ -15,15 +15,18 @@ from bookwyrm import activitystreams, models
 class Activitystreams(TestCase):
     """using redis to build activity streams"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """use a test csv"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
             )
-            self.another_user = models.User.objects.create_user(
+            cls.another_user = models.User.objects.create_user(
                 "nutria",
                 "nutria@nutria.nutria",
                 "password",
@@ -31,7 +34,7 @@ class Activitystreams(TestCase):
                 localname="nutria",
             )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -41,7 +44,10 @@ class Activitystreams(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
         work = models.Work.objects.create(title="test work")
-        self.book = models.Edition.objects.create(title="test book", parent_work=work)
+        cls.book = models.Edition.objects.create(title="test book", parent_work=work)
+
+    def setUp(self):
+        """per-test setUp"""
 
         class TestStream(activitystreams.ActivityStream):
             """test stream, don't have to do anything here"""
@@ -53,18 +59,18 @@ class Activitystreams(TestCase):
     def test_activitystream_class_ids(self, *_):
         """the abstract base class for stream objects"""
         self.assertEqual(
-            self.test_stream.stream_id(self.local_user),
+            self.test_stream.stream_id(self.local_user.id),
             f"{self.local_user.id}-test",
         )
         self.assertEqual(
-            self.test_stream.unread_id(self.local_user),
+            self.test_stream.unread_id(self.local_user.id),
             f"{self.local_user.id}-test-unread",
         )
 
     def test_unread_by_status_type_id(self, *_):
         """stream for status type"""
         self.assertEqual(
-            self.test_stream.unread_by_status_type_id(self.local_user),
+            self.test_stream.unread_by_status_type_id(self.local_user.id),
             f"{self.local_user.id}-test-unread-by-type",
         )
 
@@ -101,9 +107,11 @@ class Activitystreams(TestCase):
             privacy="direct",
             book=self.book,
         )
-        with patch("bookwyrm.activitystreams.r.set"), patch(
-            "bookwyrm.activitystreams.r.delete"
-        ), patch("bookwyrm.activitystreams.ActivityStream.get_store") as redis_mock:
+        with (
+            patch("bookwyrm.activitystreams.r.set"),
+            patch("bookwyrm.activitystreams.r.delete"),
+            patch("bookwyrm.activitystreams.ActivityStream.get_store") as redis_mock,
+        ):
             redis_mock.return_value = [status.id, status2.id]
             result = self.test_stream.get_activity_stream(self.local_user)
         self.assertEqual(result.count(), 2)
@@ -118,9 +126,9 @@ class Activitystreams(TestCase):
         )
         users = self.test_stream.get_audience(status)
         # remote users don't have feeds
-        self.assertFalse(self.remote_user in users)
-        self.assertTrue(self.local_user in users)
-        self.assertTrue(self.another_user in users)
+        self.assertFalse(self.remote_user.id in users)
+        self.assertTrue(self.local_user.id in users)
+        self.assertTrue(self.another_user.id in users)
 
     def test_abstractstream_get_audience_direct(self, *_):
         """get a list of users that should see a status"""
@@ -141,9 +149,9 @@ class Activitystreams(TestCase):
         )
         status.mention_users.add(self.local_user)
         users = self.test_stream.get_audience(status)
-        self.assertTrue(self.local_user in users)
-        self.assertFalse(self.another_user in users)
-        self.assertFalse(self.remote_user in users)
+        self.assertTrue(self.local_user.id in users)
+        self.assertFalse(self.another_user.id in users)
+        self.assertFalse(self.remote_user.id in users)
 
     def test_abstractstream_get_audience_followers_remote_user(self, *_):
         """get a list of users that should see a status"""
@@ -153,7 +161,7 @@ class Activitystreams(TestCase):
             privacy="followers",
         )
         users = self.test_stream.get_audience(status)
-        self.assertFalse(users.exists())
+        self.assertEqual(users, [])
 
     def test_abstractstream_get_audience_followers_self(self, *_):
         """get a list of users that should see a status"""
@@ -164,9 +172,9 @@ class Activitystreams(TestCase):
             book=self.book,
         )
         users = self.test_stream.get_audience(status)
-        self.assertTrue(self.local_user in users)
-        self.assertFalse(self.another_user in users)
-        self.assertFalse(self.remote_user in users)
+        self.assertTrue(self.local_user.id in users)
+        self.assertFalse(self.another_user.id in users)
+        self.assertFalse(self.remote_user.id in users)
 
     def test_abstractstream_get_audience_followers_with_mention(self, *_):
         """get a list of users that should see a status"""
@@ -179,9 +187,9 @@ class Activitystreams(TestCase):
         status.mention_users.add(self.local_user)
 
         users = self.test_stream.get_audience(status)
-        self.assertTrue(self.local_user in users)
-        self.assertFalse(self.another_user in users)
-        self.assertFalse(self.remote_user in users)
+        self.assertTrue(self.local_user.id in users)
+        self.assertFalse(self.another_user.id in users)
+        self.assertFalse(self.remote_user.id in users)
 
     def test_abstractstream_get_audience_followers_with_relationship(self, *_):
         """get a list of users that should see a status"""
@@ -193,6 +201,6 @@ class Activitystreams(TestCase):
             book=self.book,
         )
         users = self.test_stream.get_audience(status)
-        self.assertFalse(self.local_user in users)
-        self.assertFalse(self.another_user in users)
-        self.assertFalse(self.remote_user in users)
+        self.assertFalse(self.local_user.id in users)
+        self.assertFalse(self.another_user.id in users)
+        self.assertFalse(self.remote_user.id in users)

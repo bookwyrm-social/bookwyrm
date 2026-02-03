@@ -1,4 +1,5 @@
-""" testing book data connectors """
+"""testing book data connectors"""
+
 from django.test import TestCase
 
 from bookwyrm import models
@@ -9,9 +10,10 @@ from bookwyrm.connectors.abstract_connector import Mapping
 class AbstractConnector(TestCase):
     """generic code for connecting to outside data sources"""
 
-    def setUp(self):
-        """we need an example connector"""
-        self.connector_info = models.Connector.objects.create(
+    @classmethod
+    def setUpTestData(cls):
+        """we need an example connector in the database"""
+        cls.connector_info = models.Connector.objects.create(
             identifier="example.com",
             connector_file="openlibrary",
             base_url="https://example.com",
@@ -20,6 +22,9 @@ class AbstractConnector(TestCase):
             search_url="https://example.com/search?q=",
             isbn_search_url="https://example.com/isbn?q=",
         )
+
+    def setUp(self):
+        """instantiate example connector"""
 
         class TestConnector(abstract_connector.AbstractMinimalConnector):
             """nothing added here"""

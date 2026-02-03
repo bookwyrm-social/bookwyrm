@@ -1,0 +1,91 @@
+name: Python
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# overrides for .env.example
+env:
+  POSTGRES_HOST: 127.0.0.1
+  PGPORT: 5432
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: hunter2
+  POSTGRES_DB: github_actions
+  SECRET_KEY: beepbeep
+  EMAIL_HOST_USER: ""
+  EMAIL_HOST_PASSWORD: ""
+
+jobs:
+  pytest:
+    name: Tests (pytest)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env: # does not inherit from jobs.build.env
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: hunter2
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+          cache: pip
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade "pip>=25.1.0"
+          pip install --group main --group dev
+          pip install pytest-github-actions-annotate-failures
+      - name: Set up .env
+        run: cp .env.example .env
+      - name: Check migrations up-to-date
+        run: python ./manage.py makemigrations --check -v 3
+      - name: Run Tests
+        run: pytest -n 3
+
+  ruff:
+    name: Linting & Formatting (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+          cache: pip
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade "pip>=25.1.0"
+          pip install --group main --group dev
+      - name: Check code formatting with ruff
+        run: ruff format --check bookwyrm/ celerywyrm/
+      - name: Lint code with ruff
+        run: ruff check bookwyrm/ celerywyrm/
+
+  mypy:
+    name: Typing (mypy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+          cache: pip
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade "pip>=25.1.0"
+          pip install --group main --group dev
+      - name: Set up .env
+        run: cp .env.example .env
+      - name: Analyse code with mypy
+        run: mypy bookwyrm celerywyrm

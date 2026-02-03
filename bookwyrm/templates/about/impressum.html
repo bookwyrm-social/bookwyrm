@@ -1,0 +1,15 @@
+{% extends 'about/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Impressum" %}{% endblock %}
+
+
+{% block about_content %}
+<div class="block content">
+    <h2>{% trans "Impressum" %}</h2>
+    <div class="content">
+        {{ site.impressum | safe }}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<script>
+<script nonce="{{request.csp_nonce}}">
 
     let localResult = document.querySelector(".local-book-search-result");
     let remoteResult = document.querySelector(".remote-book-search-result");

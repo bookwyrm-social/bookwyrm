@@ -1,4 +1,5 @@
-""" book list views"""
+"""book list views"""
+
 from typing import Optional
 
 from django.contrib.auth.decorators import login_required
@@ -14,17 +15,22 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
+from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request, maybe_redirect_local_path
+from bookwyrm.views.helpers import (
+    is_api_request,
+    maybe_redirect_local_path,
+    redirect_to_referer,
+)
 
 
-# pylint: disable=no-self-use
 class List(View):
     """book list page"""
 
+    @vary_on_headers("Accept")
     def get(self, request, list_id, **kwargs):
         """display a book list"""
         add_failed = kwargs.get("add_failed", False)
@@ -91,10 +97,10 @@ class List(View):
             book_list.group = None
             book_list.save(broadcast=False)
 
-        return redirect(book_list.local_path)
+        return redirect_to_referer(request, book_list.local_path)
 
 
-def get_list_suggestions(book_list, user, query=None):
+def get_list_suggestions(book_list, user, query=None, num_suggestions=5):
     """What books might a user want to add to a list"""
     if query:
         # search for books
@@ -103,23 +109,29 @@ def get_list_suggestions(book_list, user, query=None):
             filters=[~Q(parent_work__editions__in=book_list.books.all())],
         )
     # just suggest whatever books are nearby
-    suggestions = user.shelfbook_set.filter(~Q(book__in=book_list.books.all()))
-    suggestions = [s.book for s in suggestions[:5]]
-    if len(suggestions) < 5:
-        suggestions += [
+    suggestions = user.shelfbook_set.filter(
+        ~Q(book__in=book_list.books.all())
+    ).distinct()[:num_suggestions]
+    suggestions = [s.book for s in suggestions[:num_suggestions]]
+    if len(suggestions) < num_suggestions:
+        others = [
             s.default_edition
             for s in models.Work.objects.filter(
                 ~Q(editions__in=book_list.books.all()),
-            ).order_by("-updated_date")[: 5 - len(suggestions)]
+            )
+            .distinct()
+            .order_by("-updated_date")[:num_suggestions]
         ]
+        # get 'num_suggestions' unique items
+        suggestions = list(set(suggestions + others))[:num_suggestions]
     return suggestions
 
 
 def sort_list(request, items):
-    """helper to handle the surprisngly involved sorting"""
+    """helper to handle the surprisingly involved sorting"""
     # sort_by shall be "order" unless a valid alternative is given
     sort_by = request.GET.get("sort_by", "order")
-    if sort_by not in ("order", "title", "rating"):
+    if sort_by not in ("order", "sort_title", "rating"):
         sort_by = "order"
 
     # direction shall be "ascending" unless a valid alternative is given
@@ -129,7 +141,7 @@ def sort_list(request, items):
 
     directional_sort_by = {
         "order": "order",
-        "title": "book__title",
+        "sort_title": "book__sort_title",
         "rating": "average_rating",
     }[sort_by]
     if direction == "descending":
@@ -151,7 +163,7 @@ def save_list(request, list_id):
     """save a list"""
     book_list = get_object_or_404(models.List, id=list_id)
     request.user.saved_lists.add(book_list)
-    return redirect("list", list_id)
+    return redirect_to_referer(request, "list", list_id)
 
 
 @require_POST
@@ -160,7 +172,7 @@ def unsave_list(request, list_id):
     """unsave a list"""
     book_list = get_object_or_404(models.List, id=list_id)
     request.user.saved_lists.remove(book_list)
-    return redirect("list", list_id)
+    return redirect_to_referer(request, "list", list_id)
 
 
 @require_POST
@@ -173,7 +185,7 @@ def delete_list(request, list_id):
     book_list.raise_not_deletable(request.user)
 
     book_list.delete()
-    return redirect("lists")
+    return redirect("/list")
 
 
 @require_POST
@@ -204,10 +216,13 @@ def add_book(request):
     else:
         # add the book at the latest order of approved books, before pending books
         order_max = (
-            book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
-                "order__max"
-            ]
-        ) or 0
+            (
+                book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
+                    "order__max"
+                ]
+            )
+            or 0
+        )
         increment_order_in_reverse(book_list.id, order_max + 1)
     item.order = order_max + 1
     item.save()
@@ -230,7 +245,7 @@ def remove_book(request, list_id):
         item.delete()
         normalize_book_list_ordering(book_list.id, start=deleted_order)
 
-    return redirect("list", list_id)
+    return redirect_to_referer(request, "list", list_id)
 
 
 @require_POST
@@ -277,7 +292,7 @@ def set_book_position(request, list_item_id):
         list_item.order = int_position
         list_item.save()
 
-    return redirect("list", book_list.id)
+    return redirect_to_referer(request, book_list.local_path)
 
 
 @transaction.atomic

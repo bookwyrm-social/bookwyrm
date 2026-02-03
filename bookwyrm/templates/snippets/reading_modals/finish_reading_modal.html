@@ -13,7 +13,7 @@ Finish "<em>{{ book_title }}</em>"
 {% csrf_token %}
 <input type="hidden" name="id" value="{{ readthrough.id }}">
 <input type="hidden" name="reading_status" value="read">
-<input type="hidden" name="shelf" value="{{ move_from }}"> 
+<input type="hidden" name="shelf" value="{{ move_from }}">
 {% endblock %}
 
 {% block reading-dates %}

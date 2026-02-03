@@ -19,9 +19,9 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
     {# Supplemental fields #}
     <div>
         {% active_shelf book as active_shelf %}
-        {% if active_shelf.shelf.identifier == 'reading' and book.latest_readthrough %}
-
+        {% if active_shelf.shelf.identifier == 'reading' %}
         {% with readthrough=book.latest_readthrough %}
+        {% if readthrough %}
         <div class="field">
             <input type="hidden" name="id" value="{{ readthrough.id }}"/>
             <label class="label" for="progress_{{ uuid }}">{% trans "Progress:" %}</label>
@@ -66,6 +66,7 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
             <p class="help">{% blocktrans with pages=book.pages %}of {{ pages }} pages{% endblocktrans %}</p>
             {% endif %}
         </div>
+        {% endif %}
         {% endwith %}
         {% endif %}
     </div>

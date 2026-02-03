@@ -1,12 +1,11 @@
-""" using django model forms """
+"""using django model forms"""
+
 from django import forms
 
 
 class ArrayWidget(forms.widgets.TextInput):
     """Inputs for postgres array fields"""
 
-    # pylint: disable=unused-argument
-    # pylint: disable=no-self-use
     def value_from_datadict(self, data, files, name):
         """get all values for this name"""
         return [i for i in data.getlist(name) if i]

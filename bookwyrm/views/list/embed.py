@@ -1,4 +1,5 @@
-""" book list views"""
+"""book list views"""
+
 from django.core.paginator import Paginator
 from django.db.models import Avg, DecimalField
 from django.db.models.functions import Coalesce
@@ -12,9 +13,8 @@ from bookwyrm import models
 from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable=no-self-use
 class EmbedList(View):
-    """embeded book list page"""
+    """embedded book list page"""
 
     def get(self, request, list_id, list_key):
         """display a book list"""

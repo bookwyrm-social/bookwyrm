@@ -8,8 +8,13 @@
 {% include 'user/books_header.html' with shelf=shelf %}
 {% endblock %}
 
-{% block opengraph_images %}
-    {% include 'snippets/opengraph_images.html' with image=user.preview_image %}
+{% block opengraph %}
+    {% include 'snippets/opengraph.html' with image=user.preview_image %}
+{% endblock %}
+
+
+{% block head_links %}
+    <link rel="alternate" type="application/rss+xml" href="{{ request.get_full_path }}/rss" title="{{ user.display_name }} - {{ shelf.name }}" />
 {% endblock %}
 
 {% block content %}
@@ -18,7 +23,9 @@
         {% include 'user/books_header.html' %}
     </h1>
 </header>
-
+{% if user.moved_to %}
+    {% include "snippets/moved_user_notice.html" with user=user %}
+{% else %}
 <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
     <ul>
         <li><a href="{% url 'user-feed' user|username %}">{% trans "User profile" %}</a></li>
@@ -99,7 +106,6 @@
                     {% plural %}
                         {{ formatted_count }} books
                     {% endblocktrans %}
-
                     {% if books.has_other_pages %}
                         {% blocktrans trimmed with start=books.start_index end=books.end_index %}
                         (showing {{ start }}-{{ end }})
@@ -109,6 +115,8 @@
                 {% endif %}
                 {% endwith %}
             </h2>
+            {% include 'shelf/shelves_filters.html' with user=user query=query %}
+
         </div>
         {% if is_self and shelf.id %}
         <div class="column is-narrow">
@@ -134,7 +142,7 @@
     {% endif %}
 </div>
 
-<div class="block">
+<div class="block mt-2">
     {% include 'shelf/edit_shelf_form.html' with controls_text="edit_shelf_form" %}
 </div>
 
@@ -145,7 +153,7 @@
             <thead>
                 <tr>
                     <th>{% trans "Cover"%}</th>
-                    <th>{% trans "Title"  as text %}{% include 'snippets/table-sort-header.html' with field="title" sort=sort text=text %}</th>
+                    <th>{% trans "Title"  as text %}{% include 'snippets/table-sort-header.html' with field="sort_title" sort=sort text=text %}</th>
                     <th>{% trans "Author"  as text %}{% include 'snippets/table-sort-header.html' with field="author" sort=sort text=text %}</th>
                     {% if request.user.is_authenticated %}
                         {% if is_self %}
@@ -207,7 +215,17 @@
             </tbody>
         </table>
         {% else %}
-        <p><em>{% trans "This shelf is empty." %}</em></p>
+        <p>
+            <em>
+                {% if shelves_filter_query %}
+                    {% blocktrans trimmed %}
+                        We couldn't find any books that matched {{ shelves_filter_query }}
+                    {% endblocktrans %}
+                {% else %}
+                    {% trans "This shelf is empty." %}
+                {% endif %}
+            </em>
+        </p>
         {% endif %}
 
     </div>
@@ -215,6 +233,7 @@
 <div>
     {% include 'snippets/pagination.html' with page=books path=request.path %}
 </div>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}

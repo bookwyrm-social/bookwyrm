@@ -28,47 +28,49 @@
     </ul>
 </div>
 
-<table class="table is-striped is-fullwidth">
-    <tr>
-        {% url 'settings-federation' as url %}
-        <th>
-            {% trans "Instance name" as text %}
-            {% include 'snippets/table-sort-header.html' with field="server_name" sort=sort text=text %}
-        </th>
-        <th>
-            {% trans "Date added" as text %}
-            {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
-        </th>
-        <th>
-            {% trans "Last updated" as text %}
-            {% include 'snippets/table-sort-header.html' with field="updated_date" sort=sort text=text %}
-        </th>
-        <th>
-            {% trans "Software" as text %}
-            {% include 'snippets/table-sort-header.html' with field="application_type" sort=sort text=text %}
-        </th>
-        <th>
-            {% trans "Users" %}
-        </th>
-    </tr>
-    {% for server in servers %}
-    <tr>
-        <td><a href="{% url 'settings-federated-server' server.id %}">{{ server.server_name }}</a></td>
-        <td>{{ server.created_date|date:'Y-m-d' }}</td>
-        <td>{{ server.updated_date|date:'Y-m-d' }}</td>
-        <td>
-        {% if server.application_type %}
-            {{ server.application_type }}
-            {% if server.application_version %}({{ server.application_version }}){% endif %}
+<div class="table-container scroll-x">
+    <table class="table is-striped is-fullwidth">
+        <tr>
+            {% url 'settings-federation' as url %}
+            <th>
+                {% trans "Instance name" as text %}
+                {% include 'snippets/table-sort-header.html' with field="server_name" sort=sort text=text %}
+            </th>
+            <th>
+                {% trans "Date added" as text %}
+                {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
+            </th>
+            <th>
+                {% trans "Last updated" as text %}
+                {% include 'snippets/table-sort-header.html' with field="updated_date" sort=sort text=text %}
+            </th>
+            <th>
+                {% trans "Software" as text %}
+                {% include 'snippets/table-sort-header.html' with field="application_type" sort=sort text=text %}
+            </th>
+            <th>
+                {% trans "Users" %}
+            </th>
+        </tr>
+        {% for server in servers %}
+        <tr>
+            <td><a href="{% url 'settings-federated-server' server.id %}">{{ server.server_name }}</a></td>
+            <td>{{ server.created_date|date:'Y-m-d' }}</td>
+            <td>{{ server.updated_date|date:'Y-m-d' }}</td>
+            <td>
+            {% if server.application_type %}
+                {{ server.application_type }}
+                {% if server.application_version %}({{ server.application_version }}){% endif %}
+            {% endif %}
+            </td>
+            <td>{{ server.user_set.count }}</td>
+        </tr>
+        {% endfor %}
+        {% if not servers %}
+        <tr><td colspan="5"><em>{% trans "No instances found" %}</em></td></tr>
         {% endif %}
-        </td>
-        <td>{{ server.user_set.count }}</td>
-    </tr>
-    {% endfor %}
-    {% if not servers %}
-    <tr><td colspan="5"><em>{% trans "No instances found" %}</em></td></tr>
-    {% endif %}
-</table>
+    </table>
+</div>
 
 
 {% include 'snippets/pagination.html' with page=servers path=request.path %}

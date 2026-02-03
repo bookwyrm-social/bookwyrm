@@ -1,0 +1,20 @@
+{% extends 'notifications/items/layout.html' %}
+{% load humanize %}
+{% load i18n %}
+
+{% block primary_link %}{% spaceless %}
+{% url 'settings-invite-requests' %}
+{% endspaceless %}{% endblock %}
+
+{% block icon %}
+<span class="icon icon-envelope"></span>
+{% endblock %}
+
+{% block description %}
+    {% url 'settings-invite-requests' as path %}
+    {% blocktrans trimmed count counter=notification.related_invite_requests.count with display_count=notification.related_invite_requests.count|intcomma %}
+    New <a href="{{ path }}">invite request</a> awaiting response
+    {% plural %}
+    {{ display_count }} new <a href="{{ path }}">invite requests</a> awaiting response
+    {% endblocktrans %}
+{% endblock %}

@@ -1,21 +1,29 @@
-""" send emails """
+"""send emails"""
+
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 
 from bookwyrm import models, settings
-from bookwyrm.tasks import app, HIGH
-from bookwyrm.settings import DOMAIN
+from bookwyrm.tasks import app, EMAIL
+from bookwyrm.settings import DOMAIN, BASE_URL
 
 
 def email_data():
     """fields every email needs"""
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
     return {
         "site_name": site.name,
         "logo": site.logo_small_url,
         "domain": DOMAIN,
+        "base_url": BASE_URL,
         "user": None,
     }
+
+
+def test_email(user):
+    """Just an admin checking if emails are sending"""
+    data = email_data()
+    send_email(user.email, *format_email("test", data))
 
 
 def email_confirmation_email(user):
@@ -69,7 +77,7 @@ def format_email(email_name, data):
     return (subject, html_content, text_content)
 
 
-@app.task(queue=HIGH)
+@app.task(queue=EMAIL)
 def send_email(recipient, subject, html_content, text_content):
     """use a task to send the email"""
     email = EmailMultiAlternatives(

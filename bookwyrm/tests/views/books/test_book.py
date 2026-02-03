@@ -1,8 +1,7 @@
-""" test for app action functionality """
-from io import BytesIO
+"""test for app action functionality"""
+
 import pathlib
 from unittest.mock import patch
-from PIL import Image
 
 import responses
 
@@ -23,13 +22,15 @@ from bookwyrm.tests.validate_html import validate_html
 class BookViews(TestCase):
     """books books books"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -37,22 +38,24 @@ class BookViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-        self.group = Group.objects.create(name="editor")
-        self.group.permissions.add(
+        cls.group = Group.objects.create(name="editor")
+        cls.group.permissions.add(
             Permission.objects.create(
                 name="edit_book",
                 codename="edit_book",
                 content_type=ContentType.objects.get_for_model(models.User),
             ).id
         )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.work = models.Work.objects.create(title="Test Work")
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
-            parent_work=self.work,
+            parent_work=cls.work,
         )
 
-        models.SiteSettings.objects.create()
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_book_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -155,15 +158,15 @@ class BookViews(TestCase):
     def test_upload_cover_file(self):
         """add a cover via file upload"""
         self.assertFalse(self.book.cover)
-        image_file = pathlib.Path(__file__).parent.joinpath(
+        image_path = pathlib.Path(__file__).parent.joinpath(
             "../../../static/images/default_avi.jpg"
         )
 
         form = forms.CoverForm(instance=self.book)
-        # pylint: disable=consider-using-with
-        form.data["cover"] = SimpleUploadedFile(
-            image_file, open(image_file, "rb").read(), content_type="image/jpeg"
-        )
+        with open(image_path, "rb") as image_file:
+            form.data["cover"] = SimpleUploadedFile(
+                image_path, image_file.read(), content_type="image/jpeg"
+            )
 
         request = self.factory.post("", form.data)
         request.user = self.local_user
@@ -257,20 +260,47 @@ class BookViews(TestCase):
         self.assertEqual(mock.call_args[0][0], "https://openlibrary.org/book/123")
         self.assertEqual(result.status_code, 302)
 
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
+    def test_quotation_endposition(self, *_):
+        """make sure the endposition is served as well"""
+        view = views.Book.as_view()
+
+        _ = models.Quotation.objects.create(
+            user=self.local_user,
+            book=self.book,
+            content="hi",
+            quote="wow",
+            position="12",
+            endposition="13",
+        )
+
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.book.id, user_statuses="quotation")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        print(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(
+            result.context_data["statuses"].object_list[0].endposition, "13"
+        )
+
 
 def _setup_cover_url():
     """creates cover url mock"""
     cover_url = "http://example.com"
-    image_file = pathlib.Path(__file__).parent.joinpath(
+    image_path = pathlib.Path(__file__).parent.joinpath(
         "../../../static/images/default_avi.jpg"
     )
-    image = Image.open(image_file)
-    output = BytesIO()
-    image.save(output, format=image.format)
-    responses.add(
-        responses.GET,
-        cover_url,
-        body=output.getvalue(),
-        status=200,
-    )
+    with open(image_path, "rb") as image_file:
+        responses.add(
+            responses.GET,
+            cover_url,
+            body=image_file.read(),
+            status=200,
+        )
     return cover_url

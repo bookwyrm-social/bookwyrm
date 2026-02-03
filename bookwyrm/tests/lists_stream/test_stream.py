@@ -1,4 +1,5 @@
-""" testing activitystreams """
+"""testing activitystreams"""
+
 from datetime import datetime
 from unittest.mock import patch
 
@@ -15,15 +16,18 @@ from bookwyrm import lists_stream, models
 class ListsStream(TestCase):
     """using redis to build activity streams"""
 
-    def setUp(self):
-        """use a test csv"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+    @classmethod
+    def setUpTestData(cls):
+        """database setup"""
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
             )
-            self.another_user = models.User.objects.create_user(
+            cls.another_user = models.User.objects.create_user(
                 "nutria",
                 "nutria@nutria.nutria",
                 "password",
@@ -31,7 +35,7 @@ class ListsStream(TestCase):
                 localname="nutria",
             )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -40,7 +44,7 @@ class ListsStream(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        self.stream = lists_stream.ListsStream()
+        cls.stream = lists_stream.ListsStream()
 
     def test_lists_stream_ids(self, *_):
         """the abstract base class for stream objects"""

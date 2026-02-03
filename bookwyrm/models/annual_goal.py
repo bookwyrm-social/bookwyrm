@@ -1,11 +1,12 @@
-""" How many books do you want to read this year """
+"""How many books do you want to read this year"""
+
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
 
 from bookwyrm.models.status import Review
 from .base_model import BookWyrmModel
-from . import fields, Review
+from . import fields
 
 
 def get_current_year():
@@ -24,7 +25,7 @@ class AnnualGoal(BookWyrmModel):
     )
 
     class Meta:
-        """unqiueness constraint"""
+        """uniqueness constraint"""
 
         unique_together = ("user", "year")
 
@@ -52,7 +53,7 @@ class AnnualGoal(BookWyrmModel):
             user=self.user,
             book__in=book_ids,
         )
-        return {r.book.id: r.rating for r in reviews}
+        return {r.book_id: r.rating for r in reviews}
 
     @property
     def progress(self):

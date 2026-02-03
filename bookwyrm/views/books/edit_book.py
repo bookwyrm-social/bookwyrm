@@ -1,5 +1,7 @@
-""" the good stuff! the books! """
+"""the good stuff! the books!"""
+
 from re import sub, findall
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.db import transaction
@@ -11,6 +13,7 @@ from django.views.decorators.http import require_POST
 from django.views import View
 
 from bookwyrm import book_search, forms, models
+from bookwyrm.utils.images import remove_uploaded_image_exif, set_cover_from_url
 
 # from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.utils.isni import (
@@ -18,10 +21,9 @@ from bookwyrm.utils.isni import (
     build_author_from_isni,
     augment_author_metadata,
 )
-from bookwyrm.views.helpers import get_edition
-from .books import set_cover_from_url
+from bookwyrm.views.helpers import get_edition, get_mergeable_object_or_404
 
-# pylint: disable=no-self-use
+
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.edit_book", raise_exception=True), name="dispatch"
@@ -32,6 +34,9 @@ class EditBook(View):
     def get(self, request, book_id):
         """info about a book"""
         book = get_edition(book_id)
+        # This doesn't update the sort title, just pre-populates it in the form
+        if book.sort_title in ["", None]:
+            book.sort_title = book.guess_sort_title(user=request.user)
         if not book.description:
             book.description = book.parent_work.description
         data = {"book": book, "form": forms.EditionForm(instance=book)}
@@ -39,11 +44,14 @@ class EditBook(View):
 
     def post(self, request, book_id):
         """edit a book cool"""
-        book = get_object_or_404(models.Edition, id=book_id)
+        book = get_mergeable_object_or_404(models.Edition, id=book_id)
+
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
 
         data = {"book": book, "form": form}
+        ensure_transient_values_persist(request, data)
         if not form.is_valid():
+            ensure_transient_values_persist(request, data, add_author=True)
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         data = add_authors(request, data)
@@ -63,6 +71,8 @@ class EditBook(View):
             image = set_cover_from_url(url)
             if image:
                 book.cover.save(*image, save=False)
+        elif "cover" in form.files:
+            book.cover = remove_uploaded_image_exif(form.files["cover"])
 
         book.save()
         return redirect(f"/book/{book.id}")
@@ -80,7 +90,6 @@ class CreateBook(View):
         data = {"form": forms.EditionForm()}
         return TemplateResponse(request, "book/edit/edit_book.html", data)
 
-    # pylint: disable=too-many-locals
     def post(self, request):
         """create a new book"""
         # returns None if no match is found
@@ -102,14 +111,18 @@ class CreateBook(View):
             }
 
         if not form.is_valid():
+            ensure_transient_values_persist(request, data, form=form)
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
+        # we have to call this twice because it requires form.cleaned_data
+        # which only exists after we validate the form
+        ensure_transient_values_persist(request, data, form=form)
         data = add_authors(request, data)
 
         # check if this is an edition of an existing work
         author_text = ", ".join(data.get("add_author", []))
         data["book_matches"] = book_search.search(
-            f'{form.cleaned_data.get("title")} {author_text}',
+            f"{form.cleaned_data.get('title')} {author_text}",
             min_confidence=0.1,
         )[:5]
 
@@ -120,7 +133,7 @@ class CreateBook(View):
 
         with transaction.atomic():
             book = form.save(request)
-            parent_work = get_object_or_404(models.Work, id=parent_work_id)
+            parent_work = get_mergeable_object_or_404(models.Work, id=parent_work_id)
             book.parent_work = parent_work
 
             if authors:
@@ -131,26 +144,39 @@ class CreateBook(View):
                 image = set_cover_from_url(url)
                 if image:
                     book.cover.save(*image, save=False)
+            elif "cover" in form.files:
+                book.cover = remove_uploaded_image_exif(form.files["cover"])
 
             book.save()
         return redirect(f"/book/{book.id}")
+
+
+def ensure_transient_values_persist(request, data, **kwargs):
+    """ensure that values of transient form fields persist when re-rendering the form"""
+    data["cover_url"] = request.POST.get("cover-url")
+    if kwargs and kwargs.get("form"):
+        data["book"] = data.get("book") or {}
+        data["book"]["subjects"] = kwargs["form"].cleaned_data["subjects"]
+        data["add_author"] = request.POST.getlist("add_author")
+    elif kwargs and kwargs.get("add_author") is True:
+        data["add_author"] = request.POST.getlist("add_author")
 
 
 def add_authors(request, data):
     """helper for adding authors"""
     add_author = [author for author in request.POST.getlist("add_author") if author]
     if not add_author:
+        data["add_author"] = []
         return data
 
     data["add_author"] = add_author
     data["author_matches"] = []
     data["isni_matches"] = []
 
-    # creting a book or adding an author to a book needs another step
+    # creating a book or adding an author to a book needs another step
     data["confirm_mode"] = True
     # this isn't preserved because it isn't part of the form obj
     data["remove_authors"] = request.POST.getlist("remove_authors")
-    data["cover_url"] = request.POST.get("cover-url")
 
     for author in add_author:
         # filter out empty author fields
@@ -161,8 +187,8 @@ def add_authors(request, data):
 
         author_matches = (
             models.Author.objects.annotate(search=vector)
-            .annotate(rank=SearchRank(vector, author))
-            .filter(rank__gt=0.4)
+            .annotate(rank=SearchRank(vector, author, normalization=32))
+            .filter(rank__gt=0.19)  # short alias names like XY get rank around 0.1956
             .order_by("-rank")[:5]
         )
 
@@ -178,7 +204,6 @@ def add_authors(request, data):
             if sub(r"\D", "", str(i.isni)) == sub(r"\D", "", str(a.isni))
         ]
 
-        # pylint: disable=cell-var-from-loop
         matches = list(filter(lambda x: x not in exists, isni_authors))
         # combine existing and isni authors
         matches.extend(author_matches)
@@ -215,8 +240,6 @@ def create_book_from_data(request):
 class ConfirmEditBook(View):
     """confirm edits to a book"""
 
-    # pylint: disable=too-many-locals
-    # pylint: disable=too-many-branches
     def post(self, request, book_id=None):
         """edit a book cool"""
         # returns None if no match is found
@@ -274,7 +297,7 @@ class ConfirmEditBook(View):
             if not book.parent_work:
                 work_match = request.POST.get("parent_work")
                 if work_match and work_match != "0":
-                    work = get_object_or_404(models.Work, id=work_match)
+                    work = get_mergeable_object_or_404(models.Work, id=work_match)
                 else:
                     work = models.Work.objects.create(title=form.cleaned_data["title"])
                     work.authors.set(book.authors.all())
@@ -289,6 +312,12 @@ class ConfirmEditBook(View):
                 image = set_cover_from_url(url)
                 if image:
                     book.cover.save(*image, save=False)
+            elif "cover" in form.files:
+                book.cover = remove_uploaded_image_exif(form.files["cover"])
+
+            # add a sort title if we don't have one
+            if book.sort_title in ["", None]:
+                book.sort_title = book.guess_sort_title(user=request.user)
 
             # we don't tell the world when creating a book
             book.save(broadcast=False)

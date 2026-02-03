@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 from datetime import timedelta
 from unittest.mock import patch
 
@@ -12,12 +13,15 @@ from bookwyrm import models, settings
 class SiteModels(TestCase):
     """tests for site models"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -76,7 +80,7 @@ class SiteModels(TestCase):
     def test_site_invite_link(self):
         """invite link generator"""
         invite = models.SiteInvite.objects.create(user=self.local_user, code="hello")
-        self.assertEqual(invite.link, f"https://{settings.DOMAIN}/invite/hello")
+        self.assertEqual(invite.link, f"{settings.BASE_URL}/invite/hello")
 
     def test_invite_request(self):
         """someone wants an invite"""
@@ -92,7 +96,7 @@ class SiteModels(TestCase):
         """password reset token"""
         token = models.PasswordReset.objects.create(user=self.local_user, code="hello")
         self.assertTrue(token.valid())
-        self.assertEqual(token.link, f"https://{settings.DOMAIN}/password-reset/hello")
+        self.assertEqual(token.link, f"{settings.BASE_URL}/password-reset/hello")
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
     @patch("bookwyrm.suggested_users.remove_user_task.delay")

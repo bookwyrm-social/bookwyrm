@@ -6,16 +6,16 @@
 @use 'bulma/bulma.sass';
 
 .shepherd-button {
-    @extend .button.mr-2;
+    @extend .button, .mr-2;
 }
 
 .shepherd-button.shepherd-button-secondary {
-    @extend .button.is-light;
+    @extend .button, .is-light;
 }
 
 .shepherd-footer {
     @extend .message-body;
-    @extend .is-info.is-light;
+    @extend .is-info, .is-light;
     border-color: $info-light;
     border-radius: 0 0 4px 4px;
 }
@@ -29,7 +29,7 @@
 
 .shepherd-text {
     @extend .message-body;
-    @extend .is-info.is-light;
+    @extend .is-info, .is-light;
     border-radius: 0;
 }
 

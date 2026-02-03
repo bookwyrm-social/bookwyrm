@@ -1,4 +1,5 @@
-""" Filters and tags related to shelving books """
+"""Filters and tags related to shelving books"""
+
 from django import template
 from django.utils.translation import gettext_lazy as _
 
@@ -7,6 +8,15 @@ from bookwyrm.utils import cache
 
 
 register = template.Library()
+
+
+SHELF_NAMES = {
+    "all": _("All books"),
+    "to-read": _("To Read"),
+    "reading": _("Currently Reading"),
+    "read": _("Read"),
+    "stopped-reading": _("Stopped Reading"),
+}
 
 
 @register.filter(name="is_book_on_shelf")
@@ -37,20 +47,16 @@ def get_next_shelf(current_shelf):
 
 @register.filter(name="translate_shelf_name")
 def get_translated_shelf_name(shelf):
-    """produced translated shelf nidentifierame"""
+    """produce translated shelf identifiername"""
     if not shelf:
         return ""
     # support obj or dict
     identifier = shelf["identifier"] if isinstance(shelf, dict) else shelf.identifier
-    if identifier == "all":
-        return _("All books")
-    if identifier == "to-read":
-        return _("To Read")
-    if identifier == "reading":
-        return _("Currently Reading")
-    if identifier == "read":
-        return _("Read")
-    return shelf["name"] if isinstance(shelf, dict) else shelf.name
+
+    try:
+        return SHELF_NAMES[identifier]
+    except KeyError:
+        return shelf["name"] if isinstance(shelf, dict) else shelf.name
 
 
 @register.simple_tag(takes_context=True)

@@ -29,6 +29,11 @@
                 <p>
                     <a href ="{% url 'privacy' %}">{% trans "Privacy Policy" %}</a>
                 </p>
+                {% if site.show_impressum %}
+                <p>
+                    <a href ="{% url 'impressum' %}">{% trans "Impressum" %}</a>
+                </p>
+                {% endif %}
             </div>
             <div class="column content">
                 {% if site.support_link %}

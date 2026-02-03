@@ -1,4 +1,5 @@
-""" testing model activitypub utilities """
+"""testing model activitypub utilities"""
+
 from unittest.mock import patch
 from collections import namedtuple
 from dataclasses import dataclass
@@ -20,24 +21,26 @@ from bookwyrm.models.activitypub_mixin import (
 from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable=invalid-name,too-many-public-methods
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class ActivitypubMixins(TestCase):
     """functionality shared across models"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """shared data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
             )
-        self.local_user.remote_id = "http://example.com/a/b"
-        self.local_user.save(broadcast=False, update_fields=["remote_id"])
+        cls.local_user.remote_id = "http://example.com/a/b"
+        cls.local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -47,6 +50,8 @@ class ActivitypubMixins(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
+    def setUp(self):
+        """test data"""
         self.object_mock = {
             "to": "to field",
             "cc": "cc field",
@@ -118,6 +123,25 @@ class ActivitypubMixins(TestCase):
 
         result = models.Edition.find_existing({"openlibraryKey": "OL1234"})
         self.assertEqual(result, book)
+
+    def test_find_existing_with_id(self, *_):
+        """make sure that an "id" field won't produce a match"""
+        book = models.Edition.objects.create(title="Test edition")
+
+        result = models.Edition.find_existing({"id": book.id})
+        self.assertIsNone(result)
+
+    def test_find_existing_with_id_and_match(self, *_):
+        """make sure that an "id" field won't produce a match"""
+        book = models.Edition.objects.create(title="Test edition")
+        matching_book = models.Edition.objects.create(
+            title="Another test edition", openlibrary_key="OL1234"
+        )
+
+        result = models.Edition.find_existing(
+            {"id": book.id, "openlibraryKey": "OL1234"}
+        )
+        self.assertEqual(result, matching_book)
 
     def test_get_recipients_public_object(self, *_):
         """determines the recipients for an object's broadcast"""
@@ -205,14 +229,18 @@ class ActivitypubMixins(TestCase):
                 shared_inbox="http://example.com/inbox",
                 outbox="https://example.com/users/nutria/outbox",
             )
-        MockSelf = namedtuple("Self", ("privacy", "user"))
-        mock_self = MockSelf("public", self.local_user)
+        MockSelf = namedtuple("Self", ("privacy", "user", "recipients"))
         self.local_user.followers.add(self.remote_user)
         self.local_user.followers.add(another_remote_user)
 
+        mock_self = MockSelf("public", self.local_user, [])
         recipients = ActivitypubMixin.get_recipients(mock_self)
-        self.assertEqual(len(recipients), 1)
-        self.assertEqual(recipients[0], "http://example.com/inbox")
+        self.assertCountEqual(recipients, ["http://example.com/inbox"])
+
+        # should also work with recipient that is a follower
+        mock_self.recipients.append(another_remote_user)
+        recipients = ActivitypubMixin.get_recipients(mock_self)
+        self.assertCountEqual(recipients, ["http://example.com/inbox"])
 
     def test_get_recipients_software(self, *_):
         """should differentiate between bookwyrm and other remote users"""
@@ -245,7 +273,7 @@ class ActivitypubMixins(TestCase):
 
     # ObjectMixin
     def test_object_save_create(self, *_):
-        """should save uneventufully when broadcast is disabled"""
+        """should save uneventfully when broadcast is disabled"""
 
         class Success(Exception):
             """this means we got to the right method"""
@@ -259,13 +287,11 @@ class ActivitypubMixins(TestCase):
                 with patch("django.db.models.Model.save"):
                     super().save(*args, **kwargs)
 
-            def broadcast(
-                self, activity, sender, **kwargs
-            ):  # pylint: disable=arguments-differ
+            def broadcast(self, activity, sender, **kwargs):
                 """do something"""
                 raise Success()
 
-            def to_create_activity(self, user):  # pylint: disable=arguments-differ
+            def to_create_activity(self, user):
                 return {}
 
         with self.assertRaises(Success):
@@ -276,7 +302,7 @@ class ActivitypubMixins(TestCase):
         ObjectModel(user=None).save()
 
     def test_object_save_update(self, *_):
-        """should save uneventufully when broadcast is disabled"""
+        """should save uneventfully when broadcast is disabled"""
 
         class Success(Exception):
             """this means we got to the right method"""
@@ -372,38 +398,40 @@ class ActivitypubMixins(TestCase):
     def test_to_ordered_collection_page(self, *_):
         """make sure the paged results of an ordered collection work"""
         self.assertEqual(PAGE_LENGTH, 15)
-        for number in range(0, 2 * PAGE_LENGTH):
-            models.Status.objects.create(
+        models.Status.objects.bulk_create(
+            models.Status(
                 user=self.local_user,
                 content=f"test status {number}",
             )
+            for number in range(2 * PAGE_LENGTH)
+        )
         page_1 = to_ordered_collection_page(
             models.Status.objects.all(), "http://fish.com/", page=1
         )
         self.assertEqual(page_1.partOf, "http://fish.com/")
         self.assertEqual(page_1.id, "http://fish.com/?page=1")
         self.assertEqual(page_1.next, "http://fish.com/?page=2")
-        self.assertEqual(page_1.orderedItems[0]["content"], "test status 29")
-        self.assertEqual(page_1.orderedItems[1]["content"], "test status 28")
+        self.assertEqual(page_1.orderedItems[0]["content"], "<p>test status 29</p>")
+        self.assertEqual(page_1.orderedItems[1]["content"], "<p>test status 28</p>")
 
         page_2 = to_ordered_collection_page(
             models.Status.objects.all(), "http://fish.com/", page=2
         )
         self.assertEqual(page_2.partOf, "http://fish.com/")
         self.assertEqual(page_2.id, "http://fish.com/?page=2")
-        self.assertEqual(page_2.orderedItems[0]["content"], "test status 14")
-        self.assertEqual(page_2.orderedItems[-1]["content"], "test status 0")
+        self.assertEqual(page_2.orderedItems[0]["content"], "<p>test status 14</p>")
+        self.assertEqual(page_2.orderedItems[-1]["content"], "<p>test status 0</p>")
 
     def test_to_ordered_collection(self, *_):
         """convert a queryset into an ordered collection object"""
         self.assertEqual(PAGE_LENGTH, 15)
-
-        for number in range(0, 2 * PAGE_LENGTH):
-            models.Status.objects.create(
+        models.Status.objects.bulk_create(
+            models.Status(
                 user=self.local_user,
                 content=f"test status {number}",
             )
-
+            for number in range(2 * PAGE_LENGTH)
+        )
         MockSelf = namedtuple("Self", ("remote_id"))
         mock_self = MockSelf("")
 
@@ -420,8 +448,8 @@ class ActivitypubMixins(TestCase):
         )
         self.assertEqual(page_2.partOf, "http://fish.com/")
         self.assertEqual(page_2.id, "http://fish.com/?page=2")
-        self.assertEqual(page_2.orderedItems[0]["content"], "test status 14")
-        self.assertEqual(page_2.orderedItems[-1]["content"], "test status 0")
+        self.assertEqual(page_2.orderedItems[0]["content"], "<p>test status 14</p>")
+        self.assertEqual(page_2.orderedItems[-1]["content"], "<p>test status 0</p>")
 
     def test_broadcast_task(self, *_):
         """Should be calling asyncio"""

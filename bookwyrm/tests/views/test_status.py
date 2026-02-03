@@ -1,17 +1,20 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
+import dateutil
 from django.core.exceptions import PermissionDenied
 from django.test import TestCase, TransactionTestCase
 from django.test.client import RequestFactory
+from django.utils import timezone
 
 from bookwyrm import forms, models, views
-from bookwyrm.views.status import find_mentions
+from bookwyrm.views.status import find_mentions, find_or_create_hashtags
 from bookwyrm.settings import DOMAIN
 
 from bookwyrm.tests.validate_html import validate_html
 
-# pylint: disable=invalid-name
+
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class StatusTransactions(TransactionTestCase):
     """Test full database transactions"""
@@ -19,9 +22,11 @@ class StatusTransactions(TransactionTestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -62,7 +67,7 @@ class StatusTransactions(TransactionTestCase):
         with patch("bookwyrm.activitystreams.add_status_task.apply_async") as mock:
             view(request, "comment")
 
-        self.assertEqual(mock.call_count, 2)
+        self.assertEqual(mock.call_count, 1)
 
 
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -70,17 +75,18 @@ class StatusTransactions(TransactionTestCase):
 @patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
-# pylint: disable=too-many-public-methods
 class StatusViews(TestCase):
     """viewing and creating statuses"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
                 "mouseword",
@@ -88,15 +94,16 @@ class StatusViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-            self.another_user = models.User.objects.create_user(
+            cls.another_user = models.User.objects.create_user(
                 f"nutria@{DOMAIN}",
                 "nutria@nutria.com",
                 "password",
                 local=True,
                 localname="nutria",
             )
+            cls.existing_hashtag = models.Hashtag.objects.create(name="#existing")
         with patch("bookwyrm.models.user.set_remote_server"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@email.com",
                 "ratword",
@@ -105,14 +112,16 @@ class StatusViews(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-
         work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,
         )
-        models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_create_status_comment(self, *_):
         """create a status"""
@@ -158,6 +167,37 @@ class StatusViews(TestCase):
         self.assertEqual(status.book, self.book)
         self.assertEqual(status.rating, 4.0)
         self.assertIsNone(status.edited_date)
+
+    def test_create_status_progress(self, *_):
+        """create a status that updates a readthrough"""
+        start_date = timezone.make_aware(dateutil.parser.parse("2024-07-27"))
+        readthrough = models.ReadThrough.objects.create(
+            book=self.book, user=self.local_user, start_date=start_date
+        )
+
+        self.assertEqual(start_date, readthrough.start_date)
+        self.assertIsNone(readthrough.progress)
+
+        view = views.CreateStatus.as_view()
+        form = forms.CommentForm(
+            {
+                "progress": 1,
+                "progress_mode": "PG",
+                "content": "I started the book",
+                "id": readthrough.id,
+                "book": self.book.id,
+                "user": self.local_user.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        view(request, "comment")
+        readthrough.refresh_from_db()
+
+        self.assertEqual(1, readthrough.progress)
+        self.assertEqual(start_date, readthrough.start_date)  # not overwritten
 
     def test_create_status_wrong_user(self, *_):
         """You can't compose statuses for someone else"""
@@ -233,7 +273,7 @@ class StatusViews(TestCase):
         )
 
     def test_create_status_reply_with_mentions(self, *_):
-        """reply to a post with an @mention'ed user"""
+        """reply to a post with an @mention'd user"""
         view = views.CreateStatus.as_view()
         user = models.User.objects.create_user(
             "rat", "rat@rat.com", "password", local=True, localname="rat"
@@ -322,16 +362,81 @@ class StatusViews(TestCase):
 
     def test_find_mentions_unknown_remote(self, *_):
         """mention a user that isn't in the database"""
-        with patch("bookwyrm.views.status.handle_remote_webfinger") as rw:
-            rw.return_value = self.another_user
+        with patch("bookwyrm.views.status.handle_remote_webfinger") as rwf:
+            rwf.return_value = self.another_user
             result = find_mentions(self.local_user, "@beep@beep.com")
             self.assertEqual(result["@nutria"], self.another_user)
             self.assertEqual(result[f"@nutria@{DOMAIN}"], self.another_user)
 
-        with patch("bookwyrm.views.status.handle_remote_webfinger") as rw:
-            rw.return_value = None
+        with patch("bookwyrm.views.status.handle_remote_webfinger") as rwf:
+            rwf.return_value = None
             result = find_mentions(self.local_user, "@beep@beep.com")
             self.assertEqual(result, {})
+
+    def test_create_status_hashtags(self, *_):
+        """#mention a hashtag in a post"""
+        view = views.CreateStatus.as_view()
+        form = forms.CommentForm(
+            {
+                "content": "this is an #EXISTING hashtag but all uppercase, "
+                + "this one is #NewTag.",
+                "user": self.local_user.id,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        view(request, "comment")
+        status = models.Status.objects.get()
+
+        hashtags = models.Hashtag.objects.all()
+        self.assertEqual(len(hashtags), 2)
+        self.assertEqual(list(status.mention_hashtags.all()), list(hashtags))
+
+        hashtag_existing = models.Hashtag.objects.filter(name="#existing").first()
+        hashtag_new = models.Hashtag.objects.filter(name="#NewTag").first()
+        self.assertEqual(
+            status.content,
+            "<p>this is an "
+            + f'<a href="{hashtag_existing.remote_id}" data-mention="hashtag">'
+            + "#EXISTING</a> hashtag but all uppercase, this one is "
+            + f'<a href="{hashtag_new.remote_id}" data-mention="hashtag">'
+            + "#NewTag</a>.</p>",
+        )
+
+    def test_find_or_create_hashtags(self, *_):
+        """detect and look up #hashtags"""
+        result = find_or_create_hashtags("no hashtag to be found here")
+        self.assertEqual(result, {})
+
+        result = find_or_create_hashtags("#existing")
+        self.assertEqual(result["#existing"], self.existing_hashtag)
+
+        result = find_or_create_hashtags("leading text #existing")
+        self.assertEqual(result["#existing"], self.existing_hashtag)
+
+        result = find_or_create_hashtags("leading #existing trailing")
+        self.assertEqual(result["#existing"], self.existing_hashtag)
+
+        self.assertIsNone(models.Hashtag.objects.filter(name="new").first())
+        result = find_or_create_hashtags("leading #new trailing")
+        new_hashtag = models.Hashtag.objects.filter(name="#new").first()
+        self.assertIsNotNone(new_hashtag)
+        self.assertEqual(result["#new"], new_hashtag)
+
+        result = find_or_create_hashtags("leading #existing #new trailing")
+        self.assertEqual(result["#existing"], self.existing_hashtag)
+        self.assertEqual(result["#new"], new_hashtag)
+
+        result = find_or_create_hashtags("#Braunbär")
+        hashtag = models.Hashtag.objects.filter(name="#Braunbär").first()
+        self.assertEqual(result["#Braunbär"], hashtag)
+
+        result = find_or_create_hashtags("#ひぐま")
+        hashtag = models.Hashtag.objects.filter(name="#ひぐま").first()
+        self.assertEqual(result["#ひぐま"], hashtag)
 
     def test_format_links_simple_url(self, *_):
         """find and format urls into a tags"""
@@ -354,13 +459,25 @@ http://www.fish.com/"""
             'okay\n\n<a href="http://www.fish.com/">www.fish.com/</a>',
         )
 
-    def test_format_links_parens(self, *_):
-        """find and format urls into a tags"""
-        url = "http://www.fish.com/"
-        self.assertEqual(
-            views.status.format_links(f"({url})"),
-            f'(<a href="{url}">www.fish.com/</a>)',
-        )
+    def test_format_links_punctuation(self, *_):
+        """test many combinations of brackets, URLs, and punctuation"""
+        url = "https://bookwyrm.social"
+        html = f'<a href="{url}">bookwyrm.social</a>'
+        test_table = [
+            ("punct", f"text and {url}.", f"text and {html}."),
+            ("multi_punct", f"text, then {url}?...", f"text, then {html}?..."),
+            ("bracket_punct", f"here ({url}).", f"here ({html})."),
+            ("punct_bracket", f"there [{url}?]", f"there [{html}?]"),
+            ("punct_bracket_punct", f"not here? ({url}!).", f"not here? ({html}!)."),
+            (
+                "multi_punct_bracket",
+                f"not there ({url}...);",
+                f"not there ({html}...);",
+            ),
+        ]
+        for desc, text, output in test_table:
+            with self.subTest(desc=desc):
+                self.assertEqual(views.status.format_links(text), output)
 
     def test_format_links_special_chars(self, *_):
         """find and format urls into a tags"""
@@ -388,6 +505,31 @@ http://www.fish.com/"""
         url = "https://pkm.one/#/page/The%20Book%20launched%20a%201000%20Note%20apps"
         self.assertEqual(
             views.status.format_links(url), f'<a href="{url}">{url[8:]}</a>'
+        )
+
+    def test_format_links_ignore_non_urls(self, *_):
+        """formating links should leave plain text untouced"""
+        text_elision = "> “The distinction is significant.” [...]"  # bookwyrm#2993
+        text_quoteparens = "some kind of gene-editing technology (?)"  # bookwyrm#3049
+        self.assertEqual(views.status.format_links(text_elision), text_elision)
+        self.assertEqual(views.status.format_links(text_quoteparens), text_quoteparens)
+
+    def test_format_mentions_with_at_symbol_links(self, *_):
+        """A link with an @username shouldn't treat the username as a mention"""
+        content = "a link to https://example.com/user/@mouse"
+        mentions = views.status.find_mentions(self.local_user, content)
+        self.assertEqual(
+            views.status.format_mentions(content, mentions),
+            "a link to https://example.com/user/@mouse",
+        )
+
+    def test_format_hashtag_with_pound_symbol_links(self, *_):
+        """A link with an @username shouldn't treat the username as a mention"""
+        content = "a link to https://example.com/page#anchor"
+        hashtags = views.status.find_or_create_hashtags(content)
+        self.assertEqual(
+            views.status.format_hashtags(content, hashtags),
+            "a link to https://example.com/page#anchor",
         )
 
     def test_to_markdown(self, *_):

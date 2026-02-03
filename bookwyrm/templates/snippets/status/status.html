@@ -10,6 +10,6 @@
         {% trans "boosted" %}
         {% include 'snippets/status/body.html' with status=status|boosted_status %}
     {% else %}
-        {% include 'snippets/status/body.html' with status=status %}
+        {% include 'snippets/status/body.html' with status=status expand=expand %}
     {% endif %}
 {% endif %}

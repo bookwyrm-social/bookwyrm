@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 import datetime
 from unittest.mock import patch
 from django.test import TestCase
@@ -11,18 +12,21 @@ from bookwyrm import models
 class ReadThrough(TestCase):
     """some activitypub oddness ahead"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """look, a shelf"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
 
-        self.work = models.Work.objects.create(title="Example Work")
-        self.edition = models.Edition.objects.create(
-            title="Example Edition", parent_work=self.work
+        cls.work = models.Work.objects.create(title="Example Work")
+        cls.edition = models.Edition.objects.create(
+            title="Example Edition", parent_work=cls.work
         )
 
     def test_valid_date(self):

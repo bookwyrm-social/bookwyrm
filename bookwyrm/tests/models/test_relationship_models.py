@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 import json
 from unittest.mock import patch
 from django.db import IntegrityError
@@ -14,10 +15,11 @@ from bookwyrm import models
 class Relationship(TestCase):
     """following, blocking, stuff like that"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need some users for this"""
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -26,14 +28,16 @@ class Relationship(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
             )
-        self.local_user.remote_id = "http://local.com/user/mouse"
-        self.local_user.save(broadcast=False, update_fields=["remote_id"])
+        cls.local_user.remote_id = "http://local.com/user/mouse"
+        cls.local_user.save(broadcast=False, update_fields=["remote_id"])
 
     def test_user_follows(self, *_):
         """basic functionality of user follows"""

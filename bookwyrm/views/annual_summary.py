@@ -1,4 +1,5 @@
 """end-of-year read books stats"""
+
 from datetime import date
 from uuid import uuid4
 
@@ -20,11 +21,10 @@ FIRST_DAY = 15
 LAST_DAY = 15
 
 
-# pylint: disable= no-self-use
 class AnnualSummary(View):
     """display a summary of the year for the current user"""
 
-    def get(self, request, username, year):  # pylint: disable=too-many-locals
+    def get(self, request, username, year):
         """get response"""
 
         user = get_user_from_username(request.user, username)
@@ -68,7 +68,7 @@ class AnnualSummary(View):
         book_list_by_pages = read_books_in_year.filter(pages__gte=0).order_by("pages")
 
         # books with no pages
-        no_page_list = len(read_books_in_year.filter(pages__exact=None))
+        no_page_list = read_books_in_year.filter(pages__exact=None).count()
 
         # rating stats queries
         ratings = (
@@ -95,13 +95,13 @@ class AnnualSummary(View):
             "book_pages_lowest": book_list_by_pages.first(),
             "book_pages_highest": book_list_by_pages.last(),
             "no_page_number": no_page_list,
-            "ratings_total": len(ratings),
+            "ratings_total": ratings.count(),
             "rating_average": round(
                 ratings_stats["rating__avg"] if ratings_stats["rating__avg"] else 0, 2
             ),
             "book_rating_highest": ratings.order_by("-rating").first(),
             "best_ratings_books_ids": [
-                review.book.id for review in ratings.filter(rating=5)
+                review.book_id for review in ratings.filter(rating=5)
             ],
             "paginated_years": paginated_years,
             "goal_status": goal_status,
@@ -225,4 +225,4 @@ def get_goal_status(user, year):
     if goal.privacy != "public":
         return None
 
-    return dict(**goal.progress, **{"goal": goal.goal})
+    return {**goal.progress, **{"goal": goal.goal}}

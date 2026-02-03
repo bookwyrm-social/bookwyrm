@@ -1,4 +1,5 @@
-""" Logging utilities """
+"""Logging utilities"""
+
 import logging
 
 
@@ -10,7 +11,7 @@ class IgnoreVariableDoesNotExist(logging.Filter):
     these errors are not useful to us.
     """
 
-    def filter(self, record):
+    def filter(self, record: logging.LogRecord) -> bool:
         if record.exc_info:
             (_, err_value, _) = record.exc_info
             while err_value:

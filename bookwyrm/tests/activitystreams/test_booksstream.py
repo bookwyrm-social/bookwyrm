@@ -1,4 +1,7 @@
-""" testing activitystreams """
+"""testing activitystreams"""
+
+import itertools
+
 from unittest.mock import patch
 from django.test import TestCase
 from bookwyrm import activitystreams, models
@@ -12,16 +15,19 @@ from bookwyrm import activitystreams, models
 class Activitystreams(TestCase):
     """using redis to build activity streams"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """use a test csv"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
             )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -31,7 +37,7 @@ class Activitystreams(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
         work = models.Work.objects.create(title="test work")
-        self.book = models.Edition.objects.create(title="test book", parent_work=work)
+        cls.book = models.Edition.objects.create(title="test book", parent_work=work)
 
     def test_get_statuses_for_user_books(self, *_):
         """create a stream for a user"""
@@ -69,12 +75,29 @@ class Activitystreams(TestCase):
             shelf=self.local_user.shelf_set.first(),
             book=self.book,
         )
+
+        class RedisMockCounter:
+            """keep track of calls to mock redis store"""
+
+            calls = []
+
+            def bulk_add_objects_to_store(self, objs, store):
+                """keep track of bulk_add_objects_to_store calls"""
+                self.calls.append((objs, store))
+
+        redis_mock_counter = RedisMockCounter()
         with patch(
             "bookwyrm.activitystreams.BooksStream.bulk_add_objects_to_store"
         ) as redis_mock:
+            redis_mock.side_effect = redis_mock_counter.bulk_add_objects_to_store
             activitystreams.BooksStream().add_book_statuses(self.local_user, self.book)
-        args = redis_mock.call_args[0]
-        queryset = args[0]
-        self.assertEqual(queryset.count(), 1)
-        self.assertTrue(status in queryset)
-        self.assertEqual(args[1], f"{self.local_user.id}-books")
+
+        self.assertEqual(sum(map(lambda x: x[0].count(), redis_mock_counter.calls)), 1)
+        self.assertTrue(
+            status
+            in itertools.chain.from_iterable(
+                map(lambda x: x[0], redis_mock_counter.calls)
+            )
+        )
+        for call in redis_mock_counter.calls:
+            self.assertEqual(call[1], f"{self.local_user.id}-books")

@@ -1,4 +1,4 @@
-""" responds to various requests to /.well-know """
+"""responds to various requests to /.well-know"""
 
 from dateutil.relativedelta import relativedelta
 from django.http import HttpResponseNotFound
@@ -9,10 +9,12 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET
 
 from bookwyrm import models
-from bookwyrm.settings import DOMAIN, VERSION
+from bookwyrm.decorators import require_federation
+from bookwyrm.settings import BASE_URL, DOMAIN, VERSION, LANGUAGE_CODE
 
 
 @require_GET
+@require_federation
 def webfinger(request):
     """allow other servers to ask about a user"""
     resource = request.GET.get("resource")
@@ -21,6 +23,7 @@ def webfinger(request):
 
     username = resource.replace("acct:", "")
     user = get_object_or_404(models.User, username__iexact=username)
+    href = user.moved_to if user.moved_to else user.remote_id
 
     return JsonResponse(
         {
@@ -29,11 +32,11 @@ def webfinger(request):
                 {
                     "rel": "self",
                     "type": "application/activity+json",
-                    "href": user.remote_id,
+                    "href": href,
                 },
                 {
                     "rel": "http://ostatus.org/schema/1.0/subscribe",
-                    "template": f"https://{DOMAIN}/ostatus_subscribe?acct={{uri}}",
+                    "template": f"{BASE_URL}/ostatus_subscribe?acct={{uri}}",
                 },
             ],
         }
@@ -41,6 +44,7 @@ def webfinger(request):
 
 
 @require_GET
+@require_federation
 def nodeinfo_pointer(_):
     """direct servers to nodeinfo"""
     return JsonResponse(
@@ -56,6 +60,7 @@ def nodeinfo_pointer(_):
 
 
 @require_GET
+@require_federation
 def nodeinfo(_):
     """basic info about the server"""
     status_count = models.Status.objects.filter(user__local=True, deleted=False).count()
@@ -91,6 +96,7 @@ def nodeinfo(_):
 
 
 @require_GET
+@require_federation
 def instance_info(_):
     """let's talk about your cool unique instance"""
     user_count = models.User.objects.filter(is_active=True, local=True).count()
@@ -110,7 +116,7 @@ def instance_info(_):
                 "status_count": status_count,
             },
             "thumbnail": logo,
-            "languages": ["en"],
+            "languages": [LANGUAGE_CODE[:2]],
             "registrations": site.allow_registration,
             "approval_required": not site.allow_registration
             and site.allow_invite_requests,
@@ -120,6 +126,7 @@ def instance_info(_):
 
 
 @require_GET
+@require_federation
 def peers(_):
     """list of federated servers this instance connects with"""
     names = models.FederatedServer.objects.filter(status="federated").values_list(
@@ -129,6 +136,7 @@ def peers(_):
 
 
 @require_GET
+@require_federation
 def host_meta(request):
     """meta of the host"""
     return TemplateResponse(request, "host_meta.xml", {"DOMAIN": DOMAIN})
@@ -140,5 +148,5 @@ def opensearch(request):
     site = models.SiteSettings.get()
     image = site.favicon_url
     return TemplateResponse(
-        request, "opensearch.xml", {"image": image, "DOMAIN": DOMAIN}
+        request, "opensearch.xml", {"image": image, "BASE_URL": BASE_URL}
     )

@@ -1,13 +1,15 @@
-""" using django model forms """
+"""using django model forms"""
+
 from django import forms
 
+from file_resubmit.widgets import ResubmitImageWidget
+
 from bookwyrm import models
-from bookwyrm.models.fields import ClearableFileInputWithWarning
+from bookwyrm.settings import DATA_UPLOAD_MAX_MEMORY_SIZE
 from .custom_form import CustomForm
 from .widgets import ArrayWidget, SelectDateWidget, Select
 
 
-# pylint: disable=missing-class-docstring
 class CoverForm(CustomForm):
     class Meta:
         model = models.Book
@@ -15,25 +17,58 @@ class CoverForm(CustomForm):
         help_texts = {f: None for f in fields}
 
 
+class ResubmitImageWidgetWithWarning(ResubmitImageWidget):
+    """Define template to use that shows warning on too big image"""
+
+    template_name = "widgets/clearable_file_input_with_warning.html"
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["widget"]["attrs"].update(
+            {
+                "data-max-upload": DATA_UPLOAD_MAX_MEMORY_SIZE,
+                "max_mb": DATA_UPLOAD_MAX_MEMORY_SIZE >> 20,
+            }
+        )
+        return context
+
+
 class EditionForm(CustomForm):
     class Meta:
         model = models.Edition
-        exclude = [
-            "remote_id",
-            "origin_id",
-            "created_date",
-            "updated_date",
-            "edition_rank",
-            "authors",
-            "parent_work",
-            "shelves",
-            "connector",
-            "search_vector",
-            "links",
-            "file_links",
+        fields = [
+            "title",
+            "sort_title",
+            "subtitle",
+            "description",
+            "series",
+            "series_number",
+            "languages",
+            "subjects",
+            "publishers",
+            "first_published_date",
+            "published_date",
+            "cover",
+            "physical_format",
+            "physical_format_detail",
+            "pages",
+            "isbn_13",
+            "isbn_10",
+            "openlibrary_key",
+            "inventaire_id",
+            "goodreads_key",
+            "finna_key",
+            "libris_key",
+            "oclc_number",
+            "asin",
+            "aasin",
+            "isfdb",
         ]
         widgets = {
             "title": forms.TextInput(attrs={"aria-describedby": "desc_title"}),
+            "sort_title": forms.TextInput(
+                attrs={"aria-describedby": "desc_sort_title"}
+            ),
             "subtitle": forms.TextInput(attrs={"aria-describedby": "desc_subtitle"}),
             "description": forms.Textarea(
                 attrs={"aria-describedby": "desc_description"}
@@ -55,7 +90,7 @@ class EditionForm(CustomForm):
             "published_date": SelectDateWidget(
                 attrs={"aria-describedby": "desc_published_date"}
             ),
-            "cover": ClearableFileInputWithWarning(
+            "cover": ResubmitImageWidgetWithWarning(
                 attrs={"aria-describedby": "desc_cover"}
             ),
             "physical_format": Select(
@@ -73,10 +108,19 @@ class EditionForm(CustomForm):
             "inventaire_id": forms.TextInput(
                 attrs={"aria-describedby": "desc_inventaire_id"}
             ),
+            "goodreads_key": forms.TextInput(
+                attrs={"aria-describedby": "desc_goodreads_key"}
+            ),
             "oclc_number": forms.TextInput(
                 attrs={"aria-describedby": "desc_oclc_number"}
             ),
+            "finna_key": forms.TextInput(attrs={"aria-describedby": "desc_finna_key"}),
+            "libris_key": forms.TextInput(
+                attrs={"aria-describedby": "desc_libris_key"}
+            ),
             "ASIN": forms.TextInput(attrs={"aria-describedby": "desc_ASIN"}),
+            "AASIN": forms.TextInput(attrs={"aria-describedby": "desc_AASIN"}),
+            "isfdb": forms.TextInput(attrs={"aria-describedby": "desc_isfdb"}),
         }
 
 
@@ -91,6 +135,7 @@ class EditionFromWorkForm(CustomForm):
         model = models.Work
         fields = [
             "title",
+            "sort_title",
             "subtitle",
             "authors",
             "description",

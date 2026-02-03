@@ -3,9 +3,8 @@
 
 let BookWyrm = new (class {
     constructor() {
-        this.MAX_FILE_SIZE_BYTES = 10 * 1000000;
         this.initOnDOMLoaded();
-        this.initReccuringTasks();
+        this.initRecurringTasks();
         this.initEventListeners();
     }
 
@@ -13,6 +12,10 @@ let BookWyrm = new (class {
         document
             .querySelectorAll("[data-controls]")
             .forEach((button) => button.addEventListener("click", this.toggleAction.bind(this)));
+
+        document
+            .querySelectorAll("[data-disappear]")
+            .forEach((button) => button.addEventListener("click", this.hideSelf.bind(this)));
 
         document
             .querySelectorAll(".interaction")
@@ -31,6 +34,12 @@ let BookWyrm = new (class {
             .forEach((button) => button.addEventListener("click", this.back));
 
         document
+            .querySelectorAll("[data-password-icon]")
+            .forEach((button) =>
+                button.addEventListener("click", this.togglePasswordVisibility.bind(this))
+            );
+
+        document
             .querySelectorAll('input[type="file"]')
             .forEach((node) => node.addEventListener("change", this.disableIfTooLarge.bind(this)));
 
@@ -40,14 +49,23 @@ let BookWyrm = new (class {
 
         document.querySelectorAll("details.dropdown").forEach((node) => {
             node.addEventListener("toggle", this.handleDetailsDropdown.bind(this));
-            node.querySelectorAll("[data-modal-open]").forEach((modal_node) =>
-                modal_node.addEventListener("click", () => (node.open = false))
-            );
         });
 
         document
             .querySelector("#barcode-scanner-modal")
             .addEventListener("open", this.openBarcodeScanner.bind(this));
+
+        document
+            .querySelectorAll('form[name="register"]')
+            .forEach((form) =>
+                form.addEventListener("submit", (e) => this.setPreferredTimezone(e, form))
+            );
+
+        document
+            .querySelectorAll("button[name='button-book-list']")
+            .forEach((button) =>
+                button.addEventListener("click", this.checkListSelection.bind(this))
+            );
     }
 
     /**
@@ -63,6 +81,9 @@ let BookWyrm = new (class {
                 .forEach(bookwyrm.disableIfTooLarge.bind(bookwyrm));
             document.querySelectorAll("[data-copytext]").forEach(bookwyrm.copyText.bind(bookwyrm));
             document
+                .querySelectorAll("[data-copywithtooltip]")
+                .forEach(bookwyrm.copyWithTooltip.bind(bookwyrm));
+            document
                 .querySelectorAll(".modal.is-active")
                 .forEach(bookwyrm.handleActiveModal.bind(bookwyrm));
         });
@@ -71,7 +92,7 @@ let BookWyrm = new (class {
     /**
      * Execute recurring tasks.
      */
-    initReccuringTasks() {
+    initRecurringTasks() {
         // Polling
         document.querySelectorAll("[data-poll]").forEach((liveArea) => this.polling(liveArea));
     }
@@ -89,7 +110,6 @@ let BookWyrm = new (class {
 
     /**
      * Update a counter with recurring requests to the API
-     * The delay is slightly randomized and increased on each cycle.
      *
      * @param  {Object} counter - DOM node
      * @param  {int}    delay   - frequency for polling in ms
@@ -98,16 +118,19 @@ let BookWyrm = new (class {
     polling(counter, delay) {
         const bookwyrm = this;
 
-        delay = delay || 10000;
-        delay += Math.random() * 1000;
+        delay = delay || 5 * 60 * 1000 + (Math.random() - 0.5) * 30 * 1000;
 
         setTimeout(
             function () {
                 fetch("/api/updates/" + counter.dataset.poll)
                     .then((response) => response.json())
-                    .then((data) => bookwyrm.updateCountElement(counter, data));
-
-                bookwyrm.polling(counter, delay * 1.25);
+                    .then((data) => {
+                        bookwyrm.updateCountElement(counter, data);
+                        bookwyrm.polling(counter);
+                    })
+                    .catch(() => {
+                        bookwyrm.polling(counter, delay * 1.1);
+                    });
             },
             delay,
             counter
@@ -165,6 +188,18 @@ let BookWyrm = new (class {
         let visible = document.getElementById(targetId);
 
         this.addRemoveClass(visible, "is-hidden", true);
+    }
+
+    /**
+     * Hide the element you just clicked
+     *
+     * @param {Event} event
+     * @return {undefined}
+     */
+    hideSelf(event) {
+        let trigger = event.currentTarget;
+
+        this.addRemoveClass(trigger, "is-hidden", true);
     }
 
     /**
@@ -366,13 +401,14 @@ let BookWyrm = new (class {
     }
 
     disableIfTooLarge(eventOrElement) {
-        const { addRemoveClass, MAX_FILE_SIZE_BYTES } = this;
+        const { addRemoveClass } = this;
         const element = eventOrElement.currentTarget || eventOrElement;
+        const limit = element.dataset.maxUpload;
 
         const submits = element.form.querySelectorAll('[type="submit"]');
         const warns = element.parentElement.querySelectorAll(".file-too-big");
         const isTooBig =
-            element.files && element.files[0] && element.files[0].size > MAX_FILE_SIZE_BYTES;
+            element.files && limit && element.files[0] && element.files[0].size > limit;
 
         if (isTooBig) {
             submits.forEach((submitter) => (submitter.disabled = true));
@@ -519,6 +555,21 @@ let BookWyrm = new (class {
         textareaEl.parentNode.appendChild(copyButtonEl);
     }
 
+    copyWithTooltip(copyButtonEl) {
+        const text = document.getElementById(copyButtonEl.dataset.contentId).innerHTML;
+        const tooltipEl = document.getElementById(copyButtonEl.dataset.tooltipId);
+
+        copyButtonEl.addEventListener("click", () => {
+            navigator.clipboard.writeText(text);
+            tooltipEl.style.visibility = "visible";
+            tooltipEl.style.opacity = 1;
+            setTimeout(function () {
+                tooltipEl.style.visibility = "hidden";
+                tooltipEl.style.opacity = 0;
+            }, 3000);
+        });
+    }
+
     /**
      * Handle the details dropdown component.
      *
@@ -628,9 +679,9 @@ let BookWyrm = new (class {
         }
 
         function toggleStatus(status) {
-            for (const child of statusNode.children) {
-                BookWyrm.toggleContainer(child, !child.classList.contains(status));
-            }
+            const template = document.querySelector(`#barcode-${status}`);
+
+            statusNode.replaceChildren(template ? template.content.cloneNode(true) : null);
         }
 
         function initBarcodes(cameraId = null) {
@@ -784,5 +835,68 @@ let BookWyrm = new (class {
         event.target.addEventListener("close", cleanup, { once: true });
 
         initBarcodes();
+    }
+
+    /**
+     * Set preferred timezone in register form.
+     *
+     * @param  {Event} event - `submit` event fired by the register form.
+     * @return {undefined}
+     */
+    setPreferredTimezone(event, form) {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        form.querySelector('input[name="preferred_timezone"]').value = tz;
+    }
+
+    togglePasswordVisibility(event) {
+        const iconElement = event.currentTarget.getElementsByTagName("button")[0];
+        const passwordElementId = event.currentTarget.dataset.for;
+        const passwordInputElement = document.getElementById(passwordElementId);
+
+        if (!passwordInputElement) return;
+
+        if (passwordInputElement.type === "password") {
+            passwordInputElement.type = "text";
+            this.addRemoveClass(iconElement, "icon-eye-blocked");
+            this.addRemoveClass(iconElement, "icon-eye", true);
+        } else {
+            passwordInputElement.type = "password";
+            this.addRemoveClass(iconElement, "icon-eye");
+            this.addRemoveClass(iconElement, "icon-eye-blocked", true);
+        }
+
+        this.toggleFocus(passwordElementId);
+    }
+
+    /**
+     * When user want to add book to list, it checks if the list needs
+     * to be created and if so open a modal to do it. Otherwise it submit
+     * the form to add the book to the selected list.
+     *
+     * @param {Event} event - The click event from the button
+     * @returns {undefined}
+     */
+    checkListSelection(event) {
+        const selectElement = document.getElementById("id_list");
+        const formElement = document.querySelector("form[name='list-add']");
+        const modalElement = document.getElementById("modal-create-list-with-book");
+
+        if (!selectElement || !formElement) {
+            console.error("List management elements not found. Check your HTML IDs.");
+
+            return;
+        }
+
+        if (selectElement.value === "NEW_LIST_CREATION") {
+            if (modalElement) {
+                event.currentTarget.dataset.modalOpen = "modal-create-list-with-book";
+                this.handleModalButton(event);
+            } else {
+                console.error("Modal element not found with ID: modal-create-list-with-book");
+            }
+        } else {
+            formElement.submit();
+        }
     }
 })();

@@ -1,15 +1,20 @@
-""" progress in a book """
+"""progress in a book"""
+
+from typing import Optional, Iterable
+
 from django.core import validators
 from django.core.cache import cache
 from django.db import models
 from django.db.models import F, Q
 from django.utils.translation import gettext_lazy as _
 
+from bookwyrm.utils.db import add_update_fields
+
 from .base_model import BookWyrmModel
 
 
 class ProgressMode(models.TextChoices):
-    """types of prgress available"""
+    """types of progress available"""
 
     PAGE = "PG", "page"
     PERCENT = "PCT", "percent"
@@ -66,7 +71,7 @@ class ReadThrough(BookWyrmModel):
         constraints = [
             # Don't let readthroughs end before they start
             models.CheckConstraint(
-                check=Q(finish_date__gte=F("start_date")), name="chronology"
+                condition=check=Q(finish_date__gte=F("start_date")), name="chronology"
             ),
             # Can't be actively reading the same book twice
             # Currently reading status can't have stopped date

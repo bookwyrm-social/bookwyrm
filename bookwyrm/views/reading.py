@@ -1,4 +1,5 @@
-""" the good stuff! the books! """
+"""the good stuff! the books!"""
+
 import logging
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
@@ -11,16 +12,15 @@ from django.views import View
 from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
+from bookwyrm.views.helpers import get_mergeable_object_or_404
 from bookwyrm.views.shelf.shelf_actions import unshelve
 from .status import CreateStatus
 from .helpers import get_edition, handle_reading_status, is_api_request
-from .helpers import load_date_in_user_tz_as_utc
+from .helpers import load_date_in_user_tz_as_utc, redirect_to_referer
 
 logger = logging.getLogger(__name__)
 
 
-# pylint: disable=no-self-use
-# pylint: disable=too-many-return-statements
 @method_decorator(login_required, name="dispatch")
 class ReadingStatus(View):
     """consider reading a book"""
@@ -83,7 +83,7 @@ class ReadingStatus(View):
             if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
                 current_status_shelfbook.delete()
             else:  # It already was on the shelf
-                return redirect("/")
+                return redirect_to_referer(request)
 
         models.ShelfBook.objects.create(
             book=book, shelf=desired_shelf, user=request.user
@@ -121,7 +121,7 @@ class ReadingStatus(View):
         if is_api_request(request):
             return HttpResponse()
 
-        return redirect("/")
+        return redirect_to_referer(request)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -130,7 +130,7 @@ class ReadThrough(View):
 
     def get(self, request, book_id, readthrough_id=None):
         """standalone form in case of errors"""
-        book = get_object_or_404(models.Edition, id=book_id)
+        book = get_mergeable_object_or_404(models.Edition, id=book_id)
         form = forms.ReadThroughForm()
         data = {"form": form, "book": book}
         if readthrough_id:
@@ -152,7 +152,7 @@ class ReadThrough(View):
         )
         form = forms.ReadThroughForm(request.POST)
         if not form.is_valid():
-            book = get_object_or_404(models.Edition, id=book_id)
+            book = get_mergeable_object_or_404(models.Edition, id=book_id)
             data = {"form": form, "book": book}
             if request.POST.get("id"):
                 data["readthrough"] = get_object_or_404(
@@ -164,7 +164,6 @@ class ReadThrough(View):
 
 
 @transaction.atomic
-# pylint: disable=too-many-arguments
 def update_readthrough_on_shelve(
     user, annotated_book, status, start_date=None, finish_date=None, stopped_date=None
 ):
@@ -186,7 +185,7 @@ def update_readthrough_on_shelve(
         active_readthrough = models.ReadThrough.objects.create(
             user=user, book=annotated_book
         )
-    # santiize and set dates
+    # sanitize and set dates
     active_readthrough.start_date = load_date_in_user_tz_as_utc(start_date, user)
     # if the stop or finish date is set, the readthrough will be set as inactive
     active_readthrough.finish_date = load_date_in_user_tz_as_utc(finish_date, user)
@@ -203,7 +202,7 @@ def delete_readthrough(request):
     readthrough.raise_not_deletable(request.user)
 
     readthrough.delete()
-    return redirect("/")
+    return redirect_to_referer(request)
 
 
 @login_required
@@ -214,4 +213,4 @@ def delete_progressupdate(request):
     update.raise_not_deletable(request.user)
 
     update.delete()
-    return redirect("/")
+    return redirect_to_referer(request)

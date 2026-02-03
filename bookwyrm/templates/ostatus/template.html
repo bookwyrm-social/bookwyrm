@@ -11,7 +11,7 @@
     <title>{% block title %}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="{% sass_src site_theme %}" rel="stylesheet" type="text/css" />
-    <script>
+    <script nonce="{{request.csp_nonce}}">
         function closeWindow() {
             window.close();
         }
@@ -21,7 +21,7 @@
 <nav class="navbar" aria-label="main navigation">
     <div class="container">
         <div class="navbar-brand">
-                <img class="image logo navbar-item" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static 'images/logo-small.png' %}{% endif %}" alt="Home page">
+                <img class="image logo navbar-item" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static 'images/logo-small.png' %}{% endif %}" alt="Home page" loading="lazy" decoding="async">
             <h2 class="navbar-item subtitle">{% block heading %}{% endblock %}</h2>
         </div>
     </div>
@@ -32,7 +32,7 @@
     </div>
 </div>
 
-<script>
+<script nonce="{{request.csp_nonce}}">
     var csrf_token = '{{ csrf_token }}';
 </script>
 <script src="{% static 'js/bookwyrm.js' %}?v={{ js_cache }}"></script>

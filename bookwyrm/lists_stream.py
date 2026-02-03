@@ -1,31 +1,31 @@
-""" access the list streams stored in redis """
+"""access the list streams stored in redis"""
+
 from django.dispatch import receiver
 from django.db import transaction
 from django.db.models import signals, Count, Q
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore
-from bookwyrm.tasks import app, MEDIUM, HIGH
+from bookwyrm.tasks import app, LISTS
 
 
 class ListsStream(RedisStore):
     """all the lists you can see"""
 
-    def stream_id(self, user):  # pylint: disable=no-self-use
+    def stream_id(self, user):
         """the redis key for this user's instance of this stream"""
         if isinstance(user, int):
             # allows the function to take an int or an obj
             return f"{user}-lists"
         return f"{user.id}-lists"
 
-    def get_rank(self, obj):  # pylint: disable=no-self-use
+    def get_rank(self, obj):
         """lists are sorted by updated date"""
         return obj.updated_date.timestamp()
 
     def add_list(self, book_list):
         """add a list to users' feeds"""
-        # the pipeline contains all the add-to-stream activities
-        self.add_object_to_related_stores(book_list)
+        self.add_object_to_stores(book_list, self.get_stores_for_object(book_list))
 
     def add_user_lists(self, viewer, user):
         """add a user's lists to another user's feed"""
@@ -59,7 +59,7 @@ class ListsStream(RedisStore):
         """go from zero to a timeline"""
         self.populate_store(self.stream_id(user))
 
-    def get_audience(self, book_list):  # pylint: disable=no-self-use
+    def get_audience(self, book_list):
         """given a list, what users should see it"""
         # everybody who could plausibly see this list
         audience = models.User.objects.filter(
@@ -86,21 +86,22 @@ class ListsStream(RedisStore):
             if group:
                 audience = audience.filter(
                     Q(id=book_list.user.id)  # if the user is the list's owner
-                    | Q(following=book_list.user)  # if the user is following the pwmer
+                    | Q(following=book_list.user)  # if the user is following the owner
                     # if a user is in the group
                     | Q(memberships__group__id=book_list.group.id)
                 )
             else:
                 audience = audience.filter(
                     Q(id=book_list.user.id)  # if the user is the list's owner
-                    | Q(following=book_list.user)  # if the user is following the pwmer
+                    | Q(following=book_list.user)  # if the user is following the owner
                 )
         return audience.distinct()
 
     def get_stores_for_object(self, obj):
+        """the stores that an object belongs in"""
         return [self.stream_id(u) for u in self.get_audience(obj)]
 
-    def get_lists_for_user(self, user):  # pylint: disable=no-self-use
+    def get_lists_for_user(self, user):
         """given a user, what lists should they see on this stream"""
         return models.List.privacy_filter(
             user,
@@ -113,7 +114,6 @@ class ListsStream(RedisStore):
 
 
 @receiver(signals.post_save, sender=models.List)
-# pylint: disable=unused-argument
 def add_list_on_create(sender, instance, created, *args, update_fields=None, **kwargs):
     """add newly created lists streams"""
     if created:
@@ -131,7 +131,6 @@ def add_list_on_create(sender, instance, created, *args, update_fields=None, **k
 
 
 @receiver(signals.post_delete, sender=models.List)
-# pylint: disable=unused-argument
 def remove_list_on_delete(sender, instance, *args, **kwargs):
     """remove deleted lists to streams"""
     remove_list_task.delay(instance.id)
@@ -143,7 +142,6 @@ def add_list_on_create_command(instance_id):
 
 
 @receiver(signals.post_save, sender=models.UserFollows)
-# pylint: disable=unused-argument
 def add_lists_on_follow(sender, instance, created, *args, **kwargs):
     """add a newly followed user's lists to feeds"""
     if not created or not instance.user_subject.local:
@@ -152,7 +150,6 @@ def add_lists_on_follow(sender, instance, created, *args, **kwargs):
 
 
 @receiver(signals.post_delete, sender=models.UserFollows)
-# pylint: disable=unused-argument
 def remove_lists_on_unfollow(sender, instance, *args, **kwargs):
     """remove lists from a feed on unfollow"""
     if not instance.user_subject.local:
@@ -164,7 +161,6 @@ def remove_lists_on_unfollow(sender, instance, *args, **kwargs):
 
 
 @receiver(signals.post_save, sender=models.UserBlocks)
-# pylint: disable=unused-argument
 def remove_lists_on_block(sender, instance, *args, **kwargs):
     """remove lists from all feeds on block"""
     # blocks apply ot all feeds
@@ -177,7 +173,6 @@ def remove_lists_on_block(sender, instance, *args, **kwargs):
 
 
 @receiver(signals.post_delete, sender=models.UserBlocks)
-# pylint: disable=unused-argument
 def add_lists_on_unblock(sender, instance, *args, **kwargs):
     """add lists back to all feeds on unblock"""
     # make sure there isn't a block in the other direction
@@ -203,7 +198,6 @@ def add_lists_on_unblock(sender, instance, *args, **kwargs):
 
 
 @receiver(signals.post_save, sender=models.User)
-# pylint: disable=unused-argument
 def populate_lists_on_account_create(sender, instance, created, *args, **kwargs):
     """build a user's feeds when they join"""
     if not created or not instance.local:
@@ -217,14 +211,14 @@ def add_list_on_account_create_command(user_id):
 
 
 # ---- TASKS
-@app.task(queue=MEDIUM)
+@app.task(queue=LISTS)
 def populate_lists_task(user_id):
     """background task for populating an empty list stream"""
     user = models.User.objects.get(id=user_id)
     ListsStream().populate_lists(user)
 
 
-@app.task(queue=MEDIUM)
+@app.task(queue=LISTS)
 def remove_list_task(list_id, re_add=False):
     """remove a list from any stream it might be in"""
     stores = models.User.objects.filter(local=True, is_active=True).values_list(
@@ -233,20 +227,20 @@ def remove_list_task(list_id, re_add=False):
 
     # delete for every store
     stores = [ListsStream().stream_id(idx) for idx in stores]
-    ListsStream().remove_object_from_related_stores(list_id, stores=stores)
+    ListsStream().remove_object_from_stores(list_id, stores)
 
     if re_add:
         add_list_task.delay(list_id)
 
 
-@app.task(queue=HIGH)
+@app.task(queue=LISTS)
 def add_list_task(list_id):
     """add a list to any stream it should be in"""
     book_list = models.List.objects.get(id=list_id)
     ListsStream().add_list(book_list)
 
 
-@app.task(queue=MEDIUM)
+@app.task(queue=LISTS)
 def remove_user_lists_task(viewer_id, user_id, exclude_privacy=None):
     """remove all lists by a user from a viewer's stream"""
     viewer = models.User.objects.get(id=viewer_id)
@@ -254,7 +248,7 @@ def remove_user_lists_task(viewer_id, user_id, exclude_privacy=None):
     ListsStream().remove_user_lists(viewer, user, exclude_privacy=exclude_privacy)
 
 
-@app.task(queue=MEDIUM)
+@app.task(queue=LISTS)
 def add_user_lists_task(viewer_id, user_id):
     """add all lists by a user to a viewer's stream"""
     viewer = models.User.objects.get(id=viewer_id)

@@ -1,4 +1,6 @@
-""" class views for login/register views """
+"""class views for login/register views"""
+
+import zoneinfo
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
@@ -11,11 +13,10 @@ from bookwyrm import emailing, forms, models
 from bookwyrm.settings import DOMAIN
 
 
-# pylint: disable=no-self-use
 class Register(View):
     """register a user"""
 
-    def get(self, request):  # pylint: disable=unused-argument
+    def get(self, request):
         """whether or not you're logged in, just go to the home view"""
         return redirect("/")
 
@@ -55,6 +56,12 @@ class Register(View):
         localname = form.data["localname"].strip()
         email = form.data["email"]
         password = form.data["password"]
+        try:
+            preferred_timezone = zoneinfo.ZoneInfo(
+                form.data.get("preferred_timezone", "")
+            )
+        except (ValueError, zoneinfo.ZoneInfoNotFoundError):
+            preferred_timezone = zoneinfo.ZoneInfo("UTC")
 
         # make sure the email isn't blocked as spam
         email_domain = email.split("@")[-1]
@@ -69,8 +76,10 @@ class Register(View):
             password,
             localname=localname,
             local=True,
+            allow_reactivation=settings.require_confirm_email,
             deactivation_reason="pending" if settings.require_confirm_email else None,
             is_active=not settings.require_confirm_email,
+            preferred_timezone=preferred_timezone,
         )
         if invite:
             invite.times_used += 1
@@ -88,7 +97,7 @@ class Register(View):
 class ConfirmEmailCode(View):
     """confirm email address"""
 
-    def get(self, request, code):  # pylint: disable=unused-argument
+    def get(self, request, code):
         """you got the code! good work"""
         settings = models.SiteSettings.get()
         if request.user.is_authenticated:
@@ -99,15 +108,15 @@ class ConfirmEmailCode(View):
 
         # look up the user associated with this code
         try:
-            user = models.User.objects.get(confirmation_code=code)
+            user = models.User.objects.get(
+                confirmation_code=code, deactivation_reason="pending"
+            )
         except models.User.DoesNotExist:
             return TemplateResponse(
                 request, "confirm_email/confirm_email.html", {"valid": False}
             )
         # update the user
-        user.is_active = True
-        user.deactivation_reason = None
-        user.save(broadcast=False, update_fields=["is_active", "deactivation_reason"])
+        user.reactivate()
         # direct the user to log in
         return redirect("login", confirmed="confirmed")
 
@@ -115,7 +124,7 @@ class ConfirmEmailCode(View):
 class ConfirmEmail(View):
     """enter code to confirm email address"""
 
-    def get(self, request):  # pylint: disable=unused-argument
+    def get(self, request):
         """you need a code! keep looking"""
         settings = models.SiteSettings.get()
         if request.user.is_authenticated or not settings.require_confirm_email:

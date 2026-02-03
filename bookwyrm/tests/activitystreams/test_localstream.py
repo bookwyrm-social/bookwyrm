@@ -1,4 +1,5 @@
-""" testing activitystreams """
+"""testing activitystreams"""
+
 from unittest.mock import patch
 from django.test import TestCase
 from bookwyrm import activitystreams, models
@@ -12,15 +13,18 @@ from bookwyrm import activitystreams, models
 class Activitystreams(TestCase):
     """using redis to build activity streams"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """use a test csv"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
             )
-            self.another_user = models.User.objects.create_user(
+            cls.another_user = models.User.objects.create_user(
                 "nutria",
                 "nutria@nutria.nutria",
                 "password",
@@ -28,7 +32,7 @@ class Activitystreams(TestCase):
                 localname="nutria",
             )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -38,7 +42,7 @@ class Activitystreams(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
         work = models.Work.objects.create(title="test work")
-        self.book = models.Edition.objects.create(title="test book", parent_work=work)
+        cls.book = models.Edition.objects.create(title="test book", parent_work=work)
 
     def test_localstream_get_audience_remote_status(self, *_):
         """get a list of users that should see a status"""
@@ -54,8 +58,8 @@ class Activitystreams(TestCase):
             user=self.local_user, content="hi", privacy="public"
         )
         users = activitystreams.LocalStream().get_audience(status)
-        self.assertTrue(self.local_user in users)
-        self.assertTrue(self.another_user in users)
+        self.assertTrue(self.local_user.id in users)
+        self.assertTrue(self.another_user.id in users)
 
     def test_localstream_get_audience_unlisted(self, *_):
         """get a list of users that should see a status"""
@@ -88,7 +92,7 @@ class Activitystreams(TestCase):
         )
         # yes book, yes audience
         audience = activitystreams.BooksStream().get_audience(status)
-        self.assertTrue(self.local_user in audience)
+        self.assertTrue(self.local_user.id in audience)
 
     def test_localstream_get_audience_books_book_field(self, *_):
         """get a list of users that should see a status"""
@@ -102,7 +106,7 @@ class Activitystreams(TestCase):
         )
         # yes book, yes audience
         audience = activitystreams.BooksStream().get_audience(status)
-        self.assertTrue(self.local_user in audience)
+        self.assertTrue(self.local_user.id in audience)
 
     def test_localstream_get_audience_books_alternate_edition(self, *_):
         """get a list of users that should see a status"""
@@ -119,7 +123,7 @@ class Activitystreams(TestCase):
         )
         # yes book, yes audience
         audience = activitystreams.BooksStream().get_audience(status)
-        self.assertTrue(self.local_user in audience)
+        self.assertTrue(self.local_user.id in audience)
 
     def test_localstream_get_audience_books_non_public(self, *_):
         """get a list of users that should see a status"""

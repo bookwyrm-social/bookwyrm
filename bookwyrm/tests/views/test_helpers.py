@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 import pathlib
@@ -8,7 +9,7 @@ from django.test.client import RequestFactory
 import responses
 
 from bookwyrm import models, views
-from bookwyrm.settings import USER_AGENT
+from bookwyrm.settings import USER_AGENT, BASE_URL
 
 
 @patch("bookwyrm.activitystreams.add_status_task.delay")
@@ -18,47 +19,55 @@ from bookwyrm.settings import USER_AGENT
 class ViewsHelpers(TestCase):
     """viewing and creating statuses"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            with patch("bookwyrm.suggested_users.rerank_user_task.delay"):
-                self.local_user = models.User.objects.create_user(
-                    "mouse@local.com",
-                    "mouse@mouse.com",
-                    "mouseword",
-                    local=True,
-                    discoverable=True,
-                    localname="mouse",
-                    remote_id="https://example.com/users/mouse",
-                )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            with patch("bookwyrm.suggested_users.rerank_user_task.delay"):
-                self.remote_user = models.User.objects.create_user(
-                    "rat",
-                    "rat@rat.com",
-                    "ratword",
-                    local=False,
-                    remote_id="https://example.com/users/rat",
-                    discoverable=True,
-                    inbox="https://example.com/users/rat/inbox",
-                    outbox="https://example.com/users/rat/outbox",
-                )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+            patch("bookwyrm.suggested_users.rerank_user_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                discoverable=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
+            )
+        with (
+            patch("bookwyrm.models.user.set_remote_server.delay"),
+            patch("bookwyrm.suggested_users.rerank_user_task.delay"),
+        ):
+            cls.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                discoverable=True,
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
+        cls.work = models.Work.objects.create(title="Test Work")
+        cls.book = models.Edition.objects.create(
             title="Test Book",
             remote_id="https://example.com/book/1",
-            parent_work=self.work,
+            parent_work=cls.work,
         )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            cls.shelf = models.Shelf.objects.create(
+                name="Test Shelf", identifier="test-shelf", user=cls.local_user
+            )
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
         self.userdata = json.loads(datafile.read_bytes())
         del self.userdata["icon"]
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            self.shelf = models.Shelf.objects.create(
-                name="Test Shelf", identifier="test-shelf", user=self.local_user
-            )
 
     def test_get_edition(self, *_):
         """given an edition or a work, returns an edition"""
@@ -105,11 +114,19 @@ class ViewsHelpers(TestCase):
         request = self.factory.get(
             "",
             {"q": "Test Book"},
-            HTTP_USER_AGENT="http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
+            headers={
+                "user-agent": "http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
+            },
         )
         self.assertFalse(views.helpers.is_bookwyrm_request(request))
 
-        request = self.factory.get("", {"q": "Test Book"}, HTTP_USER_AGENT=USER_AGENT)
+        request = self.factory.get(
+            "",
+            {"q": "Test Book"},
+            headers={
+                "user-agent": USER_AGENT,
+            },
+        )
         self.assertTrue(views.helpers.is_bookwyrm_request(request))
 
     def test_handle_remote_webfinger_invalid(self, *_):
@@ -260,3 +277,49 @@ class ViewsHelpers(TestCase):
                 self.local_user, self.shelf, self.book, "public"
             )
         self.assertFalse(models.GeneratedNote.objects.exists())
+
+    def test_redirect_to_referer_outside_domain(self, *_):
+        """safely send people on their way"""
+        request = self.factory.get(
+            "/path",
+            headers={
+                "referer": "http://outside.domain/name",
+            },
+        )
+        result = views.helpers.redirect_to_referer(
+            request, "user-feed", self.local_user.localname
+        )
+        self.assertEqual(result.url, f"/user/{self.local_user.localname}")
+
+    def test_redirect_to_referer_outside_domain_with_fallback(self, *_):
+        """invalid domain with regular params for the redirect function"""
+        request = self.factory.get(
+            "/path",
+            headers={
+                "referer": "http://outside.domain/name",
+            },
+        )
+        result = views.helpers.redirect_to_referer(request)
+        self.assertEqual(result.url, "/")
+
+    def test_redirect_to_referer_valid_domain(self, *_):
+        """redirect to within the app"""
+        request = self.factory.get(
+            "/path",
+            headers={
+                "referer": f"{BASE_URL}/and/a/path",
+            },
+        )
+        result = views.helpers.redirect_to_referer(request)
+        self.assertEqual(result.url, f"{BASE_URL}/and/a/path")
+
+    def test_redirect_to_referer_with_get_args(self, *_):
+        """if the path has get params (like sort) they are preserved"""
+        request = self.factory.get(
+            "/path",
+            headers={
+                "referer": f"{BASE_URL}/and/a/path?sort=hello",
+            },
+        )
+        result = views.helpers.redirect_to_referer(request)
+        self.assertEqual(result.url, f"{BASE_URL}/and/a/path?sort=hello")

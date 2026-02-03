@@ -1,4 +1,5 @@
-""" test generating preview images """
+"""test generating preview images"""
+
 import pathlib
 from unittest.mock import patch
 from PIL import Image
@@ -14,25 +15,26 @@ from bookwyrm.preview_images import (
     generate_edition_preview_image_task,
     generate_user_preview_image_task,
     generate_preview_image,
+    remove_user_preview_image_task,
     save_and_cleanup,
 )
 
 
-# pylint: disable=unused-argument
-# pylint: disable=missing-function-docstring
-# pylint: disable=consider-using-with
 class PreviewImages(TestCase):
     """every response to a get request, html or json"""
 
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        avatar_file = pathlib.Path(__file__).parent.joinpath(
+        avatar_path = pathlib.Path(__file__).parent.joinpath(
             "../static/images/no_cover.jpg"
         )
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+            open(avatar_path, "rb") as avatar_file,
+        ):
             self.local_user = models.User.objects.create_user(
                 "possum@local.com",
                 "possum@possum.possum",
@@ -40,8 +42,44 @@ class PreviewImages(TestCase):
                 local=True,
                 localname="possum",
                 avatar=SimpleUploadedFile(
-                    avatar_file,
-                    open(avatar_file, "rb").read(),
+                    avatar_path,
+                    avatar_file.read(),
+                    content_type="image/jpeg",
+                ),
+            )
+
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
+
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+            open(avatar_path, "rb") as avatar_file,
+        ):
+            self.remote_user_with_preview = models.User.objects.create_user(
+                "badger@your.domain.here",
+                "badger@badger.com",
+                "badgeword",
+                local=False,
+                remote_id="https://example.com/users/badger",
+                inbox="https://example.com/users/badger/inbox",
+                outbox="https://example.com/users/badger/outbox",
+                avatar=SimpleUploadedFile(
+                    avatar_path,
+                    avatar_file.read(),
                     content_type="image/jpeg",
                 ),
             )
@@ -53,12 +91,12 @@ class PreviewImages(TestCase):
             parent_work=self.work,
         )
 
-        self.site = models.SiteSettings.objects.create()
+        self.site = models.SiteSettings.get()
 
         settings.ENABLE_PREVIEW_IMAGES = True
 
     def test_generate_preview_image(self, *args, **kwargs):
-        image_file = pathlib.Path(__file__).parent.joinpath(
+        image_path = pathlib.Path(__file__).parent.joinpath(
             "../static/images/no_cover.jpg"
         )
 
@@ -67,7 +105,7 @@ class PreviewImages(TestCase):
             "text_three": "@possum@local.com",
         }
 
-        result = generate_preview_image(texts=texts, picture=image_file, rating=5)
+        result = generate_preview_image(texts=texts, picture=image_path, rating=5)
         self.assertIsInstance(result, Image.Image)
         self.assertEqual(
             result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT)
@@ -122,6 +160,14 @@ class PreviewImages(TestCase):
             self.local_user.preview_image.height, settings.PREVIEW_IMG_HEIGHT
         )
 
+    def test_remote_user_preview(self, *args, **kwargs):
+        """a remote user doesn’t get a user preview"""
+        generate_user_preview_image_task(self.remote_user.id)
+
+        self.remote_user.refresh_from_db()
+
+        self.assertFalse(self.remote_user.preview_image)
+
     def test_generate_user_preview_images_task(self, *args, **kwargs):
         """test task's external calls"""
         with patch("bookwyrm.preview_images.generate_preview_image") as generate_mock:
@@ -129,3 +175,11 @@ class PreviewImages(TestCase):
         args = generate_mock.call_args.kwargs
         self.assertEqual(args["texts"]["text_one"], "possum")
         self.assertEqual(args["texts"]["text_three"], f"@possum@{settings.DOMAIN}")
+
+    def test_remove_user_preview_image_task(self, *args, **kwargs):
+        """you can delete the preview image for a (remote) user"""
+        remove_user_preview_image_task(self.remote_user_with_preview.id)
+
+        self.remote_user_with_preview.refresh_from_db()
+
+        self.assertFalse(self.remote_user_with_preview.preview_image)

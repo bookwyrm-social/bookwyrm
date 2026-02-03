@@ -1,5 +1,5 @@
-""" test for app action functionality """
-import os
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 
@@ -17,14 +17,15 @@ from bookwyrm.tests.validate_html import validate_html
 class FederationViews(TestCase):
     """every response to a get request, html or json"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
                 "password",
@@ -32,7 +33,7 @@ class FederationViews(TestCase):
                 localname="mouse",
             )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
+            cls.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",
@@ -44,9 +45,11 @@ class FederationViews(TestCase):
         initdb.init_groups()
         initdb.init_permissions()
         group = Group.objects.get(name="moderator")
-        self.local_user.groups.set([group])
+        cls.local_user.groups.set([group])
 
-        models.SiteSettings.objects.create()
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_federation_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -174,7 +177,6 @@ class FederationViews(TestCase):
         self.assertEqual(server.application_type, "coolsoft")
         self.assertEqual(server.status, "blocked")
 
-    # pylint: disable=consider-using-with
     def test_import_blocklist(self):
         """load a json file with a list of servers to block"""
         server = models.FederatedServer.objects.create(server_name="hi.there.com")
@@ -186,14 +188,13 @@ class FederationViews(TestCase):
             {"instance": "hi.there.com", "url": "https://explanation.url"},  # existing
             {"a": "b"},  # invalid
         ]
-        json.dump(data, open("file.json", "w"))  # pylint: disable=unspecified-encoding
 
         view = views.ImportServerBlocklist.as_view()
         request = self.factory.post(
             "",
             {
                 "json_file": SimpleUploadedFile(
-                    "file.json", open("file.json", "rb").read()
+                    "file.json", json.dumps(data).encode("utf-8")
                 )
             },
         )
@@ -209,6 +210,3 @@ class FederationViews(TestCase):
         created = models.FederatedServer.objects.get(server_name="server.name")
         self.assertEqual(created.status, "blocked")
         self.assertEqual(created.notes, "https://explanation.url")
-
-        # remove file.json after test
-        os.remove("file.json")

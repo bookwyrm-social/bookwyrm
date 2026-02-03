@@ -1,0 +1,14 @@
+{% load static %}
+{
+  "name": "{{ site.name }}",
+  "description": "{{ site.description }}",
+  "icons": [
+    {
+      "src": "{% if site.logo %}{{ media_full_url }}{{ site.logo }}{% else %}{% static 'images/logo.png' %}{% endif %}",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+	"start_url": "/",
+  "display": "standalone"
+}

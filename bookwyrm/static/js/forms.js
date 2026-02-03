@@ -2,7 +2,7 @@
     "use strict";
 
     /**
-     * Remoev input field
+     * Remove input field
      *
      * @param {event} the button click event
      */
@@ -46,4 +46,15 @@
     document
         .querySelectorAll("[data-remove]")
         .forEach((node) => node.addEventListener("click", removeInput));
+
+    // Get element, add a keypress listener...
+    document.getElementById("subjects").addEventListener("keypress", function (e) {
+        // Linstening to element e.target
+        // If e.target is an input field within "subjects" div preventDefault()
+        if (e.target && e.target.nodeName == "INPUT") {
+            if (event.keyCode == 13) {
+                event.preventDefault();
+            }
+        }
+    });
 })();

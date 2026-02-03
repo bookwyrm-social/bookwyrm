@@ -1,4 +1,5 @@
-""" getting and verifying signatures """
+"""getting and verifying signatures"""
+
 import time
 from collections import namedtuple
 from urllib.parse import urlsplit
@@ -15,7 +16,7 @@ from django.utils.http import http_date
 
 from bookwyrm import models
 from bookwyrm.activitypub import Follow
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import DOMAIN, NETLOC
 from bookwyrm.signatures import create_key_pair, make_signature, make_digest
 
 
@@ -35,32 +36,35 @@ Sender = namedtuple("Sender", ("remote_id", "key_pair"))
 class Signature(TestCase):
     """signature test"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         """create users and test data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.mouse = models.User.objects.create_user(
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.mouse = models.User.objects.create_user(
                 f"mouse@{DOMAIN}",
                 "mouse@example.com",
                 "",
                 local=True,
                 localname="mouse",
             )
-            self.rat = models.User.objects.create_user(
+            cls.rat = models.User.objects.create_user(
                 f"rat@{DOMAIN}", "rat@example.com", "", local=True, localname="rat"
             )
-            self.cat = models.User.objects.create_user(
+            cls.cat = models.User.objects.create_user(
                 f"cat@{DOMAIN}", "cat@example.com", "", local=True, localname="cat"
             )
 
+    def setUp(self):
+        """test data"""
+        self.site = models.SiteSettings.get()
         private_key, public_key = create_key_pair()
-
         self.fake_remote = Sender(
             "http://localhost/user/remote", KeyPair(private_key, public_key)
         )
-
-        models.SiteSettings.objects.create()
 
     def send(self, signature, now, data, digest):
         """test request"""
@@ -69,30 +73,35 @@ class Signature(TestCase):
             urlsplit(self.rat.inbox).path,
             data=data,
             content_type="application/json",
-            **{
-                "HTTP_DATE": now,
-                "HTTP_SIGNATURE": signature,
-                "HTTP_DIGEST": digest,
-                "HTTP_CONTENT_TYPE": "application/activity+json; charset=utf-8",
-                "HTTP_HOST": DOMAIN,
+            headers={
+                "date": now,
+                "signature": signature,
+                "digest": digest,
+                "content-type": "application/activity+json; charset=utf-8",
+                "host": NETLOC,
             },
         )
 
-    def send_test_request(  # pylint: disable=too-many-arguments
+    def send_test_request(
         self, sender, signer=None, send_data=None, digest=None, date=None
     ):
         """sends a follow request to the "rat" user"""
         now = date or http_date()
         data = json.dumps(get_follow_activity(sender, self.rat))
         digest = digest or make_digest(data)
-        signature = make_signature(signer or sender, self.rat.inbox, now, digest)
-        with patch("bookwyrm.views.inbox.activity_task.delay"):
-            with patch("bookwyrm.models.user.set_remote_server.delay"):
-                return self.send(signature, now, send_data or data, digest)
+        signature = make_signature(
+            "post", signer or sender, self.rat.inbox, now, digest=digest
+        )
+        with (
+            patch("bookwyrm.views.inbox.activity_task.apply_async"),
+            patch("bookwyrm.models.user.set_remote_server.delay"),
+        ):
+            return self.send(signature, now, send_data or data, digest)
 
     def test_correct_signature(self):
         """this one should just work"""
-        response = self.send_test_request(sender=self.mouse)
+        with patch("bookwyrm.models.relationship.UserFollowRequest.accept"):
+            response = self.send_test_request(sender=self.mouse)
         self.assertEqual(response.status_code, 200)
 
     def test_wrong_signature(self):
@@ -103,10 +112,11 @@ class Signature(TestCase):
 
     @responses.activate
     def test_remote_signer(self):
-        """signtures for remote users"""
+        """signatures for remote users"""
         datafile = pathlib.Path(__file__).parent.joinpath("data/ap_user.json")
         data = json.loads(datafile.read_bytes())
         data["id"] = self.fake_remote.remote_id
+        data["publicKey"]["id"] = f"{self.fake_remote.remote_id}/#main-key"
         data["publicKey"]["publicKeyPem"] = self.fake_remote.key_pair.public_key
         del data["icon"]  # Avoid having to return an avatar.
         responses.add(responses.GET, self.fake_remote.remote_id, json=data, status=200)
@@ -121,8 +131,12 @@ class Signature(TestCase):
         )
 
         with patch("bookwyrm.models.user.get_remote_reviews.delay"):
-            response = self.send_test_request(sender=self.fake_remote)
+            with patch(
+                "bookwyrm.models.relationship.UserFollowRequest.accept"
+            ) as accept_mock:
+                response = self.send_test_request(sender=self.fake_remote)
             self.assertEqual(response.status_code, 200)
+            self.assertTrue(accept_mock.called)
 
     @responses.activate
     def test_key_needs_refresh(self):
@@ -130,6 +144,7 @@ class Signature(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath("data/ap_user.json")
         data = json.loads(datafile.read_bytes())
         data["id"] = self.fake_remote.remote_id
+        data["publicKey"]["id"] = f"{self.fake_remote.remote_id}/#main-key"
         data["publicKey"]["publicKeyPem"] = self.fake_remote.key_pair.public_key
         del data["icon"]  # Avoid having to return an avatar.
         responses.add(responses.GET, self.fake_remote.remote_id, json=data, status=200)
@@ -145,16 +160,28 @@ class Signature(TestCase):
 
         with patch("bookwyrm.models.user.get_remote_reviews.delay"):
             # Key correct:
-            response = self.send_test_request(sender=self.fake_remote)
-            self.assertEqual(response.status_code, 200)
+            with patch(
+                "bookwyrm.models.relationship.UserFollowRequest.accept"
+            ) as accept_mock:
+                response = self.send_test_request(sender=self.fake_remote)
+            self.assertEqual(response.status_code, 200)  # BUG this is 401
+            self.assertTrue(accept_mock.called)
 
             # Old key is cached, so still works:
-            response = self.send_test_request(sender=self.fake_remote)
+            with patch(
+                "bookwyrm.models.relationship.UserFollowRequest.accept"
+            ) as accept_mock:
+                response = self.send_test_request(sender=self.fake_remote)
             self.assertEqual(response.status_code, 200)
+            self.assertTrue(accept_mock.called)
 
             # Try with new key:
-            response = self.send_test_request(sender=new_sender)
+            with patch(
+                "bookwyrm.models.relationship.UserFollowRequest.accept"
+            ) as accept_mock:
+                response = self.send_test_request(sender=new_sender)
             self.assertEqual(response.status_code, 200)
+            self.assertTrue(accept_mock.called)
 
             # Now the old key will fail:
             response = self.send_test_request(sender=self.fake_remote)

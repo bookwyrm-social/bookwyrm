@@ -5,7 +5,7 @@
 
 {% join "report" report_uuid as modal_id %}
 <button
-    class="button is-small is-danger is-light is-fullwidth"
+    class="button is-small is-danger is-light is-fullwidth {{ class }}"
     type="button"
     data-modal-open="{{ modal_id }}"
     {% if is_current %}disabled{% endif %}

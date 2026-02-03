@@ -1,4 +1,5 @@
-""" like/fav/star a status """
+"""like/fav/star a status"""
+
 from django.db import models
 
 from bookwyrm import activitypub
@@ -21,7 +22,7 @@ class Favorite(ActivityMixin, BookWyrmModel):
     activity_serializer = activitypub.Like
 
     @classmethod
-    def ignore_activity(cls, activity):
+    def ignore_activity(cls, activity, allow_external_connections=True):
         """don't bother with incoming favs of unknown statuses"""
         return not Status.objects.filter(remote_id=activity.object).exists()
 

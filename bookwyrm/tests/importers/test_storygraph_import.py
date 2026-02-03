@@ -1,8 +1,8 @@
-""" testing import """
+"""testing import"""
+
 import pathlib
 from unittest.mock import patch
 import datetime
-import pytz
 
 from django.test import TestCase
 
@@ -13,31 +13,39 @@ from bookwyrm.models.import_job import handle_imported_book
 
 def make_date(*args):
     """helper function to easily generate a date obj"""
-    return datetime.datetime(*args, tzinfo=pytz.UTC)
+    return datetime.datetime(*args, tzinfo=datetime.timezone.utc)
 
 
-# pylint: disable=consider-using-with
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 class StorygraphImport(TestCase):
     """importing from storygraph csv"""
 
-    # pylint: disable=invalid-name
     def setUp(self):
         """use a test csv"""
         self.importer = StorygraphImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/storygraph.csv")
+
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            self.local_user = models.User.objects.create_user(
+
+    def tearDown(self):
+        """close test csv"""
+        self.csv.close()
+
+    @classmethod
+    def setUpTestData(cls):
+        """populate database"""
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
-
         work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
+        cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,
@@ -53,13 +61,19 @@ class StorygraphImport(TestCase):
             models.ImportItem.objects.filter(job=import_job).order_by("index").all()
         )
         self.assertEqual(len(import_items), 2)
-        self.assertEqual(import_items[0].index, 0)
-        self.assertEqual(import_items[0].normalized_data["title"], "Always Coming Home")
-        self.assertEqual(import_items[1].index, 1)
+
+        always_book = import_items[0]
+        self.assertEqual(always_book.index, 0)
+        self.assertEqual(always_book.normalized_data["title"], "Always Coming Home")
+        self.assertEqual(always_book.isbn, "9780520227354")
+
+        subprime_book = import_items[1]
+        self.assertEqual(subprime_book.index, 1)
         self.assertEqual(
-            import_items[1].normalized_data["title"], "Subprime Attention Crisis"
+            subprime_book.normalized_data["title"], "Subprime Attention Crisis"
         )
-        self.assertEqual(import_items[1].normalized_data["rating"], "5.0")
+        self.assertEqual(subprime_book.normalized_data["rating"], "5.0")
+        self.assertEqual(subprime_book.isbn, "0374538654")
 
     def test_handle_imported_book(self, *_):
         """storygraph import added a book, this adds related connections"""
