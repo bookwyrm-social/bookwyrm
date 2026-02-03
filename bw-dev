@@ -179,8 +179,6 @@ case "$CMD" in
         ;;
     update_locales)
         prod_error
-        git fetch origin l10n_main:l10n_main
-        git checkout l10n_main locale/
         runweb django-admin makemessages --no-wrap --ignore=venv -l en_US $@
         runweb django-admin compilemessages --ignore venv
         ;;
