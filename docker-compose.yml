@@ -64,8 +64,10 @@ services:
       - ./certbot/logs:/var/log/letsencrypt
       - ./certbot/data:/var/www/certbot
   db:
-    image: postgres:17
+    build: postgres-docker
     env_file: .env
+    entrypoint: /bookwyrm-entrypoint.sh
+    command: cron postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
