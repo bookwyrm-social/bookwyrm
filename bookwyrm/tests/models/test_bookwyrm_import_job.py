@@ -1,4 +1,4 @@
-""" testing models """
+"""testing models"""
 
 import json
 import os
@@ -15,11 +15,11 @@ from bookwyrm.utils.tar import BookwyrmTarFile
 from bookwyrm.models import bookwyrm_import_job
 
 
-class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
+class BookwyrmImport(TestCase):
     """testing user import functions"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(self):
         """setting stuff up"""
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
@@ -146,7 +146,6 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         goals = [{"goal": 12, "year": 2023, "privacy": "followers"}]
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-
             models.bookwyrm_import_job.update_goals(self.local_user, goals)
 
         self.local_user.refresh_from_db()
@@ -226,7 +225,6 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
             patch("bookwyrm.activitypub.resolve_remote_id", return_value=self.rat_user),
         ):
-
             bookwyrm_import_job.import_user_relationship_task(child_id=task.id)
 
         after_follow = models.UserFollows.objects.filter(
@@ -757,7 +755,6 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         with patch(
             "bookwyrm.activitypub.resolve_remote_id", return_value=self.rat_user
         ):
-
             alias = bookwyrm_import_job.is_alias(
                 self.local_user, self.rat_user.remote_id
             )
@@ -767,7 +764,7 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
     def test_status_already_exists(self):
         """test status checking"""
 
-        string = '{"id":"https://www.example.com/user/rat/comment/4","type":"Comment","published":"2023-08-14T04:48:18.746+00:00","attributedTo":"https://www.example.com/user/rat","content":"<p>this is a comment about an amazing book</p>","to":["https://www.w3.org/ns/activitystreams#Public"],"cc":["https://www.example.com/user/rat/followers"],"replies":{"id":"https://www.example.com/user/rat/comment/4/replies","type":"OrderedCollection","totalItems":0,"first":"https://www.example.com/user/rat/comment/4/replies?page=1","last":"https://www.example.com/user/rat/comment/4/replies?page=1","@context":"https://www.w3.org/ns/activitystreams"},"tag":[],"attachment":[],"sensitive":false,"inReplyToBook":"https://www.example.com/book/4","readingStatus":null,"@context":"https://www.w3.org/ns/activitystreams"}'  # pylint: disable=line-too-long
+        string = '{"id":"https://www.example.com/user/rat/comment/4","type":"Comment","published":"2023-08-14T04:48:18.746+00:00","attributedTo":"https://www.example.com/user/rat","content":"<p>this is a comment about an amazing book</p>","to":["https://www.w3.org/ns/activitystreams#Public"],"cc":["https://www.example.com/user/rat/followers"],"replies":{"id":"https://www.example.com/user/rat/comment/4/replies","type":"OrderedCollection","totalItems":0,"first":"https://www.example.com/user/rat/comment/4/replies?page=1","last":"https://www.example.com/user/rat/comment/4/replies?page=1","@context":"https://www.w3.org/ns/activitystreams"},"tag":[],"attachment":[],"sensitive":false,"inReplyToBook":"https://www.example.com/book/4","readingStatus":null,"@context":"https://www.w3.org/ns/activitystreams"}'
 
         status = json.loads(string)
         parsed = activitypub.parse(status)

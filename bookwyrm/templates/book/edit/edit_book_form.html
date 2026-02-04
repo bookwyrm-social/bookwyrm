@@ -393,6 +393,15 @@
 
                     {% include 'snippets/form_errors.html' with errors_list=form.finna_key.errors id="desc_finna_key" %}
                 </div>
+
+                <div class="field">
+                    <label class="label" for="id_libris_key">
+                        {% trans "Libris ID:" %}
+                    </label>
+                    {{ form.libris_key }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.libris_key.errors id="desc_libris_key" %}
+                </div>
             </div>
         </section>
     </div>

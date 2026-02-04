@@ -41,7 +41,6 @@ class Command(BaseCommand):
 
     help = "show authors with same name but different id"
 
-    # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """run deduplications"""
         find_duplicate_author_names()

@@ -1,4 +1,5 @@
-""" using django model forms """
+"""using django model forms"""
+
 from django import forms
 from django.forms import ChoiceField
 from django.utils.translation import gettext_lazy as _
@@ -7,7 +8,6 @@ from bookwyrm import models
 from .custom_form import CustomForm
 
 
-# pylint: disable=missing-class-docstring
 class ListForm(CustomForm):
     class Meta:
         model = models.List

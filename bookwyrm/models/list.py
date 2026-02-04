@@ -1,7 +1,9 @@
-""" make a list of books!! """
+"""make a list of books!!"""
+
 from typing import Optional, Iterable
 import uuid
 
+from django.contrib.postgres.indexes import Index
 from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import Q
@@ -137,6 +139,8 @@ class List(AbstractList):
     def get_remote_id(self):
         """don't want the user to be in there in this case"""
         return f"{BASE_URL}/list/{self.id}"
+
+        indexes = [Index(fields=["privacy", "-updated_date"])]
 
     def raise_not_editable(self, viewer):
         """the associated user OR the list owner can edit"""

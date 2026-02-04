@@ -1,4 +1,5 @@
-""" functionality outline for a book data connector """
+"""functionality outline for a book data connector"""
+
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Optional, TypedDict, Any, Callable, Union, Iterator
@@ -78,7 +79,7 @@ class AbstractMinimalConnector(ABC):
         query: str,
     ) -> Optional[ConnectorResults]:
         """try this specific connector"""
-        # pylint: disable=line-too-long
+
         headers = {
             "Accept": (
                 'application/json, application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8'
@@ -188,7 +189,7 @@ class AbstractConnector(AbstractMinimalConnector):
         load_more_data.delay(self.connector.id, work.id)
         return edition
 
-    def get_book_data(self, remote_id: str) -> JsonDict:  # pylint: disable=no-self-use
+    def get_book_data(self, remote_id: str) -> JsonDict:
         """this allows connectors to override the default behavior"""
         return get_data(remote_id, is_activitypub=False)
 
@@ -323,7 +324,7 @@ def get_data(
         resp = requests.get(
             url,
             params=params,
-            headers={  # pylint: disable=line-too-long
+            headers={
                 "Accept": (
                     'application/json, application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8'
                 ),
@@ -405,7 +406,7 @@ class Mapping:
             return None
         try:
             return self.formatter(value)
-        except:  # pylint: disable=bare-except
+        except:
             return None
 
 

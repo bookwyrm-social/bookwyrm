@@ -1,4 +1,5 @@
-""" manage federated servers """
+"""manage federated servers"""
+
 import json
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
@@ -14,7 +15,6 @@ from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.models.user import get_or_create_remote_server
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.control_federation", raise_exception=True),
@@ -41,7 +41,7 @@ class Federation(View):
             "application_type",
             "server_name",
         ]
-        if not sort in sort_fields + [f"-{f}" for f in sort_fields]:
+        if sort not in sort_fields + [f"-{f}" for f in sort_fields]:
             sort = "-created_date"
         servers = servers.order_by(sort, "-created_date")
 
@@ -163,7 +163,6 @@ class FederatedServer(View):
 @login_required
 @require_POST
 @permission_required("bookwyrm.control_federation", raise_exception=True)
-# pylint: disable=unused-argument
 def block_server(request, server):
     """block a server"""
     server = get_object_or_404(models.FederatedServer, id=server)
@@ -174,7 +173,6 @@ def block_server(request, server):
 @login_required
 @require_POST
 @permission_required("bookwyrm.control_federation", raise_exception=True)
-# pylint: disable=unused-argument
 def unblock_server(request, server):
     """unblock a server"""
     server = get_object_or_404(models.FederatedServer, id=server)
@@ -185,7 +183,6 @@ def unblock_server(request, server):
 @login_required
 @require_POST
 @permission_required("bookwyrm.control_federation", raise_exception=True)
-# pylint: disable=unused-argument
 def refresh_server(request, server):
     """unblock a server"""
     server = get_object_or_404(models.FederatedServer, id=server)

@@ -74,7 +74,7 @@ def create_export_json_task(**kwargs):
         # trigger task to create tar file
         create_archive_task.delay(job_id=job.id)
 
-    except Exception as err:  # pylint: disable=broad-except
+    except Exception as err:
         logger.exception(
             "create_export_json_task for job %s failed with error: %s", job.id, err
         )
@@ -163,7 +163,7 @@ def create_archive_task(**kwargs):
 
         job.complete_job()
 
-    except Exception as err:  # pylint: disable=broad-except
+    except Exception as err:
         logger.exception(
             "create_archive_task for job %s failed with error: %s", job.id, err
         )
@@ -193,7 +193,7 @@ def export_settings(user: User):
 
 def export_saved_lists(user: User):
     """add user saved lists to export JSON"""
-    return [l.remote_id for l in user.saved_lists.all()]
+    return [saved_list.remote_id for saved_list in user.saved_lists.all()]
 
 
 def export_follows(user: User):
@@ -256,9 +256,9 @@ def export_book(user: User, edition: Edition):
     data["lists"] = []
     for item in list_items:
         list_info = item.book_list.to_activity()
-        list_info[
-            "privacy"
-        ] = item.book_list.privacy  # this isn't serialized so we add it
+        list_info["privacy"] = (
+            item.book_list.privacy
+        )  # this isn't serialized so we add it
         list_info["list_item"] = item.to_activity()
         data["lists"].append(list_info)
 
@@ -298,24 +298,37 @@ def export_book(user: User, edition: Edition):
 def get_books_for_user(user):
     """
     Get all the books and editions related to a user.
-    We use union() instead of Q objects because it creates
+    We use selecting book_id instead of Q objects because it creates
     multiple simple queries instead of a complex DB query
     that can time out.
     """
 
-    shelf_eds = Edition.objects.select_related("parent_work").filter(shelves__user=user)
-    rt_eds = Edition.objects.select_related("parent_work").filter(
-        readthrough__user=user
+    shelf_ids = ShelfBook.objects.filter(user=user).values_list("book_id", flat=True)
+    readthrough = ReadThrough.objects.filter(user=user).values_list(
+        "book_id", flat=True
     )
-    review_eds = Edition.objects.select_related("parent_work").filter(review__user=user)
-    list_eds = Edition.objects.select_related("parent_work").filter(list__user=user)
-    comment_eds = Edition.objects.select_related("parent_work").filter(
-        comment__user=user, comment__deleted=False
+    reviews = Review.objects.filter(user=user).values_list("book_id", flat=True)
+    lists = ListItem.objects.filter(user=user).values_list("book_id", flat=True)
+    comments = Comment.objects.filter(user=user, deleted=False).values_list(
+        "book_id", flat=True
     )
-    quote_eds = Edition.objects.select_related("parent_work").filter(
-        quotation__user=user, quotation__deleted=False
+    quotes = Quotation.objects.filter(user=user, deleted=False).values_list(
+        "book_id", flat=True
     )
 
-    editions = shelf_eds.union(rt_eds, review_eds, list_eds, comment_eds, quote_eds)
+    editions = (
+        Edition.objects.select_related("parent_work")
+        .filter(
+            id__in=(
+                set(shelf_ids)
+                | set(readthrough)
+                | set(reviews)
+                | set(lists)
+                | set(comments)
+                | set(quotes)
+            )
+        )
+        .distinct()
+    )
 
     return editions

@@ -1,4 +1,5 @@
 """tests incoming activities"""
+
 from datetime import datetime
 from unittest.mock import patch
 

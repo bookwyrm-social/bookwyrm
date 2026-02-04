@@ -1,6 +1,8 @@
-""" cleanup tasks """
+"""cleanup tasks"""
+
 import math
 from datetime import datetime, timedelta, timezone
+from itertools import chain
 
 from django.db.models import (
     CharField,
@@ -66,7 +68,6 @@ class CleanUpUserExportFilesJob(ParentJob):
 class CleanUpExportsTask(ParentTask):
     """Task to delete expired user export files"""
 
-    # pylint: disable=too-many-arguments, unused-argument, no-self-use
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
         """Handler called after the task returns"""
 
@@ -139,7 +140,6 @@ class FindMissingCoversJob(ParentJob):
             get_missing_cover_task.delay(job_id=self.id, edition_id=edition.id)
 
         if self.editions.count() == 0:
-
             self.complete_job()
 
 
@@ -155,7 +155,6 @@ class MissingCoverTask(ParentTask):
 
             job.found_covers.add(edition)
 
-    # pylint: disable=too-many-arguments, unused-argument, no-self-use
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
         """Handler called after the task returns"""
 
@@ -184,14 +183,20 @@ def get_cover_from_identifiers(edition):
     """for a given edition, can we find a book cover from the fedi?"""
 
     # idk there is probably a more pythonic way of doing this
-    # pylint: disable=protected-access
+
+    # Try first searching by isbn if possible
+    isbn_fields = ["isbn_10", "isbn_13"]
     fields = [
         f.name
         for f in models.Edition._meta.get_fields()
-        if hasattr(f, "deduplication_field") and f.deduplication_field
+        if hasattr(f, "deduplication_field")
+        and f.deduplication_field
+        and f.name not in isbn_fields
     ]
 
-    for field in fields:
+    for field in chain.from_iterable([isbn_fields, fields]):
+        if not getattr(edition, field):
+            continue
         query_result = (
             search(query=getattr(edition, field), min_confidence=0.999) or None
         )

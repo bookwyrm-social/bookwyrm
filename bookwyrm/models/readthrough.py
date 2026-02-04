@@ -1,4 +1,5 @@
-""" progress in a book """
+"""progress in a book"""
+
 from typing import Optional, Iterable
 
 from django.core import validators

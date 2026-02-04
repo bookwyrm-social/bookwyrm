@@ -21,7 +21,10 @@ compilemessages \
 update_locales \
 build \
 clean \
-black \
+ruff \
+ruff-format \
+ruff-check \
+ruff-fix \
 prettier \
 eslint \
 stylelint \
@@ -64,7 +67,10 @@ __bw_complete "$commands" "compilemessages"                   "compile .po local
 __bw_complete "$commands" "update_locales"                    "run makemessages and compilemessages for the en_US and additional locales"
 __bw_complete "$commands" "build"                             "build the containers"
 __bw_complete "$commands" "clean"                             "bring the cluster down and remove all containers"
-__bw_complete "$commands" "black"                             "run Python code formatting tool"
+__bw_complete "$commands" "ruff"                               "run ruff (format and check Python code)"
+__bw_complete "$commands" "ruff-format"                       "run ruff format (format Python code only)"
+__bw_complete "$commands" "ruff-check"                         "run ruff check (lint Python code only)"
+__bw_complete "$commands" "ruff-fix"                          "run ruff check --fix (auto-fix ruff issues)"
 __bw_complete "$commands" "prettier"                          "run JavaScript code formatting tool"
 __bw_complete "$commands" "eslint"                            "run JavaScript linting tool"
 __bw_complete "$commands" "stylelint"                         "run SCSS linting tool"

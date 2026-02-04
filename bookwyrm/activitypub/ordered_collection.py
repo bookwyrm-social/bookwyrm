@@ -1,4 +1,5 @@
-""" defines activitypub collections (lists) """
+"""defines activitypub collections (lists)"""
+
 from dataclasses import dataclass, field
 from typing import List
 
@@ -6,7 +7,6 @@ from .base_activity import ActivityObject
 from .book import Work
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class OrderedCollection(ActivityObject):
     """structure of an ordered collection activity"""
@@ -52,7 +52,6 @@ class SuggestionList(OrderedCollectionPrivate):
     type: str = "SuggestionList"
 
 
-# pylint: disable=invalid-name
 @dataclass(init=False)
 class OrderedCollectionPage(ActivityObject):
     """structure of an ordered collection activity"""

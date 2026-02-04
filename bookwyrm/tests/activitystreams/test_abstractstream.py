@@ -1,4 +1,5 @@
-""" testing activitystreams """
+"""testing activitystreams"""
+
 from datetime import datetime, timezone
 from unittest.mock import patch
 from django.test import TestCase

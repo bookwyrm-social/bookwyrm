@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import datetime
 import pathlib
 from unittest.mock import patch

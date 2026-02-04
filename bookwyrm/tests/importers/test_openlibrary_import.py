@@ -1,4 +1,5 @@
-""" testing import """
+"""testing import"""
+
 import pathlib
 from unittest.mock import patch
 import datetime
@@ -25,7 +26,7 @@ class OpenLibraryImport(TestCase):
         """use a test csv"""
         self.importer = OpenLibraryImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/openlibrary.csv")
-        # pylint: disable-next=consider-using-with
+
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
 
     def tearDown(self):

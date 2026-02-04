@@ -1,4 +1,5 @@
-""" tests the base functionality for activitypub dataclasses """
+"""tests the base functionality for activitypub dataclasses"""
+
 import json
 import pathlib
 from unittest.mock import patch
@@ -206,7 +207,7 @@ class BaseActivity(TestCase):
 
         self.assertIsNone(self.user.avatar.name)
         with self.assertRaises(ValueError):
-            self.user.avatar.file  # pylint: disable=pointless-statement
+            self.user.avatar.file
 
         # this would trigger a broadcast because it's a local user
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
@@ -341,7 +342,7 @@ class BaseActivity(TestCase):
             self.assertEqual(
                 logger.output,
                 [
-                    "WARNING:bookwyrm.activitypub.base_activity:request for object dropped because it is gone (410) - remote_id: https://example.com/user/mouse"  # pylint: disable=line-too-long
+                    "WARNING:bookwyrm.activitypub.base_activity:request for object dropped because it is gone (410) - remote_id: https://example.com/user/mouse"
                 ],
             )
 

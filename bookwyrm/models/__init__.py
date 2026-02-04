@@ -1,4 +1,5 @@
-""" bring all the models into the app namespace """
+"""bring all the models into the app namespace"""
+
 import inspect
 import sys
 

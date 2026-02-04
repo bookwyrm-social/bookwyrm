@@ -1,4 +1,5 @@
-""" testing model activitypub utilities """
+"""testing model activitypub utilities"""
+
 from unittest.mock import patch
 from collections import namedtuple
 from dataclasses import dataclass
@@ -20,7 +21,6 @@ from bookwyrm.models.activitypub_mixin import (
 from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable=too-many-public-methods
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class ActivitypubMixins(TestCase):
@@ -287,13 +287,11 @@ class ActivitypubMixins(TestCase):
                 with patch("django.db.models.Model.save"):
                     super().save(*args, **kwargs)
 
-            def broadcast(
-                self, activity, sender, **kwargs
-            ):  # pylint: disable=arguments-differ
+            def broadcast(self, activity, sender, **kwargs):
                 """do something"""
                 raise Success()
 
-            def to_create_activity(self, user):  # pylint: disable=arguments-differ
+            def to_create_activity(self, user):
                 return {}
 
         with self.assertRaises(Success):

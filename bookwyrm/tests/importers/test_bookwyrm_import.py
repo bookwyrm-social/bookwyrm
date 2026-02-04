@@ -1,4 +1,5 @@
-""" testing bookwyrm csv import """
+"""testing bookwyrm csv import"""
+
 import pathlib
 from unittest.mock import patch
 import datetime
@@ -25,7 +26,7 @@ class BookwyrmBooksImport(TestCase):
         """use a test csv"""
         self.importer = BookwyrmBooksImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/bookwyrm.csv")
-        # pylint: disable-next=consider-using-with
+
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
 
     def tearDown(self):
