@@ -1,4 +1,5 @@
-""" the good stuff! the books! """
+"""the good stuff! the books!"""
+
 from typing import Any
 
 from django.contrib.auth.decorators import login_required
@@ -19,6 +20,7 @@ from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views import Book
 from bookwyrm.views.helpers import is_api_request, redirect_to_referer
 from bookwyrm.views.list.list import get_list_suggestions
+
 
 # pylint: disable=no-self-use
 class SuggestionList(View):
@@ -84,7 +86,9 @@ class SuggestionList(View):
 
     @method_decorator(login_required, name="dispatch")
     def post(
-        self, request: HttpRequest, book_id: int  # pylint: disable=unused-argument
+        self,
+        request: HttpRequest,
+        book_id: int,  # pylint: disable=unused-argument
     ) -> Any:
         """create a suggestion_list"""
         form = forms.SuggestionListForm(request.POST)
