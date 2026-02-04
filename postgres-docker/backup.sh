@@ -1,9 +1,8 @@
 #!/bin/bash
 source /backups/.env
 
-if [ $DEBUG ]; then
+if [ ${DEBUG} != 'false' ]; then
     echo "Skipping backups because DEBUG is true"
-    exit 1
 fi
 
 if [ -z "$POSTGRES_DB" ]; then
