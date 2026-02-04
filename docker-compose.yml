@@ -1,6 +1,14 @@
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "150m"
+    max-file: "2"
+
 services:
   nginx:
     image: nginx:1.25.2
+    logging: *default-logging
     restart: unless-stopped
     ports:
       - "${PORT:-80}:80"
@@ -56,8 +64,10 @@ services:
       - ./certbot/logs:/var/log/letsencrypt
       - ./certbot/data:/var/www/certbot
   db:
-    image: postgres:17
+    build: postgres-docker
     env_file: .env
+    entrypoint: /bookwyrm-entrypoint.sh
+    command: cron postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -66,6 +76,7 @@ services:
       timeout: 10s
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - backups:/backups
     networks:
       - main
   web:
@@ -92,6 +103,7 @@ services:
   redis_activity:
     image: redis:7.2.1
     command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD} --appendonly yes --port ${REDIS_ACTIVITY_PORT}
+    logging: *default-logging
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_activity_data:/data
@@ -102,6 +114,7 @@ services:
   redis_broker:
     image: redis:7.2.1
     command: redis-server --requirepass ${REDIS_BROKER_PASSWORD} --appendonly yes --port ${REDIS_BROKER_PORT}
+    logging: *default-logging
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_broker_data:/data
@@ -188,6 +201,7 @@ services:
       - tools
 volumes:
   pgdata:
+  backups:
   static_volume:
   media_volume:
   exports_volume:
