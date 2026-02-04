@@ -19,6 +19,9 @@ if [ "$1" = "gunicorn" ]; then
     python manage.py migrate django_celery_beat || die "failed to migrate django"
     info "**** Migrations done"
 
+    info "**** Checking if database is initialized"
+    python manage.py initdb || die "Failed to initialize database"
+
     # after each update of assets, we run collectstatic, if it is already done, it is quick command
     # to check
     info "**** Checking static asset collection"
