@@ -63,11 +63,24 @@ services:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/logs:/var/log/letsencrypt
       - ./certbot/data:/var/www/certbot
-  db:
+  db-backup-job:
     build: postgres-docker
+    environment:
+      - DEBUG=${DEBUG}
+      - PGPASSWORD=${POSTGRES_PASSWORD}
+      - PGHOST=${POSTGRES_HOST}
+      - PGUSER=${POSTGRES_USER}
+      - PGDATABASE=${POSTGRES_DB}
+    depends_on:
+      db:
+        condition: service_started
+    volumes:
+      - backups:/backups
+    networks:
+      - main
+  db:
+    image: postgres:17
     env_file: .env
-    entrypoint: /bookwyrm-entrypoint.sh
-    command: cron postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -76,7 +89,6 @@ services:
       timeout: 10s
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - backups:/backups
     networks:
       - main
   web:
