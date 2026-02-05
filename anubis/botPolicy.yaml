@@ -8,6 +8,9 @@ bots:
         - 'userAgent.startsWith("BookWyrm")'
         - '"Accept" in headers'
         - 'headers["Accept"] == "application/activity+json"'
+  - name: Check all email confirmations
+    action: CHALLENGE
+    expression: 'path.startsWith("confirm-email/")'
 status_codes:
   CHALLENGE: 200
   DENY: 403
