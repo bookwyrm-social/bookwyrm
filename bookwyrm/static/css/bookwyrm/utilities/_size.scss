@@ -68,7 +68,7 @@
     height: 500px !important;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (width <= 768px) {
     .is-w-auto-mobile {
         width: auto !important;
     }
@@ -122,7 +122,7 @@
     }
 }
 
-@media only screen and (min-width: 769px) {
+@media only screen and (width >= 769px) {
     .is-w-auto-tablet {
         width: auto !important;
     }
@@ -176,7 +176,7 @@
     }
 }
 
-@media only screen and (min-width: 1024px) {
+@media only screen and (width >= 1024px) {
     .is-w-auto-desktop {
         width: auto !important;
     }

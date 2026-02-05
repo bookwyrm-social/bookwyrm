@@ -52,7 +52,7 @@ details.dropdown .dropdown-menu a:focus-visible {
     outline-offset: -2px;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (width <= 768px) {
     details.dropdown[open] summary.dropdown-trigger::before {
         background-color: $modal-background-background-color;
         z-index: 30;
@@ -114,7 +114,7 @@ details[open] summary .details-close {
     transform: rotate(0deg);
 }
 
-@media only screen and (min-width: 769px) {
+@media only screen and (width >= 769px) {
     .details-panel .filters-field:not(:last-child) {
         border-right: 1px solid $border;
         margin-top: 0.75rem;

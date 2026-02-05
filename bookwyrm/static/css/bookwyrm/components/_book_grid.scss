@@ -28,7 +28,7 @@
     min-height: calc(2 * var(--height-basis));
 }
 
-@media only screen and (min-width: 769px) {
+@media only screen and (width >= 769px) {
     .books-grid {
         gap: 1.5rem;
         grid-template-columns: repeat(auto-fill, minmax(8em, 1fr));
