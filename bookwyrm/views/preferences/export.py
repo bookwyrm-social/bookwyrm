@@ -239,13 +239,7 @@ class ExportArchive(View):
         export = BookwyrmExportJob.objects.get(task_id=archive_id, user=request.user)
 
         if settings.USE_S3_FOR_EXPORTS:
-            try:
-                url = (
-                    export.export_data.url
-                )  # this is a pre-signed url by default, nice
-            except Exception as err:
-                logger.error("Failed to download user export file %s: %s", url, err)
-                raise Http404()
+            url = export.export_data.url  # this is a pre-signed url by default, nice
             return redirect(url)
 
         if settings.USE_AZURE:
