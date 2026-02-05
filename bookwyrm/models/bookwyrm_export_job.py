@@ -28,7 +28,7 @@ class BookwyrmAwsSession(BotoSession):
     """a boto session that always uses settings.AWS_S3_ENDPOINT_URL"""
 
     def client(self, *args, **kwargs):
-        kwargs["endpoint_url"] = settings.AWS_S3_ENDPOINT_URL
+        kwargs["endpoint_url"] = storages["exports"].endpoint_url
         return super().client("s3", *args, **kwargs)
 
 
@@ -86,17 +86,6 @@ def archive_file_location(file, directory="") -> str:
     return os.path.join(directory, file.name)
 
 
-def add_file_to_s3_tar(s3_tar: S3Tar, storage, file, directory=""):
-    """
-    add file to S3Tar inside directory, keeping any directories under its
-    storage location
-    """
-    s3_tar.add_file(
-        os.path.join(storage.location, file.name),
-        folder=os.path.dirname(archive_file_location(file, directory=directory)),
-    )
-
-
 @app.task(queue=IMPORTS, base=ParentTask)
 def create_archive_task(**kwargs):
     """create the archive containing the JSON file and additional files"""
@@ -132,11 +121,12 @@ def create_archive_task(**kwargs):
                 os.path.join(exports_storage.location, export_json_tmp_file)
             )
 
-            # Add avatar to TAR
-            images_storage = storages["default"]
-
             if user.avatar:
-                add_file_to_s3_tar(s3_tar, images_storage, user.avatar)
+                exports_storage.save(user.avatar.name, user.avatar)
+                s3_tar.add_file(
+                    os.path.join(exports_storage.location, user.avatar.name),
+                    folder="avatars",
+                )
 
             # Create archive and store file name
             s3_tar.tar()
@@ -145,11 +135,12 @@ def create_archive_task(**kwargs):
 
             # Delete temporary files
             exports_storage.delete(export_json_tmp_file)
+            exports_storage.delete(user.avatar.name)
 
         else:
             # exports saved to local storage
             # this is the default even when using S3 for other files
-            # use the scheduled task to periodically delete these
+            # Use the scheduled task to periodically delete these
             job.export_data = archive_filename
             with job.export_data.open("wb") as tar_file:
                 with BookwyrmTarFile.open(mode="w:gz", fileobj=tar_file) as tar:
