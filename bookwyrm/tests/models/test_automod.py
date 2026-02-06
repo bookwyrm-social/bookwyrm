@@ -80,6 +80,6 @@ class AutomodModel(TestCase):
 
         reports = models.Report.objects.all()
         self.assertEqual(reports.count(), 1)
-        self.assertEqual(reports.first().status, status)
+        self.assertEqual(reports.first().statuses.first(), status)
         self.assertEqual(reports.first().user, self.local_user)
         self.assertEqual(models.Notification.objects.count(), 1)
