@@ -70,6 +70,12 @@ location /robots.txt {
 
 #end of anubis related configuration
 
+# exempt manifest.json from bot checking
+location /manifest.json {
+    proxy_pass http://web;
+    proxy_set_header Host $host;
+}
+
 # do not log periodic polling requests from logged in users
 location /api/updates/ {
     access_log off;
