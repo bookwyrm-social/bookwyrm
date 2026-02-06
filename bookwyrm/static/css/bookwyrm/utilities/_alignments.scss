@@ -31,7 +31,7 @@
     justify-content: flex-start !important;
 }
 
-@media screen and (width <= 768px) {
+@media screen and (max-width: 768px) {
     .align.to-c-mobile {
         justify-content: center !important;
     }
@@ -53,7 +53,7 @@
     }
 }
 
-@media screen and (width >= 769px) {
+@media screen and (min-width: 769px) {
     .align.to-c-tablet {
         justify-content: center !important;
     }
