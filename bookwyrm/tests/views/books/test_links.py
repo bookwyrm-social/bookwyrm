@@ -131,7 +131,7 @@ class LinkViews(TestCase):
             # link is duplicate and we get form page again with error
             self.assertContains(
                 result,
-                "This link with file type has already been added for this book",
+                "This link has already been added for this book",
             )
             self.assertEqual(result.status_code, 200)
 
