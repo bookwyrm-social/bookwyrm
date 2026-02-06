@@ -57,7 +57,6 @@ def view_data():
     data = {"errors": [], "prefix": settings.CACHE_KEY_PREFIX}
     try:
         data["info"] = r.info()
-    # pylint: disable=broad-except
     except Exception as err:
         data["errors"].append(err)
     return data
