@@ -129,11 +129,16 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "bookwyrm.urls"
 
+
+default_loaders = [
+    "django.template.loaders.filesystem.Loader",
+    "django.template.loaders.app_directories.Loader",
+]
+cached_loaders = [("django.template.loaders.cached.Loader", default_loaders)]
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": ["templates"],
-        "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -142,6 +147,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "bookwyrm.context_processors.site_settings",
             ],
+            "loaders": default_loaders if DEBUG else cached_loaders,
         },
     },
 ]
