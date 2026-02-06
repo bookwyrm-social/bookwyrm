@@ -526,6 +526,7 @@ if USE_S3_FOR_EXPORTS:
             "endpoint_url": env("EXPORTS_S3_ENDPOINT_URL", env("AWS_S3_ENDPOINT_URL")),
             "custom_domain": env("EXPORTS_S3_CUSTOM_DOMAIN", None),
             "bucket_name": env("EXPORTS_STORAGE_BUCKET_NAME"),
+            "querystring_auth": True,
         },
     }
 else:
