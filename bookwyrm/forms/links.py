@@ -44,7 +44,7 @@ class FileLinkForm(CustomForm):
                 self.add_error(
                     "url",
                     _(
-                        "This link with file type has already been added for this book."
+                        "This link has already been added for this book."
                         " If it is not visible, the domain is still pending."
                     ),
                 )
