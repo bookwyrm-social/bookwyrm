@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-03 18:12+0000\n"
-"PO-Revision-Date: 2026-02-03 19:48\n"
+"POT-Creation-Date: 2026-02-06 17:47+0000\n"
+"PO-Revision-Date: 2026-02-06 18:48\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -89,13 +89,13 @@ msgstr "Naujasis slaptažodis turi skirtis nuo esamojo"
 msgid "Incorrect code"
 msgstr "Neteisingas kodas"
 
-#: bookwyrm/forms/links.py:35
+#: bookwyrm/forms/links.py:34
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
 msgstr "Šis domenas užblokuotas. Jei manote, kad tai klaida, susisiekite su savo administratoriumi."
 
-#: bookwyrm/forms/links.py:50
-msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr "Ši nuoroda su failo tipu knygai jau buvo pridėta. Jei nematote, reiškia dar laukiama domeno."
+#: bookwyrm/forms/links.py:47
+msgid "This link has already been added for this book. If it is not visible, the domain is still pending."
+msgstr ""
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
@@ -512,91 +512,91 @@ msgstr "Knygų siena"
 msgid "Books"
 msgstr "Knygos"
 
-#: bookwyrm/settings.py:314
+#: bookwyrm/settings.py:316
 msgid "English"
 msgstr "English (Anglų)"
 
-#: bookwyrm/settings.py:315
+#: bookwyrm/settings.py:317
 msgid "Català (Catalan)"
 msgstr "Català (kataloniečių)"
 
-#: bookwyrm/settings.py:316
+#: bookwyrm/settings.py:318
 msgid "Deutsch (German)"
 msgstr "Deutsch (Vokiečių)"
 
-#: bookwyrm/settings.py:317
+#: bookwyrm/settings.py:319
 msgid "Esperanto (Esperanto)"
 msgstr "Esperanto (Esperanto)"
 
-#: bookwyrm/settings.py:318
+#: bookwyrm/settings.py:320
 msgid "Español (Spanish)"
 msgstr "Español (Ispanų)"
 
-#: bookwyrm/settings.py:319
+#: bookwyrm/settings.py:321
 msgid "Euskara (Basque)"
 msgstr "Euskara (Baskų kalba)"
 
-#: bookwyrm/settings.py:320
+#: bookwyrm/settings.py:322
 msgid "Galego (Galician)"
 msgstr "Galego (galisų)"
 
-#: bookwyrm/settings.py:321
+#: bookwyrm/settings.py:323
 msgid "Italiano (Italian)"
 msgstr "Italų (Italian)"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:324
 msgid "한국어 (Korean)"
 msgstr "한국어 (korėjiečių)"
 
-#: bookwyrm/settings.py:323
+#: bookwyrm/settings.py:325
 msgid "Suomi (Finnish)"
 msgstr "Suomi (suomių)"
 
-#: bookwyrm/settings.py:324
+#: bookwyrm/settings.py:326
 msgid "Français (French)"
 msgstr "Français (Prancūzų)"
 
-#: bookwyrm/settings.py:325
+#: bookwyrm/settings.py:327
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių"
 
-#: bookwyrm/settings.py:326
+#: bookwyrm/settings.py:328
 msgid "Nederlands (Dutch)"
 msgstr "Nederlands (Olandų)"
 
-#: bookwyrm/settings.py:327
+#: bookwyrm/settings.py:329
 msgid "Norsk (Norwegian)"
 msgstr "Norvegų (Norwegian)"
 
-#: bookwyrm/settings.py:328
+#: bookwyrm/settings.py:330
 msgid "Polski (Polish)"
 msgstr "Polski (lenkų)"
 
-#: bookwyrm/settings.py:329
+#: bookwyrm/settings.py:331
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português brasileiro (Brazilijos portugalų)"
 
-#: bookwyrm/settings.py:330
+#: bookwyrm/settings.py:332
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Europos portugalų)"
 
-#: bookwyrm/settings.py:331
+#: bookwyrm/settings.py:333
 msgid "Română (Romanian)"
 msgstr "Română (rumunų)"
 
-#: bookwyrm/settings.py:332
+#: bookwyrm/settings.py:334
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Švedų)"
 
-#: bookwyrm/settings.py:333
+#: bookwyrm/settings.py:335
 msgid "Українська (Ukrainian)"
 msgstr "Українська (Ukrainiečių)"
 
-#: bookwyrm/settings.py:334
+#: bookwyrm/settings.py:336
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Supaprastinta kinų)"
 
-#: bookwyrm/settings.py:335
+#: bookwyrm/settings.py:337
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Tradicinė kinų)"
 
@@ -1684,14 +1684,8 @@ msgid "Status"
 msgstr "Būsena"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:37
-#: bookwyrm/templates/settings/announcements/announcements.html:41
-#: bookwyrm/templates/settings/federation/instance.html:112
-#: bookwyrm/templates/settings/imports/imports.html:223
-#: bookwyrm/templates/settings/imports/imports.html:302
-#: bookwyrm/templates/settings/reports/report_links_table.html:6
-#: bookwyrm/templates/settings/themes.html:108
-msgid "Actions"
-msgstr "Veiksmai"
+msgid "Availability"
+msgstr ""
 
 #: bookwyrm/templates/book/file_links/edit_links.html:48
 #: bookwyrm/templates/settings/link_domains/link_table.html:21
@@ -2162,21 +2156,21 @@ msgstr "Puslapio administratorius"
 msgid "Join BookWyrm"
 msgstr "Prisijunkite prie „BookWyrm“"
 
-#: bookwyrm/templates/feed/direct_messages.html:8
+#: bookwyrm/templates/feed/direct_messages.html:9
 #, python-format
 msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgstr "Asmeninis susirašinėjimas su <a href=\"%(path)s\">%(username)s</a>"
 
-#: bookwyrm/templates/feed/direct_messages.html:10
+#: bookwyrm/templates/feed/direct_messages.html:11
 #: bookwyrm/templates/user_menu.html:39
 msgid "Direct Messages"
 msgstr "Asmeninės žinutės"
 
-#: bookwyrm/templates/feed/direct_messages.html:13
+#: bookwyrm/templates/feed/direct_messages.html:14
 msgid "All messages"
 msgstr "Visos žinutės"
 
-#: bookwyrm/templates/feed/direct_messages.html:22
+#: bookwyrm/templates/feed/direct_messages.html:23
 msgid "You have no messages right now."
 msgstr "Neturite žinučių."
 
@@ -5203,7 +5197,7 @@ msgstr "Redaguoti"
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:126
+#: bookwyrm/templates/settings/layout.html:130
 msgid "Announcements"
 msgstr "Pranešimai"
 
@@ -5257,6 +5251,15 @@ msgstr "Pradžios data"
 #: bookwyrm/templates/settings/announcements/announcements.html:33
 msgid "End date"
 msgstr "Pabaigos data"
+
+#: bookwyrm/templates/settings/announcements/announcements.html:41
+#: bookwyrm/templates/settings/federation/instance.html:112
+#: bookwyrm/templates/settings/imports/imports.html:223
+#: bookwyrm/templates/settings/imports/imports.html:302
+#: bookwyrm/templates/settings/reports/report_links_table.html:6
+#: bookwyrm/templates/settings/themes.html:108
+msgid "Actions"
+msgstr "Veiksmai"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:50
 msgid "active"
@@ -5427,7 +5430,7 @@ msgid "Import triggered"
 msgstr "Importas suplanuotas"
 
 #: bookwyrm/templates/settings/celery.html:57
-#: bookwyrm/templates/settings/layout.html:113
+#: bookwyrm/templates/settings/layout.html:117
 msgid "Connectors"
 msgstr "Integracijos"
 
@@ -5517,6 +5520,7 @@ msgid "Clearing queues can cause serious problems including data loss! Only play
 msgstr "Eilių trynimas gali sukelti nepageidaujamą reakciją - žaisti tik, jei yra supratimas ką darai. Prieš atliekant šią operaciją - \"Celery\" procesas turi būti išjungtas."
 
 #: bookwyrm/templates/settings/celery.html:208
+#: bookwyrm/templates/settings/redis.html:117
 msgid "Errors"
 msgstr "Klaidos"
 
@@ -5737,7 +5741,7 @@ msgstr "Šiuo metu neblokuojamas nė vienas el. pašto domenas"
 
 #: bookwyrm/templates/settings/email_config.html:6
 #: bookwyrm/templates/settings/email_config.html:8
-#: bookwyrm/templates/settings/layout.html:109
+#: bookwyrm/templates/settings/layout.html:113
 msgid "Email Configuration"
 msgstr "El. pašto konfigūracija"
 
@@ -6364,25 +6368,29 @@ msgid "System"
 msgstr "Sistema"
 
 #: bookwyrm/templates/settings/layout.html:105
+msgid "Redis status"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:109
 msgid "Scheduled Tasks"
 msgstr "Planinės užduotys"
 
-#: bookwyrm/templates/settings/layout.html:117
+#: bookwyrm/templates/settings/layout.html:121
 msgid "Files Maintenance"
 msgstr "Failų priežiūra"
 
-#: bookwyrm/templates/settings/layout.html:122
+#: bookwyrm/templates/settings/layout.html:126
 msgid "Instance Settings"
 msgstr "Serverio nustatymai"
 
-#: bookwyrm/templates/settings/layout.html:130
+#: bookwyrm/templates/settings/layout.html:134
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr "Puslapio nustatymai"
 
-#: bookwyrm/templates/settings/layout.html:136
-#: bookwyrm/templates/settings/layout.html:139
+#: bookwyrm/templates/settings/layout.html:140
+#: bookwyrm/templates/settings/layout.html:143
 #: bookwyrm/templates/settings/registration.html:4
 #: bookwyrm/templates/settings/registration.html:6
 #: bookwyrm/templates/settings/registration_limited.html:4
@@ -6390,7 +6398,7 @@ msgstr "Puslapio nustatymai"
 msgid "Registration"
 msgstr "Registracija"
 
-#: bookwyrm/templates/settings/layout.html:145
+#: bookwyrm/templates/settings/layout.html:149
 #: bookwyrm/templates/settings/site.html:107
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
@@ -6429,6 +6437,74 @@ msgstr "Šiuo metu užblokuotų domenų nėra"
 #: bookwyrm/templates/settings/link_domains/link_table.html:43
 msgid "No links available for this domain."
 msgstr "Šiam domenui nuorodų nėra."
+
+#: bookwyrm/templates/settings/redis.html:5
+#: bookwyrm/templates/settings/redis.html:7
+msgid "Redis Status"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:13
+msgid "Info"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:17
+msgid "Used memory"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:23
+msgid "Total system memory"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:29
+msgid "Keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:37
+msgid "Outdated cache keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:40
+#, python-format
+msgid "This will scan for keys in the Django redis cache that use no prefix (the current prefix is <code>%(prefix)s</code>), and identify Activity Streams for users with deleted accounts."
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:47
+#, python-format
+msgid "%(keys)s identified"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:55
+msgid "Erase outdated keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:63
+msgid "Scan for outdated keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:71
+msgid "Advanced"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:75
+msgid "Clear Django Cache"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:81
+msgid "This is <strong>NOT recommended</strong> and should only be used if something has gone very wrong with your cache. All sessions will be cleared and users will be logged out of their accounts."
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:88
+#, python-format
+msgid "%(keys)s keys deleted"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:97
+msgid "Erase cache"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:109
+msgid "Could not connect to Redis Activity"
+msgstr ""
 
 #: bookwyrm/templates/settings/registration.html:38
 msgid "Allow registration"
