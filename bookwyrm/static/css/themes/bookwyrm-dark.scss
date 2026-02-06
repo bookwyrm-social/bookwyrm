@@ -66,13 +66,13 @@ $info-light: $background-body;
 $info-dark: #72b6ee;
 
 /* These element's colors are hardcoded, probably a bug in bulma? */
-@media screen and (width >= 769px) {
+@media screen and (min-width: 769px) {
     .navbar-dropdown {
         box-shadow: 0 8px 8px rgba($black, 0.2) !important;
     }
 }
 
-@media screen and (width <= 768px) {
+@media screen and (max-width: 768px) {
     .navbar-menu {
         box-shadow: 0 8px 8px rgba($black, 0.2) !important;
     }
