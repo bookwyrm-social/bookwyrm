@@ -243,6 +243,7 @@ SEARCH_TIMEOUT = env.int("SEARCH_TIMEOUT", 8)
 # timeout for a query to an individual connector
 QUERY_TIMEOUT = env.int("INTERACTIVE_QUERY_TIMEOUT", env.int("QUERY_TIMEOUT", 5))
 
+CACHE_KEY_PREFIX = "django_cache"
 # Redis cache backend
 if env.bool("USE_DUMMY_CACHE", False):
     CACHES = {
@@ -259,6 +260,7 @@ else:
         "default": {
             "BACKEND": "django.core.cache.backends.redis.RedisCache",
             "LOCATION": REDIS_ACTIVITY_URL,
+            "KEY_PREFIX": CACHE_KEY_PREFIX,
         },
         "file_resubmit": {
             "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
