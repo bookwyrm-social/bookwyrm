@@ -11,6 +11,12 @@ bots:
   - name: Check all email confirmations
     action: CHALLENGE
     expression: 'path.startsWith("confirm-email/")'
+  - name: Paths to skip for checking
+    action: ALLOW
+    expression:
+      any:
+        - 'path == "manifest.json"'
+        - 'path == "favicon.ico"'
 status_codes:
   CHALLENGE: 200
   DENY: 403
