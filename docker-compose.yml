@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: nginx:1.25.2
+    image: nginx:1.28.1
     restart: unless-stopped
     ports:
       - "${PORT:-80}:80"
@@ -57,6 +57,7 @@ services:
       - ./certbot/data:/var/www/certbot
   db:
     image: postgres:17
+    shm_size: ${POSTGRES_SHM_SIZE:-128mb}
     env_file: .env
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
@@ -78,8 +79,8 @@ services:
       - exports_volume:/app/exports
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8000"]
-      interval: 10s
-      timeout: 10s
+      interval: 3s
+      timeout: 1s
       start_period: 3s
       retries: 6
     depends_on:

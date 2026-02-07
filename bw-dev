@@ -143,7 +143,7 @@ case "$CMD" in
         ;;
     makemigrations)
         prod_error
-        runweb python manage.py makemigrations "$@"
+        runtools python manage.py makemigrations "$@"
         ;;
     migrate)
         migrate "$@"

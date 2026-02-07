@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-01 17:29+0000\n"
-"PO-Revision-Date: 2026-02-01 15:40\n"
+"POT-Creation-Date: 2026-02-06 17:47+0000\n"
+"PO-Revision-Date: 2026-02-06 18:47\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -19,19 +19,19 @@ msgstr ""
 
 #: bookwyrm/forms/admin.py:42
 msgid "One Day"
-msgstr "Een dag"
+msgstr "Eén dag"
 
 #: bookwyrm/forms/admin.py:43
 msgid "One Week"
-msgstr "Een week"
+msgstr "Eén week"
 
 #: bookwyrm/forms/admin.py:44
 msgid "One Month"
-msgstr "Een maand"
+msgstr "Eén maand"
 
 #: bookwyrm/forms/admin.py:45
 msgid "Does Not Expire"
-msgstr "Verloopt niet"
+msgstr "Verloopt nooit"
 
 #: bookwyrm/forms/admin.py:50
 msgid "Unlimited"
@@ -67,11 +67,11 @@ msgstr "De einddatum van lezen kan niet in de toekomst liggen."
 
 #: bookwyrm/forms/landing.py:37
 msgid "Username or password are incorrect"
-msgstr "Gebruikersnaam of wachtwoord is onjuist"
+msgstr "Gebruikersnaam of wachtwoord onjuist"
 
 #: bookwyrm/forms/landing.py:56
 msgid "User with this username already exists"
-msgstr "Er bestaat al een gebruiker met deze gebruikersnaam"
+msgstr "Deze gebruikersnaam is al bezet"
 
 #: bookwyrm/forms/landing.py:65
 msgid "A user with this email already exists."
@@ -79,7 +79,7 @@ msgstr "Er bestaat al een gebruiker met dit e-mailadres."
 
 #: bookwyrm/forms/landing.py:69
 msgid "This email address cannot be registered."
-msgstr "Dit e-mailadres kan niet geregistreerd worden."
+msgstr "Dit e-mailadres kan niet gebruikt worden."
 
 #: bookwyrm/forms/landing.py:114
 msgid "Password cannot be the same as your current password"
@@ -89,17 +89,17 @@ msgstr "Wachtwoord mag niet hetzelfde zijn als je huidige wachtwoord"
 msgid "Incorrect code"
 msgstr "Ongeldige code"
 
-#: bookwyrm/forms/links.py:35
+#: bookwyrm/forms/links.py:34
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
-msgstr "Dit domein is geblokkeerd. Neem contact op met uw beheerder als u denkt dat dit een fout is."
+msgstr "Dit domein is geblokkeerd. Neem contact op met je beheerder als je denkt dat dit een fout is."
 
-#: bookwyrm/forms/links.py:50
-msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr "Deze koppeling met het bestandstype is al toegevoegd voor dit boek. Als deze niet zichtbaar is, is het domein nog steeds in behandeling."
+#: bookwyrm/forms/links.py:47
+msgid "This link has already been added for this book. If it is not visible, the domain is still pending."
+msgstr ""
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
-msgstr "Lijst volgorde"
+msgstr "Lijstvolgorde"
 
 #: bookwyrm/forms/lists.py:27
 msgid "Book Title"
@@ -175,35 +175,35 @@ msgstr "Verwijdering moderator"
 msgid "Domain block"
 msgstr "Domeinblokkade"
 
-#: bookwyrm/models/book.py:488
+#: bookwyrm/models/book.py:500
 msgid "Audiobook"
 msgstr "Luisterboek"
 
-#: bookwyrm/models/book.py:489
+#: bookwyrm/models/book.py:501
 msgid "eBook"
-msgstr "eBook"
+msgstr "E-book"
 
-#: bookwyrm/models/book.py:490
+#: bookwyrm/models/book.py:502
 msgid "Graphic novel"
 msgstr "Striproman"
 
-#: bookwyrm/models/book.py:491
+#: bookwyrm/models/book.py:503
 msgid "Hardcover"
 msgstr "Harde kaft"
 
-#: bookwyrm/models/book.py:492
+#: bookwyrm/models/book.py:504
 msgid "Paperback"
 msgstr "Zachte kaft"
 
-#: bookwyrm/models/book.py:501 bookwyrm/models/book.py:508
-#: bookwyrm/models/book.py:514 bookwyrm/models/book.py:519
-#: bookwyrm/models/book.py:524 bookwyrm/models/book.py:542
-#: bookwyrm/models/book.py:548 bookwyrm/models/book.py:553
+#: bookwyrm/models/book.py:513 bookwyrm/models/book.py:520
+#: bookwyrm/models/book.py:526 bookwyrm/models/book.py:531
+#: bookwyrm/models/book.py:536 bookwyrm/models/book.py:554
+#: bookwyrm/models/book.py:560 bookwyrm/models/book.py:565
 #, python-format
 msgid "%(value)s doesn't look like an ISBN"
 msgstr "%(value)s lijkt niet op een ISBN"
 
-#: bookwyrm/models/book.py:530 bookwyrm/models/book.py:570
+#: bookwyrm/models/book.py:542 bookwyrm/models/book.py:582
 #, python-format
 msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
 msgstr "%(value)s heeft niet de juiste ISBN controlesom, we verwachten %(check_version)s"
@@ -329,11 +329,11 @@ msgstr "Volgers"
 msgid "Private"
 msgstr "Privé"
 
-#: bookwyrm/models/housekeeping.py:116
+#: bookwyrm/models/housekeeping.py:117
 msgid "Missing"
 msgstr "Ontbrekend"
 
-#: bookwyrm/models/housekeeping.py:117
+#: bookwyrm/models/housekeeping.py:118
 msgid "Wrong Path"
 msgstr "Verkeerde pad"
 
@@ -473,7 +473,7 @@ msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
 msgstr[0] "%(display_name)s beoordeelde %(book_title)s: %(display_rating).1f ster"
 msgstr[1] "%(display_name)s beoordeelde %(book_title)s: %(display_rating).1f sterren"
 
-#: bookwyrm/models/user.py:40 bookwyrm/templates/book/book.html:336
+#: bookwyrm/models/user.py:40 bookwyrm/templates/book/book.html:343
 msgid "Reviews"
 msgstr "Recensies"
 
@@ -510,91 +510,91 @@ msgstr "Boeken tijdlijn"
 msgid "Books"
 msgstr "Boeken"
 
-#: bookwyrm/settings.py:314
+#: bookwyrm/settings.py:316
 msgid "English"
 msgstr "Engels (English)"
 
-#: bookwyrm/settings.py:315
+#: bookwyrm/settings.py:317
 msgid "Català (Catalan)"
 msgstr "Català (Catalaans)"
 
-#: bookwyrm/settings.py:316
+#: bookwyrm/settings.py:318
 msgid "Deutsch (German)"
 msgstr "Duits (Deutsch)"
 
-#: bookwyrm/settings.py:317
+#: bookwyrm/settings.py:319
 msgid "Esperanto (Esperanto)"
 msgstr "Esperanto (Esperanto)"
 
-#: bookwyrm/settings.py:318
+#: bookwyrm/settings.py:320
 msgid "Español (Spanish)"
 msgstr "Spaans (Español)"
 
-#: bookwyrm/settings.py:319
+#: bookwyrm/settings.py:321
 msgid "Euskara (Basque)"
 msgstr "Euskara (Baskisch)"
 
-#: bookwyrm/settings.py:320
+#: bookwyrm/settings.py:322
 msgid "Galego (Galician)"
 msgstr "Galego (Galicisch)"
 
-#: bookwyrm/settings.py:321
+#: bookwyrm/settings.py:323
 msgid "Italiano (Italian)"
 msgstr "Italiano (Italiaans)"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:324
 msgid "한국어 (Korean)"
 msgstr "한국어 (Koreaans)"
 
-#: bookwyrm/settings.py:323
+#: bookwyrm/settings.py:325
 msgid "Suomi (Finnish)"
 msgstr "Suomi (Fins)"
 
-#: bookwyrm/settings.py:324
+#: bookwyrm/settings.py:326
 msgid "Français (French)"
 msgstr "Frans (Français)"
 
-#: bookwyrm/settings.py:325
+#: bookwyrm/settings.py:327
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (Litouws)"
 
-#: bookwyrm/settings.py:326
+#: bookwyrm/settings.py:328
 msgid "Nederlands (Dutch)"
 msgstr "Nederlands"
 
-#: bookwyrm/settings.py:327
+#: bookwyrm/settings.py:329
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (Noors)"
 
-#: bookwyrm/settings.py:328
+#: bookwyrm/settings.py:330
 msgid "Polski (Polish)"
 msgstr "Polski (Pools)"
 
-#: bookwyrm/settings.py:329
+#: bookwyrm/settings.py:331
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (Braziliaans-Portugees)"
 
-#: bookwyrm/settings.py:330
+#: bookwyrm/settings.py:332
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Europeaans Portugees)"
 
-#: bookwyrm/settings.py:331
+#: bookwyrm/settings.py:333
 msgid "Română (Romanian)"
 msgstr "Română (Roemeens)"
 
-#: bookwyrm/settings.py:332
+#: bookwyrm/settings.py:334
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Zweeds)"
 
-#: bookwyrm/settings.py:333
+#: bookwyrm/settings.py:335
 msgid "Українська (Ukrainian)"
 msgstr "Українська (Oekraïens)"
 
-#: bookwyrm/settings.py:334
+#: bookwyrm/settings.py:336
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Vereenvoudigd Chinees)"
 
-#: bookwyrm/settings.py:335
+#: bookwyrm/settings.py:337
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "简体中文 (Traditioneel Chinees)"
 
@@ -1057,7 +1057,7 @@ msgid "ISNI:"
 msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:128
-#: bookwyrm/templates/book/book.html:249
+#: bookwyrm/templates/book/book.html:256
 #: bookwyrm/templates/book/edit/edit_book.html:150
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
@@ -1082,7 +1082,7 @@ msgstr "Opslaan"
 
 #: bookwyrm/templates/author/edit_author.html:129
 #: bookwyrm/templates/author/sync_modal.html:23
-#: bookwyrm/templates/book/book.html:250
+#: bookwyrm/templates/book/book.html:257
 #: bookwyrm/templates/book/cover_add_modal.html:33
 #: bookwyrm/templates/book/edit/edit_book.html:152
 #: bookwyrm/templates/book/edit/edit_book.html:155
@@ -1149,73 +1149,77 @@ msgstr "Klik om te vergroten"
 msgid "View on Finna"
 msgstr "Bekijk op Finna"
 
-#: bookwyrm/templates/book/book.html:222
+#: bookwyrm/templates/book/book.html:205
+msgid "View on Libris"
+msgstr "Bekijk op Libris"
+
+#: bookwyrm/templates/book/book.html:229
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
 msgstr[0] "(%(review_count)s recensie)"
 msgstr[1] "(%(review_count)s recensies)"
 
-#: bookwyrm/templates/book/book.html:238
+#: bookwyrm/templates/book/book.html:245
 msgid "Add Description"
 msgstr "Beschrijving toevoegen"
 
-#: bookwyrm/templates/book/book.html:245
+#: bookwyrm/templates/book/book.html:252
 #: bookwyrm/templates/book/edit/edit_book_form.html:55
 #: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
 msgid "Description:"
 msgstr "Beschrijving:"
 
-#: bookwyrm/templates/book/book.html:261
+#: bookwyrm/templates/book/book.html:268
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
 msgstr[0] "%(count)s editie"
 msgstr[1] "%(count)s edities"
 
-#: bookwyrm/templates/book/book.html:275
+#: bookwyrm/templates/book/book.html:282
 msgid "You have shelved this edition in:"
 msgstr "Je hebt deze editie op de plank gezet in:"
 
-#: bookwyrm/templates/book/book.html:290
+#: bookwyrm/templates/book/book.html:297
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
 msgstr "Een <a href=\"%(book_path)s\">andere editie</a> van dit boek staat op je <a href=\"%(shelf_path)s\">%(shelf_name)s</a> plank."
 
-#: bookwyrm/templates/book/book.html:301
+#: bookwyrm/templates/book/book.html:308
 msgid "Your reading activity"
 msgstr "Jouw leesactiviteit"
 
-#: bookwyrm/templates/book/book.html:307
+#: bookwyrm/templates/book/book.html:314
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
 msgstr "Leesdata toevoegen"
 
-#: bookwyrm/templates/book/book.html:315
+#: bookwyrm/templates/book/book.html:322
 msgid "You don't have any reading activity for this book."
 msgstr "Je hebt geen leesactiviteit voor dit boek."
 
-#: bookwyrm/templates/book/book.html:341
+#: bookwyrm/templates/book/book.html:348
 msgid "Your reviews"
 msgstr "Je recensies"
 
-#: bookwyrm/templates/book/book.html:347
+#: bookwyrm/templates/book/book.html:354
 msgid "Your comments"
 msgstr "Jouw opmerkingen"
 
-#: bookwyrm/templates/book/book.html:353
+#: bookwyrm/templates/book/book.html:360
 msgid "Your quotes"
 msgstr "Jouw citaten"
 
-#: bookwyrm/templates/book/book.html:389
+#: bookwyrm/templates/book/book.html:396
 msgid "Subjects"
 msgstr "Onderwerpen"
 
-#: bookwyrm/templates/book/book.html:401
+#: bookwyrm/templates/book/book.html:408
 msgid "Places"
 msgstr "Plaatsen"
 
-#: bookwyrm/templates/book/book.html:412
+#: bookwyrm/templates/book/book.html:419
 #: bookwyrm/templates/groups/group.html:19
 #: bookwyrm/templates/guided_tour/lists.html:14
 #: bookwyrm/templates/guided_tour/user_books.html:102
@@ -1230,11 +1234,15 @@ msgstr "Plaatsen"
 msgid "Lists"
 msgstr "Lijsten"
 
-#: bookwyrm/templates/book/book.html:424
+#: bookwyrm/templates/book/book.html:431
 msgid "Add to list"
 msgstr "Toevoegen aan lijst"
 
-#: bookwyrm/templates/book/book.html:434
+#: bookwyrm/templates/book/book.html:438
+msgid "Create new list..."
+msgstr "Nieuwe lijst aanmaken..."
+
+#: bookwyrm/templates/book/book.html:442
 #: bookwyrm/templates/book/cover_add_modal.html:32
 #: bookwyrm/templates/lists/add_item_modal.html:39
 #: bookwyrm/templates/lists/list.html:255
@@ -1289,6 +1297,11 @@ msgstr "Goodreads:"
 #: bookwyrm/templates/book/edit/edit_book_form.html:390
 msgid "Finna ID:"
 msgstr "Finna-ID:"
+
+#: bookwyrm/templates/book/book_identifiers.html:65
+#: bookwyrm/templates/book/edit/edit_book_form.html:399
+msgid "Libris ID:"
+msgstr "Libris-ID:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1657,14 +1670,8 @@ msgid "Status"
 msgstr "Status"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:37
-#: bookwyrm/templates/settings/announcements/announcements.html:41
-#: bookwyrm/templates/settings/federation/instance.html:112
-#: bookwyrm/templates/settings/imports/imports.html:223
-#: bookwyrm/templates/settings/imports/imports.html:302
-#: bookwyrm/templates/settings/reports/report_links_table.html:6
-#: bookwyrm/templates/settings/themes.html:108
-msgid "Actions"
-msgstr "Handelingen"
+msgid "Availability"
+msgstr ""
 
 #: bookwyrm/templates/book/file_links/edit_links.html:48
 #: bookwyrm/templates/settings/link_domains/link_table.html:21
@@ -1916,6 +1923,19 @@ msgstr "publicaties"
 msgid "last active"
 msgstr "laatst actief"
 
+#: bookwyrm/templates/directory/user_connection_filter.html:5
+#: bookwyrm/templates/import/user_troubleshoot.html:65
+msgid "Relationship"
+msgstr "Relatie"
+
+#: bookwyrm/templates/directory/user_connection_filter.html:8
+msgid "Following users"
+msgstr "Volgende gebruikers"
+
+#: bookwyrm/templates/directory/user_connection_filter.html:12
+msgid "Not following users"
+msgstr "Niet-volgende gebruikers"
+
 #: bookwyrm/templates/directory/user_type_filter.html:5
 msgid "User type"
 msgstr "Gebruikerstype"
@@ -2118,21 +2138,21 @@ msgstr "Contact opnemen met de sitebeheerder"
 msgid "Join BookWyrm"
 msgstr "Word lid van BookWyrm"
 
-#: bookwyrm/templates/feed/direct_messages.html:8
+#: bookwyrm/templates/feed/direct_messages.html:9
 #, python-format
 msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgstr "Privéberichten met <a href=\"%(path)s\">%(username)s</a>"
 
-#: bookwyrm/templates/feed/direct_messages.html:10
+#: bookwyrm/templates/feed/direct_messages.html:11
 #: bookwyrm/templates/user_menu.html:39
 msgid "Direct Messages"
 msgstr "Privéberichten"
 
-#: bookwyrm/templates/feed/direct_messages.html:13
+#: bookwyrm/templates/feed/direct_messages.html:14
 msgid "All messages"
 msgstr "Alle berichten"
 
-#: bookwyrm/templates/feed/direct_messages.html:22
+#: bookwyrm/templates/feed/direct_messages.html:23
 msgid "You have no messages right now."
 msgstr "Je hebt momenteel geen berichten."
 
@@ -3532,10 +3552,6 @@ msgstr "Het is momenteel mogelijk om één gebruikersimport per %(hours)s uur te
 msgid "You will be able to retry this import at %(next_time)s"
 msgstr "Je kunt deze import opnieuw proberen om %(next_time)s"
 
-#: bookwyrm/templates/import/user_troubleshoot.html:65
-msgid "Relationship"
-msgstr "Relatie"
-
 #: bookwyrm/templates/import/user_troubleshoot.html:68
 msgid "Reason"
 msgstr "Reden"
@@ -3726,6 +3742,10 @@ msgstr "Voorstellen"
 #: bookwyrm/templates/lists/bookmark_button.html:30
 msgid "Un-save"
 msgstr "Vergeten"
+
+#: bookwyrm/templates/lists/create_list_modal.html:6
+msgid "Create new list"
+msgstr "Nieuwe lijst aanmaken"
 
 #: bookwyrm/templates/lists/created_text.html:5
 #, python-format
@@ -4259,7 +4279,7 @@ msgstr "is verwijderd uit jouw groep \"<a href=\"%(group_path)s\">%(group_name)s
 #: bookwyrm/templates/notifications/items/remove.html:23
 #, python-format
 msgid "You have been removed from the \"<a href=\"%(group_path)s\">%(group_name)s</a>\" group"
-msgstr "Je bent verwijderd uit de \"<a href=\"%(group_path)s\">%(group_name)s</a>\" groep"
+msgstr "Je bent verwijderd uit de groep \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/reply.html:21
 #, python-format
@@ -4530,7 +4550,7 @@ msgstr "Je account wordt verborgen. Je kunt op elk gewenst moment opnieuw inlogg
 
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Deactivate Account"
-msgstr "Account Deactiveren"
+msgstr "Account deactiveren"
 
 #: bookwyrm/templates/preferences/delete_user.html:26
 msgid "Permanently delete account"
@@ -5133,7 +5153,7 @@ msgstr "Bewerken"
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:126
+#: bookwyrm/templates/settings/layout.html:130
 msgid "Announcements"
 msgstr "Mededelingen"
 
@@ -5187,6 +5207,15 @@ msgstr "Startdatum"
 #: bookwyrm/templates/settings/announcements/announcements.html:33
 msgid "End date"
 msgstr "Einddatum"
+
+#: bookwyrm/templates/settings/announcements/announcements.html:41
+#: bookwyrm/templates/settings/federation/instance.html:112
+#: bookwyrm/templates/settings/imports/imports.html:223
+#: bookwyrm/templates/settings/imports/imports.html:302
+#: bookwyrm/templates/settings/reports/report_links_table.html:6
+#: bookwyrm/templates/settings/themes.html:108
+msgid "Actions"
+msgstr "Handelingen"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:50
 msgid "active"
@@ -5357,7 +5386,7 @@ msgid "Import triggered"
 msgstr "Import geactiveerd"
 
 #: bookwyrm/templates/settings/celery.html:57
-#: bookwyrm/templates/settings/layout.html:113
+#: bookwyrm/templates/settings/layout.html:117
 msgid "Connectors"
 msgstr "Connectoren"
 
@@ -5447,14 +5476,19 @@ msgid "Clearing queues can cause serious problems including data loss! Only play
 msgstr "Wachtrijen leegmaken kan ernstige problemen veroorzaken, waaronder gegevensverlies! Gebruik dit alleen als je echt weet wat je aan het doen bent. Je moet eerst de Celery worker stoppen voordat je dit doet."
 
 #: bookwyrm/templates/settings/celery.html:208
+#: bookwyrm/templates/settings/redis.html:117
 msgid "Errors"
 msgstr "Foutmeldingen"
 
-#: bookwyrm/templates/settings/connectors/available.html:15
+#: bookwyrm/templates/settings/connectors/available.html:17
 msgid "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof."
 msgstr "Finna.fi is een zoekmachine die materiaal van honderden Finse organisaties samenbrengt."
 
-#: bookwyrm/templates/settings/connectors/available.html:28
+#: bookwyrm/templates/settings/connectors/available.html:19
+msgid "Libris is the Swedish national library catalog, providing access to records from Swedish libraries."
+msgstr "Libris is de Zweedse nationale bibliotheekcatalogus en geeft toegang tot gegevens van Zweedse bibliotheken."
+
+#: bookwyrm/templates/settings/connectors/available.html:32
 msgid "Create new connector"
 msgstr "Nieuwe conector maken"
 
@@ -5655,7 +5689,7 @@ msgstr "Momenteel worden er geen e-maildomeinen geblokkeerd"
 
 #: bookwyrm/templates/settings/email_config.html:6
 #: bookwyrm/templates/settings/email_config.html:8
-#: bookwyrm/templates/settings/layout.html:109
+#: bookwyrm/templates/settings/layout.html:113
 msgid "Email Configuration"
 msgstr "E-mail configuratie"
 
@@ -6123,7 +6157,7 @@ msgstr "Datum geaccepteerd"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:45
 msgid "Answer"
-msgstr "Beantwoorden"
+msgstr "Antwoord"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:51
 msgid "Action"
@@ -6282,25 +6316,29 @@ msgid "System"
 msgstr "Systeem"
 
 #: bookwyrm/templates/settings/layout.html:105
+msgid "Redis status"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:109
 msgid "Scheduled Tasks"
 msgstr "Geplande taken"
 
-#: bookwyrm/templates/settings/layout.html:117
+#: bookwyrm/templates/settings/layout.html:121
 msgid "Files Maintenance"
 msgstr "Bestandsonderhoud"
 
-#: bookwyrm/templates/settings/layout.html:122
+#: bookwyrm/templates/settings/layout.html:126
 msgid "Instance Settings"
 msgstr "Instance Instellingen"
 
-#: bookwyrm/templates/settings/layout.html:130
+#: bookwyrm/templates/settings/layout.html:134
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr "Site-instellingen"
 
-#: bookwyrm/templates/settings/layout.html:136
-#: bookwyrm/templates/settings/layout.html:139
+#: bookwyrm/templates/settings/layout.html:140
+#: bookwyrm/templates/settings/layout.html:143
 #: bookwyrm/templates/settings/registration.html:4
 #: bookwyrm/templates/settings/registration.html:6
 #: bookwyrm/templates/settings/registration_limited.html:4
@@ -6308,7 +6346,7 @@ msgstr "Site-instellingen"
 msgid "Registration"
 msgstr "Registratie"
 
-#: bookwyrm/templates/settings/layout.html:145
+#: bookwyrm/templates/settings/layout.html:149
 #: bookwyrm/templates/settings/site.html:107
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
@@ -6347,6 +6385,74 @@ msgstr "Er zijn momenteel geen domeinen geblokkeerd"
 #: bookwyrm/templates/settings/link_domains/link_table.html:43
 msgid "No links available for this domain."
 msgstr "Geen links beschikbaar voor dit domein."
+
+#: bookwyrm/templates/settings/redis.html:5
+#: bookwyrm/templates/settings/redis.html:7
+msgid "Redis Status"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:13
+msgid "Info"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:17
+msgid "Used memory"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:23
+msgid "Total system memory"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:29
+msgid "Keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:37
+msgid "Outdated cache keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:40
+#, python-format
+msgid "This will scan for keys in the Django redis cache that use no prefix (the current prefix is <code>%(prefix)s</code>), and identify Activity Streams for users with deleted accounts."
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:47
+#, python-format
+msgid "%(keys)s identified"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:55
+msgid "Erase outdated keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:63
+msgid "Scan for outdated keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:71
+msgid "Advanced"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:75
+msgid "Clear Django Cache"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:81
+msgid "This is <strong>NOT recommended</strong> and should only be used if something has gone very wrong with your cache. All sessions will be cleared and users will be logged out of their accounts."
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:88
+#, python-format
+msgid "%(keys)s keys deleted"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:97
+msgid "Erase cache"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:109
+msgid "Could not connect to Redis Activity"
+msgstr ""
 
 #: bookwyrm/templates/settings/registration.html:38
 msgid "Allow registration"
@@ -6725,7 +6831,7 @@ msgstr "Alle gebruikers in de gekozen categorie worden uitgelogd en moeten bij h
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:18
 msgid "If your account is in the group, you will be logged out out after submitting."
-msgstr "Als jouw account deel uitmaakt van de groep, word je uitgelogd na het uitvoeren."
+msgstr "Als jouw account deel uitmaakt van deze groep, word je uitgelogd na het uitvoeren."
 
 #: bookwyrm/templates/settings/users/force_password_reset.html:22
 msgid "Users given password resets:"
