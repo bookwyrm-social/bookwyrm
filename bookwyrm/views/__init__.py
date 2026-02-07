@@ -87,7 +87,7 @@ from .books.books import (
     add_description,
     resolve_book,
 )
-from .books.series import BookSeriesBy
+
 from .books.books import update_book_from_remote
 from .books.edit_book import (
     EditBook,
@@ -97,6 +97,7 @@ from .books.edit_book import (
 )
 from .books.editions import Editions, switch_edition
 from .books.links import BookFileLinks, AddFileLink, delete_link
+from .books.series import Series, SeriesBook, EditSeries
 
 # landing
 from .landing.about import about, privacy, conduct, impressum
