@@ -39,7 +39,13 @@ function runweb {
 }
 
 function runtools {
-    $DOCKER_COMPOSE run --rm dev-tools "$@"
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml run -e DEBUG=true --rm dev-tools "$@"
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml down
+}
+
+function rundev {
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml run -e DEBUG=true --rm web "$@"
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml down
 }
 
 function execdb {
@@ -116,6 +122,9 @@ case "$CMD" in
     down)
         $DOCKER_COMPOSE down
         ;;
+    dev)
+        $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml up "$@"
+        ;;
     service_ports_web)
         prod_error
         $DOCKER_COMPOSE run --rm --service-ports web
@@ -162,11 +171,11 @@ case "$CMD" in
         ;;
     pytest)
         prod_error
-        runtools pytest --no-cov-on-fail "$@"
+        rundev pytest --no-cov-on-fail "$@"
         ;;
     pytest_coverage_report)
         prod_error
-        runtools pytest -n 3 --cov-report term-missing "$@"
+        rundev pytest -n 3 --cov-report term-missing "$@"
         ;;
     compile_themes)
         runweb python manage.py compile_themes
