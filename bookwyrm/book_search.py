@@ -114,22 +114,30 @@ def search_identifiers(
         # Oh did you think the 'S' in ISBN stood for 'standard'?
         normalized_isbn = query.strip().upper().rjust(10, "0")
         query = normalized_isbn
-        # Try first searching just for ISBN10 and ISBN13, assuming those are the most common
-        results = books.filter(*filters, Q(isbn_10=query) | Q(isbn_13=query)).distinct()
-        if results.exists():
-            return results
 
-    or_filters = [
+    edition_deduplication_fields = [
         {f.name: query}
         for f in models.Edition._meta.get_fields()
         if hasattr(f, "deduplication_field") and f.deduplication_field
     ]
-    results = books.filter(
-        *filters, reduce(operator.or_, (Q(**f) for f in or_filters))
-    ).distinct()
 
-    if return_first:
-        return results.first()
+    results = None
+    # We assume that identifier hits only one field and we care only first hit
+    #  searching each field seprately makes overall search littlebit slower in case all fields needs to be checked, but each
+    #  query is really small for db load.
+    # we iterate reverse order so Edition specific fields are first
+    #  like isbn10, isbn13 and oclc number
+    for f in edition_deduplication_fields[::-1]:
+        field_results = books.filter(*filters, Q(**f))
+        if field_results.exists() is False:
+            continue
+        if return_first:
+            return field_results.first()
+        if results is None:
+            results = field_results
+        else:
+            results |= field_results
+
     return results
 
 
