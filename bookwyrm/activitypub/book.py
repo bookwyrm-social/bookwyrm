@@ -98,7 +98,6 @@ class Author(BookData):
 class Series(BookData):
     """serializes a book series"""
 
-    actor: str
     name: str
     alternativeNames: list[str] = field(default_factory=list)
     seriesBooks: list[str] = field(default_factory=list)

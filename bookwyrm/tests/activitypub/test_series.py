@@ -28,7 +28,6 @@ class TestSeries(TestCase):
         cls.series = models.Series.objects.create(
             name="Example Series",
             alternative_names=["Exemple de série", "Esimerkkisarja"],
-            user=cls.user,
             remote_id="https://example.com/series/1",
         )
 
@@ -104,7 +103,6 @@ class TestSeries(TestCase):
             activity["alternativeNames"], ["Exemple de série", "Esimerkkisarja"]
         )
         self.assertEqual(activity["name"], "Example Series")
-        self.assertIsInstance(activity["seriesBooks"], list)
         self.assertEqual(activity["seriesBooks"], [self.seriesbook.remote_id])
 
     def test_serialize_seriesbook(self):
@@ -148,115 +146,11 @@ class TestSeries(TestCase):
         book = book_data.to_model()
         with patch(
             "bookwyrm.activitypub.base_activity.set_related_field.delay",
-            new_callable=set_related_field(
-                "SeriesBook",
-                "Work",
-                "book",
-                "https://example.com/book/2",
-                book_data.seriesBooks[0],
-            ),
+            new=lambda *args: set_related_field(*args),
         ) as mocked:
-            book_data.to_model()  # run it again to trigger the mock
-            mocked.assert_called()
+            book_data.to_model()  # run it again to set the related field
 
         self.assertEqual(book.title, "Example Book 2")
         self.assertTrue(models.Series.objects.filter(name="Example Series 2").exists())
         self.assertEqual(models.Series.objects.count(), 2)
         self.assertEqual(models.Book.objects.count(), 2)
-
-    @responses.activate
-    def test_deserialize_series(self):
-        """do we get a seriesbook and book from a series?"""
-
-        responses.add(
-            responses.GET,
-            "https://example.com/book/2",
-            json=self.book_data,
-            status=200,
-        )
-
-        responses.add(
-            responses.GET,
-            "https://example.com/seriesbook/2",
-            json=self.seriesbook_data,
-            status=200,
-        )
-
-        responses.add(
-            responses.GET,
-            "https://example.com/user/instance",
-            json=self.user.to_activity(),
-            status=200,
-        )
-
-        self.assertFalse(models.Series.objects.filter(name="Example Series 2").exists())
-        self.assertEqual(models.Series.objects.count(), 1)
-        self.assertEqual(models.SeriesBook.objects.count(), 1)
-        self.assertEqual(models.Book.objects.count(), 1)
-
-        series_data = activitypub.Series(**self.series_data)
-        s = series_data.to_model()
-
-        with patch(
-            "bookwyrm.activitypub.base_activity.set_related_field.delay",
-            new_callable=set_related_field(
-                "SeriesBook",
-                "Series",
-                "series",
-                "https://example.com/series/2",
-                series_data.seriesBooks[0],
-            ),
-        ) as mocked:
-            series_data.to_model()
-            mocked.assert_called()
-
-        self.assertTrue(models.Series.objects.filter(name="Example Series 2").exists())
-        self.assertEqual(models.Series.objects.count(), 2)
-        self.assertEqual(models.SeriesBook.objects.count(), 2)
-        self.assertEqual(models.Book.objects.count(), 2)
-
-        self.assertTrue(
-            models.SeriesBook.objects.filter(
-                book=self.book, series=self.series
-            ).exists()
-        )
-        seriesbook = models.SeriesBook.objects.filter(series=s).first()
-        self.assertEqual(seriesbook.series_number, "99")
-
-    @responses.activate
-    def test_deserialize_seriesbook(self):
-        """do we get a book and series from a seriesbook?"""
-
-        responses.add(
-            responses.GET,
-            "https://example.com/book/2",
-            json=self.book_data,
-            status=200,
-        )
-
-        responses.add(
-            responses.GET,
-            "https://example.com/series/2",
-            json=self.series_data,
-            status=200,
-        )
-
-        responses.add(
-            responses.GET,
-            "https://example.com/user/instance",
-            json=self.user.to_activity(),
-            status=200,
-        )
-
-        self.assertFalse(models.Series.objects.filter(name="Example Series 2").exists())
-        self.assertEqual(models.Series.objects.count(), 1)
-        self.assertEqual(models.SeriesBook.objects.count(), 1)
-        self.assertEqual(models.Book.objects.count(), 1)
-
-        seriesbook_data = activitypub.SeriesBook(**self.seriesbook_data)
-        seriesbook_data.to_model()
-
-        self.assertTrue(models.Series.objects.filter(name="Example Series 2").exists())
-        self.assertEqual(models.Series.objects.count(), 2)
-        self.assertEqual(models.Book.objects.count(), 2)
-        self.assertEqual(models.SeriesBook.objects.count(), 2)

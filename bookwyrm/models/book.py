@@ -32,6 +32,8 @@ from bookwyrm.settings import (
 from bookwyrm.utils.db import format_trigger, add_update_fields
 
 from .activitypub_mixin import (
+    OrderedCollectionMixin,
+    CollectionItemMixin,
     OrderedCollectionPageMixin,
     ObjectMixin,
 )
@@ -665,14 +667,8 @@ class Edition(Book):
 
     activity_serializer = activitypub.Edition
     name_field = "title"
-    serialize_reverse_fields = [
-        ("file_links", "fileLinks", "-created_date"),
-        ("seriesbooks", "seriesBooks", "-created_date"),
-    ]
-    deserialize_reverse_fields = [
-        ("file_links", "fileLinks"),
-        ("seriesbooks", "seriesBooks"),
-    ]
+    serialize_reverse_fields = [("file_links", "fileLinks", "-created_date")]
+    deserialize_reverse_fields = [("file_links", "fileLinks")]
 
     class Meta:
         indexes = [
@@ -784,6 +780,19 @@ class Edition(Book):
         rank += int(bool(self.description))
         # max rank is 9
         return rank
+
+    def clean(self):
+        """Don't try to add a series the book is already part of"""
+        if self.pk:
+            for sb in self.parent_work.seriesbooks.all():
+                alternatives = [name.lower() for name in sb.series.alternative_names]
+                if (
+                    self.series.lower() in alternatives
+                    or self.series.lower() == sb.series.name.lower()
+                ):
+                    raise ValidationError(
+                        {"series": _("Book is already in this series")}
+                    )
 
     def save(
         self, *args: Any, update_fields: Optional[Iterable[str]] = None, **kwargs: Any
@@ -929,20 +938,15 @@ def preview_image(instance, *args, **kwargs):
         )
 
 
-class Series(BookDataModel):
+class Series(OrderedCollectionMixin, BookDataModel):
     """a series of books"""
 
     name = fields.TextField(max_length=255)
     alternative_names = fields.ArrayField(
-        models.CharField(max_length=255), blank=True, default=list
+        fields.CharField(max_length=255), blank=True, default=list
     )  # like aliases on an author
-    user = fields.ForeignKey(
-        "User", on_delete=models.PROTECT, activitypub_field="actor", related_name="+"
-    )  # for broadcast, should always be instance user but we can't set that here
 
     activity_serializer = activitypub.Series
-    serialize_reverse_fields = [("seriesbooks", "seriesBooks", "-created_date")]
-    deserialize_reverse_fields = [("seriesbooks", "seriesBooks")]
 
     def get_remote_id(self):
         """series need a remote id"""
@@ -951,12 +955,11 @@ class Series(BookDataModel):
     @property
     def collection_queryset(self):
         """list of books for this series, overrides OrderedCollectionMixin"""
-        return SeriesBook.objects.filter(series=self).order_by("-series_number")
+        return self.seriesbooks.all().order_by("series_number")
 
     def raise_not_editable(self, viewer):
-        if viewer.has_perm("bookwyrm.edit_book"):
-            return
-        raise PermissionDenied()
+        if not viewer.has_perm("bookwyrm.edit_book"):
+            raise PermissionDenied()
 
     @property
     def isfdb_link(self):
@@ -964,7 +967,7 @@ class Series(BookDataModel):
         return f"https://www.isfdb.org/cgi-bin/pe.cgi?{self.isfdb}"
 
 
-class SeriesBook(ObjectMixin, BookWyrmModel):
+class SeriesBook(CollectionItemMixin, BookWyrmModel):
     """connect a book to a series with a series number"""
 
     series = fields.ForeignKey(
@@ -978,16 +981,16 @@ class SeriesBook(ObjectMixin, BookWyrmModel):
         "User", on_delete=models.PROTECT, activitypub_field="actor", related_name="+"
     )  # for broadcast, should always be instance user but we can't set that here
 
+    collection_field = "series"
+    activity_serializer = activitypub.SeriesBook
+
     class Meta:
         ordering = ["series_number"]
-
-    activity_serializer = activitypub.SeriesBook
 
     def get_remote_id(self):
         """need a remote id to provide the URI for series"""
         return f"{BASE_URL}/seriesbook/{self.id}"
 
     def raise_not_editable(self, viewer):
-        if viewer.has_perm("bookwyrm.edit_book"):
-            return
-        raise PermissionDenied()
+        if not viewer.has_perm("bookwyrm.edit_book"):
+            raise PermissionDenied()

@@ -11,7 +11,6 @@ from bookwyrm.models import Book, Edition, Series, SeriesBook, User
 def upgrade_series_data():
     """turn strings into things"""
 
-    user = activitypub.get_representative()
     series_count = Series.objects.count()
     seriesbook_count = SeriesBook.objects.count()
 
@@ -43,13 +42,10 @@ def upgrade_series_data():
                 # leave it for a user to work out manually
                 continue
         else:
-            series = Series.objects.create(name=book.series, user=user)
+            series = Series.objects.create(name=book.series)
 
         SeriesBook.objects.create(
-            series=series,
-            book=book.parent_work,
-            series_number=book.series_number,
-            user=user,
+            series=series, book=book.parent_work, series_number=book.series_number
         )
 
         book.series = None
@@ -71,7 +67,6 @@ class Command(BaseCommand):
 
     help = "Turn legacy series data into Series and SeriesBook objects"
 
-    # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """run data migration"""
         upgrade_series_data()

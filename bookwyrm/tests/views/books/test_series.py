@@ -38,7 +38,7 @@ class SeriesViews(TestCase):
 
         cls.book = models.Work.objects.create(title="test book")
         cls.series = models.Series.objects.create(
-            name="test series", user=cls.user, remote_id="https://example.com/series/1"
+            name="test series", remote_id="https://example.com/series/1"
         )
         cls.seriesbook = models.SeriesBook.objects.create(
             book=cls.book,
@@ -47,7 +47,7 @@ class SeriesViews(TestCase):
             remote_id="https://example.com/seriesbook/1",
         )
 
-        models.SiteSettings.objects.create()
+        models.SiteSettings.objects.get_or_create()
 
     def setUp(self):
         """individual test setup"""

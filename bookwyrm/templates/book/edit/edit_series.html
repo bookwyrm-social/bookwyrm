@@ -25,7 +25,6 @@
 
 <form method="post" action="{% url 'edit-series' series.id %}">
     {% csrf_token %}
-    <input type="hidden" id="id_user" name="user" value="{{series.user.id}}">
     <div class="columns">
         <div class="column is-one-half">
             <label class="label" for="id_name">{% trans "Name" %}</label>

@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.db import transaction
 from django.http import HttpResponseBadRequest
-from django.db.models import Q
+from django.db.models import Subquery
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -251,7 +251,7 @@ def add_series(request, data):
         models.Series.objects.annotate(search=vector)
         .annotate(rank=SearchRank(vector, series, normalization=32))
         .filter(rank__gt=0.19)
-        .order_by("-rank")[:5]
+        .order_by("-rank")[:10]
     )
 
     data["series_matches"] = matches
@@ -358,8 +358,7 @@ class ConfirmEditBook(View):
             user = models.User.objects.get(localname=INSTANCE_ACTOR_USERNAME)
 
             if series_match := request.POST.get("series_match"):
-                # add known series
-                if series_match != "0":
+                if series_match != "0":  # add known series
                     series = models.Series.objects.get(id=int(series_match))
 
                     if not models.SeriesBook.objects.filter(
@@ -374,73 +373,61 @@ class ConfirmEditBook(View):
 
                     book = clear_series(book)
 
-                else:
-                    if maybe_series := models.Series.objects.filter(
-                        Q(title=book.series)
-                        | Q(alternative_titles__contains=book.series)
-                    ):
-                        # is there a SeriesBook already despite what the user claims?
-                        maybe_seriesbooks = models.SeriesBook.filter(
-                            series__in=maybe_series
+                else:  # User claims this is a new series, let's double check
+                    if not request.POST.get("confirm_series_mode"):
+                        vector = SearchVector("name", weight="A") + SearchVector(
+                            "alternative_names", weight="B"
                         )
-                        matches = maybe_seriesbooks.filter(book=book)
-
-                        if not matches:
-                            # Can we find a seriesbook with common name and author?
-                            # If we can, make a new seriesbook
-                            # If we can't do nothing and let a human work it out later
-                            if author_match := maybe_seriesbooks.authors.intersection(
-                                book.authors
-                            ).first():
-                                series = maybe_seriesbooks.filter(
-                                    authors__includes=author_match.first()
-                                ).first()
-
-                                models.SeriesBook.objects.create(
-                                    series=series,
-                                    book=book.parent_work,
-                                    series_number=book.series_number,
-                                    user=user,
-                                )
-
-                                book = clear_series(book)
-
-                    else:
-                        # Ok it really is a new series
-                        series = models.Series.objects.create(
-                            name=book.series, user=user
+                        seriesbooks = models.SeriesBook.objects.filter(
+                            book__authors__in=Subquery(book.authors.values("pk"))
                         )
-                        models.SeriesBook.objects.create(
-                            series=series,
-                            book=book.parent_work,
-                            series_number=book.series_number,
-                            user=user,
+                        possible_series = (
+                            models.Series.objects.filter(
+                                seriesbooks__in=Subquery(seriesbooks.values("pk"))
+                            )
+                            .annotate(search=vector)
+                            .annotate(
+                                rank=SearchRank(vector, book.series, normalization=32)
+                            )
+                            .filter(rank__gt=0.19)
                         )
 
-                        book = clear_series(book)
+                        if possible_series.exists():
+                            # this looks pretty suss, make the user confirm again
+                            data["confirm_mode"] = True
+                            data["confirm_series_mode"] = True
+                            data["series_matches"] = possible_series
+                            return TemplateResponse(
+                                request, "book/edit/edit_book.html", data
+                            )
+
+                    # Ok it really is a new series
+                    series = models.Series.objects.create(name=book.series)
+                    models.SeriesBook.objects.create(
+                        series=series,
+                        book=book.parent_work,
+                        series_number=book.series_number,
+                    )
+
+                    book = clear_series(book)
 
             elif book.series:
-                # It's a new series
-                series = models.Series.objects.create(name=book.series, user=user)
+                # doesn't look like any existing series
+                series = models.Series.objects.create(name=book.series)
                 models.SeriesBook.objects.create(
                     series=series,
                     book=book.parent_work,
                     series_number=book.series_number,
-                    user=user,
                 )
 
                 book = clear_series(book)
 
             for series_id in request.POST.getlist("remove_series"):
                 # remove seriesbook
-                if seriesbook := models.SeriesBook.objects.get(
-                    series__id=series_id, book=book
-                ):
-                    seriesbook.delete()
-                    series = models.Series.objects.get(id=series_id)
-                    # if it was the only book in the series, delete series
-                    if series.seriesbooks.count() == 0:
-                        series.delete()
+                seriesbook = models.SeriesBook.objects.get(id=series_id)
+                if seriesbook.series.seriesbooks.count() == 0:
+                    seriesbook.series.delete()  # will cascade
+                seriesbook.delete()
 
             # import cover, if requested
             url = request.POST.get("cover-url")

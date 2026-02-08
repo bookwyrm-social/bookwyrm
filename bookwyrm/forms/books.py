@@ -153,7 +153,6 @@ class SeriesForm(CustomForm):
     class Meta:
         model = models.Series
         fields = [
-            "user",
             "name",
             "alternative_names",
             "inventaire_id",
