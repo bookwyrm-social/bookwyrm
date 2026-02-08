@@ -123,7 +123,6 @@ services:
       start_period: 2s
       retries: 6
     volumes:
-      - .:/app
       - static_volume:/app/static
       - media_volume:/app/images
       - exports_volume:/app/exports
@@ -148,7 +147,6 @@ services:
       retries: 6
       start_period: 2s
     volumes:
-      - .:/app
       - static_volume:/app/static
       - media_volume:/app/images
       - exports_volume:/app/exports
@@ -167,7 +165,6 @@ services:
       start_period: 2s
     env_file: .env
     volumes:
-      - .:/app
       - static_volume:/app/static
     networks:
       - main
@@ -179,14 +176,6 @@ services:
       web:
         condition: service_healthy
     restart: on-failure
-  dev-tools:
-    build: dev-tools
-    env_file: .env
-    volumes:
-      - /app/dev-tools/
-      - .:/app
-    profiles:
-      - tools
 volumes:
   pgdata:
   static_volume:
