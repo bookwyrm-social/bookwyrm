@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-01 17:29+0000\n"
-"PO-Revision-Date: 2026-01-01 18:32\n"
+"POT-Creation-Date: 2026-02-06 17:47+0000\n"
+"PO-Revision-Date: 2026-02-06 18:47\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Yiddish\n"
 "Language: yi\n"
@@ -89,13 +89,13 @@ msgstr "פּאַראָל קען ניזט זײן דער זעלבער װי דער 
 msgid "Incorrect code"
 msgstr "פֿאַלשער קאָד"
 
-#: bookwyrm/forms/links.py:35
+#: bookwyrm/forms/links.py:34
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
 msgstr "דאָס װעבזײַטל איז גערלײגט אין חרם. אױב איר מײנט אַז דאָס איז אַ טעות, פֿאַרבינט זיך מיט אײַער אַדמיניסטראַטאָר."
 
-#: bookwyrm/forms/links.py:50
-msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr "דאָס לינק מיט טעקע מין האָט מען שױן צוגעגעבן פֿאַר דעם בוך. אױב עס זעט זיך נישט אָן, הענגט נאָך דער שטח."
+#: bookwyrm/forms/links.py:47
+msgid "This link has already been added for this book. If it is not visible, the domain is still pending."
+msgstr ""
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
@@ -146,7 +146,7 @@ msgstr "סכּנה"
 
 #: bookwyrm/models/antispam.py:114 bookwyrm/models/antispam.py:148
 msgid "Automatically generated report"
-msgstr "אױטאָמאַטיש גענערירט באַריך"
+msgstr "אױטאָמאַטיש גענערירט באַריכט"
 
 #: bookwyrm/models/base_model.py:19 bookwyrm/models/import_job.py:50
 #: bookwyrm/models/job.py:18 bookwyrm/models/link.py:77
@@ -175,35 +175,35 @@ msgstr "שליש אָפּמעקונג"
 msgid "Domain block"
 msgstr "שטח־חרם"
 
-#: bookwyrm/models/book.py:488
+#: bookwyrm/models/book.py:500
 msgid "Audiobook"
 msgstr "אױדיאָבוך"
 
-#: bookwyrm/models/book.py:489
+#: bookwyrm/models/book.py:501
 msgid "eBook"
 msgstr "ע־בוך"
 
-#: bookwyrm/models/book.py:490
+#: bookwyrm/models/book.py:502
 msgid "Graphic novel"
 msgstr "גראַפֿישער ראָמאַן"
 
-#: bookwyrm/models/book.py:491
+#: bookwyrm/models/book.py:503
 msgid "Hardcover"
 msgstr "באַטאָװלט"
 
-#: bookwyrm/models/book.py:492
+#: bookwyrm/models/book.py:504
 msgid "Paperback"
 msgstr "בראָשירט"
 
-#: bookwyrm/models/book.py:501 bookwyrm/models/book.py:508
-#: bookwyrm/models/book.py:514 bookwyrm/models/book.py:519
-#: bookwyrm/models/book.py:524 bookwyrm/models/book.py:542
-#: bookwyrm/models/book.py:548 bookwyrm/models/book.py:553
+#: bookwyrm/models/book.py:513 bookwyrm/models/book.py:520
+#: bookwyrm/models/book.py:526 bookwyrm/models/book.py:531
+#: bookwyrm/models/book.py:536 bookwyrm/models/book.py:554
+#: bookwyrm/models/book.py:560 bookwyrm/models/book.py:565
 #, python-format
 msgid "%(value)s doesn't look like an ISBN"
 msgstr "%(value)s זעט נישט אױס װי אַן ISBN"
 
-#: bookwyrm/models/book.py:530 bookwyrm/models/book.py:570
+#: bookwyrm/models/book.py:542 bookwyrm/models/book.py:582
 #, python-format
 msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
 msgstr "%(value)s האָט נישט דער ריכטיקער ISBN טשעקסום, האָבם מיר דערװאַרטן אױף %(check_version)s"
@@ -329,11 +329,11 @@ msgstr "אַבאָנירערעס"
 msgid "Private"
 msgstr "פּריװאַט"
 
-#: bookwyrm/models/housekeeping.py:116
+#: bookwyrm/models/housekeeping.py:117
 msgid "Missing"
 msgstr "פֿעלנדיק"
 
-#: bookwyrm/models/housekeeping.py:117
+#: bookwyrm/models/housekeeping.py:118
 msgid "Wrong Path"
 msgstr "פֿאַלשער װעג"
 
@@ -400,11 +400,11 @@ msgstr "באַשטעטיקט"
 
 #: bookwyrm/models/report.py:86
 msgid "Resolved report"
-msgstr "באַריך פֿאַרענטפֿערט"
+msgstr "באַריכט פֿאַרענטפֿערט"
 
 #: bookwyrm/models/report.py:87
 msgid "Re-opened report"
-msgstr "באַריך איבערגעעפֿנט"
+msgstr "באַריכט איבערגעעפֿנט"
 
 #: bookwyrm/models/report.py:88
 msgid "Messaged reporter"
@@ -473,7 +473,7 @@ msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
 msgstr[0] "%(display_name)s האָט געשאַצט %(book_title)s: %(display_rating).1f שטערן"
 msgstr[1] "%(display_name)s האָט געשאַצט %(book_title)s: %(display_rating).1f שטערן"
 
-#: bookwyrm/models/user.py:40 bookwyrm/templates/book/book.html:336
+#: bookwyrm/models/user.py:40 bookwyrm/templates/book/book.html:343
 msgid "Reviews"
 msgstr "רעצענזיעס"
 
@@ -510,91 +510,91 @@ msgstr "ביכער־כראָנאָלאָגיע"
 msgid "Books"
 msgstr "ביכער"
 
-#: bookwyrm/settings.py:314
+#: bookwyrm/settings.py:316
 msgid "English"
 msgstr "English (ענגליש)"
 
-#: bookwyrm/settings.py:315
+#: bookwyrm/settings.py:317
 msgid "Català (Catalan)"
 msgstr "Català (קאַטאַלאַניש)"
 
-#: bookwyrm/settings.py:316
+#: bookwyrm/settings.py:318
 msgid "Deutsch (German)"
 msgstr "Deutsch (דײַטש)"
 
-#: bookwyrm/settings.py:317
+#: bookwyrm/settings.py:319
 msgid "Esperanto (Esperanto)"
 msgstr "Esperanto (עספּעראַנטאָ)"
 
-#: bookwyrm/settings.py:318
+#: bookwyrm/settings.py:320
 msgid "Español (Spanish)"
 msgstr "Español (שפּאַניש)"
 
-#: bookwyrm/settings.py:319
+#: bookwyrm/settings.py:321
 msgid "Euskara (Basque)"
 msgstr "Euskara (באַסקיש)"
 
-#: bookwyrm/settings.py:320
+#: bookwyrm/settings.py:322
 msgid "Galego (Galician)"
 msgstr "Galego (גאַליסיש)"
 
-#: bookwyrm/settings.py:321
+#: bookwyrm/settings.py:323
 msgid "Italiano (Italian)"
 msgstr "Italiano (איטאַליעניש)"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:324
 msgid "한국어 (Korean)"
 msgstr "한국어 (קאָרעניש)"
 
-#: bookwyrm/settings.py:323
+#: bookwyrm/settings.py:325
 msgid "Suomi (Finnish)"
 msgstr "Suomi (פֿיניש)"
 
-#: bookwyrm/settings.py:324
+#: bookwyrm/settings.py:326
 msgid "Français (French)"
 msgstr "Français (פֿראַנצײזיש)"
 
-#: bookwyrm/settings.py:325
+#: bookwyrm/settings.py:327
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (ליטװיש)"
 
-#: bookwyrm/settings.py:326
+#: bookwyrm/settings.py:328
 msgid "Nederlands (Dutch)"
 msgstr "Nederlands (האָלענדיש)"
 
-#: bookwyrm/settings.py:327
+#: bookwyrm/settings.py:329
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (נאָרװעגיש)"
 
-#: bookwyrm/settings.py:328
+#: bookwyrm/settings.py:330
 msgid "Polski (Polish)"
 msgstr "Polski (פּױליש)"
 
-#: bookwyrm/settings.py:329
+#: bookwyrm/settings.py:331
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (בראַזיליאַנער פּאָרטוגעזיש)"
 
-#: bookwyrm/settings.py:330
+#: bookwyrm/settings.py:332
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (אײראָפּעיש פּאָרטוגעזיש)"
 
-#: bookwyrm/settings.py:331
+#: bookwyrm/settings.py:333
 msgid "Română (Romanian)"
 msgstr "Română (רומעניש)"
 
-#: bookwyrm/settings.py:332
+#: bookwyrm/settings.py:334
 msgid "Svenska (Swedish)"
 msgstr "Svenska (שװעדיש)"
 
-#: bookwyrm/settings.py:333
+#: bookwyrm/settings.py:335
 msgid "Українська (Ukrainian)"
 msgstr "Українська (אוקראַיִניש)"
 
-#: bookwyrm/settings.py:334
+#: bookwyrm/settings.py:336
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (פֿאַרפּשוטערן כינעזיש)"
 
-#: bookwyrm/settings.py:335
+#: bookwyrm/settings.py:337
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (טראַדיציאָנעל כינעזיש)"
 
@@ -1028,7 +1028,7 @@ msgstr "געשטאָרבן־טאָג"
 
 #: bookwyrm/templates/author/edit_author.html:81
 msgid "Author Identifiers"
-msgstr ""
+msgstr "מחבר אידענטיפֿיצירערס"
 
 #: bookwyrm/templates/author/edit_author.html:83
 msgid "Openlibrary key:"
@@ -1057,7 +1057,7 @@ msgid "ISNI:"
 msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:128
-#: bookwyrm/templates/book/book.html:249
+#: bookwyrm/templates/book/book.html:256
 #: bookwyrm/templates/book/edit/edit_book.html:150
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
@@ -1082,7 +1082,7 @@ msgstr "אױפֿהיטן"
 
 #: bookwyrm/templates/author/edit_author.html:129
 #: bookwyrm/templates/author/sync_modal.html:23
-#: bookwyrm/templates/book/book.html:250
+#: bookwyrm/templates/book/book.html:257
 #: bookwyrm/templates/book/cover_add_modal.html:33
 #: bookwyrm/templates/book/edit/edit_book.html:152
 #: bookwyrm/templates/book/edit/edit_book.html:155
@@ -1109,7 +1109,7 @@ msgstr "אַנולירן"
 #: bookwyrm/templates/author/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this author which aren't present here. Existing metadata will not be overwritten."
-msgstr ""
+msgstr "אַרײַנלאָדן דאַטן װעט פֿאַרבינדן מיט <strong>%(source_name)s</strong> און זוכן װעסער מעטאַדאַטן װעגן דעם מחבר װאָס איז נאָך נישט דאָ. איציקע מעטאַדאַטן װעט נישט איבערגעשריבן װערן."
 
 #: bookwyrm/templates/author/sync_modal.html:24
 #: bookwyrm/templates/book/edit/edit_book.html:137
@@ -1123,99 +1123,103 @@ msgstr ""
 #: bookwyrm/templates/settings/users/force_password_reset.html:55
 #: bookwyrm/templates/snippets/remove_from_group_button.html:17
 msgid "Confirm"
-msgstr ""
+msgstr "באַשטעטיקן"
 
 #: bookwyrm/templates/book/book.html:24
 msgid "Unable to connect to remote source."
-msgstr ""
+msgstr "נישט געקענט פֿאַרבינדן זיך מיט װײַטן קװאַל."
 
 #: bookwyrm/templates/book/book.html:81 bookwyrm/templates/book/book.html:82
 msgid "Edit Book"
-msgstr ""
+msgstr "רעדאַקטירן בוך"
 
 #: bookwyrm/templates/book/book.html:107 bookwyrm/templates/book/book.html:110
 msgid "Click to add cover"
-msgstr ""
+msgstr "גיב אַ קװעטש צו שטעלן צו אַ טאָװל"
 
 #: bookwyrm/templates/book/book.html:116
 msgid "Failed to load cover"
-msgstr ""
+msgstr "נישט געקענט אַרײַנלאָדן טאָװל"
 
 #: bookwyrm/templates/book/book.html:127
 msgid "Click to enlarge"
-msgstr ""
+msgstr "גיב אַ קװעטש צו פֿאַרגרעסערן"
 
 #: bookwyrm/templates/book/book.html:190
 msgid "View on Finna"
+msgstr "זען אױף Finna"
+
+#: bookwyrm/templates/book/book.html:205
+msgid "View on Libris"
 msgstr ""
 
-#: bookwyrm/templates/book/book.html:222
+#: bookwyrm/templates/book/book.html:229
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
-msgstr[0] ""
-msgstr[1] ""
-
-#: bookwyrm/templates/book/book.html:238
-msgid "Add Description"
-msgstr ""
+msgstr[0] "(%(review_count)s רעצענזיע)"
+msgstr[1] "(%(review_count)s רעצענזיעס)"
 
 #: bookwyrm/templates/book/book.html:245
+msgid "Add Description"
+msgstr "צוגעבן באַשרײַבן"
+
+#: bookwyrm/templates/book/book.html:252
 #: bookwyrm/templates/book/edit/edit_book_form.html:55
 #: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
 msgid "Description:"
-msgstr ""
+msgstr "באַשרײַבונג:"
 
-#: bookwyrm/templates/book/book.html:261
+#: bookwyrm/templates/book/book.html:268
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(count)s אױסגאַבע"
+msgstr[1] "%(count)s אױסגאַבעס"
 
-#: bookwyrm/templates/book/book.html:275
+#: bookwyrm/templates/book/book.html:282
 msgid "You have shelved this edition in:"
-msgstr ""
+msgstr "האָסט געשטעלט דאָס אױסגאַבע אױף:"
 
-#: bookwyrm/templates/book/book.html:290
+#: bookwyrm/templates/book/book.html:297
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
-msgstr ""
+msgstr "אַן <a href=\"%(book_path)s\">אַנדערע אױסגאַבע</a> פֿון דאָס בוך איז דאָ אױף דײַן <a href=\"%(shelf_path)s\">%(shelf_name)s</a> פּאָליצע."
 
-#: bookwyrm/templates/book/book.html:301
+#: bookwyrm/templates/book/book.html:308
 msgid "Your reading activity"
-msgstr ""
+msgstr "דײַנע לײען־טוענישן"
 
-#: bookwyrm/templates/book/book.html:307
+#: bookwyrm/templates/book/book.html:314
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
-msgstr ""
+msgstr "צוגעבן לײען־דאַטעס"
 
-#: bookwyrm/templates/book/book.html:315
+#: bookwyrm/templates/book/book.html:322
 msgid "You don't have any reading activity for this book."
-msgstr ""
+msgstr "האָסט נישט קײן לײען־טוענישן פֿאַר דעם בוך."
 
-#: bookwyrm/templates/book/book.html:341
+#: bookwyrm/templates/book/book.html:348
 msgid "Your reviews"
-msgstr ""
+msgstr "דײַנע רעצענזיעס"
 
-#: bookwyrm/templates/book/book.html:347
+#: bookwyrm/templates/book/book.html:354
 msgid "Your comments"
-msgstr ""
+msgstr "דײַנע קאָמענטאַרן"
 
-#: bookwyrm/templates/book/book.html:353
+#: bookwyrm/templates/book/book.html:360
 msgid "Your quotes"
-msgstr ""
+msgstr "דײַנע ציטאַטן"
 
-#: bookwyrm/templates/book/book.html:389
+#: bookwyrm/templates/book/book.html:396
 msgid "Subjects"
-msgstr ""
+msgstr "טעמעס"
 
-#: bookwyrm/templates/book/book.html:401
+#: bookwyrm/templates/book/book.html:408
 msgid "Places"
-msgstr ""
+msgstr "פּלאַצן"
 
-#: bookwyrm/templates/book/book.html:412
+#: bookwyrm/templates/book/book.html:419
 #: bookwyrm/templates/groups/group.html:19
 #: bookwyrm/templates/guided_tour/lists.html:14
 #: bookwyrm/templates/guided_tour/user_books.html:102
@@ -1228,85 +1232,94 @@ msgstr ""
 #: bookwyrm/templates/settings/celery.html:77
 #: bookwyrm/templates/user/layout.html:101 bookwyrm/templates/user/lists.html:6
 msgid "Lists"
-msgstr ""
+msgstr "רשימות"
 
-#: bookwyrm/templates/book/book.html:424
+#: bookwyrm/templates/book/book.html:431
 msgid "Add to list"
+msgstr "צושטעלן אױף דער רשימה"
+
+#: bookwyrm/templates/book/book.html:438
+msgid "Create new list..."
 msgstr ""
 
-#: bookwyrm/templates/book/book.html:434
+#: bookwyrm/templates/book/book.html:442
 #: bookwyrm/templates/book/cover_add_modal.html:32
 #: bookwyrm/templates/lists/add_item_modal.html:39
 #: bookwyrm/templates/lists/list.html:255
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:24
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:32
 msgid "Add"
-msgstr ""
+msgstr "צוגעבן"
 
 #: bookwyrm/templates/book/book_identifiers.html:8
 msgid "ISBN:"
-msgstr ""
+msgstr "ISBN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:12
 #: bookwyrm/templates/book/book_identifiers.html:13
 msgid "Copy ISBN"
-msgstr ""
+msgstr "קאָפּירן ISBN"
 
 #: bookwyrm/templates/book/book_identifiers.html:16
 msgid "Copied ISBN!"
-msgstr ""
+msgstr "ISBN קאָפּירט!"
 
 #: bookwyrm/templates/book/book_identifiers.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:354
 #: bookwyrm/templates/rss/edition.html:6
 msgid "OCLC Number:"
-msgstr ""
+msgstr "OCLC-צאָל:"
 
 #: bookwyrm/templates/book/book_identifiers.html:30
 #: bookwyrm/templates/book/edit/edit_book_form.html:363
 #: bookwyrm/templates/rss/edition.html:7
 msgid "ASIN:"
-msgstr ""
+msgstr "ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:37
 #: bookwyrm/templates/book/edit/edit_book_form.html:372
 #: bookwyrm/templates/rss/edition.html:8
 msgid "Audible ASIN:"
-msgstr ""
+msgstr "Audible ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:44
 #: bookwyrm/templates/book/edit/edit_book_form.html:381
 #: bookwyrm/templates/rss/edition.html:9
 msgid "ISFDB ID:"
-msgstr ""
+msgstr "ISFDB-אידענטיפֿיקאַציע:"
 
 #: bookwyrm/templates/book/book_identifiers.html:51
 #: bookwyrm/templates/rss/edition.html:10
 msgid "Goodreads:"
-msgstr ""
+msgstr "Goodreads:"
 
 #: bookwyrm/templates/book/book_identifiers.html:58
 #: bookwyrm/templates/book/edit/edit_book_form.html:390
 msgid "Finna ID:"
+msgstr "Finna ID:"
+
+#: bookwyrm/templates/book/book_identifiers.html:65
+#: bookwyrm/templates/book/edit/edit_book_form.html:399
+msgid "Libris ID:"
 msgstr ""
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
-msgstr ""
+msgstr "צושטעלן טאָװל"
 
 #: bookwyrm/templates/book/cover_add_modal.html:17
 #: bookwyrm/templates/book/edit/edit_book_form.html:246
 msgid "Upload cover:"
-msgstr ""
+msgstr "אַרױפֿלאָדן טאָװל:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:252
 msgid "Load cover from URL:"
-msgstr ""
+msgstr "אַרײַנלאָדן טאָװל פֿון URL:"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
 msgid "Book cover preview"
-msgstr ""
+msgstr "טאָװל־איבערקוק"
 
 #: bookwyrm/templates/book/cover_show_modal.html:11
 #: bookwyrm/templates/components/inline_form.html:8
@@ -1316,62 +1329,62 @@ msgstr ""
 #: bookwyrm/templates/get_started/layout.html:27
 #: bookwyrm/templates/get_started/layout.html:60
 msgid "Close"
-msgstr ""
+msgstr "פֿאַרמאַכן"
 
 #: bookwyrm/templates/book/edit/edit_book.html:8
 #: bookwyrm/templates/book/edit/edit_book.html:18
 #, python-format
 msgid "Edit \"%(book_title)s\""
-msgstr ""
+msgstr "נרעדאַקטירן \"%(book_title)s\""
 
 #: bookwyrm/templates/book/edit/edit_book.html:10
 #: bookwyrm/templates/book/edit/edit_book.html:20
 msgid "Add Book"
-msgstr ""
+msgstr "צוגעבן בוך"
 
 #: bookwyrm/templates/book/edit/edit_book.html:43
 msgid "Failed to save book, see errors below for more information."
-msgstr ""
+msgstr "נישט געקענט אױפֿהיטן בוך, גיב אַ קוק אױף די טעותן אונטן."
 
 #: bookwyrm/templates/book/edit/edit_book.html:70
 msgid "Confirm Book Info"
-msgstr ""
+msgstr "באַשטעטיקן בוך־אינפֿאָרמאַציע"
 
 #: bookwyrm/templates/book/edit/edit_book.html:78
 #, python-format
 msgid "Is \"%(name)s\" one of these authors?"
-msgstr ""
+msgstr "איז \"%(name)s\" אײנע(ר) פֿון די דאָזיקע מחברים?"
 
 #: bookwyrm/templates/book/edit/edit_book.html:89
 #, python-format
 msgid "Author of <em>%(book_title)s</em>"
-msgstr ""
+msgstr "מחבר פֿון <em>%(book_title)s</em>"
 
 #: bookwyrm/templates/book/edit/edit_book.html:93
 #, python-format
 msgid "Author of <em>%(alt_title)s</em>"
-msgstr ""
+msgstr "מחבר פֿון <em>%(alt_title)s</em>"
 
 #: bookwyrm/templates/book/edit/edit_book.html:95
 msgid "Find more information at isni.org"
-msgstr ""
+msgstr "מער אינפֿאָרמאַציע אױפֿ isni.org"
 
 #: bookwyrm/templates/book/edit/edit_book.html:105
 msgid "This is a new author"
-msgstr ""
+msgstr "דאָס איז אַ נײַע(ר) מחבר"
 
 #: bookwyrm/templates/book/edit/edit_book.html:115
 #, python-format
 msgid "Creating a new author: %(name)s"
-msgstr ""
+msgstr "שאַפֿנדיק אַ נײַע(ם) מחבר׃ %(name)s"
 
 #: bookwyrm/templates/book/edit/edit_book.html:122
 msgid "Is this an edition of an existing work?"
-msgstr ""
+msgstr "איז דאָס אַן אױסגאַבע פֿון אַ װערק װאָס איז שױן פֿאַראַנען?"
 
 #: bookwyrm/templates/book/edit/edit_book.html:130
 msgid "This is a new work"
-msgstr ""
+msgstr "דאָס איז אַ נײַ װערק"
 
 #: bookwyrm/templates/book/edit/edit_book.html:139
 #: bookwyrm/templates/feed/status.html:17
@@ -1420,12 +1433,12 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_profile.html:135
 #: bookwyrm/templates/user/user.html:102 bookwyrm/templates/user_menu.html:18
 msgid "Back"
-msgstr ""
+msgstr "צוריק"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:26
 #: bookwyrm/templates/snippets/create_status/review.html:15
 msgid "Title:"
-msgstr ""
+msgstr "טיטל:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:36
 msgid "Sort Title:"
@@ -1657,13 +1670,7 @@ msgid "Status"
 msgstr ""
 
 #: bookwyrm/templates/book/file_links/edit_links.html:37
-#: bookwyrm/templates/settings/announcements/announcements.html:41
-#: bookwyrm/templates/settings/federation/instance.html:112
-#: bookwyrm/templates/settings/imports/imports.html:223
-#: bookwyrm/templates/settings/imports/imports.html:302
-#: bookwyrm/templates/settings/reports/report_links_table.html:6
-#: bookwyrm/templates/settings/themes.html:108
-msgid "Actions"
+msgid "Availability"
 msgstr ""
 
 #: bookwyrm/templates/book/file_links/edit_links.html:48
@@ -1674,76 +1681,76 @@ msgstr ""
 #: bookwyrm/templates/book/file_links/edit_links.html:57
 #: bookwyrm/templates/book/file_links/verification_modal.html:22
 msgid "Report spam"
-msgstr ""
+msgstr "באַריכטן מיסט"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:102
 msgid "No links available for this book."
-msgstr ""
+msgstr "פֿאַראַן נישט קײן פֿאַרבינדונג פֿאַרן בוך."
 
 #: bookwyrm/templates/book/file_links/edit_links.html:113
 #: bookwyrm/templates/book/file_links/links.html:18
 msgid "Add link to file"
-msgstr ""
+msgstr "צוגעבן פֿאַרבינדונג צו דער טעקע"
 
 #: bookwyrm/templates/book/file_links/file_link_page.html:6
 msgid "File Links"
-msgstr ""
+msgstr "טעקע־פֿאַרבינדונגען"
 
 #: bookwyrm/templates/book/file_links/links.html:9
 msgid "Get a copy"
-msgstr ""
+msgstr "קריגן אַן עקסעמפּלאַר"
 
 #: bookwyrm/templates/book/file_links/links.html:47
 msgid "No links available"
-msgstr ""
+msgstr "פֿאַראַן נישט קײן פֿאַרבינדונג"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:5
 msgid "Leaving BookWyrm"
-msgstr ""
+msgstr "אַװעק פֿון BookWyrm"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:11
 #, python-format
 msgid "This link is taking you to: <code>%(link_url)s</code>.<br> Is that where you'd like to go?"
-msgstr ""
+msgstr "דאָס פֿאַרבינדונג ברענגט דיך צו׃ <code>%(link_url)s</code>.<br> װילסטו יאָ דאָרט גײען?"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:27
 #: bookwyrm/templates/setup/config.html:134
 msgid "Continue"
-msgstr ""
+msgstr "װײַטער"
 
 #: bookwyrm/templates/book/publisher_info.html:23
 #, python-format
 msgid "%(format)s, %(pages)s pages"
-msgstr ""
+msgstr "%(format)s, %(pages)s זײַטלעך"
 
 #: bookwyrm/templates/book/publisher_info.html:25
 #, python-format
 msgid "%(pages)s pages"
-msgstr ""
+msgstr "%(pages)s זײַטלעך"
 
 #: bookwyrm/templates/book/publisher_info.html:38
 #, python-format
 msgid "%(languages)s language"
-msgstr ""
+msgstr "%(languages)s שפּראַך"
 
 #: bookwyrm/templates/book/publisher_info.html:63
 #, python-format
 msgid "Published %(date)s by %(publisher)s."
-msgstr ""
+msgstr "אַרױסגעגעבן %(date)s פֿון %(publisher)s."
 
 #: bookwyrm/templates/book/publisher_info.html:65
 #, python-format
 msgid "Published by %(publisher)s."
-msgstr ""
+msgstr "אַרױסגעגעבן פֿון %(publisher)s."
 
 #: bookwyrm/templates/book/publisher_info.html:67
 #, python-format
 msgid "Published %(date)s"
-msgstr ""
+msgstr "אַרױסגעגעבן %(date)s"
 
 #: bookwyrm/templates/book/rating.html:19
 msgid "rated it"
-msgstr ""
+msgstr "האָט עס געשאַצט"
 
 #: bookwyrm/templates/book/series.html:11
 msgid "Series by"
@@ -1914,6 +1921,19 @@ msgstr ""
 
 #: bookwyrm/templates/directory/user_card.html:61
 msgid "last active"
+msgstr ""
+
+#: bookwyrm/templates/directory/user_connection_filter.html:5
+#: bookwyrm/templates/import/user_troubleshoot.html:65
+msgid "Relationship"
+msgstr ""
+
+#: bookwyrm/templates/directory/user_connection_filter.html:8
+msgid "Following users"
+msgstr ""
+
+#: bookwyrm/templates/directory/user_connection_filter.html:12
+msgid "Not following users"
 msgstr ""
 
 #: bookwyrm/templates/directory/user_type_filter.html:5
@@ -2118,21 +2138,21 @@ msgstr ""
 msgid "Join BookWyrm"
 msgstr ""
 
-#: bookwyrm/templates/feed/direct_messages.html:8
+#: bookwyrm/templates/feed/direct_messages.html:9
 #, python-format
 msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/feed/direct_messages.html:10
+#: bookwyrm/templates/feed/direct_messages.html:11
 #: bookwyrm/templates/user_menu.html:39
 msgid "Direct Messages"
 msgstr ""
 
-#: bookwyrm/templates/feed/direct_messages.html:13
+#: bookwyrm/templates/feed/direct_messages.html:14
 msgid "All messages"
 msgstr ""
 
-#: bookwyrm/templates/feed/direct_messages.html:22
+#: bookwyrm/templates/feed/direct_messages.html:23
 msgid "You have no messages right now."
 msgstr ""
 
@@ -3532,10 +3552,6 @@ msgstr ""
 msgid "You will be able to retry this import at %(next_time)s"
 msgstr ""
 
-#: bookwyrm/templates/import/user_troubleshoot.html:65
-msgid "Relationship"
-msgstr ""
-
 #: bookwyrm/templates/import/user_troubleshoot.html:68
 msgid "Reason"
 msgstr ""
@@ -3725,6 +3741,10 @@ msgstr ""
 
 #: bookwyrm/templates/lists/bookmark_button.html:30
 msgid "Un-save"
+msgstr ""
+
+#: bookwyrm/templates/lists/create_list_modal.html:6
+msgid "Create new list"
 msgstr ""
 
 #: bookwyrm/templates/lists/created_text.html:5
@@ -5131,7 +5151,7 @@ msgstr ""
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:126
+#: bookwyrm/templates/settings/layout.html:130
 msgid "Announcements"
 msgstr ""
 
@@ -5184,6 +5204,15 @@ msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcements.html:33
 msgid "End date"
+msgstr ""
+
+#: bookwyrm/templates/settings/announcements/announcements.html:41
+#: bookwyrm/templates/settings/federation/instance.html:112
+#: bookwyrm/templates/settings/imports/imports.html:223
+#: bookwyrm/templates/settings/imports/imports.html:302
+#: bookwyrm/templates/settings/reports/report_links_table.html:6
+#: bookwyrm/templates/settings/themes.html:108
+msgid "Actions"
 msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcements.html:50
@@ -5355,7 +5384,7 @@ msgid "Import triggered"
 msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:57
-#: bookwyrm/templates/settings/layout.html:113
+#: bookwyrm/templates/settings/layout.html:117
 msgid "Connectors"
 msgstr ""
 
@@ -5445,14 +5474,19 @@ msgid "Clearing queues can cause serious problems including data loss! Only play
 msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:208
+#: bookwyrm/templates/settings/redis.html:117
 msgid "Errors"
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/available.html:15
+#: bookwyrm/templates/settings/connectors/available.html:17
 msgid "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof."
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/available.html:28
+#: bookwyrm/templates/settings/connectors/available.html:19
+msgid "Libris is the Swedish national library catalog, providing access to records from Swedish libraries."
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/available.html:32
 msgid "Create new connector"
 msgstr ""
 
@@ -5653,7 +5687,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/email_config.html:6
 #: bookwyrm/templates/settings/email_config.html:8
-#: bookwyrm/templates/settings/layout.html:109
+#: bookwyrm/templates/settings/layout.html:113
 msgid "Email Configuration"
 msgstr ""
 
@@ -6280,25 +6314,29 @@ msgid "System"
 msgstr ""
 
 #: bookwyrm/templates/settings/layout.html:105
+msgid "Redis status"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:109
 msgid "Scheduled Tasks"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:117
+#: bookwyrm/templates/settings/layout.html:121
 msgid "Files Maintenance"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:122
+#: bookwyrm/templates/settings/layout.html:126
 msgid "Instance Settings"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:130
+#: bookwyrm/templates/settings/layout.html:134
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:136
-#: bookwyrm/templates/settings/layout.html:139
+#: bookwyrm/templates/settings/layout.html:140
+#: bookwyrm/templates/settings/layout.html:143
 #: bookwyrm/templates/settings/registration.html:4
 #: bookwyrm/templates/settings/registration.html:6
 #: bookwyrm/templates/settings/registration_limited.html:4
@@ -6306,7 +6344,7 @@ msgstr ""
 msgid "Registration"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:145
+#: bookwyrm/templates/settings/layout.html:149
 #: bookwyrm/templates/settings/site.html:107
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
@@ -6344,6 +6382,74 @@ msgstr ""
 
 #: bookwyrm/templates/settings/link_domains/link_table.html:43
 msgid "No links available for this domain."
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:5
+#: bookwyrm/templates/settings/redis.html:7
+msgid "Redis Status"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:13
+msgid "Info"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:17
+msgid "Used memory"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:23
+msgid "Total system memory"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:29
+msgid "Keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:37
+msgid "Outdated cache keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:40
+#, python-format
+msgid "This will scan for keys in the Django redis cache that use no prefix (the current prefix is <code>%(prefix)s</code>), and identify Activity Streams for users with deleted accounts."
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:47
+#, python-format
+msgid "%(keys)s identified"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:55
+msgid "Erase outdated keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:63
+msgid "Scan for outdated keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:71
+msgid "Advanced"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:75
+msgid "Clear Django Cache"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:81
+msgid "This is <strong>NOT recommended</strong> and should only be used if something has gone very wrong with your cache. All sessions will be cleared and users will be logged out of their accounts."
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:88
+#, python-format
+msgid "%(keys)s keys deleted"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:97
+msgid "Erase cache"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:109
+msgid "Could not connect to Redis Activity"
 msgstr ""
 
 #: bookwyrm/templates/settings/registration.html:38
