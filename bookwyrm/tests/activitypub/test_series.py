@@ -26,6 +26,7 @@ class TestSeries(TestCase):
         cls.user.save(broadcast=False)
 
         cls.series = models.Series.objects.create(
+            user=cls.user,
             name="Example Series",
             alternative_names=["Exemple de série", "Esimerkkisarja"],
             remote_id="https://example.com/series/1",

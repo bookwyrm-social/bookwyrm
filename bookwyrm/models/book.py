@@ -40,6 +40,8 @@ from .activitypub_mixin import (
 from .base_model import BookWyrmModel
 from . import fields
 
+from .user import User
+
 
 class BookDataModel(ObjectMixin, BookWyrmModel):
     """fields shared between editable book data (books, works, authors)"""
@@ -667,8 +669,14 @@ class Edition(Book):
 
     activity_serializer = activitypub.Edition
     name_field = "title"
-    serialize_reverse_fields = [("file_links", "fileLinks", "-created_date")]
-    deserialize_reverse_fields = [("file_links", "fileLinks")]
+    serialize_reverse_fields = [
+        ("file_links", "fileLinks", "-created_date"),
+        ("seriesbooks", "seriesBooks", "-created_date"),
+    ]
+    deserialize_reverse_fields = [
+        ("file_links", "fileLinks"),
+        ("seriesbooks", "seriesBooks"),
+    ]
 
     class Meta:
         indexes = [
@@ -941,12 +949,17 @@ def preview_image(instance, *args, **kwargs):
 class Series(OrderedCollectionMixin, BookDataModel):
     """a series of books"""
 
+    user = fields.ForeignKey(
+        "User", on_delete=models.PROTECT, activitypub_field="actor", related_name="+"
+    )  # for broadcast, should always be instance user but we can't set that here
     name = fields.TextField(max_length=255)
     alternative_names = fields.ArrayField(
         fields.CharField(max_length=255), blank=True, default=list
     )  # like aliases on an author
 
     activity_serializer = activitypub.Series
+    serialize_reverse_fields = [("seriesbooks", "seriesBooks", "-created_date")]
+    deserialize_reverse_fields = [("seriesbooks", "seriesBooks")]
 
     def get_remote_id(self):
         """series need a remote id"""
@@ -970,6 +983,9 @@ class Series(OrderedCollectionMixin, BookDataModel):
 class SeriesBook(CollectionItemMixin, BookWyrmModel):
     """connect a book to a series with a series number"""
 
+    user = fields.ForeignKey(
+        "User", on_delete=models.PROTECT, activitypub_field="actor", related_name="+"
+    )  # for broadcast, should always be instance user but we can't set that here
     series = fields.ForeignKey(
         "Series", on_delete=models.CASCADE, related_name="seriesbooks"
     )
@@ -977,9 +993,6 @@ class SeriesBook(CollectionItemMixin, BookWyrmModel):
         "Book", on_delete=models.CASCADE, related_name="seriesbooks"
     )
     series_number = fields.CharField(max_length=255, blank=True, null=True)
-    user = fields.ForeignKey(
-        "User", on_delete=models.PROTECT, activitypub_field="actor", related_name="+"
-    )  # for broadcast, should always be instance user but we can't set that here
 
     collection_field = "series"
     activity_serializer = activitypub.SeriesBook

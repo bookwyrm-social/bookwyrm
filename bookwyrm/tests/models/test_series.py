@@ -23,7 +23,7 @@ class TestSeriesModel(TestCase):
         cls.edition = models.Edition.objects.create(
             title="Test Book", parent_work=cls.work
         )
-        cls.series = models.Series.objects.create(name="Test series")
+        cls.series = models.Series.objects.create(user=cls.instance_user, name="Test series")
 
     def test_seriesbook(self):
         """making a seriesbook"""

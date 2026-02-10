@@ -38,7 +38,7 @@ class SeriesViews(TestCase):
 
         cls.book = models.Work.objects.create(title="test book")
         cls.series = models.Series.objects.create(
-            name="test series", remote_id="https://example.com/series/1"
+            user=cls.user, name="test series", remote_id="https://example.com/series/1"
         )
         cls.seriesbook = models.SeriesBook.objects.create(
             book=cls.book,
