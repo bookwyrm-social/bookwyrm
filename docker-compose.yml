@@ -1,5 +1,4 @@
-x-logging:
-  &default-logging
+x-logging: &default-logging
   driver: "json-file"
   options:
     max-size: "150m"
@@ -66,7 +65,7 @@ services:
       - ./certbot/logs:/var/log/letsencrypt
       - ./certbot/data:/var/www/certbot
   db-backup-job:
-    build: postgres-docker
+    image: ghcr.io/bookwyrm-social/postgres-docker:latest
     environment:
       - DEBUG=${DEBUG}
       - PGPASSWORD=${POSTGRES_PASSWORD}
@@ -96,8 +95,8 @@ services:
     networks:
       - main
   web:
-    build: .
     restart: unless-stopped
+    image: ghcr.io/bookwyrm-social/bookwyrm:latest
     env_file: .env
     command: gunicorn bookwyrm.wsgi:application
     volumes:
@@ -140,8 +139,8 @@ services:
       - main
     restart: unless-stopped
   celery_worker:
+    image: ghcr.io/bookwyrm-social/bookwyrm:latest
     env_file: .env
-    build: .
     networks:
       - main
     command: celery -A celerywyrm worker --pool=threads --concurrency=20 -l info -Q high_priority,medium_priority,low_priority,streams,images,suggested_users,email,connectors,lists,inbox,imports,import_triggered,broadcast,misc
@@ -164,8 +163,8 @@ services:
         condition: service_started
     restart: unless-stopped
   celery_beat:
+    image: ghcr.io/bookwyrm-social/bookwyrm:latest
     env_file: .env
-    build: .
     networks:
       - main
     command: celery -A celerywyrm beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
@@ -184,7 +183,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
   flower:
-    build: .
+    image: ghcr.io/bookwyrm-social/bookwyrm:latest
     command: celery -A celerywyrm flower --basic_auth=${FLOWER_USER}:${FLOWER_PASSWORD} --url_prefix=flower
     healthcheck:
       test: celery -A celerywyrm status
