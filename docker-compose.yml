@@ -48,7 +48,7 @@ services:
       - "./anubis/botPolicy.yaml:/data/cfg/botPolicy.yaml:ro"
   certbot:
     image: certbot/certbot:latest
-    entrypoint: /bin/sh -c "trap exit TERM; while [ "$NGINX_SETUP" = "https" ];do certbot renew --webroot --webroot-path=/var/www/certbot; sleep 1d & wait $${!}; done"
+    entrypoint: /bin/sh -c "trap exit TERM; while [ "${NGINX_SETUP:-https}" = "https" ];do certbot renew --webroot --webroot-path=/var/www/certbot; sleep 1d & wait $${!}; done"
     depends_on:
       - nginx
     volumes:
@@ -82,7 +82,7 @@ services:
       interval: 3s
       timeout: 1s
       start_period: 3s
-      retries: 6
+      retries: 25
     depends_on:
       db:
         condition: service_healthy
