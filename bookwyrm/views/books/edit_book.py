@@ -390,6 +390,7 @@ class ConfirmEditBook(View):
                                 rank=SearchRank(vector, book.series, normalization=32)
                             )
                             .filter(rank__gt=0.19)
+                            .order_by("-rank")
                         )
 
                         if possible_series.exists():

@@ -791,16 +791,12 @@ class Edition(Book):
 
     def clean(self):
         """Don't try to add a series the book is already part of"""
-        if self.pk:
-            for sb in self.parent_work.seriesbooks.all():
-                alternatives = [name.lower() for name in sb.series.alternative_names]
-                if (
-                    self.series.lower() in alternatives
-                    or self.series.lower() == sb.series.name.lower()
-                ):
-                    raise ValidationError(
-                        {"series": _("Book is already in this series")}
-                    )
+        if self.pk and self.series:
+            if self.parent_work.seriesbooks.filter(
+                Q(series__name__iexact=self.series)
+                | Q(series__alternative_names__icontains=self.series)
+            ):
+                raise ValidationError({"series": _("Book is already in this series")})
 
     def save(
         self, *args: Any, update_fields: Optional[Iterable[str]] = None, **kwargs: Any
@@ -958,8 +954,6 @@ class Series(OrderedCollectionMixin, BookDataModel):
     )  # like aliases on an author
 
     activity_serializer = activitypub.Series
-    serialize_reverse_fields = [("seriesbooks", "seriesBooks", "-created_date")]
-    deserialize_reverse_fields = [("seriesbooks", "seriesBooks")]
 
     def get_remote_id(self):
         """series need a remote id"""
@@ -968,7 +962,10 @@ class Series(OrderedCollectionMixin, BookDataModel):
     @property
     def collection_queryset(self):
         """list of books for this series, overrides OrderedCollectionMixin"""
-        return self.seriesbooks.all().order_by("series_number")
+        seriesbooks = self.seriesbooks.all().values("book__pk")
+        works = Work.objects.filter(id__in=seriesbooks)
+        books = Edition.objects.filter(parent_work__in=works).order_by("-updated_date")
+        return books
 
     def raise_not_editable(self, viewer):
         if not viewer.has_perm("bookwyrm.edit_book"):
@@ -999,6 +996,7 @@ class SeriesBook(CollectionItemMixin, BookWyrmModel):
 
     class Meta:
         ordering = ["series_number"]
+        unique_together = ("book", "series")
 
     def get_remote_id(self):
         """need a remote id to provide the URI for series"""

@@ -71,6 +71,9 @@ class TestSeries(TestCase):
         cls.series_data = {
             "id": "https://example.com/series/2",
             "type": "Series",
+            "totalItems": 1,
+            "first": "https://example.com/series/2?page=1",
+            "last": "https://example.com/series/2?page=1",
             "actor": "https://example.com/user/instance",
             "name": "Example Series 2",
             "alternativeNames": ["Exemple de série 2", "Esimerkkisarja 2"],
@@ -104,7 +107,6 @@ class TestSeries(TestCase):
             activity["alternativeNames"], ["Exemple de série", "Esimerkkisarja"]
         )
         self.assertEqual(activity["name"], "Example Series")
-        self.assertEqual(activity["seriesBooks"], [self.seriesbook.remote_id])
 
     def test_serialize_seriesbook(self):
         """check presence of seriesbook fields"""
