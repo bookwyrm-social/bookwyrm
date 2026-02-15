@@ -18,7 +18,7 @@ def get_element_text(element: Optional[ET.Element]) -> str:
     return ""
 
 
-def request_isni_data(search_index: str, search_term: str, max_records: int = 5) -> str:
+def request_isni_data(search_index: str, search_term: str, max_records: int = 5) -> str | None:
     """Request data from the ISNI API"""
 
     search_string = f'{search_index}="{search_term}"'
@@ -191,7 +191,7 @@ def get_author_from_isni(isni: str) -> Optional[activitypub.Author]:
         make_name_string(forename)
         if (forename := element.find(".//forename/..")) is not None
         else make_name_string(personal_name)
-        if (personal_name := element.find(".//personalName") is not None)
+        if (personal_name := element.find(".//personalName")) is not None
         else ""
     )
     viaf = get_other_identifier(element, "viaf")
