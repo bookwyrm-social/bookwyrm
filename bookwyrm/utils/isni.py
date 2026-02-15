@@ -35,7 +35,7 @@ def request_isni_data(search_index: str, search_term: str, max_records: int = 5)
 
     try:
         result = requests.get(
-            "http://isni.oclc.org/sru/", params=query_params, timeout=1
+            "http://isni.oclc.org/sru/", params=query_params, timeout=10
         )
 
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as err:
