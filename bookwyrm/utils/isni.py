@@ -18,7 +18,9 @@ def get_element_text(element: Optional[ET.Element]) -> str:
     return ""
 
 
-def request_isni_data(search_index: str, search_term: str, max_records: int = 5) -> str | None:
+def request_isni_data(
+    search_index: str, search_term: str, max_records: int = 5
+) -> str | None:
     """Request data from the ISNI API"""
 
     search_string = f'{search_index}="{search_term}"'
