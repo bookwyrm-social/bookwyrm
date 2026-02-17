@@ -30,8 +30,6 @@ PAGE_LENGTH = env.int("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE", 3600 * 24 * 365)  # One year ...ish
 
-JS_CACHE = "8a89cad7"
-
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
 EMAIL_HOST = env("EMAIL_HOST")
@@ -490,7 +488,7 @@ else:
             "BACKEND": "django.core.files.storage.FileSystemStorage",
         },
         "staticfiles": {
-            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+            "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
         },
     }
     # Static settings

@@ -76,7 +76,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static "js/tabs.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/tabs.js" %}"></script>
 
 {% if request.user.show_guided_tour %}
     {% include 'guided_tour/home.html' %}
