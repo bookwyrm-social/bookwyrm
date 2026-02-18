@@ -3,7 +3,7 @@
 import os
 from typing import AnyStr
 
-from environs import Env
+from environs import FileAwareEnv
 
 
 import requests
@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ImproperlyConfigured
 
 
-env = Env()
+env = FileAwareEnv()
 env.read_env()
 DOMAIN = env("DOMAIN")
 
