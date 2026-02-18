@@ -240,7 +240,9 @@ def feed_page_data(user):
     if not user.is_authenticated:
         return {}
 
-    goal = models.AnnualGoal.objects.filter(user=user, year=timezone.now().year).first()
+    goal = models.AnnualGoal.objects.filter(
+        user=user, year=timezone.localtime().year
+    ).first()
     return {
         "goal": goal,
         "goal_form": forms.GoalForm(),
