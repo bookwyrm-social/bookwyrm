@@ -6,6 +6,8 @@
             <h4 class="m-3"><strong>
                 {% if connector == "finna" %}
                 Finna
+                {% elif connector == "libris" %}
+                Libris
                 {% endif %}
             </strong></h4>
         </div>
@@ -13,6 +15,8 @@
             <p>
             {% if connector == "finna" %}
                 {% trans "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof." %}
+            {% elif connector == "libris" %}
+                {% trans "Libris is the Swedish national library catalog, providing access to records from Swedish libraries." %}
             {% endif %}
             </p>
         </div>

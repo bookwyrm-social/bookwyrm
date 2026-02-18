@@ -9,6 +9,7 @@
 {% if book.isfdb %}<meta name="DC.Identifier" content="URN:ISFDB:{{ book.isfdb }}" />{% endif %}
 {% if book.goodreads_key %}<meta name="DC.Identifier" content="URN:Goodreads:{{ book.goodreads_key }}" />{% endif %}
 {% if book.finna_key %}<meta name="DC.Identifier" content="URN:Finna:{{ book.finna_key }}" />{% endif %}
+{% if book.libris_key %}<meta name="DC.Identifier" content="URN:Libris:{{ book.libris_key }}" />{% endif %}
 {% if book.languages %}
 {% for language in book.languages %}
 <meta name="DC.Language" content="{{ language }}" />

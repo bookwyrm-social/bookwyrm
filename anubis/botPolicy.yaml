@@ -1,0 +1,22 @@
+bots:
+  # import default config, you can check what it contains in https://github.com/TecharoHQ/anubis/blob/main/data/botPolicies.yaml
+  - import: (data)/meta/default-config.yaml
+  - name: Other Bookwyrm instance requests
+    action: ALLOW
+    expression:
+      all:
+        - 'userAgent.startsWith("BookWyrm")'
+        - '"Accept" in headers'
+        - 'headers["Accept"] == "application/activity+json"'
+  - name: Check all email confirmations
+    action: CHALLENGE
+    expression: 'path.startsWith("confirm-email/")'
+  - name: Paths to skip for checking
+    action: ALLOW
+    expression:
+      any:
+        - 'path == "manifest.json"'
+        - 'path == "favicon.ico"'
+status_codes:
+  CHALLENGE: 200
+  DENY: 403
