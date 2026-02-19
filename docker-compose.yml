@@ -115,7 +115,7 @@ services:
     build: .
     networks:
       - main
-    command: celery -A celerywyrm worker -l info -Q high_priority,medium_priority,low_priority,streams,images,suggested_users,email,connectors,lists,inbox,imports,import_triggered,broadcast,misc
+    command: celery -A celerywyrm worker --autoscale=10,1 -l info -Q high_priority,medium_priority,low_priority,streams,images,suggested_users,email,connectors,lists,inbox,imports,import_triggered,broadcast,misc
     healthcheck:
       test: celery -A celerywyrm status
       interval: 10s
