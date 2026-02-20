@@ -462,6 +462,7 @@ urlpatterns = [
     re_path(
         r"^settings/celery/ping/?$", views.celery_ping, name="settings-celery-ping"
     ),
+    re_path(r"^settings/redis/?$", views.RedisStatus.as_view(), name="settings-redis"),
     re_path(
         r"^settings/schedules/(?P<task_id>\d+)?$",
         views.ScheduledTasks.as_view(),

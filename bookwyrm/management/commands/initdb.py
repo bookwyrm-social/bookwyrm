@@ -80,38 +80,44 @@ def init_connectors():
     """access book data sources"""
     models.Connector.objects.get_or_create(
         identifier="bookwyrm.social",
-        name="Bookwyrm.social",
-        connector_file="bookwyrm_connector",
-        base_url="https://bookwyrm.social",
-        books_url="https://bookwyrm.social/book",
-        covers_url="https://bookwyrm.social/images/",
-        search_url="https://bookwyrm.social/search?q=",
-        isbn_search_url="https://bookwyrm.social/isbn/",
-        priority=2,
+        defaults={
+            "name": "Bookwyrm.social",
+            "connector_file": "bookwyrm_connector",
+            "base_url": "https://bookwyrm.social",
+            "books_url": "https://bookwyrm.social/book",
+            "covers_url": "https://bookwyrm.social/images/",
+            "search_url": "https://bookwyrm.social/search?q=",
+            "isbn_search_url": "https://bookwyrm.social/isbn/",
+            "priority": 2,
+        },
     )
 
     models.Connector.objects.get_or_create(
         identifier="inventaire.io",
-        name="Inventaire",
-        connector_file="inventaire",
-        base_url="https://inventaire.io",
-        books_url="https://inventaire.io/api/entities",
-        covers_url="https://inventaire.io",
-        search_url="https://inventaire.io/api/search?types=works&types=works&search=",
-        isbn_search_url="https://inventaire.io/api/entities?action=by-uris&uris=isbn%3A",
-        priority=3,
+        defaults={
+            "name": "Inventaire",
+            "connector_file": "inventaire",
+            "base_url": "https://inventaire.io",
+            "books_url": "https://inventaire.io/api/entities",
+            "covers_url": "https://inventaire.io",
+            "search_url": "https://inventaire.io/api/search?types=works&types=works&search=",
+            "isbn_search_url": "https://inventaire.io/api/entities?action=by-uris&uris=isbn%3A",
+            "priority": 3,
+        },
     )
 
     models.Connector.objects.get_or_create(
         identifier="openlibrary.org",
-        name="OpenLibrary",
-        connector_file="openlibrary",
-        base_url="https://openlibrary.org",
-        books_url="https://openlibrary.org",
-        covers_url="https://covers.openlibrary.org",
-        search_url="https://openlibrary.org/search?q=",
-        isbn_search_url="https://openlibrary.org/api/books?jscmd=data&format=json&bibkeys=ISBN:",
-        priority=3,
+        defaults={
+            "name": "OpenLibrary",
+            "connector_file": "openlibrary",
+            "base_url": "https://openlibrary.org",
+            "books_url": "https://openlibrary.org",
+            "covers_url": "https://covers.openlibrary.org",
+            "search_url": "https://openlibrary.org/search?q=",
+            "isbn_search_url": "https://openlibrary.org/api/books?jscmd=data&format=json&bibkeys=ISBN:",
+            "priority": 3,
+        },
     )
 
 

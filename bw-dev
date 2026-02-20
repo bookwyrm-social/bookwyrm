@@ -38,6 +38,16 @@ function runweb {
     $DOCKER_COMPOSE run --rm web "$@"
 }
 
+function runtools {
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml run -e DEBUG=true --rm dev-tools "$@"
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml down
+}
+
+function rundev {
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml run -e DEBUG=true --rm web "$@"
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml down
+}
+
 function execdb {
     $DOCKER_COMPOSE exec db $@
 }
@@ -112,6 +122,9 @@ case "$CMD" in
     down)
         $DOCKER_COMPOSE down
         ;;
+    dev)
+        $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml up "$@"
+        ;;
     service_ports_web)
         prod_error
         $DOCKER_COMPOSE run --rm --service-ports web
@@ -139,7 +152,7 @@ case "$CMD" in
         ;;
     makemigrations)
         prod_error
-        runweb python manage.py makemigrations "$@"
+        runtools python manage.py makemigrations "$@"
         ;;
     migrate)
         migrate "$@"
@@ -158,11 +171,11 @@ case "$CMD" in
         ;;
     pytest)
         prod_error
-        runweb pytest --no-cov-on-fail "$@"
+        rundev pytest --no-cov-on-fail "$@"
         ;;
     pytest_coverage_report)
         prod_error
-        runweb pytest -n 3 --cov-report term-missing "$@"
+        rundev pytest -n 3 --cov-report term-missing "$@"
         ;;
     compile_themes)
         runweb python manage.py compile_themes
@@ -172,17 +185,15 @@ case "$CMD" in
         ;;
     makemessages)
         prod_error
-        runweb django-admin makemessages --no-wrap --ignore=venv -l en_US $@
+        runtools django-admin makemessages --no-wrap --ignore=venv -l en_US $@
         ;;
     compilemessages)
-        runweb django-admin compilemessages --ignore venv $@
+        runtools django-admin compilemessages --ignore venv $@
         ;;
     update_locales)
         prod_error
-        git fetch origin l10n_main:l10n_main
-        git checkout l10n_main locale/
-        runweb django-admin makemessages --no-wrap --ignore=venv -l en_US $@
-        runweb django-admin compilemessages --ignore venv
+        runtools django-admin makemessages --no-wrap --ignore=venv -l en_US "$@"
+        runtools django-admin compilemessages --ignore venv
         ;;
     build)
         $DOCKER_COMPOSE build
@@ -193,46 +204,46 @@ case "$CMD" in
         ;;
     ruff)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools ruff format celerywyrm bookwyrm
-        $DOCKER_COMPOSE run --rm dev-tools ruff check celerywyrm bookwyrm
+        runtools ruff format celerywyrm bookwyrm
+        runtools ruff check celerywyrm bookwyrm
         ;;
     ruff-format)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools ruff format celerywyrm bookwyrm
+        runtools ruff format celerywyrm bookwyrm
         ;;
     ruff-check)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools ruff check celerywyrm bookwyrm
+        runtools ruff check celerywyrm bookwyrm
         ;;
     ruff-fix)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools ruff check --fix celerywyrm bookwyrm
+        runtools ruff check --fix celerywyrm bookwyrm
         ;;
     prettier)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools prettier --write bookwyrm/static/js/*.js
+        runtools prettier --write bookwyrm/static/js/*.js
         ;;
     eslint)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools eslint bookwyrm/static --ext .js
+        runtools eslint bookwyrm/static --ext .js
         ;;
     stylelint)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools stylelint --fix bookwyrm/static/css \
+        runtools stylelint --fix bookwyrm/static/css \
             --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
         ;;
     formatters)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools ruff format celerywyrm bookwyrm
-        $DOCKER_COMPOSE run --rm dev-tools ruff check --fix celerywyrm bookwyrm
-        $DOCKER_COMPOSE run --rm dev-tools prettier --write bookwyrm/static/js/*.js
-        $DOCKER_COMPOSE run --rm dev-tools eslint bookwyrm/static --ext .js
-        $DOCKER_COMPOSE run --rm dev-tools stylelint --fix bookwyrm/static/css \
+        runtools ruff format celerywyrm bookwyrm
+        runtools ruff check --fix celerywyrm bookwyrm
+        runtools prettier --write bookwyrm/static/js/*.js
+        runtools eslint bookwyrm/static --ext .js
+        runtools stylelint --fix bookwyrm/static/css \
             --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
         ;;
     mypy)
         prod_error
-        runweb mypy celerywyrm bookwyrm
+        runtools mypy celerywyrm bookwyrm
         ;;
     create_secrets)
         create_secrets

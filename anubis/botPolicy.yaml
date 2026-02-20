@@ -1,0 +1,33 @@
+bots:
+  # import default config, you can check what it contains in https://github.com/TecharoHQ/anubis/blob/main/data/botPolicies.yaml
+  - import: (data)/meta/default-config.yaml
+  - name: Other Bookwyrm instance requests
+    action: ALLOW
+    expression:
+      all:
+        - 'userAgent.startsWith("BookWyrm")'
+        - '"Accept" in headers'
+        - 'headers["Accept"] == "application/activity+json"'
+  - name: Allow access to manifest.json directly
+    action: ALLOW
+    path_regex: "^/manifest.json$"
+  # Anubis subauth doesn't seem to handle CHALLENGE nicely, so tune weight
+  - name: All email confirmations are suspicious by default
+    action: WEIGH
+    path_regex: "^/confirm-email/"
+    weight:
+      adjust: 10
+  # If request has cookie and it contains something like anubis thing, make it less suspicious
+  - name: Allow email confirmations with something looking like anubis-auth cookie
+    action: WEIGH
+    path_regex: "^/confirm-email/"
+    expression:
+      all:
+        - '"Cookies" in headers'
+        - 'headers["Cookies"].contains("anubis-auth")'
+    weight:
+      adjust: -10
+  #
+status_codes:
+  CHALLENGE: 200
+  DENY: 403

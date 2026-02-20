@@ -4,6 +4,7 @@ from datetime import timedelta
 import csv
 import datetime
 import io
+import logging
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, ExpressionWrapper, F
@@ -18,11 +19,11 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.shortcuts import redirect
 
-from storages.backends.s3 import S3Storage
-
 from bookwyrm import models, settings
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
 from bookwyrm.utils.cache import get_or_set
+
+logger = logging.getLogger(__name__)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -237,18 +238,8 @@ class ExportArchive(View):
         """download user export file"""
         export = BookwyrmExportJob.objects.get(task_id=archive_id, user=request.user)
 
-        if settings.USE_S3:
-            # make custom_domain None so we can sign the url
-            # see https://github.com/jschneier/django-storages/issues/944
-            storage = S3Storage(querystring_auth=True, custom_domain=None)
-            try:
-                url = S3Storage.url(
-                    storage,
-                    f"/exports/{export.task_id}.tar.gz",
-                    expire=settings.S3_SIGNED_URL_EXPIRY,
-                )
-            except Exception:
-                raise Http404()
+        if settings.USE_S3_FOR_EXPORTS:
+            url = export.export_data.url  # this is a pre-signed url by default, nice
             return redirect(url)
 
         if settings.USE_AZURE:

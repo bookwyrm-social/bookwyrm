@@ -359,6 +359,6 @@ def _unwrap(text):
 def to_markdown(content):
     """catch links and convert to markdown"""
     content = format_links(content)
-    content = mistune.html(content)
+    content = mistune.html(content).rstrip()
     # sanitize resulting html
     return sanitizer.clean(content)

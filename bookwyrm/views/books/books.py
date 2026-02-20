@@ -40,18 +40,23 @@ class Book(View):
             else False
         )
 
-        # it's safe to use this OR because edition and work and subclasses of the same
-        # table, so they never have clashing IDs
+        # Use union so filtering hits index better
+        # we don't do prefetch here, to keep it simpler
+        # and faster to get that one book we care about
         book = (
             models.Edition.viewer_aware_objects(request.user)
-            .filter(
-                Q(id=book_id)
-                | Q(parent_work__id=book_id)
-                | Q(absorbed__deleted_id=book_id)
+            .filter(Q(id=book_id))
+            .select_related("parent_work")
+            .union(
+                models.Edition.viewer_aware_objects(request.user)
+                .filter(Q(parent_work__id=book_id))
+                .select_related("parent_work"),
+                models.Edition.viewer_aware_objects(request.user)
+                .filter(Q(absorbed__deleted_id=book_id))
+                .select_related("parent_work"),
+                all=True,  # We are anyway taking only the first result, so don't care about duplicates
             )
             .order_by("-edition_rank")
-            .select_related("parent_work")
-            .prefetch_related("authors", "file_links")
             .first()
         )
 
@@ -106,6 +111,7 @@ class Book(View):
 
         if request.user.is_authenticated:
             data["list_options"] = request.user.list_set.exclude(id__in=data["lists"])
+            data["list_form"] = forms.ListForm()
             data["file_link_form"] = forms.FileLinkForm()
             readthroughs = models.ReadThrough.objects.filter(
                 user=request.user,

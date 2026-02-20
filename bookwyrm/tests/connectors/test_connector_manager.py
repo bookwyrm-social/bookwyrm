@@ -95,3 +95,17 @@ class ConnectorManager(TestCase):
 
         finna = models.Connector.objects.get(connector_file="finna")
         self.assertEqual("https://www.finna.fi", finna.base_url)
+
+    def test_create_libris_connector(self):
+        """does the libris connector work?"""
+
+        self.assertEqual(
+            0, models.Connector.objects.filter(connector_file="libris").count()
+        )
+        connector_manager.create_libris_connector()
+        self.assertEqual(
+            1, models.Connector.objects.filter(connector_file="libris").count()
+        )
+
+        libris = models.Connector.objects.get(connector_file="libris")
+        self.assertEqual("https://libris.kb.se", libris.base_url)
