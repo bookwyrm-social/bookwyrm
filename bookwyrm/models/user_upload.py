@@ -1,9 +1,12 @@
-""" database schema for images uploaded by users """
+"""database schema for images uploaded by users"""
+
 from django.db import models
 import time, os
 
+
 def user_upload_directory_path(instance, filename):
     return "uploads/user_{0}/{1}_{2}".format(instance.user.id, time.time_ns(), filename)
+
 
 class UserUpload(models.Model):
     original_name = models.TextField()
@@ -14,11 +17,18 @@ class UserUpload(models.Model):
         on_delete=models.CASCADE,
         null=False,
         blank=False,
-        related_name="user_uploads"
+        related_name="user_uploads",
     )
 
+
 def user_upload_version_directory_path(instance, filename):
-    return "uploads/user_{0}/{1}/{2}{3}".format(instance.user_upload.user.id, instance.user_upload.id, instance.max_dimension, os.path.splitext(filename)[1])
+    return "uploads/user_{0}/{1}/{2}{3}".format(
+        instance.user_upload.user.id,
+        instance.user_upload.id,
+        instance.max_dimension,
+        os.path.splitext(filename)[1],
+    )
+
 
 class UserUploadVersion(models.Model):
     max_dimension = models.TextField()
@@ -28,5 +38,5 @@ class UserUploadVersion(models.Model):
         on_delete=models.CASCADE,
         null=False,
         blank=False,
-        related_name="versions"
+        related_name="versions",
     )

@@ -139,19 +139,20 @@ class CreateStatus(View):
             return HttpResponse()
         return redirect_to_referer(request)
 
+
 def format_images(content, user):
     """Detect special image tags and make them responsive"""
-    return re.sub(
-            r'!image\(([^)]+)\)',
-            partial(responsive_image_tag, user),
-            content
-    )
+    return re.sub(r"!image\(([^)]+)\)", partial(responsive_image_tag, user), content)
+
 
 def responsive_image_tag(user, matchobj):
-    upload = user.user_uploads.get(original_file = matchobj.group(1))
-    srcs = [[version.file.url, version.max_dimension] for version in upload.versions.all()]
-    srcset = ', '.join([f"{src[0]} {src[1]}w" for src in srcs])
-    return f"<img srcset=\"{srcset}\" sizes=\"(width <= 600px) 100vw, 60vw\" src=\"{srcs[-1][0]}\" />"
+    upload = user.user_uploads.get(original_file=matchobj.group(1))
+    srcs = [
+        [version.file.url, version.max_dimension] for version in upload.versions.all()
+    ]
+    srcset = ", ".join([f"{src[0]} {src[1]}w" for src in srcs])
+    return f'<img srcset="{srcset}" sizes="(width <= 600px) 100vw, 60vw" src="{srcs[-1][0]}" />'
+
 
 def format_mentions(content, mentions):
     """Detect @mentions and make them links"""
@@ -355,6 +356,7 @@ def _unwrap(text):
         suffix = inner_punct + suffix
 
     return prefix, text, suffix
+
 
 def to_markdown(content):
     """catch links and convert to markdown"""
