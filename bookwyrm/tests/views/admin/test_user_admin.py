@@ -122,7 +122,7 @@ class UserAdminViews(TestCase):
         )
 
         report = models.Report.objects.create(
-            user=self.local_user, reporter=self.local_user
+            reported_user=self.local_user, user=self.local_user
         )
 
         view = views.UserAdmin.as_view()
