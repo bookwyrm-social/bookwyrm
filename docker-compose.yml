@@ -1,6 +1,14 @@
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "150m"
+    max-file: "2"
+
 services:
   nginx:
     image: nginx:1.28.1
+    logging: *default-logging
     restart: unless-stopped
     ports:
       - "${PORT:-80}:80"
@@ -55,6 +63,21 @@ services:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/logs:/var/log/letsencrypt
       - ./certbot/data:/var/www/certbot
+  db-backup-job:
+    build: postgres-docker
+    environment:
+      - DEBUG=${DEBUG}
+      - PGPASSWORD=${POSTGRES_PASSWORD}
+      - PGHOST=${POSTGRES_HOST}
+      - PGUSER=${POSTGRES_USER}
+      - PGDATABASE=${POSTGRES_DB}
+    depends_on:
+      db:
+        condition: service_started
+    volumes:
+      - backups:/backups
+    networks:
+      - main
   db:
     image: postgres:17
     shm_size: ${POSTGRES_SHM_SIZE:-128mb}
@@ -93,6 +116,7 @@ services:
   redis_activity:
     image: redis:7.2.1
     command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD} --appendonly yes --port ${REDIS_ACTIVITY_PORT}
+    logging: *default-logging
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_activity_data:/data
@@ -103,6 +127,7 @@ services:
   redis_broker:
     image: redis:7.2.1
     command: redis-server --requirepass ${REDIS_BROKER_PASSWORD} --appendonly yes --port ${REDIS_BROKER_PORT}
+    logging: *default-logging
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_broker_data:/data
@@ -178,6 +203,7 @@ services:
     restart: on-failure
 volumes:
   pgdata:
+  backups:
   static_volume:
   media_volume:
   exports_volume:
