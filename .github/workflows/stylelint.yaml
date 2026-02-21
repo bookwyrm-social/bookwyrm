@@ -1,0 +1,21 @@
+name: Lint Stylesheets files (run `./bw-dev stylelint` to fix errors)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install modules
+        run: npm install stylelint stylelint-config-recommended stylelint-config-standard stylelint-order stylelint-config-standard-scss
+
+      - name: Run Stylelint
+        run: >
+          npx stylelint bookwyrm/static/css \
+            --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore

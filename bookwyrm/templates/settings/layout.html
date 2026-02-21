@@ -101,6 +101,10 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Celery Status" %}</a>
             </li>
             <li>
+                {% url 'settings-redis' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Redis status" %}</a>
+            </li>
+            <li>
                 {% url 'settings-schedules' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Scheduled Tasks" %}</a>
             </li>
