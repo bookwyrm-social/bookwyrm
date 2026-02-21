@@ -6,7 +6,7 @@ from typing import Union, Optional
 
 import requests
 
-from bookwyrm import activitypub, models
+from bookwyrm import activitypub, models, settings
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,9 @@ def request_isni_data(
 
     try:
         result = requests.get(
-            "http://isni.oclc.org/sru/", params=query_params, timeout=10
+            "http://isni.oclc.org/sru/",
+            params=query_params,
+            timeout=settings.QUERY_TIMEOUT,
         )
 
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as err:
