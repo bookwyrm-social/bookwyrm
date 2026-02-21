@@ -6,8 +6,12 @@ import responses
 
 from bookwyrm import models
 from bookwyrm.connectors import abstract_connector, ConnectorException
-from bookwyrm.connectors.abstract_connector import Mapping, get_data
-from bookwyrm.settings import BASE_URL
+from bookwyrm.connectors.abstract_connector import (
+    Mapping,
+    get_data,
+    activitydata_to_seriesbook,
+)
+from bookwyrm.settings import BASE_URL, INSTANCE_ACTOR_USERNAME
 
 
 class AbstractConnector(TestCase):
@@ -16,7 +20,7 @@ class AbstractConnector(TestCase):
     @classmethod
     def setUpTestData(cls):
         """we need an example connector in the database"""
-        models.Connector.objects.create(
+        cls.connector = models.Connector.objects.create(
             identifier="example.com",
             connector_file="openlibrary",
             base_url="https://example.com",
@@ -28,6 +32,13 @@ class AbstractConnector(TestCase):
             title="Test Book",
             remote_id="https://example.com/book/1234",
             openlibrary_key="OL1234M",
+        )
+
+        cls.local_user = models.User.objects.create_user(
+            "instance@local.com",
+            local=True,
+            localname=INSTANCE_ACTOR_USERNAME,
+            remote_id="https://example.com/users/instance_actor",
         )
 
     def setUp(self):
@@ -166,3 +177,121 @@ class AbstractConnector(TestCase):
 
         with self.assertRaises(ConnectorException):
             get_data("http://127.0.0.1/image/jpg")
+
+    def test_get_or_create_seriesbook_from_data(self):
+        """do we make a seriesbook?"""
+
+        work = models.Work.objects.create(title="Test Book")
+        work.series = [{"name": "Test Series 1"}]
+        edition = self.book
+
+        self.assertEqual(models.Series.objects.count(), 0)
+        self.assertEqual(models.SeriesBook.objects.count(), 0)
+
+        self.connector.get_or_create_seriesbook_from_data(work=work, edition=edition)
+
+        self.assertEqual(models.Series.objects.count(), 1)
+        self.assertEqual(models.SeriesBook.objects.count(), 1)
+
+    def test_get_or_create_seriesbook_from_existing_series(self):
+        """do we get a seriesbook with existing series?"""
+
+        author = models.Author.objects.create(name="Sammy")
+        series = models.Series.objects.create(
+            user=self.local_user, name="Test Series 1"
+        )
+        models.SeriesBook.objects.create(
+            user=self.local_user, book=self.book, series=series
+        )
+
+        work = models.Work.objects.create(title="Test Book")
+        work.series = [{"name": "Test Series 1"}]
+        edition = models.Edition.objects.create(title="Test Book 2")
+        edition.authors.add(author)
+        self.book.authors.add(author)
+        edition.save()
+        self.book.save()
+
+        self.assertEqual(models.Series.objects.count(), 1)
+        self.assertEqual(models.SeriesBook.objects.count(), 1)
+
+        self.connector.get_or_create_seriesbook_from_data(work=work, edition=edition)
+
+        self.assertEqual(models.Series.objects.count(), 1)
+        self.assertEqual(models.SeriesBook.objects.count(), 2)
+
+    def test_get_or_create_seriesbook_with_ambiguous_series(self):
+        """do we get series info in the book when we can't match author?"""
+
+        series = models.Series.objects.create(
+            user=self.local_user, name="Test Series 1"
+        )
+        models.SeriesBook.objects.create(
+            user=self.local_user, book=self.book, series=series
+        )
+
+        work = models.Work.objects.create(title="Test Book 2")
+        work.series = [{"name": "Test Series 1"}]
+        edition = models.Edition.objects.create(title="Test Book 2")
+
+        self.assertEqual(models.Series.objects.count(), 1)
+        self.assertEqual(models.SeriesBook.objects.count(), 1)
+
+        self.connector.get_or_create_seriesbook_from_data(work=work, edition=edition)
+
+        self.assertEqual(models.Series.objects.count(), 1)
+        self.assertEqual(models.SeriesBook.objects.count(), 1)
+        self.assertEqual(edition.series, "Test Series 1")
+
+    def test_activitydata_to_seriesbook(self):
+        """do we get a seriesbook?"""
+
+        work = models.Work.objects.create(title="Test Book 2")
+        new = models.Series(name="Test Series A")
+
+        self.assertEqual(models.Series.objects.count(), 0)
+        self.assertEqual(models.SeriesBook.objects.count(), 0)
+
+        activitydata_to_seriesbook(
+            user=self.local_user, work=work, new=new, instance=None
+        )
+
+        self.assertEqual(models.Series.objects.count(), 1)
+        self.assertEqual(models.SeriesBook.objects.count(), 1)
+
+    def test_activitydata_to_seriesbook_with_existing_series(self):
+        """do we get a seriesbook but not a duplicate series?"""
+
+        work = models.Work.objects.create(title="Test Book 2")
+        series = models.Series.objects.create(
+            user=self.local_user, name="Test Series A"
+        )
+
+        self.assertEqual(models.Series.objects.count(), 1)
+        self.assertEqual(models.SeriesBook.objects.count(), 0)
+
+        activitydata_to_seriesbook(
+            user=self.local_user, work=work, new=series, instance=series
+        )
+
+        self.assertEqual(models.Series.objects.count(), 1)
+        self.assertEqual(models.SeriesBook.objects.count(), 1)
+
+    def test_activitydata_to_seriesbook_with_existing_seriesbook(self):
+        """do we reuse the existing series and seriesbook?"""
+
+        work = models.Work.objects.create(title="Test Book 2")
+        series = models.Series.objects.create(
+            user=self.local_user, name="Test Series A"
+        )
+        models.SeriesBook.objects.create(user=self.local_user, book=work, series=series)
+
+        self.assertEqual(models.Series.objects.count(), 1)
+        self.assertEqual(models.SeriesBook.objects.count(), 1)
+
+        activitydata_to_seriesbook(
+            user=self.local_user, work=work, new=series, instance=None
+        )
+
+        self.assertEqual(models.Series.objects.count(), 1)
+        self.assertEqual(models.SeriesBook.objects.count(), 1)

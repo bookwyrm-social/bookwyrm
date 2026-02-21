@@ -19,7 +19,7 @@ from .ordered_collection import CollectionItem, ListItem, ShelfItem
 from .ordered_collection import BookList, Shelf
 from .person import Person, PublicKey
 from .response import ActivitypubResponse
-from .book import Edition, Work, Author
+from .book import Edition, Work, Author, Series, SeriesBook
 from .verbs import Create, Delete, Undo, Update
 from .verbs import Follow, Accept, Reject, Block
 from .verbs import Add, Remove
