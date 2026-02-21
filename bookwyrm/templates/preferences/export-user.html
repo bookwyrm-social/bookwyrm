@@ -160,7 +160,7 @@
                             {% trans "Download your export" %}
                         </span>
                     </a>
-                    {% else %}
+                    {% elif export.job.complete %}
                     {% trans "Archive is no longer available" %}
                     {% endif %}
                 </td>
