@@ -8,15 +8,26 @@ bots:
         - 'userAgent.startsWith("BookWyrm")'
         - '"Accept" in headers'
         - 'headers["Accept"] == "application/activity+json"'
-  - name: Check all email confirmations
-    action: CHALLENGE
-    expression: 'path.startsWith("confirm-email/")'
-  - name: Paths to skip for checking
+  - name: Allow access to manifest.json directly
     action: ALLOW
+    path_regex: "^/manifest.json$"
+  # Anubis subauth doesn't seem to handle CHALLENGE nicely, so tune weight
+  - name: All email confirmations are suspicious by default
+    action: WEIGH
+    path_regex: "^/confirm-email/"
+    weight:
+      adjust: 10
+  # If request has cookie and it contains something like anubis thing, make it less suspicious
+  - name: Allow email confirmations with something looking like anubis-auth cookie
+    action: WEIGH
+    path_regex: "^/confirm-email/"
     expression:
-      any:
-        - 'path == "manifest.json"'
-        - 'path == "favicon.ico"'
+      all:
+        - '"Cookies" in headers'
+        - 'headers["Cookies"].contains("anubis-auth")'
+    weight:
+      adjust: -10
+  #
 status_codes:
   CHALLENGE: 200
   DENY: 403
