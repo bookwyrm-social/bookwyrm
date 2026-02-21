@@ -1,0 +1,22 @@
+name: dev-wyrm
+services:
+  web:
+    volumes:
+      - .:/app
+  celery_worker:
+    volumes:
+      - .:/app
+  celery_beat:
+    volumes:
+      - .:/app
+  flower:
+    volumes:
+      - .:/app
+  dev-tools:
+    build: dev-tools
+    env_file: .env
+    volumes:
+      - /app/dev-tools/
+      - .:/app
+    profiles:
+      - tools
