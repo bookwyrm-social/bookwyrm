@@ -268,13 +268,7 @@ case "$CMD" in
     update)
         git pull
         $DOCKER_COMPOSE build
-        # ./update.sh
-        runweb python manage.py migrate
-        runweb python manage.py compile_themes
-        runweb python manage.py collectstatic --no-input
         $DOCKER_COMPOSE up -d
-        $DOCKER_COMPOSE restart web
-        $DOCKER_COMPOSE restart celery_worker
         ;;
     populate_streams)
         runweb python manage.py populate_streams "$@"
