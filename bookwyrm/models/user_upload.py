@@ -20,6 +20,13 @@ class UserUpload(models.Model):
         blank=False,
         related_name="user_uploads",
     )
+    status = models.ForeignKey(
+        "Status",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="user_image_uploads",
+    )
 
 
 def user_upload_version_directory_path(instance, filename):
