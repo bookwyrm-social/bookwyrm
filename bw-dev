@@ -123,6 +123,9 @@ case "$CMD" in
     dev)
         $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml --env-file .env --env-file .env.dev "$@"
         ;;
+    rundev)
+        rundev "$@"
+        ;;
     docker_cache_cleanup)
         echo "Showing current docker storage usage"
         docker system df
@@ -366,6 +369,7 @@ case "$CMD" in
         echo "    update_locales"
         echo "    build"
         echo "    dev"
+        echo "    rundev"
         echo "    docker_cache_cleanup"
         echo "    clean"
         echo "    ruff (format and check)"
