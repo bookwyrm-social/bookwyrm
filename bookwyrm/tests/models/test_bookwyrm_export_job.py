@@ -6,13 +6,16 @@ import pathlib
 
 from unittest.mock import patch
 
+from django.db import connection
 from django.utils import timezone
 from django.test import TestCase
 
 from bookwyrm import models
+from bookwyrm.tests.query_logger import QueryLogger, raise_long_query_runtime
 from bookwyrm.utils.tar import BookwyrmTarFile
 
 
+# pylint: disable=invalid-name
 class BookwyrmExportJob(TestCase):
     """testing user export functions"""
 
@@ -187,6 +190,14 @@ class BookwyrmExportJob(TestCase):
             with patch("bookwyrm.models.bookwyrm_export_job.create_archive_task.delay"):
                 models.bookwyrm_export_job.create_export_json_task(job_id=self.job.id)
             self.job.refresh_from_db()
+
+    def test_create_export_job_query_time(self):
+        """test the creation of the job"""
+        query_logger = QueryLogger()
+        with connection.execute_wrapper(query_logger):
+            with patch("bookwyrm.models.bookwyrm_export_job.create_archive_task.delay"):
+                models.bookwyrm_export_job.create_export_json_task(job_id=self.job.id)
+            raise_long_query_runtime(query_logger.queries)
 
     def test_add_book_to_user_export_job(self):
         """does AddBookToUserExportJob ...add the book to the export?"""
