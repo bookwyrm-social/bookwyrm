@@ -16,7 +16,8 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 
-from markdown import markdown
+from functools import partial
+import mistune
 from bookwyrm import forms, models
 from bookwyrm.models.report import DELETE_ITEM
 from bookwyrm.utils import regex, sanitizer
@@ -106,6 +107,8 @@ class CreateStatus(View):
         if status.reply_parent:
             status.mention_users.add(status.reply_parent.user)
 
+        content = format_images(content, request.user)
+
         # inspect the text for hashtags
         hashtags = find_or_create_hashtags(content)
         for _, mention_hashtag in hashtags.items():
@@ -135,6 +138,20 @@ class CreateStatus(View):
         if is_api_request(request):
             return HttpResponse()
         return redirect_to_referer(request)
+
+
+def format_images(content, user):
+    """Detect special image tags and make them responsive"""
+    return re.sub(r"!image\(([^)]+)\)", partial(responsive_image_tag, user), content)
+
+
+def responsive_image_tag(user, matchobj):
+    upload = user.user_uploads.get(original_file=matchobj.group(1))
+    srcs = [
+        [version.file.url, version.max_dimension] for version in upload.versions.all()
+    ]
+    srcset = ", ".join([f"{src[0]} {src[1]}w" for src in srcs])
+    return f'<img srcset="{srcset}" sizes="(width <= 600px) 100vw, 60vw" src="{srcs[-1][0]}" />'
 
 
 def format_mentions(content, mentions):
@@ -344,6 +361,6 @@ def _unwrap(text):
 def to_markdown(content):
     """catch links and convert to markdown"""
     content = format_links(content)
-    content = markdown(content)
+    content = mistune.html(content).rstrip()
     # sanitize resulting html
     return sanitizer.clean(content)
