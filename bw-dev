@@ -123,6 +123,18 @@ case "$CMD" in
     dev)
         $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml --env-file .env --env-file .env.dev "$@"
         ;;
+    docker_cache_cleanup)
+        echo "Showing current docker storage usage"
+        docker system df
+
+        echo "Cleaning out docker build caches that hasn't been used in the last 24 hours"
+        docker buildx prune -af --filter=until=24h
+
+        echo "Docker storage usage after cache cleanup"
+        docker system df
+
+        echo "If you still need to reclaim more space, you can consider running 'docker system prune --volumes'"
+        ;;
     service_ports_web)
         prod_error
         $DOCKER_COMPOSE run --rm --service-ports web
