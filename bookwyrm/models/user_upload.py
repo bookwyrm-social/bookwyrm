@@ -1,7 +1,8 @@
 """database schema for images uploaded by users"""
 
 from django.db import models
-import time, os
+import time
+import os
 
 
 def user_upload_directory_path(instance, filename):
