@@ -40,12 +40,10 @@ function runweb {
 
 function runtools {
     $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml run -e DEBUG=true --rm dev-tools "$@"
-    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml down
 }
 
 function rundev {
     $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml run -e DEBUG=true --rm web "$@"
-    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml down
 }
 
 function execdb {
@@ -123,7 +121,7 @@ case "$CMD" in
         $DOCKER_COMPOSE down
         ;;
     dev)
-        $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml up "$@"
+        $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml --env-file .env --env-file .env.dev "$@"
         ;;
     service_ports_web)
         prod_error
