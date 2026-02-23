@@ -166,7 +166,6 @@ case "$CMD" in
         admin_code
         ;;
     makemigrations)
-        prod_error
         rundev python manage.py makemigrations "$@"
         ;;
     migrate)
@@ -185,7 +184,6 @@ case "$CMD" in
         $DOCKER_COMPOSE restart celery_worker
         ;;
     pytest)
-        prod_error
         rundev pytest --no-cov-on-fail "$@"
         ;;
     pytest_coverage_report)
@@ -199,14 +197,12 @@ case "$CMD" in
         runweb python manage.py collectstatic --no-input
         ;;
     makemessages)
-        prod_error
         runtools django-admin makemessages --no-wrap --ignore=venv -l en_US $@
         ;;
     compilemessages)
         runtools django-admin compilemessages --ignore venv $@
         ;;
     update_locales)
-        prod_error
         runtools django-admin makemessages --no-wrap --ignore=venv -l en_US "$@"
         runtools django-admin compilemessages --ignore venv
         ;;
@@ -218,37 +214,29 @@ case "$CMD" in
         clean
         ;;
     ruff)
-        prod_error
         runtools ruff format celerywyrm bookwyrm
         runtools ruff check celerywyrm bookwyrm
         ;;
     ruff-format)
-        prod_error
         runtools ruff format celerywyrm bookwyrm
         ;;
     ruff-check)
-        prod_error
         runtools ruff check celerywyrm bookwyrm
         ;;
     ruff-fix)
-        prod_error
         runtools ruff check --fix celerywyrm bookwyrm
         ;;
     prettier)
-        prod_error
         runtools prettier --write bookwyrm/static/js/*.js
         ;;
     eslint)
-        prod_error
         runtools eslint bookwyrm/static --ext .js
         ;;
     stylelint)
-        prod_error
         runtools stylelint --fix bookwyrm/static/css \
             --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
         ;;
     formatters)
-        prod_error
         runtools ruff format celerywyrm bookwyrm
         runtools ruff check --fix celerywyrm bookwyrm
         runtools prettier --write bookwyrm/static/js/*.js
@@ -257,7 +245,6 @@ case "$CMD" in
             --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
         ;;
     mypy)
-        prod_error
         runtools mypy celerywyrm bookwyrm
         ;;
     create_secrets)
