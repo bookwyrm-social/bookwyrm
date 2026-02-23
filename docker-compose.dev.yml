@@ -20,7 +20,11 @@ services:
       - .:/app
   dev-tools:
     build: dev-tools
-    env_file: .env
+    env_file:
+      - .env
+      - .env.dev
+    networks:
+      - main
     volumes:
       - /app/dev-tools/
       - .:/app
