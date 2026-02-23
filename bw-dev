@@ -38,12 +38,14 @@ function runweb {
     $DOCKER_COMPOSE run --rm web "$@"
 }
 
+# dev-tools that don't need db to be up
 function runtools {
-    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml run -e DEBUG=true --rm dev-tools "$@"
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml  --env-file .env --env-file .env.dev run -e DEBUG=true --rm dev-tools "$@"
 }
 
+# dev-tools that needs db etc to be up
 function rundev {
-    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml run -e DEBUG=true --rm web "$@"
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml  --env-file .env --env-file .env.dev run -e DEBUG=true --rm web "$@"
 }
 
 function execdb {
@@ -165,7 +167,7 @@ case "$CMD" in
         ;;
     makemigrations)
         prod_error
-        runtools python manage.py makemigrations "$@"
+        rundev python manage.py makemigrations "$@"
         ;;
     migrate)
         migrate "$@"
