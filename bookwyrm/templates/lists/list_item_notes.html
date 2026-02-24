@@ -1,0 +1,49 @@
+{% load i18n %}
+{% load utilities %}
+
+{% if item.notes %}
+<div class="notification">
+    <div class="is-flex mb-3">
+        <figure class="mr-3" aria-hidden="true">
+            {% include "snippets/avatar.html" with user=item.user %}
+        </figure>
+        <header>
+            {% url 'user-feed' item.user|username as user_path %}
+            {% blocktrans trimmed with username=item.user.display_name %}
+            <a href="{{ user_path }}">{{ username }}</a> says:
+            {% endblocktrans %}
+        </header>
+    </div>
+    <div class="block">
+
+        {% include 'snippets/trimmed_text.html' with no_trim=no_trim full=item.notes %}
+
+        {% if item.user == request.user and not hide_edit %}
+        <div>
+            <details class="details-panel box">
+                <summary>
+                    <span role="heading" aria-level="3">
+                        {% trans "Edit notes" %}
+                        <span class="details-close icon icon-pencil" aria-hidden="true"></span>
+                    </span>
+                </summary>
+                {% include "lists/edit_item_form.html" with book=item.book %}
+            </details>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% elif item.user == request.user and not hide_edit %}
+<div>
+    <details class="details-panel box">
+        <summary>
+            <span role="heading" aria-level="3">
+                {% trans "Add notes" %}
+                <span class="details-close icon icon-x" aria-hidden="true"></span>
+            </span>
+        </summary>
+        {% include "lists/edit_item_form.html" with book=item.book %}
+    </details>
+</div>
+{% endif %}
+
