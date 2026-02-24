@@ -16,10 +16,11 @@ from bookwyrm import models
 
 logger = logging.getLogger(__name__)
 
-PREFERRED_EXTENSIONS = {img_type: ext for ext, img_type in Image.EXTENSION}
+PREFERRED_EXTENSIONS = {img_type: ext for ext, img_type in Image.registered_extensions().items()}
 PREFERRED_EXTENSIONS.update(
     {
         "JPEG": ".jpg",
+        "PNG": ".png",
         "TIFF": ".tif",
     }
 )
