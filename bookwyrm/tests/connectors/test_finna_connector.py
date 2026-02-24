@@ -6,7 +6,7 @@ import pathlib
 from django.test import TestCase
 import responses
 
-from bookwyrm import models
+from bookwyrm import models, settings
 from bookwyrm.connectors.finna import Connector, guess_page_numbers
 
 
@@ -33,6 +33,13 @@ class Finna(TestCase):
             "&field[]=title&field[]=recordPage&field[]=authors&field[]=year"
             "&field[]=id&field[]=formats&field[]=images"
             "&lookfor=isbn:",
+        )
+
+        cls.instance_user = models.User.objects.create_user(
+            "instance@local.com",
+            local=True,
+            localname=settings.INSTANCE_ACTOR_USERNAME,
+            remote_id="https://example.com/users/instance_actor",
         )
 
     def setUp(self):

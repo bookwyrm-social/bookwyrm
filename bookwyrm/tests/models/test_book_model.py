@@ -10,6 +10,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from bookwyrm import models, settings
+from bookwyrm.activitypub import get_representative
 from bookwyrm.models.book import (
     isbn_10_to_13,
     isbn_13_to_10,
@@ -240,3 +241,21 @@ class Book(TestCase):
 
         self.assertEqual(edition.parent_work.title, "test")
         self.assertEqual(edition.parent_work.authors.count(), 1)
+
+    def test_series_validation(self):
+        """Can't duplicate series"""
+        user = get_representative()
+        series = models.Series.objects.create(
+            name="Series Test Name",
+            alternative_names=["Alternative series name"],
+            user=user,
+        )
+        models.SeriesBook.objects.create(user=user, book=self.work, series=series)
+
+        with self.assertRaises(ValidationError):
+            self.first_edition.series = "series test name"
+            self.first_edition.clean()
+
+        with self.assertRaises(ValidationError):
+            self.first_edition.series = "ALTERnative series name"
+            self.first_edition.clean()

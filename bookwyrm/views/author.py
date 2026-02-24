@@ -40,10 +40,17 @@ class Author(View):
             .distinct()
         )
 
+        series = (
+            models.Series.objects.filter(seriesbooks__book__authors=author)
+            .order_by("created_date")
+            .distinct()
+        )
+
         paginated = Paginator(books, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "author": author,
+            "series": series,
             "books": page,
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1

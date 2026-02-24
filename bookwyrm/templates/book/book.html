@@ -33,45 +33,61 @@
             <h1 class="title" itemprop="name" dir="auto">
                 {{ book.title }}
             </h1>
-
-            {% if book.subtitle or book.series %}
+            {% if book.subtitle or book.series or book.parent_work.seriesbooks %}
+                {% if book.subtitle %}
                 <p class="subtitle title is-5">
-                    {% if book.subtitle %}
-                        <meta
-                            itemprop="alternativeHeadline"
-                            content="{{ book.subtitle | escape }}"
-                        >
-
-                        <span class="has-text-weight-bold" dir="auto">
-                            {{ book.subtitle }}
-                        </span>
-                    {% endif %}
-
-                    {% if book.series %}
-                        {% spaceless %}
-                        <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
-                        {% if book.authors.exists %}
-                            <a href="{% url 'book-series-by' book.authors.first.id %}?series_name={{ book.series | urlencode }}"
-                               itemprop="url">
-                        {% endif %}
-                        <span itemprop="name">{{ book.series }}</span>
-                        {% if book.authors.exists %}
-                            </a>
-                        {% endif %}
-                        </span>
-                        {% if book.series_number %}
-                            <span>, #</span>
-                            <span itemprop="position">{{ book.series_number }}</span>
-                        {% endif %}
-                        {% endspaceless %}
-                    {% endif %}
+                    <meta
+                        itemprop="alternativeHeadline"
+                        content="{{ book.subtitle | escape }}"
+                    >
+                    <span class="has-text-weight-bold" dir="auto">
+                        {{ book.subtitle }}
+                    </span>
                 </p>
+                {% endif %}
+                {% if book.series %}
+                    {% spaceless %}
+                    <div columns>
+                        <div class="notification is-info is-light column is-half">
+                            {% blocktrans trimmed with series=book.series %}
+                            This book might be part of the <em>{{series}}</em> series.
+                            {% endblocktrans %}
+                            {% if user_authenticated and can_edit_book %}
+                            Edit it to confirm.
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endspaceless %}
+                {% endif %}
+
+                {% if book.parent_work.seriesbooks %}
+                {% for sbook in book.parent_work.seriesbooks.all %}
+                <div>
+                    {% spaceless %}
+                    {% if sbook.series_number %}
+                    <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
+                        {% blocktrans trimmed with title=sbook.series.name path=sbook.series.local_path number=sbook.series_number %}
+                            Book <span itemprop="position">{{ number }}</span> in <em><a href="{{ path }}">{{ title }}</a></em>
+                        {% endblocktrans %}
+                    </span>
+                    {% else %}
+                    <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
+                        {% blocktrans trimmed with title=sbook.series.name path=sbook.series.local_path %}
+                            Part of <em><a href="{{ path }}">{{ title }}</a></em>
+                        {% endblocktrans %}
+                    </span>
+                    {% endif %}
+                    {% endspaceless %}
+                </div>
+                {% endfor%}
+                {% endif %}
+
             {% endif %}
 
             {% if book.authors.exists %}
-                <div class="subtitle" dir="auto">
-                    {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
-                </div>
+            <div class="subtitle" dir="auto">
+                {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
+            </div>
             {% endif %}
         </div>
 
@@ -219,7 +235,7 @@
                 >
                     <meta itemprop="ratingValue" content="{{ rating|floatformat }}">
                     <meta itemprop="reviewCount" content="{{ review_count }}">
-                    
+
                     {% if review_count > 0 %}
                     <a href="#reviews" class="has-text-link">
                     {% endif %}
@@ -392,15 +408,15 @@
         </div>
         <div class="column is-one-fifth is-clipped">
             {% if book.subjects %}
-                <section class="content block">
-                    <h2 class="title is-5">{% trans "Subjects" %}</h2>
+            <section class="content block">
+                <h2 class="title is-5">{% trans "Subjects" %}</h2>
 
-                    <ul>
-                        {% for subject in book.subjects %}
-                            <li itemprop="about">{{ subject }}</li>
-                        {% endfor %}
-                    </ul>
-                </section>
+                <ul>
+                    {% for subject in book.subjects %}
+                        <li itemprop="about">{{ subject }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
             {% endif %}
 
             {% if book.subject_places %}
@@ -453,7 +469,6 @@
             </section>
         </div>
     </div>
-
 </div>
 {% endwith %}
 {% endblock %}

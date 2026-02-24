@@ -286,3 +286,34 @@ class Inventaire(TestCase):
             self.connector.get_remote_id_from_model(obj),
             "https://inventaire.io?action=by-uris&uris=123",
         )
+
+    @responses.activate
+    def test_format_series(self):
+        """make an activitypub series object from Inventaire JSON-LD"""
+
+        ent = {
+            "uri": "wd:Q1234",
+            "originalLang": "fr",
+            "labels": {"fr": "Série de Tests", "en": "Test Series"},
+            "claims": {
+                "wdt:P6947": ["grk123"],
+                "wdt:P1235": ["isfdb123"],
+                "wdt:P8513": ["ltk123"],
+            },
+        }
+
+        responses.add(
+            responses.GET,
+            "https://inventaire.io/?action=by-uris&uris=wd:999",
+            json={"entities": {"wd:999": ent}},
+        )
+
+        formatted = self.connector.format_series(["wd:999"])
+        data = formatted[0]
+
+        self.assertEqual(data["name"], "Série de Tests")
+        self.assertIsInstance(data["alternative_names"], list)
+        self.assertEqual(data["wikidata"], "999")
+        self.assertEqual(data["goodreads_key"], "grk123")
+        self.assertEqual(data["isfdb"], "isfdb123")
+        self.assertEqual(data["librarything_key"], "ltk123")
