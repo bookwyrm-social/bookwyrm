@@ -1,7 +1,6 @@
-{% load static %}
-{
+{% load static %}{
   "name": "{{ site.name }}",
-  "description": "{{ site.description }}",
+  "description": "{{ site.instance_short_description }}",
   "icons": [
     {
       "src": "{% if site.logo %}{{ media_full_url }}{{ site.logo }}{% else %}{% static 'images/logo.png' %}{% endif %}",
@@ -9,6 +8,6 @@
       "sizes": "512x512"
     }
   ],
-	"start_url": "/",
+  "start_url": "/",
   "display": "standalone"
 }
