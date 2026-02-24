@@ -45,7 +45,7 @@ class CreateUserUpload(View):
 
         width, height = image.size
         env = Env()
-        sizes = env.list("UPLOAD_IMAGE_SIZES", [400, 1200], subcast=int)
+        sizes = env.list("UPLOAD_IMAGE_DIMENSIONS", [400, 1200], subcast=int)
 
         for size in sizes:
             v = self.create_version(image, upload, size)

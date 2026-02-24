@@ -38,7 +38,7 @@ class UserUploadViews(TestCase):
         image_path = pathlib.Path(__file__).parent.joinpath(
             "../../../static/images/logo.png"
         )
-        with patch.dict("os.environ", {"UPLOAD_IMAGE_SIZES": "120,600"}):
+        with patch.dict("os.environ", {"UPLOAD_IMAGE_DIMENSIONS": "120,600"}):
             with open(image_path, "rb") as image_file:
                 request = self.factory.post("/upload", {"file": image_file})
                 request.user = self.local_user
