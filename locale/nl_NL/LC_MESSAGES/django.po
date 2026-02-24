@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-06 17:47+0000\n"
-"PO-Revision-Date: 2026-02-08 13:26\n"
+"PO-Revision-Date: 2026-02-24 10:23\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -95,7 +95,7 @@ msgstr "Dit domein is geblokkeerd. Neem contact op met je beheerder als je denkt
 
 #: bookwyrm/forms/links.py:47
 msgid "This link has already been added for this book. If it is not visible, the domain is still pending."
-msgstr ""
+msgstr "Deze koppeling is al toegevoegd voor dit boek. Als deze niet zichtbaar is, is het domein nog steeds in behandeling."
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
@@ -6317,7 +6317,7 @@ msgstr "Systeem"
 
 #: bookwyrm/templates/settings/layout.html:105
 msgid "Redis status"
-msgstr ""
+msgstr "Redis-status"
 
 #: bookwyrm/templates/settings/layout.html:109
 msgid "Scheduled Tasks"
@@ -6389,7 +6389,7 @@ msgstr "Geen links beschikbaar voor dit domein."
 #: bookwyrm/templates/settings/redis.html:5
 #: bookwyrm/templates/settings/redis.html:7
 msgid "Redis Status"
-msgstr ""
+msgstr "Redis-status"
 
 #: bookwyrm/templates/settings/redis.html:13
 msgid "Info"
@@ -6401,7 +6401,7 @@ msgstr "Gebruikt geheugen"
 
 #: bookwyrm/templates/settings/redis.html:23
 msgid "Total system memory"
-msgstr ""
+msgstr "Totaal systeemgeheugen"
 
 #: bookwyrm/templates/settings/redis.html:29
 msgid "Keys"
@@ -6409,25 +6409,25 @@ msgstr "Sleutels"
 
 #: bookwyrm/templates/settings/redis.html:37
 msgid "Outdated cache keys"
-msgstr ""
+msgstr "Verouderde cachesleutels"
 
 #: bookwyrm/templates/settings/redis.html:40
 #, python-format
 msgid "This will scan for keys in the Django redis cache that use no prefix (the current prefix is <code>%(prefix)s</code>), and identify Activity Streams for users with deleted accounts."
-msgstr ""
+msgstr "Dit voert een scan uit voor sleutels in de Django Redis-cache die geen prefix gebruiken (de huidige prefix is <code>%(prefix)s</code>) en identificeert Activity Streams voor verwijderde gebruikersaccounts."
 
 #: bookwyrm/templates/settings/redis.html:47
 #, python-format
 msgid "%(keys)s identified"
-msgstr ""
+msgstr "%(keys)s gevonden"
 
 #: bookwyrm/templates/settings/redis.html:55
 msgid "Erase outdated keys"
-msgstr ""
+msgstr "Verouderde sleutels wissen"
 
 #: bookwyrm/templates/settings/redis.html:63
 msgid "Scan for outdated keys"
-msgstr ""
+msgstr "Scan op verouderde sleutels"
 
 #: bookwyrm/templates/settings/redis.html:71
 msgid "Advanced"
@@ -6435,16 +6435,16 @@ msgstr "Geavanceerd"
 
 #: bookwyrm/templates/settings/redis.html:75
 msgid "Clear Django Cache"
-msgstr ""
+msgstr "Django-cache legen"
 
 #: bookwyrm/templates/settings/redis.html:81
 msgid "This is <strong>NOT recommended</strong> and should only be used if something has gone very wrong with your cache. All sessions will be cleared and users will be logged out of their accounts."
-msgstr ""
+msgstr "Dit wordt <strong>NIET aangeraden</strong> en zou alleen gebruikt moeten worden wanneer er iets ernstig fout is gegaan met de cache. Alle sessies worden hiermee beëindigd en alle gebruikers worden uitgelogd."
 
 #: bookwyrm/templates/settings/redis.html:88
 #, python-format
 msgid "%(keys)s keys deleted"
-msgstr ""
+msgstr "%(keys)s sleutels verwijderd"
 
 #: bookwyrm/templates/settings/redis.html:97
 msgid "Erase cache"
@@ -6452,7 +6452,7 @@ msgstr "Wis cache"
 
 #: bookwyrm/templates/settings/redis.html:109
 msgid "Could not connect to Redis Activity"
-msgstr ""
+msgstr "Kon geen verbinding maken met Redis Activity"
 
 #: bookwyrm/templates/settings/registration.html:38
 msgid "Allow registration"
