@@ -13,6 +13,7 @@ from django.views import View
 from django.http import JsonResponse
 
 from bookwyrm import models
+from bookwyrm.utils.images import remove_uploaded_image_exif
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +33,7 @@ PREFERRED_EXTENSIONS.update(
 @method_decorator(login_required, name="dispatch")
 class CreateUserUpload(View):
     def post(self, request):
-        file = request.FILES["file"]
+        file = remove_uploaded_image_exif(request.FILES["file"])
         image = Image.open(file)
         upload = models.UserUpload(
             user=request.user,
