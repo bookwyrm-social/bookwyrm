@@ -21,7 +21,8 @@ def clean(input_text: str) -> str:
             "ul",
             "ol",
             "li",
+            "img",
         },
-        attributes=["href", "rel", "src", "alt", "data-mention"],
+        attributes=["href", "rel", "sizes", "src", "srcset", "alt", "data-mention"],
         strip=True,
     )

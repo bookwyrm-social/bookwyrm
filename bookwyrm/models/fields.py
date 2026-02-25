@@ -16,7 +16,7 @@ from django.forms import ClearableFileInput, ImageField as DjangoImageField
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.encoding import filepath_to_uri
-from markdown import markdown
+import mistune
 
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_image
@@ -605,7 +605,7 @@ class HtmlField(ActivitypubFieldMixin, models.TextField):
         return clean(value)
 
     def field_to_activity(self, value):
-        return markdown(value) if value else value
+        return mistune.html(value).rstrip() if value else value
 
 
 class ArrayField(ActivitypubFieldMixin, DjangoArrayField):
