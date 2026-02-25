@@ -35,20 +35,18 @@ class UserUploadViews(TestCase):
 
     def test_upload(self):
         view = views.CreateUserUpload.as_view()
-        image_path = pathlib.Path(__file__).parent.joinpath(
-            "../../../static/images/logo.png"
-        )
-        with patch.dict("os.environ", {"UPLOAD_IMAGE_DIMENSIONS": "120,600"}):
+        image_path = "bookwyrm/tests/data/default_avi_exif.jpg"
+        with patch.dict("os.environ", {"UPLOAD_IMAGE_DIMENSIONS": "60,180"}):
             with open(image_path, "rb") as image_file:
                 request = self.factory.post("/upload", {"file": image_file})
                 request.user = self.local_user
                 response = view(request)
         self.assertEqual(response.status_code, 201)
         upload = self.local_user.user_uploads.get()
-        self.assertEqual(upload.original_name, "logo.png")
+        self.assertEqual(upload.original_name, "default_avi_exif.jpg")
         versions = [v for v in upload.versions.all()]
         self.assertEqual(len(versions), 2)
-        self.assertEqual([v.max_dimension for v in versions], ["120", "600"])
+        self.assertEqual([v.max_dimension for v in versions], ["60", "180"])
         self.assertEqual(
-            [[v.file.height, v.file.width] for v in versions], [[115, 120], [300, 314]]
+            [[v.file.height, v.file.width] for v in versions], [[60, 60], [120, 120]]
         )
