@@ -80,6 +80,11 @@ class InitDB(TestCase):
 
     def test_init_link_domains(self):
         """Common trusted domains for links"""
+        models.LinkDomain.objects.create(
+            domain="standardebooks.org",
+            name="not the same name with initdb",
+            status="approved",
+        ).save()
         initdb.init_link_domains()
         self.assertTrue(
             models.LinkDomain.objects.filter(
