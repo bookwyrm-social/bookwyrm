@@ -36,7 +36,7 @@ class Dashboard(View):
     def get(self, request):
         """list of users"""
         data = get_stats()
-        # data |= get_charts(request)
+        data |= get_charts(request)
 
         # Make sure email looks properly configured
         email_config_error = re.findall(
