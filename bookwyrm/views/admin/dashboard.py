@@ -95,12 +95,12 @@ class Dashboard(View):
 def get_stats():
     """Defines the dashboard charts"""
     now = timezone.now()
-    user_queryset = models.User.objects.filter(local=True)
+    user_queryset = models.User.objects.filter(local=True, is_active=True)
     status_queryset = models.Status.objects.filter(user__local=True, deleted=False)
     return {
-        "users": user_queryset.filter(is_active=True).count(),
+        "users": user_queryset.count(),
         "active_users": user_queryset.filter(
-            is_active=True, last_active_date__gte=now - timedelta(days=31)
+            last_active_date__gte=now - timedelta(days=31)
         ).count(),
         "statuses": status_queryset.count(),
         "works": models.Work.objects.count(),
