@@ -63,8 +63,8 @@ class ListsStream(RedisStore):
         """given a list, what users should see it"""
         # everybody who could plausibly see this list
         audience = models.User.objects.filter(
-            is_active=True,
             local=True,  # we only create feeds for users of this instance
+            is_active=True,
         ).exclude(  # not blocked
             Q(id__in=book_list.user.blocks.all()) | Q(blocks=book_list.user)
         )
