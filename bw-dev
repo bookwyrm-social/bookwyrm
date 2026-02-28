@@ -38,14 +38,14 @@ function runweb {
     $DOCKER_COMPOSE run --rm web "$@"
 }
 
+# dev-tools that don't need db to be up
 function runtools {
-    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml run -e DEBUG=true --rm dev-tools "$@"
-    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml down
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml  --env-file .env --env-file .env.dev run -e DEBUG=true --rm dev-tools "$@"
 }
 
+# dev-tools that needs db etc to be up
 function rundev {
-    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml run -e DEBUG=true --rm web "$@"
-    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml down
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml  --env-file .env --env-file .env.dev run -e DEBUG=true --rm web "$@"
 }
 
 function execdb {
@@ -123,7 +123,22 @@ case "$CMD" in
         $DOCKER_COMPOSE down
         ;;
     dev)
-        $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml up "$@"
+        $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml --env-file .env --env-file .env.dev "$@"
+        ;;
+    rundev)
+        rundev "$@"
+        ;;
+    docker_cache_cleanup)
+        echo "Showing current docker storage usage"
+        docker system df
+
+        echo "Cleaning out docker build caches that hasn't been used in the last 24 hours"
+        docker buildx prune -af --filter=until=24h
+
+        echo "Docker storage usage after cache cleanup"
+        docker system df
+
+        echo "If you still need to reclaim more space, you can consider running 'docker system prune --volumes'"
         ;;
     service_ports_web)
         prod_error
@@ -151,8 +166,7 @@ case "$CMD" in
         admin_code
         ;;
     makemigrations)
-        prod_error
-        runtools python manage.py makemigrations "$@"
+        rundev python manage.py makemigrations "$@"
         ;;
     migrate)
         migrate "$@"
@@ -170,7 +184,6 @@ case "$CMD" in
         $DOCKER_COMPOSE restart celery_worker
         ;;
     pytest)
-        prod_error
         rundev pytest --no-cov-on-fail "$@"
         ;;
     pytest_coverage_report)
@@ -184,14 +197,12 @@ case "$CMD" in
         runweb python manage.py collectstatic --no-input
         ;;
     makemessages)
-        prod_error
         runtools django-admin makemessages --no-wrap --ignore=venv -l en_US $@
         ;;
     compilemessages)
         runtools django-admin compilemessages --ignore venv $@
         ;;
     update_locales)
-        prod_error
         runtools django-admin makemessages --no-wrap --ignore=venv -l en_US "$@"
         runtools django-admin compilemessages --ignore venv
         ;;
@@ -203,37 +214,29 @@ case "$CMD" in
         clean
         ;;
     ruff)
-        prod_error
         runtools ruff format celerywyrm bookwyrm
         runtools ruff check celerywyrm bookwyrm
         ;;
     ruff-format)
-        prod_error
         runtools ruff format celerywyrm bookwyrm
         ;;
     ruff-check)
-        prod_error
         runtools ruff check celerywyrm bookwyrm
         ;;
     ruff-fix)
-        prod_error
         runtools ruff check --fix celerywyrm bookwyrm
         ;;
     prettier)
-        prod_error
         runtools prettier --write bookwyrm/static/js/*.js
         ;;
     eslint)
-        prod_error
         runtools eslint bookwyrm/static --ext .js
         ;;
     stylelint)
-        prod_error
         runtools stylelint --fix bookwyrm/static/css \
             --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
         ;;
     formatters)
-        prod_error
         runtools ruff format celerywyrm bookwyrm
         runtools ruff check --fix celerywyrm bookwyrm
         runtools prettier --write bookwyrm/static/js/*.js
@@ -242,7 +245,6 @@ case "$CMD" in
             --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
         ;;
     mypy)
-        prod_error
         runtools mypy celerywyrm bookwyrm
         ;;
     create_secrets)
@@ -255,13 +257,7 @@ case "$CMD" in
     update)
         git pull
         $DOCKER_COMPOSE build
-        # ./update.sh
-        runweb python manage.py migrate
-        runweb python manage.py compile_themes
-        runweb python manage.py collectstatic --no-input
         $DOCKER_COMPOSE up -d
-        $DOCKER_COMPOSE restart web
-        $DOCKER_COMPOSE restart celery_worker
         ;;
     populate_streams)
         runweb python manage.py populate_streams "$@"
@@ -355,6 +351,9 @@ case "$CMD" in
         echo "    compilemessages [locale]"
         echo "    update_locales"
         echo "    build"
+        echo "    dev"
+        echo "    rundev"
+        echo "    docker_cache_cleanup"
         echo "    clean"
         echo "    ruff (format and check)"
         echo "    ruff-format (format code only)"
