@@ -9,7 +9,7 @@
     <div class="content">
         <p>{% trans "There are no books here right now! Try searching for a book to get started" %}</p>
 
-        <div class="box has-background-link-light">
+        <div class="notification has-background-link-light">
             <p>{% trans "Do you have book data from another service like GoodReads?" %}</p>
             <a href="{% url 'import' %}">
                 <span class="icon icon-list" aria-hidden="true"></span>
@@ -50,14 +50,14 @@
         {% with shelf_counter=forloop.counter %}
         {% for book in shelf.books %}
         <div
-            class="suggested-tabs card"
+            class="suggested-tabs"
             role="tabpanel"
             id="book_{{ book.id }}"
             {% if active_book and active_book == book.id|stringformat:'d' %}{% elif not active_book and shelf_counter == 1 and forloop.first %}{% else %} hidden{% endif %}
             aria-labelledby="tab_book_{{ book.id }}">
 
-            <div class="card-header">
-                <div class="card-header-title">
+            <div>
+                <div class="title is-6">
                     <div>
                         <p class="mb-2">{% include 'snippets/book_titleby.html' with book=book %}</p>
                         {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
@@ -68,8 +68,8 @@
                     {% include 'snippets/toggle/toggle_button.html' with label=button_text controls_text="book" controls_uid=book.id class="delete" nonbutton=True pressed=True %}
                 </div>
             </div>
-            <div class="card-content">
-            {% include 'snippets/create_status.html' with book=book %}
+            <div>
+                {% include 'snippets/create_status.html' with book=book %}
             </div>
         </div>
         {% endfor %}
