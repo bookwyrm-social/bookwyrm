@@ -4,7 +4,7 @@
 
 {% block card-header %}
 <div
-    class="card-header-title has-background-secondary is-block"
+    class=""
     {% if main %}id="anchor-{{ status.id }}"{% endif %}
 >
     {% include 'snippets/status/header.html' with status=status %}
@@ -16,7 +16,7 @@
 {% block card-footer %}
 {% if moderation_mode and perms.bookwyrm.moderate_post %}
 
-<div class="card-footer-item">
+<div class="is-flex-grow-1">
     {# moderation options #}
     <form name="delete-{{ status.id }}" action="/delete-status/{{ status.id }}/{{ report.id }}" method="post">
         {% csrf_token %}
@@ -30,25 +30,25 @@
 {# nothing here #}
 {% elif request.user.is_authenticated %}
 
-    <div class="card-footer-item">
+    <div class="is-flex-grow-1">
         {% trans "Reply" as button_text %}
         {% include 'snippets/toggle/toggle_button.html' with controls_text="show_comment" controls_uid=status.id text=button_text icon_with_text="comment" class="is-small is-light is-transparent toggle-button" focus="id_content_reply" %}
     </div>
-    <div class="card-footer-item">
+    <div class="is-flex-grow-1">
         {% include 'snippets/boost_button.html' with status=status %}
     </div>
-    <div class="card-footer-item">
+    <div class="is-flex-grow-1">
         {% include 'snippets/fav_button.html' with status=status %}
     </div>
     {% if not moderation_mode %}
-    <div class="card-footer-item">
+    <div class="is-flex-grow-1">
         {% include 'snippets/status/status_options.html' with class="is-small is-light is-transparent" right=True %}
     </div>
     {% endif %}
 
 {% else %}
 
-    <div class="card-footer-item">
+    <div class="">
         <a href="{% url 'login' %}">
             <span class="icon icon-comment is-small" title="{% trans 'Reply' %}">
                 <span class="is-sr-only">{% trans "Reply" %}</span>
@@ -71,7 +71,7 @@
 {% if request.user.is_authenticated and not moderation_mode and not no_interact %}
 <section class="reply-panel is-hidden" id="show_comment_{{ status.id }}">
     <div class="card-footer">
-        <div class="card-footer-item">
+        <div class="is-flex-grow-1">
             {% include 'snippets/create_status/status.html' with type="reply" reply_parent=status book=None %}
         </div>
     </div>
