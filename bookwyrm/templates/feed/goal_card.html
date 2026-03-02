@@ -1,9 +1,11 @@
 {% extends 'components/card.html' %}
 {% load i18n %}
 
+{% block card-body-style %}notification{% endblock %}
+
 {% block card-header %}
-<h3 class="card-header-title has-background-primary has-text-white">
-    <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {% blocktrans %}{{ year }} Reading Goal{% endblocktrans %}
+<h3 class="title is-5 is-flex is-align-items-center">
+    <span class="icon icon-book is-size-3 mr-2 ml-1" aria-hidden="true"></span> {% blocktrans %}{{ year }} Reading Goal{% endblocktrans %}
 </h3>
 {% endblock %}
 

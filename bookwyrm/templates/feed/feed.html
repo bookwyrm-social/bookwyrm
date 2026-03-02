@@ -35,10 +35,7 @@
 
     {% if request.user.show_goal and not goal and tab.key == 'home' %}
     {% now 'Y' as year %}
-    <section class="block">
-        {% include 'feed/goal_card.html' with year=year %}
-        <hr>
-    </section>
+    {% include 'feed/goal_card.html' with year=year %}
     {% endif %}
 
     {% if annual_summary_year and tab.key == 'home' and has_summary_read_throughs %}
@@ -68,9 +65,9 @@
 {# suggested users on the first page, two statuses down #}
 {% include 'feed/suggested_users.html' with suggested_users=suggested_users %}
 {% endif %}
-<div class="block">
-    {% include 'snippets/status/status.html' with status=activity %}
-</div>
+
+{% include 'snippets/status/status.html' with status=activity %}
+
 {% endfor %}
 
 {% endblock %}
