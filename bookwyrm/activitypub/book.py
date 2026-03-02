@@ -5,6 +5,7 @@ from typing import Optional
 
 from .base_activity import ActivityObject
 from .image import Document
+from .ordered_collection import OrderedCollection, CollectionItem
 
 
 @dataclass(init=False)
@@ -35,8 +36,9 @@ class Book(BookData):
     subtitle: str = None
     description: str = ""
     languages: list[str] = field(default_factory=list)
-    series: str = ""
-    seriesNumber: str = ""
+    series: str = ""  # legacy, now deprecated
+    seriesNumber: str = ""  # legacy, now deprecated
+    seriesBooks: list[str] = field(default_factory=list)
     subjects: list[str] = field(default_factory=list)
     subjectPlaces: list[str] = field(default_factory=list)
 
@@ -91,3 +93,24 @@ class Author(BookData):
     wikipediaLink: str = ""
     type: str = "Author"
     website: str = ""
+
+
+@dataclass(init=False)
+class Series(BookData, OrderedCollection):
+    """serializes a book series"""
+
+    actor: str
+    name: str
+    alternativeNames: list[str] = field(default_factory=list)
+    type: str = "Series"
+
+
+@dataclass(init=False)
+class SeriesBook(CollectionItem):
+    """a book in a series"""
+
+    actor: str
+    book: str
+    series: str
+    seriesNumber: int = None
+    type: str = "SeriesBook"
