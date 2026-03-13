@@ -81,12 +81,7 @@ from .preferences.security import (
 )
 
 # books
-from .books.books import (
-    Book,
-    upload_cover,
-    add_description,
-    resolve_book,
-)
+from .books.books import Book, upload_cover, add_description, resolve_book
 from .books.series import BookSeriesBy
 from .books.books import update_book_from_remote
 from .books.edit_book import (
@@ -141,6 +136,14 @@ from .list.list import (
     add_book,
     remove_book,
     set_book_position,
+)
+
+# suggestion lists
+from .suggestion_list import SuggestionList
+from .suggestion_list import (
+    book_add_suggestion,
+    book_remove_suggestion,
+    endorse_suggestion,
 )
 
 # misc views
