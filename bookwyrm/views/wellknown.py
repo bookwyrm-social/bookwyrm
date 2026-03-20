@@ -64,16 +64,16 @@ def nodeinfo_pointer(_):
 def nodeinfo(_):
     """basic info about the server"""
     status_count = models.Status.objects.filter(user__local=True, deleted=False).count()
-    user_count = models.User.objects.filter(is_active=True, local=True).count()
+    user_count = models.User.objects.filter(local=True, is_active=True).count()
 
     month_ago = timezone.now() - relativedelta(months=1)
     last_month_count = models.User.objects.filter(
-        is_active=True, local=True, last_active_date__gt=month_ago
+        local=True, is_active=True, last_active_date__gt=month_ago
     ).count()
 
     six_months_ago = timezone.now() - relativedelta(months=6)
     six_month_count = models.User.objects.filter(
-        is_active=True, local=True, last_active_date__gt=six_months_ago
+        local=True, is_active=True, last_active_date__gt=six_months_ago
     ).count()
 
     site = models.SiteSettings.get()
@@ -99,7 +99,7 @@ def nodeinfo(_):
 @require_federation
 def instance_info(_):
     """let's talk about your cool unique instance"""
-    user_count = models.User.objects.filter(is_active=True, local=True).count()
+    user_count = models.User.objects.filter(local=True, is_active=True).count()
     status_count = models.Status.objects.filter(user__local=True, deleted=False).count()
 
     site = models.SiteSettings.get()
