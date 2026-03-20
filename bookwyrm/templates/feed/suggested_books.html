@@ -56,7 +56,7 @@
             {% if active_book and active_book == book.id|stringformat:'d' %}{% elif not active_book and shelf_counter == 1 and forloop.first %}{% else %} hidden{% endif %}
             aria-labelledby="tab_book_{{ book.id }}">
 
-            <div>
+            <div class="is-flex">
                 <div class="title is-6">
                     <div>
                         <p class="mb-2">{% include 'snippets/book_titleby.html' with book=book %}</p>
