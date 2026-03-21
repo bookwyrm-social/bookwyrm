@@ -145,8 +145,10 @@ def init_link_domains():
     for domain, name in domains:
         models.LinkDomain.objects.get_or_create(
             domain=domain,
-            name=name,
-            status="approved",
+            defaults={
+                "name": name,
+                "status": "approved",
+            },
         )
 
 

@@ -1,20 +1,30 @@
 name: dev-wyrm
 services:
+  nginx:
+    env_file: .env.dev
   web:
+    env_file: .env.dev
     volumes:
       - .:/app
   celery_worker:
+    env_file: .env.dev
     volumes:
       - .:/app
   celery_beat:
+    env_file: .env.dev
     volumes:
       - .:/app
   flower:
+    env_file: .env.dev
     volumes:
       - .:/app
   dev-tools:
     build: dev-tools
-    env_file: .env
+    env_file:
+      - .env
+      - .env.dev
+    networks:
+      - main
     volumes:
       - /app/dev-tools/
       - .:/app

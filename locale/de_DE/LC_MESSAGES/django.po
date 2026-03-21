@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-06 17:47+0000\n"
-"PO-Revision-Date: 2026-02-06 18:48\n"
+"PO-Revision-Date: 2026-02-18 21:24\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -95,7 +95,7 @@ msgstr "Diese Domain ist blockiert. Bitte kontaktiere einen Administrator, wenn 
 
 #: bookwyrm/forms/links.py:47
 msgid "This link has already been added for this book. If it is not visible, the domain is still pending."
-msgstr ""
+msgstr "Dieser Link wurde bereits zu diesem Buch hinzugefügt. Falls er nicht sichtbar ist, befindet sich die Domain noch in der Freischaltung."
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
@@ -1151,7 +1151,7 @@ msgstr "Auf Finna ansehen"
 
 #: bookwyrm/templates/book/book.html:205
 msgid "View on Libris"
-msgstr ""
+msgstr "Auf Libris ansehen"
 
 #: bookwyrm/templates/book/book.html:229
 #, python-format
@@ -1240,7 +1240,7 @@ msgstr "Zur Liste hinzufügen"
 
 #: bookwyrm/templates/book/book.html:438
 msgid "Create new list..."
-msgstr ""
+msgstr "Neue Liste erstellen..."
 
 #: bookwyrm/templates/book/book.html:442
 #: bookwyrm/templates/book/cover_add_modal.html:32
@@ -1301,7 +1301,7 @@ msgstr "Finna ID:"
 #: bookwyrm/templates/book/book_identifiers.html:65
 #: bookwyrm/templates/book/edit/edit_book_form.html:399
 msgid "Libris ID:"
-msgstr ""
+msgstr "Libris-ID:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1671,7 +1671,7 @@ msgstr "Status"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:37
 msgid "Availability"
-msgstr ""
+msgstr "Verfügbarkeit"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:48
 #: bookwyrm/templates/settings/link_domains/link_table.html:21
@@ -1930,11 +1930,11 @@ msgstr "Beziehungen"
 
 #: bookwyrm/templates/directory/user_connection_filter.html:8
 msgid "Following users"
-msgstr ""
+msgstr "Nutzer*innen, denen du folgst"
 
 #: bookwyrm/templates/directory/user_connection_filter.html:12
 msgid "Not following users"
-msgstr ""
+msgstr "Nutzer*innen, denen du nicht folgst"
 
 #: bookwyrm/templates/directory/user_type_filter.html:5
 msgid "User type"
@@ -3396,7 +3396,7 @@ msgstr "Folgende und Gefolgte"
 
 #: bookwyrm/templates/import/import_user.html:131
 msgid "User blocks"
-msgstr "Blockierte Accounts"
+msgstr "Blockierte Nutzer\\*innen"
 
 #: bookwyrm/templates/import/import_user.html:138
 #: bookwyrm/templates/preferences/export-user.html:23
@@ -3516,7 +3516,7 @@ msgstr "Statusmeldungen"
 
 #: bookwyrm/templates/import/user_import_status.html:85
 msgid "Follows & Blocks"
-msgstr "Gefolgte und Geblockte"
+msgstr "Gefolgte und Blockierte"
 
 #: bookwyrm/templates/import/user_import_status.html:144
 msgid "Imported books"
@@ -3745,7 +3745,7 @@ msgstr "Speichern rückgängig machen"
 
 #: bookwyrm/templates/lists/create_list_modal.html:6
 msgid "Create new list"
-msgstr ""
+msgstr "Neue Liste erstellen"
 
 #: bookwyrm/templates/lists/created_text.html:5
 #, python-format
@@ -4515,7 +4515,7 @@ msgstr "Alias entfernen"
 #: bookwyrm/templates/preferences/blocks.html:7
 #: bookwyrm/templates/preferences/layout.html:62
 msgid "Blocked Users"
-msgstr "Gesperrte Benutzer*innen"
+msgstr "Blockierte Nutzer*innen"
 
 #: bookwyrm/templates/preferences/blocks.html:12
 msgid "No users currently blocked."
@@ -4586,7 +4586,7 @@ msgstr "2FA ausschalten"
 #: bookwyrm/templates/preferences/edit_user.html:7
 #: bookwyrm/templates/preferences/layout.html:15
 msgid "Edit Profile"
-msgstr "Profil bearbeiten:"
+msgstr "Profil bearbeiten"
 
 #: bookwyrm/templates/preferences/edit_user.html:12
 #: bookwyrm/templates/preferences/edit_user.html:25
@@ -5256,11 +5256,11 @@ msgstr "Farbe:"
 #: bookwyrm/templates/settings/automod/rules.html:7
 #: bookwyrm/templates/settings/automod/rules.html:11
 msgid "Auto-moderation rules"
-msgstr "Regeln für automatische Moderation"
+msgstr "Regeln für automatisierte Moderation"
 
 #: bookwyrm/templates/settings/automod/rules.html:18
 msgid "Auto-moderation rules will create reports for any local user or status with fields matching the provided string."
-msgstr "Auto-Moderationsregeln erstellen Berichte für jeden lokalen Benutzer oder Status mit Feldern, die der angegebenen Zeichenfolge entsprechen."
+msgstr "Regeln für die automatisierte Moderation bewirken, dass Berichte erstellt werden über lokale Benutzer\\*innen oder Beiträge, die die angegebene Zeichenkette in irgendeinem Feld nutzen."
 
 #: bookwyrm/templates/settings/automod/rules.html:19
 msgid "Users or statuses that have already been reported (regardless of whether the report was resolved) will not be flagged."
@@ -5486,7 +5486,7 @@ msgstr "Finna.fi ist ein Suchdienst, der Material von Hunderten finnischen Organ
 
 #: bookwyrm/templates/settings/connectors/available.html:19
 msgid "Libris is the Swedish national library catalog, providing access to records from Swedish libraries."
-msgstr ""
+msgstr "Libris ist der Katalog der schwedischen Nationalbibliothek, der den Zugriff auf Bestände schwedischer Bibliotheken ermöglicht."
 
 #: bookwyrm/templates/settings/connectors/available.html:32
 msgid "Create new connector"
@@ -5841,7 +5841,7 @@ msgstr "Alle Benutzer*innen dieser Instanz werden wieder aktiviert."
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:6
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:15
 msgid "Import Blocklist"
-msgstr "Blockliste importieren"
+msgstr "Sperrliste importieren"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:38
 msgid "Success!"
@@ -6317,7 +6317,7 @@ msgstr "System"
 
 #: bookwyrm/templates/settings/layout.html:105
 msgid "Redis status"
-msgstr ""
+msgstr "Redis-Status"
 
 #: bookwyrm/templates/settings/layout.html:109
 msgid "Scheduled Tasks"
@@ -6389,70 +6389,70 @@ msgstr "Keine Links für diese Domain vorhanden."
 #: bookwyrm/templates/settings/redis.html:5
 #: bookwyrm/templates/settings/redis.html:7
 msgid "Redis Status"
-msgstr ""
+msgstr "Redis-Status"
 
 #: bookwyrm/templates/settings/redis.html:13
 msgid "Info"
-msgstr ""
+msgstr "Info"
 
 #: bookwyrm/templates/settings/redis.html:17
 msgid "Used memory"
-msgstr ""
+msgstr "Verwendeter Speicher"
 
 #: bookwyrm/templates/settings/redis.html:23
 msgid "Total system memory"
-msgstr ""
+msgstr "Gesamter Systemspeicher"
 
 #: bookwyrm/templates/settings/redis.html:29
 msgid "Keys"
-msgstr ""
+msgstr "Schlüssel"
 
 #: bookwyrm/templates/settings/redis.html:37
 msgid "Outdated cache keys"
-msgstr ""
+msgstr "Veraltete Cache-Schlüssel"
 
 #: bookwyrm/templates/settings/redis.html:40
 #, python-format
 msgid "This will scan for keys in the Django redis cache that use no prefix (the current prefix is <code>%(prefix)s</code>), and identify Activity Streams for users with deleted accounts."
-msgstr ""
+msgstr "Dies sucht nach Schlüsseln in Djangos Redis-Cache, die keinen Präfix verwenden (der aktuelle Präfix ist <code>%(prefix)s</code>) und identifiziert Activity Streams für Nutzer\\*innen mit gelöschten Accounts."
 
 #: bookwyrm/templates/settings/redis.html:47
 #, python-format
 msgid "%(keys)s identified"
-msgstr ""
+msgstr "%(keys)s identifiziert"
 
 #: bookwyrm/templates/settings/redis.html:55
 msgid "Erase outdated keys"
-msgstr ""
+msgstr "Veraltete Schlüssel löschen"
 
 #: bookwyrm/templates/settings/redis.html:63
 msgid "Scan for outdated keys"
-msgstr ""
+msgstr "Nach veralteten Schlüsseln suchen"
 
 #: bookwyrm/templates/settings/redis.html:71
 msgid "Advanced"
-msgstr ""
+msgstr "Erweitert"
 
 #: bookwyrm/templates/settings/redis.html:75
 msgid "Clear Django Cache"
-msgstr ""
+msgstr "Django-Cache leeren"
 
 #: bookwyrm/templates/settings/redis.html:81
 msgid "This is <strong>NOT recommended</strong> and should only be used if something has gone very wrong with your cache. All sessions will be cleared and users will be logged out of their accounts."
-msgstr ""
+msgstr "Dies wird <strong>NICHT empfohlen</strong> und sollte nur dann verwendet werden, wenn etwas mit deinem Cache gründlich schiefgegangen ist. Alle Sitzungen werden gelöscht und Nutzer\\*innen werden aus ihren Konten ausgeloggt."
 
 #: bookwyrm/templates/settings/redis.html:88
 #, python-format
 msgid "%(keys)s keys deleted"
-msgstr ""
+msgstr "%(keys)s Schlüssel gelöscht"
 
 #: bookwyrm/templates/settings/redis.html:97
 msgid "Erase cache"
-msgstr ""
+msgstr "Cache löschen"
 
 #: bookwyrm/templates/settings/redis.html:109
 msgid "Could not connect to Redis Activity"
-msgstr ""
+msgstr "Verbindung zur Redis-Activity fehlgeschlagen"
 
 #: bookwyrm/templates/settings/registration.html:38
 msgid "Allow registration"
