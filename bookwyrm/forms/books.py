@@ -147,3 +147,15 @@ class EditionFromWorkForm(CustomForm):
             "cover",
             "first_published_date",
         ]
+
+
+class SeriesForm(CustomForm):
+    class Meta:
+        model = models.Series
+        fields = [
+            "name",
+            "alternative_names",
+            "inventaire_id",
+            "wikidata",
+            "isfdb",
+        ]
