@@ -11,6 +11,12 @@ bots:
   - name: Allow access to manifest.json directly
     action: ALLOW
     path_regex: "^/manifest.json$"
+  - name: Allow access to user rss
+    action: ALLOW
+    path_regex: "^/user/.*/rss/?$"
+  - name: Allow access to user reviews/quotes/comments rss
+    action: ALLOW
+    path_regex: "^/user/.*/rss-(quotes|reviews|comments)/?$"
   # Anubis subauth doesn't seem to handle CHALLENGE nicely, so tune weight
   - name: All email confirmations are suspicious by default
     action: WEIGH
