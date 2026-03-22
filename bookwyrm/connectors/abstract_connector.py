@@ -124,13 +124,17 @@ class AbstractMinimalConnector(ABC):
         authors = work.authors.all().union(edition.authors.all())
 
         # Inventaire series will be a list of activity strings
-        if work.series and isinstance(work.series, list):
-            for data in work.series:
-                series_data = models.Series(**data)  # type: ignore
-                series_to_process.append(series_data)
+        if hasattr(work, "series") and isinstance(work.series, list):
+            if len(work.series) > 0:
+                for data in work.series:
+                    series_data = models.Series(**data)  # type: ignore
+                    series_to_process.append(series_data)
+
         else:
             # otherwise it's just a a name
             name = work.series or edition.series
+            if not name or name == "":
+                return
             series_to_process.append(models.Series(name=name))  # type: ignore
             work.series_number = work.series_number or edition.series_number
 
@@ -548,9 +552,10 @@ def activitydata_to_seriesbook(
         series = new
         series.save()
 
-    if not models.SeriesBook.objects.filter(book=work, series=series).exists():
-        # using the work.series_number for every series is safe because
-        # Inventaire doesn't supply series ordinal when more than one series
-        models.SeriesBook.objects.create(
-            user=user, book=work, series=series, series_number=work.series_number
-        )
+    # using the work.series_number for every series is safe because
+    # Inventaire doesn't supply series ordinal when more than one series
+    models.SeriesBook.objects.get_or_create(
+        book=work,
+        series=series,
+        defaults={"user": user, "series_number": work.series_number},
+    )

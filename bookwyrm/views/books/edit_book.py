@@ -360,16 +360,14 @@ class ConfirmEditBook(View):
             if series_match := request.POST.get("series_match"):
                 if series_match != "0":  # add known series
                     series = models.Series.objects.get(id=int(series_match))
-
-                    if not models.SeriesBook.objects.filter(
-                        series=series, book=book.parent_work, user=user
-                    ).exists():  # don't create a dupe!
-                        models.SeriesBook.objects.create(
-                            series=series,
-                            book=book.parent_work,
-                            series_number=book.series_number,
-                            user=user,
-                        )
+                    models.SeriesBook.objects.get_or_create(
+                        series=series,
+                        book=book.parent_work,
+                        defaults={
+                            "series_number": book.series_number,
+                            "user": user,
+                        },
+                    )
 
                     book = clear_series(book)
 

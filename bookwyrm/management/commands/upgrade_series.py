@@ -52,15 +52,12 @@ def upgrade_series_data():
         else:
             series = Series.objects.create(user=user, name=book.series)
 
-        if not SeriesBook.objects.filter(
-            book=book.parent_work, series=series
-        ).exists():  # the series might match because the parent work is already attached to the series. Don't try to duplicate it.
-            SeriesBook.objects.create(
-                user=user,
-                series=series,
-                book=book.parent_work,
-                series_number=book.series_number,
-            )
+        # Use get_or_create so we don't duplicate.
+        SeriesBook.objects.get_or_create(
+            book=book.parent_work,
+            series=series,
+            defaults={"user": user, "series_number": book.series_number},
+        )
 
         book.series = None
         book.series_number = None

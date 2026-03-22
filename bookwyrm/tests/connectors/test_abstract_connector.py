@@ -193,6 +193,36 @@ class AbstractConnector(TestCase):
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.SeriesBook.objects.count(), 1)
 
+    def test_get_or_create_seriesbook_from_empty_series(self):
+        """don't make empty series"""
+
+        work = models.Work.objects.create(title="Test Book")
+        work.series = ""
+        edition = self.book
+
+        self.assertEqual(models.Series.objects.count(), 0)
+        self.assertEqual(models.SeriesBook.objects.count(), 0)
+
+        self.connector.get_or_create_seriesbook_from_data(work=work, edition=edition)
+
+        self.assertEqual(models.Series.objects.count(), 0)
+        self.assertEqual(models.SeriesBook.objects.count(), 0)
+
+    def test_get_or_create_seriesbook_from_empty_inventaire_series(self):
+        """don't make empty series when fetching Inventaire books"""
+
+        work = models.Work.objects.create(title="Test Book")
+        work.series = []
+        edition = self.book
+
+        self.assertEqual(models.Series.objects.count(), 0)
+        self.assertEqual(models.SeriesBook.objects.count(), 0)
+
+        self.connector.get_or_create_seriesbook_from_data(work=work, edition=edition)
+
+        self.assertEqual(models.Series.objects.count(), 0)
+        self.assertEqual(models.SeriesBook.objects.count(), 0)
+
     def test_get_or_create_seriesbook_from_existing_series(self):
         """do we get a seriesbook with existing series?"""
 
