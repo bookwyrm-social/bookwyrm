@@ -19,7 +19,7 @@ main = [
     "django-storages[azure]",
     "environs==14.5.0",
     "flower==2.0.1",
-    "gunicorn==23.0.0",
+    "gunicorn==25.0.3",
     "hiredis==2.3.2",
     "libsass==0.23.0",
     "mistune==3.2.0",
@@ -133,7 +133,7 @@ target-version = "py311"
 [tool.ruff.lint]
 select = [
     "E", # pycodestyle errors
-    "W", # pycodestyle warnings  
+    "W", # pycodestyle warnings
     "F", # pyflakes (critical errors only)
 ]
 
