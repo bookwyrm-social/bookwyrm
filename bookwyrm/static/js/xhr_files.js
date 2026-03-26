@@ -38,6 +38,7 @@ let XhrFiles = new (class {
                     alert(
                         `File exceeds maximum size: ${event.currentTarget.dataset.maxUploadHuman}`
                     );
+
                     return;
                 }
 
