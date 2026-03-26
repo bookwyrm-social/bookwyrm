@@ -34,6 +34,13 @@ let XhrFiles = new (class {
             if (item.kind === "file") {
                 const file = item.getAsFile();
 
+                if (file.size > event.currentTarget.dataset.maxUpload) {
+                    alert(
+                        `File exceeds maximum size: ${event.currentTarget.dataset.maxUploadHuman}`
+                    );
+                    return;
+                }
+
                 this.uploadFile(file, event.target);
             }
         });

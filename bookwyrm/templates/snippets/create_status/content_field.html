@@ -13,6 +13,8 @@ draft: an existing Status object that is providing default values for input fiel
         name="content"
         class="textarea save-draft"
         data-droppable-textfield="1"
+        data-max-upload="{% max_upload_size %}"
+        data-max-upload-human="{% max_upload_size_human %}"
         {% if not draft %}data-cache-draft="id_content_{{ type }}_{{ book.id }}{{ reply_parent.id }}"{% endif %}
         id="id_content_{{ type }}_{{ book.id }}{{ reply_parent.id }}{{ uuid }}"
         placeholder="{{ placeholder }}"
