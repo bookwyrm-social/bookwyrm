@@ -19,7 +19,7 @@
                 {% csrf_token %}
                 <div class="field has-addons mb-0">
                     <div class="control">
-                        <label for="input-priority" class="button is-transparent is-small">{% trans "Priority" %}</label>
+                        <label for="input_priority_{{ connector.id }}" class="button is-transparent is-small">{% trans "Priority" %}</label>
                     </div>
                     <div class="control">
                         <input id="input_priority_{{ connector.id }}" class="input is-small" type="number" min="1" name="priority" value="{{connector.priority}}">
