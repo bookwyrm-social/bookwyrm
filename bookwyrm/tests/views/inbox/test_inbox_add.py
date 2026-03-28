@@ -45,6 +45,11 @@ class InboxAdd(TestCase):
             remote_id="https://example.com/book/37292",
             parent_work=work,
         )
+        cls.another_book = models.Edition.objects.create(
+            title="Another Test",
+            remote_id="https://example.com/book/79",
+            parent_work=models.Work.objects.create(title="blah"),
+        )
 
     @responses.activate
     def test_handle_add_book_to_shelf(self):
@@ -132,4 +137,59 @@ class InboxAdd(TestCase):
         self.assertEqual(booklist.name, "Test List")
         self.assertEqual(booklist.books.first(), self.book)
         self.assertEqual(listitem.remote_id, "https://example.com/listbook/6189")
+        self.assertEqual(listitem.notes, "hi hello")
+
+    # pylint: disable=line-too-long
+    @responses.activate
+    def test_handle_add_book_to_suggestion_list(self):
+        """listing a book"""
+        responses.add(
+            responses.GET,
+            "https://example.com/book/suggestion/list",
+            json={
+                "id": "https://example.com/book/{self.another_book.id}/suggestions",
+                "type": "SuggestionList",
+                "totalItems": 1,
+                "book": self.another_book.parent_work.to_activity(),
+                "first": f"https://example.com/book/{self.another_book.id}/suggestions?page=1",
+                "last": f"https://example.com/book/{self.another_book.id}/suggestions?page=1",
+                "name": "Test List",
+                "owner": "https://example.com/user/mouse",
+                "to": ["https://www.w3.org/ns/activitystreams#Public"],
+                "cc": ["https://example.com/user/mouse/followers"],
+                "summary": "summary text",
+                "curation": "open",
+                "@context": "https://www.w3.org/ns/activitystreams",
+            },
+        )
+        responses.add(
+            responses.GET,
+            self.another_book.parent_work.remote_id,
+            json=self.another_book.parent_work.to_activity(),
+        )
+
+        activity = {
+            "id": f"https://example.com/book/{self.another_book.id}/suggestions#add",
+            "type": "Add",
+            "actor": "https://example.com/users/rat",
+            "object": {
+                "actor": self.remote_user.remote_id,
+                "type": "SuggestionListItem",
+                "book": self.book.remote_id,
+                "id": "https://example.com/list/suggestion/item",
+                "notes": "hi hello",
+                "order": 1,
+            },
+            "target": "https://example.com/book/suggestion/list",
+            "@context": "https://www.w3.org/ns/activitystreams",
+        }
+        views.inbox.activity_task(activity)
+
+        booklist = models.SuggestionList.objects.get()
+        listitem = models.SuggestionListItem.objects.get()
+        self.assertEqual(
+            booklist.name, f"Suggestions for {self.another_book.parent_work.title}"
+        )
+        self.assertEqual(booklist.suggests_for, self.another_book.parent_work)
+        self.assertEqual(booklist.books.first(), self.book)
         self.assertEqual(listitem.notes, "hi hello")
