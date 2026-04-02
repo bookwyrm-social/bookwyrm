@@ -143,7 +143,7 @@
                             {% csrf_token %}
                             <div class="field has-addons mb-0">
                                 <div class="control">
-                                    <label for="input-list-position" class="button is-transparent is-small">{% trans "List position" %}</label>
+                                    <label for="input_list_position_{{ item.id }}" class="button is-transparent is-small">{% trans "List position" %}</label>
                                 </div>
                                 <div class="control">
                                     <input id="input_list_position_{{ item.id }}" class="input is-small" type="number" min="1" name="position" value="{{ item.order }}">
