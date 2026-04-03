@@ -6,6 +6,7 @@ import os
 from boto3.session import Session as BotoSession
 from s3_tar import S3Tar
 
+from django.db import transaction
 from django.db.models import FileField, JSONField
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
@@ -59,26 +60,27 @@ def create_export_json_task(**kwargs):
     if job.status == "stopped":
         return
 
-    try:
-        # generate JSON
-        data = export_user(job.user)
-        data["settings"] = export_settings(job.user)
-        data["goals"] = export_goals(job.user)
-        data["books"] = export_books(job.user)
-        data["saved_lists"] = export_saved_lists(job.user)
-        data["follows"] = export_follows(job.user)
-        data["blocks"] = export_blocks(job.user)
-        job.export_json = data
-        job.save(update_fields=["export_json"])
+    with transaction.atomic():
+        try:
+            # generate JSON
+            data = export_user(job.user)
+            data["settings"] = export_settings(job.user)
+            data["goals"] = export_goals(job.user)
+            data["books"] = export_books(job.user)
+            data["saved_lists"] = export_saved_lists(job.user)
+            data["follows"] = export_follows(job.user)
+            data["blocks"] = export_blocks(job.user)
+            job.export_json = data
+            job.save(update_fields=["export_json"])
 
-        # trigger task to create tar file
-        create_archive_task.delay(job_id=job.id)
+            # trigger task to create tar file
+            create_archive_task.delay(job_id=job.id)
 
-    except Exception as err:
-        logger.exception(
-            "create_export_json_task for job %s failed with error: %s", job.id, err
-        )
-        job.set_status("failed")
+        except Exception as err:
+            logger.exception(
+                "create_export_json_task for job %s failed with error: %s", job.id, err
+            )
+            job.set_status("failed")
 
 
 def archive_file_location(file, directory="") -> str:
