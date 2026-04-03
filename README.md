@@ -1,11 +1,12 @@
 # BookWyrm
-
 [![](https://img.shields.io/github/release/bookwyrm-social/bookwyrm.svg?colorB=58839b)](https://github.com/bookwyrm-social/bookwyrm/releases)
-[![Run Python Tests](https://github.com/bookwyrm-social/bookwyrm/actions/workflows/django-tests.yml/badge.svg)](https://github.com/bookwyrm-social/bookwyrm/actions/workflows/django-tests.yml)
 [![Ruff](https://github.com/bookwyrm-social/bookwyrm/actions/workflows/python.yml/badge.svg?job=ruff)](https://github.com/bookwyrm-social/bookwyrm/actions/workflows/python.yml)
+
+## Welcome to the codebase!
 
 BookWyrm is a social network for tracking your reading, talking about books, writing reviews, and discovering what to read next. Federation allows BookWyrm users to join small, trusted communities that can connect with one another, and with other ActivityPub services like [Mastodon](https://joinmastodon.org/) and [Pleroma](http://pleroma.social/).
 
+👋 Meaningful human interaction is the whole point: please feel welcome to participate regardless of your experience level with programming. We would love to help! By the same token, **please do *not* submit any AI-generated code or content.**
 
 ## Links
 
