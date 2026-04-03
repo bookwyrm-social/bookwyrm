@@ -110,9 +110,9 @@ def automod_users(reporter):
     return report_model.objects.bulk_create(
         [
             report_model(
-                reporter=reporter,
+                user=reporter,
                 note=_("Automatically generated report"),
-                user=u,
+                reported_user=u,
             )
             for u in users
         ]
@@ -141,14 +141,14 @@ def automod_statuses(reporter):
     ).distinct()
 
     report_model = apps.get_model("bookwyrm", "Report", require_ready=True)
-    return report_model.objects.bulk_create(
-        [
-            report_model(
-                reporter=reporter,
+    reports = []
+    for status in statuses:
+        with transaction.atomic():
+            report = report_model.objects.create(
+                user=reporter,
                 note=_("Automatically generated report"),
-                user=s.user,
-                status=s,
+                reported_user=status.user,
             )
-            for s in statuses
-        ]
-    )
+            report.statuses.add(status)
+            reports.append(report)
+    return reports

@@ -5,11 +5,11 @@
 
 {% block modal-title %}
 {% if status %}
-{% blocktrans with username=user|username %}Report @{{ username }}'s status{% endblocktrans %}
+{% blocktrans with username=reported_user|username %}Report @{{ username }}'s status{% endblocktrans %}
 {% elif link %}
 {% blocktrans with domain=link.domain.domain %}Report {{ domain }} link{% endblocktrans %}
 {% else %}
-{% blocktrans with username=user|username %}Report @{{ username }}{% endblocktrans %}
+{% blocktrans with username=reported_user|username %}Report @{{ username }}{% endblocktrans %}
 {%  endif %}
 {% endblock %}
 
@@ -20,10 +20,10 @@
 {% block modal-body %}
 
 {% csrf_token %}
-<input type="hidden" name="reporter" value="{{ request.user.id }}">
-<input type="hidden" name="user" value="{{ user.id }}">
+<input type="hidden" name="user" value="{{ request.user.id }}">
+<input type="hidden" name="reported_user" value="{{ reported_user.id }}">
 {% if status_id %}
-<input type="hidden" name="status" value="{{ status_id }}">
+<input type="hidden" name="statuses" value="{{ status_id }}">
 {% endif %}
 {% if link %}
 <input type="hidden" name="links" value="{{ link.id }}">
@@ -36,6 +36,14 @@
             {% trans "Links from this domain will be removed until your report has been reviewed." %}
         {% endif %}
     </p>
+    {% if not reported_user.local %}
+    <label class="checkbox label">
+        <input class="checkbox" id="id_allow_broadcast" type="checkbox" name="allow_broadcast" checked>
+        {% trans "Also send this report to the user's instance admins" %}
+    </label>
+    {% else %}
+        <input type="hidden" name="allow_broadcast">
+    {% endif %}
     <div class="control">
         <label class="label" for="id_{{ controls_uid }}_report_note">
             {% trans "More info about this report:" %}
