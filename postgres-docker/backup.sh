@@ -1,11 +1,6 @@
 #!/bin/bash
 info() { echo >&2 "[$(date --iso-8601=seconds)] $*"; }
 
-if [ "${DEBUG}" != 'false' ]; then
-    info "backup: Skipping backups because DEBUG is true"
-    exit 0
-fi
-
 if [ -z "$POSTGRES_DB" ]; then
     info "backup: Database not specified, defaulting to bookwyrm"
 fi
