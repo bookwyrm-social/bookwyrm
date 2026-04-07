@@ -3,6 +3,7 @@ services:
   web:
     volumes:
       - .:/app
+  db-backup-job: !reset null
   celery_worker:
     volumes:
       - .:/app
