@@ -6,7 +6,7 @@
 {% block content %}
 <div class="columns">
     {% if user.is_authenticated %}
-    <div class="column is-one-third">
+    <div class="column is-one-third pr-5">
         {% include "feed/suggested_books.html" %}
         {% if goal %}
         <section class="block">
