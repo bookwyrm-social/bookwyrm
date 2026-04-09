@@ -22,7 +22,7 @@ class Importer:
         ("authors", ["author_text", "author", "authors", "primary author"]),
         ("isbn_10", ["isbn_10", "isbn10", "isbn", "isbn/uid"]),
         ("isbn_13", ["isbn_13", "isbn13", "isbn", "isbns", "isbn/uid"]),
-        ("shelf", ["shelf", "exclusive shelf", "read status", "bookshelf"]),
+        ("shelf", ["shelf", "exclusive shelf", "read status", "bookshelf", "collections"]),
         ("review_name", ["review_name", "review name"]),
         ("review_body", ["review_content", "my review", "review"]),
         ("rating", ["my rating", "rating", "star rating"]),

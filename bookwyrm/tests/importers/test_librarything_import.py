@@ -65,7 +65,7 @@ class LibrarythingImport(TestCase):
         import_items = (
             models.ImportItem.objects.filter(job=import_job).all().order_by("id")
         )
-        self.assertEqual(len(import_items), 3)
+        self.assertEqual(len(import_items), 6)
         self.assertEqual(import_items[0].index, 0)
         self.assertEqual(import_items[0].data["Book Id"], "5498194")
         self.assertEqual(import_items[0].normalized_data["isbn_13"], "9782070291342")
@@ -181,3 +181,87 @@ class LibrarythingImport(TestCase):
         self.assertEqual(review.rating, 4.5)
         self.assertEqual(review.published_date, make_date(2007, 5, 8))
         self.assertEqual(review.privacy, "unlisted")
+
+    def test_get_shelf_date_finished(self, *_):
+        """date_finished takes priority and maps to read-finished shelf"""
+        normalized = {
+            "date_finished": "2007-05-08",
+            "date_started": "2007-04-16",
+            "shelf": "To read",
+        }
+        self.assertEqual(self.importer.get_shelf(normalized), models.Shelf.READ_FINISHED)
+
+    def test_get_shelf_date_started(self, *_):
+        """date_started without date_finished maps to reading shelf"""
+        normalized = {
+            "date_finished": None,
+            "date_started": "2007-04-16",
+            "shelf": "To read",
+        }
+        self.assertEqual(self.importer.get_shelf(normalized), models.Shelf.READING)
+
+    def test_get_shelf_from_collections_to_read(self, *_):
+        """Collections 'To read' maps to to-read shelf when no dates"""
+        normalized = {
+            "date_finished": None,
+            "date_started": None,
+            "shelf": "To read",
+        }
+        self.assertEqual(self.importer.get_shelf(normalized), models.Shelf.TO_READ)
+
+    def test_get_shelf_from_collections_reading(self, *_):
+        """Collections 'Currently reading' maps to reading shelf when no dates"""
+        normalized = {
+            "date_finished": None,
+            "date_started": None,
+            "shelf": "Currently reading",
+        }
+        self.assertEqual(self.importer.get_shelf(normalized), models.Shelf.READING)
+
+    def test_get_shelf_from_collections_read(self, *_):
+        """Collections 'Read' maps to read shelf when no dates"""
+        normalized = {
+            "date_finished": None,
+            "date_started": None,
+            "shelf": "Read",
+        }
+        self.assertEqual(self.importer.get_shelf(normalized), models.Shelf.READ_FINISHED)
+
+    def test_get_shelf_unrecognized_collection_defaults_to_read(self, *_):
+        """Unrecognized Collections value defaults to to-read"""
+        normalized = {
+            "date_finished": None,
+            "date_started": None,
+            "shelf": "Your library",
+        }
+        self.assertEqual(self.importer.get_shelf(normalized), models.Shelf.TO_READ)
+
+    def test_get_shelf_no_dates_no_collection(self, *_):
+        """No dates and no collection defaults to to-read"""
+        normalized = {
+            "date_finished": None,
+            "date_started": None,
+            "shelf": None,
+        }
+        self.assertEqual(self.importer.get_shelf(normalized), models.Shelf.TO_READ)
+
+    def test_create_job_with_collections(self, *_):
+        """Collections column is mapped to shelf field and used for shelf placement"""
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "public"
+        )
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")
+        )
+        # Row 0: has date_finished -> READ_FINISHED (dates take priority)
+        self.assertEqual(import_items[0].normalized_data["shelf"], models.Shelf.READ_FINISHED)
+        # Row 1: no dates, "Your library" -> TO_READ (unrecognized defaults)
+        self.assertEqual(import_items[1].normalized_data["shelf"], models.Shelf.TO_READ)
+        # Row 2: no dates, "Your library" -> TO_READ
+        self.assertEqual(import_items[2].normalized_data["shelf"], models.Shelf.TO_READ)
+        # Row 3: no dates, "To read" -> TO_READ (matches via Collections)
+        self.assertEqual(import_items[3].normalized_data["shelf"], models.Shelf.TO_READ)
+        # Row 4: no dates, "Currently reading" -> READING (matches via Collections)
+        self.assertEqual(import_items[4].normalized_data["shelf"], models.Shelf.READING)
+        # Row 5: no dates, "Read" -> READ_FINISHED (matches via Collections)
+        self.assertEqual(import_items[5].normalized_data["shelf"], models.Shelf.READ_FINISHED)

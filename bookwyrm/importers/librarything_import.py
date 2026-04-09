@@ -32,8 +32,17 @@ class LibrarythingImporter(Importer):
         return normalized
 
     def get_shelf(self, normalized_row: dict[str, Optional[str]]) -> Optional[str]:
+        """determine which shelf to use based on dates, falling back to the
+        Collections/shelf field, and defaulting to to-read"""
         if normalized_row["date_finished"]:
             return Shelf.READ_FINISHED
         if normalized_row["date_started"]:
             return Shelf.READING
+        # Fall back to Collections/shelf field for shelf matching
+        shelf_name = normalized_row.get("shelf")
+        if shelf_name:
+            shelf_name_lower = shelf_name.lower()
+            for shelf_key, guesses in self.shelf_mapping_guesses.items():
+                if shelf_name_lower in guesses:
+                    return shelf_key
         return Shelf.TO_READ
