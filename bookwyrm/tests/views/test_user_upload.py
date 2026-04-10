@@ -33,7 +33,7 @@ class UserUploadViews(TestCase):
         self.assertEqual(views.user_upload.target_size(1200, 1200, 500), [500, 500])
         self.assertEqual(views.user_upload.target_size(345, 456, 500), [345, 456])
 
-    @patch("bookwyrm.views.user_upload.UPLOAD_IMAGE_DIMENSIONS", [60,180])
+    @patch("bookwyrm.views.user_upload.UPLOAD_IMAGE_DIMENSIONS", [60, 180])
     def test_upload(self):
         view = views.CreateUserUpload.as_view()
         image_path = "bookwyrm/tests/data/default_avi_exif.jpg"
