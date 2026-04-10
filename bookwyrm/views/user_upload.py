@@ -2,7 +2,6 @@ import re
 import logging
 import tempfile
 from PIL import Image
-from environs import Env
 from io import BytesIO
 
 from django.core.files import File
@@ -14,6 +13,7 @@ from django.http import JsonResponse
 
 from bookwyrm import models
 from bookwyrm.utils.images import remove_uploaded_image_exif
+from bookwyrm.settings import UPLOAD_IMAGE_DIMENSIONS
 
 logger = logging.getLogger(__name__)
 
@@ -44,10 +44,8 @@ class CreateUserUpload(View):
         upload.save()
 
         width, height = image.size
-        env = Env()
-        sizes = env.list("UPLOAD_IMAGE_DIMENSIONS", [400, 1200], subcast=int)
 
-        for size in sizes:
+        for size in UPLOAD_IMAGE_DIMENSIONS:
             v = self.create_version(image, upload, size)
             if width < size and height < size:
                 break
