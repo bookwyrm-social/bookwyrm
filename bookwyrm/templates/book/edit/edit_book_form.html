@@ -59,29 +59,6 @@
                     {% include 'snippets/form_errors.html' with errors_list=form.description.errors id="desc_description" %}
                 </div>
 
-                <div class="columns">
-                    <div class="column is-two-thirds">
-                        <div class="field">
-                            <label class="label" for="id_series">
-                                {% trans "Series:" %}
-                            </label>
-                            <input type="text" class="input" name="series" id="id_series" value="{{ form.series.value|default:'' }}" aria-describedby="desc_series">
-
-                            {% include 'snippets/form_errors.html' with errors_list=form.series.errors id="desc_series" %}
-                        </div>
-                    </div>
-                    <div class="column is-one-third">
-                        <div class="field">
-                            <label class="label" for="id_series_number">
-                                {% trans "Series number:" %}
-                            </label>
-                            {{ form.series_number }}
-
-                            {% include 'snippets/form_errors.html' with errors_list=form.series_number.errors id="desc_series_number" %}
-                        </div>
-                    </div>
-                </div>
-
                 <div class="field">
                     <label class="label" for="id_languages">
                         {% trans "Languages:" %}
@@ -146,6 +123,57 @@
                 </span>
             </div>
         </section>
+
+
+        <section class="box">
+            <h2 class="title is-4">
+                {% trans "Series" %}
+            </h2>
+
+                <div class="content">
+                    <div class="field">
+                        {% with seriesbooks=book.parent_work.seriesbooks %}
+                        {% if seriesbooks.exists %}
+                        <label class="label">
+                            {% trans "Remove Series:" %}
+                        </label>
+                        <fieldset>
+                            {% for sb in seriesbooks.all %}
+                            <div class="">
+                                <label class="label mb-2" for="remove_series">
+                                    <span class="tag is-link is-light is-medium">
+                                        <a href="{{ sb.series.local_path }}">{{ sb.series.name }}</a>
+                                        <input class="ml-4" type="checkbox" name="remove_series" id="id_remove_series_{{sb.series.id}}" value="{{ sb.series.id }}" {% if sb.series.id|stringformat:"i" in remove_series %}checked{% endif %} aria-describedby="desc_remove_series_{{sb.series.id}}">
+                                      </span>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </fieldset>
+                        {% endif %}
+                        {% endwith %}
+
+                        <h3 class="title is-5">
+                            {% trans "Add Series" %}
+                        </h3>
+                    <label class="label" for="id_series">
+                        {% trans "Series name:" %}
+                    </label>
+                    <input type="text" class="input" name="series" id="id_series" value="{{ form.series.value|default:'' }}" aria-describedby="desc_series" {% if confirm_mode %}readonly{% endif %}>
+                    {% include 'snippets/form_errors.html' with errors_list=form.series.errors id="desc_series" %}
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="id_series_number">
+                        {% trans "Series number:" %}
+                    </label>
+                    {{ form.series_number }}
+                    {% include 'snippets/form_errors.html' with errors_list=form.series_number.errors id="desc_series_number" %}
+                </div>
+        </section>
+
+
+
+
 
         <section class="block">
             <h2 class="title is-4">
