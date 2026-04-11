@@ -1,11 +1,12 @@
 # BookWyrm
-
 [![](https://img.shields.io/github/release/bookwyrm-social/bookwyrm.svg?colorB=58839b)](https://github.com/bookwyrm-social/bookwyrm/releases)
-[![Run Python Tests](https://github.com/bookwyrm-social/bookwyrm/actions/workflows/django-tests.yml/badge.svg)](https://github.com/bookwyrm-social/bookwyrm/actions/workflows/django-tests.yml)
 [![Ruff](https://github.com/bookwyrm-social/bookwyrm/actions/workflows/python.yml/badge.svg?job=ruff)](https://github.com/bookwyrm-social/bookwyrm/actions/workflows/python.yml)
+
+## Welcome to the codebase!
 
 BookWyrm is a social network for tracking your reading, talking about books, writing reviews, and discovering what to read next. Federation allows BookWyrm users to join small, trusted communities that can connect with one another, and with other ActivityPub services like [Mastodon](https://joinmastodon.org/) and [Pleroma](http://pleroma.social/).
 
+👋 Meaningful human interaction is the whole point: please feel welcome to participate regardless of your experience level with programming. We would love to help! By the same token, **please do *not* submit any AI-generated code or content.**
 
 ## Links
 
@@ -22,7 +23,7 @@ BookWyrm is a platform for social reading. You can use it to track what you're r
 ## Federation
 BookWyrm is built on [ActivityPub](http://activitypub.rocks/). With ActivityPub, it inter-operates with different instances of BookWyrm, and other ActivityPub compliant services, like Mastodon. This means you can run an instance for your book club, and still follow your friend who posts on a server devoted to 20th century Russian speculative fiction. It also means that your friend on mastodon can read and comment on a book review that you post on your BookWyrm instance.
 
-Federation makes it possible to have small, self-determining communities, in contrast to the monolithic service you find on GoodReads or Twitter. An instance can be focused on a particular interest, be just for a group of friends, or anything else that brings people together. Each community can choose which other instances they want to federate with, and moderate and run their community autonomously. Check out https://runyourown.social/ to get a sense of the philosophy and logistics behind small, high-trust social networks.
+Federation makes it possible to have small, self-determining communities, in contrast to the monolithic service you find on GoodReads or Twitter. An instance can be focused on a particular interest, be just for a group of friends, or anything else that brings people together. Each community can choose which other instances they want to federate with, and moderate and run their community autonomously. Check out [`runyourown.social`](https://runyourown.social/) to get a sense of the philosophy and logistics behind small, high-trust social networks.
 
 Developers of other ActivityPub software can find out more about BookWyrm's implementation at [`FEDERATION.md`](https://github.com/bookwyrm-social/bookwyrm/blob/main/FEDERATION.md).
 
@@ -41,7 +42,7 @@ Federation allows you to interact with users on other instances and services, an
 Users and administrators can control who can see their posts and what other instances to federate with.
 
 ## Tech Stack
-Web backend
+#### Web backend
 - [Django](https://www.djangoproject.com/) web server
 - [PostgreSQL](https://www.postgresql.org/) database
 - [ActivityPub](https://activitypub.rocks/) federation
@@ -49,12 +50,12 @@ Web backend
 - [Redis](https://redis.io/) task backend
 - [Redis (again)](https://redis.io/) activity stream manager
 
-Front end
+#### Front end
 - Django templates
-- [Bulma.io](https://bulma.io/) css framework
+- [`Bulma.io`](https://bulma.io/) CSS framework
 - Vanilla JavaScript, in moderation
 
-Deployment
+#### Deployment
 - [Docker](https://www.docker.com/) and docker-compose
 - [Gunicorn](https://gunicorn.org/) web runner
 - [Flower](https://github.com/mher/flower) celery monitoring
@@ -66,4 +67,4 @@ The [documentation website](https://docs.joinbookwyrm.com/) has instruction on h
 
 ## Contributing
 
-There are many ways you can contribute to the success and health of the BookWyrm project! You do not have to know how to write code and we are always keen to see more people get involved. Find out how you can join the project at [CONTRIBUTING.md](https://github.com/bookwyrm-social/bookwyrm/blob/main/CONTRIBUTING.md)
+There are many ways you can contribute to the success and health of the BookWyrm project! You do not have to know how to write code and we are always keen to see more people get involved. Find out how you can join the project at [`CONTRIBUTING.md`](https://github.com/bookwyrm-social/bookwyrm/blob/main/CONTRIBUTING.md).

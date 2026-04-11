@@ -76,7 +76,7 @@
                         {% trans "Subjects:" %}
                     </label>
                     {% for subject in book.subjects %}
-                    <label class="label is-sr-only" for="id_add_subject={% if not forloop.first %}-{{forloop.counter}}{% endif %}">
+                    <label class="label is-sr-only" for="id_add_subject{% if not forloop.first %}-{{forloop.counter}}{% endif %}">
                         {% trans "Add subject" %}
                     </label>
                     <div class="field has-addons" id="subject_field_wrapper_{{ forloop.counter }}">
