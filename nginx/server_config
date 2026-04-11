@@ -28,3 +28,18 @@ proxy_cache_lock_timeout 10s;
 open_file_cache max=20000 inactive=20s;
 open_file_cache_min_uses 2;
 open_file_cache_errors on;
+
+upstream web {
+    server web:8000;
+
+    keepalive 4;
+}
+
+upstream flower{
+    server flower:8888;
+}
+
+upstream anubis {
+    server anubis:8000;
+}
+
