@@ -10,6 +10,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.http import JsonResponse
+from django.core.exceptions import ValidationError
 
 from bookwyrm import models
 from bookwyrm.utils.images import remove_uploaded_image_exif
@@ -33,15 +34,34 @@ PREFERRED_EXTENSIONS.update(
 @method_decorator(login_required, name="dispatch")
 class CreateUserUpload(View):
     def post(self, request):
-        file = remove_uploaded_image_exif(request.FILES["file"])
-        image = Image.open(file)
+        file = request.FILES["file"]
         upload = models.UserUpload(
             user=request.user,
             original_name=file.name,
             original_content_type=file.content_type,
-            original_file=file,
         )
-        upload.save()
+
+        try:
+            # Django image validation only happens with a form, so do it by hand instead
+            image = Image.open(file)
+            image.verify()
+
+            upload.original_file = remove_uploaded_image_exif(file)
+            upload.full_clean()
+            upload.save()
+
+        except ValidationError as e:
+            return JsonResponse(
+                e.message_dict,
+                status=422,
+            )
+        except Exception as e:
+            return JsonResponse(
+                {"original_file": "File was not a supported image type."},
+                status=422,
+            )
+
+        image = Image.open(upload.original_file)
 
         width, height = image.size
 
