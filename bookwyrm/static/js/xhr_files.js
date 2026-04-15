@@ -53,7 +53,11 @@ let XhrFiles = new (class {
 
         xhr.addEventListener("load", function (e) {
             if (this.status != 201) {
-                console.log(e);
+                console.error(this.response);
+
+                if (this.status == 422) {
+                    alert("The provided file isn't a valid image.");
+                }
 
                 return;
             }
