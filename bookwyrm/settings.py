@@ -556,3 +556,6 @@ INSTANCE_ACTOR_USERNAME = "bookwyrm.instance.actor"
 # We only allow specifying DATA_UPLOAD_MAX_MEMORY_SIZE in MiB from .env
 # (note the difference in variable names).
 DATA_UPLOAD_MAX_MEMORY_SIZE = env.int("DATA_UPLOAD_MAX_MEMORY_MiB", 100) << 20
+
+
+UPLOAD_IMAGE_DIMENSIONS = env.list("UPLOAD_IMAGE_DIMENSIONS", [400, 1200], subcast=int)
