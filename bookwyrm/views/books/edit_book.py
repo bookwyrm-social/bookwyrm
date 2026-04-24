@@ -69,13 +69,13 @@ class EditBook(View):
         for author_id in remove_authors:
             book.authors.remove(author_id)
 
-        for series_id in request.POST.getlist("remove_series"):
+        for seriesbook_id in request.POST.getlist("remove_series"):
             # remove seriesbook and, if it was the only one in the series, delete series
-            seriesbook = models.SeriesBook.objects.get(id=series_id)
-            series = seriesbook.series
-            seriesbook.delete()
-            if series.seriesbooks.count() == 0:
-                series.delete()
+            if seriesbook := models.SeriesBook.objects.filter(id=seriesbook_id).first():
+                series = seriesbook.series
+                seriesbook.delete()
+                if series.seriesbooks.count() == 0:
+                    series.delete()
 
         book = form.save(request, commit=False)
 
@@ -425,10 +425,10 @@ class ConfirmEditBook(View):
 
             for series_id in request.POST.getlist("remove_series"):
                 # remove seriesbook
-                seriesbook = models.SeriesBook.objects.get(id=series_id)
-                if seriesbook.series.seriesbooks.count() == 0:
-                    seriesbook.series.delete()  # will cascade
-                seriesbook.delete()
+                if seriesbook := models.SeriesBook.objects.get(id=series_id):
+                    if seriesbook.series.seriesbooks.count() == 0:
+                        seriesbook.series.delete()  # will cascade
+                    seriesbook.delete()
 
             # import cover, if requested
             url = request.POST.get("cover-url")
