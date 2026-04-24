@@ -49,6 +49,10 @@ jobs:
         run: cp .env.example .env
       - name: Check migrations up-to-date
         run: python ./manage.py makemigrations --check -v 3
+      - name: Compile themes and collect statics
+        run: |
+          python ./manage.py compile_themes
+          python ./manage.py collectstatic --no-input
       - name: Run Tests
         run: pytest -n 3
 
