@@ -449,9 +449,7 @@ class Review(BookStatus):
             return self.content
         else:
             template = get_template("snippets/generated_status/rating_pure_name.html")
-            return template.render(
-                {"book": self.book, "rating": self.rating}
-            ).strip()
+            return template.render({"book": self.book, "rating": self.rating}).strip()
 
     @property
     def page_title(self):
