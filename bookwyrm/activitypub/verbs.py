@@ -48,7 +48,6 @@ class Delete(Verb):
 
         if isinstance(self.object, str):
             # Deleted users are passed as strings. Not wild about this fix
-            print("It's a user")
             model = apps.get_model("bookwyrm.User")
             obj = model.find_existing_by_remote_id(self.object)
         else:
