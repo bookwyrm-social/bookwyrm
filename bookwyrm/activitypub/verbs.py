@@ -46,8 +46,6 @@ class Delete(Verb):
         if not self.object:
             return
 
-        print(self.object)
-
         if isinstance(self.object, str):
             # Deleted users are passed as strings. Not wild about this fix
             print("It's a user")
@@ -59,8 +57,6 @@ class Delete(Verb):
                 allow_create=False,
                 allow_external_connections=allow_external_connections,
             )
-
-            print("It is something else and we are not allowing create")
 
         if obj:
             obj.delete()
