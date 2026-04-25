@@ -1,0 +1,7 @@
+{% load i18n %}
+
+{% blocktrans trimmed with book_title=book.title|safe book_path=book.local_path display_rating=rating|floatformat:"-1" review_title=name|safe count counter=rating %}
+Rated "{{ book_title }}" {{ display_rating }} star {{ review_title }}
+{% plural %}
+Rated "{{ book_title }}" {{ display_rating }} stars {{ review_title }}
+{% endblocktrans %}
