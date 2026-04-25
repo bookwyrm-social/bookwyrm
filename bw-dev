@@ -159,7 +159,7 @@ case "$CMD" in
         ;;
     resetdb)
         dev down
-        $DOCKER_COMPOSE rm -svf
+        dev rm -svf
         docker volume rm -f dev-wyrm_media_volume dev-wyrm_pgdata dev-wyrm_redis_activity_data dev-wyrm_redis_broker_data dev-wyrm_static_volume, dev-wyrm_exports_volume
         dev up --build -d
         rundev python manage.py admin_code
