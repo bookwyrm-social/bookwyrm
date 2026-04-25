@@ -375,6 +375,34 @@ class Status(TestCase):
         self.assertEqual(activity["content"], "<p>test content</p>")
         self.assertEqual(activity["inReplyToBook"], self.book.remote_id)
 
+    def test_review_to_activity_no_name(self, *_):
+        """subclass of the base model version with a "pure" serializer and no name"""
+        status = models.Review.objects.create(
+            content="test content",
+            rating=3.0,
+            user=self.local_user,
+            book=self.book,
+        )
+        activity = status.to_activity()
+        self.assertEqual(activity["id"], status.remote_id)
+        self.assertEqual(activity["type"], "Review")
+        self.assertEqual(activity["rating"], 3)
+        self.assertEqual(activity["content"], "<p>test content</p>")
+        self.assertEqual(activity["inReplyToBook"], self.book.remote_id)
+
+    def test_review_to_activity_no_name_or_content(self, *_):
+        """subclass of the base model version with a "pure" serializer and no content or name"""
+        status = models.Review.objects.create(
+            rating=3.0,
+            user=self.local_user,
+            book=self.book,
+        )
+        activity = status.to_activity()
+        self.assertEqual(activity["id"], status.remote_id)
+        self.assertEqual(activity["type"], "Review")
+        self.assertEqual(activity["rating"], 3)
+        self.assertEqual(activity["inReplyToBook"], self.book.remote_id)
+
     def test_review_to_pure_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""
         status = models.Review.objects.create(
