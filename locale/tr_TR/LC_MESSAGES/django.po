@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-06 17:47+0000\n"
-"PO-Revision-Date: 2026-04-27 23:31\n"
+"PO-Revision-Date: 2026-04-28 00:36\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Turkish\n"
 "Language: tr\n"
@@ -4212,7 +4212,7 @@ msgstr ""
 msgid "New <a href=\"%(path)s\">invite request</a> awaiting response"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">invite requests</a> awaiting response"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%(display_count)s yeni <a href=\"%(path)s\">davet isteği</a> yanıt bekliyor"
 
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
@@ -4244,7 +4244,7 @@ msgstr[1] ""
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>, <a href=\"%(related_path)s\"><em>%(book_title)s</em> incelemesinde</a> sizden bahsetti"
 
 #: bookwyrm/templates/notifications/items/mention.html:26
 #, python-format
@@ -4284,7 +4284,7 @@ msgstr ""
 #: bookwyrm/templates/notifications/items/reply.html:21
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">yanıt verdi</a>: <a href=\"%(parent_path)s\"><em>%(book_title)s</em> incelemeniz</a>"
 
 #: bookwyrm/templates/notifications/items/reply.html:27
 #, python-format
@@ -4336,7 +4336,7 @@ msgstr ""
 #: bookwyrm/templates/notifications/items/user_import.html:14
 #, python-format
 msgid "Your <a href=\"%(import_url)s\">user import</a> is complete."
-msgstr ""
+msgstr "Sizin <a href=\"%(import_url)s\">kullanıcı içe aktarımınız</a> tamamlandı."
 
 #: bookwyrm/templates/notifications/notifications_page.html:19
 msgid "Delete notifications"
@@ -4362,7 +4362,7 @@ msgstr ""
 #: bookwyrm/templates/ostatus/error.html:8
 #: bookwyrm/templates/ostatus/error.html:13
 msgid "Check you have the correct username before trying again"
-msgstr ""
+msgstr "Tekrar denemeden önce kullanıcı adının doğru olup olmadığını kontrol et"
 
 #: bookwyrm/templates/ostatus/error.html:12
 #, python-format
@@ -4562,7 +4562,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/delete_user.html:36
 msgid "I understand that my account cannot be recovered:"
-msgstr ""
+msgstr "Hesabımın kurtarılmasının mümkün olmadığını anlıyorum:"
 
 #: bookwyrm/templates/preferences/disable-2fa.html:4
 #: bookwyrm/templates/preferences/disable-2fa.html:7
@@ -4702,7 +4702,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export-user.html:45
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set the account you are moving to as an <strong>alias</strong> of this one, or <strong>move</strong> this account to the new account, before you import your user data."
-msgstr ""
+msgstr "Herhangi bir durumunuzu (yorumlar, incelemeler veya alıntılar) taşımak istiyorsanız, kullanıcı verilerinizi içe aktarmadan önce, taşınacağınız hesabı ya bu hesabın bir <strong>takma adı</strong> olarak ayarlamalı ya da bu hesabı yeni hesaba <strong>taşımalısınız</strong>."
 
 #: bookwyrm/templates/preferences/export-user.html:50
 msgid "New user exports are currently disabled."
@@ -4711,7 +4711,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/export-user.html:54
 #, python-format
 msgid "User exports settings can be changed from <a href=\"%(url)s\">the Imports page</a> in the Admin dashboard."
-msgstr ""
+msgstr "Kullanıcı dışa aktarma ayarları, Yönetici panelindeki <a href=\"%(url)s\">İçe Aktarmalar sayfasından</a> değiştirilebilir."
 
 #: bookwyrm/templates/preferences/export-user.html:61
 #, python-format
@@ -4726,7 +4726,7 @@ msgstr "Ortalama olarak, son dışa aktarmalar%(hours)s saat sürmüştür."
 #: bookwyrm/templates/preferences/export-user.html:76
 #, python-format
 msgid "On average, recent exports have taken %(minutes)s minutes."
-msgstr ""
+msgstr "Son dışa aktarma işlemleri ortalama %(minutes)s dakika sürdü."
 
 #: bookwyrm/templates/preferences/export-user.html:88
 msgid "Create user export file"
@@ -4745,7 +4745,7 @@ msgstr ""
 msgid "Export files will be deleted after %(expiry_hours)s hour."
 msgid_plural "Export files will be deleted after %(expiry_hours)s hours."
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Dışa aktarma dosyaları %(expiry_hours)s saat sonra silinecektir."
 
 #: bookwyrm/templates/preferences/export-user.html:110
 #: bookwyrm/templates/preferences/security.html:126
@@ -4786,7 +4786,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/layout.html:24
 msgid "Security Settings"
-msgstr ""
+msgstr "Güvenlik Ayarları"
 
 #: bookwyrm/templates/preferences/layout.html:32
 msgid "Move  Account"
@@ -4811,7 +4811,7 @@ msgstr "Hesabınızı taşımak, tüm takipçilerinize bildirim gönderecek ve o
 #: bookwyrm/templates/preferences/move_user.html:19
 #, python-format
 msgid "<strong>%(user)s</strong> will be marked as moved and will not be discoverable or usable unless you undo the move."
-msgstr ""
+msgstr "<strong>%(user)s</strong> taşındı olarak işaretlenecek ve taşıma işlemini geri almadığınız sürece keşfedilemez veya kullanılamaz olacaktır."
 
 #: bookwyrm/templates/preferences/move_user.html:25
 msgid "Remember to add this user as an alias of the target account before you try to move."
@@ -4819,12 +4819,12 @@ msgstr "Taşıma işleminden önce, bu kullanıcıyı hedef hesabın takma adı 
 
 #: bookwyrm/templates/preferences/move_user.html:30
 msgid "Enter the username for the account you want to move to e.g. <em>user@example.com </em>:"
-msgstr ""
+msgstr "Taşınmak istediğiniz hesabın kullanıcı adını girin, örneğin <em>kullanici@ornek.com</em>:"
 
 #: bookwyrm/templates/preferences/security.html:4
 #: bookwyrm/templates/preferences/security.html:7
 msgid "Account Security"
-msgstr ""
+msgstr "Hesap Güvenliği"
 
 #: bookwyrm/templates/preferences/security.html:13
 msgid "Two Factor Authentication"
@@ -4897,7 +4897,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/security.html:119
 msgid "You are logged in to the following sessions:"
-msgstr ""
+msgstr "Şu oturumlarda giriş yapmış durumdasınız:"
 
 #: bookwyrm/templates/preferences/security.html:126
 msgid "Date first logged in"
@@ -5012,7 +5012,7 @@ msgstr ""
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:43
 msgid "Delete this progress update"
-msgstr ""
+msgstr "Bu ilerleme güncellemesini sil"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:55
 msgid "started"
@@ -5071,14 +5071,14 @@ msgstr ""
 #: bookwyrm/templates/search/barcode_modal.html:37
 msgctxt "followed by ISBN"
 msgid "Searching for book:"
-msgstr ""
+msgstr "Kitap aranıyor:"
 
 #: bookwyrm/templates/search/book.html:25
 #, python-format
 msgid "%(formatted_review_count)s review"
 msgid_plural "%(formatted_review_count)s reviews"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%(formatted_review_count)s inceleme"
 
 #: bookwyrm/templates/search/book.html:34
 #, python-format
@@ -5087,7 +5087,7 @@ msgstr ""
 
 #: bookwyrm/templates/search/book.html:50
 msgid "Results from"
-msgstr ""
+msgstr "... kaynağından sonuçlar"
 
 #: bookwyrm/templates/search/book.html:89
 msgid "Import book"
@@ -5347,7 +5347,7 @@ msgstr "Geçerli Kurallar"
 
 #: bookwyrm/templates/settings/automod/rules.html:151
 msgid "Show rules"
-msgstr ""
+msgstr "Kuralları göster"
 
 #: bookwyrm/templates/settings/automod/rules.html:188
 msgid "Remove rule"
@@ -5484,11 +5484,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/connectors/available.html:19
 msgid "Libris is the Swedish national library catalog, providing access to records from Swedish libraries."
-msgstr ""
+msgstr "Libris, İsveç kütüphane kayıtlarına erişim sağlayan İsveç ulusal kütüphane kataloğu."
 
 #: bookwyrm/templates/settings/connectors/available.html:32
 msgid "Create new connector"
-msgstr ""
+msgstr "Yeni bağlayıcı oluştur"
 
 #: bookwyrm/templates/settings/connectors/connector.html:35
 #: bookwyrm/templates/settings/connectors/update.html:33
@@ -5517,7 +5517,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/connectors/connectors.html:12
 msgid "The priority determines the order in which search results appear. The highest priority is <code>1</code>. The default priority is <code>2</code>."
-msgstr ""
+msgstr "Öncelik, arama sonuçlarının hangi sırada görüneceğini belirler. En yüksek öncelik <code>1</code>'dir. Varsayılan öncelik ise <code>2</code>'dir."
 
 #: bookwyrm/templates/settings/connectors/connectors.html:14
 msgid "Connector settings only determine whether a connector will be used to deliver search results. To manage more interactions with other federated servers, including domain blocks, see"
@@ -5585,11 +5585,11 @@ msgstr "Kullanıcı kayıt etkinliği"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:126
 msgid "Status activity"
-msgstr ""
+msgstr "Durum etkinliği"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:132
 msgid "Works created"
-msgstr ""
+msgstr "Oluşturulanlar"
 
 #: bookwyrm/templates/settings/dashboard/registration_chart.html:10
 msgid "Registrations"
@@ -5617,11 +5617,11 @@ msgstr[1] "%(display_count)s alan adlarının incelenmesi gerekiyor"
 #: bookwyrm/templates/settings/dashboard/warnings/email_config.html:8
 #, python-format
 msgid "Your outgoing email address, <code>%(email_sender)s</code>, may be misconfigured."
-msgstr ""
+msgstr "Giden e posta adresiniz, <code>%(email_sender)s</code>, yanlış yapılandırılmış olabilir."
 
 #: bookwyrm/templates/settings/dashboard/warnings/email_config.html:11
 msgid "Check the <code>EMAIL_SENDER_NAME</code> and <code>EMAIL_SENDER_DOMAIN</code> in your <code>.env</code> file."
-msgstr ""
+msgstr "<code>.env</code> dosyanızdaki <code>EMAIL_SENDER_NAME</code> ve <code>EMAIL_SENDER_DOMAIN</code> alanlarını kontrol edin."
 
 #: bookwyrm/templates/settings/dashboard/warnings/invites.html:9
 #, python-format
@@ -5834,12 +5834,12 @@ msgstr ""
 
 #: bookwyrm/templates/settings/federation/instance.html:123
 msgid "All users from this instance will be re-activated."
-msgstr ""
+msgstr "Bu sunucudaki tüm kullanıcılar tekrar aktif edilecek."
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:6
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:15
 msgid "Import Blocklist"
-msgstr ""
+msgstr "Engelleme Listesini İçe Aktar"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:38
 msgid "Success!"
@@ -5904,24 +5904,24 @@ msgstr ""
 
 #: bookwyrm/templates/settings/federation/settings.html:40
 msgid "Prevents your instance from interacting with other federated services. Existing data from other instances will still be present."
-msgstr ""
+msgstr "Sunucunuzun diğer federe hizmetler etkileşime girmesini engeller. Diğer örneklerden gelen mevcut veriler var olmaya devam edecektir."
 
 #: bookwyrm/templates/settings/files.html:7
 #: bookwyrm/templates/settings/files.html:11
 msgid "Files maintenance"
-msgstr ""
+msgstr "Dosya bakımı"
 
 #: bookwyrm/templates/settings/files.html:17
 msgid "Schedule file deletion"
-msgstr ""
+msgstr "Dosya Silmeyi Planla"
 
 #: bookwyrm/templates/settings/files.html:21
 msgid "This job deletes uploaded user export and import files that have reached the expiry age."
-msgstr ""
+msgstr "Bu görev, geçerlilik süresi dolan yüklenmiş kullanıcı dışa aktarma ve içe aktarma dosyalarını siler."
 
 #: bookwyrm/templates/settings/files.html:102
 msgid "Export file expiration"
-msgstr ""
+msgstr "Dışa aktarma dosyası geçerlilik süresi"
 
 #: bookwyrm/templates/settings/files.html:109
 msgid "Maximum age of export files, in hours"
