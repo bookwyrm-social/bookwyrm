@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-06 17:47+0000\n"
-"PO-Revision-Date: 2026-05-02 23:33\n"
+"PO-Revision-Date: 2026-05-03 00:39\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Turkish\n"
 "Language: tr\n"
@@ -7654,22 +7654,22 @@ msgstr "%(date)s tarihinde düzenlendi"
 #: bookwyrm/templates/snippets/status/headers/comment.html:8
 #, python-format
 msgid "commented on <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "<a href=\"%(author_path)s\">%(author_name)s</a> yazarına ait <a href=\"%(book_path)s\">%(book)s</a> kitabı hakkında yorum yaptı"
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:15
 #, python-format
 msgid "commented on <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "<a href=\"%(book_path)s\">%(book)s</a> kitabı hakkında yorum yaptı"
 
 #: bookwyrm/templates/snippets/status/headers/note.html:8
 #, python-format
 msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> kullanıcısının <a href=\"%(status_path)s\">durumuna</a> yanıt verdi"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:8
 #, python-format
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "<a href=\"%(author_path)s\">%(author_name)s</a> yazarına ait <a href=\"%(book_path)s\">%(book)s</a> kitabından alıntı yaptı"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:15
 #, python-format
@@ -7679,57 +7679,57 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/rating.html:3
 #, python-format
 msgid "rated <a href=\"%(book_path)s\">%(book)s</a>:"
-msgstr ""
+msgstr "<a href=\"%(book_path)s\">%(book)s</a> kitabından alıntı yaptı:"
 
 #: bookwyrm/templates/snippets/status/headers/read.html:10
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "<a href=\"%(author_path)s\">%(author_name)s</a> yazarına ait <a href=\"%(book_path)s\">%(book)s</a> kitabını okumayı bitirdi"
 
 #: bookwyrm/templates/snippets/status/headers/read.html:17
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "<a href=\"%(book_path)s\">%(book)s</a> kitabını okumayı bitirdi"
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:10
 #, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "<a href=\"%(author_path)s\">%(author_name)s</a> yazarına ait <a href=\"%(book_path)s\">%(book)s</a> kitabını okumaya başladı"
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:17
 #, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "<a href=\"%(book_path)s\">%(book)s</a> kitabını okumaya başladı"
 
 #: bookwyrm/templates/snippets/status/headers/review.html:8
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "<a href=\"%(author_path)s\">%(author_name)s</a> yazarına ait <a href=\"%(book_path)s\">%(book)s</a> kitabını inceledi"
 
 #: bookwyrm/templates/snippets/status/headers/review.html:15
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "<a href=\"%(book_path)s\">%(book)s</a> kitabını inceledi"
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
 #, python-format
 msgid "stopped reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "<a href=\"%(author_path)s\">%(author_name)s</a> yazarına ait <a href=\"%(book_path)s\">%(book)s</a> kitabını okumayı bıraktı"
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:17
 #, python-format
 msgid "stopped reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "<a href=\"%(book_path)s\">%(book)s</a> kitabını okumayı bıraktı"
 
 #: bookwyrm/templates/snippets/status/headers/to_read.html:10
 #, python-format
 msgid "wants to read <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "<a href=\"%(author_path)s\">%(author_name)s</a> yazarına ait <a href=\"%(book_path)s\">%(book)s</a> kitabını okumak istiyor"
 
 #: bookwyrm/templates/snippets/status/headers/to_read.html:17
 #, python-format
 msgid "wants to read <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "<a href=\"%(book_path)s\">%(book)s</a> kitabını okumak istiyor"
 
 #: bookwyrm/templates/snippets/status/layout.html:24
 #: bookwyrm/templates/snippets/status/status_options.html:17
@@ -7739,148 +7739,148 @@ msgstr "Durumu sil"
 #: bookwyrm/templates/snippets/status/layout.html:57
 #: bookwyrm/templates/snippets/status/layout.html:58
 msgid "Boost status"
-msgstr ""
+msgstr "Durumu öne çıkar"
 
 #: bookwyrm/templates/snippets/status/layout.html:61
 #: bookwyrm/templates/snippets/status/layout.html:62
 msgid "Like status"
-msgstr ""
+msgstr "Durumu beğen"
 
 #: bookwyrm/templates/snippets/status/status.html:10
 msgid "boosted"
-msgstr ""
+msgstr "öne çıkarıldı"
 
 #: bookwyrm/templates/snippets/status/status_options.html:7
 #: bookwyrm/templates/snippets/user_options.html:7
 msgid "More options"
-msgstr ""
+msgstr "Daha çok seçenek"
 
 #: bookwyrm/templates/snippets/switch_edition_button.html:5
 msgid "Switch to this edition"
-msgstr ""
+msgstr "Bu baskıya geç"
 
 #: bookwyrm/templates/snippets/table-sort-header.html:6
 msgid "Sorted ascending"
-msgstr ""
+msgstr "Küçükten Büyüğe Sıralandı"
 
 #: bookwyrm/templates/snippets/table-sort-header.html:10
 msgid "Sorted descending"
-msgstr ""
+msgstr "Büyükten Küçüğe Sıralandı"
 
 #: bookwyrm/templates/snippets/trimmed_text.html:17
 msgid "Show more"
-msgstr ""
+msgstr "Daha fazla göster"
 
 #: bookwyrm/templates/snippets/trimmed_text.html:35
 msgid "Show less"
-msgstr ""
+msgstr "Daha az göster"
 
 #: bookwyrm/templates/snippets/user_active_tag.html:5
 msgid "Moved"
-msgstr ""
+msgstr "Taşındı"
 
 #: bookwyrm/templates/snippets/user_active_tag.html:12
 msgid "Deleted"
-msgstr ""
+msgstr "Silindi"
 
 #: bookwyrm/templates/snippets/user_active_tag.html:15
 msgid "Inactive"
-msgstr ""
+msgstr "Pasif"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:29
 msgid "2FA check"
-msgstr ""
+msgstr "2FA kontrolü"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:37
 msgid "Enter the code from your authenticator app:"
-msgstr ""
+msgstr "Kimlik doğrulama uygulamanızdaki kodu girin:"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:41
 msgid "Confirm and Log In"
-msgstr ""
+msgstr "Onayla ve Giriş Yap"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:29
 msgid "2FA is available"
-msgstr ""
+msgstr "2FA kullanılabilir"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:34
 msgid "You can secure your account by setting up two factor authentication in your user preferences. This will require a one-time code from your phone in addition to your password each time you log in."
-msgstr ""
+msgstr "Hesap güvenliğinizi artırmak için kullanıcı tercihlerinizden iki faktörlü doğrulamayı ayarlayabilirsiniz. Bu özellik, her giriş yaptığınızda şifrenize ek olarak telefonunuzdan alacağınız tek seferlik bir kod girmenizi gerektirecektir."
 
 #: bookwyrm/templates/user/books_header.html:9
 #, python-format
 msgid "%(username)s's books"
-msgstr ""
+msgstr "%(username)s kitapları"
 
 #: bookwyrm/templates/user/goal.html:12
 #, python-format
 msgid "%(year)s Reading Progress"
-msgstr ""
+msgstr "%(year)s Okuma Durumu"
 
 #: bookwyrm/templates/user/goal.html:16
 msgid "Edit Goal"
-msgstr ""
+msgstr "Hedefi Düzenle"
 
 #: bookwyrm/templates/user/goal.html:32
 #, python-format
 msgid "%(name)s hasn't set a reading goal for %(year)s."
-msgstr ""
+msgstr "%(name)s, %(year)s yılı için bir okuma hedefi belirlemedi."
 
 #: bookwyrm/templates/user/goal.html:44
 #, python-format
 msgid "Your %(year)s Books"
-msgstr ""
+msgstr "%(year)s Kitaplarınız"
 
 #: bookwyrm/templates/user/goal.html:46
 #, python-format
 msgid "%(username)s's %(year)s Books"
-msgstr ""
+msgstr "%(username)s kullanıcısının %(year)s kitapları"
 
 #: bookwyrm/templates/user/groups.html:14
 msgid "Your Groups"
-msgstr ""
+msgstr "Gruplarınız"
 
 #: bookwyrm/templates/user/groups.html:16
 #, python-format
 msgid "Groups: %(username)s"
-msgstr ""
+msgstr "Gruplar: %(username)s"
 
 #: bookwyrm/templates/user/layout.html:59
 msgid "Follow Requests"
-msgstr ""
+msgstr "Takip İstekleri"
 
 #: bookwyrm/templates/user/layout.html:83
 #: bookwyrm/templates/user/reviews_comments.html:6
 #: bookwyrm/templates/user/reviews_comments.html:12
 msgid "Reviews and Comments"
-msgstr ""
+msgstr "İncelemeler ve Yorumlar"
 
 #: bookwyrm/templates/user/lists.html:16
 #, python-format
 msgid "Lists: %(username)s"
-msgstr ""
+msgstr "Listeler: %(username)s"
 
 #: bookwyrm/templates/user/lists.html:22 bookwyrm/templates/user/lists.html:34
 msgid "Create list"
-msgstr ""
+msgstr "Liste oluştur"
 
 #: bookwyrm/templates/user/moved.html:25
 #: bookwyrm/templates/user/user_preview.html:22
 #, python-format
 msgid "Joined %(date)s"
-msgstr ""
+msgstr "Katılım tarihi: %(date)s"
 
 #: bookwyrm/templates/user/relationships/followers.html:36
 #, python-format
 msgid "%(username)s has no followers"
-msgstr ""
+msgstr "%(username)s hiçbir kullanıcıyı takip etmiyor"
 
 #: bookwyrm/templates/user/relationships/following.html:6
 #: bookwyrm/templates/user/relationships/following.html:11
 #: bookwyrm/templates/user/relationships/following.html:21
 #: bookwyrm/templates/user/relationships/layout.html:15
 msgid "Following"
-msgstr ""
+msgstr "Takip Ediliyor"
 
 #: bookwyrm/templates/user/relationships/following.html:30
 #, python-format
@@ -7893,115 +7893,115 @@ msgstr ""
 
 #: bookwyrm/templates/user/user.html:20
 msgid "Edit profile"
-msgstr ""
+msgstr "Profili Düzenle"
 
 #: bookwyrm/templates/user/user.html:29
 msgid "Federation is currently disabled, so you will not be able to interact with this user."
-msgstr ""
+msgstr "Federasyon şu anda devre dışı, bu nedenle bu kullanıcıyla etkileşime giremezsiniz."
 
 #: bookwyrm/templates/user/user.html:51
 #, python-format
 msgid "View all %(size)s"
-msgstr ""
+msgstr "Tümünü görüntüle: %(size)s"
 
 #: bookwyrm/templates/user/user.html:70
 msgid "View all books"
-msgstr ""
+msgstr "Tüm kitapları görüntüle"
 
 #: bookwyrm/templates/user/user.html:78
 #, python-format
 msgid "%(current_year)s Reading Goal"
-msgstr ""
+msgstr "%(current_year)s Okuma Hedefi"
 
 #: bookwyrm/templates/user/user.html:85
 msgid "User Activity"
-msgstr ""
+msgstr "Kullanıcı Etkinliği"
 
 #: bookwyrm/templates/user/user.html:91
 msgid "Show RSS Options"
-msgstr ""
+msgstr "RSS Seçeneklerini Göster"
 
 #: bookwyrm/templates/user/user.html:97
 msgid "RSS feed"
-msgstr ""
+msgstr "RSS Besleme"
 
 #: bookwyrm/templates/user/user.html:113
 msgid "Complete feed"
-msgstr ""
+msgstr "Tam akış"
 
 #: bookwyrm/templates/user/user.html:118
 msgid "Reviews only"
-msgstr ""
+msgstr "Sadece incelemeler"
 
 #: bookwyrm/templates/user/user.html:123
 msgid "Quotes only"
-msgstr ""
+msgstr "Sadece alıntılar"
 
 #: bookwyrm/templates/user/user.html:128
 msgid "Comments only"
-msgstr ""
+msgstr "Sadece yorumlar"
 
 #: bookwyrm/templates/user/user.html:144
 msgid "No activities yet!"
-msgstr ""
+msgstr "Henüz etkinlik yok!"
 
 #: bookwyrm/templates/user/user_preview.html:26
 #, python-format
 msgid "%(display_count)s follower"
 msgid_plural "%(display_count)s followers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_count)s takipçi"
+msgstr[1] "%(display_count)s takipçi"
 
 #: bookwyrm/templates/user/user_preview.html:31
 #, python-format
 msgid "%(counter)s following"
-msgstr ""
+msgstr "%(counter)s takip edilen"
 
 #: bookwyrm/templates/user/user_preview.html:45
 #, python-format
 msgid "%(mutuals_display)s follower you follow"
 msgid_plural "%(mutuals_display)s followers you follow"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Takip ettiğiniz %(mutuals_display)s ortak takipçi"
+msgstr[1] "Takip ettiğiniz %(mutuals_display)s ortak takipçiler"
 
 #: bookwyrm/templates/user/user_preview.html:49
 msgid "No followers you follow"
-msgstr ""
+msgstr "Takip ettiğiniz hiçbir takipçi yok"
 
 #: bookwyrm/templates/user_menu.html:7
 msgid "View profile and more"
-msgstr ""
+msgstr "Profili ve daha fazlasını görüntüle"
 
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
 #, python-format
 msgid "File exceeds maximum size: %(max_size)sMB"
-msgstr ""
+msgstr "Dosya maksimum boyutu aşıyor: %(max_size)sMB"
 
 #: bookwyrm/templatetags/list_page_tags.py:15
 #, python-format
 msgid "Book List: %(name)s"
-msgstr ""
+msgstr "Kitap Listesi: %(name)s"
 
 #: bookwyrm/templatetags/list_page_tags.py:23
 #, python-format
 msgid "%(num)d book - by %(user)s"
 msgid_plural "%(num)d books - by %(user)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d kitap - %(user)s tarafından"
+msgstr[1] "%(num)d kitaplar - %(user)s tarafından"
 
 #: bookwyrm/templatetags/utilities.py:50
 #, python-format
 msgid "%(title)s: %(subtitle)s"
-msgstr ""
+msgstr "%(title)s: %(subtitle)s"
 
 #: bookwyrm/templatetags/utilities.py:133
 msgid "a new user account"
-msgstr ""
+msgstr "yeni bir kullanıcı hesabı"
 
 #: bookwyrm/views/updates.py:46
 #, python-format
 msgid "Load %(count)d unread status"
 msgid_plural "Load %(count)d unread statuses"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(count)d okunmamış durumu yükle"
+msgstr[1] "%(count)d okunmamış durumu yükle"
 
