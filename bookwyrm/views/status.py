@@ -16,7 +16,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 
-from markdown import markdown
+import mistune
 from bookwyrm import forms, models
 from bookwyrm.models.report import DELETE_ITEM
 from bookwyrm.utils import regex, sanitizer
@@ -344,6 +344,6 @@ def _unwrap(text):
 def to_markdown(content):
     """catch links and convert to markdown"""
     content = format_links(content)
-    content = markdown(content)
+    content = mistune.html(content).rstrip()
     # sanitize resulting html
     return sanitizer.clean(content)
