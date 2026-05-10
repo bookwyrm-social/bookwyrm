@@ -52,21 +52,26 @@ class User(View):
         else:
             shelves = user.shelf_set.filter(books__isnull=False).distinct()
 
+        blocked = (
+            request.user.blocked_books.all()
+            if hasattr(request.user, "blocked_books")
+            else []
+        )
         for user_shelf in shelves.all()[:3]:
             shelf_preview.append(
                 {
                     "name": user_shelf.name,
                     "local_path": user_shelf.local_path,
-                    "books": user_shelf.books.order_by(
-                        "-shelfbook__shelved_date"
-                    ).all()[:3],
+                    "books": user_shelf.books.exclude(parent_work__in=blocked)
+                    .order_by("-shelfbook__shelved_date")
+                    .all()[:3],
                     "size": user_shelf.books.count(),
                 }
             )
 
         # user's posts
         activities = (
-            models.Status.privacy_filter(
+            models.Status.safety_filter(
                 request.user,
             )
             .filter(user=user)

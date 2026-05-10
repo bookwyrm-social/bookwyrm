@@ -222,3 +222,31 @@ class FeedViews(TestCase):
         suggestions = views.feed.get_suggested_books(self.local_user)
         self.assertEqual(suggestions[0]["name"], "Currently Reading")
         self.assertEqual(suggestions[0]["books"][0], self.book)
+
+    def test_get_suggested_book_filters_blocked(self, *_):
+        """gets books you're interested in minus books you definitely don't want to see"""
+
+        models.ShelfBook.objects.create(
+            book=self.book,
+            user=self.local_user,
+            shelf=self.local_user.shelf_set.get(identifier="reading"),
+        )
+
+        awful_book = models.Edition.objects.create(
+            parent_work=models.Work.objects.create(title="hi"),
+            title="This book is very bad",
+            remote_id="https://example.com/book/99",
+        )
+
+        self.local_user.blocked_books.add(awful_book.parent_work)
+
+        models.ShelfBook.objects.create(
+            book=awful_book,
+            user=self.local_user,
+            shelf=self.local_user.shelf_set.get(identifier="reading"),
+        )
+
+        suggestions = views.feed.get_suggested_books(self.local_user)
+        self.assertEqual(suggestions[0]["name"], "Currently Reading")
+        self.assertEqual(suggestions[0]["books"][0], self.book)
+        self.assertTrue(awful_book not in suggestions[0]["books"])
