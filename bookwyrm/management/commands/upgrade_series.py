@@ -14,7 +14,11 @@ def upgrade_series_data():
     series_count = Series.objects.count()
     seriesbook_count = SeriesBook.objects.count()
 
-    for book in Edition.objects.exclude(parent_work=None).exclude(series=None):
+    for book in (
+        Edition.objects.exclude(parent_work=None)
+        .exclude(series=None)
+        .exclude(series="")
+    ):
         user = activitypub.get_representative()
         vector = SearchVector("name", weight="A") + SearchVector(
             "alternative_names", weight="B"
