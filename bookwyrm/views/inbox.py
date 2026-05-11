@@ -137,8 +137,8 @@ def has_valid_signature(request, activity):
     try:
         signature = Signature.parse(request)
         remote_user = activitypub.resolve_remote_id(
-            activity.get("actor"), model=models.User
-        )
+            activity.get("actor"), model=models.User, save=False
+        )  # don't save the actor unless we actually need to import them
         if not remote_user:
             return False
 
