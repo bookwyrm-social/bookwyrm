@@ -33,8 +33,8 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static "js/tabs.js" %}?v={{ js_cache }}"></script>
-<script src="{% static "js/autocomplete.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/tabs.js" %}"></script>
+<script src="{% static "js/autocomplete.js" %}"></script>
 {% if request.user.show_guided_tour %}
     {% include 'guided_tour/book.html' %}
 {% endif %}
