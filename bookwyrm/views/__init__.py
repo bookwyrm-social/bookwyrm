@@ -1,10 +1,12 @@
-""" make sure all our nice views are available """
+"""make sure all our nice views are available"""
+
 # site admin
 from .admin.announcements import Announcements, Announcement
 from .admin.announcements import EditAnnouncement, delete_announcement
 from .admin.automod import AutoMod, automod_delete, run_automod
 from .admin.automod import schedule_automod_task, unschedule_automod_task
 from .admin.celery_status import CeleryStatus, celery_ping
+from .admin.redis import RedisStatus
 from .admin.connectors import (
     ConnectorSettings,
     deactivate_connector,
@@ -18,11 +20,16 @@ from .admin.dashboard import Dashboard
 from .admin.federation import Federation, FederatedServer
 from .admin.federation import AddFederatedServer, ImportServerBlocklist
 from .admin.federation import block_server, unblock_server, refresh_server
+from .admin.federation_settings import FederationSettings
 from .admin.files_maintenance import (
     FilesMaintenance,
     run_export_deletions,
+    run_missing_covers,
+    run_wrong_cover_paths,
     schedule_export_delete_task,
-    unschedule_export_delete_task,
+    schedule_run_missing_covers_job,
+    unschedule_file_maintenance_task,
+    cancel_covers_job,
     set_export_expiry_age,
     cancel_export_delete_job,
 )
@@ -53,6 +60,7 @@ from .admin.reports import (
 from .admin.site import Site, Registration, RegistrationLimited
 from .admin.themes import Themes, delete_theme, test_theme
 from .admin.user_admin import UserAdmin, UserAdminList, ActivateUserAdmin
+from .admin.user_admin import ForcePasswordResetAdmin
 
 # user preferences
 from .preferences.change_password import ChangePassword
@@ -96,7 +104,7 @@ from .landing.landing import Home, Landing
 from .landing.login import Login, Logout
 from .landing.register import Register
 from .landing.register import ConfirmEmail, ConfirmEmailCode, ResendConfirmEmail
-from .landing.password import PasswordResetRequest, PasswordReset
+from .landing.password import PasswordResetRequest, PasswordReset, ForcePasswordReset
 
 # shelves
 from .shelf.shelf import Shelf

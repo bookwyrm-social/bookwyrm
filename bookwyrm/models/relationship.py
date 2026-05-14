@@ -1,4 +1,5 @@
-""" defines relationships between users """
+"""defines relationships between users"""
+
 from django.core.cache import cache
 from django.db import models, transaction, IntegrityError
 from django.db.models import Q
@@ -80,7 +81,7 @@ class UserFollows(ActivityMixin, UserRelationship):
 
     status = "follows"
 
-    def to_activity(self):  # pylint: disable=arguments-differ
+    def to_activity(self):
         """overrides default to manually set serializer"""
         return activitypub.Follow(**generate_activity(self))
 

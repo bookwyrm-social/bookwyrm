@@ -1,8 +1,9 @@
-""" search views"""
+"""search views"""
 
 import re
 
 from django.contrib.postgres.search import TrigramSimilarity, SearchRank, SearchQuery
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import F
 from django.db.models.functions import Greatest
@@ -22,7 +23,6 @@ from .helpers import is_api_request
 from .helpers import handle_remote_webfinger
 
 
-# pylint: disable= no-self-use
 class Search(View):
     """search users or books"""
 
@@ -47,7 +47,7 @@ class Search(View):
             "user": user_search,
             "list": list_search,
         }
-        if not search_type in endpoints:
+        if search_type not in endpoints:
             search_type = "book"
 
         return endpoints[search_type](request)
@@ -131,7 +131,10 @@ def user_search(request):
     # use webfinger for mastodon style account@domain.com username to load the user if
     # they don't exist locally (handle_remote_webfinger will check the db)
     if re.match(regex.FULL_USERNAME, query) and viewer.is_authenticated:
-        handle_remote_webfinger(query)
+        try:
+            handle_remote_webfinger(query)
+        except PermissionDenied:
+            return TemplateResponse(request, "search/user.html", data)
 
     results = (
         models.User.viewer_aware_objects(viewer)

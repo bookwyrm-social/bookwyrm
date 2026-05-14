@@ -1,4 +1,5 @@
-""" manage imports """
+"""manage imports"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect
@@ -12,7 +13,6 @@ from bookwyrm.views.helpers import redirect_to_referer
 from bookwyrm.settings import PAGE_LENGTH, USE_AZURE
 
 
-# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.moderate_user", raise_exception=True),
@@ -33,7 +33,7 @@ class ImportList(View):
         imports = models.ImportJob.objects.filter(complete=complete).order_by(
             "created_date"
         )
-        # pylint: disable=consider-using-f-string
+
         if sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
             imports = imports.order_by(sort)
 
@@ -47,7 +47,7 @@ class ImportList(View):
         user_paginated = Paginator(user_imports, PAGE_LENGTH)
         user_page = user_paginated.get_page(request.GET.get("page"))
 
-        site_settings = models.SiteSettings.objects.get()
+        site_settings = models.SiteSettings.get()
         data = {
             "imports": page,
             "user_imports": user_page,
@@ -72,10 +72,9 @@ class ImportList(View):
 
 @require_POST
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
-# pylint: disable=unused-argument
 def disable_imports(request):
     """When you just need people to please stop starting imports"""
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
     site.imports_enabled = False
     site.save(update_fields=["imports_enabled"])
     return redirect("settings-imports")
@@ -83,10 +82,9 @@ def disable_imports(request):
 
 @require_POST
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
-# pylint: disable=unused-argument
 def enable_imports(request):
     """When you just need people to please stop starting imports"""
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
     site.imports_enabled = True
     site.save(update_fields=["imports_enabled"])
     return redirect("settings-imports")
@@ -96,7 +94,7 @@ def enable_imports(request):
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
 def set_import_size_limit(request):
     """Limit the amount of books users can import at once"""
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
     import_size_limit = int(request.POST.get("limit"))
     import_limit_reset = int(request.POST.get("reset"))
     site.import_size_limit = import_size_limit
@@ -108,7 +106,6 @@ def set_import_size_limit(request):
 @require_POST
 @login_required
 @permission_required("bookwyrm.moderate_user", raise_exception=True)
-# pylint: disable=unused-argument
 def set_user_import_completed(request, import_id):
     """Mark a user import as complete"""
     import_job = get_object_or_404(models.BookwyrmImportJob, id=import_id)
@@ -120,7 +117,7 @@ def set_user_import_completed(request, import_id):
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
 def set_user_import_limit(request):
     """Limit how ofter users can import and export their account"""
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
     site.user_import_time_limit = int(request.POST.get("limit"))
     site.save(update_fields=["user_import_time_limit"])
     return redirect("settings-imports")
@@ -128,10 +125,9 @@ def set_user_import_limit(request):
 
 @require_POST
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
-# pylint: disable=unused-argument
 def enable_user_exports(request):
     """Allow users to export account data"""
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
     site.user_exports_enabled = True
     site.save(update_fields=["user_exports_enabled"])
     return redirect("settings-imports")
@@ -139,10 +135,9 @@ def enable_user_exports(request):
 
 @require_POST
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
-# pylint: disable=unused-argument
 def disable_user_exports(request):
     """Don't allow users to export account data"""
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
     site.user_exports_enabled = False
     site.save(update_fields=["user_exports_enabled"])
     return redirect("settings-imports")

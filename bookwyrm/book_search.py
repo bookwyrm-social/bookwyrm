@@ -1,4 +1,5 @@
-""" using a bookwyrm instance as a source of book data """
+"""using a bookwyrm instance as a source of book data"""
+
 from __future__ import annotations
 from dataclasses import asdict, dataclass
 from functools import reduce
@@ -21,8 +22,7 @@ def search(
     min_confidence: float = 0,
     filters: Optional[list[Any]] = None,
     return_first: Literal[False],
-) -> QuerySet[models.Edition]:
-    ...
+) -> QuerySet[models.Edition]: ...
 
 
 @overload
@@ -32,8 +32,7 @@ def search(
     min_confidence: float = 0,
     filters: Optional[list[Any]] = None,
     return_first: Literal[True],
-) -> Optional[models.Edition]:
-    ...
+) -> Optional[models.Edition]: ...
 
 
 def search(
@@ -53,7 +52,7 @@ def search(
     results = None
     # first, try searching unique identifiers
     # unique identifiers never have spaces, title/author usually do
-    if not " " in query:
+    if " " not in query:
         results = search_identifiers(
             query, *filters, return_first=return_first, books=books
         )
@@ -115,18 +114,30 @@ def search_identifiers(
         # Oh did you think the 'S' in ISBN stood for 'standard'?
         normalized_isbn = query.strip().upper().rjust(10, "0")
         query = normalized_isbn
-    # pylint: disable=W0212
-    or_filters = [
+
+    edition_deduplication_fields = [
         {f.name: query}
         for f in models.Edition._meta.get_fields()
         if hasattr(f, "deduplication_field") and f.deduplication_field
     ]
-    results = books.filter(
-        *filters, reduce(operator.or_, (Q(**f) for f in or_filters))
-    ).distinct()
 
-    if return_first:
-        return results.first()
+    results = None
+    # We assume that identifier hits only one field and we care only first hit
+    #  searching each field seprately makes overall search littlebit slower in case all fields needs to be checked, but each
+    #  query is really small for db load.
+    # we iterate reverse order so Edition specific fields are first
+    #  like isbn10, isbn13 and oclc number
+    for f in edition_deduplication_fields[::-1]:
+        field_results = books.filter(*filters, Q(**f))
+        if field_results.exists() is False:
+            continue
+        if return_first:
+            return field_results.first()
+        if results is None:
+            results = field_results
+        else:
+            results |= field_results
+
     return results
 
 
@@ -179,7 +190,6 @@ class SearchResult:
     confidence: float = 1.0
 
     def __repr__(self):
-        # pylint: disable=consider-using-f-string
         return "<SearchResult key={!r} title={!r} author={!r} confidence={!r}>".format(
             self.key, self.title, self.author, self.confidence
         )

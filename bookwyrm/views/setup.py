@@ -1,4 +1,5 @@
-""" Installation wizard 🧙 """
+"""Installation wizard 🧙"""
+
 import re
 
 from django.contrib.auth import login
@@ -15,14 +16,13 @@ from bookwyrm import settings
 from bookwyrm.utils import regex
 
 
-# pylint: disable= no-self-use
 class InstanceConfig(View):
     """make sure the instance looks correct before adding any data"""
 
     def get(self, request):
         """Check out this cool instance"""
         # only allow this view when an instance is being configured
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         if not site.install_mode:
             raise PermissionDenied()
 
@@ -35,7 +35,6 @@ class InstanceConfig(View):
         )
         warnings["localhost"] = settings.DOMAIN == "localhost"
 
-        # pylint: disable=line-too-long
         data = {
             "warnings": warnings,
             "info": {
@@ -58,7 +57,7 @@ class CreateAdmin(View):
     def get(self, request):
         """Create admin user form"""
         # only allow this view when an instance is being configured
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         if not site.install_mode:
             raise PermissionDenied()
 
@@ -68,7 +67,7 @@ class CreateAdmin(View):
     @transaction.atomic
     def post(self, request):
         """Create that user"""
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         # you can't create an admin user if you're in config mode
         if not site.install_mode:
             raise PermissionDenied()

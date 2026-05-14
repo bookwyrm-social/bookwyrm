@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.template.response import TemplateResponse
@@ -36,8 +37,6 @@ class BookViews(TestCase):
             parent_work=cls.work,
             physical_format="paperback",
         )
-
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

@@ -1,4 +1,5 @@
-""" PROCEED WITH CAUTION: this permanently deletes book data """
+"""PROCEED WITH CAUTION: this permanently deletes book data"""
+
 from django.core.management.base import BaseCommand
 from django.db.models import Count, Q
 from bookwyrm import models
@@ -20,7 +21,7 @@ def remove_editions():
         models.Edition.objects.filter(
             Q(languages=[]) | Q(languages__contains=["English"]),
             **filters,
-            **null_fields
+            **null_fields,
         )
         .annotate(Count("parent_work__editions"))
         .filter(
@@ -36,7 +37,7 @@ class Command(BaseCommand):
     """deduplicate allllll the book data models"""
 
     help = "merges duplicate book data"
-    # pylint: disable=no-self-use,unused-argument
+
     def handle(self, *args, **options):
         """run deduplications"""
         remove_editions()

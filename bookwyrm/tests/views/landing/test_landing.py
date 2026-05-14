@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 from django.contrib.auth.models import AnonymousUser
 from django.http import Http404
@@ -29,7 +30,6 @@ class LandingViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""
@@ -94,7 +94,7 @@ class LandingViews(TestCase):
 
     def test_impressum_page_on(self):
         """there are so many views, this just makes sure it LOADS"""
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         site.show_impressum = True
         site.save()
 

@@ -1,4 +1,5 @@
-""" using django model forms """
+"""using django model forms"""
+
 import datetime
 from django import forms
 from django.forms import widgets
@@ -9,7 +10,7 @@ from bookwyrm.models.user import FeedFilterChoices
 from bookwyrm.models.fields import ClearableFileInputWithWarning
 from .custom_form import CustomForm
 
-# pylint: disable=missing-class-docstring
+
 class FeedStatusTypesForm(CustomForm):
     class Meta:
         model = models.User

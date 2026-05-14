@@ -1,4 +1,5 @@
-""" test for app two factor auth functionality """
+"""test for app two factor auth functionality"""
+
 from importlib import import_module
 from unittest.mock import patch
 import time

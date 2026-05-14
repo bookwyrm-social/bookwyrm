@@ -3,6 +3,8 @@
 
 {% if request.user == user or not request.user.is_authenticated %}
 {# nothing to see here -- either it's yourself or your logged out #}
+{% elif site.disable_federation and not user.local %}
+{# can't follow remote users without federation #}
 {% else %}
 
 {% get_relationship user as relationship %}

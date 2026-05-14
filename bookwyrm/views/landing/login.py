@@ -1,4 +1,5 @@
-""" class views for login/register views """
+"""class views for login/register views"""
+
 import time
 
 from django.contrib.auth import authenticate, login, logout
@@ -14,7 +15,6 @@ from bookwyrm import forms, models
 from bookwyrm.views.helpers import set_language
 
 
-# pylint: disable=no-self-use
 class Login(View):
     """authenticate an existing user"""
 
@@ -30,7 +30,6 @@ class Login(View):
         }
         return TemplateResponse(request, "landing/login.html", data)
 
-    # pylint: disable=too-many-return-statements
     @sensitive_variables("password")
     @method_decorator(sensitive_post_parameters("password"))
     def post(self, request):
@@ -47,6 +46,11 @@ class Login(View):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
+            # do they need to reset their password?
+            if user.force_password_reset:
+                request.session["force_reset_password_user"] = user.username
+                return redirect("force-password-reset")
+
             # if 2fa is set, don't log them in until they enter the right code
             if user.two_factor_auth:
                 request.session["2fa_user"] = user.username

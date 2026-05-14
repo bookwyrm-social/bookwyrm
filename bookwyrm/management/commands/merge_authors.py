@@ -1,5 +1,6 @@
-""" PROCEED WITH CAUTION: uses deduplication fields to permanently
-merge author data objects """
+"""PROCEED WITH CAUTION: uses deduplication fields to permanently
+merge author data objects"""
+
 from bookwyrm import models
 from bookwyrm.management.merge_command import MergeCommand
 

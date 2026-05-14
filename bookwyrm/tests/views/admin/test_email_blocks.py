@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.contrib.auth.models import Group
@@ -33,8 +34,6 @@ class EmailBlocklistViews(TestCase):
         initdb.init_permissions()
         group = Group.objects.get(name="moderator")
         cls.local_user.groups.set([group])
-
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

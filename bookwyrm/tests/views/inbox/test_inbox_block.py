@@ -1,4 +1,5 @@
-""" tests incoming activities"""
+"""tests incoming activities"""
+
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -36,8 +37,6 @@ class InboxBlock(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-
-        models.SiteSettings.objects.create()
 
     def test_handle_blocks(self):
         """create a "block" database entry from an activity"""

@@ -1,4 +1,5 @@
-""" customize the info available in context for rendering templates """
+"""customize the info available in context for rendering templates"""
+
 from bookwyrm import models, settings
 
 
@@ -8,7 +9,7 @@ def site_settings(request):
     if not request.is_secure():
         request_protocol = "http://"
 
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
     theme = "css/themes/bookwyrm-light.scss"
     if (
         hasattr(request, "user")
@@ -27,5 +28,4 @@ def site_settings(request):
         "media_full_url": settings.MEDIA_FULL_URL,
         "preview_images_enabled": settings.ENABLE_PREVIEW_IMAGES,
         "request_protocol": request_protocol,
-        "js_cache": settings.JS_CACHE,
     }

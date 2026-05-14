@@ -1,4 +1,5 @@
-""" What's up locally """
+"""What's up locally"""
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -9,7 +10,6 @@ from django.views import View
 from bookwyrm import activitystreams
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Discover(View):
     """preview of recently reviewed books"""

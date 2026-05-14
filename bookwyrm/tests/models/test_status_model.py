@@ -1,4 +1,5 @@
-""" testing models """
+"""testing models"""
+
 from unittest.mock import patch
 import pathlib
 import re
@@ -13,8 +14,6 @@ import responses
 from bookwyrm import activitypub, models, settings
 
 
-# pylint: disable=too-many-public-methods
-# pylint: disable=line-too-long
 @patch("bookwyrm.models.Status.broadcast")
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
@@ -477,7 +476,6 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Announce")
         self.assertEqual(activity, boost.to_activity(pure=True))
 
-    # pylint: disable=unused-argument
     def test_create_broadcast(self, one, two, broadcast_mock, *_):
         """should send out two versions of a status on create"""
         models.Comment.objects.create(

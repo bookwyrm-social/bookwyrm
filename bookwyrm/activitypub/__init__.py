@@ -1,4 +1,5 @@
-""" bring activitypub functions into the namespace """
+"""bring activitypub functions into the namespace"""
+
 import inspect
 import sys
 

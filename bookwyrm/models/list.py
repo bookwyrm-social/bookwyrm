@@ -1,7 +1,9 @@
-""" make a list of books!! """
+"""make a list of books!!"""
+
 from typing import Optional, Iterable
 import uuid
 
+from django.contrib.postgres.indexes import Index
 from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import Q
@@ -63,6 +65,8 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         """default sorting"""
 
         ordering = ("-updated_date",)
+
+        indexes = [Index(fields=["privacy", "-updated_date"])]
 
     def raise_not_editable(self, viewer):
         """the associated user OR the list owner can edit"""

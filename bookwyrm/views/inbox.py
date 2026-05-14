@@ -1,4 +1,5 @@
-""" incoming activities """
+"""incoming activities"""
+
 import json
 import re
 import logging
@@ -13,6 +14,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from bookwyrm import activitypub, models
+from bookwyrm.decorators import require_federation
 from bookwyrm.tasks import app, INBOX
 from bookwyrm.signatures import Signature
 from bookwyrm.utils import regex
@@ -25,7 +27,7 @@ class UserIsGoneError(Exception):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-# pylint: disable=no-self-use
+@method_decorator(require_federation, name="dispatch")
 class Inbox(View):
     """requests sent by outside servers"""
 
@@ -52,9 +54,9 @@ class Inbox(View):
             return HttpResponseForbidden()
 
         if (
-            not "object" in activity_json
-            or not "type" in activity_json
-            or not activity_json["type"] in activitypub.activity_objects
+            "object" not in activity_json
+            or "type" not in activity_json
+            or activity_json["type"] not in activitypub.activity_objects
         ):
             raise Http404()
 

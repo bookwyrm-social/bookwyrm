@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 
@@ -37,7 +38,6 @@ class IsbnViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=cls.work,
         )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

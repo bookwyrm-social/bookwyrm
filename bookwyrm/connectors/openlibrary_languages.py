@@ -1,4 +1,5 @@
-""" key lookups for openlibrary languages """
+"""key lookups for openlibrary languages"""
+
 languages = {
     "/languages/eng": "English",
     "/languages/fre": "French",

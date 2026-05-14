@@ -1,4 +1,5 @@
-""" test for files maintenance page functionality """
+"""test for files maintenance page functionality"""
+
 from unittest.mock import patch
 
 from django.contrib.auth.models import Group
@@ -72,7 +73,7 @@ class FilesMaintenanceViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_schedule_delete_export_file(self):
-        """Schedule the task"""
+        """Schedule the delete export task"""
         self.assertFalse(IntervalSchedule.objects.exists())
 
         form = forms.IntervalScheduleForm()
@@ -85,6 +86,11 @@ class FilesMaintenanceViews(TestCase):
         self.assertEqual(response.status_code, 302)
 
         self.assertTrue(IntervalSchedule.objects.exists())
+        self.assertTrue(PeriodicTask.objects.exists())
+        self.assertEqual(
+            PeriodicTask.objects.first().task,
+            "bookwyrm.models.housekeeping.start_export_deletions",
+        )
 
     def test_export_files_set_expiry(self):
         """does setting the expiry time change the setting?"""
@@ -107,3 +113,24 @@ class FilesMaintenanceViews(TestCase):
         site.refresh_from_db()
 
         self.assertEqual(site.export_files_lifetime_hours, 48)
+
+    def test_schedule_missing_covers_job(self):
+        """Schedule the missing covers job"""
+
+        self.assertFalse(IntervalSchedule.objects.exists())
+
+        form = forms.IntervalScheduleForm()
+        form.data["every"] = 1
+        form.data["period"] = "days"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        response = views.schedule_run_missing_covers_job(request)
+        self.assertEqual(response.status_code, 302)
+
+        self.assertTrue(IntervalSchedule.objects.exists())
+        self.assertTrue(PeriodicTask.objects.exists())
+        self.assertEqual(
+            PeriodicTask.objects.first().task,
+            "bookwyrm.models.housekeeping.run_missing_covers_job",
+        )

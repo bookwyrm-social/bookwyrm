@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 
@@ -46,8 +47,6 @@ class LinkViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=cls.work,
         )
-
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""
@@ -132,7 +131,7 @@ class LinkViews(TestCase):
             # link is duplicate and we get form page again with error
             self.assertContains(
                 result,
-                "This link with file type has already been added for this book",
+                "This link has already been added for this book",
             )
             self.assertEqual(result.status_code, 200)
 

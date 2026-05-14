@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.contrib.auth.models import Group
@@ -18,6 +19,10 @@ class UserAdminViews(TestCase):
     @classmethod
     def setUpTestData(cls):
         """we need basic test data and mocks"""
+        initdb.init_groups()
+        initdb.init_permissions()
+        moderator = Group.objects.get(name="moderator")
+        editor = Group.objects.get(name="editor")
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
             patch("bookwyrm.activitystreams.populate_stream_task.delay"),
@@ -30,11 +35,30 @@ class UserAdminViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        initdb.init_groups()
-        initdb.init_permissions()
-        group = Group.objects.get(name="moderator")
-        cls.local_user.groups.set([group])
-        models.SiteSettings.objects.create()
+            cls.user_user = models.User.objects.create_user(
+                "user@local.com",
+                "user@user.user",
+                "password",
+                local=True,
+                localname="user",
+            )
+            cls.user_editor = models.User.objects.create_user(
+                "editor@local.com",
+                "editor@editor.editor",
+                "password",
+                local=True,
+                localname="editor",
+            )
+            cls.user_editor_2 = models.User.objects.create_user(
+                "editor_2@local.com",
+                "editor_2@editor_2.editor_2",
+                "password",
+                local=True,
+                localname="editor_2",
+            )
+        cls.local_user.groups.set([moderator])
+        cls.user_editor.groups.set([editor])
+        cls.user_editor_2.groups.set([editor])
 
     def setUp(self):
         """individual test setup"""
@@ -120,3 +144,63 @@ class UserAdminViews(TestCase):
                 report=report, action_type=USER_PERMS
             ).exists()
         )
+
+    def test_force_password_reset_page(self):
+        """Force password resets from admin panel"""
+        view = views.ForcePasswordResetAdmin.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        result = view(request)
+        validate_html(result.render())
+
+    def test_force_password_reset_page_confirm(self):
+        """Confirm selection for force password reset page"""
+        view = views.ForcePasswordResetAdmin.as_view()
+        request = self.factory.get("", {"group": "all"})
+        request.user = self.local_user
+
+        result = view(request)
+        validate_html(result.render())
+        self.assertEqual(result.context_data["count"], 4)
+
+        request = self.factory.get("", {"group": "moderator"})
+        request.user = self.local_user
+        result = view(request)
+        validate_html(result.render())
+        self.assertEqual(result.context_data["count"], 1)
+
+        request = self.factory.get("", {"group": "editor"})
+        request.user = self.local_user
+        result = view(request)
+        validate_html(result.render())
+        self.assertEqual(result.context_data["count"], 2)
+
+        request = self.factory.get("", {"group": "user"})
+        request.user = self.local_user
+        result = view(request)
+        validate_html(result.render())
+        self.assertEqual(result.context_data["count"], 1)
+
+    def test_force_password_reset_page_post(self):
+        """Force reset for users"""
+        view = views.ForcePasswordResetAdmin.as_view()
+        request = self.factory.post("", {"group": "editor"})
+        request.user = self.local_user
+
+        result = view(request)
+        validate_html(result.render())
+
+        self.assertEqual(result.context_data["force_count"], 2)
+
+        self.user_editor.refresh_from_db()
+        self.assertTrue(self.user_editor.force_password_reset)
+
+        self.user_editor_2.refresh_from_db()
+        self.assertTrue(self.user_editor_2.force_password_reset)
+
+        self.user_user.refresh_from_db()
+        self.assertFalse(self.user_user.force_password_reset)
+
+        self.local_user.refresh_from_db()
+        self.assertFalse(self.local_user.force_password_reset)

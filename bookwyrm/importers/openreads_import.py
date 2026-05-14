@@ -1,4 +1,5 @@
-""" handle reading a csv from openreads"""
+"""handle reading a csv from openreads"""
+
 from typing import Any, Optional
 from datetime import datetime
 from bookwyrm.models import Shelf

@@ -1,4 +1,5 @@
-""" test populating user streams """
+"""test populating user streams"""
+
 from django.test import TestCase
 
 from bookwyrm.models import Connector

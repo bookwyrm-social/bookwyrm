@@ -1,4 +1,5 @@
-""" sending out activities """
+"""sending out activities"""
+
 from unittest.mock import patch
 import json
 

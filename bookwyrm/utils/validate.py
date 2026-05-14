@@ -1,4 +1,5 @@
 """Validations"""
+
 from typing import Optional
 
 from bookwyrm.settings import BASE_URL

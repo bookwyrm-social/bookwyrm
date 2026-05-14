@@ -1,4 +1,5 @@
-""" import books from another app """
+"""import books from another app"""
+
 from io import TextIOWrapper
 import datetime
 from typing import Optional
@@ -29,7 +30,7 @@ from bookwyrm.models.bookwyrm_import_job import BookwyrmImportJob
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.utils.cache import get_or_set
 
-# pylint: disable= no-self-use
+
 @method_decorator(login_required, name="dispatch")
 class Import(View):
     """import view"""
@@ -56,14 +57,14 @@ class Import(View):
         elif seconds:
             data["recent_avg_minutes"] = seconds / 60
 
-        site_settings = models.SiteSettings.objects.get()
+        site_settings = models.SiteSettings.get()
         time_range = timezone.now() - datetime.timedelta(
             days=site_settings.import_limit_reset
         )
         import_jobs = models.ImportJob.objects.filter(
             user=request.user, created_date__gte=time_range
         )
-        # pylint: disable=consider-using-generator
+
         imported_books = sum([job.successful_item_count for job in import_jobs])
         data["import_size_limit"] = site_settings.import_size_limit
         data["import_limit_reset"] = site_settings.import_limit_reset
@@ -73,7 +74,7 @@ class Import(View):
 
     def post(self, request):
         """ingest a book data csv"""
-        site = models.SiteSettings.objects.get()
+        site = models.SiteSettings.get()
         if not site.imports_enabled:
             raise PermissionDenied()
 
@@ -142,7 +143,6 @@ def get_average_import_time() -> float:
     return None
 
 
-# pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class UserImport(View):
     """import user view"""

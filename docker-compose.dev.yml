@@ -1,34 +1,33 @@
+name: dev-wyrm
 services:
+  nginx:
+    env_file: .env.dev
   web:
-    environment:
-      - DEBUG=1
+    env_file: .env.dev
     volumes:
-      - ./bookwyrm:/app/bookwyrm
-      - ./celerywyrm:/app/celerywyrm
-      - ./locale:/app/locale
-      - ./manage.py:/app/manage.py
-      - ./entrypoint.sh:/entrypoint.sh
+      - .:/app
+  db-backup-job: !reset null
+  celery_worker:
+    env_file: .env.dev
+    volumes:
+      - .:/app
+  celery_beat:
+    env_file: .env.dev
+    volumes:
+      - .:/app
+  flower:
+    env_file: .env.dev
+    volumes:
+      - .:/app
   dev-tools:
-    image: bookwyrm:dev
     build: dev-tools
-    env_file: .env
+    env_file:
+      - .env
+      - .env.dev
+    networks:
+      - main
     volumes:
-      - ./bookwyrm:/app/bookwyrm
-      - ./celerywyrm:/app/celerywyrm
-      - ./locale:/app/locale
-      - ./manage.py:/app/manage.py
-      - ./.prettierignore:/app/.prettierignore
-      - ./.prettierrc:/app/.prettierrc
-      - ./.eslintrc.js:/app/.eslintrc.js
-      - ./.eslintignore:/app/.eslintignore
-      - ./pyproject.toml:/app/pyproject.toml
-    depends_on:
-      db:
-        condition: service_healthy
-        restart: true
-      celery_worker:
-        condition: service_started
-      redis_activity:
-        condition: service_started
+      - /app/dev-tools/
+      - .:/app
     profiles:
       - tools

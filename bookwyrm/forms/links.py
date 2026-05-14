@@ -1,4 +1,4 @@
-""" using django model forms """
+"""using django model forms"""
 
 from urllib.parse import urlparse
 
@@ -8,7 +8,6 @@ from bookwyrm import models
 from .custom_form import CustomForm
 
 
-# pylint: disable=missing-class-docstring
 class LinkDomainForm(CustomForm):
     class Meta:
         model = models.LinkDomain
@@ -24,7 +23,6 @@ class FileLinkForm(CustomForm):
         """make sure the domain isn't blocked or pending"""
         cleaned_data = super().clean()
         url = cleaned_data.get("url")
-        filetype = cleaned_data.get("filetype")
         book = cleaned_data.get("book")
         domain = urlparse(url).hostname
         if models.LinkDomain.objects.filter(domain=domain).exists():
@@ -39,16 +37,14 @@ class FileLinkForm(CustomForm):
                     ),
                 )
                 return
-        if current_links := models.FileLink.objects.filter(
-            url=url, book=book, filetype=filetype
-        ).all():
+        if current_links := models.FileLink.objects.filter(url=url, book=book).all():
             for link in current_links:
                 if link == self.instance:
                     continue
                 self.add_error(
                     "url",
                     _(
-                        "This link with file type has already been added for this book."
+                        "This link has already been added for this book."
                         " If it is not visible, the domain is still pending."
                     ),
                 )

@@ -1,4 +1,5 @@
-""" track progress of goodreads imports """
+"""track progress of goodreads imports"""
+
 from datetime import datetime
 import math
 import re
@@ -303,6 +304,11 @@ class ImportItem(models.Model):
         return self._parse_datefield("date_finished")
 
     @property
+    def date_reviewed(self):
+        """the date a book was reviewed"""
+        return self._parse_datefield("review_published")
+
+    @property
     def reads(self):
         """formats a read through dataset for the book in this line"""
         start_date = self.date_started
@@ -330,11 +336,9 @@ class ImportItem(models.Model):
         return []
 
     def __repr__(self):
-        # pylint: disable=consider-using-f-string
         return "<{!r} Item {!r}>".format(self.index, self.normalized_data.get("title"))
 
     def __str__(self):
-        # pylint: disable=consider-using-f-string
         return "{} by {}".format(
             self.normalized_data.get("title"), self.normalized_data.get("authors")
         )
@@ -385,7 +389,7 @@ def import_item_task(item_id):
     item.update_job()
 
 
-def handle_imported_book(item):  # pylint: disable=too-many-branches
+def handle_imported_book(item):
     """process a csv and then post about it"""
     job = item.job
     if job.complete:
@@ -414,7 +418,6 @@ def handle_imported_book(item):  # pylint: disable=too-many-branches
             try:
                 shelf = Shelf.objects.get(identifier=item.shelf, user=user)
             except ObjectDoesNotExist:
-
                 shelf = Shelf.objects.create(
                     user=user,
                     identifier=item.shelf,
@@ -447,11 +450,9 @@ def handle_imported_book(item):  # pylint: disable=too-many-branches
         # but "now" is a bad guess unless we have no choice
 
         published_date_guess = (
-            item.review_published or item.date_read or item.date_added or timezone.now()
+            item.date_reviewed or item.date_read or item.date_added or timezone.now()
         )
         if item.review:
-
-            # pylint: disable=consider-using-f-string
             review_title = "Review of {!r} on {!r}".format(
                 item.book.title,
                 job.source,

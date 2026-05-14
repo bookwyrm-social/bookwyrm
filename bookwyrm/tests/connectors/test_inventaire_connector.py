@@ -1,4 +1,5 @@
-""" testing book data connectors """
+"""testing book data connectors"""
+
 import json
 import pathlib
 from unittest.mock import patch

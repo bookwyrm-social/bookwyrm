@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -41,7 +42,6 @@ class ReportViews(TestCase):
                 user=cls.local_user,
                 content="Test status",
             )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

@@ -1,4 +1,5 @@
-""" tests incoming activities"""
+"""tests incoming activities"""
+
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -43,8 +44,6 @@ class InboxRemove(TestCase):
             remote_id="https://bookwyrm.social/book/37292",
             parent_work=cls.work,
         )
-
-        models.SiteSettings.objects.create()
 
     def test_handle_unshelve_book(self):
         """remove a book from a shelf"""

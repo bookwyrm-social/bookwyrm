@@ -1,4 +1,5 @@
 """testing the annual summary page"""
+
 import datetime
 from unittest.mock import patch
 
@@ -44,7 +45,6 @@ class AnnualSummary(TestCase):
             parent_work=cls.work,
             pages=300,
         )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

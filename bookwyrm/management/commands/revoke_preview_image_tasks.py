@@ -1,4 +1,5 @@
-""" Actually let's not generate those preview images  """
+"""Actually let's not generate those preview images"""
+
 import json
 from django.core.management.base import BaseCommand
 from bookwyrm.tasks import app
@@ -7,7 +8,6 @@ from bookwyrm.tasks import app
 class Command(BaseCommand):
     """Find and revoke image tasks"""
 
-    # pylint: disable=unused-argument
     def handle(self, *args, **options):
         """revoke nonessential low priority tasks"""
         types = [

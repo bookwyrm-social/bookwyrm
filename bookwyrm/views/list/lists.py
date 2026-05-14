@@ -1,4 +1,7 @@
-""" book list views"""
+"""book list views"""
+
+import logging
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import redirect
@@ -9,12 +12,11 @@ from django.views import View
 from bookwyrm import forms, models
 from bookwyrm.lists_stream import ListsStream
 from bookwyrm.views.helpers import get_user_from_username
-
-import logging
+from bookwyrm.views.list.list import add_book
 
 logger = logging.getLogger(__name__)
 
-# pylint: disable=no-self-use
+
 class Lists(View):
     """book list page"""
 
@@ -33,7 +35,6 @@ class Lists(View):
         return TemplateResponse(request, "lists/lists.html", data)
 
     @method_decorator(login_required, name="dispatch")
-    # pylint: disable=unused-argument
     def post(self, request):
         """create a book_list"""
         form = forms.ListForm(request.POST)
@@ -45,6 +46,15 @@ class Lists(View):
         if not book_list.curation == "group":
             book_list.group = None
         book_list.save()
+
+        book_id = request.POST.get("book")
+        if book_id:
+            # We want to add a book to the new list directly after its creation
+            updated_post = request.POST.copy()
+            updated_post["book_list"] = book_list.id
+            updated_post["book"] = book_id
+            request.POST = updated_post
+            return add_book(request)
 
         return redirect(book_list.local_path)
 

@@ -1,4 +1,5 @@
-""" testing bookwyrm user import """
+"""testing bookwyrm user import"""
+
 from unittest.mock import patch
 from django.test import TestCase
 from bookwyrm import models

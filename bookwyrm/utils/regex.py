@@ -1,4 +1,4 @@
-""" defining regexes for regularly used concepts """
+"""defining regexes for regularly used concepts"""
 
 DOMAIN = r"[\w_\-\.]+\.[a-z\-]{2,}"
 LOCALNAME = r"@?[a-zA-Z_\-\.0-9]+"

@@ -42,6 +42,20 @@ function runweb {
     $DOCKER_COMPOSE run --rm web "$@"
 }
 
+# dev-tools that don't need db to be up
+function runtools {
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml  --env-file .env --env-file .env.dev run -e DEBUG=true --rm dev-tools "$@"
+}
+
+# dev-tools that needs db etc to be up
+function rundev {
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml  --env-file .env --env-file .env.dev run -e DEBUG=true --rm web "$@"
+}
+
+function dev {
+    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml --env-file .env --env-file .env.dev "$@"
+}
+
 function execdb {
     $DOCKER_COMPOSE exec db "$@"
 }
@@ -119,6 +133,24 @@ case "$CMD" in
     down)
         $DOCKER_COMPOSE down
         ;;
+    dev)
+        dev "$@"
+        ;;
+    rundev)
+        rundev "$@"
+        ;;
+    docker_cache_cleanup)
+        echo "Showing current docker storage usage"
+        docker system df
+
+        echo "Cleaning out docker build caches that hasn't been used in the last 24 hours"
+        docker buildx prune -af --filter=until=24h
+
+        echo "Docker storage usage after cache cleanup"
+        docker system df
+
+        echo "If you still need to reclaim more space, you can consider running 'docker system prune --volumes'"
+        ;;
     service_ports_web)
         prod_error
         $DOCKER_COMPOSE run --rm --service-ports web
@@ -133,20 +165,14 @@ case "$CMD" in
         $DOCKER_COMPOSE --file docker-compose-upgrade-db.yml run --rm db_update
         ;;
     resetdb)
-        prod_error
-        $DOCKER_COMPOSE rm -svf
-        docker volume rm -f bookwyrm_media_volume bookwyrm_pgdata bookwyrm_redis_activity_data bookwyrm_redis_broker_data bookwyrm_static_volume
-        $DOCKER_COMPOSE build
-        migrate
-        migrate django_celery_beat
-        initdb
-        runweb python manage.py compile_themes
-        runweb python manage.py collectstatic --no-input
-        admin_code
+        dev down
+        dev rm -svf
+        docker volume rm -f dev-wyrm_media_volume dev-wyrm_pgdata dev-wyrm_redis_activity_data dev-wyrm_redis_broker_data dev-wyrm_static_volume, dev-wyrm_exports_volume
+        dev up --build -d
+        rundev python manage.py admin_code
         ;;
     makemigrations)
-        prod_error
-        runweb python manage.py makemigrations "$@"
+        rundev python manage.py makemigrations "$@"
         ;;
     migrate)
         migrate "$@"
@@ -164,12 +190,11 @@ case "$CMD" in
         $DOCKER_COMPOSE restart celery_worker
         ;;
     pytest)
-        prod_error
-        runweb_code pytest --no-cov-on-fail "$@"
+        rundev pytest --no-cov-on-fail "$@"
         ;;
     pytest_coverage_report)
         prod_error
-        runweb_code pytest -n 3 --cov-report term-missing "$@"
+        rundev pytest -n 3 --cov-report term-missing "$@"
         ;;
     compile_themes)
         runweb python manage.py compile_themes
@@ -178,18 +203,14 @@ case "$CMD" in
         runweb python manage.py collectstatic --no-input
         ;;
     makemessages)
-        prod_error
-        runweb_code django-admin makemessages --no-wrap --ignore=venv -l en_US $@
+        runtools django-admin makemessages --no-wrap --ignore=venv -l en_US $@
         ;;
     compilemessages)
-        runweb_code django-admin compilemessages --ignore venv $@
+        runtools django-admin compilemessages --ignore venv $@
         ;;
     update_locales)
-        prod_error
-        git fetch origin l10n_main:l10n_main
-        git checkout l10n_main locale/
-        runweb_code django-admin makemessages --no-wrap --ignore=venv -l en_US $@
-        runweb_code django-admin compilemessages --ignore venv
+        runtools django-admin makemessages --no-wrap --ignore=venv -l en_US "$@"
+        runtools django-admin compilemessages --ignore venv
         ;;
     build)
         $DOCKER_COMPOSE build
@@ -198,40 +219,39 @@ case "$CMD" in
         prod_error
         clean
         ;;
-    black)
-        prod_error
-        runweb_code black celerywyrm bookwyrm
+    ruff)
+        runtools ruff format celerywyrm bookwyrm
+        runtools ruff check celerywyrm bookwyrm
         ;;
-    pylint)
-        prod_error
-        # pylint depends on having the app dependencies in place, so we run it in the web container
-        runweb_code pylint bookwyrm/
+    ruff-format)
+        runtools ruff format celerywyrm bookwyrm
+        ;;
+    ruff-check)
+        runtools ruff check celerywyrm bookwyrm
+        ;;
+    ruff-fix)
+        runtools ruff check --fix celerywyrm bookwyrm
         ;;
     prettier)
-        prod_error
-        runweb_code prettier --write bookwyrm/static/js/*.js
+        runtools prettier --write bookwyrm/static/js/*.js
         ;;
     eslint)
-        prod_error
-        runweb_code eslint bookwyrm/static --ext .js
+        runtools eslint bookwyrm/static --ext .js
         ;;
     stylelint)
-        prod_error
-        runweb_code stylelint --fix bookwyrm/static/css \
+        runtools stylelint --fix bookwyrm/static/css \
             --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
         ;;
     formatters)
-        prod_error
-        runweb_code pylint bookwyrm/
-        runweb_code black celerywyrm bookwyrm
-        runweb_code prettier --write bookwyrm/static/js/*.js
-        runweb_code eslint bookwyrm/static --ext .js
-        runweb_code stylelint --fix bookwyrm/static/css \
+        runtools ruff format celerywyrm bookwyrm
+        runtools ruff check --fix celerywyrm bookwyrm
+        runtools prettier --write bookwyrm/static/js/*.js
+        runtools eslint bookwyrm/static --ext .js
+        runtools stylelint --fix bookwyrm/static/css \
             --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
         ;;
     mypy)
-        prod_error
-        runweb_code mypy celerywyrm bookwyrm
+        runtools mypy celerywyrm bookwyrm
         ;;
     create_secrets)
         create_secrets
@@ -243,13 +263,8 @@ case "$CMD" in
     update)
         git pull
         $DOCKER_COMPOSE build
-        # ./update.sh
         runweb python manage.py migrate
-        runweb python manage.py compile_themes
-        runweb python manage.py collectstatic --no-input
         $DOCKER_COMPOSE up -d
-        $DOCKER_COMPOSE restart web
-        $DOCKER_COMPOSE restart celery_worker
         ;;
     populate_streams)
         runweb python manage.py populate_streams "$@"
@@ -344,8 +359,14 @@ case "$CMD" in
         echo "    compilemessages [locale]"
         echo "    update_locales"
         echo "    build"
+        echo "    dev"
+        echo "    rundev"
+        echo "    docker_cache_cleanup"
         echo "    clean"
-        echo "    black"
+        echo "    ruff (format and check)"
+        echo "    ruff-format (format code only)"
+        echo "    ruff-check (check code only)"
+        echo "    ruff-fix (auto-fix ruff issues)"
         echo "    prettier"
         echo "    eslint"
         echo "    stylelint"

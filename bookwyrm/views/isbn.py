@@ -1,4 +1,5 @@
-""" isbn search view """
+"""isbn search view"""
+
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
@@ -9,7 +10,7 @@ from bookwyrm import book_search
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request
 
-# pylint: disable= no-self-use
+
 class Isbn(View):
     """search a book by isbn"""
 

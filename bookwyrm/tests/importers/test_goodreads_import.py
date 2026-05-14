@@ -1,4 +1,5 @@
-""" testing import """
+"""testing import"""
+
 import pathlib
 from unittest.mock import patch
 import datetime
@@ -25,7 +26,7 @@ class GoodreadsImport(TestCase):
         """use a test csv"""
         self.importer = GoodreadsImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
-        # pylint: disable-next=consider-using-with
+
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
 
     def tearDown(self):
@@ -43,7 +44,6 @@ class GoodreadsImport(TestCase):
             cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
-        models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
         cls.book = models.Edition.objects.create(
             title="Example Edition",

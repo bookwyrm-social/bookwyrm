@@ -1,4 +1,5 @@
-""" tests incoming activities"""
+"""tests incoming activities"""
+
 import json
 import pathlib
 from unittest.mock import patch
@@ -54,7 +55,6 @@ class Inbox(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        models.SiteSettings.objects.create()
 
     def test_inbox_invalid_get(self):
         """shouldn't try to handle if the user is not found"""
@@ -134,7 +134,6 @@ class Inbox(TestCase):
         request = self.factory.post(
             "",
             headers={
-                # pylint: disable-next=line-too-long
                 "user-agent": "http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
             },
         )

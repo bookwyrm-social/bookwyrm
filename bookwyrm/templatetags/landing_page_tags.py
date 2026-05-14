@@ -1,4 +1,5 @@
-""" template filters """
+"""template filters"""
+
 from django import template
 from django.db.models import Avg, StdDev, Count, F, Q
 

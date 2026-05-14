@@ -1,4 +1,5 @@
-""" non-interactive pages """
+"""non-interactive pages"""
+
 from dateutil.relativedelta import relativedelta
 from django.http import Http404
 from django.template.response import TemplateResponse
@@ -13,7 +14,7 @@ def about(request):
     """more information about the instance"""
     six_months_ago = timezone.now() - relativedelta(months=6)
     six_month_count = models.User.objects.filter(
-        is_active=True, local=True, last_active_date__gt=six_months_ago
+        local=True, is_active=True, last_active_date__gt=six_months_ago
     ).count()
     data = {
         "active_users": six_month_count,
@@ -42,7 +43,7 @@ def privacy(request):
 @require_GET
 def impressum(request):
     """more information about the instance"""
-    site = models.SiteSettings.objects.get()
+    site = models.SiteSettings.get()
     if not site.show_impressum:
         raise Http404()
     return TemplateResponse(request, "about/impressum.html")

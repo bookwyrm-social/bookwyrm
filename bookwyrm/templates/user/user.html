@@ -22,9 +22,18 @@
     </div>
     {% endif %}
 </div>
+
+{% if site.disable_federation and not user.local %}
+<div class="notification is-danger is-light">
+    <p>
+    {% trans "Federation is currently disabled, so you will not be able to interact with this user." %}
+    </p>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block panel %}
+
 {% if user.bookwyrm_user %}
 <div class="block">
     <h2 class="title">

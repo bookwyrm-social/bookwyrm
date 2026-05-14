@@ -1,4 +1,5 @@
-""" models for storing different kinds of Activities """
+"""models for storing different kinds of Activities"""
+
 from dataclasses import MISSING
 from typing import Optional, Iterable
 import re
@@ -108,7 +109,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         # clear user content
         self.content = None
         if hasattr(self, "quotation"):
-            self.quotation = None  # pylint: disable=attribute-defined-outside-init
+            self.quotation = None
         self.deleted_date = timezone.now()
         self.save(*args, **kwargs)
 
@@ -125,9 +126,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return list(mentions)
 
     @classmethod
-    def ignore_activity(
-        cls, activity, allow_external_connections=True
-    ):  # pylint: disable=too-many-return-statements
+    def ignore_activity(cls, activity, allow_external_connections=True):
         """keep notes if they are replies to existing statuses"""
         if activity.type == "Announce":
             boosted = activitypub.resolve_remote_id(
@@ -253,7 +252,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             activity.attachment = covers
         return activity
 
-    def to_activity(self, pure=False):  # pylint: disable=arguments-differ
+    def to_activity(self, pure=False):
         """json serialized activitypub class"""
         return self.to_activity_dataclass(pure=pure).serialize()
 
@@ -353,8 +352,7 @@ class Comment(BookStatus):
         """indicate the book in question for mastodon (or w/e) users"""
         progress = self.progress or 0
         citation = (
-            f'comment on <a href="{self.book.remote_id}">'
-            f"<i>{self.book.title}</i></a>"
+            f'comment on <a href="{self.book.remote_id}"><i>{self.book.title}</i></a>'
         )
         if self.progress_mode == "PG" and progress > 0:
             citation += f", p. {progress}"
@@ -533,7 +531,6 @@ class Boost(ActivityMixin, Status):
         self.deserialize_reverse_fields = []
 
 
-# pylint: disable=unused-argument
 @receiver(models.signals.post_save)
 def preview_image(instance, sender, *args, **kwargs):
     """Updates book previews if the rating has changed"""

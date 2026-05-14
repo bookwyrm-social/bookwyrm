@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 from unittest.mock import patch
 import responses
 from responses import matchers
@@ -49,12 +50,11 @@ class EditBookViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=cls.work,
         )
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""
         self.factory = RequestFactory()
-        # pylint: disable=line-too-long
+
         self.authors_body = "<?xml version='1.0' encoding='UTF-8' ?><?xml-stylesheet type='text/xsl' href='http://isni.oclc.org/sru/DB=1.2/?xsl=searchRetrieveResponse' ?><srw:searchRetrieveResponse xmlns:srw='http://www.loc.gov/zing/srw/' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:diag='http://www.loc.gov/zing/srw/diagnostic/' xmlns:xcql='http://www.loc.gov/zing/cql/xcql/'><srw:version>1.1</srw:version><srw:records><srw:record><isniUnformatted>0000000084510024</isniUnformatted></srw:record></srw:records></srw:searchRetrieveResponse>"
         self.author_body = "<?xml version='1.0' encoding='UTF-8' ?><?xml-stylesheet type='text/xsl' href='http://isni.oclc.org/sru/DB=1.2/?xsl=searchRetrieveResponse' ?><srw:searchRetrieveResponse xmlns:srw='http://www.loc.gov/zing/srw/' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:diag='http://www.loc.gov/zing/srw/diagnostic/' xmlns:xcql='http://www.loc.gov/zing/cql/xcql/'><srw:records><srw:record><srw:recordData><responseRecord><ISNIAssigned><isniUnformatted>0000000084510024</isniUnformatted><isniURI>https://isni.org/isni/0000000084510024</isniURI><dataConfidence>60</dataConfidence><ISNIMetadata><identity><personOrFiction><personalName><surname>Catherine Amy Dawson Scott</surname><nameTitle>poet and novelist</nameTitle><nameUse>public</nameUse><source>VIAF</source><source>WKP</source><subsourceIdentifier>Q544961</subsourceIdentifier></personalName><personalName><forename>C. A.</forename><surname>Dawson Scott</surname><marcDate>1865-1934</marcDate><nameUse>public</nameUse><source>VIAF</source><source>NLP</source><subsourceIdentifier>a28927850</subsourceIdentifier></personalName><sources><codeOfSource>VIAF</codeOfSource><sourceIdentifier>45886165</sourceIdentifier><reference><class>ALL</class><role>CRE</role><URI>http://viaf.org/viaf/45886165</URI></reference></sources><externalInformation><information>Wikipedia</information><URI>https://en.wikipedia.org/wiki/Catherine_Amy_Dawson_Scott</URI></externalInformation></ISNIMetadata></ISNIAssigned></responseRecord></srw:recordData></srw:record></srw:records></srw:searchRetrieveResponse>"
 
@@ -381,6 +381,60 @@ class EditBookViews(TestCase):
         self.assertEqual(len(result["author_matches"]), 2)
         self.assertEqual(result["author_matches"][0]["name"], "Sappho")
         self.assertEqual(result["author_matches"][1]["name"], "Some Guy")
+
+    def test_existings_authors_names_add_author_helper(self):
+        """converts form input into author matches"""
+        for author_name in [
+            "YX",
+            "Medium author",
+            "幌田",
+            "long author name that exceeds normal limits",
+        ]:
+            author = models.Author.objects.create(name=author_name)
+            author.save()
+            form = forms.EditionForm(instance=self.book)
+            form.data["title"] = "New Title"
+            form.data["last_edited_by"] = self.local_user.id
+            form.data["add_author"] = [author_name]
+            request = self.factory.post("", form.data)
+            request.user = self.local_user
+
+            with patch("bookwyrm.utils.isni.find_authors_by_name") as mock:
+                mock.return_value = []
+                result = add_authors(request, form.data)
+
+            self.assertTrue(result["confirm_mode"])
+            self.assertEqual(result["add_author"], [author_name])
+            self.assertTrue(len(result["author_matches"]) >= 1)
+            self.assertEqual(result["author_matches"][0]["name"], author_name)
+
+    def test_existings_authors_aliases_add_author_helper(self):
+        """converts form input into author matches"""
+        for author_name in [
+            "YX",
+            "Medium author",
+            "幌田",
+            "long author name that exceeds normal limits",
+        ]:
+            author = models.Author.objects.create(
+                name="Mystery author", aliases=[author_name]
+            )
+            author.save()
+            form = forms.EditionForm(instance=self.book)
+            form.data["title"] = "New Title"
+            form.data["last_edited_by"] = self.local_user.id
+            form.data["add_author"] = [author_name]
+            request = self.factory.post("", form.data)
+            request.user = self.local_user
+
+            with patch("bookwyrm.views.books.edit_book.find_authors_by_name") as mock:
+                mock.return_value = []
+                result = add_authors(request, form.data)
+
+            self.assertTrue(result["confirm_mode"])
+            self.assertEqual(result["add_author"], [author_name])
+            self.assertEqual(len(result["author_matches"]), 1)
+            self.assertEqual(result["author_matches"][0]["name"], author_name)
 
     def test_create_book_get(self):
         """there are so many views, this just makes sure it LOADS"""

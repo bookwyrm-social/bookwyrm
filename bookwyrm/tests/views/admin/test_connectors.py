@@ -1,7 +1,8 @@
-""" test for app action functionality """
-from unittest.mock import patch
-import pytest
+"""test for app action functionality"""
 
+from unittest.mock import patch
+
+import pytest
 from django.contrib.auth.models import Group
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -130,4 +131,20 @@ class ConnectorViews(TestCase):
 
         self.assertTrue(
             models.Connector.objects.filter(connector_file="finna").exists()
+        )
+
+    def test_create_libris_connector(self):
+        """test creating a libris connector"""
+
+        self.assertFalse(
+            models.Connector.objects.filter(connector_file="libris").exists()
+        )
+
+        view = views.create_connector
+        request = self.factory.post("", {"connector_file": "libris"})
+        request.user = self.local_user
+        view(request)
+
+        self.assertTrue(
+            models.Connector.objects.filter(connector_file="libris").exists()
         )

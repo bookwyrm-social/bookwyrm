@@ -1,4 +1,5 @@
-""" test searching for authors """
+"""test searching for authors"""
+
 from django.test import TestCase
 
 from django.contrib.postgres.search import SearchRank, SearchQuery

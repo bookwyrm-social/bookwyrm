@@ -1,4 +1,5 @@
 """test bookwyrm user export functions"""
+
 import datetime
 import json
 import pathlib
@@ -16,7 +17,7 @@ class BookwyrmExportJob(TestCase):
     """testing user export functions"""
 
     @classmethod
-    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+    def setUpTestData(self):
         """lots of stuff to set up for a user export"""
         with (
             patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
@@ -27,7 +28,6 @@ class BookwyrmExportJob(TestCase):
             patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"),
             patch("bookwyrm.activitystreams.add_book_statuses_task"),
         ):
-
             self.local_user = models.User.objects.create_user(
                 "mouse",
                 "mouse@mouse.mouse",
@@ -93,6 +93,12 @@ class BookwyrmExportJob(TestCase):
             self.edition = models.Edition.objects.create(
                 title="Example Edition", parent_work=self.work
             )
+            self.second_work = models.Work.objects.create(
+                title="Another Example Work", remote_id="https://example.com/book/2"
+            )
+            self.another_edition = models.Edition.objects.create(
+                title="Another Edition", parent_work=self.second_work
+            )
 
             # edition cover
             cover_path = pathlib.Path(__file__).parent.joinpath(
@@ -109,6 +115,12 @@ class BookwyrmExportJob(TestCase):
             models.ReadThrough.objects.create(
                 user=self.local_user,
                 book=self.edition,
+                start_date=self.readthrough_start,
+                finish_date=finish,
+            )
+            models.ReadThrough.objects.create(
+                user=self.local_user,
+                book=self.another_edition,
                 start_date=self.readthrough_start,
                 finish_date=finish,
             )
@@ -179,7 +191,7 @@ class BookwyrmExportJob(TestCase):
     def test_add_book_to_user_export_job(self):
         """does AddBookToUserExportJob ...add the book to the export?"""
         self.assertIsNotNone(self.job.export_json["books"])
-        self.assertEqual(len(self.job.export_json["books"]), 1)
+        self.assertEqual(len(self.job.export_json["books"]), 2)
         book = self.job.export_json["books"][0]
 
         self.assertEqual(book["work"]["id"], self.work.remote_id)
@@ -242,7 +254,7 @@ class BookwyrmExportJob(TestCase):
 
         data = models.bookwyrm_export_job.get_books_for_user(self.local_user)
 
-        self.assertEqual(len(data), 1)
+        self.assertEqual(len(data), 2)
         self.assertEqual(data[0].title, "Example Edition")
 
     def test_archive(self):

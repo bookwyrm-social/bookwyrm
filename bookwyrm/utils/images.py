@@ -1,13 +1,19 @@
-""" Image  utilities """
+"""Image  utilities"""
 
 import logging
 from io import BytesIO
+from typing import Any
+from uuid import uuid4
+
 from PIL import Image, UnidentifiedImageError
+
 from django.core.files.uploadedfile import (
     UploadedFile,
     InMemoryUploadedFile,
     TemporaryUploadedFile,
 )
+
+from bookwyrm.connectors import get_image
 
 logger = logging.getLogger(__name__)
 
@@ -41,3 +47,15 @@ def remove_uploaded_image_exif(source: UploadedFile) -> UploadedFile:
             "Could not open image file for EXIF removal, saving unmodified image"
         )
     return source
+
+
+def set_cover_from_url(url: str) -> None | list[Any]:
+    """load cover image from a url"""
+    try:
+        image_content, extension = get_image(url)
+    except:
+        return None
+    if not image_content or not extension:
+        return None
+    image_name = str(uuid4()) + "." + extension
+    return [image_name, image_content]

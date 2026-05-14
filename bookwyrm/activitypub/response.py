@@ -1,4 +1,5 @@
-""" ActivityPub-specific json response wrapper """
+"""ActivityPub-specific json response wrapper"""
+
 from django.http import JsonResponse
 
 from .base_activity import ActivityEncoder
@@ -18,9 +19,8 @@ class ActivitypubResponse(JsonResponse):
         encoder=ActivityEncoder,
         safe=False,
         json_dumps_params=None,
-        **kwargs
+        **kwargs,
     ):
-
         if "content_type" not in kwargs:
             kwargs["content_type"] = "application/activity+json"
 

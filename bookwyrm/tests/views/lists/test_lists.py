@@ -1,4 +1,5 @@
-""" test for app action functionality """
+"""test for app action functionality"""
+
 import json
 from unittest.mock import patch
 
@@ -34,8 +35,6 @@ class ListViews(TestCase):
             cls.another_user = models.User.objects.create_user(
                 "rat@local.com", "rat@rat.com", "ratword", local=True, localname="rat"
             )
-
-        models.SiteSettings.objects.create()
 
     def setUp(self):
         """individual test setup"""

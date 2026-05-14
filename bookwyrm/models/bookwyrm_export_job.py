@@ -28,7 +28,7 @@ class BookwyrmAwsSession(BotoSession):
     """a boto session that always uses settings.AWS_S3_ENDPOINT_URL"""
 
     def client(self, *args, **kwargs):
-        kwargs["endpoint_url"] = settings.AWS_S3_ENDPOINT_URL
+        kwargs["endpoint_url"] = storages["exports"].endpoint_url
         return super().client("s3", *args, **kwargs)
 
 
@@ -74,7 +74,7 @@ def create_export_json_task(**kwargs):
         # trigger task to create tar file
         create_archive_task.delay(job_id=job.id)
 
-    except Exception as err:  # pylint: disable=broad-except
+    except Exception as err:
         logger.exception(
             "create_export_json_task for job %s failed with error: %s", job.id, err
         )
@@ -84,17 +84,6 @@ def create_export_json_task(**kwargs):
 def archive_file_location(file, directory="") -> str:
     """get the relative location of a file inside the archive"""
     return os.path.join(directory, file.name)
-
-
-def add_file_to_s3_tar(s3_tar: S3Tar, storage, file, directory=""):
-    """
-    add file to S3Tar inside directory, keeping any directories under its
-    storage location
-    """
-    s3_tar.add_file(
-        os.path.join(storage.location, file.name),
-        folder=os.path.dirname(archive_file_location(file, directory=directory)),
-    )
 
 
 @app.task(queue=IMPORTS, base=ParentTask)
@@ -112,12 +101,10 @@ def create_archive_task(**kwargs):
         archive_filename = f"{export_task_id}.tar.gz"
         export_json_bytes = DjangoJSONEncoder().encode(job.export_json).encode("utf-8")
         user = job.user
+        exports_storage = storages["exports"]
 
-        if settings.USE_S3:
-            # Storage for writing temporary files
-            exports_storage = storages["exports"]
-
-            # Handle for creating the final archive
+        if settings.USE_S3_FOR_EXPORTS:
+            # Handle creating the final archive
             s3_tar = S3Tar(
                 exports_storage.bucket_name,
                 os.path.join(exports_storage.location, archive_filename),
@@ -134,11 +121,12 @@ def create_archive_task(**kwargs):
                 os.path.join(exports_storage.location, export_json_tmp_file)
             )
 
-            # Add avatar to TAR
-            images_storage = storages["default"]
-
             if user.avatar:
-                add_file_to_s3_tar(s3_tar, images_storage, user.avatar)
+                exports_storage.save(user.avatar.name, user.avatar)
+                s3_tar.add_file(
+                    os.path.join(exports_storage.location, user.avatar.name),
+                    folder="avatars",
+                )
 
             # Create archive and store file name
             s3_tar.tar()
@@ -147,8 +135,12 @@ def create_archive_task(**kwargs):
 
             # Delete temporary files
             exports_storage.delete(export_json_tmp_file)
+            exports_storage.delete(user.avatar.name)
 
         else:
+            # exports saved to local storage
+            # this is the default even when using S3 for other files
+            # Use the scheduled task to periodically delete these
             job.export_data = archive_filename
             with job.export_data.open("wb") as tar_file:
                 with BookwyrmTarFile.open(mode="w:gz", fileobj=tar_file) as tar:
@@ -163,7 +155,7 @@ def create_archive_task(**kwargs):
 
         job.complete_job()
 
-    except Exception as err:  # pylint: disable=broad-except
+    except Exception as err:
         logger.exception(
             "create_archive_task for job %s failed with error: %s", job.id, err
         )
@@ -193,7 +185,7 @@ def export_settings(user: User):
 
 def export_saved_lists(user: User):
     """add user saved lists to export JSON"""
-    return [l.remote_id for l in user.saved_lists.all()]
+    return [saved_list.remote_id for saved_list in user.saved_lists.all()]
 
 
 def export_follows(user: User):
@@ -256,9 +248,9 @@ def export_book(user: User, edition: Edition):
     data["lists"] = []
     for item in list_items:
         list_info = item.book_list.to_activity()
-        list_info[
-            "privacy"
-        ] = item.book_list.privacy  # this isn't serialized so we add it
+        list_info["privacy"] = (
+            item.book_list.privacy
+        )  # this isn't serialized so we add it
         list_info["list_item"] = item.to_activity()
         data["lists"].append(list_info)
 
@@ -298,24 +290,37 @@ def export_book(user: User, edition: Edition):
 def get_books_for_user(user):
     """
     Get all the books and editions related to a user.
-    We use union() instead of Q objects because it creates
+    We use selecting book_id instead of Q objects because it creates
     multiple simple queries instead of a complex DB query
     that can time out.
     """
 
-    shelf_eds = Edition.objects.select_related("parent_work").filter(shelves__user=user)
-    rt_eds = Edition.objects.select_related("parent_work").filter(
-        readthrough__user=user
+    shelf_ids = ShelfBook.objects.filter(user=user).values_list("book_id", flat=True)
+    readthrough = ReadThrough.objects.filter(user=user).values_list(
+        "book_id", flat=True
     )
-    review_eds = Edition.objects.select_related("parent_work").filter(review__user=user)
-    list_eds = Edition.objects.select_related("parent_work").filter(list__user=user)
-    comment_eds = Edition.objects.select_related("parent_work").filter(
-        comment__user=user, comment__deleted=False
+    reviews = Review.objects.filter(user=user).values_list("book_id", flat=True)
+    lists = ListItem.objects.filter(user=user).values_list("book_id", flat=True)
+    comments = Comment.objects.filter(user=user, deleted=False).values_list(
+        "book_id", flat=True
     )
-    quote_eds = Edition.objects.select_related("parent_work").filter(
-        quotation__user=user, quotation__deleted=False
+    quotes = Quotation.objects.filter(user=user, deleted=False).values_list(
+        "book_id", flat=True
     )
 
-    editions = shelf_eds.union(rt_eds, review_eds, list_eds, comment_eds, quote_eds)
+    editions = (
+        Edition.objects.select_related("parent_work")
+        .filter(
+            id__in=(
+                set(shelf_ids)
+                | set(readthrough)
+                | set(reviews)
+                | set(lists)
+                | set(comments)
+                | set(quotes)
+            )
+        )
+        .distinct()
+    )
 
     return editions
