@@ -1,17 +1,17 @@
-<article class="{% block card-body-style %}block{% endblock %}">
-    <header class="block mb-3">
+<article class="{% block card-body-style %}card{% endblock %}">
+    <header class="card-header">
         {% block card-header %}
         {% endblock %}
     </header>
 
     {% if not status or status.status_type != 'GeneratedNote' or status.book or status.mention_books.exists or status.mention_users.exists %}
-    <section class="block mb-3">
+    <section class="card-content">
         {% block card-content %}
         {% endblock %}
     </section>
     {% endif %}
 
-    <footer class="is-flex has-text-centered">
+    <footer class="card-footer">
         {% block card-footer %}
         {% endblock %}
     </footer>
@@ -19,4 +19,3 @@
     {% block card-bonus %}
     {% endblock %}
 </article>
-<hr aria-hidden="true">
