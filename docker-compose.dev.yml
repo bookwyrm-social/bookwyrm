@@ -6,6 +6,7 @@ services:
     env_file: .env.dev
     volumes:
       - .:/app
+  db-backup-job: !reset null
   celery_worker:
     env_file: .env.dev
     volumes:
