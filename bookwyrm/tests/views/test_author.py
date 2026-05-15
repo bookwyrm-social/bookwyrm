@@ -5,15 +5,18 @@ from unittest.mock import patch
 from django.contrib.auth.models import AnonymousUser, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied
+from django.db import connection
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.tests.query_logger import QueryLogger, raise_long_query_runtime
 from bookwyrm.tests.validate_html import validate_html
 
 
+# pylint: disable=invalid-name
 class AuthorViews(TestCase):
     """author views"""
 
@@ -61,9 +64,12 @@ class AuthorViews(TestCase):
         self.book.authors.add(author)
         request = self.factory.get("")
         request.user = self.local_user
-        with patch("bookwyrm.views.author.is_api_request") as is_api:
-            is_api.return_value = False
-            result = view(request, author.id)
+        query_logger = QueryLogger()
+        with connection.execute_wrapper(query_logger):
+            with patch("bookwyrm.views.author.is_api_request") as is_api:
+                is_api.return_value = False
+                result = view(request, author.id)
+            raise_long_query_runtime(query_logger.queries)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -81,9 +87,12 @@ class AuthorViews(TestCase):
         self.book.authors.add(author)
         request = self.factory.get("")
         request.user = self.local_user
-        with patch("bookwyrm.views.author.is_api_request") as is_api:
-            is_api.return_value = False
-            result = view(request, author.id)
+        query_logger = QueryLogger()
+        with connection.execute_wrapper(query_logger):
+            with patch("bookwyrm.views.author.is_api_request") as is_api:
+                is_api.return_value = False
+                result = view(request, author.id)
+            raise_long_query_runtime(query_logger.queries)
         books = result.context_data["books"]
         self.assertEqual(books.object_list.count(), 1)
 
@@ -97,9 +106,12 @@ class AuthorViews(TestCase):
         author = models.Author.objects.create(name="Jessica")
         request = self.factory.get("")
         request.user = self.local_user
-        with patch("bookwyrm.views.author.is_api_request") as is_api:
-            is_api.return_value = False
-            result = view(request, author.id)
+        query_logger = QueryLogger()
+        with connection.execute_wrapper(query_logger):
+            with patch("bookwyrm.views.author.is_api_request") as is_api:
+                is_api.return_value = False
+                result = view(request, author.id)
+            raise_long_query_runtime(query_logger.queries)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -110,9 +122,12 @@ class AuthorViews(TestCase):
         author = models.Author.objects.create(name="Jessica")
         request = self.factory.get("")
         request.user = self.anonymous_user
-        with patch("bookwyrm.views.author.is_api_request") as is_api:
-            is_api.return_value = False
-            result = view(request, author.id)
+        query_logger = QueryLogger()
+        with connection.execute_wrapper(query_logger):
+            with patch("bookwyrm.views.author.is_api_request") as is_api:
+                is_api.return_value = False
+                result = view(request, author.id)
+            raise_long_query_runtime(query_logger.queries)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -123,9 +138,12 @@ class AuthorViews(TestCase):
         author = models.Author.objects.create(name="Jessica")
         request = self.factory.get("")
         request.user = self.local_user
-        with patch("bookwyrm.views.author.is_api_request") as is_api:
-            is_api.return_value = True
-            result = view(request, author.id)
+        query_logger = QueryLogger()
+        with connection.execute_wrapper(query_logger):
+            with patch("bookwyrm.views.author.is_api_request") as is_api:
+                is_api.return_value = True
+                result = view(request, author.id)
+            raise_long_query_runtime(query_logger.queries)
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
@@ -137,7 +155,10 @@ class AuthorViews(TestCase):
         request.user = self.local_user
         request.user.is_superuser = True
 
-        result = view(request, author.id)
+        query_logger = QueryLogger()
+        with connection.execute_wrapper(query_logger):
+            result = view(request, author.id)
+            raise_long_query_runtime(query_logger.queries)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -153,8 +174,11 @@ class AuthorViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            view(request, author.id)
+        query_logger = QueryLogger()
+        with connection.execute_wrapper(query_logger):
+            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+                view(request, author.id)
+            raise_long_query_runtime(query_logger.queries)
         author.refresh_from_db()
         self.assertEqual(author.name, "New Name")
         self.assertEqual(author.last_edited_by, self.local_user)
@@ -169,8 +193,11 @@ class AuthorViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with self.assertRaises(PermissionDenied):
-            view(request, author.id)
+        query_logger = QueryLogger()
+        with connection.execute_wrapper(query_logger):
+            with self.assertRaises(PermissionDenied):
+                view(request, author.id)
+            raise_long_query_runtime(query_logger.queries)
         author.refresh_from_db()
         self.assertEqual(author.name, "Test Author")
 
@@ -185,7 +212,10 @@ class AuthorViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        resp = view(request, author.id)
+        query_logger = QueryLogger()
+        with connection.execute_wrapper(query_logger):
+            resp = view(request, author.id)
+            raise_long_query_runtime(query_logger.queries)
         author.refresh_from_db()
         self.assertEqual(author.name, "Test Author")
         validate_html(resp.render())
@@ -208,8 +238,11 @@ class AuthorViews(TestCase):
         request = self.factory.post("")
         request.user = self.local_user
 
-        with patch(
-            "bookwyrm.connectors.openlibrary.Connector.update_author_from_remote"
-        ) as mock:
-            views.update_author_from_remote(request, author.id, "openlibrary.org")
-        self.assertEqual(mock.call_count, 1)
+        query_logger = QueryLogger()
+        with connection.execute_wrapper(query_logger):
+            with patch(
+                "bookwyrm.connectors.openlibrary.Connector.update_author_from_remote"
+            ) as mock:
+                views.update_author_from_remote(request, author.id, "openlibrary.org")
+            self.assertEqual(mock.call_count, 1)
+            raise_long_query_runtime(query_logger.queries)
