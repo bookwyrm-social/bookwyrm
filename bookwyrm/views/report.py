@@ -18,7 +18,7 @@ class Report(View):
         data = {"user": None}
         if user_id:
             # but normally we should have an error if the user is not found
-            data["user"] = get_object_or_404(models.User, id=user_id)
+            data["reported_user"] = get_object_or_404(models.User, id=user_id)
 
         if status_id:
             data["status"] = status_id
