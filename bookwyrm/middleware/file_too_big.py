@@ -18,12 +18,10 @@ class FileTooBig:
         """If RequestDataTooBig is thrown, render the 413 error page"""
 
         try:
-            body = request.body
+            response = self.get_response(request)
 
         except RequestDataTooBig:
             rendered = render(request, "413.html")
             response = HttpResponse(rendered)
-            return response
 
-        response = self.get_response(request)
         return response
