@@ -1,0 +1,54 @@
+{% load i18n %}
+{% load humanize %}
+
+{% if request.user.is_authenticated or suggestion_list %}
+<h2 class="title is-4" id="suggestions-section">
+    {% trans "Suggestions" %}
+    {% if suggestion_list and items|length > 0 %}
+    <a class="help has-text-weight-normal" href="{% url 'suggestion-list' book_id=work.id %}">
+        {% trans "View all suggestions" %} ({{ items|length }})
+    </a>
+    {% endif %}
+</h2>
+
+<p class="subtitle">
+    {% blocktrans trimmed with title=book.title %}
+    Readers who liked <em>{{ title }}</em> recommend giving these books a try:
+    {% endblocktrans %}
+</p>
+
+{% if suggestion_list %}
+
+    {% if items|length == 0 %}
+    <section class="section has-background-light is-flex is-flex-direction-column is-align-items-center">
+        <div class="column is-full is-centered">
+    <p>{% trans "Have a recommendation for someone who liked this book?" %}</p>
+           {% include "book/suggestion_list/search.html" with list=suggestion_list is_suggestion=True %}
+        </div>
+    </section>
+    {% else %}
+    <ol class="columns is-multiline">
+    {% for item in items %}
+        <li class="mb-5 column is-one-third">
+            {% include "book/suggestion_list/book_card.html" with list=suggestion_list %}
+        </li>
+    {% endfor %}
+    </ol>
+
+    <div class="mb-5 column is-full">
+        {% include "book/suggestion_list/search.html" with list=suggestion_list is_suggestion=True %}
+    </div>
+    {% endif %}
+{% else %}
+
+<section class="section has-background-light">
+        <form name="create-list" method="post" action="{% url 'suggestion-list' book_id=book.id %}#suggestions-section">
+            {% csrf_token %}
+            <input type="hidden" name="user" value="{{ request.user.id }}">
+            <input type="hidden" name="suggests_for" value="{{ work.id }}">
+            <p>{% trans "Have a recommendation for someone who liked this book?" %}</p>
+            <button type="submit" class="button">{% trans "Load books" %}</button>
+        </form>
+    </section>
+{% endif %}
+{% endif %}

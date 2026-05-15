@@ -890,6 +890,26 @@ urlpatterns = [
         name="book-update-remote",
     ),
     re_path(
+        rf"{BOOK_PATH}/suggestions(.json)?/?$",
+        views.SuggestionList.as_view(),
+        name="suggestion-list",
+    ),
+    re_path(
+        rf"{BOOK_PATH}/suggestions/add/?$",
+        views.book_add_suggestion,
+        name="book-add-suggestion",
+    ),
+    re_path(
+        rf"{BOOK_PATH}/suggestions/remove/?$",
+        views.book_remove_suggestion,
+        name="book-remove-suggestion",
+    ),
+    re_path(
+        rf"{BOOK_PATH}/suggestions/endorse/(?P<item_id>\d+)/?$",
+        views.endorse_suggestion,
+        name="suggestion-endorse",
+    ),
+    re_path(
         r"^author/(?P<author_id>\d+)/update/(?P<connector_identifier>[\w\.]+)/?$",
         views.update_author_from_remote,
         name="author-update-remote",

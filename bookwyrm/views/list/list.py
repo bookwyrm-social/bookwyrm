@@ -75,11 +75,15 @@ class List(View):
             "embed_url": embed_url,
             "add_failed": add_failed,
             "add_succeeded": add_succeeded,
+            "add_book_url": reverse("list-add-book"),
+            "remove_book_url": reverse("list-remove-book", args=[list_id]),
         }
 
         if request.user.is_authenticated:
             data["suggested_books"] = get_list_suggestions(
-                book_list, request.user, query=query
+                book_list,
+                request.user,
+                query=query,
             )
         return TemplateResponse(request, "lists/list.html", data)
 
@@ -91,7 +95,7 @@ class List(View):
         form = forms.ListForm(request.POST, instance=book_list)
         if not form.is_valid():
             # this shouldn't happen
-            raise Exception(form.errors)
+            raise Exception(form.errors)  # pylint: disable=broad-exception-raised
         book_list = form.save(request)
         if not book_list.curation == "group":
             book_list.group = None
@@ -100,24 +104,32 @@ class List(View):
         return redirect_to_referer(request, book_list.local_path)
 
 
-def get_list_suggestions(book_list, user, query=None, num_suggestions=5):
+def get_list_suggestions(
+    book_list, user, query=None, num_suggestions=5, ignore_book=None
+):
     """What books might a user want to add to a list"""
     if query:
         # search for books
         return book_search.search(
             query,
-            filters=[~Q(parent_work__editions__in=book_list.books.all())],
+            filters=[
+                ~Q(parent_work__editions__in=book_list.books.all()),
+                ~Q(parent_work=ignore_book),
+            ],
         )
     # just suggest whatever books are nearby
-    suggestions = user.shelfbook_set.filter(
-        ~Q(book__in=book_list.books.all())
-    ).distinct()[:num_suggestions]
+    suggestions = (
+        user.shelfbook_set.filter(~Q(book__in=book_list.books.all()))
+        .exclude(book__parent_work=ignore_book)
+        .distinct()[:num_suggestions]
+    )
     suggestions = [s.book for s in suggestions[:num_suggestions]]
     if len(suggestions) < num_suggestions:
         others = [
             s.default_edition
             for s in models.Work.objects.filter(
                 ~Q(editions__in=book_list.books.all()),
+                ~Q(id=ignore_book.id if ignore_book else None),
             )
             .distinct()
             .order_by("-updated_date")[:num_suggestions]

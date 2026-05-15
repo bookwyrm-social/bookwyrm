@@ -20,6 +20,18 @@ class ListItemForm(CustomForm):
         fields = ["user", "book", "book_list", "notes"]
 
 
+class SuggestionListForm(CustomForm):
+    class Meta:
+        model = models.SuggestionList
+        fields = ["suggests_for"]
+
+
+class SuggestionListItemForm(CustomForm):
+    class Meta:
+        model = models.SuggestionListItem
+        fields = ["user", "book", "book_list", "notes"]
+
+
 class SortListForm(forms.Form):
     sort_by = ChoiceField(
         choices=(
