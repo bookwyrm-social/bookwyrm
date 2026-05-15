@@ -2,6 +2,8 @@
 {% load utilities %}
 
 {% with book=status.book %}
+{% if status.content %}
+
 {% if book.authors.exists %}
 
 {% with author=book.authors.first %}
@@ -16,6 +18,23 @@ reviewed <a href="{{ book_path }}">{{ book }}</a> by <a href="{{ author_path }}"
 reviewed <a href="{{ book_path }}">{{ book }}</a>
 {% endblocktrans %}
 
+{% endif %}
+{% else %}
+{% if book.authors.exists %}
+
+{% with author=book.authors.first %}
+{% blocktrans trimmed with book_path=book.local_path book=book|book_title author_name=author.name author_path=author.local_path %}
+reviewed <a href="{{ book_path }}">{{ book }}</a> by <a href="{{ author_path }}">{{ author_name }}</a>
+{% endblocktrans %}
+{% endwith %}
+
+{% else %}
+
+{% blocktrans trimmed with book_path=book.local_path book=book|book_title %}
+rated <a href="{{ book_path }}">{{ book }}</a>
+{% endblocktrans %}
+
+{% endif %}
 {% endif %}
 
 {% include 'snippets/book_series.html' with book=book %}
