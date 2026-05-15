@@ -178,3 +178,37 @@ class AnnualSummary(TestCase):
 
         self.assertEqual(result.status_code, 302)
         self.assertFalse("2020" in self.local_user.summary_keys.keys())
+
+    def test_annual_summary_with_blocked_book(self, *_):
+        """don't show blocked books"""
+
+        bad_work = models.Work.objects.create(title="Bad Work")
+        bad_book = models.Edition.objects.create(
+            title="Bad Edition",
+            remote_id="https://example.com/book/666",
+            parent_work=bad_work,
+            pages=666,
+        )
+
+        models.ReadThrough.objects.create(
+            user=self.local_user, book=self.book, finish_date=make_date(2020, 1, 1)
+        )
+
+        models.ReadThrough.objects.create(
+            user=self.local_user, book=bad_book, finish_date=make_date(2020, 1, 2)
+        )
+
+        self.local_user.blocked_books.add(bad_work)
+
+        view = views.AnnualSummary.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        result = view(request, self.local_user.localname, self.year)
+
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+        self.assertFalse(result.context_data["books"].contains(bad_book))
+        self.assertTrue(result.context_data["books"].contains(self.book))

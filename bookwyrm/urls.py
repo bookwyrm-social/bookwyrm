@@ -787,9 +787,16 @@ urlpatterns = [
         views.ReactivateUser.as_view(),
         name="prefs-reactivate",
     ),
+    # block users
     re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),
     re_path(r"^block/(?P<user_id>\d+)/?$", views.Block.as_view()),
     re_path(r"^unblock/(?P<user_id>\d+)/?$", views.unblock),
+    # block books
+    re_path(
+        r"^preferences/books/?$", views.BlockedBooks.as_view(), name="prefs-block-books"
+    ),
+    re_path(r"^block-book/(?P<book_id>\d+)/?$", views.BlockedBooks.as_view()),
+    re_path(r"^unblock-book/(?P<book_id>\d+)/?$", views.unblock_book),
     # statuses
     re_path(rf"{STATUS_PATH}(.json)?/?$", views.Status.as_view(), name="status"),
     re_path(rf"{STATUS_PATH}{regex.SLUG}/?$", views.Status.as_view(), name="status"),

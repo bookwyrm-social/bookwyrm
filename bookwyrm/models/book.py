@@ -806,9 +806,15 @@ class Edition(Book):
         self.save(update_fields=["parent_work"], broadcast=False)
 
     @classmethod
-    def viewer_aware_objects(cls, viewer):
+    def viewer_aware_objects(cls, viewer, check_blocked=False):
         """annotate a book query with metadata related to the user"""
         queryset = cls.objects
+
+        if check_blocked and hasattr(viewer, "blocked_books"):
+            blocked = cls.objects.filter(parent_work__in=viewer.blocked_books.all())
+            queryset = queryset.exclude(id__in=blocked)
+            # TODO: could this just be queryset = queryset.exclude(parent_work__in=viewer.blocked_books.all()) ?
+
         if not viewer or not viewer.is_authenticated:
             return queryset
 

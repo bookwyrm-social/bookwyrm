@@ -204,3 +204,19 @@ class Activitystreams(TestCase):
         self.assertFalse(self.local_user.id in users)
         self.assertFalse(self.another_user.id in users)
         self.assertFalse(self.remote_user.id in users)
+
+    def test_abstractstream_exclude_books(self, *_):
+        """exlude users who have blocked a mention_book parent"""
+
+        self.local_user.blocked_books.add(self.book.parent_work)
+
+        status = models.Comment.objects.create(
+            user=self.remote_user,
+            content="This book is awful",
+            privacy="public",
+            book=self.book,
+        )
+
+        users = self.test_stream.get_audience(status)
+        self.assertTrue(self.another_user.id in users)
+        self.assertFalse(self.local_user.id in users)

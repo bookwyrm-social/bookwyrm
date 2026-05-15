@@ -756,3 +756,40 @@ class ListViews(TestCase):
         views.unsave_list(request, self.list.id)
         self.local_user.refresh_from_db()
         self.assertFalse(self.local_user.saved_lists.exists())
+
+    def test_list_page_excludes_blocked_items(self):
+        """exclude blocked books from lists"""
+
+        self.local_user.blocked_books.add(self.book_two.parent_work)
+
+        view = views.List.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        list_item_one = models.ListItem.objects.create(
+            book_list=self.list,
+            user=self.local_user,
+            book=self.book,
+            approved=True,
+            notes="hello",
+            order=1,
+        )
+
+        list_item_two = models.ListItem.objects.create(
+            book_list=self.list,
+            user=self.local_user,
+            book=self.book_two,
+            approved=True,
+            notes="goodbye",
+            order=2,
+        )
+
+        with patch("bookwyrm.views.list.list.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.list.id)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+        self.assertFalse(list_item_two in result.context_data["items"].object_list)
+        self.assertEqual(result.context_data["items"].object_list, [list_item_one])
