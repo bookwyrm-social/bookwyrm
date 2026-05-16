@@ -5,11 +5,13 @@ from re import sub, findall
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.db import transaction
+from django.db.utils import IntegrityError
 from django.http import HttpResponseBadRequest
 from django.db.models import Subquery
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 from django.views import View
 
@@ -37,12 +39,17 @@ class EditBook(View):
     def get(self, request, book_id):
         """info about a book"""
         book = get_edition(book_id)
+        seriesbooks = book.parent_work.seriesbooks.all()
         # This doesn't update the sort title, just pre-populates it in the form
         if book.sort_title in ["", None]:
             book.sort_title = book.guess_sort_title(user=request.user)
         if not book.description:
             book.description = book.parent_work.description
-        data = {"book": book, "form": forms.EditionForm(instance=book)}
+        data = {
+            "book": book,
+            "seriesbooks": seriesbooks,
+            "form": forms.EditionForm(instance=book),
+        }
         return TemplateResponse(request, "book/edit/edit_book.html", data)
 
     def post(self, request, book_id):
@@ -57,8 +64,28 @@ class EditBook(View):
             ensure_transient_values_persist(request, data, add_author=True)
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
-        data = add_authors(request, data)
-        data = add_series(request, data)
+        data = add_or_remove_authors(request, data)
+        data = add_or_remove_series(request, data)
+
+        series_errors = []
+        for sb in book.parent_work.seriesbooks.all():
+            if value := request.POST.get(f"series_number-{sb.id}"):
+                try:
+                    sb.series_number = value
+                    sb.save(update_fields=["series_number"])
+                except IntegrityError as e:
+                    # This is a bit of a hack but provides a friendlier error message
+                    if "duplicate key value violates unique constraint" in str(e):
+                        error = _(
+                            "There is another book in the series with the same value"
+                        )
+                    else:
+                        error = e
+                    series_errors.append(error)
+        if len(series_errors) > 0:
+            data["series_errors"] = series_errors
+            ensure_transient_values_persist(request, data, form=form)
+            return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         # adding authors or series requires additional confirmation
         clean = form.cleaned_data
@@ -71,6 +98,7 @@ class EditBook(View):
 
         for seriesbook_id in request.POST.getlist("remove_series"):
             # remove seriesbook and, if it was the only one in the series, delete series
+            # do this before updating seriesbooks so we don't update series we're about to delete
             if seriesbook := models.SeriesBook.objects.filter(id=seriesbook_id).first():
                 series = seriesbook.series
                 seriesbook.delete()
@@ -130,8 +158,8 @@ class CreateBook(View):
         # we have to call this twice because it requires form.cleaned_data
         # which only exists after we validate the form
         ensure_transient_values_persist(request, data, form=form)
-        data = add_authors(request, data)
-        data = add_series(request, data)
+        data = add_or_remove_authors(request, data)
+        data = add_or_remove_series(request, data)
 
         # check if this is an edition of an existing work
         author_text = ", ".join(data.get("add_author", []))
@@ -169,16 +197,31 @@ class CreateBook(View):
 def ensure_transient_values_persist(request, data, **kwargs):
     """ensure that values of transient form fields persist when re-rendering the form"""
     data["cover_url"] = request.POST.get("cover-url")
+    if data.get("book") and hasattr(data.get("book"), "parent_work"):
+        data["seriesbooks"] = []
+        for sb in data["book"].parent_work.seriesbooks.all():
+            series_number = request.POST.get(f"series_number-{sb.id}")
+            seriesbook = {}
+            seriesbook["id"] = sb.id
+            seriesbook["series_number"] = series_number
+            seriesbook["series"] = {}
+            seriesbook["series"]["local_path"] = sb.series.local_path
+            seriesbook["series"]["name"] = sb.series.name
+            data["seriesbooks"].append(seriesbook)
     if kwargs and kwargs.get("form"):
         data["book"] = data.get("book") or {}
         data["book"]["subjects"] = kwargs["form"].cleaned_data["subjects"]
-        data["add_author"] = request.POST.getlist("add_author")
+        if request.POST.getlist("add_author") != [""]:
+            data["add_author"] = request.POST.getlist("add_author")
     elif kwargs and kwargs.get("add_author") is True:
-        data["add_author"] = request.POST.getlist("add_author")
+        if request.POST.getlist("add_author") != [""]:
+            data["add_author"] = request.POST.getlist("add_author")
 
 
-def add_authors(request, data):
+def add_or_remove_authors(request, data):
     """helper for adding authors"""
+    # this isn't preserved because it isn't part of the form obj
+    data["remove_authors"] = request.POST.getlist("remove_authors")
     add_author = [author for author in request.POST.getlist("add_author") if author]
     if not add_author:
         data["add_author"] = []
@@ -190,8 +233,6 @@ def add_authors(request, data):
 
     # creating a book or adding an author to a book needs another step
     data["confirm_mode"] = True
-    # this isn't preserved because it isn't part of the form obj
-    data["remove_authors"] = request.POST.getlist("remove_authors")
 
     for author in add_author:
         # filter out empty author fields
@@ -233,19 +274,20 @@ def add_authors(request, data):
     return data
 
 
-def add_series(request, data):
+def add_or_remove_series(request, data):
     """helper for adding series"""
 
     # need to retain this
     data["remove_series"] = request.POST.getlist("remove_series")
-    # creating or matching a series needs another step
-    data["confirm_mode"] = True
 
     # check for existing series
     vector = SearchVector("name", weight="A") + SearchVector(
         "alternative_names", weight="B"
     )
     series = data["form"]["series"].value()
+    # creating or matching a series needs another step
+    if series:
+        data["confirm_mode"] = True
 
     matches = (
         models.Series.objects.annotate(search=vector)
@@ -423,12 +465,31 @@ class ConfirmEditBook(View):
 
                 book = clear_series(book)
 
-            for series_id in request.POST.getlist("remove_series"):
+            for id in request.POST.getlist("remove_series"):
                 # remove seriesbook
-                if seriesbook := models.SeriesBook.objects.get(id=series_id):
+                if seriesbook := models.SeriesBook.objects.get(id=id):
                     if seriesbook.series.seriesbooks.count() == 0:
                         seriesbook.series.delete()  # will cascade
                     seriesbook.delete()
+
+            series_errors = []
+            for sb in book.parent_work.seriesbooks.all():
+                if value := request.POST.get(f"series_number-{sb.id}"):
+                    try:
+                        sb.series_number = value
+                        sb.save(update_fields=["series_number"])
+                    except IntegrityError as e:
+                        if "duplicate key value violates unique constraint" in str(e):
+                            error = _(
+                                "There is another book in the series with the same value"
+                            )
+                        else:
+                            error = e
+                        series_errors.append(error)
+            if len(series_errors) > 0:
+                data["series_errors"] = series_errors
+                ensure_transient_values_persist(request, data, form=form)
+                return TemplateResponse(request, "book/edit/edit_book.html", data)
 
             # import cover, if requested
             url = request.POST.get("cover-url")

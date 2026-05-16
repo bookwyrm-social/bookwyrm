@@ -12,7 +12,7 @@ from django.test.client import RequestFactory
 from django.utils import timezone
 
 from bookwyrm import forms, models, views, settings
-from bookwyrm.views.books.edit_book import add_authors
+from bookwyrm.views.books.edit_book import add_or_remove_authors
 from bookwyrm.tests.validate_html import validate_html
 from bookwyrm.tests.views.books.test_book import _setup_cover_url
 
@@ -380,7 +380,7 @@ class EditBookViews(TestCase):
 
         with patch("bookwyrm.utils.isni.find_authors_by_name") as mock:
             mock.return_value = []
-            result = add_authors(request, form.data)
+            result = add_or_remove_authors(request, form.data)
 
         self.assertTrue(result["confirm_mode"])
         self.assertEqual(result["add_author"], ["Sappho", "Some Guy"])
@@ -407,7 +407,7 @@ class EditBookViews(TestCase):
 
             with patch("bookwyrm.utils.isni.find_authors_by_name") as mock:
                 mock.return_value = []
-                result = add_authors(request, form.data)
+                result = add_or_remove_authors(request, form.data)
 
             self.assertTrue(result["confirm_mode"])
             self.assertEqual(result["add_author"], [author_name])
@@ -435,7 +435,7 @@ class EditBookViews(TestCase):
 
             with patch("bookwyrm.views.books.edit_book.find_authors_by_name") as mock:
                 mock.return_value = []
-                result = add_authors(request, form.data)
+                result = add_or_remove_authors(request, form.data)
 
             self.assertTrue(result["confirm_mode"])
             self.assertEqual(result["add_author"], [author_name])

@@ -1,9 +1,11 @@
 """book series"""
 
 from django.core.paginator import Paginator
+from django.db.utils import IntegrityError
 from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.vary import vary_on_headers
 
@@ -82,8 +84,22 @@ class EditSeries(View):
         series.alternative_names = alt_names
         series.save(update_fields=["alternative_names"])
 
-        # update seriesbooks as needed
+        seriesbook_errors = []
         for book in series.seriesbooks.all():
+            if value := request.POST.get(f"series_number-{book.book.id}"):
+                try:
+                    book.series_number = value
+                    book.save(update_fields=["series_number"])
+                except IntegrityError as e:
+                    if "duplicate key value violates unique constraint" in str(e):
+                        error = _("Series position must be unique for each book")
+                    else:
+                        error = e
+                    seriesbook_errors.append(error)
+        if len(seriesbook_errors) > 0:
+            data["seriesbook_errors"] = seriesbook_errors
+            return TemplateResponse(request, "book/edit/edit_series.html", data)
+
             value = request.POST[f"series_number-{book.book.id}"]
             book.series_number = value
             # save the series_number as the value

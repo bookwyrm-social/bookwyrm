@@ -132,26 +132,45 @@
 
                 <div class="content">
                     <div class="field">
-                        {% with seriesbooks=book.parent_work.seriesbooks %}
-                        {% if seriesbooks.exists %}
-                        <label class="label">
-                            {% trans "Remove Series:" %}
-                        </label>
-                        <fieldset>
-                            {% for sb in seriesbooks.all %}
-                            <div class="">
-                                <label class="label mb-2" for="remove_series">
-                                    <span class="tag is-link is-light is-medium">
-                                        <a href="{{ sb.series.local_path }}">{{ sb.series.name }}</a>
-                                        <input class="ml-4" type="checkbox" name="remove_series" id="id_remove_series_{{sb.id}}" value="{{ sb.id }}" {% if sb.series.id|stringformat:"i" in remove_series %}checked{% endif %} aria-describedby="desc_remove_series_{{sb.id}}">
-                                      </span>
-                                </label>
+                        {% with seriesbooks=seriesbooks %}
+                        {% if seriesbooks %}
+                        <h3 class="title is-5">
+                            {% trans "Edit Series" %}
+                        </h3>
+                        <span class="help my-2" id="desc_series_help">
+                            {% trans 'To edit details of a series itself, click the series name' %}
+                        </span>
+                        {% for sb in seriesbooks %}
+                        <div class="box">
+                            <label class="label mb-4">
+                                <a href="{{sb.series.local_path}}">{{sb.series.name}}</a>
+                            </label>
+                            <div class="columns is-flex is-vcentered">
+                                <label class="label column is-one-quarter" for="id_series_number">
+                                    {% trans "Position:" %}
+                            </label>
+                            <input  type="text"
+                            class="input column"
+                            name="series_number-{{sb.id}}"
+                            id="id_series_number-{{sb.id}}"
+                            value="{{sb.series_number|default:'' }}"
+                            aria-describedby="desc_series_number"
+                            {% if confirm_mode %}readonly{% endif %}
+                            >
                             </div>
-                            {% endfor %}
-                        </fieldset>
+                            <span>
+                                <input class="checkbox" type="checkbox" name="remove_series" id="id_remove_series_{{sb.id}}" value="{{ sb.id }}" {% if sb.id|stringformat:"i" in remove_series %}checked{% endif %} aria-describedby="desc_remove_series_{{sb.id}}">
+                                <label class="label is-inline ml-2" for="id_remove_series_{{sb.id}}">
+                                    {% blocktrans with series_name=sb.series.name trimmed %}
+                                    Remove this book from <em>{{series_name}}</em>
+                                    {% endblocktrans %}
+                                </label>
+                            </span>
+                        </div>
+                        {% endfor %}
                         {% endif %}
                         {% endwith %}
-
+                        {% include 'snippets/form_errors.html' with errors_list=series_errors id="series_errors" %}
                         <h3 class="title is-5">
                             {% trans "Add Series" %}
                         </h3>
@@ -164,8 +183,11 @@
                 </div>
                 <div class="field">
                     <label class="label" for="id_series_number">
-                        {% trans "Series number:" %}
+                        {% trans "Series position:" %}
                     </label>
+                    <span class="help my-2" id="desc_series_number_help">
+                        {% trans 'This field was previously called "Series number"' %}
+                    </span>
                     {{ form.series_number }}
                     {% include 'snippets/form_errors.html' with errors_list=form.series_number.errors id="desc_series_number" %}
                 </div>
