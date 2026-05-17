@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-01 17:29+0000\n"
-"PO-Revision-Date: 2026-01-01 18:32\n"
+"POT-Creation-Date: 2026-02-06 17:47+0000\n"
+"PO-Revision-Date: 2026-02-06 18:48\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -89,13 +89,13 @@ msgstr ""
 msgid "Incorrect code"
 msgstr "Neplatný kód"
 
-#: bookwyrm/forms/links.py:35
+#: bookwyrm/forms/links.py:34
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
 msgstr "Tato doména je blokována. Pokud se domníváte, že se jedná o chybu, obraťte se na správce."
 
-#: bookwyrm/forms/links.py:50
-msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr "Tento odkaz s typem souboru již byl pro tuto knihu přidán. Pokud není viditelný, požadavek stále není vyřízený."
+#: bookwyrm/forms/links.py:47
+msgid "This link has already been added for this book. If it is not visible, the domain is still pending."
+msgstr ""
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
@@ -175,35 +175,35 @@ msgstr "Odstraněn moderátorem"
 msgid "Domain block"
 msgstr "Blokování domény"
 
-#: bookwyrm/models/book.py:488
+#: bookwyrm/models/book.py:500
 msgid "Audiobook"
 msgstr "Audiokniha"
 
-#: bookwyrm/models/book.py:489
+#: bookwyrm/models/book.py:501
 msgid "eBook"
 msgstr "Ekniha"
 
-#: bookwyrm/models/book.py:490
+#: bookwyrm/models/book.py:502
 msgid "Graphic novel"
 msgstr "Grafický román"
 
-#: bookwyrm/models/book.py:491
+#: bookwyrm/models/book.py:503
 msgid "Hardcover"
 msgstr "Pevná vazba"
 
-#: bookwyrm/models/book.py:492
+#: bookwyrm/models/book.py:504
 msgid "Paperback"
 msgstr "Měkká vazba"
 
-#: bookwyrm/models/book.py:501 bookwyrm/models/book.py:508
-#: bookwyrm/models/book.py:514 bookwyrm/models/book.py:519
-#: bookwyrm/models/book.py:524 bookwyrm/models/book.py:542
-#: bookwyrm/models/book.py:548 bookwyrm/models/book.py:553
+#: bookwyrm/models/book.py:513 bookwyrm/models/book.py:520
+#: bookwyrm/models/book.py:526 bookwyrm/models/book.py:531
+#: bookwyrm/models/book.py:536 bookwyrm/models/book.py:554
+#: bookwyrm/models/book.py:560 bookwyrm/models/book.py:565
 #, python-format
 msgid "%(value)s doesn't look like an ISBN"
 msgstr "%(value)s nevypadá jako ISBN"
 
-#: bookwyrm/models/book.py:530 bookwyrm/models/book.py:570
+#: bookwyrm/models/book.py:542 bookwyrm/models/book.py:582
 #, python-format
 msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
 msgstr "%(value)s nemá správný kontrolní součet ISBN, očekávali jsme %(check_version)s"
@@ -329,11 +329,11 @@ msgstr "Sledující"
 msgid "Private"
 msgstr "Soukromý"
 
-#: bookwyrm/models/housekeeping.py:116
+#: bookwyrm/models/housekeeping.py:117
 msgid "Missing"
 msgstr ""
 
-#: bookwyrm/models/housekeeping.py:117
+#: bookwyrm/models/housekeeping.py:118
 msgid "Wrong Path"
 msgstr ""
 
@@ -475,7 +475,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: bookwyrm/models/user.py:40 bookwyrm/templates/book/book.html:336
+#: bookwyrm/models/user.py:40 bookwyrm/templates/book/book.html:343
 msgid "Reviews"
 msgstr "Hodnocení"
 
@@ -512,91 +512,91 @@ msgstr "Zeď knih"
 msgid "Books"
 msgstr "Knihy"
 
-#: bookwyrm/settings.py:314
+#: bookwyrm/settings.py:316
 msgid "English"
 msgstr "Anglicky"
 
-#: bookwyrm/settings.py:315
+#: bookwyrm/settings.py:317
 msgid "Català (Catalan)"
 msgstr "Català (katalánština)"
 
-#: bookwyrm/settings.py:316
+#: bookwyrm/settings.py:318
 msgid "Deutsch (German)"
 msgstr "Deutsch (němčina)"
 
-#: bookwyrm/settings.py:317
+#: bookwyrm/settings.py:319
 msgid "Esperanto (Esperanto)"
 msgstr "Esperanto (Esperanto)"
 
-#: bookwyrm/settings.py:318
+#: bookwyrm/settings.py:320
 msgid "Español (Spanish)"
 msgstr "Español (španělština)"
 
-#: bookwyrm/settings.py:319
+#: bookwyrm/settings.py:321
 msgid "Euskara (Basque)"
 msgstr "Euskara (Basque)"
 
-#: bookwyrm/settings.py:320
+#: bookwyrm/settings.py:322
 msgid "Galego (Galician)"
 msgstr "Galego (galicijština)"
 
-#: bookwyrm/settings.py:321
+#: bookwyrm/settings.py:323
 msgid "Italiano (Italian)"
 msgstr "Italiano (italština)"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:324
 msgid "한국어 (Korean)"
 msgstr "한국어 (Korejština)"
 
-#: bookwyrm/settings.py:323
+#: bookwyrm/settings.py:325
 msgid "Suomi (Finnish)"
 msgstr "Suomi (finština)"
 
-#: bookwyrm/settings.py:324
+#: bookwyrm/settings.py:326
 msgid "Français (French)"
 msgstr "Français (francouzština)"
 
-#: bookwyrm/settings.py:325
+#: bookwyrm/settings.py:327
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (litevština)"
 
-#: bookwyrm/settings.py:326
+#: bookwyrm/settings.py:328
 msgid "Nederlands (Dutch)"
 msgstr "Nederlands (Nizozemština)"
 
-#: bookwyrm/settings.py:327
+#: bookwyrm/settings.py:329
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (norština)"
 
-#: bookwyrm/settings.py:328
+#: bookwyrm/settings.py:330
 msgid "Polski (Polish)"
 msgstr "Polski (polština)"
 
-#: bookwyrm/settings.py:329
+#: bookwyrm/settings.py:331
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (portugalština (Brazílie))"
 
-#: bookwyrm/settings.py:330
+#: bookwyrm/settings.py:332
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (portugalština (Evropa))"
 
-#: bookwyrm/settings.py:331
+#: bookwyrm/settings.py:333
 msgid "Română (Romanian)"
 msgstr "Română (rumunština)"
 
-#: bookwyrm/settings.py:332
+#: bookwyrm/settings.py:334
 msgid "Svenska (Swedish)"
 msgstr "Svenska (švédština)"
 
-#: bookwyrm/settings.py:333
+#: bookwyrm/settings.py:335
 msgid "Українська (Ukrainian)"
 msgstr "Українська (Ukrajinština)"
 
-#: bookwyrm/settings.py:334
+#: bookwyrm/settings.py:336
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (zjednodušená čínština)"
 
-#: bookwyrm/settings.py:335
+#: bookwyrm/settings.py:337
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (tradiční čínština)"
 
@@ -1067,7 +1067,7 @@ msgid "ISNI:"
 msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:128
-#: bookwyrm/templates/book/book.html:249
+#: bookwyrm/templates/book/book.html:256
 #: bookwyrm/templates/book/edit/edit_book.html:150
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
@@ -1092,7 +1092,7 @@ msgstr "Uložit"
 
 #: bookwyrm/templates/author/edit_author.html:129
 #: bookwyrm/templates/author/sync_modal.html:23
-#: bookwyrm/templates/book/book.html:250
+#: bookwyrm/templates/book/book.html:257
 #: bookwyrm/templates/book/cover_add_modal.html:33
 #: bookwyrm/templates/book/edit/edit_book.html:152
 #: bookwyrm/templates/book/edit/edit_book.html:155
@@ -1159,7 +1159,11 @@ msgstr "Kliknutím zvětšíte"
 msgid "View on Finna"
 msgstr ""
 
-#: bookwyrm/templates/book/book.html:222
+#: bookwyrm/templates/book/book.html:205
+msgid "View on Libris"
+msgstr ""
+
+#: bookwyrm/templates/book/book.html:229
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
@@ -1168,17 +1172,17 @@ msgstr[1] "(%(review_count)s hodnocení)"
 msgstr[2] "(%(review_count)s hodnocení)"
 msgstr[3] "(%(review_count)s hodnocení)"
 
-#: bookwyrm/templates/book/book.html:238
+#: bookwyrm/templates/book/book.html:245
 msgid "Add Description"
 msgstr "Přidat popis"
 
-#: bookwyrm/templates/book/book.html:245
+#: bookwyrm/templates/book/book.html:252
 #: bookwyrm/templates/book/edit/edit_book_form.html:55
 #: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
 msgid "Description:"
 msgstr "Popis:"
 
-#: bookwyrm/templates/book/book.html:261
+#: bookwyrm/templates/book/book.html:268
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
@@ -1187,49 +1191,49 @@ msgstr[1] "%(count)s vydání"
 msgstr[2] "%(count)s vydání"
 msgstr[3] "%(count)s vydání"
 
-#: bookwyrm/templates/book/book.html:275
+#: bookwyrm/templates/book/book.html:282
 msgid "You have shelved this edition in:"
 msgstr "Toto vydání bylo odloženo v:"
 
-#: bookwyrm/templates/book/book.html:290
+#: bookwyrm/templates/book/book.html:297
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
 msgstr "<a href=\"%(book_path)s\">Jiné vydání</a> této knihy je na vaší poličce <a href=\"%(shelf_path)s\">%(shelf_name)s</a>."
 
-#: bookwyrm/templates/book/book.html:301
+#: bookwyrm/templates/book/book.html:308
 msgid "Your reading activity"
 msgstr "Vaše aktivita čtení"
 
-#: bookwyrm/templates/book/book.html:307
+#: bookwyrm/templates/book/book.html:314
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
 msgstr "Přidat datum přečtení"
 
-#: bookwyrm/templates/book/book.html:315
+#: bookwyrm/templates/book/book.html:322
 msgid "You don't have any reading activity for this book."
 msgstr "Tuto knihu jste ještě nečetly."
 
-#: bookwyrm/templates/book/book.html:341
+#: bookwyrm/templates/book/book.html:348
 msgid "Your reviews"
 msgstr "Tvoje hodnocení"
 
-#: bookwyrm/templates/book/book.html:347
+#: bookwyrm/templates/book/book.html:354
 msgid "Your comments"
 msgstr "Vaše komentáře"
 
-#: bookwyrm/templates/book/book.html:353
+#: bookwyrm/templates/book/book.html:360
 msgid "Your quotes"
 msgstr "Vaše citace"
 
-#: bookwyrm/templates/book/book.html:389
+#: bookwyrm/templates/book/book.html:396
 msgid "Subjects"
 msgstr "Témata"
 
-#: bookwyrm/templates/book/book.html:401
+#: bookwyrm/templates/book/book.html:408
 msgid "Places"
 msgstr "Místa"
 
-#: bookwyrm/templates/book/book.html:412
+#: bookwyrm/templates/book/book.html:419
 #: bookwyrm/templates/groups/group.html:19
 #: bookwyrm/templates/guided_tour/lists.html:14
 #: bookwyrm/templates/guided_tour/user_books.html:102
@@ -1244,11 +1248,15 @@ msgstr "Místa"
 msgid "Lists"
 msgstr "Seznamy"
 
-#: bookwyrm/templates/book/book.html:424
+#: bookwyrm/templates/book/book.html:431
 msgid "Add to list"
 msgstr "Přidat na seznam"
 
-#: bookwyrm/templates/book/book.html:434
+#: bookwyrm/templates/book/book.html:438
+msgid "Create new list..."
+msgstr ""
+
+#: bookwyrm/templates/book/book.html:442
 #: bookwyrm/templates/book/cover_add_modal.html:32
 #: bookwyrm/templates/lists/add_item_modal.html:39
 #: bookwyrm/templates/lists/list.html:255
@@ -1303,6 +1311,11 @@ msgstr "Goodreads:"
 #: bookwyrm/templates/book/edit/edit_book_form.html:390
 msgid "Finna ID:"
 msgstr "Finna ID:"
+
+#: bookwyrm/templates/book/book_identifiers.html:65
+#: bookwyrm/templates/book/edit/edit_book_form.html:399
+msgid "Libris ID:"
+msgstr ""
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1671,14 +1684,8 @@ msgid "Status"
 msgstr "Status"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:37
-#: bookwyrm/templates/settings/announcements/announcements.html:41
-#: bookwyrm/templates/settings/federation/instance.html:112
-#: bookwyrm/templates/settings/imports/imports.html:223
-#: bookwyrm/templates/settings/imports/imports.html:302
-#: bookwyrm/templates/settings/reports/report_links_table.html:6
-#: bookwyrm/templates/settings/themes.html:108
-msgid "Actions"
-msgstr "Akce"
+msgid "Availability"
+msgstr ""
 
 #: bookwyrm/templates/book/file_links/edit_links.html:48
 #: bookwyrm/templates/settings/link_domains/link_table.html:21
@@ -1934,6 +1941,19 @@ msgstr "příspěvky"
 msgid "last active"
 msgstr "naposledy aktivní"
 
+#: bookwyrm/templates/directory/user_connection_filter.html:5
+#: bookwyrm/templates/import/user_troubleshoot.html:65
+msgid "Relationship"
+msgstr "Vztah"
+
+#: bookwyrm/templates/directory/user_connection_filter.html:8
+msgid "Following users"
+msgstr ""
+
+#: bookwyrm/templates/directory/user_connection_filter.html:12
+msgid "Not following users"
+msgstr ""
+
 #: bookwyrm/templates/directory/user_type_filter.html:5
 msgid "User type"
 msgstr "Druh uživatele"
@@ -2136,21 +2156,21 @@ msgstr "Kontaktujte správce stránky"
 msgid "Join BookWyrm"
 msgstr "Připojte se k BookWyrmu"
 
-#: bookwyrm/templates/feed/direct_messages.html:8
+#: bookwyrm/templates/feed/direct_messages.html:9
 #, python-format
 msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgstr "Soukromé zprávy s <a href=\"%(path)s\">%(username)s</a>"
 
-#: bookwyrm/templates/feed/direct_messages.html:10
+#: bookwyrm/templates/feed/direct_messages.html:11
 #: bookwyrm/templates/user_menu.html:39
 msgid "Direct Messages"
 msgstr "Soukromé zprávy"
 
-#: bookwyrm/templates/feed/direct_messages.html:13
+#: bookwyrm/templates/feed/direct_messages.html:14
 msgid "All messages"
 msgstr "Všechny zprávy"
 
-#: bookwyrm/templates/feed/direct_messages.html:22
+#: bookwyrm/templates/feed/direct_messages.html:23
 msgid "You have no messages right now."
 msgstr "Momentálně nemáte žádné zprávy."
 
@@ -3560,10 +3580,6 @@ msgstr ""
 msgid "You will be able to retry this import at %(next_time)s"
 msgstr "Budete moci zkusit tento import znovu %(next_time)s"
 
-#: bookwyrm/templates/import/user_troubleshoot.html:65
-msgid "Relationship"
-msgstr "Vztah"
-
 #: bookwyrm/templates/import/user_troubleshoot.html:68
 msgid "Reason"
 msgstr "Příčina"
@@ -3754,6 +3770,10 @@ msgstr "Navrhnout"
 #: bookwyrm/templates/lists/bookmark_button.html:30
 msgid "Un-save"
 msgstr "Od-uložit"
+
+#: bookwyrm/templates/lists/create_list_modal.html:6
+msgid "Create new list"
+msgstr ""
 
 #: bookwyrm/templates/lists/created_text.html:5
 #, python-format
@@ -5177,7 +5197,7 @@ msgstr ""
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:126
+#: bookwyrm/templates/settings/layout.html:130
 msgid "Announcements"
 msgstr ""
 
@@ -5231,6 +5251,15 @@ msgstr ""
 #: bookwyrm/templates/settings/announcements/announcements.html:33
 msgid "End date"
 msgstr ""
+
+#: bookwyrm/templates/settings/announcements/announcements.html:41
+#: bookwyrm/templates/settings/federation/instance.html:112
+#: bookwyrm/templates/settings/imports/imports.html:223
+#: bookwyrm/templates/settings/imports/imports.html:302
+#: bookwyrm/templates/settings/reports/report_links_table.html:6
+#: bookwyrm/templates/settings/themes.html:108
+msgid "Actions"
+msgstr "Akce"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:50
 msgid "active"
@@ -5401,7 +5430,7 @@ msgid "Import triggered"
 msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:57
-#: bookwyrm/templates/settings/layout.html:113
+#: bookwyrm/templates/settings/layout.html:117
 msgid "Connectors"
 msgstr ""
 
@@ -5491,14 +5520,19 @@ msgid "Clearing queues can cause serious problems including data loss! Only play
 msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:208
+#: bookwyrm/templates/settings/redis.html:117
 msgid "Errors"
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/available.html:15
+#: bookwyrm/templates/settings/connectors/available.html:17
 msgid "Finna.fi is a search service that collects material from hundreds of Finnish organisations under one roof."
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/available.html:28
+#: bookwyrm/templates/settings/connectors/available.html:19
+msgid "Libris is the Swedish national library catalog, providing access to records from Swedish libraries."
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/available.html:32
 msgid "Create new connector"
 msgstr ""
 
@@ -5707,7 +5741,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/email_config.html:6
 #: bookwyrm/templates/settings/email_config.html:8
-#: bookwyrm/templates/settings/layout.html:109
+#: bookwyrm/templates/settings/layout.html:113
 msgid "Email Configuration"
 msgstr ""
 
@@ -6334,25 +6368,29 @@ msgid "System"
 msgstr ""
 
 #: bookwyrm/templates/settings/layout.html:105
+msgid "Redis status"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:109
 msgid "Scheduled Tasks"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:117
+#: bookwyrm/templates/settings/layout.html:121
 msgid "Files Maintenance"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:122
+#: bookwyrm/templates/settings/layout.html:126
 msgid "Instance Settings"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:130
+#: bookwyrm/templates/settings/layout.html:134
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:136
-#: bookwyrm/templates/settings/layout.html:139
+#: bookwyrm/templates/settings/layout.html:140
+#: bookwyrm/templates/settings/layout.html:143
 #: bookwyrm/templates/settings/registration.html:4
 #: bookwyrm/templates/settings/registration.html:6
 #: bookwyrm/templates/settings/registration_limited.html:4
@@ -6360,7 +6398,7 @@ msgstr ""
 msgid "Registration"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:145
+#: bookwyrm/templates/settings/layout.html:149
 #: bookwyrm/templates/settings/site.html:107
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
@@ -6398,6 +6436,74 @@ msgstr ""
 
 #: bookwyrm/templates/settings/link_domains/link_table.html:43
 msgid "No links available for this domain."
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:5
+#: bookwyrm/templates/settings/redis.html:7
+msgid "Redis Status"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:13
+msgid "Info"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:17
+msgid "Used memory"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:23
+msgid "Total system memory"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:29
+msgid "Keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:37
+msgid "Outdated cache keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:40
+#, python-format
+msgid "This will scan for keys in the Django redis cache that use no prefix (the current prefix is <code>%(prefix)s</code>), and identify Activity Streams for users with deleted accounts."
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:47
+#, python-format
+msgid "%(keys)s identified"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:55
+msgid "Erase outdated keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:63
+msgid "Scan for outdated keys"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:71
+msgid "Advanced"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:75
+msgid "Clear Django Cache"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:81
+msgid "This is <strong>NOT recommended</strong> and should only be used if something has gone very wrong with your cache. All sessions will be cleared and users will be logged out of their accounts."
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:88
+#, python-format
+msgid "%(keys)s keys deleted"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:97
+msgid "Erase cache"
+msgstr ""
+
+#: bookwyrm/templates/settings/redis.html:109
+msgid "Could not connect to Redis Activity"
 msgstr ""
 
 #: bookwyrm/templates/settings/registration.html:38
