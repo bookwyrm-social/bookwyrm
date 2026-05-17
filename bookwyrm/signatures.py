@@ -128,6 +128,24 @@ class Signature:
         # raises a ValueError if it fails
         signer.verify(digest, self.signature)
 
+    def verify_get(self, public_key, request):
+        """verify rsa signature for GET requests"""
+        if http_date_age(request.headers["date"]) > MAX_SIGNATURE_AGE:
+            raise ValueError(f"Request too old: {request.headers['date']}")
+        public_key = RSA.import_key(public_key)
+
+        if signed_header_name := self.headers.split(" ").get("(request-target)"):
+            comparison_string = [f"(request-target): get {request.path}"]
+
+            signer = pkcs1_15.new(public_key)
+            digest = SHA256.new()
+            digest.update(comparison_string.encode())
+
+            # raises a ValueError if it fails
+            signer.verify(digest, self.signature)
+
+        raise ValueError("Invalid HTTP Digest header")
+
 
 def http_date_age(datestr):
     """age of a signature in seconds"""
