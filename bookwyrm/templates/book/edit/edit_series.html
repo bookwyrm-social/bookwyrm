@@ -51,13 +51,13 @@
             </div>
         </div>
         <div class="column is-one-half">
-            <label class="label" for="id_add_alt_title">Inventaire ID:</label>
+            <label class="label" for="id_add_alt_title">{% trans "Inventaire ID:" %}</label>
             <input type="text" name="inventaire_id" value="{{ form.inventaire_id.value|default:'' }}" maxlength="255" class="input" id="id_inventaire_id" aria-describedby="desc_title">
 
-            <label class="label" for="id_add_alt_title">Wikidata ID:</label>
+            <label class="label" for="id_add_alt_title">{% trans "Wikidata ID:" %}</label>
             <input type="text" name="wikidata" value="{{ form.wikidata.value|default:'' }}" maxlength="255" class="input" id="id_wikidata" aria-describedby="desc_title">
 
-            <label class="label" for="id_add_alt_title">ISFDB ID:</label>
+            <label class="label" for="id_add_alt_title">{% trans "ISFDB ID:" %}</label>
             <input type="text" name="isfdb" value="{{ form.isfdb.value|default:'' }}" maxlength="255" class="input" id="id_isfdb" aria-describedby="desc_title">
         </div>
     </div>
