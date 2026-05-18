@@ -68,10 +68,10 @@
     {% if confirm_mode %}
         <div class="box">
             <h2 class="title is-4">{% trans "Confirm Book Info" %}</h2>
-            <div class="columns mb-4">
+            <div class="is-flex  mb-4">
                 {% if author_matches %}
                 <input type="hidden" name="author-match-count" value="{{ author_matches|length }}">
-                <div class="column is-half">
+                <div class="column is-one-third">
                     {% for author in author_matches %}
                     <fieldset class="block">
                         <legend class="title is-5 mb-1">
@@ -112,12 +112,13 @@
                     {% endfor %}
                 </div>
                 {% elif add_author %}
-                <p class="column is-half">{% blocktrans with name=add_author %}Creating a new author: {{ name }}{% endblocktrans %}</p>
+                <p class="is-one-third">{% blocktrans with name=add_author %}Creating a new author: {{ name }}{% endblocktrans %}</p>
                 {% endif %}
 
-                {% if not book.parent_work %}
-                <div class="column is-half">
+                {% if not book.parent_work.exists %}
+                <div class="is-one-third">
                     <fieldset>
+                        {% if book_matches%}
                         <legend class="title is-5 mb-1">
                             {% trans "Is this an edition of an existing work?" %}
                         </legend>
@@ -129,7 +130,47 @@
                         <label class="label mt-2">
                             <input type="radio" name="parent_work" value="0" required> {% trans "This is a new work" %}
                         </label>
+                        {% endif %}
                     </fieldset>
+                </div>
+                {% endif %}
+                {% if form.series.value %}
+                <div class="is-one-third">
+                    {% if series_matches %}
+                    {% if confirm_series_mode %}
+                    <div class="notification is-warning">
+                        {% trans "Are you sure this is a new series? The following series have similar names and a matching author." %}
+                    </div>
+                    <input hidden="hidden" aria-hidden="true" name="confirm_series_mode" value="true">
+                    {% endif %}
+                    <fieldset>
+                        <legend class="title is-5 mb-1">
+                            {% trans "Is this book part of one of these series?" %}
+                        </legend>
+                        {% for series in series_matches %}
+                        <label class="label">
+                            <input type="radio" name="series_match" value="{{ series.id }}"> {{ series.name }}
+                            <p class="help ml-5 mb-0 mt-0">
+                                <em>
+                                {% with book=series.seriesbooks.first %}
+                                {% blocktrans with hint=book|possible_series_hint %}
+                                {{ hint }}
+                                {% endblocktrans %}
+                                {% endwith %}
+                                </em>
+                            </p>
+                        </label>
+                        {% endfor %}
+                        <label class="label mt-2">
+                            <input type="radio" name="series_match" id="series_match" value="0" required> {% trans "This is a new series" %}
+                        </label>
+                    </fieldset>
+                    {% else %}
+                        <legend class="title is-5">
+                            {% trans "Creating a new series" %}:
+                        </legend>
+                        <p class="is-italic">{{ form.series.value }}</p>
+                    {% endif %}
                 </div>
                 {% endif %}
             </div>
