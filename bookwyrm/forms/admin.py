@@ -182,11 +182,23 @@ class FederationSettings(CustomForm):
         model = models.SiteSettings
         fields = [
             "disable_federation",
+            "require_signed_get",
+            "require_login_everywhere",
+            "block_incoming_search",
         ]
 
         widgets = {
             "disable_federation": forms.CheckboxInput(
                 attrs={"aria-describedby": "desc_disable_federation"}
+            ),
+            "require_signed_get": forms.CheckboxInput(
+                attrs={"aria-describedby": "desc_require_signed_get"}
+            ),
+            "require_login_everywhere": forms.CheckboxInput(
+                attrs={"aria-describedby": "desc_require_login_everywhere"}
+            ),
+            "block_incoming_search": forms.CheckboxInput(
+                attrs={"aria-describedby": "desc_block_incoming_search"}
             ),
         }
 
