@@ -151,13 +151,8 @@
                         <label class="label">
                             <input type="radio" name="series_match" value="{{ series.id }}"> {{ series.name }}
                             <p class="help ml-5 mb-0 mt-0">
-                                <em>
-                                {% with book=series.seriesbooks.first %}
-                                {% blocktrans with hint=book|possible_series_hint %}
-                                {{ hint }}
-                                {% endblocktrans %}
-                                {% endwith %}
-                                </em>
+
+                            <em>{{ series.seriesbooks.first..possible_series_hint }}</em>
                             </p>
                         </label>
                         {% endfor %}
