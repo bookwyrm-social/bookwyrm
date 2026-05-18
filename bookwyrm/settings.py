@@ -118,6 +118,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "csp.middleware.CSPMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "bookwyrm.middleware.BookWyrmSecurityChecks",
     "bookwyrm.middleware.TimezoneMiddleware",
     "bookwyrm.middleware.IPBlocklistMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
