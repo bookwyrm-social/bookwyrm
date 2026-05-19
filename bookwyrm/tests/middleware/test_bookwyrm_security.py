@@ -1,5 +1,6 @@
 """test security middleware"""
 
+from unittest.mock import patch
 from collections import namedtuple
 import json
 import pathlib
@@ -63,6 +64,15 @@ class TestBookWyrmSecurityChecks(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/login/?next=/user/mouse")
 
+        with patch(
+            "bookwyrm.activitystreams.ActivityStream.get_activity_stream"
+        ) as mock:
+            response = self.client.get("/discover")
+            self.assertEqual(response.status_code, 302)
+
+        response = self.client.get("")
+        self.assertEqual(response.status_code, 200)
+
     @override_settings(MIDDLEWARE=["bookwyrm.middleware.BookWyrmSecurityChecks"])
     def test_require_login_everywhere_allowed_pages(self):
         """don't block allowlist"""
@@ -81,6 +91,8 @@ class TestBookWyrmSecurityChecks(TestCase):
             "bookwyrm.middleware.BookWyrmSecurityChecks",
         ]
     )
+
+
     def test_require_login_everywhere_logged_in(self):
         """allow logged in users"""
 
@@ -90,11 +102,16 @@ class TestBookWyrmSecurityChecks(TestCase):
 
         self.client.user = self.user
         self.client.login(username=self.user.username, password="changeme")
+
         response = self.client.get("/user/mouse")
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.get("/discover")
-        self.assertEqual(response.status_code, 200)
+        with patch(
+            "bookwyrm.activitystreams.ActivityStream.get_activity_stream"
+        ) as mock:
+            response = self.client.get("/discover")
+            self.assertEqual(response.status_code, 200)
+
 
     @override_settings(
         MIDDLEWARE=[
