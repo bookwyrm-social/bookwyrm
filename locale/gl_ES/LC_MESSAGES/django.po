@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-18 20:01+0000\n"
-"PO-Revision-Date: 2026-05-18 20:55\n"
+"PO-Revision-Date: 2026-05-19 02:31\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -210,7 +210,7 @@ msgstr "%(value)s non ten a suma de comprobación ISBN correcta, agardábase %(c
 
 #: bookwyrm/models/book.py:799
 msgid "Book is already in this series"
-msgstr ""
+msgstr "O libro xa está incluído nesta serie"
 
 #: bookwyrm/models/bookwyrm_import_job.py:151 bookwyrm/models/report.py:85
 #: bookwyrm/templates/settings/reports/report.html:115
@@ -1143,21 +1143,21 @@ msgstr "Non se pode conectar coa fonte remota."
 #: bookwyrm/templates/book/book.html:52
 #, python-format
 msgid "This book might be part of the <em>%(series)s</em> series."
-msgstr ""
+msgstr "Este libro podería ser parte da serie <em>%(series)s</em>."
 
 #: bookwyrm/templates/book/book.html:56
 msgid "Edit it to confirm."
-msgstr ""
+msgstr "Edítao para confirmar."
 
 #: bookwyrm/templates/book/book.html:69
 #, python-format
 msgid "Book <span itemprop=\"position\">%(number)s</span> in <em><a href=\"%(path)s\">%(title)s</a></em>"
-msgstr ""
+msgstr "Libro <span itemprop=\"position\">%(number)s</span> en <em><a href=\"%(path)s\">%(title)s</a></em>"
 
 #: bookwyrm/templates/book/book.html:75
 #, python-format
 msgid "Part of <em><a href=\"%(path)s\">%(title)s</a></em>"
-msgstr ""
+msgstr "Parte de <em><a href=\"%(path)s\">%(title)s</a></em>"
 
 #: bookwyrm/templates/book/book.html:97 bookwyrm/templates/book/book.html:98
 msgid "Edit Book"
@@ -1419,19 +1419,19 @@ msgstr "Este é un novo traballo"
 
 #: bookwyrm/templates/book/edit/edit_book.html:142
 msgid "Are you sure this is a new series? The following series have similar names and a matching author."
-msgstr ""
+msgstr "Tes certeza de que esta é unha nova serie? As seguintes series teñen un nome parecido e a autoría coincide."
 
 #: bookwyrm/templates/book/edit/edit_book.html:148
 msgid "Is this book part of one of these series?"
-msgstr ""
+msgstr "Pertence este libro a algunha destas series?"
 
 #: bookwyrm/templates/book/edit/edit_book.html:160
 msgid "This is a new series"
-msgstr ""
+msgstr "Esta é unha nova serie"
 
 #: bookwyrm/templates/book/edit/edit_book.html:165
 msgid "Creating a new series"
-msgstr ""
+msgstr "Creando unha nova serie"
 
 #: bookwyrm/templates/book/edit/edit_book.html:175
 #: bookwyrm/templates/book/edit/edit_series.html:86
@@ -1518,17 +1518,17 @@ msgstr "Engadir outro tema"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:130
 msgid "Series"
-msgstr ""
+msgstr "Serie"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:138
 #: bookwyrm/templates/book/series.html:12
 #: bookwyrm/templates/book/series.html:13
 msgid "Edit Series"
-msgstr ""
+msgstr "Editar a serie"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:141
 msgid "To edit details of a series itself, click the series name"
-msgstr ""
+msgstr "Para editar os detalles dunha serie, fai click no nome da serie"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:150
 #: bookwyrm/templates/snippets/create_status/quotation.html:31
@@ -1538,24 +1538,24 @@ msgstr "Posición:"
 #: bookwyrm/templates/book/edit/edit_book_form.html:164
 #, python-format
 msgid "Remove this book from <em>%(series_name)s</em>"
-msgstr ""
+msgstr "Retirar este libro de <em>%(series_name)s</em>"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:175
 msgid "Add Series"
-msgstr ""
+msgstr "Engadir serie"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:178
 msgid "Series name:"
-msgstr ""
+msgstr "Nome da serie:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:186
 #: bookwyrm/templates/book/edit/edit_series.html:75
 msgid "Series position:"
-msgstr ""
+msgstr "Posición na serie:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:189
 msgid "This field was previously called \"Series number\""
-msgstr ""
+msgstr "Este campo antes tiña o nome de «Número na serie»"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:202
 msgid "Publication"
@@ -1650,12 +1650,12 @@ msgstr "ID en Openlibrary:"
 #: bookwyrm/templates/book/edit/edit_series.html:9
 #, python-format
 msgid "Edit \"%(title)s\""
-msgstr ""
+msgstr "Editar «%(title)s»"
 
 #: bookwyrm/templates/book/edit/edit_series.html:20
 #, python-format
 msgid "Edit \"%(name)s\""
-msgstr ""
+msgstr "Editar «%(name)s»"
 
 #: bookwyrm/templates/book/edit/edit_series.html:30
 #: bookwyrm/templates/settings/schedules.html:22
@@ -1665,20 +1665,20 @@ msgstr "Nome"
 #: bookwyrm/templates/book/edit/edit_series.html:36
 #: bookwyrm/templates/book/series.html:29
 msgid "Alternative names"
-msgstr ""
+msgstr "Nomes alternativos"
 
 #: bookwyrm/templates/book/edit/edit_series.html:39
 #: bookwyrm/templates/book/edit/edit_series.html:42
 msgid "Add Alternative name:"
-msgstr ""
+msgstr "Engadir un nome alternativo:"
 
 #: bookwyrm/templates/book/edit/edit_series.html:48
 msgid "Add an Alternative name"
-msgstr ""
+msgstr "Engade un nome alternativo"
 
 #: bookwyrm/templates/book/edit/edit_series.html:57
 msgid "Wikidata ID:"
-msgstr ""
+msgstr "ID en Wikidata:"
 
 #: bookwyrm/templates/book/editions/editions.html:4
 #, python-format
@@ -2567,7 +2567,7 @@ msgstr "Editar grupo"
 
 #: bookwyrm/templates/groups/members.html:6
 msgid "Group Members"
-msgstr ""
+msgstr "Integrantes do grupo"
 
 #: bookwyrm/templates/groups/members.html:11
 msgid "Search to add a user"
@@ -8096,11 +8096,11 @@ msgstr "unha nova conta de usuaria"
 
 #: bookwyrm/views/books/edit_book.py:80 bookwyrm/views/books/edit_book.py:484
 msgid "There is another book in the series with the same value"
-msgstr ""
+msgstr "Hai outro libro na serie co mesmo valor"
 
 #: bookwyrm/views/books/series.py:95
 msgid "Series position must be unique for each book"
-msgstr ""
+msgstr "A posición na serie ten que ser única para cada libro"
 
 #: bookwyrm/views/updates.py:46
 #, python-format
