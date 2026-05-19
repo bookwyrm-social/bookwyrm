@@ -91,8 +91,6 @@ class TestBookWyrmSecurityChecks(TestCase):
             "bookwyrm.middleware.BookWyrmSecurityChecks",
         ]
     )
-
-
     def test_require_login_everywhere_logged_in(self):
         """allow logged in users"""
 
@@ -111,7 +109,6 @@ class TestBookWyrmSecurityChecks(TestCase):
         ) as mock:
             response = self.client.get("/discover")
             self.assertEqual(response.status_code, 200)
-
 
     @override_settings(
         MIDDLEWARE=[
