@@ -58,8 +58,10 @@ class BookWyrmSecurityChecks:
         """run before next middleware or view"""
 
         # block search endpoint if disabled
+        # TODO - actually this should be "^/?search/?$" (i think) and is_api_request
+        # same for testing
         if SiteSettings.get().block_incoming_search:
-            if re.search("^/?search.json/?$", request.path):
+            if is_api_request(request) and re.search("^/?search/?$", request.path):
                 raise PermissionDenied
 
         if (

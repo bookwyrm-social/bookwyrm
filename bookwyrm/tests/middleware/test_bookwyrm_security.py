@@ -129,13 +129,26 @@ class TestBookWyrmSecurityChecks(TestCase):
     def test_block_incoming_search(self):
         """disallow search endpoint"""
 
-        response = self.client.get("/search.json/?q=beep")
+        # TODO change this to an API request with headers
+        response = self.client.get(
+            "/search/?q=beep",
+            headers={
+                "Host": DOMAIN,
+                "Accept": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+            },
+        )
         self.assertEqual(response.status_code, 200)
 
         self.site.block_incoming_search = True
         self.site.save(update_fields=["block_incoming_search"])
 
-        response = self.client.get("/search.json/?q=boop")
+        response = self.client.get(
+            "/search/?q=boop",
+            headers={
+                "Host": DOMAIN,
+                "Accept": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+            },
+        )
         self.assertEqual(response.status_code, 403)
 
 
