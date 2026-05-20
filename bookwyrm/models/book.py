@@ -40,8 +40,6 @@ from .activitypub_mixin import (
 from .base_model import BookWyrmModel
 from . import fields
 
-from .user import User
-
 
 class BookDataModel(ObjectMixin, BookWyrmModel):
     """fields shared between editable book data (books, works, authors)"""
