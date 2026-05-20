@@ -125,7 +125,7 @@ module = [
 ]
 
 [tool.ruff]
-exclude = ["migrations"]
+exclude = ["migrations", "**/__init__.py"]
 
 line-length = 88
 
@@ -142,10 +142,7 @@ ignore = [
     "E501", # line too long
     "E722", # bare except
     "E731", # lambda assignment
-    "F401", # unused imports
-    "F403", # star import (unable to detect undefined names from star imports)
     "F405", # `env` may be undefined, or defined from star imports
-    "F841", # unused variable
 ]
 
 [tool.ruff.format]
