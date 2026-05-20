@@ -3,6 +3,7 @@
 from typing import Optional, Iterable
 import uuid
 
+from django.apps import apps
 from django.contrib.postgres.indexes import Index
 from django.core.exceptions import PermissionDenied
 from django.db import models
@@ -57,11 +58,11 @@ class AbstractList(OrderedCollectionMixin, BookWyrmModel):
 class SuggestionList(AbstractList):
     """a list of user-provided suggested things to read next"""
 
-    books = models.ManyToManyField(
+    works = models.ManyToManyField(
         "Work",
         symmetrical=False,
         through="SuggestionListItem",
-        through_fields=("book_list", "book"),
+        through_fields=("book_list", "work"),
     )
 
     suggests_for = fields.OneToOneField(
@@ -77,6 +78,12 @@ class SuggestionList(AbstractList):
     def collection_queryset(self):
         """list of books for this shelf, overrides OrderedCollectionMixin"""
         return self.books.order_by("suggestionlistitem")
+
+    @property
+    def editions(self):
+        default_editions = [w.default_edition.id for w in self.works.all()]
+        edition_model = apps.get_model("bookwyrm", "Edition")
+        return edition_model.objects.filter(id__in=default_editions)
 
     def save(self, *args, **kwargs):
         """on save, update embed_key and avoid clash with existing code"""
@@ -112,11 +119,11 @@ class SuggestionList(AbstractList):
 class List(AbstractList):
     """a list of books"""
 
-    books = models.ManyToManyField(
+    editions = models.ManyToManyField(
         "Edition",
         symmetrical=False,
         through="ListItem",
-        through_fields=("book_list", "book"),
+        through_fields=("book_list", "edition"),
     )
     name = fields.CharField(max_length=100)
     description = fields.TextField(blank=True, null=True, activitypub_field="summary")
@@ -130,6 +137,11 @@ class List(AbstractList):
         blank=True,
         null=True,
     )
+
+    @property
+    def works(self):
+        work_model = apps.get_model("bookwyrm", "Work")
+        return work_model.objects.filter(editions__in=self.editions.all()).distinct()
 
     @property
     def collection_queryset(self):
@@ -207,6 +219,7 @@ class List(AbstractList):
 
 class AbstractListItem(CollectionItemMixin, BookWyrmModel):
     """Abstracy class for list items for all types of lists"""
+
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor"
     )
@@ -239,7 +252,6 @@ class AbstractListItem(CollectionItemMixin, BookWyrmModel):
         """A book may only be placed into a list once,
         and each order in the list may be used only once"""
 
-        unique_together = ("book", "book_list")
         ordering = ("-created_date",)
         abstract = True
 
@@ -247,7 +259,7 @@ class AbstractListItem(CollectionItemMixin, BookWyrmModel):
 class ListItem(AbstractListItem):
     """ok"""
 
-    book = fields.ForeignKey(
+    edition = fields.ForeignKey(
         "Edition", on_delete=models.PROTECT, activitypub_field="book"
     )
 
@@ -276,16 +288,19 @@ class ListItem(AbstractListItem):
         """A book may only be placed into a list once,
         and each order in the list may be used only once"""
 
-        unique_together = (("book", "book_list"), ("order", "book_list"))
+        unique_together = (("edition", "book_list"), ("order", "book_list"))
 
 
 class SuggestionListItem(AbstractListItem):
     """items on a suggestion list"""
 
-
-    book = fields.ForeignKey(
-        "Work", on_delete=models.PROTECT, activitypub_field="book"
-    )
+    work = fields.ForeignKey("Work", on_delete=models.PROTECT, activitypub_field="book")
     book_list = models.ForeignKey("SuggestionList", on_delete=models.CASCADE)
     endorsement = models.ManyToManyField("User", related_name="suggestion_endorsers")
     activity_serializer = activitypub.SuggestionListItem
+
+    class Meta:
+        """A book may only be placed into a list once,
+        and each order in the list may be used only once"""
+
+        unique_together = ("work", "book_list")

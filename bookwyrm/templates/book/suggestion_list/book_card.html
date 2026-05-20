@@ -3,7 +3,7 @@
 
 <div class="card is-stretchable">
     <div class="card-content pb-0 columns">
-        {% with item_book=item.book %}
+        {% with item_book=item.work.default_edition %}
             <div class="column is-one-third">
                 <div class="is-cover">
                     <a href="{{ item_book.local_path }}" aria-hidden="true">
@@ -36,7 +36,7 @@
             </p>
         </div>
         <div class="card-footer-item">
-            {% include "snippets/shelve_button/shelve_button.html" with book=item.book %}
+            {% include "snippets/shelve_button/shelve_button.html" with book=item.work.default_edition %}
         </div>
         <div class="card-footer-item">
             {% include "book/suggestion_list/endorsement_button.html" %}

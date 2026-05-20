@@ -45,7 +45,7 @@ class SuggestionList(View):
 
         items = (
             book_list.suggestionlistitem_set.prefetch_related(
-                "user", "book", "book__authors"
+                "user", "work", "work__authors"
             )
             .annotate(endorsement_count=Count("endorsement"))
             .order_by("-endorsement_count")

@@ -92,7 +92,7 @@ class Book(View):
             request.user,
         ).filter(
             listitem__approved=True,
-            listitem__book__in=book.parent_work.editions.all(),
+            listitem__edition__in=book.parent_work.editions.all(),
         )
         data = {
             "book": book,
@@ -148,7 +148,7 @@ class Book(View):
                 data["items"] = (
                     data["suggestion_list"]
                     .suggestionlistitem_set.prefetch_related(
-                        "user", "book", "book__authors", "endorsement"
+                        "user", "work", "work__authors", "endorsement"
                     )
                     .annotate(endorsement_count=Count("endorsement"))
                     .order_by("-endorsement_count")[:3]

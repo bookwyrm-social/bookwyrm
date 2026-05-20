@@ -46,7 +46,7 @@ class List(View):
             return redirect_option
 
         items = book_list.listitem_set.filter(approved=True).prefetch_related(
-            "user", "book", "book__authors"
+            "user", "edition", "edition__authors"
         )
         items = sort_list(request, items)
 
@@ -113,13 +113,13 @@ def get_list_suggestions(
         return book_search.search(
             query,
             filters=[
-                ~Q(parent_work__editions__in=book_list.books.all()),
+                ~Q(parent_work=book_list.works.all()),
                 ~Q(parent_work=ignore_book),
             ],
         )
     # just suggest whatever books are nearby
     suggestions = (
-        user.shelfbook_set.filter(~Q(book__in=book_list.books.all()))
+        user.shelfbook_set.filter(~Q(book__in=book_list.editions.all()))
         .exclude(book__parent_work=ignore_book)
         .distinct()[:num_suggestions]
     )
@@ -128,7 +128,7 @@ def get_list_suggestions(
         others = [
             s.default_edition
             for s in models.Work.objects.filter(
-                ~Q(editions__in=book_list.books.all()),
+                ~Q(editions__in=book_list.editions.all()),
                 ~Q(id=ignore_book.id if ignore_book else None),
             )
             .distinct()
