@@ -299,6 +299,10 @@ class SuggestionListItem(AbstractListItem):
     endorsement = models.ManyToManyField("User", related_name="suggestion_endorsers")
     activity_serializer = activitypub.SuggestionListItem
 
+    @property
+    def edition(self):
+        return self.work.default_edition
+
     class Meta:
         """A book may only be placed into a list once,
         and each order in the list may be used only once"""

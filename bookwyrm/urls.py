@@ -645,6 +645,11 @@ urlpatterns = [
         name="reject-group-invitation",
     ),
     # lists
+    re_path(
+        rf"{USER_PATH}/suggestions/?$",
+        views.UserSuggestions.as_view(),
+        name="user-suggestions",
+    ),
     re_path(rf"{USER_PATH}/lists/?$", views.UserLists.as_view(), name="user-lists"),
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),
     re_path(r"^list/saved/?$", views.SavedLists.as_view(), name="saved-lists"),
@@ -895,7 +900,7 @@ urlpatterns = [
         name="book-add-suggestion",
     ),
     re_path(
-        rf"{BOOK_PATH}/suggestions/remove/?$",
+        r"^suggestion/(?P<list_id>\d+)/remove/?$",
         views.book_remove_suggestion,
         name="book-remove-suggestion",
     ),

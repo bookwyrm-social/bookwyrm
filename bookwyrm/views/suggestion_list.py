@@ -3,6 +3,7 @@
 from typing import Any
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Count, Q
@@ -18,11 +19,11 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views import Book
+from bookwyrm.views.helpers import get_user_from_username
 from bookwyrm.views.helpers import is_api_request, redirect_to_referer
 from bookwyrm.views.list.list import get_list_suggestions
 
 
-# pylint: disable=no-self-use
 class SuggestionList(View):
     """book list page"""
 
@@ -75,7 +76,7 @@ class SuggestionList(View):
             "add_failed": add_failed,
             "add_succeeded": add_succeeded,
             "add_book_url": reverse("book-add-suggestion", args=[book_id]),
-            "remove_book_url": reverse("book-remove-suggestion", args=[book_id]),
+            "remove_book_url": reverse("book-remove-suggestion", args=[book_list.id]),
         }
 
         if request.user.is_authenticated:
@@ -103,6 +104,32 @@ class SuggestionList(View):
         return redirect_to_referer(request)
 
 
+@method_decorator(login_required, name="dispatch")
+class UserSuggestions(View):
+    """view all suggestions made by a user"""
+
+    def get(
+        self, request: HttpRequest, username: str
+    ) -> ActivitypubResponse | TemplateResponse:
+        """display a book list"""
+        user = get_user_from_username(request.user, username)
+        is_self = request.user.id == user.id
+        if not is_self:
+            raise PermissionDenied()
+
+        suggestions = models.SuggestionListItem.objects.filter(
+            user=request.user
+        ).prefetch_related("book_list")
+        paginated = Paginator(suggestions, 12)
+        data = {
+            "user": user,
+            "is_self": is_self,
+            "suggestions": paginated.get_page(request.GET.get("page")),
+            "path": user.local_path + "/suggestions",
+        }
+        return TemplateResponse(request, "user/suggestions.html", data)
+
+
 @login_required
 @require_POST
 def book_add_suggestion(request: HttpRequest, book_id: int) -> Any:
@@ -122,12 +149,12 @@ def book_add_suggestion(request: HttpRequest, book_id: int) -> Any:
 
 @require_POST
 @login_required
-def book_remove_suggestion(request: HttpRequest, book_id: int) -> Any:
+def book_remove_suggestion(request: HttpRequest, list_id: int) -> Any:
     """remove a book from a suggestion list"""
     item = get_object_or_404(
         models.SuggestionListItem,
         id=request.POST.get("item"),
-        book_list__suggests_for=book_id,
+        book_list=list_id,
     )
     item.raise_not_deletable(request.user)
 

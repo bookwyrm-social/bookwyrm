@@ -1,0 +1,81 @@
+{% load i18n %}
+{% load rating_tags %}
+{% load book_display_tags %}
+{% load markdown %}
+{% load group_tags %}
+<div class="card is-stretchable">
+    <div class="card-content">
+        {% with book=item.edition %}
+        <div class="columns is-mobile">
+            <div class="column is-narrow is-cover">
+                <a href="{{ item.edition.local_path }}" aria-hidden="true">
+                    {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-mobile is-h-m-tablet is-align-items-flex-start' size='medium' %}
+                </a>
+            </div>
+
+            <div class="column">
+                <p>
+                    {% include 'snippets/book_titleby.html' %}
+                </p>
+                <p>
+                    {% include 'snippets/stars.html' with rating=item.edition|rating:request.user %}
+                </p>
+                <div>
+                    {{ book|book_description|to_markdown|default:""|safe|truncatewords_html:20 }}
+                </div>
+                {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
+            </div>
+        </div>
+        {% endwith %}
+        {% include "lists/list_item_notes.html" with item=item no_trim=True %}
+
+    </div>
+    <div class="card-footer is-stacked-mobile has-background-tertiary is-align-items-stretch">
+        <div class="card-footer-item">
+            <p>
+                {% blocktrans trimmed with username=item.user.display_name user_path=item.user.local_path %}
+                Added by <a href="{{ user_path }}">{{ username }}</a>
+                {% endblocktrans %}
+            </p>
+        </div>
+        {% if list.suggests_for %}
+        <div class="card-footer-item">
+            {% include "book/suggestion_list/endorsement_button.html" with work=list.suggests_for %}
+        </div>
+        {% endif %}
+        {% if list.user == request.user or list.group|is_member:request.user %}
+        <form
+            name="set-position-{{ item.id }}"
+            method="post"
+            action="{% url 'list-set-book-position' item.id %}"
+            class="card-footer-item"
+        >
+            {% csrf_token %}
+            <div class="field has-addons mb-0">
+                <div class="control">
+                    <label for="input_list_position_{{ item.id }}" class="button is-transparent is-small">{% trans "List position" %}</label>
+                </div>
+                <div class="control">
+                    <input id="input_list_position_{{ item.id }}" class="input is-small" type="number" min="1" name="position" value="{{ item.order }}">
+                </div>
+                <div class="control">
+                    <button type="submit" class="button is-info is-small is-tablet">{% trans "Set" %}</button>
+                </div>
+            </div>
+        </form>
+        {% endif %}
+
+        {% if item.user == request.user or list.curation == 'open' and item.user == request.user or list.group|is_member:request.user %}
+        <form
+            name="remove-book-{{ item.id }}"
+            method="post"
+            action="{{ remove_book_url }}"
+            class="card-footer-item"
+        >
+            {% csrf_token %}
+            <input type="hidden" name="item" value="{{ item.id }}">
+            <button type="submit" class="button is-small is-danger">{% trans "Remove" %}</button>
+        </form>
+        {% endif %}
+    </div>
+</div>

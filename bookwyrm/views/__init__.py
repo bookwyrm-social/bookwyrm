@@ -145,7 +145,7 @@ from .list.list import (
 )
 
 # suggestion lists
-from .suggestion_list import SuggestionList
+from .suggestion_list import SuggestionList, UserSuggestions
 from .suggestion_list import (
     book_add_suggestion,
     book_remove_suggestion,
