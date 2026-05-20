@@ -159,10 +159,10 @@ case "$CMD" in
         $DOCKER_COMPOSE rm -svf
         docker volume rm -f dev-wyrm_media_volume dev-wyrm_pgdata dev-wyrm_redis_activity_data dev-wyrm_redis_broker_data dev-wyrm_static_volume, dev-wyrm_exports_volume
         $DOCKER_COMPOSE up --build -d
-        runweb python manage.py admin_code
+        rundev python manage.py admin_code
         ;;
     makemigrations)
-        runweb python manage.py makemigrations "$@"
+        rundev python manage.py makemigrations "$@"
         ;;
     migrate)
         migrate "$@"
@@ -327,6 +327,7 @@ case "$CMD" in
         echo "Unrecognised command. Try:"
         echo " Development flow commands:"
         echo "    makemessages"
+        echo "    resetdb"
         echo "    compilemessages [locale]"
         echo "    pytest [path]"
         echo "    makemigrations [migration]"
@@ -350,7 +351,6 @@ case "$CMD" in
         echo "    service_ports_web"
         echo "    upgrade_db_version"
         echo "    initdb"
-        echo "    resetdb"
         echo "    init_ssl"
         echo "    migrate [migration]"
         echo "    create_secrets"
