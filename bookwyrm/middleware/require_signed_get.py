@@ -1,55 +1,20 @@
-"""require signed headers and user log in depending on site settings"""
+"""Require all GET API requests to use signed HTTP headers"""
 
 import re
 from requests.exceptions import HTTPError
 
 from django.core.exceptions import PermissionDenied
-from django.contrib.auth.decorators import login_required
 
-from bookwyrm.connectors import get_data
 from bookwyrm.activitypub import resolve_remote_id
+from bookwyrm.connectors import get_data
 from bookwyrm.models import SiteSettings, User
-from bookwyrm.settings import DOMAIN
 from bookwyrm.signatures import Signature
 from bookwyrm.views.helpers import is_api_request
 from bookwyrm.views.inbox import raise_is_blocked_user_agent
 
 
-allowed_views = [
-    # basic web utility views
-    r"/robots.txt",
-    r"/manifest.json",
-    r"^/opensearch.xml$",
-    # site basics
-    r"^/?$",
-    r"^/about/?$",
-    r"^/privacy/?$",
-    r"^/conduct/?$",
-    # setup
-    r"^/setup/?$",
-    r"^/setup/admin/?$",
-    # login and register
-    r"^/login/?$",
-    r"^/login/(?P<confirmed>confirmed)/?$",
-    r"^/register/?$",
-    r"^/password-reset/?$",
-    r"/confirm-email/?$",
-    r"/confirm-email/(?P<code>[A-Za-z0-9]+)/?$",
-    r"^/resend-link/?$",
-    r"^/invite/(?P<code>[A-Za-z0-9]+)/?$",
-    r"^/2fa-check/?$",
-]
-
-allowed_api_views = [
-    r"^/\.well-known/webfinger/?$",
-    r"^/\.well-known/nodeinfo/?$",
-    r"^/\.well-known/host-meta/?$",
-    r"^/nodeinfo/2\.0/?$",
-]
-
-
-class BookWyrmSecurityChecks:
-    """lock down incoming access depending on site settings"""
+class RequireSignedGet:
+    """lock down incoming GET API requests"""
 
     def __init__(self, get_response):
         self.get_response = get_response
@@ -57,41 +22,31 @@ class BookWyrmSecurityChecks:
     def __call__(self, request):
         """run before next middleware or view"""
 
-        # block search endpoint if disabled
-        # TODO - actually this should be "^/?search/?$" (i think) and is_api_request
-        # same for testing
-        if SiteSettings.get().block_incoming_search:
-            if is_api_request(request) and re.search("^/?search/?$", request.path):
-                raise PermissionDenied
+        if is_api_request(request):
+            # Always check if this server is on our shitlist
+            raise_is_blocked_user_agent(request)
 
-        if (
-            SiteSettings.get().require_signed_get
-            and request.method == "GET"
-            and is_api_request(request)
-        ):
             # if we disabled federation, disallow all API requests
             # this will include nodeinfo and webfinger etc
             SiteSettings.raise_federation_disabled()
 
-            # check if this server is on our shitlist
-            raise_is_blocked_user_agent(request)
+            if SiteSettings.get().require_signed_get and request.method == "GET":
+                allowed_api_views = [
+                    r"^/\.well-known/webfinger/?$",
+                    r"^/\.well-known/nodeinfo/?$",
+                    r"^/\.well-known/host-meta/?$",
+                    r"^/nodeinfo/2\.0/?$",
+                ]
 
-            # ignore for allowed paths
-            for path in allowed_api_views:
-                if re.search(path, request.path):
-                    return self.get_response(request)
-
-            # require signed headers for everything else
-            if not has_valid_get_signature(request):
-                raise PermissionDenied
-
-        if SiteSettings.get().require_login_everywhere and not is_api_request(request):
-            # require login unless endpoint is on the allow list
-            if not request.user.is_authenticated:
-                for path in allowed_views:
+                # ignore well-known and nodeinfo paths
+                # otherwise nobody can follow our users
+                for path in allowed_api_views:
                     if re.search(path, request.path):
                         return self.get_response(request)
-                return login_required(self.get_response)(request)
+
+                # require signed headers for everything else
+                if not has_valid_get_signature(request):
+                    raise PermissionDenied
 
         # we're good, continue
         return self.get_response(request)

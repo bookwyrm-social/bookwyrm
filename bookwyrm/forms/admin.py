@@ -183,7 +183,7 @@ class FederationSettings(CustomForm):
         fields = [
             "disable_federation",
             "require_signed_get",
-            "require_login_everywhere",
+            "require_login_nearly_everywhere",
             "block_incoming_search",
         ]
 
@@ -194,7 +194,7 @@ class FederationSettings(CustomForm):
             "require_signed_get": forms.CheckboxInput(
                 attrs={"aria-describedby": "desc_require_signed_get"}
             ),
-            "require_login_everywhere": forms.CheckboxInput(
+            "require_login_nearly_everywhere": forms.CheckboxInput(
                 attrs={"aria-describedby": "desc_require_login_everywhere"}
             ),
             "block_incoming_search": forms.CheckboxInput(

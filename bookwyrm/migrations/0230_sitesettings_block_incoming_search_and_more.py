@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='sitesettings',
-            name='require_login_everywhere',
+            name='require_login_nearly_everywhere',
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(

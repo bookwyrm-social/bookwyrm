@@ -59,7 +59,7 @@ class SiteSettings(SiteModel):
 
     # security
     require_signed_get = models.BooleanField(default=False)
-    require_login_everywhere = models.BooleanField(default=False)
+    require_login_nearly_everywhere = models.BooleanField(default=False)
     block_incoming_search = models.BooleanField(default=False)
 
     # about page

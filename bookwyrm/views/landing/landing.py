@@ -33,6 +33,6 @@ class Landing(View):
         data = {
             "register_form": forms.RegisterForm(),
             "request_form": forms.InviteRequestForm(),
-            "require_login_everywhere": models.SiteSettings.get().require_login_everywhere,
+            "require_login_nearly_everywhere": models.SiteSettings.get().require_login_nearly_everywhere,
         }
         return TemplateResponse(request, "landing/landing.html", data)
