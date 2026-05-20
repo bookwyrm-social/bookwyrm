@@ -58,7 +58,7 @@ class SuggestionList(AbstractList):
     """a list of user-provided suggested things to read next"""
 
     books = models.ManyToManyField(
-        "Edition",
+        "Work",
         symmetrical=False,
         through="SuggestionListItem",
         through_fields=("book_list", "book"),
@@ -207,10 +207,6 @@ class List(AbstractList):
 
 class AbstractListItem(CollectionItemMixin, BookWyrmModel):
     """Abstracy class for list items for all types of lists"""
-
-    book = fields.ForeignKey(
-        "Edition", on_delete=models.PROTECT, activitypub_field="book"
-    )
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor"
     )
@@ -251,6 +247,10 @@ class AbstractListItem(CollectionItemMixin, BookWyrmModel):
 class ListItem(AbstractListItem):
     """ok"""
 
+    book = fields.ForeignKey(
+        "Edition", on_delete=models.PROTECT, activitypub_field="book"
+    )
+
     book_list = models.ForeignKey("List", on_delete=models.CASCADE)
     approved = models.BooleanField(default=True)
     order = fields.IntegerField()
@@ -282,6 +282,10 @@ class ListItem(AbstractListItem):
 class SuggestionListItem(AbstractListItem):
     """items on a suggestion list"""
 
+
+    book = fields.ForeignKey(
+        "Work", on_delete=models.PROTECT, activitypub_field="book"
+    )
     book_list = models.ForeignKey("SuggestionList", on_delete=models.CASCADE)
     endorsement = models.ManyToManyField("User", related_name="suggestion_endorsers")
     activity_serializer = activitypub.SuggestionListItem
