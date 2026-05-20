@@ -102,7 +102,7 @@ def has_valid_get_signature(request):
             signature.verify(
                 remote_actor.key_pair.public_key, request, request_type="get"
             )
-    except (ValueError, HTTPError):
+    except (KeyError, ValueError, HTTPError):
         return False
 
     # save previously unknown actors so we can check our DB next time
