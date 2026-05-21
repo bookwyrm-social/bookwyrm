@@ -161,7 +161,9 @@ class BookViews(TestCase):
         view = views.Book.as_view()
         suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
         models.SuggestionListItem.objects.create(
-            book_list=suggestion_list, user=self.local_user, book=self.another_book
+            book_list=suggestion_list,
+            user=self.local_user,
+            work=self.another_book.parent_work,
         )
 
         request = self.factory.get("")

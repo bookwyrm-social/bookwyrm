@@ -105,7 +105,7 @@ class BookViews(TestCase):
 
         form = forms.SuggestionListItemForm()
         form.data["user"] = self.local_user.id
-        form.data["book"] = self.another_book.id
+        form.data["work"] = self.another_book.parent_work.id
         form.data["book_list"] = suggestion_list.id
         form.data["notes"] = "hello"
 
@@ -116,7 +116,7 @@ class BookViews(TestCase):
 
         self.assertEqual(suggestion_list.suggestionlistitem_set.count(), 1)
         item = suggestion_list.suggestionlistitem_set.first()
-        self.assertEqual(item.book, self.another_book)
+        self.assertEqual(item.work, self.another_book.parent_work)
         self.assertEqual(item.user, self.local_user)
         self.assertEqual(item.notes, "hello")
 
@@ -124,7 +124,9 @@ class BookViews(TestCase):
         """Remove a book from the recommendation list"""
         suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
         item = models.SuggestionListItem.objects.create(
-            book_list=suggestion_list, user=self.local_user, book=self.another_book
+            book_list=suggestion_list,
+            user=self.local_user,
+            work=self.another_book.parent_work,
         )
         self.assertEqual(suggestion_list.suggestionlistitem_set.count(), 1)
 
@@ -132,7 +134,7 @@ class BookViews(TestCase):
         request = self.factory.post("", {"item": item.id})
         request.user = self.local_user
 
-        view(request, self.work.id)
+        view(request, suggestion_list.id)
 
         self.assertEqual(suggestion_list.suggestionlistitem_set.count(), 0)
 
@@ -140,7 +142,9 @@ class BookViews(TestCase):
         """Remove a book from the recommendation list"""
         suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
         item = models.SuggestionListItem.objects.create(
-            book_list=suggestion_list, user=self.local_user, book=self.another_book
+            book_list=suggestion_list,
+            user=self.local_user,
+            work=self.another_book.parent_work,
         )
         self.assertEqual(suggestion_list.suggestionlistitem_set.count(), 1)
 
@@ -149,7 +153,7 @@ class BookViews(TestCase):
         request.user = self.another_user
 
         with self.assertRaises(PermissionDenied):
-            view(request, self.work.id)
+            view(request, suggestion_list.id)
 
         self.assertEqual(suggestion_list.suggestionlistitem_set.count(), 1)
 
@@ -157,7 +161,9 @@ class BookViews(TestCase):
         """Endorse a suggestion"""
         suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
         item = models.SuggestionListItem.objects.create(
-            book_list=suggestion_list, user=self.local_user, book=self.another_book
+            book_list=suggestion_list,
+            user=self.local_user,
+            work=self.another_book.parent_work,
         )
         self.assertEqual(item.endorsement.count(), 0)
         view = views.endorse_suggestion
@@ -172,7 +178,9 @@ class BookViews(TestCase):
         """Endorse a suggestion error handling"""
         suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
         item = models.SuggestionListItem.objects.create(
-            book_list=suggestion_list, user=self.local_user, book=self.another_book
+            book_list=suggestion_list,
+            user=self.local_user,
+            work=self.another_book.parent_work,
         )
         self.assertEqual(item.endorsement.count(), 0)
         view = views.endorse_suggestion

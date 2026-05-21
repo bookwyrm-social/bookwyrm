@@ -86,11 +86,11 @@ class InboxRemove(TestCase):
             )
             listitem = models.ListItem.objects.create(
                 user=self.local_user,
-                book=self.book,
+                edition=self.book,
                 book_list=booklist,
                 order=1,
             )
-        self.assertEqual(booklist.books.count(), 1)
+        self.assertEqual(booklist.editions.count(), 1)
 
         activity = {
             "id": listitem.remote_id,
@@ -107,4 +107,4 @@ class InboxRemove(TestCase):
         }
         views.inbox.activity_task(activity)
 
-        self.assertEqual(booklist.books.count(), 0)
+        self.assertEqual(booklist.editions.count(), 0)

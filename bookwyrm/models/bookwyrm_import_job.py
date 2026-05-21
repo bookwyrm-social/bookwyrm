@@ -549,7 +549,7 @@ def upsert_lists(
 
         item = models.ListItem.objects.filter(edition=book, book_list=booklist).exists()
         if not item:
-            count = booklist.books.count()
+            count = booklist.editions.count()
             notes = blist["list_item"].get("notes", "")
             approved = blist["list_item"].get("approved", False)
             models.ListItem.objects.create(

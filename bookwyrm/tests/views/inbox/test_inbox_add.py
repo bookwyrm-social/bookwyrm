@@ -135,7 +135,7 @@ class InboxAdd(TestCase):
         booklist = models.List.objects.get()
         listitem = models.ListItem.objects.get()
         self.assertEqual(booklist.name, "Test List")
-        self.assertEqual(booklist.books.first(), self.book)
+        self.assertEqual(booklist.editions.first(), self.book)
         self.assertEqual(listitem.remote_id, "https://example.com/listbook/6189")
         self.assertEqual(listitem.notes, "hi hello")
 
@@ -175,7 +175,7 @@ class InboxAdd(TestCase):
             "object": {
                 "actor": self.remote_user.remote_id,
                 "type": "SuggestionListItem",
-                "book": self.book.remote_id,
+                "book": self.book.parent_work.remote_id,
                 "id": "https://example.com/list/suggestion/item",
                 "notes": "hi hello",
                 "order": 1,
@@ -191,5 +191,5 @@ class InboxAdd(TestCase):
             booklist.name, f"Suggestions for {self.another_book.parent_work.title}"
         )
         self.assertEqual(booklist.suggests_for, self.another_book.parent_work)
-        self.assertEqual(booklist.books.first(), self.book)
+        self.assertEqual(booklist.works.first(), self.book.parent_work)
         self.assertEqual(listitem.notes, "hi hello")

@@ -77,7 +77,7 @@ class SuggestionList(AbstractList):
     @property
     def collection_queryset(self):
         """list of books for this shelf, overrides OrderedCollectionMixin"""
-        return self.editions.order_by("suggestionlistitem")
+        return self.works.order_by("suggestionlistitem")
 
     @property
     def editions(self):
