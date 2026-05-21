@@ -2,6 +2,7 @@
 
 from uuid import UUID
 from unittest.mock import patch
+from django.core.exceptions import PermissionDenied
 from django.test import TestCase
 
 from bookwyrm import activitypub
@@ -23,6 +24,9 @@ class List(TestCase):
         ):
             cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+            )
+            cls.another_user = models.User.objects.create_user(
+                "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
             )
             cls.instance_user = activitypub.get_representative()
         cls.work = models.Work.objects.create(title="hello")
@@ -75,6 +79,8 @@ class List(TestCase):
         self.assertEqual(item.edition, self.book)
         self.assertEqual(item.order, 1)
         self.assertEqual(item.work, self.work)
+        self.assertEqual(book_list.editions.first(), self.book)
+        self.assertEqual(book_list.works.first(), self.book.parent_work)
 
     def test_suggestion_list_item(self, *_):
         """a suggestion list entry"""
@@ -89,6 +95,8 @@ class List(TestCase):
         self.assertEqual(item.privacy, "public")
         self.assertEqual(item.edition, self.book)
         self.assertEqual(item.work, self.work)
+        self.assertEqual(book_list.editions.first(), self.book)
+        self.assertEqual(book_list.works.first(), self.book.parent_work)
 
     def test_list_item_pending(self, *_):
         """a list entry"""
@@ -106,6 +114,26 @@ class List(TestCase):
         self.assertEqual(item.book_list.privacy, "public")
         self.assertEqual(item.privacy, "direct")
         self.assertEqual(item.recipients, [])
+
+    def test_raise_not_submittable(self, *_):
+        """user trying to add to list they shouldn't access"""
+        book_list = models.List.objects.create(
+            name="Test List", user=self.local_user, privacy="public", curation="open"
+        )
+        result = book_list.raise_not_submittable(self.another_user)
+        self.assertIsNone(result)
+
+        book_list = models.List.objects.create(
+            name="Test List", user=self.local_user, privacy="public", curation="curated"
+        )
+        result = book_list.raise_not_submittable(self.another_user)
+        self.assertIsNone(result)
+
+        book_list = models.List.objects.create(
+            name="Test List", user=self.local_user, privacy="public", curation="closed"
+        )
+        with self.assertRaises(PermissionDenied):
+            book_list.raise_not_submittable(self.another_user)
 
     def test_embed_key(self, *_):
         """embed_key should never be empty"""
