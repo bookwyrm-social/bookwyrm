@@ -59,7 +59,7 @@ class ListViews(TestCase):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book,
+                edition=self.book,
                 approved=False,
                 order=1,
             )
@@ -80,7 +80,7 @@ class ListViews(TestCase):
             pending = models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book,
+                edition=self.book,
                 approved=False,
                 order=1,
             )
@@ -103,7 +103,7 @@ class ListViews(TestCase):
         self.assertEqual(activity["target"], self.list.remote_id)
 
         pending.refresh_from_db()
-        self.assertEqual(self.list.books.count(), 1)
+        self.assertEqual(self.list.editions.count(), 1)
         self.assertEqual(self.list.listitem_set.first(), pending)
         self.assertTrue(pending.approved)
 
@@ -114,7 +114,7 @@ class ListViews(TestCase):
             pending = models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book,
+                edition=self.book,
                 approved=False,
                 order=1,
             )
@@ -130,5 +130,5 @@ class ListViews(TestCase):
 
         view(request, self.list.id)
 
-        self.assertFalse(self.list.books.exists())
+        self.assertFalse(self.list.editions.exists())
         self.assertFalse(models.ListItem.objects.exists())
