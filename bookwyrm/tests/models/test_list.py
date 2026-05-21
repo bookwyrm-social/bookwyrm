@@ -81,7 +81,7 @@ class List(TestCase):
         book_list = models.SuggestionList.objects.create(suggests_for=self.work)
 
         item = models.SuggestionListItem.objects.create(
-            suggestion_list=book_list,
+            book_list=book_list,
             work=self.work,
             user=self.local_user,
         )

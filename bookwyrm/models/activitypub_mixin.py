@@ -410,11 +410,9 @@ class CollectionItemMixin(ActivitypubMixin):
 
     @property
     def privacy(self):
-        """inherit the privacy of the list, or direct if pending"""
+        """inherit the privacy of the list"""
         collection_field = getattr(self, self.collection_field)
-        if self.approved:
-            return collection_field.privacy
-        return "direct"
+        return collection_field.privacy
 
     @property
     def recipients(self):

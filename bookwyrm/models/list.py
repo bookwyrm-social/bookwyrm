@@ -274,6 +274,14 @@ class ListItem(AbstractListItem):
     def work(self):
         return self.edition.parent_work
 
+    @property
+    def privacy(self):
+        """inherit the privacy of the list, or direct if pending"""
+        collection_field = getattr(self, self.collection_field)
+        if self.approved:
+            return collection_field.privacy
+        return "direct"
+
     def raise_not_deletable(self, viewer):
         """the associated user OR the list owner can delete"""
         # group members can delete items in group lists
