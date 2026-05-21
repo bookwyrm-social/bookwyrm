@@ -221,7 +221,7 @@ class List(AbstractList):
 
 
 class AbstractListItem(CollectionItemMixin, BookWyrmModel):
-    """Abstracy class for list items for all types of lists"""
+    """Abstract class for list items for all types of lists"""
 
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor"
@@ -269,6 +269,10 @@ class ListItem(AbstractListItem):
     book_list = models.ForeignKey("List", on_delete=models.CASCADE)
     approved = models.BooleanField(default=True)
     order = fields.IntegerField()
+
+    @property
+    def work(self):
+        return self.edition.parent_work
 
     def raise_not_deletable(self, viewer):
         """the associated user OR the list owner can delete"""
