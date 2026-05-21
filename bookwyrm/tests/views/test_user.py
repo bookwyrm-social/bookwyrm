@@ -44,6 +44,9 @@ class UserViews(TestCase):
         cls.book = models.Edition.objects.create(
             title="test", parent_work=models.Work.objects.create(title="test work")
         )
+        cls.another_book = models.Edition.objects.create(
+            title="test 2", parent_work=models.Work.objects.create(title="test work 2")
+        )
         cls.book_recently_shelved = models.Edition.objects.create(
             title="recently shelved",
             parent_work=models.Work.objects.create(title="recent shelved"),
@@ -314,3 +317,51 @@ class UserViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
+
+    def test_suggestions_page(self):
+        """view of all suggestions made by the user"""
+        suggestion_list = models.SuggestionList.objects.create(
+            suggests_for=self.book.parent_work
+        )
+        models.SuggestionListItem.objects.create(
+            book_list=suggestion_list,
+            user=self.local_user,
+            work=self.book_recently_shelved.parent_work,
+        )
+        models.SuggestionListItem.objects.create(
+            book_list=suggestion_list,
+            user=self.rat,
+            work=self.another_book.parent_work,
+        )
+
+        view = views.UserSuggestions.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request, "mouse")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+        suggestions = result.context_data["suggestions"]
+        self.assertEqual(len(suggestions.object_list), 1)
+
+    def test_suggestions_page_empty(self):
+        """view of all suggestions made by the user"""
+        view = views.UserSuggestions.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request, "mouse")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+        suggestions = result.context_data["suggestions"]
+        self.assertEqual(len(suggestions.object_list), 0)
+
+    def test_suggestions_page_is_not_self(self):
+        """view of all suggestions made by the user"""
+        view = views.UserSuggestions.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        result = view(request, "mouse")
+        self.assertEqual(result.status_code, 302)
