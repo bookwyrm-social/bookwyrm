@@ -77,7 +77,7 @@ class SuggestionList(AbstractList):
     @property
     def collection_queryset(self):
         """list of books for this shelf, overrides OrderedCollectionMixin"""
-        return self.books.order_by("suggestionlistitem")
+        return self.editions.order_by("suggestionlistitem")
 
     @property
     def editions(self):
@@ -146,7 +146,7 @@ class List(AbstractList):
     @property
     def collection_queryset(self):
         """list of books for this shelf, overrides OrderedCollectionMixin"""
-        return self.books.filter(listitem__approved=True).order_by("listitem")
+        return self.editions.filter(listitem__approved=True).order_by("listitem")
 
     def get_remote_id(self):
         """don't want the user to be in there in this case"""

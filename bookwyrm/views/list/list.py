@@ -113,7 +113,7 @@ def get_list_suggestions(
         return book_search.search(
             query,
             filters=[
-                ~Q(parent_work=book_list.works.all()),
+                ~Q(parent_work__editions__in=book_list.editions.all()),
                 ~Q(parent_work=ignore_book),
             ],
         )
@@ -153,7 +153,7 @@ def sort_list(request, items):
 
     directional_sort_by = {
         "order": "order",
-        "sort_title": "book__sort_title",
+        "sort_title": "edition__sort_title",
         "rating": "average_rating",
     }[sort_by]
     if direction == "descending":
@@ -162,7 +162,7 @@ def sort_list(request, items):
     if sort_by == "rating":
         items = items.annotate(
             average_rating=Avg(
-                Coalesce("book__review__rating", 0.0),
+                Coalesce("edition__review__rating", 0.0),
                 output_field=DecimalField(),
             )
         )
