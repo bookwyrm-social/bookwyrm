@@ -19,10 +19,10 @@
 
 {% block description %}
 {% with related_list=notification.related_list_items.first.book_list %}
-{% with book_path=notification.related_list_items.first.book.local_path %}
-{% with book_title=notification.related_list_items.first.book|book_title %}
-{% with second_book_path=notification.related_list_items.all.1.book.local_path %}
-{% with second_book_title=notification.related_list_items.all.1.book|book_title %}
+{% with book_path=notification.related_list_items.first.edition.local_path %}
+{% with book_title=notification.related_list_items.first.edition|book_title %}
+{% with second_book_path=notification.related_list_items.all.1.edition.local_path %}
+{% with second_book_title=notification.related_list_items.all.1.edition|book_title %}
 {% with list_name=related_list.name %}
 
 {% url 'list' related_list.id as list_path %}
