@@ -20,7 +20,7 @@
 {% if suggestion_list %}
 
     {% if items|length == 0 %}
-    <section class="section has-background-light is-flex is-flex-direction-column is-align-items-center">
+    <section class="notification is-flex is-flex-direction-column is-align-items-center">
         <div class="column is-full is-centered">
     <p>{% trans "Have a recommendation for someone who liked this book?" %}</p>
            {% include "book/suggestion_list/search.html" with list=suggestion_list is_suggestion=True %}
@@ -41,7 +41,7 @@
     {% endif %}
 {% else %}
 
-<section class="section has-background-light">
+<section class="notification">
         <form name="create-list" method="post" action="{% url 'suggestion-list' book_id=book.id %}#suggestions-section">
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ request.user.id }}">

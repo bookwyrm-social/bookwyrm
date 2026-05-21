@@ -28,7 +28,7 @@
         {% endwith %}
     </div>
     <div class="card-footer is-stacked-mobile has-background-tertiary is-align-items-stretch">
-        <div class="card-footer-item p-0">
+        <div class="card-footer-item has-text-centered">
             <p>
                 {% blocktrans trimmed with username=item.user.display_name user_path=item.user.local_path %}
                 Added by <a href="{{ user_path }}">{{ username }}</a>
