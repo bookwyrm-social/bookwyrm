@@ -138,6 +138,11 @@ class List(AbstractList):
         null=True,
     )
 
+    class Meta:
+        """default sorting"""
+
+        indexes = [Index(fields=["privacy", "-updated_date"])]
+
     @property
     def works(self):
         work_model = apps.get_model("bookwyrm", "Work")
@@ -151,8 +156,6 @@ class List(AbstractList):
     def get_remote_id(self):
         """don't want the user to be in there in this case"""
         return f"{BASE_URL}/list/{self.id}"
-
-        indexes = [Index(fields=["privacy", "-updated_date"])]
 
     def raise_not_editable(self, viewer):
         """the associated user OR the list owner can edit"""
