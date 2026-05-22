@@ -52,11 +52,10 @@ class User(View):
         else:
             shelves = user.shelf_set.filter(books__isnull=False).distinct()
 
-        blocked = (
-            request.user.blocked_books.all()
-            if hasattr(request.user, "blocked_books")
-            else []
-        )
+        blocked = []
+        if request.user.is_authenticated:
+            blocked = request.user.blocked_books.values_list("id", flat=True)
+
         for user_shelf in shelves.all()[:3]:
             shelf_preview.append(
                 {
