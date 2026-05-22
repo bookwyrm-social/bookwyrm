@@ -14,16 +14,21 @@ from . import fields
 class MergeableMixin:
     """A bookwyrm data object that can be deduplicated"""
 
-    def find_merge_candidate(self):
-        """look for the first possible duplicate of the current object"""
-        model = self.__class__
-        model_fields = model._meta.get_fields()
-        dedupe_fields = [
+    @classmethod
+    def deduplication_fields(cls):
+        """list all the deduplication fields for a model"""
+        model_fields = cls._meta.get_fields()
+        return [
             f
             for f in model_fields
             if hasattr(f, "deduplication_field") and f.deduplication_field
         ]
+
+    def find_merge_candidate(self):
+        """look for the first possible duplicate of the current object"""
+        model = self.__class__
         # filter based on the dedupe fields on this obj that are set
+        dedupe_fields = model.deduplication_fields()
         filters = [
             {f.name: getattr(self, f.name)}
             for f in dedupe_fields
