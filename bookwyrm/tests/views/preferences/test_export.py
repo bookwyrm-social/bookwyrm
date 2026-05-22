@@ -47,7 +47,7 @@ class ExportViews(TestCase):
         """individual test setup"""
         self.factory = RequestFactory()
 
-    def tst_export_get(self, *_):
+    def test_export_get(self, *_):
         """request export"""
         request = self.factory.get("")
         request.user = self.local_user
