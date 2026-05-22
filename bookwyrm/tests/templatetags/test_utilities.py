@@ -122,6 +122,6 @@ class UtilitiesTags(TestCase):
             title="book 2", asin="1234", isbn_10="123456789x", goodreads_key="abcd"
         )
         result = utilities.get_dupe_match_field(original, dupe)
-        self.assertTrue("goodreads key" in result)
-        self.assertTrue("asin" in result)
-        self.assertFalse("isbn 10" in result)
+        self.assertTrue("GoodReads key" in result)
+        self.assertTrue("ASIN" in result)
+        self.assertFalse("ISBN 10" in result)
