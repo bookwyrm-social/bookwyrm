@@ -97,8 +97,6 @@ class Book(View):
         # TODO: cache or background this query
         edition_dupe = book.find_merge_candidate()
         work_dupe = book.parent_work.find_merge_candidate()
-        print(edition_dupe)
-        print(work_dupe)
 
         data = {
             "book": book,
