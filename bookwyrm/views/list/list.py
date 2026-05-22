@@ -118,7 +118,9 @@ def get_list_suggestions(book_list, user, query=None, num_suggestions=5):
         )
     # just suggest whatever books are nearby
     suggestions = (
-        user.shelfbook_set.exclude(book__parent_work__in=user.blocked_books.all())
+        user.shelfbook_set.exclude(
+            book__parent_work__in=user.blocked_books.values_list("id", flat=True)
+        )
         .filter(~Q(book__in=book_list.books.all()))
         .distinct()[:num_suggestions]
     )
@@ -126,7 +128,9 @@ def get_list_suggestions(book_list, user, query=None, num_suggestions=5):
     if len(suggestions) < num_suggestions:
         others = [
             s.default_edition
-            for s in models.Work.objects.exclude(id__in=user.blocked_books.all())
+            for s in models.Work.objects.exclude(
+                id__in=user.blocked_books.values_list("id", flat=True)
+            )
             .filter(
                 ~Q(editions__in=book_list.books.all()),
             )
