@@ -1,15 +1,39 @@
 """models that can be deduplicated and merged"""
 
+from functools import reduce
+import operator
+
 from typing import Any, Dict
 from typing_extensions import Self
 
-from django.db.models import ManyToManyField
+from django.db.models import ManyToManyField, Q
 
 from . import fields
 
 
 class MergeableMixin:
     """A bookwyrm data object that can be deduplicated"""
+
+    def find_merge_candidate(self):
+        """look for the first possible duplicate of the current object"""
+        model = self.__class__
+        model_fields = model._meta.get_fields()
+        dedupe_fields = [
+            f
+            for f in model_fields
+            if hasattr(f, "deduplication_field") and f.deduplication_field
+        ]
+        # filter based on the dedupe fields on this obj that are set
+        filters = [
+            {f.name: getattr(self, f.name)}
+            for f in dedupe_fields
+            if getattr(self, f.name) and getattr(self, f.name) != ""
+        ]
+        # look up objects that aren't the current object but match any dedupe field
+        dupe = model.objects.exclude(id=self.id).filter(
+            reduce(operator.or_, (Q(**f) for f in filters))
+        )
+        return dupe.first()
 
     def merge_into(self, canonical: Self, dry_run=False) -> Dict[str, Any]:
         """merge this entity into another entity"""
