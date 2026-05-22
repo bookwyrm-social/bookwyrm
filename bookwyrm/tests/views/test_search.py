@@ -11,7 +11,12 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 from bookwyrm.book_search import SearchResult
+<<<<<<< secure-mode
 from bookwyrm.settings import BASE_URL, DOMAIN
+=======
+from bookwyrm.views.search import author_search
+from bookwyrm.settings import BASE_URL
+>>>>>>> main
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -40,6 +45,8 @@ class Views(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=cls.work,
         )
+        cls.author = models.Author.objects.create(name="Philip Howard")
+        cls.another_author = models.Author.objects.create(name="Author Name")
 
         cls.site = models.SiteSettings.get()
 
@@ -227,6 +234,7 @@ class Views(TestCase):
         validate_html(response.render())
         self.assertEqual(response.context_data["results"][0], booklist)
 
+<<<<<<< secure-mode
     def test_block_incoming_search(self):
         """disallow search endpoint"""
 
@@ -250,3 +258,12 @@ class Views(TestCase):
             },
         )
         self.assertEqual(response.status_code, 403)
+=======
+    def test_author_search(self):
+        """search for authors"""
+        request = self.factory.get("", {"q": "Author Name"})
+        response = author_search(request)
+        validate_html(response.render())
+        self.assertEqual(len(response.context_data["results"]), 1)
+        self.assertEqual(response.context_data["results"][0], self.another_author)
+>>>>>>> main

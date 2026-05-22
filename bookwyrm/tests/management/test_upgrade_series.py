@@ -1,9 +1,8 @@
 """test the series upgrade command works"""
 
 from django.test import TestCase
-from django.db.models import Subquery, Count
+from django.db.models import Subquery
 
-from bookwyrm.management.commands import add_libris_connector
 from bookwyrm import models
 from bookwyrm.management.commands.upgrade_series import upgrade_series_data
 
