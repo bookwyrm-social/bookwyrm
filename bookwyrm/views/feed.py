@@ -275,7 +275,7 @@ def get_suggested_books(user, max_books=5):
         shelf_preview = {
             "name": shelf.name,
             "identifier": shelf.identifier,
-            "books": models.Edition.viewer_aware_objects(user, check_blocked=True)
+            "books": models.Edition.viewer_aware_objects(user)
             .filter(
                 shelfbook__shelf=shelf,
             )

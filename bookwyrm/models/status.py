@@ -277,9 +277,15 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         )
 
     @classmethod
-    def safety_filter(cls, viewer, privacy_levels=None):
+    def blocked_book_filter(cls, viewer, privacy_levels=None):
+        """filter out all statuses related to a book this user has blocked"""
+
         queryset = super().privacy_filter(viewer, privacy_levels=privacy_levels)
-        blocked = viewer.blocked_books.all() if hasattr(viewer, "blocked_books") else []
+
+        if not viewer or not viewer.is_authenticated:
+            return queryset
+
+        blocked = viewer.blocked_books.values_list("id", flat=True)
 
         book_comments = queryset.filter(comment__book__parent_work__in=blocked)
         book_quotations = queryset.filter(quotation__book__parent_work__in=blocked)

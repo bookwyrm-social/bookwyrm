@@ -233,7 +233,7 @@ class FeedViews(TestCase):
         )
 
         awful_book = models.Edition.objects.create(
-            parent_work=models.Work.objects.create(title="hi"),
+            parent_work=models.Work.objects.create(title="bad book"),
             title="This book is very bad",
             remote_id="https://example.com/book/99",
         )

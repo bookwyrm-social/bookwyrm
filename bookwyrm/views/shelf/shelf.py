@@ -49,7 +49,7 @@ class Shelf(View):
             )
 
             books = (
-                models.Edition.viewer_aware_objects(request.user, check_blocked=True)
+                models.Edition.viewer_aware_objects(request.user)
                 .filter(
                     # privacy is ensured because the shelves are already filtered above
                     shelfbook__shelf__in=shelves

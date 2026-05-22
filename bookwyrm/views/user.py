@@ -71,7 +71,7 @@ class User(View):
 
         # user's posts
         activities = (
-            models.Status.safety_filter(
+            models.Status.blocked_book_filter(
                 request.user,
             )
             .filter(user=user)
