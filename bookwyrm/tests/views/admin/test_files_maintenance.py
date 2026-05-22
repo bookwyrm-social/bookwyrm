@@ -92,6 +92,39 @@ class FilesMaintenanceViews(TestCase):
             "bookwyrm.models.housekeeping.start_export_deletions",
         )
 
+    def test_schedule_delete_export_file_invalid_form(self):
+        """Schedule the delete export task"""
+        self.assertFalse(IntervalSchedule.objects.exists())
+
+        form = forms.IntervalScheduleForm()
+        form.data["every"] = 1
+        form.data["period"] = "fish"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        response = views.schedule_export_delete_task(request)
+        validate_html(response.render())
+
+        self.assertFalse(IntervalSchedule.objects.exists())
+        self.assertFalse(PeriodicTask.objects.exists())
+
+    def test_unschedule_file_maintenance_task(self):
+        """Schedule the delete export task"""
+        schedule = IntervalSchedule.objects.create(every=1, period="days")
+        task = PeriodicTask.objects.create(
+            interval=schedule,
+            name="delete-exports-task",
+            task="bookwyrm.models.housekeeping.start_export_deletions",
+        )
+
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        response = views.unschedule_file_maintenance_task(request, task.id)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(IntervalSchedule.objects.exists())
+        self.assertFalse(PeriodicTask.objects.exists())
+
     def test_export_files_set_expiry(self):
         """does setting the expiry time change the setting?"""
 

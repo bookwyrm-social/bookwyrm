@@ -73,7 +73,7 @@ class LinkDomainViews(TestCase):
         domain.refresh_from_db()
         self.assertEqual(domain.name, "ugh")
 
-    def test_domain_page_set_status(self):
+    def test_domain_page_set_status_approved(self):
         """there are so many views, this just makes sure it LOADS"""
         domain = models.LinkDomain.objects.get(domain="beep.com")
         self.assertEqual(domain.status, "pending")
@@ -87,3 +87,18 @@ class LinkDomainViews(TestCase):
 
         domain.refresh_from_db()
         self.assertEqual(domain.status, "approved")
+
+    def test_domain_page_set_status_blocked(self):
+        """there are so many views, this just makes sure it LOADS"""
+        domain = models.LinkDomain.objects.get(domain="beep.com")
+        self.assertEqual(domain.status, "pending")
+
+        view = views.update_domain_status
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        result = view(request, domain.id, "blocked")
+        self.assertEqual(result.status_code, 302)
+
+        domain.refresh_from_db()
+        self.assertEqual(domain.status, "blocked")
