@@ -1,6 +1,6 @@
 """bookwyrm settings and configuration"""
 
-from bookwyrm.settings import *
+from bookwyrm.settings import *  # noqa
 
 QUERY_TIMEOUT = env.int("CELERY_QUERY_TIMEOUT", env.int("QUERY_TIMEOUT", 30))
 

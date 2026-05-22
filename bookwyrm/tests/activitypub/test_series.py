@@ -150,7 +150,7 @@ class TestSeries(TestCase):
         with patch(
             "bookwyrm.activitypub.base_activity.set_related_field.delay",
             new=lambda *args: set_related_field(*args),
-        ) as mocked:
+        ):
             book_data.to_model()  # run it again to set the related field
 
         self.assertEqual(book.title, "Example Book 2")
