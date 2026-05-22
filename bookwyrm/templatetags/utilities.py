@@ -36,8 +36,10 @@ def get_user_identifier(user):
 @register.filter(name="user_from_remote_id")
 def get_user_identifier_from_remote_id(remote_id):
     """get the local user id from their remote id"""
-    user = User.objects.get(remote_id=remote_id)
-    return user if user else None
+    try:
+        return User.objects.get(remote_id=remote_id)
+    except User.DoesNotExist:
+        return None
 
 
 @register.filter(name="book_title")
