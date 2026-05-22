@@ -96,6 +96,8 @@
         </h2>
         {% include "lists/suggestion_search.html" with query_param="q" search_url=request.path is_suggestion=list.suggests_for %}
     {% endif %}
+
+        {% block emded_link %}
         <div>
             <h2 class="title is-5 mt-6" id="embed-label">
                 {% trans "Embed this list on a website" %}
@@ -113,6 +115,7 @@
                 {% endblocktrans %}" src="{{ embed_url }}"&gt;&lt;/iframe&gt;</textarea>
             </div>
         </div>
+        {% endblock %}
 
     </section>
 </div>

@@ -83,7 +83,7 @@ class SuggestionList(View):
             data["suggested_books"] = get_list_suggestions(
                 book_list, request.user, query=query, ignore_book=book_list.suggests_for
             )
-        return TemplateResponse(request, "lists/list.html", data)
+        return TemplateResponse(request, "lists/suggestion_list.html", data)
 
     @method_decorator(login_required, name="dispatch")
     def post(

@@ -3,6 +3,7 @@
 {% load book_display_tags %}
 {% load markdown %}
 {% load group_tags %}
+{% load utilities %}
 <div class="card is-stretchable">
     <div class="card-content">
         {% with book=item.edition %}
@@ -33,8 +34,8 @@
     <div class="card-footer is-stacked-mobile has-background-tertiary is-align-items-stretch">
         <div class="card-footer-item">
             <p>
-                {% blocktrans trimmed with username=item.user.display_name user_path=item.user.local_path %}
-                Added by <a href="{{ user_path }}">{{ username }}</a>
+                {% blocktrans trimmed with username=item.user.display_name user_link=item.user|user_link %}
+                Added by {{ user_link }}
                 {% endblocktrans %}
             </p>
         </div>

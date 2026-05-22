@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load book_display_tags %}
+{% load utilities %}
 
 <div class="card is-stretchable">
     <div class="card-content pb-0 columns">
@@ -28,15 +29,15 @@
         {% endwith %}
     </div>
     <div class="card-footer is-stacked-mobile has-background-tertiary is-align-items-stretch">
-        <div class="card-footer-item has-text-centered">
-            <p>
-                {% blocktrans trimmed with username=item.user.display_name user_path=item.user.local_path %}
-                Added by <a href="{{ user_path }}">{{ username }}</a>
-                {% endblocktrans %}
-            </p>
-        </div>
         <div class="card-footer-item">
             {% include "snippets/shelve_button/shelve_button.html" with book=item.work.default_edition %}
+        </div>
+        <div class="card-footer-item has-text-centered">
+            <p>
+                {% blocktrans trimmed with user_link=item.user|user_link user_path=item.user.local_path %}
+                Added by {{ user_link }}
+                {% endblocktrans %}
+            </p>
         </div>
         <div class="card-footer-item">
             {% include "book/suggestion_list/endorsement_button.html" %}

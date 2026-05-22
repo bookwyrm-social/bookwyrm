@@ -9,8 +9,8 @@
         </figure>
         <header>
             {% url 'user-feed' item.user|username as user_path %}
-            {% blocktrans trimmed with username=item.user.display_name %}
-            <a href="{{ user_path }}">{{ username }}</a> says:
+            {% blocktrans trimmed with user_link=item.user|user_link %}
+            {{ user_link }} says:
             {% endblocktrans %}
         </header>
     </div>
