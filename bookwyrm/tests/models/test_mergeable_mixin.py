@@ -12,6 +12,13 @@ class MergeableMixin(TestCase):
     def setUpTestData(cls):
         """Any test data here"""
 
+    def test_dedupe_fields(self):
+        """get a list of all the deduplication fields"""
+        edition_fields = [f.name for f in models.Edition.deduplication_fields()]
+        # just a spot check
+        self.assertTrue("isbn_10" in edition_fields)
+        self.assertFalse("title" in edition_fields)
+
     def test_find_merge_candidate(self):
         """look for duplicates"""
         models.Edition.objects.create(
