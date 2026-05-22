@@ -907,6 +907,9 @@ urlpatterns = [
     ),
     # series
     re_path(
+        r"^series/(?P<series_id>\d+)(.json)?/?$", views.Series.as_view(), name="series"
+    ),
+    re_path(
         rf"^series/(?P<series_id>\d+)(.json)?{regex.SLUG}/?$",
         views.Series.as_view(),
         name="series",
