@@ -12,6 +12,7 @@ import responses
 from bookwyrm import models, settings
 from bookwyrm.book_search import SearchResult
 from bookwyrm.connectors import connector_manager
+from bookwyrm.models.import_job import construct_search_term
 
 
 class ImportJob(TestCase):
@@ -46,6 +47,18 @@ class ImportJob(TestCase):
             },
         )
         self.assertEqual(item.isbn, "9780356506999")
+
+    def test_construct_search_term(self):
+        """formats queries"""
+        title = "the book title"
+        author = "author m. name"
+        result = construct_search_term(title, author)
+        self.assertEqual(result, "the book title author name")
+
+        title = "the book title (series)"
+        author = "author Name"
+        result = construct_search_term(title, author)
+        self.assertEqual(result, "the book title author Name")
 
     def test_shelf(self):
         """converts to the local shelf typology"""
