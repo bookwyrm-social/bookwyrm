@@ -30,8 +30,6 @@ PAGE_LENGTH = env.int("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE", 3600 * 24 * 365)  # One year ...ish
 
-JS_CACHE = "8a89cad7"
-
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
 EMAIL_HOST = env("EMAIL_HOST")
@@ -112,6 +110,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "django.middleware.cache.UpdateCacheMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -125,15 +124,21 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "bookwyrm.middleware.FileTooBig",
     "bookwyrm.middleware.ForceLogoutMiddleware",
+    "django.middleware.cache.FetchFromCacheMiddleware",
 ]
 
 ROOT_URLCONF = "bookwyrm.urls"
 
+
+default_loaders = [
+    "django.template.loaders.filesystem.Loader",
+    "django.template.loaders.app_directories.Loader",
+]
+cached_loaders = [("django.template.loaders.cached.Loader", default_loaders)]
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": ["templates"],
-        "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -142,10 +147,12 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "bookwyrm.context_processors.site_settings",
             ],
+            "loaders": default_loaders if DEBUG else cached_loaders,
         },
     },
 ]
 
+CACHE_MIDDLEWARE_SECONDS = 0 if DEBUG else env.int("CACHE_MIDDLEWARE_SECONDS", 60)
 LOG_LEVEL = env("LOG_LEVEL", "INFO").upper()
 # Override aspects of the default handler to our taste
 # See https://docs.djangoproject.com/en/3.2/topics/logging/#default-logging-configuration
@@ -490,7 +497,7 @@ else:
             "BACKEND": "django.core.files.storage.FileSystemStorage",
         },
         "staticfiles": {
-            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+            "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
         },
     }
     # Static settings

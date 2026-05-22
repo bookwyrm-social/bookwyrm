@@ -3,7 +3,7 @@
 {% load humanize %}
 {% load group_tags %}
 
-<h2 class="title is-5">Group Members</h2>
+<h2 class="title is-5">{% trans "Group Members" %}</h2>
 {% if group.user == request.user %}
 <div class="block">
     <form class="field has-addons" method="get" action="{% url 'group-find-users' group.id %}">
