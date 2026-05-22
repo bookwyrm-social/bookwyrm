@@ -7,7 +7,7 @@ x-logging:
 
 services:
   nginx:
-    image: nginx:1.28.1
+    image: nginx:1.30.1
     logging: *default-logging
     restart: unless-stopped
     ports:
@@ -58,7 +58,7 @@ services:
   certbot:
     image: certbot/certbot:latest
     restart: unless-stopped
-    entrypoint: /bin/sh -c "trap exit TERM; while [ "${NGINX_SETUP:-https}" = "https" ];do certbot renew --webroot --webroot-path=/var/www/certbot; sleep 1d & wait $${!}; done"
+    entrypoint: /bin/sh -c "trap exit TERM; while [ "${NGINX_SETUP:-https}" = "https" ];do certbot renew --webroot --webroot-path=/var/www/certbot; sleep 1d & wait $${!}; done; while [ "${NGINX_SETUP:-https}" != "https" ];do sleep infinity & wait $${!}; done;"
     depends_on:
       - nginx
     volumes:
@@ -144,7 +144,7 @@ services:
     build: .
     networks:
       - main
-    command: celery -A celerywyrm worker --autoscale=10,1 -l info -Q high_priority,medium_priority,low_priority,streams,images,suggested_users,email,connectors,lists,inbox,imports,import_triggered,broadcast,misc
+    command: celery -A celerywyrm worker --pool=gevent --concurrency=1000 -l info -Q high_priority,medium_priority,low_priority,streams,images,suggested_users,email,connectors,lists,inbox,imports,import_triggered,broadcast,misc
     healthcheck:
       test: celery -A celerywyrm status
       interval: 10s
