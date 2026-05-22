@@ -146,7 +146,8 @@ class List(AbstractList):
     @property
     def works(self):
         work_model = apps.get_model("bookwyrm", "Work")
-        return work_model.objects.filter(editions__in=self.editions.all()).distinct()
+        works = self.editions.all().values_list("parent_work__id", flat=True).distinct()
+        return work_model.objects.filter(id__in=works)
 
     @property
     def collection_queryset(self):
