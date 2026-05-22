@@ -57,6 +57,18 @@
                     <dd itemprop="deathDate">{{ author.died|naturalday }}</dd>
                 </div>
                 {% endif %}
+
+                {% if series %}
+                <div class="is-flex mt-1">
+                    <dt class="has-text-weight-bold mr-1">{% trans "Series:" %}</dt>
+                    <dd>
+                        {% for s in series %}
+                            <a href="{{ s.local_path }}">{{ s.name }}</a>{% if not forloop.last%},{% endif %}
+                        {% endfor %}
+                    </dd>
+                </div>
+
+                {% endif %}
             </dl>
         </section>
         {% endif %}
@@ -79,7 +91,7 @@
                         {% trans "View on Wikidata" %}
                     </a>
                 </div>
-                {% endif %} 
+                {% endif %}
 
                 {% if author.website %}
                 <div>

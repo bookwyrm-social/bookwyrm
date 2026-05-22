@@ -61,6 +61,14 @@ class UtilitiesTags(TestCase):
             utilities.get_user_identifier(self.remote_user), "rat@example.com"
         )
 
+    def test_get_user_identifier_from_remote_id(self, *_):
+        """load a user based on a remote id"""
+        result = utilities.get_user_identifier_from_remote_id(self.user.remote_id)
+        self.assertEqual(result, self.user)
+
+        result = utilities.get_user_identifier_from_remote_id("http://nota.real/user")
+        self.assertIsNone(result)
+
     def test_get_title(self, *_):
         """the title of a book"""
         self.assertEqual(utilities.get_title(None), "")

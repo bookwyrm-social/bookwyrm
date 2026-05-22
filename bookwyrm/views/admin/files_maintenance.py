@@ -127,7 +127,6 @@ def schedule_run_missing_covers_job(request):
     """scheduler"""
     form = forms.IntervalScheduleForm(request.POST)
     if not form.is_valid():
-        print("not valid")
         data = files_maintenance_data()
         data["covers_form"] = form
         return TemplateResponse(request, "settings/files.html", data)
