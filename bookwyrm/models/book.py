@@ -46,40 +46,88 @@ class BookDataModel(ObjectMixin, MergeableMixin, BookWyrmModel):
 
     origin_id = models.CharField(max_length=255, null=True, blank=True)
     openlibrary_key = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("OpenLibrary key"),
     )
     finna_key = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("Finna key"),
     )
     libris_key = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("Libris key"),
     )
     inventaire_id = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("Inventaire ID"),
     )
     librarything_key = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("LibraryThing key"),
     )
     goodreads_key = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("GoodReads key"),
     )
     bnf_id = fields.CharField(  # Bibliothèque nationale de France
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("BNF ID"),
     )
     viaf = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("VIAF"),
     )
     wikidata = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("Wikidata ID"),
     )
     asin = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("ASIN"),
     )
     aasin = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("AASIN"),
     )
     isfdb = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("ISFDB ID"),
     )
     search_vector = SearchVectorField(null=True)
 
@@ -420,7 +468,11 @@ class Work(OrderedCollectionPageMixin, Book):
 
     # library of congress catalog control number
     lccn = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("LCCN"),
     )
 
     def save(self, *args, **kwargs):
@@ -567,6 +619,7 @@ class Edition(Book):
         null=True,
         deduplication_field=True,
         validators=[validate_isbn10],
+        verbose_name=_("ISBN 10"),
     )
     isbn_13 = fields.CharField(
         max_length=255,
@@ -574,9 +627,14 @@ class Edition(Book):
         null=True,
         deduplication_field=True,
         validators=[validate_isbn13],
+        verbose_name=_("ISBN 13"),
     )
     oclc_number = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("OCLC number"),
     )
     pages = fields.IntegerField(blank=True, null=True)
     physical_format = fields.CharField(

@@ -5,8 +5,10 @@
     <details class="content">
         <summary>
             <p>
+            <span class="icon icon-warning" aria-hidden="true"></span>
             {% blocktrans trimmed with dupe_url=dupe.remote_id dupe_title=dupe|book_title %}
-            This has been identified as a duplicate of <a href="{{ dupe_url }}">{{ dupe_title }}</a>. They will be automatically merged on -date-.
+            This has been identified as a duplicate of <strong><a href="{{ dupe_url }}">{{ dupe_title }}</a></strong>.
+            An automatic merge is schedule on -data-.
             {% endblocktrans %}
             <span class="details-close mt-4 mr-4 icon icon-x is-small" aria-hidden></span>
             </p>
