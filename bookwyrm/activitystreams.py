@@ -121,8 +121,8 @@ class ActivityStream(RedisStore):
 
         # everybody who could plausibly see this status
         audience = models.User.objects.filter(
-            is_active=True,
             local=True,  # we only create feeds for users of this instance
+            is_active=True,
         ).exclude(
             Q(id__in=status.user.blocks.all()) | Q(blocks=status.user)  # not blocked
         )
@@ -155,7 +155,7 @@ class ActivityStream(RedisStore):
         trace.get_current_span().set_attribute("stream_id", self.key)
         audience = self._get_audience(status).values_list("id", flat=True)
         status_author = models.User.objects.filter(
-            is_active=True, local=True, id=status.user.id
+            local=True, is_active=True, id=status.user.id
         ).values_list("id", flat=True)
         return list(set(audience) | set(status_author))
 
@@ -188,7 +188,7 @@ class HomeStream(ActivityStream):
         audience = audience.filter(following=status.user).values_list("id", flat=True)
         # if the user is the post's author
         status_author = models.User.objects.filter(
-            is_active=True, local=True, id=status.user.id
+            local=True, is_active=True, id=status.user.id
         ).values_list("id", flat=True)
         return list(set(audience) | set(status_author))
 

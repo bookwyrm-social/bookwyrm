@@ -32,6 +32,7 @@
         <article class="column ml-3-tablet my-3-mobile is-clipped">
             {% if status_type == 'Review' %}
             <header class="mb-2">
+                {% if status.name %}
                 <h3
                     class="title is-5 has-subtitle"
                     dir="auto"
@@ -39,6 +40,7 @@
                 >
                     {{ status.name|escape }}
                 </h3>
+                {% endif %}
 
                 <h4 class="subtitle is-6">
                     <span

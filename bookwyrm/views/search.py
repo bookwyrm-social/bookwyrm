@@ -31,6 +31,8 @@ class Search(View):
     def get(self, request):
         """that search bar up top"""
         if is_api_request(request):
+            if models.SiteSettings.get().block_incoming_search:
+                raise PermissionDenied
             return api_book_search(request)
 
         query = request.GET.get("q")

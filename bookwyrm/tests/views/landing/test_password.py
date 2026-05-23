@@ -4,6 +4,7 @@ from datetime import timedelta
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -148,3 +149,60 @@ class PasswordViews(TestCase):
         resp = view(request, code.code)
         validate_html(resp.render())
         self.assertTrue(models.PasswordReset.objects.exists())
+
+    def test_force_password_reset_get_no_force(self):
+        """require users to reset passwords"""
+        self.assertFalse(self.local_user.force_password_reset)
+        view = views.ForcePasswordReset.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+        request.session["force_reset_password_user"] = self.local_user.username
+        request.session.save()
+        resp = view(request)
+        self.assertEqual(resp.status_code, 302)
+
+    def test_force_password_reset_get_is_forced(self):
+        """require users to reset passwords"""
+        self.local_user.force_password_reset = True
+        self.local_user.save(broadcast=False)
+
+        view = views.ForcePasswordReset.as_view()
+
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+        request.session["force_reset_password_user"] = self.local_user.username
+        request.session.save()
+
+        resp = view(request)
+        validate_html(resp.render())
+
+    def test_force_password_reset_post(self):
+        """reset from code"""
+        self.local_user.force_password_reset = True
+        self.local_user.save(broadcast=False)
+
+        view = views.ForcePasswordReset.as_view()
+
+        request = self.factory.post(
+            "",
+            {
+                "current_password": "password",
+                "password": "longwordsecure",
+                "confirm_password": "longwordsecure",
+            },
+        )
+        request.user = self.anonymous_user
+        middleware = SessionMiddleware(lambda x: None)
+        middleware.process_request(request)
+        request.session["force_reset_password_user"] = self.local_user.username
+        request.session.save()
+
+        with patch("bookwyrm.views.landing.password.login"):
+            resp = view(request)
+        self.assertEqual(resp.status_code, 302)
+        self.local_user.refresh_from_db()
+        self.assertFalse(self.local_user.force_password_reset)
