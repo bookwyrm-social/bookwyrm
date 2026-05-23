@@ -11,13 +11,15 @@
     {% endif %}
 </h2>
 
-<p class="subtitle">
-    {% blocktrans trimmed with title=book.title %}
-    Readers who liked <em>{{ title }}</em> recommend giving these books a try:
-    {% endblocktrans %}
-</p>
-
 {% if suggestion_list %}
+
+    {% if items|length > 0 %}
+    <p class="subtitle">
+        {% blocktrans trimmed with title=book.title %}
+        Readers who liked <em>{{ title }}</em> recommend giving these books a try:
+        {% endblocktrans %}
+    </p>
+    {% endif %}
 
     {% if items|length == 0 %}
     <section class="notification is-flex is-flex-direction-column is-align-items-center">
