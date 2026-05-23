@@ -145,6 +145,7 @@ class Book(View):
             }
             if hasattr(book.parent_work, "suggestion_list"):
                 data["suggestion_list"] = book.parent_work.suggestion_list
+                data["item_count"] = data["suggestion_list"].suggestionlistitem_set.count()
                 data["items"] = (
                     data["suggestion_list"]
                     .suggestionlistitem_set.prefetch_related(
