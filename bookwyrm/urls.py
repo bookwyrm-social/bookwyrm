@@ -658,6 +658,11 @@ urlpatterns = [
         rf"^list/(?P<list_id>\d+){regex.SLUG}/?$", views.List.as_view(), name="list"
     ),
     re_path(
+        r"^suggestionlist/(?P<list_id>\d+)/item/(?P<list_item>\d+)/?$",
+        views.SuggestionListItem.as_view(),
+        name="suggestion-list-item",
+    ),
+    re_path(
         r"^list/(?P<list_id>\d+)/item/(?P<list_item>\d+)/?$",
         views.ListItem.as_view(),
         name="list-item",

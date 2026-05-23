@@ -273,7 +273,13 @@ class ListItem(AbstractListItem):
 
     @property
     def work(self):
+        """match the suggestion list model by producing a work"""
         return self.edition.parent_work
+
+    @property
+    def edit_path_name(self):
+        """the form submit link to edit this item"""
+        return "list-item"
 
     @property
     def privacy(self):
@@ -317,7 +323,13 @@ class SuggestionListItem(AbstractListItem):
 
     @property
     def edition(self):
+        """match the list model by producing an edition"""
         return self.work.default_edition
+
+    @property
+    def edit_path_name(self):
+        """the form submit link to edit this item"""
+        return "suggestion-list-item"
 
     class Meta:
         """A book may only be placed into a list once,

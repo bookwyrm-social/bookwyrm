@@ -27,7 +27,8 @@
                         <span class="details-close icon icon-pencil" aria-hidden="true"></span>
                     </span>
                 </summary>
-                {% include "lists/edit_item_form.html" with edition=item.book %}
+                {% url item.edit_path_name list.id item.id as path %}
+                {% include "lists/edit_item_form.html" with item=item list=list path=path %}
             </details>
         </div>
         {% endif %}
