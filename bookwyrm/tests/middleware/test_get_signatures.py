@@ -5,7 +5,6 @@ import json
 import pathlib
 import responses
 
-from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase, override_settings
 from django.utils.http import http_date

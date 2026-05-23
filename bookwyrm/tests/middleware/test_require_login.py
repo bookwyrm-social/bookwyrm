@@ -1,10 +1,8 @@
 """test require login middleware"""
 
-import json
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
-from django.core.exceptions import PermissionDenied
 from django.test import TestCase, override_settings
 
 from bookwyrm import models
@@ -58,9 +56,7 @@ class TestRequireLogin(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/login/?next=/user/mouse")
 
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.get_activity_stream"
-        ) as mock:
+        with patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream"):
             response = self.client.get("/discover")
             self.assertEqual(response.status_code, 302)
 
@@ -98,9 +94,7 @@ class TestRequireLogin(TestCase):
         response = self.client.get("/user/mouse")
         self.assertEqual(response.status_code, 200)
 
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.get_activity_stream"
-        ) as mock:
+        with patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream"):
             response = self.client.get("/discover")
             self.assertEqual(response.status_code, 200)
 
