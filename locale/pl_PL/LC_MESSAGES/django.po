@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-18 20:01+0000\n"
-"PO-Revision-Date: 2026-05-18 20:54\n"
+"POT-Creation-Date: 2026-05-23 18:40+0000\n"
+"PO-Revision-Date: 2026-05-23 19:13\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -107,7 +107,7 @@ msgstr "Tytuł książki"
 
 #: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:164
 #: bookwyrm/templates/shelf/shelf.html:196
-#: bookwyrm/templates/snippets/create_status/review.html:32
+#: bookwyrm/templates/snippets/create_status/review.html:31
 msgid "Rating"
 msgstr "Ocena"
 
@@ -175,40 +175,40 @@ msgstr "Usunięte przez moderatora"
 msgid "Domain block"
 msgstr "Blokada domeny"
 
-#: bookwyrm/models/book.py:534
+#: bookwyrm/models/book.py:532
 msgid "Audiobook"
 msgstr "Audiobook"
 
-#: bookwyrm/models/book.py:535
+#: bookwyrm/models/book.py:533
 msgid "eBook"
 msgstr "eBook"
 
-#: bookwyrm/models/book.py:536
+#: bookwyrm/models/book.py:534
 msgid "Graphic novel"
 msgstr "Powieść ilustrowana"
 
-#: bookwyrm/models/book.py:537
+#: bookwyrm/models/book.py:535
 msgid "Hardcover"
 msgstr "Twarda oprawa"
 
-#: bookwyrm/models/book.py:538
+#: bookwyrm/models/book.py:536
 msgid "Paperback"
 msgstr "Miękka oprawa"
 
-#: bookwyrm/models/book.py:547 bookwyrm/models/book.py:554
-#: bookwyrm/models/book.py:560 bookwyrm/models/book.py:565
-#: bookwyrm/models/book.py:570 bookwyrm/models/book.py:588
-#: bookwyrm/models/book.py:594 bookwyrm/models/book.py:599
+#: bookwyrm/models/book.py:545 bookwyrm/models/book.py:552
+#: bookwyrm/models/book.py:558 bookwyrm/models/book.py:563
+#: bookwyrm/models/book.py:568 bookwyrm/models/book.py:586
+#: bookwyrm/models/book.py:592 bookwyrm/models/book.py:597
 #, python-format
 msgid "%(value)s doesn't look like an ISBN"
 msgstr ""
 
-#: bookwyrm/models/book.py:576 bookwyrm/models/book.py:616
+#: bookwyrm/models/book.py:574 bookwyrm/models/book.py:614
 #, python-format
 msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
 msgstr ""
 
-#: bookwyrm/models/book.py:799
+#: bookwyrm/models/book.py:797
 msgid "Book is already in this series"
 msgstr ""
 
@@ -465,12 +465,12 @@ msgstr "%(display_name)s komentuje %(book_title)s"
 msgid "%(display_name)s's quote from %(book_title)s"
 msgstr "%(display_name)s cytuje %(book_title)s"
 
-#: bookwyrm/models/status.py:452
+#: bookwyrm/models/status.py:456
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
 msgstr "%(display_name)s ocenia %(book_title)s"
 
-#: bookwyrm/models/status.py:484
+#: bookwyrm/models/status.py:488
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
@@ -495,19 +495,19 @@ msgstr "Cytaty"
 msgid "Everything else"
 msgstr "Wszystko inne"
 
-#: bookwyrm/settings.py:237
+#: bookwyrm/settings.py:245
 msgid "Home Timeline"
 msgstr "Strona główna"
 
-#: bookwyrm/settings.py:237
+#: bookwyrm/settings.py:245
 msgid "Home"
 msgstr "Start"
 
-#: bookwyrm/settings.py:238
+#: bookwyrm/settings.py:246
 msgid "Books Timeline"
 msgstr "Oś czasu książek"
 
-#: bookwyrm/settings.py:238
+#: bookwyrm/settings.py:246
 #: bookwyrm/templates/guided_tour/user_profile.html:101
 #: bookwyrm/templates/import/user_import_status.html:73
 #: bookwyrm/templates/search/layout.html:22
@@ -516,91 +516,91 @@ msgstr "Oś czasu książek"
 msgid "Books"
 msgstr "Książki"
 
-#: bookwyrm/settings.py:317
+#: bookwyrm/settings.py:325
 msgid "English"
 msgstr "English (Angielski)"
 
-#: bookwyrm/settings.py:318
+#: bookwyrm/settings.py:326
 msgid "Català (Catalan)"
 msgstr "Català (kataloński)"
 
-#: bookwyrm/settings.py:319
+#: bookwyrm/settings.py:327
 msgid "Deutsch (German)"
 msgstr "Deutsch (niemiecki)"
 
-#: bookwyrm/settings.py:320
+#: bookwyrm/settings.py:328
 msgid "Esperanto (Esperanto)"
 msgstr "Esperanto (esperanto)"
 
-#: bookwyrm/settings.py:321
+#: bookwyrm/settings.py:329
 msgid "Español (Spanish)"
 msgstr "Español (hiszpański)"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:330
 msgid "Euskara (Basque)"
 msgstr "Euskara (baskijski)"
 
-#: bookwyrm/settings.py:323
+#: bookwyrm/settings.py:331
 msgid "Galego (Galician)"
 msgstr "Galego (galicyjski)"
 
-#: bookwyrm/settings.py:324
+#: bookwyrm/settings.py:332
 msgid "Italiano (Italian)"
 msgstr "Italiano (włoski)"
 
-#: bookwyrm/settings.py:325
+#: bookwyrm/settings.py:333
 msgid "한국어 (Korean)"
 msgstr "한국어 (koreański)"
 
-#: bookwyrm/settings.py:326
+#: bookwyrm/settings.py:334
 msgid "Suomi (Finnish)"
 msgstr "Suomi (fiński)"
 
-#: bookwyrm/settings.py:327
+#: bookwyrm/settings.py:335
 msgid "Français (French)"
 msgstr "Français (francuski)"
 
-#: bookwyrm/settings.py:328
+#: bookwyrm/settings.py:336
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (litewski)"
 
-#: bookwyrm/settings.py:329
+#: bookwyrm/settings.py:337
 msgid "Nederlands (Dutch)"
 msgstr "Nederlands (holenderski)"
 
-#: bookwyrm/settings.py:330
+#: bookwyrm/settings.py:338
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (norweski)"
 
-#: bookwyrm/settings.py:331
+#: bookwyrm/settings.py:339
 msgid "Polski (Polish)"
 msgstr "polski"
 
-#: bookwyrm/settings.py:332
+#: bookwyrm/settings.py:340
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (portugalski — Brazylia)"
 
-#: bookwyrm/settings.py:333
+#: bookwyrm/settings.py:341
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (portugalski — Portugalia)"
 
-#: bookwyrm/settings.py:334
+#: bookwyrm/settings.py:342
 msgid "Română (Romanian)"
 msgstr "Română (rumuński)"
 
-#: bookwyrm/settings.py:335
+#: bookwyrm/settings.py:343
 msgid "Svenska (Swedish)"
 msgstr "Svenska (szwedzki)"
 
-#: bookwyrm/settings.py:336
+#: bookwyrm/settings.py:344
 msgid "Українська (Ukrainian)"
 msgstr "Українська (ukraiński)"
 
-#: bookwyrm/settings.py:337
+#: bookwyrm/settings.py:345
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (chiński — uproszczony)"
 
-#: bookwyrm/settings.py:338
+#: bookwyrm/settings.py:346
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (chiński — tradycyjny)"
 
@@ -1090,7 +1090,7 @@ msgstr "ISNI:"
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:120
 #: bookwyrm/templates/settings/federation/edit_instance.html:98
 #: bookwyrm/templates/settings/federation/instance.html:105
-#: bookwyrm/templates/settings/federation/settings.html:45
+#: bookwyrm/templates/settings/federation/settings.html:78
 #: bookwyrm/templates/settings/registration.html:96
 #: bookwyrm/templates/settings/registration_limited.html:76
 #: bookwyrm/templates/settings/site.html:144
@@ -1990,7 +1990,7 @@ msgstr "Możesz zrezygnować w dowolnym momencie poprzez <a href=\"%(path)s\">us
 
 #: bookwyrm/templates/directory/directory.html:29
 #: bookwyrm/templates/directory/directory.html:31
-#: bookwyrm/templates/feed/goal_card.html:17
+#: bookwyrm/templates/feed/goal_card.html:19
 #: bookwyrm/templates/feed/summary_card.html:12
 #: bookwyrm/templates/feed/summary_card.html:14
 #: bookwyrm/templates/snippets/announcement.html:31
@@ -2088,21 +2088,22 @@ msgid "<a href=\"%(user_path)s\">%(username)s</a> started reading <a href=\"%(bo
 msgstr "<a href=\"%(user_path)s\">%(username)s</a> rozpoczyna czytanie <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:23
+#: bookwyrm/templates/discover/card-header.html:32
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> rated <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr "<a href=\"%(user_path)s\">%(username)s</a> ocenia <a href=\"%(book_path)s\">%(book_title)s</a>"
 
-#: bookwyrm/templates/discover/card-header.html:27
+#: bookwyrm/templates/discover/card-header.html:28
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> reviewed <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr "<a href=\"%(user_path)s\">%(username)s</a> recenzuje <a href=\"%(book_path)s\">%(book_title)s</a>"
 
-#: bookwyrm/templates/discover/card-header.html:31
+#: bookwyrm/templates/discover/card-header.html:37
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr "<a href=\"%(user_path)s\">%(username)s</a> komentuje <a href=\"%(book_path)s\">%(book_title)s</a>"
 
-#: bookwyrm/templates/discover/card-header.html:35
+#: bookwyrm/templates/discover/card-header.html:41
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> quoted <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr "<a href=\"%(user_path)s\">%(username)s</a> cytuje <a href=\"%(book_path)s\">%(book_title)s</a>"
@@ -2288,14 +2289,14 @@ msgstr "Brak aktywności na ten moment! Na początek, zacznij obserwować użytk
 msgid "Alternatively, you can try enabling more status types"
 msgstr "Możesz również aktywować więcej typów statusów"
 
-#: bookwyrm/templates/feed/goal_card.html:6
+#: bookwyrm/templates/feed/goal_card.html:8
 #: bookwyrm/templates/feed/layout.html:14
 #: bookwyrm/templates/user/goal_form.html:6
 #, python-format
 msgid "%(year)s Reading Goal"
 msgstr "Cel czytania na rok %(year)s"
 
-#: bookwyrm/templates/feed/goal_card.html:18
+#: bookwyrm/templates/feed/goal_card.html:20
 #, python-format
 msgid "You can set or change your reading goal any time from your <a href=\"%(path)s\">profile page</a>"
 msgstr "Możesz ustawić lub zmienić swój cel czytania w dowolnej chwili przez swoją <a href=\"%(path)s\">stronę profilu</a>"
@@ -4458,7 +4459,7 @@ msgstr[2] "%(display_count)s nowych <a href=\"%(path)s\">zgłoszeń</a> wymaga u
 msgstr[3] "%(display_count)s nowych <a href=\"%(path)s\">zgłoszeń</a> wymaga uwagi"
 
 #: bookwyrm/templates/notifications/items/status_preview.html:4
-#: bookwyrm/templates/snippets/status/content_status.html:62
+#: bookwyrm/templates/snippets/status/content_status.html:64
 msgid "Content warning"
 msgstr "Ostrzeżenie o treści"
 
@@ -4927,7 +4928,7 @@ msgstr "Eksportuj listę książek"
 msgid "Your CSV export file will include all the books on your shelves, books you have reviewed, and books with reading activity. <br/>Use this to import into a service like Goodreads."
 msgstr ""
 
-#: bookwyrm/templates/preferences/export.html:20
+#: bookwyrm/templates/preferences/export.html:19
 msgid "Download file"
 msgstr "Pobierz plik"
 
@@ -5120,10 +5121,9 @@ msgid "You are deleting this readthrough and its %(count)s associated progress u
 msgstr ""
 
 #: bookwyrm/templates/readthrough/readthrough.html:6
-#: bookwyrm/templates/readthrough/readthrough_modal.html:8
 #, python-format
-msgid "Update read dates for \"<em>%(title)s</em>\""
-msgstr "Aktualizuj daty czytania dla \"<em>%(title)s</em>\""
+msgid "Update read dates for \"%(title)s\""
+msgstr ""
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:10
 #: bookwyrm/templates/readthrough/readthrough_modal.html:38
@@ -5176,6 +5176,11 @@ msgstr "Edytuj daty czytania"
 #: bookwyrm/templates/readthrough/readthrough_list.html:70
 msgid "Delete these read dates"
 msgstr "Usuń te daty czytania"
+
+#: bookwyrm/templates/readthrough/readthrough_modal.html:8
+#, python-format
+msgid "Update read dates for \"<em>%(title)s</em>\""
+msgstr "Aktualizuj daty czytania dla \"<em>%(title)s</em>\""
 
 #: bookwyrm/templates/readthrough/readthrough_modal.html:12
 #, python-format
@@ -6056,11 +6061,47 @@ msgid "Unable to save settings"
 msgstr "Błąd zapisywania ustawień"
 
 #: bookwyrm/templates/settings/federation/settings.html:37
+msgid "Require signed GET requests"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:38
+msgid "Recommended"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:42
+msgid "Prevents anonymous requests from federated instances. Roughly equivalent to Mastodon's 'secure mode' or 'AUTHORIZED_FETCH'"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:48
+msgid "Prevent unauthenticated views"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:51
+msgid "Prevents anonymous users from seeing most pages. To block JSON requests as well, enable 'Require signed GET requests'"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:57
 msgid "Disable federation"
 msgstr ""
 
-#: bookwyrm/templates/settings/federation/settings.html:40
+#: bookwyrm/templates/settings/federation/settings.html:58
+msgid "Caution"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:61
 msgid "Prevents your instance from interacting with other federated services. Existing data from other instances will still be present."
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:67
+msgid "Block incoming search"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:68
+msgid "Not Recommended"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:71
+msgid "Prevents other servers from searching your instance. It is strongly recommended you do NOT enable this setting."
 msgstr ""
 
 #: bookwyrm/templates/settings/files.html:7
@@ -7448,12 +7489,12 @@ msgstr ""
 msgid "to"
 msgstr ""
 
-#: bookwyrm/templates/snippets/create_status/review.html:24
+#: bookwyrm/templates/snippets/create_status/review.html:23
 #, python-format
 msgid "Your review of '%(book_title)s'"
 msgstr "Twoja recenzja '%(book_title)s'"
 
-#: bookwyrm/templates/snippets/create_status/review.html:39
+#: bookwyrm/templates/snippets/create_status/review.html:38
 msgid "Review:"
 msgstr "Recenzja:"
 
@@ -7561,6 +7602,15 @@ msgstr[0] "ocenia <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)
 msgstr[1] "ocenia <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s gwiazdki"
 msgstr[2] "ocenia <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s gwiazdek"
 msgstr[3] "ocenia <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s gwiazdek"
+
+#: bookwyrm/templates/snippets/generated_status/rating_pure_name.html:3
+#, python-format
+msgid "Rated \"%(book_title)s\" %(display_rating)s star %(review_title)s"
+msgid_plural "Rated \"%(book_title)s\" %(display_rating)s stars %(review_title)s"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:4
 #, python-format
@@ -7776,35 +7826,35 @@ msgstr "Ukończ czytanie"
 msgid "Show rating"
 msgstr "Pokaż ocenę"
 
-#: bookwyrm/templates/snippets/status/content_status.html:69
+#: bookwyrm/templates/snippets/status/content_status.html:71
 msgid "Show status"
 msgstr "Pokaż status"
 
-#: bookwyrm/templates/snippets/status/content_status.html:91
+#: bookwyrm/templates/snippets/status/content_status.html:93
 #, python-format
 msgid "(Page %(page)s"
 msgstr "(Strona %(page)s"
 
-#: bookwyrm/templates/snippets/status/content_status.html:91
+#: bookwyrm/templates/snippets/status/content_status.html:93
 #, python-format
 msgid "%(endpage)s"
 msgstr "%(endpage)s"
 
-#: bookwyrm/templates/snippets/status/content_status.html:93
+#: bookwyrm/templates/snippets/status/content_status.html:95
 #, python-format
 msgid "(%(percent)s%%"
 msgstr "(%(percent)s %%"
 
-#: bookwyrm/templates/snippets/status/content_status.html:93
+#: bookwyrm/templates/snippets/status/content_status.html:95
 #, python-format
 msgid " - %(endpercent)s%%"
 msgstr " - %(endpercent)s %%"
 
-#: bookwyrm/templates/snippets/status/content_status.html:116
+#: bookwyrm/templates/snippets/status/content_status.html:118
 msgid "Open image in new window"
 msgstr "Otwórz obraz w nowym oknie"
 
-#: bookwyrm/templates/snippets/status/content_status.html:137
+#: bookwyrm/templates/snippets/status/content_status.html:139
 msgid "Hide status"
 msgstr "Ukryj status"
 
@@ -7863,15 +7913,21 @@ msgstr "rozpoczyna czytanie <a href=\"%(book_path)s\">%(book)s</a> autorstwa <a 
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "rozpoczyna czytanie <a href=\"%(book_path)s\">%(book)s</a>"
 
-#: bookwyrm/templates/snippets/status/headers/review.html:8
+#: bookwyrm/templates/snippets/status/headers/review.html:10
+#: bookwyrm/templates/snippets/status/headers/review.html:26
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
 msgstr "recenzuje <a href=\"%(book_path)s\">%(book)s</a> autorstwa <a href=\"%(author_path)s\">%(author_name)s</a>"
 
-#: bookwyrm/templates/snippets/status/headers/review.html:15
+#: bookwyrm/templates/snippets/status/headers/review.html:17
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "recenzuje <a href=\"%(book_path)s\">%(book)s</a>"
+
+#: bookwyrm/templates/snippets/status/headers/review.html:33
+#, python-format
+msgid "rated <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
 #, python-format
@@ -8157,12 +8213,12 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: bookwyrm/templatetags/utilities.py:50
+#: bookwyrm/templatetags/utilities.py:52
 #, python-format
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s: %(subtitle)s"
 
-#: bookwyrm/templatetags/utilities.py:151
+#: bookwyrm/templatetags/utilities.py:153
 msgid "a new user account"
 msgstr ""
 
