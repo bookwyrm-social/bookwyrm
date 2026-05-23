@@ -6,9 +6,15 @@ set -e
 # check if we're in DEBUG mode
 DEBUG=$(sed <.env -ne 's/^DEBUG=//p')
 
+CMD=$1
+COMPOSE_ARGS=""
+if [ "$CMD" == "dev" ]; then
+    COMPOSE_ARGS="-f docker-compose.yml -f docker-compose.dev.yml --env-file .env --env-file .env.dev"
+    shift
+fi
 # disallow certain commands when debug is false
 function prod_error {
-    if [ "$DEBUG" != "true" ]; then
+    if [ "$COMPOSE_ARGS" == "" ]; then
         echo "This command is not safe to run in production environments"
         exit 1
     fi
@@ -24,9 +30,9 @@ source .env
 trap - EXIT
 
 if docker compose &> /dev/null ; then
-	DOCKER_COMPOSE="docker compose"
+	DOCKER_COMPOSE="docker compose $COMPOSE_ARGS"
 else
-	DOCKER_COMPOSE="docker-compose"
+	DOCKER_COMPOSE="docker-compose $COMPOSE_ARGS"
 fi
 
 function clean {
@@ -48,12 +54,8 @@ function rundev {
     $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml  --env-file .env --env-file .env.dev run -e DEBUG=true --rm web "$@"
 }
 
-function dev {
-    $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml --env-file .env --env-file .env.dev "$@"
-}
-
 function execdb {
-    $DOCKER_COMPOSE exec db $@
+    $DOCKER_COMPOSE exec db "$@"
 }
 
 function execweb {
@@ -126,11 +128,8 @@ case "$CMD" in
     down)
         $DOCKER_COMPOSE down
         ;;
-    dev)
-        dev "$@"
-        ;;
-    rundev)
-        rundev "$@"
+    devcommand)
+        $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml  --env-file .env --env-file .env.dev "$@"
         ;;
     docker_cache_cleanup)
         echo "Showing current docker storage usage"
@@ -158,10 +157,11 @@ case "$CMD" in
         $DOCKER_COMPOSE --file docker-compose-upgrade-db.yml run --rm db_update
         ;;
     resetdb)
-        dev down
+        prod_error
+        $DOCKER_COMPOSE down
         $DOCKER_COMPOSE rm -svf
         docker volume rm -f dev-wyrm_media_volume dev-wyrm_pgdata dev-wyrm_redis_activity_data dev-wyrm_redis_broker_data dev-wyrm_static_volume, dev-wyrm_exports_volume
-        dev up --build -d
+        $DOCKER_COMPOSE up --build -d
         rundev python manage.py admin_code
         ;;
     makemigrations)
@@ -186,7 +186,6 @@ case "$CMD" in
         rundev pytest --no-cov-on-fail "$@"
         ;;
     pytest_coverage_report)
-        prod_error
         rundev pytest -n 3 --cov-report term-missing "$@"
         ;;
     compile_themes)
@@ -329,32 +328,13 @@ case "$CMD" in
     *)
         set +x # No need to echo echo
         echo "Unrecognised command. Try:"
-        echo "    setup"
-        echo "    up [container]"
-        echo "    down"
-        echo "    service_ports_web"
-        echo "    upgrade_db_version"
-        echo "    initdb"
-        echo "    resetdb"
-        echo "    init_ssl"
-        echo "    makemigrations [migration]"
-        echo "    migrate [migration]"
-        echo "    create_secrets"
-        echo "    bash"
-        echo "    shell"
-        echo "    dbshell"
-        echo "    restart_celery"
-        echo "    pytest [path]"
-        echo "    compile_themes"
-        echo "    collectstatic"
+        echo " Development flow commands:"
         echo "    makemessages"
+        echo "    resetdb"
         echo "    compilemessages [locale]"
+        echo "    pytest [path]"
+        echo "    makemigrations [migration]"
         echo "    update_locales"
-        echo "    build"
-        echo "    dev"
-        echo "    rundev"
-        echo "    docker_cache_cleanup"
-        echo "    clean"
         echo "    ruff (format and check)"
         echo "    ruff-format (format code only)"
         echo "    ruff-check (check code only)"
@@ -364,6 +344,28 @@ case "$CMD" in
         echo "    stylelint"
         echo "    formatters"
         echo "    mypy"
+        echo " "
+        echo " Commands that run in prod, but can be prefixed with 'dev' to run in devevelopment environment:"
+        echo "  To run command in dev environment, prefix it with 'dev'"
+        echo "  example './bw-dev dev migrate' or './bw-dev dev up -d"
+        echo "    setup"
+        echo "    up [container]"
+        echo "    down"
+        echo "    service_ports_web"
+        echo "    upgrade_db_version"
+        echo "    initdb"
+        echo "    init_ssl"
+        echo "    migrate [migration]"
+        echo "    create_secrets"
+        echo "    bash"
+        echo "    shell"
+        echo "    dbshell"
+        echo "    restart_celery"
+        echo "    compile_themes"
+        echo "    collectstatic"
+        echo "    build"
+        echo "    docker_cache_cleanup"
+        echo "    clean"
         echo "    collectstatic_watch"
         echo "    populate_streams [--stream=<stream name>]"
         echo "    populate_lists_streams"
@@ -371,11 +373,14 @@ case "$CMD" in
         echo "    generate_thumbnails"
         echo "    generate_preview_images [--all]"
         echo "    remove_remote_user_preview_images"
-        echo "    copy_media_to_s3"
-        echo "    sync_media_to_s3"
         echo "    set_cors_to_s3 [cors file]"
         echo "    runweb [command]"
         echo "    remove_2fa"
         echo "    confirm_email"
+        echo " "
+        echo " Command that only operate production"
+        echo "    copy_media_to_s3"
+        echo "    sync_media_to_s3"
+        echo " "
         ;;
 esac

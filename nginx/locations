@@ -21,7 +21,7 @@ add_header X-Cache-Status $upstream_cache_status;
 
 # ignore the set cookie header when deciding to
 # store a response in the cache
-proxy_ignore_headers Cache-Control Set-Cookie Expires;
+proxy_ignore_headers Set-Cookie;
 
 # PUT requests always bypass the cache
 # logged in sessions also do not populate the cache

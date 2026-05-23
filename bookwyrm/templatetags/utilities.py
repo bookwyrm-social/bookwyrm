@@ -36,8 +36,10 @@ def get_user_identifier(user):
 @register.filter(name="user_from_remote_id")
 def get_user_identifier_from_remote_id(remote_id):
     """get the local user id from their remote id"""
-    user = User.objects.get(remote_id=remote_id)
-    return user if user else None
+    try:
+        return User.objects.get(remote_id=remote_id)
+    except User.DoesNotExist:
+        return None
 
 
 @register.filter(name="book_title")
@@ -98,6 +100,24 @@ def get_isni_bio(existing, author):
             return mark_safe(f"Author of <em>{value.bio}</em>")
 
     return ""
+
+
+@register.filter(name="possible_series_hint")
+def possible_series_hint(seriesbook):
+    """Returns the hint string for a possible matching series"""
+    title = seriesbook.book.title
+    path = seriesbook.series.local_path
+    author = (
+        seriesbook.book.authors.first().name
+        if seriesbook.book.authors.first()
+        else None
+    )
+
+    hint = f'Includes <a href="{path}" target="_blank" rel="nofollow noopener noreferrer">"{title}"</a>'
+    if author:
+        hint += f" by {author}"
+
+    return mark_safe(hint)
 
 
 @register.filter(name="get_isni", needs_autoescape=True)

@@ -422,7 +422,7 @@ class Quotation(BookStatus):
 class Review(BookStatus):
     """a book review"""
 
-    name = fields.CharField(max_length=255, null=True)
+    name = fields.CharField(max_length=255, null=True, blank=True)
     rating = fields.DecimalField(
         default=None,
         null=True,
@@ -445,7 +445,11 @@ class Review(BookStatus):
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
-        return self.content
+        if self.content:
+            return self.content
+        else:
+            template = get_template("snippets/generated_status/rating_pure_name.html")
+            return template.render({"book": self.book, "rating": self.rating}).strip()
 
     @property
     def page_title(self):
