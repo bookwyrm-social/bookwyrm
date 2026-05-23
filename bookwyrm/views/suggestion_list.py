@@ -3,7 +3,6 @@
 from typing import Any
 
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Count, Q
@@ -104,7 +103,6 @@ class SuggestionList(View):
         return redirect_to_referer(request)
 
 
-@method_decorator(login_required, name="dispatch")
 class UserSuggestions(View):
     """view all suggestions made by a user"""
 
@@ -114,11 +112,9 @@ class UserSuggestions(View):
         """display a book list"""
         user = get_user_from_username(request.user, username)
         is_self = request.user.id == user.id
-        if not is_self:
-            raise PermissionDenied()
 
         suggestions = models.SuggestionListItem.objects.filter(
-            user=request.user
+            user=user
         ).prefetch_related("book_list")
         paginated = Paginator(suggestions, 12)
         data = {
