@@ -272,6 +272,39 @@ class HomeStream(ActivityStream):
             ),
         )
 
+    def add_book_statuses(self, user, book):
+        """add statuses about a book to a user's feed"""
+        work = book.parent_work
+
+        statuses = models.Status.privacy_filter(
+            user,
+            privacy_levels=["public", "unlisted", "followers"],
+        ).exclude(
+            ~Q(  # remove everything except
+                Q(user__followers=user)  # user following
+                | Q(user=user)  # is self
+                | Q(mention_users=user)  # mentions user
+            ),
+        )
+
+        book_comments = statuses.filter(Q(comment__book__parent_work=work))
+        book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
+        book_reviews = statuses.filter(Q(review__book__parent_work=work))
+        book_mentions = statuses.filter(Q(mention_books__parent_work=work))
+
+        book_statuses = book_comments.union(
+            book_quotations, book_reviews, book_mentions
+        )
+
+        self.bulk_add_objects_to_store(book_statuses, self.stream_id(user.id))
+
+        threads = book_statuses.values_list("thread_id", flat=True)
+        thread_statuses = statuses.exclude(
+            id__in=book_statuses.values_list("id", flat=True)
+        ).filter(thread_id__in=threads)
+
+        self.bulk_add_objects_to_store(thread_statuses, self.stream_id(user.id))
+
 
 class LocalStream(ActivityStream):
     """users you follow"""
@@ -538,7 +571,7 @@ def remove_book_statuses_task(user_id, book_id):
 
 @app.task(queue=STREAMS)
 def add_blocked_book_statuses_task(user_id, book_id):
-    """add statuses related to a book on shelve"""
+    """add statuses related to a formerly blocked book"""
     user = models.User.objects.get(id=user_id)
     book = models.Edition.objects.get(id=book_id)
     BooksStream().add_book_statuses(user, book)

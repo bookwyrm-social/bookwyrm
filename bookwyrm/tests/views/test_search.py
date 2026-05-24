@@ -235,3 +235,20 @@ class Views(TestCase):
         validate_html(response.render())
         self.assertEqual(len(response.context_data["results"]), 1)
         self.assertEqual(response.context_data["results"][0], self.another_author)
+
+    def test_search_books_blocked_book(self):
+        """don't return blocked books on search"""
+
+        self.local_user.blocked_books.add(self.work)
+
+        view = views.Search.as_view()
+        request = self.factory.get("", {"q": "Test Book", "remote": False})
+        request.user = self.local_user
+        with patch("bookwyrm.views.search.is_api_request") as is_api:
+            is_api.return_value = False
+            response = view(request)
+        self.assertIsInstance(response, TemplateResponse)
+        validate_html(response.render())
+
+        self.assertEqual(response.context_data["blocked_books_excluded"], True)
+        self.assertEqual(len(response.context_data["results"]), 0)

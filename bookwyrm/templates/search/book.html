@@ -1,9 +1,19 @@
 {% extends 'search/layout.html' %}
 {% load i18n %}
 {% load humanize %}
+{% load utilities %}
 {% load book_display_tags %}
 
 {% block panel %}
+
+{% if blocked_books_excluded %}
+    <p class="my-4">
+        {% url "prefs-block-books" as bb_path %}
+        {% blocktrans trimmed %}
+        <em>Some results have been excluded because they are in your <a href="{{ bb_path }}">blocked books list</a></em>
+        {% endblocktrans %}
+    </p>
+{% endif %}
 
 {% if results or remote_results %}
 <ul class="block">

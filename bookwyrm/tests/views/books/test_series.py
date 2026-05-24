@@ -122,3 +122,30 @@ class SeriesViews(TestCase):
             result = view(request, self.seriesbook.id)
             self.assertIsInstance(result, ActivitypubResponse)
             self.assertEqual(result.status_code, 200)
+
+    def test_series_page_with_blocked_book(self):
+        """do not display blocked books on series homepage"""
+
+        bad_work = models.Work.objects.create(title="awful book")
+
+        models.SeriesBook.objects.create(
+            book=bad_work,
+            series=self.series,
+            user=self.user,
+            remote_id="https://example.com/seriesbook/666",
+        )
+
+        view = views.Series.as_view()
+        request = self.factory.get("")
+        request.user = self.user
+        result = view(request, self.seriesbook.id)
+
+        books = result.context_data["books"]
+        self.assertEqual(books.object_list.count(), 2)
+
+        self.user.blocked_books.add(bad_work)
+
+        result = view(request, self.series.id)
+
+        books = result.context_data["books"]
+        self.assertEqual(books.object_list.count(), 1)
