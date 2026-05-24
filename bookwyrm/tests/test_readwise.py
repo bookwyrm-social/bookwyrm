@@ -73,7 +73,7 @@ class Readwise(TestCase):
         self.assertEqual(result["author"], "Octavia Butler")
         self.assertEqual(result["source_type"], "bookwyrm")
         self.assertEqual(result["category"], "books")
-        self.assertEqual(result["source_url"], "https://example.com/book/1")
+        self.assertEqual(result["source_url"], quotation.book.remote_id)
         self.assertEqual(result["highlight_url"], quotation.remote_id)
         self.assertEqual(result["location_type"], "page")
         self.assertEqual(result["location"], 42)
