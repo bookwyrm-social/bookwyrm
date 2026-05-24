@@ -10,7 +10,7 @@
     <p class="my-4">
         {% url "prefs-block-books" as bb_path %}
         {% blocktrans trimmed %}
-        <em>Some results have been excluded because they are in your <a href="{{ bb_path }}">blocked books list</a></em>
+        <em>Some <a href="{{ bb_path }}">blocked books</a> have been excluded.</em>
         {% endblocktrans %}
     </p>
 {% endif %}
