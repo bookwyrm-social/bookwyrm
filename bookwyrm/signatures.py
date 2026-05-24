@@ -103,7 +103,7 @@ class Signature:
 
         return cls(key_id, headers, signature)
 
-    def verify(self, public_key, request):
+    def verify(self, public_key, request, request_type="post"):
         """verify rsa signature"""
         if http_date_age(request.headers["date"]) > MAX_SIGNATURE_AGE:
             raise ValueError(f"Request too old: {request.headers['date']}")
@@ -112,7 +112,9 @@ class Signature:
         comparison_string = []
         for signed_header_name in self.headers.split(" "):
             if signed_header_name == "(request-target)":
-                comparison_string.append(f"(request-target): post {request.path}")
+                comparison_string.append(
+                    f"(request-target): {request_type} {request.path}"
+                )
             else:
                 if signed_header_name == "digest":
                     verify_digest(request)
