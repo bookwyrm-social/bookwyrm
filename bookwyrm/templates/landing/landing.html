@@ -16,7 +16,7 @@
 <section class="columns is-multiline is-mobile">
     {% for work in books %}
     {% with book=work.default_edition %}
-    <div class="column is-one-fifth is-half-mobile">
+    <div class="column is-one-fifth-tablet is-half-mobile">
         <a href="{{ book.local_path }}">
             {% include 'snippets/book_cover.html' with size='xxlarge' %}
         </a>
