@@ -70,4 +70,10 @@ def get_book_superlatives():
 @register.simple_tag(takes_context=False)
 def get_landing_books():
     """list of books for the landing page"""
-    return models.Work.objects.distinct().order_by("-updated_date")[:20]
+    return list(
+        set(
+            models.Edition.objects.exclude(cover__exact="")
+            .distinct()
+            .order_by("-updated_date")[:6]
+        )
+    )
