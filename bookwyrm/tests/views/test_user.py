@@ -364,4 +364,5 @@ class UserViews(TestCase):
         request = self.factory.get("")
         request.user = self.anonymous_user
         result = view(request, "mouse")
-        self.assertEqual(result.status_code, 302)
+        self.assertEqual(result.status_code, 200)
+        validate_html(result.render())
