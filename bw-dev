@@ -128,6 +128,9 @@ case "$CMD" in
     down)
         $DOCKER_COMPOSE down
         ;;
+    devcommand)
+        $DOCKER_COMPOSE -f docker-compose.yml -f docker-compose.dev.yml  --env-file .env --env-file .env.dev "$@"
+        ;;
     docker_cache_cleanup)
         echo "Showing current docker storage usage"
         docker system df
