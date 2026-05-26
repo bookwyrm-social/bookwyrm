@@ -9,13 +9,10 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from markdown import markdown
-
 from bookwyrm import forms, models
 from bookwyrm.lists_stream import ListsStream
 from bookwyrm.views.helpers import get_user_from_username
 from bookwyrm.views.list.list import add_book
-from bookwyrm.utils import sanitizer
 
 logger = logging.getLogger(__name__)
 
@@ -48,11 +45,6 @@ class Lists(View):
         # list should not have a group if it is not group curated
         if not book_list.curation == "group":
             book_list.group = None
-
-        # save the plain, unformatted version of the status for future editing
-        book_list.raw_notes = book_list.notes
-        book_list.notes = notes_to_markdown(book_list.notes)
-        book_list.save()
 
         book_id = request.POST.get("book")
         if book_id:
@@ -102,10 +94,3 @@ class UserLists(View):
             "path": user.local_path + "/lists",
         }
         return TemplateResponse(request, "user/lists.html", data)
-
-
-def notes_to_markdown(notes):
-    """convert to markdown"""
-    notes = markdown(notes)
-    # sanitize resulting html
-    return sanitizer.clean(notes)
