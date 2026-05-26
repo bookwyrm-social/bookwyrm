@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-23 18:40+0000\n"
-"PO-Revision-Date: 2026-05-23 19:12\n"
+"PO-Revision-Date: 2026-05-26 05:34\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -210,7 +210,7 @@ msgstr "%(value)s n'a pas la somme de contrôle ISBN correcte, nous nous attendi
 
 #: bookwyrm/models/book.py:797
 msgid "Book is already in this series"
-msgstr ""
+msgstr "Ce livre fait déjà partie de cette collection"
 
 #: bookwyrm/models/bookwyrm_import_job.py:151 bookwyrm/models/report.py:85
 #: bookwyrm/templates/settings/reports/report.html:115
@@ -1143,21 +1143,21 @@ msgstr "Impossible de se connecter au serveur distant."
 #: bookwyrm/templates/book/book.html:52
 #, python-format
 msgid "This book might be part of the <em>%(series)s</em> series."
-msgstr ""
+msgstr "Ce livre fait peut-être partie de la série <em>%(series)s</em>."
 
 #: bookwyrm/templates/book/book.html:56
 msgid "Edit it to confirm."
-msgstr ""
+msgstr "Modifiez-le pour confirmer."
 
 #: bookwyrm/templates/book/book.html:69
 #, python-format
 msgid "Book <span itemprop=\"position\">%(number)s</span> in <em><a href=\"%(path)s\">%(title)s</a></em>"
-msgstr ""
+msgstr "Livre <span itemprop=\"position\">%(number)s</span> sur <em><a href=\"%(path)s\">%(title)s</a></em>"
 
 #: bookwyrm/templates/book/book.html:75
 #, python-format
 msgid "Part of <em><a href=\"%(path)s\">%(title)s</a></em>"
-msgstr ""
+msgstr "Extrait de <em><a href=\"%(path)s\">%(title)s</a></em>"
 
 #: bookwyrm/templates/book/book.html:97 bookwyrm/templates/book/book.html:98
 msgid "Edit Book"
@@ -1419,19 +1419,19 @@ msgstr "Il s’agit d’un nouvel ouvrage."
 
 #: bookwyrm/templates/book/edit/edit_book.html:142
 msgid "Are you sure this is a new series? The following series have similar names and a matching author."
-msgstr ""
+msgstr "Êtes-vous sûr qu'il s'agit d'une nouvelle série ? Les séries suivantes ont des titres similaires et le même auteur."
 
 #: bookwyrm/templates/book/edit/edit_book.html:148
 msgid "Is this book part of one of these series?"
-msgstr ""
+msgstr "Ce livre fait-il partie d'une de ces séries ?"
 
 #: bookwyrm/templates/book/edit/edit_book.html:160
 msgid "This is a new series"
-msgstr ""
+msgstr "Il s'agit d'une nouvelle série"
 
 #: bookwyrm/templates/book/edit/edit_book.html:165
 msgid "Creating a new series"
-msgstr ""
+msgstr "Créer une nouvelle série"
 
 #: bookwyrm/templates/book/edit/edit_book.html:175
 #: bookwyrm/templates/book/edit/edit_series.html:86
@@ -1518,17 +1518,17 @@ msgstr "Ajouter un autre sujet"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:130
 msgid "Series"
-msgstr ""
+msgstr "Série"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:138
 #: bookwyrm/templates/book/series.html:12
 #: bookwyrm/templates/book/series.html:13
 msgid "Edit Series"
-msgstr ""
+msgstr "Modifier la série"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:141
 msgid "To edit details of a series itself, click the series name"
-msgstr ""
+msgstr "Pour modifier les détails d'une série, cliquez sur le nom de celle-ci"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:150
 #: bookwyrm/templates/snippets/create_status/quotation.html:31
@@ -1538,24 +1538,24 @@ msgstr "Emplacement :"
 #: bookwyrm/templates/book/edit/edit_book_form.html:164
 #, python-format
 msgid "Remove this book from <em>%(series_name)s</em>"
-msgstr ""
+msgstr "Supprimer ce livre de <em>%(series_name)s</em>"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:175
 msgid "Add Series"
-msgstr ""
+msgstr "Ajouter une série"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:178
 msgid "Series name:"
-msgstr ""
+msgstr "Titre de la série :"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:186
 #: bookwyrm/templates/book/edit/edit_series.html:75
 msgid "Series position:"
-msgstr ""
+msgstr "Position dans la série :"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:189
 msgid "This field was previously called \"Series number\""
-msgstr ""
+msgstr "Ce champ s'appelait auparavant « Numéro de série »"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:202
 msgid "Publication"
@@ -1650,12 +1650,12 @@ msgstr "Identifiant Openlibrary :"
 #: bookwyrm/templates/book/edit/edit_series.html:9
 #, python-format
 msgid "Edit \"%(title)s\""
-msgstr ""
+msgstr "Modifier « %(title)s »"
 
 #: bookwyrm/templates/book/edit/edit_series.html:20
 #, python-format
 msgid "Edit \"%(name)s\""
-msgstr ""
+msgstr "Modifier « %(name)s »"
 
 #: bookwyrm/templates/book/edit/edit_series.html:30
 #: bookwyrm/templates/settings/schedules.html:22
@@ -1665,20 +1665,20 @@ msgstr "Nom"
 #: bookwyrm/templates/book/edit/edit_series.html:36
 #: bookwyrm/templates/book/series.html:29
 msgid "Alternative names"
-msgstr ""
+msgstr "Autre nom"
 
 #: bookwyrm/templates/book/edit/edit_series.html:39
 #: bookwyrm/templates/book/edit/edit_series.html:42
 msgid "Add Alternative name:"
-msgstr ""
+msgstr "Ajouter un autre nom :"
 
 #: bookwyrm/templates/book/edit/edit_series.html:48
 msgid "Add an Alternative name"
-msgstr ""
+msgstr "Ajouter un autre nom"
 
 #: bookwyrm/templates/book/edit/edit_series.html:57
 msgid "Wikidata ID:"
-msgstr ""
+msgstr "ID Wikidata :"
 
 #: bookwyrm/templates/book/editions/editions.html:4
 #, python-format
@@ -2568,7 +2568,7 @@ msgstr "Modifier le groupe"
 
 #: bookwyrm/templates/groups/members.html:6
 msgid "Group Members"
-msgstr ""
+msgstr "Membres du groupe"
 
 #: bookwyrm/templates/groups/members.html:11
 msgid "Search to add a user"
@@ -5083,7 +5083,7 @@ msgstr "Vous avez supprimé ce résumé et ses %(count)s progressions associées
 #: bookwyrm/templates/readthrough/readthrough.html:6
 #, python-format
 msgid "Update read dates for \"%(title)s\""
-msgstr ""
+msgstr "Mettre à jour les dates de lecture pour « %(title)s »"
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:10
 #: bookwyrm/templates/readthrough/readthrough_modal.html:38
@@ -6010,23 +6010,23 @@ msgstr "Impossible d’enregistrer les paramètres"
 
 #: bookwyrm/templates/settings/federation/settings.html:37
 msgid "Require signed GET requests"
-msgstr ""
+msgstr "Exiger des requêtes GET signées"
 
 #: bookwyrm/templates/settings/federation/settings.html:38
 msgid "Recommended"
-msgstr ""
+msgstr "Recommandé"
 
 #: bookwyrm/templates/settings/federation/settings.html:42
 msgid "Prevents anonymous requests from federated instances. Roughly equivalent to Mastodon's 'secure mode' or 'AUTHORIZED_FETCH'"
-msgstr ""
+msgstr "Empêche les requêtes anonymes provenant d'instances fédérées. Cela correspond à peu près au « mode sécurisé » de Mastodon ou à « AUTHORIZED_FETCH »"
 
 #: bookwyrm/templates/settings/federation/settings.html:48
 msgid "Prevent unauthenticated views"
-msgstr ""
+msgstr "Empêcher les consultations sans authentification"
 
 #: bookwyrm/templates/settings/federation/settings.html:51
 msgid "Prevents anonymous users from seeing most pages. To block JSON requests as well, enable 'Require signed GET requests'"
-msgstr ""
+msgstr "Empêche les utilisateurs anonymes d'accéder à la plupart des pages. Pour bloquer également les requêtes JSON, activez l'option « Exiger des requêtes GET signées »"
 
 #: bookwyrm/templates/settings/federation/settings.html:57
 msgid "Disable federation"
@@ -6034,7 +6034,7 @@ msgstr "Désactiver la fédération"
 
 #: bookwyrm/templates/settings/federation/settings.html:58
 msgid "Caution"
-msgstr ""
+msgstr "Avertissement"
 
 #: bookwyrm/templates/settings/federation/settings.html:61
 msgid "Prevents your instance from interacting with other federated services. Existing data from other instances will still be present."
@@ -6042,15 +6042,15 @@ msgstr "Empêche votre instance d'interagir avec d'autres services fédérés. L
 
 #: bookwyrm/templates/settings/federation/settings.html:67
 msgid "Block incoming search"
-msgstr ""
+msgstr "Bloquer les recherches entrantes"
 
 #: bookwyrm/templates/settings/federation/settings.html:68
 msgid "Not Recommended"
-msgstr ""
+msgstr "Non recommandé"
 
 #: bookwyrm/templates/settings/federation/settings.html:71
 msgid "Prevents other servers from searching your instance. It is strongly recommended you do NOT enable this setting."
-msgstr ""
+msgstr "Empêche les autres serveurs d'effectuer des recherches sur votre instance. Il est fortement recommandé de NE PAS activer ce paramètre."
 
 #: bookwyrm/templates/settings/files.html:7
 #: bookwyrm/templates/settings/files.html:11
@@ -7543,8 +7543,8 @@ msgstr[1] "a noté <em><a href=\"%(path)s\">%(title)s</a></em> : %(display_ratin
 #, python-format
 msgid "Rated \"%(book_title)s\" %(display_rating)s star %(review_title)s"
 msgid_plural "Rated \"%(book_title)s\" %(display_rating)s stars %(review_title)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Note : « %(book_title)s » %(display_rating)s étoile %(review_title)s"
+msgstr[1] "Note : « %(book_title)s » %(display_rating)s étoiles %(review_title)s"
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:4
 #, python-format
@@ -7859,7 +7859,7 @@ msgstr "a critiqué <a href=\"%(book_path)s\">%(book)s</a>"
 #: bookwyrm/templates/snippets/status/headers/review.html:33
 #, python-format
 msgid "rated <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "note <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
 #, python-format
@@ -8150,11 +8150,11 @@ msgstr "un nouveau compte utilisateur"
 
 #: bookwyrm/views/books/edit_book.py:80 bookwyrm/views/books/edit_book.py:484
 msgid "There is another book in the series with the same value"
-msgstr ""
+msgstr "Il existe un autre ouvrage de la série qui a la même valeur"
 
 #: bookwyrm/views/books/series.py:95
 msgid "Series position must be unique for each book"
-msgstr ""
+msgstr "Le numéro de la collection doit être unique pour chaque livre"
 
 #: bookwyrm/views/updates.py:46
 #, python-format
