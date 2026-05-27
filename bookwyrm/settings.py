@@ -178,9 +178,6 @@ LOGGING = {
         "ignore_missing_variable": {
             "()": "bookwyrm.utils.log.IgnoreVariableDoesNotExist",
         },
-        "skip_unsigned_get_errors": {
-            "()": "bookwyrm.utils.log.SkipUnsignedGetErrors",
-        },
     },
     "handlers": {
         # Overrides the default handler to make it log to console
@@ -188,7 +185,7 @@ LOGGING = {
         # console if DEBUG=False)
         "console": {
             "level": LOG_LEVEL,
-            "filters": ["ignore_missing_variable", "skip_unsigned_get_errors"],
+            "filters": ["ignore_missing_variable"],
             "class": "logging.StreamHandler",
         },
         # This is copied as-is from the default logger, and is
