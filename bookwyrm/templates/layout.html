@@ -204,6 +204,7 @@
     var csrf_token = '{{ csrf_token }}';
 </script>
 
+<script src="{% url 'javascript-catalog' %}"></script>
 <script src="{% static "js/bookwyrm.js" %}"></script>
 <script src="{% static "js/localstorage.js" %}"></script>
 <script src="{% static "js/status_cache.js" %}"></script>
