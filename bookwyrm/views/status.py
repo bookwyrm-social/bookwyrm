@@ -16,7 +16,6 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 
-from functools import partial
 import mistune
 from bookwyrm import forms, models
 from bookwyrm.models.report import DELETE_ITEM

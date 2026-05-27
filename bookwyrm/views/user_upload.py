@@ -1,12 +1,9 @@
-import re
 import logging
-import tempfile
 from PIL import Image
 from io import BytesIO
 
 from django.core.files import File
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.http import JsonResponse
@@ -55,7 +52,7 @@ class CreateUserUpload(View):
                 e.message_dict,
                 status=422,
             )
-        except Exception as e:
+        except Exception:
             return JsonResponse(
                 {"original_file": "File was not a supported image type."},
                 status=422,
@@ -66,7 +63,7 @@ class CreateUserUpload(View):
         width, height = image.size
 
         for size in UPLOAD_IMAGE_DIMENSIONS:
-            v = self.create_version(image, upload, size)
+            self.create_version(image, upload, size)
             if width < size and height < size:
                 break
 
