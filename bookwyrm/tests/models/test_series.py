@@ -48,3 +48,19 @@ class TestSeriesModel(TestCase):
         self.assertEqual(self.work.seriesbooks.first(), seriesbook)
         self.assertEqual(self.work.book_series()[0], self.series)
         self.assertEqual(self.series.seriesbooks.first(), seriesbook)
+
+    def test_natural_sort_key(self):
+        cases = {
+            "2": (2.0, ""),
+            "10": (10.0, ""),
+            "4.5": (4.5, ""),
+            "2-beta": (2.0, "-beta"),
+            "1.5-rc": (1.5, "-rc"),
+            "Prequel": (float("inf"), "Prequel"),
+            None: (float("inf"), ""),
+            "": (float("inf"), ""),
+        }
+        for number, expected in cases.items():
+            with self.subTest(series_number=number):
+                seriesbook = models.SeriesBook(series_number=number)
+                self.assertEqual(seriesbook.natural_sort_key, expected)

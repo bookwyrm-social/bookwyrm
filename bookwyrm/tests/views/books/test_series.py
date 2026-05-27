@@ -64,6 +64,36 @@ class SeriesViews(TestCase):
 
         self.assertEqual(result.status_code, 200)
 
+    def test_series_page_orders_books_by_numeric_semantics(self):
+        """series books are ordered by numeric semantics, not lexicographically"""
+        series = models.Series.objects.create(
+            user=self.user,
+            name="ordering series",
+            remote_id="https://example.com/series/1",
+        )
+        for i, number in enumerate(
+            ["10", "2-beta", "1", "Prequel", "2", "4.5", "2-alpha", "1.5-rc"]
+        ):
+            book = models.Work.objects.create(title=f"book {i}")
+            models.SeriesBook.objects.create(
+                book=book,
+                series=series,
+                user=self.user,
+                series_number=number,
+                remote_id=f"https://example.com/seriesbook/{i}",
+            )
+
+        view = views.Series.as_view()
+        request = self.factory.get("")
+        request.user = self.user
+        result = view(request, series.id)
+
+        ordered = [sb.series_number for sb in result.context_data["series_books"]]
+        self.assertEqual(
+            ordered,
+            ["1", "1.5-rc", "2", "2-alpha", "2-beta", "4.5", "10", "Prequel"],
+        )
+
     def test_editseries_page(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.EditSeries.as_view()
