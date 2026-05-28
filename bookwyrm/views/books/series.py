@@ -1,5 +1,6 @@
 """book series"""
 
+from django.core.paginator import Paginator
 from django.db.utils import IntegrityError
 from django.http import Http404
 from django.shortcuts import redirect
@@ -11,6 +12,7 @@ from django.views.decorators.vary import vary_on_headers
 from bookwyrm.forms import SeriesForm
 from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import (
     is_api_request,
     get_mergeable_object_or_404,
@@ -28,16 +30,20 @@ class Series(View):
         if is_api_request(request):
             return ActivitypubResponse(series.to_activity(**request.GET))
 
-        authors = models.Author.objects.none()
-        items = series.seriesbooks.prefetch_related("book__work", "book__authors").all()
+        items = series.seriesbooks.prefetch_related(
+            "book__work", "book__work__editions__authors"
+        ).all()
         series_books = sorted(items, key=lambda sb: sb.natural_sort_key)
+        authors = models.Author.objects.filter(
+            id__in=items.values_list("book__work__editions__authors")
+        )
 
-        for item in series_books:
-            authors = authors.union(item.book.authors.all())
+        paginated = Paginator(series_books, PAGE_LENGTH)
+        page = paginated.get_page(request.GET.get("page"))
 
         data = {
             "series": series,
-            "series_books": series_books,
+            "series_books": page,
             "series_authors": {"authors": authors},
         }
 

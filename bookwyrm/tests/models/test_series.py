@@ -52,11 +52,21 @@ class TestSeriesModel(TestCase):
     def test_natural_sort_key(self):
         cases = {
             "2": (2.0, ""),
+            "0": (0.0, ""),
+            "0a": (0.0, "a"),
             "10": (10.0, ""),
             "4.5": (4.5, ""),
+            "01": (1.0, ""),
+            "007": (7.0, ""),
             "2-beta": (2.0, "-beta"),
             "1.5-rc": (1.5, "-rc"),
+            "12abc34": (12.0, "abc34"),
+            # values without a leading number sort last
             "Prequel": (float("inf"), "Prequel"),
+            "abc123": (float("inf"), "abc123"),
+            "Book 2": (float("inf"), "Book 2"),
+            " 2": (float("inf"), " 2"),
+            "v2": (float("inf"), "v2"),
             None: (float("inf"), ""),
             "": (float("inf"), ""),
         }

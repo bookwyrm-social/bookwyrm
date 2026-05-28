@@ -72,7 +72,18 @@ class SeriesViews(TestCase):
             remote_id="https://example.com/series/1",
         )
         for i, number in enumerate(
-            ["10", "2-beta", "1", "Prequel", "2", "4.5", "2-alpha", "1.5-rc"]
+            [
+                "10",
+                "2-beta",
+                "1",
+                "Prequel",
+                "Book 2",
+                "2",
+                "4.5",
+                "Book 1",
+                "2-alpha",
+                "1.5-rc",
+            ]
         ):
             book = models.Work.objects.create(title=f"book {i}")
             models.SeriesBook.objects.create(
@@ -91,7 +102,18 @@ class SeriesViews(TestCase):
         ordered = [sb.series_number for sb in result.context_data["series_books"]]
         self.assertEqual(
             ordered,
-            ["1", "1.5-rc", "2", "2-alpha", "2-beta", "4.5", "10", "Prequel"],
+            [
+                "1",
+                "1.5-rc",
+                "2",
+                "2-alpha",
+                "2-beta",
+                "4.5",
+                "10",
+                "Book 1",
+                "Book 2",
+                "Prequel",
+            ],
         )
 
     def test_editseries_page(self):

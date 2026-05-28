@@ -1007,8 +1007,8 @@ class SeriesBook(CollectionItemMixin, BookWyrmModel):
     @property
     def natural_sort_key(self):
         """numeric-aware key for series_number, so '2' sorts before '10'"""
-        value = self.series_number or ""
-        if not value:
+        value = self.series_number
+        if value is None or len(value) == 0:
             return float("inf"), ""
         match = re.match(r"\d+(?:\.\d+)?", value)
         numeric_prefix = float(match.group()) if match else float("inf")
