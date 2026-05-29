@@ -19,6 +19,11 @@
         <a href="{{ user_path}}">{{ username }}</a> started reading <a href="{{ book_path }}">{{ book_title }}</a>
         {% endblocktrans %}
     {% endif %}
+    {% if status.content == 'stopped reading' or status.content == '<p>stopped reading</p>' %}
+        {% blocktrans trimmed %}
+        <a href="{{ user_path}}">{{ username }}</a> stopped reading <a href="{{ book_path }}">{{ book_title }}</a>
+        {% endblocktrans %}
+    {% endif %}
 {% elif status.status_type == 'Rating' %}
     {% blocktrans trimmed %}
     <a href="{{ user_path}}">{{ username }}</a> rated <a href="{{ book_path }}">{{ book_title }}</a>
