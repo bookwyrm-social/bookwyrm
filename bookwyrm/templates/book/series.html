@@ -70,7 +70,7 @@
 				<meta itemprop="isPartOf" content="{{series.name}}">
 				<meta itemprop="name" content="{{book.title}}">
                                 <span class="subtitle">{% if seriesbook.series_number %}{% blocktrans with series_number=seriesbook.series_number %}Book {{ series_number }}{% endblocktrans %}{% endif %}</span>
-				{% include 'landing/small-book.html' with book=seriesbook.book.work.default_edition %}
+				{% include 'snippets/small-book.html' with book=seriesbook.book.work.default_edition %}
 			</div>
 		</div>
 	{% endfor %}
