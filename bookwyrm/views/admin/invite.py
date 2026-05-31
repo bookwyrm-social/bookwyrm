@@ -146,6 +146,9 @@ class ManageInviteRequests(View):
 
     def post(self, request):
         """send out an invite"""
+        if request.POST.get("revoke") == "true":
+            return self.delete(request)
+
         invite_request = get_object_or_404(
             models.InviteRequest, id=request.POST.get("invite-request")
         )
@@ -159,6 +162,20 @@ class ManageInviteRequests(View):
             invite_request.save()
         emailing.invite_email(invite_request)
 
+        return redirect(
+            "{:s}?{:s}".format(
+                reverse("settings-invite-requests"), urlencode(request.GET.dict())
+            )
+        )
+
+    def delete(self, request):
+        """revoke a sent, unused invite"""
+        invite_request = get_object_or_404(
+            models.InviteRequest, id=request.POST.get("invite-request")
+        )
+
+        if invite_request.invite and not invite_request.invite.times_used:
+            invite_request.invite.delete()
         return redirect(
             "{:s}?{:s}".format(
                 reverse("settings-invite-requests"), urlencode(request.GET.dict())

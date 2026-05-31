@@ -145,6 +145,44 @@ class InviteViews(TestCase):
         req.refresh_from_db()
         self.assertIsNotNone(req.invite)
 
+    def test_manage_invite_requests_revoke(self):
+        """revoke a sent, unused invite"""
+        invite = models.SiteInvite.objects.create(user=self.local_user)
+        req = models.InviteRequest.objects.create(
+            email="fish@example.com", invite=invite
+        )
+
+        view = views.ManageInviteRequests.as_view()
+        request = self.factory.post("", {"invite-request": req.id, "revoke": "true"})
+        request.user = self.local_user
+        request.user.is_superuser = True
+
+        view(request)
+
+        req.refresh_from_db()
+        self.assertIsNone(req.invite)
+        self.assertFalse(models.SiteInvite.objects.filter(id=invite.id).exists())
+
+    def test_manage_invite_requests_revoke_used(self):
+        """a used invite is not revoked"""
+        invite = models.SiteInvite.objects.create(
+            user=self.local_user, use_limit=1, times_used=1
+        )
+        req = models.InviteRequest.objects.create(
+            email="fish@example.com", invite=invite
+        )
+
+        view = views.ManageInviteRequests.as_view()
+        request = self.factory.post("", {"invite-request": req.id, "revoke": "true"})
+        request.user = self.local_user
+        request.user.is_superuser = True
+
+        view(request)
+
+        req.refresh_from_db()
+        self.assertIsNotNone(req.invite)
+        self.assertTrue(models.SiteInvite.objects.filter(id=invite.id).exists())
+
     def test_ignore_invite_request(self):
         """don't invite that jerk"""
         req = models.InviteRequest.objects.create(email="fish@example.com")
