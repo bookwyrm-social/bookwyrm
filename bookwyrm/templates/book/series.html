@@ -64,7 +64,7 @@
 	</div>
 
 	<div class="columns is-multiline is-mobile">
-	{% for seriesbook in series.seriesbooks.all %}
+	{% for seriesbook in series_books %}
 		<div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column" itemscope itemtype="https://schema.org/CreativeWork">
 		    <div class="is-flex-grow-1 mb-3">
 				<meta itemprop="isPartOf" content="{{series.name}}">
@@ -76,5 +76,8 @@
 	{% endfor %}
 	</div>
 	{% endwith %}
+    <div>
+		{% include 'snippets/pagination.html' with page=series_books path=request.path %}
+	</div>
 </div>
 {% endblock %}
