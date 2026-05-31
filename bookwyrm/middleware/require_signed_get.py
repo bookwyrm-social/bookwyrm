@@ -3,7 +3,7 @@
 import re
 from requests.exceptions import HTTPError
 
-from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseForbidden
 
 from bookwyrm.activitypub import resolve_remote_id
 from bookwyrm.connectors import get_data
@@ -46,7 +46,7 @@ class RequireSignedGet:
 
                 # require signed headers for everything else
                 if not has_valid_get_signature(request):
-                    raise PermissionDenied
+                    return HttpResponseForbidden("Invalid signature")
 
         # we're good, continue
         return self.get_response(request)
