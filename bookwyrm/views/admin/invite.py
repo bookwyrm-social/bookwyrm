@@ -48,6 +48,9 @@ class ManageInvites(View):
 
     def post(self, request):
         """creates an invite database entry"""
+        if request.POST.get("delete") == "true":
+            return self.delete(request)
+
         form = forms.CreateInviteForm(request.POST)
         if not form.is_valid():
             return HttpResponseBadRequest(f"ERRORS: {form.errors}")
@@ -64,6 +67,14 @@ class ManageInvites(View):
         )
         data = {"invites": paginated.page(1), "form": form}
         return TemplateResponse(request, "settings/invites/manage_invites.html", data)
+
+    def delete(self, request):
+        """delete an invite code"""
+        invite = get_object_or_404(
+            models.SiteInvite, id=request.POST.get("invite"), user=request.user
+        )
+        invite.delete()
+        return redirect("settings-invites")
 
 
 class Invite(View):
@@ -146,7 +157,7 @@ class ManageInviteRequests(View):
 
     def post(self, request):
         """send out an invite"""
-        if request.POST.get("revoke") == "true":
+        if request.POST.get("delete") == "true":
             return self.delete(request)
 
         invite_request = get_object_or_404(
@@ -169,7 +180,7 @@ class ManageInviteRequests(View):
         )
 
     def delete(self, request):
-        """revoke a sent, unused invite"""
+        """delete an unused invite request"""
         invite_request = get_object_or_404(
             models.InviteRequest, id=request.POST.get("invite-request")
         )

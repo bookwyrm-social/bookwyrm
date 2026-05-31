@@ -81,6 +81,19 @@ class InviteViews(TestCase):
         self.assertEqual(invite.use_limit, 3)
         self.assertIsNone(invite.expiry)
 
+    def test_manage_invites_delete(self):
+        """delete an invite code"""
+        invite = models.SiteInvite.objects.create(user=self.local_user)
+
+        view = views.ManageInvites.as_view()
+        request = self.factory.post("", {"invite": invite.id, "delete": "true"})
+        request.user = self.local_user
+        request.user.is_superuser = True
+
+        view(request)
+
+        self.assertFalse(models.SiteInvite.objects.filter(id=invite.id).exists())
+
     def test_invite_request(self):
         """request to join a server"""
         form = forms.InviteRequestForm()
@@ -153,7 +166,7 @@ class InviteViews(TestCase):
         )
 
         view = views.ManageInviteRequests.as_view()
-        request = self.factory.post("", {"invite-request": req.id, "revoke": "true"})
+        request = self.factory.post("", {"invite-request": req.id, "delete": "true"})
         request.user = self.local_user
         request.user.is_superuser = True
 
@@ -173,7 +186,7 @@ class InviteViews(TestCase):
         )
 
         view = views.ManageInviteRequests.as_view()
-        request = self.factory.post("", {"invite-request": req.id, "revoke": "true"})
+        request = self.factory.post("", {"invite-request": req.id, "delete": "true"})
         request.user = self.local_user
         request.user.is_superuser = True
 

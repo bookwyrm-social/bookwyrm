@@ -92,7 +92,7 @@
                         <form name="revoke-invite" method="post" action="{% url 'settings-invite-requests' %}">
                             {% csrf_token %}
                             <input type="hidden" name="invite-request" value="{{ req.id }}">
-                            <input type="hidden" name="revoke" value="true">
+                            <input type="hidden" name="delete" value="true">
                             <button type="submit" class="button is-danger is-light is-small is-w-s">{% trans "Revoke invite" %}</button>
                         </form>
                     </div>
