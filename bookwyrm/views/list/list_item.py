@@ -5,10 +5,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from markdown import markdown
-
 from bookwyrm import forms, models
-from bookwyrm.utils import sanitizer
+from bookwyrm.views.helpers import convert_to_markdown
 
 
 @method_decorator(login_required, name="dispatch")
@@ -23,14 +21,8 @@ class ListItem(View):
             # save the plain, unformatted version of the status for future editing
             item = form.save(request, commit=False)
             item.raw_notes = item.notes
-            item.notes = notes_to_markdown(item.notes)
+            item.notes = convert_to_markdown(item.notes)
             item.save()
         else:
             raise Exception(form.errors)
         return redirect("list", list_item.book_list.id)
-
-def notes_to_markdown(notes):
-    """convert to markdown"""
-    notes = markdown(notes)
-    # sanitize resulting html
-    return sanitizer.clean(notes)
