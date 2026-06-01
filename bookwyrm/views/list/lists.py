@@ -45,6 +45,7 @@ class Lists(View):
         # list should not have a group if it is not group curated
         if not book_list.curation == "group":
             book_list.group = None
+        book_list.save()
 
         book_id = request.POST.get("book")
         if book_id:
