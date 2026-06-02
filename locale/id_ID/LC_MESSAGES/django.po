@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-23 18:40+0000\n"
-"PO-Revision-Date: 2026-05-31 13:30\n"
+"PO-Revision-Date: 2026-06-02 12:31\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Indonesian\n"
 "Language: id\n"
@@ -283,21 +283,21 @@ msgstr "Diblokir"
 #: bookwyrm/models/fields.py:36
 #, python-format
 msgid "%(value)s is not a valid remote_id"
-msgstr ""
+msgstr "%(value)s bukan remote_id yang valid"
 
 #: bookwyrm/models/fields.py:45 bookwyrm/models/fields.py:54
 #, python-format
 msgid "%(value)s is not a valid username"
-msgstr ""
+msgstr "%(value)s buka nama pengguna yang valid"
 
 #: bookwyrm/models/fields.py:201 bookwyrm/templates/layout.html:129
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
-msgstr ""
+msgstr "nama pengguna"
 
 #: bookwyrm/models/fields.py:206
 msgid "A user with that username already exists."
-msgstr ""
+msgstr "Pengguna dengan nama tersebut sudah ada."
 
 #: bookwyrm/models/fields.py:225
 #: bookwyrm/templates/snippets/privacy-icons.html:3
@@ -305,7 +305,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/privacy_select.html:11
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:11
 msgid "Public"
-msgstr ""
+msgstr "Publik"
 
 #: bookwyrm/models/fields.py:226
 #: bookwyrm/templates/snippets/privacy-icons.html:7
@@ -313,7 +313,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/privacy_select.html:14
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:14
 msgid "Unlisted"
-msgstr ""
+msgstr "Tidak terdaftar"
 
 #: bookwyrm/models/fields.py:227
 #: bookwyrm/templates/snippets/privacy_select.html:17
@@ -322,7 +322,7 @@ msgstr ""
 #: bookwyrm/templates/user/relationships/followers.html:21
 #: bookwyrm/templates/user/relationships/layout.html:11
 msgid "Followers"
-msgstr ""
+msgstr "Pengikut"
 
 #: bookwyrm/models/fields.py:228
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:6
@@ -331,15 +331,15 @@ msgstr ""
 #: bookwyrm/templates/snippets/privacy_select.html:20
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:17
 msgid "Private"
-msgstr ""
+msgstr "Privat"
 
 #: bookwyrm/models/housekeeping.py:117
 msgid "Missing"
-msgstr ""
+msgstr "Hilang"
 
 #: bookwyrm/models/housekeeping.py:118
 msgid "Wrong Path"
-msgstr ""
+msgstr "Jalur Salah"
 
 #: bookwyrm/models/import_job.py:51 bookwyrm/models/job.py:19
 #: bookwyrm/templates/import/import.html:184
@@ -352,7 +352,7 @@ msgstr ""
 #: bookwyrm/templates/settings/imports/imports.html:270
 #: bookwyrm/templates/snippets/user_active_tag.html:8
 msgid "Active"
-msgstr ""
+msgstr "Aktif"
 
 #: bookwyrm/models/import_job.py:52 bookwyrm/models/job.py:20
 #: bookwyrm/templates/import/import.html:182
@@ -362,53 +362,53 @@ msgstr ""
 #: bookwyrm/templates/settings/files.html:160
 #: bookwyrm/templates/settings/files.html:342
 msgid "Complete"
-msgstr ""
+msgstr "Selesai"
 
 #: bookwyrm/models/import_job.py:53 bookwyrm/models/job.py:21
 msgid "Stopped"
-msgstr ""
+msgstr "Dihentikan"
 
 #: bookwyrm/models/import_job.py:87 bookwyrm/models/import_job.py:95
 msgid "Import stopped"
-msgstr ""
+msgstr "Impor dihentikan"
 
 #: bookwyrm/models/import_job.py:377 bookwyrm/models/import_job.py:402
 msgid "Error loading book"
-msgstr ""
+msgstr "Eror saat memuat buku"
 
 #: bookwyrm/models/import_job.py:386
 msgid "Could not find a match for book"
-msgstr ""
+msgstr "Tidak dapat menemukan buku yang cocok"
 
 #: bookwyrm/models/job.py:22
 #: bookwyrm/templates/import/user_import_status.html:69
 msgid "Failed"
-msgstr ""
+msgstr "Gagal"
 
 #: bookwyrm/models/link.py:56
 msgid "Free"
-msgstr ""
+msgstr "Gratis"
 
 #: bookwyrm/models/link.py:57
 msgid "Purchasable"
-msgstr ""
+msgstr "Dapat dibeli"
 
 #: bookwyrm/models/link.py:58
 msgid "Available for loan"
-msgstr ""
+msgstr "Dapat dipinjam"
 
 #: bookwyrm/models/link.py:75
 #: bookwyrm/templates/settings/link_domains/link_domains.html:23
 msgid "Approved"
-msgstr ""
+msgstr "Disetujui"
 
 #: bookwyrm/models/report.py:86
 msgid "Resolved report"
-msgstr ""
+msgstr "Laporan diselesaikan"
 
 #: bookwyrm/models/report.py:87
 msgid "Re-opened report"
-msgstr ""
+msgstr "Laporan dibuka kembali"
 
 #: bookwyrm/models/report.py:88
 msgid "Messaged reporter"
@@ -420,61 +420,61 @@ msgstr ""
 
 #: bookwyrm/models/report.py:90
 msgid "Suspended user"
-msgstr ""
+msgstr "Pengguna yang ditangguhkan"
 
 #: bookwyrm/models/report.py:91
 msgid "Un-suspended user"
-msgstr ""
+msgstr "Pengguna yang batal ditangguhkan"
 
 #: bookwyrm/models/report.py:92
 msgid "Changed user permission level"
-msgstr ""
+msgstr "Level hak pengguna yang diubah"
 
 #: bookwyrm/models/report.py:93
 msgid "Deleted user account"
-msgstr ""
+msgstr "Akun pengguna yang dihapus"
 
 #: bookwyrm/models/report.py:94
 msgid "Blocked domain"
-msgstr ""
+msgstr "Domain yang diblokir"
 
 #: bookwyrm/models/report.py:95
 msgid "Approved domain"
-msgstr ""
+msgstr "Domain yang disetujui"
 
 #: bookwyrm/models/report.py:96
 msgid "Deleted item"
-msgstr ""
+msgstr "Item yang dihapus"
 
 #: bookwyrm/models/session.py:43
 msgid "Unknown"
-msgstr ""
+msgstr "Tidak diketahui"
 
 #: bookwyrm/models/status.py:191
 #, python-format
 msgid "%(display_name)s's status"
-msgstr ""
+msgstr "Status %(display_name)s"
 
 #: bookwyrm/models/status.py:365
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
-msgstr ""
+msgstr "Komentar %(display_name)s di %(book_title)s"
 
 #: bookwyrm/models/status.py:416
 #, python-format
 msgid "%(display_name)s's quote from %(book_title)s"
-msgstr ""
+msgstr "Kutipan %(display_name)s dari %(book_title)s"
 
 #: bookwyrm/models/status.py:456
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
-msgstr ""
+msgstr "Ulasan %(display_name)s terhadap %(book_title)s"
 
 #: bookwyrm/models/status.py:488
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
-msgstr[0] ""
+msgstr[0] "%(display_name)s menilai %(book_title)s: %(display_rating).1f bintang"
 
 #: bookwyrm/models/user.py:40 bookwyrm/templates/book/book.html:359
 msgid "Reviews"
