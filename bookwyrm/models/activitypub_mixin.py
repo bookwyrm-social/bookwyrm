@@ -1,6 +1,5 @@
 """activitypub model functionality"""
 
-import asyncio
 from base64 import b64encode
 from collections import namedtuple
 from functools import reduce
@@ -11,7 +10,8 @@ from typing import Any, Optional
 from uuid import uuid4
 from typing_extensions import Self
 
-import aiohttp
+from gevent.pool import Pool
+import requests
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
@@ -541,27 +541,13 @@ def broadcast_task(sender_id: int, activity: str, recipients: list[str]):
 
     user_model = apps.get_model("bookwyrm.User", require_ready=True)
     sender = user_model.objects.select_related("key_pair").get(id=sender_id)
-    asyncio.run(async_broadcast(recipients, sender, activity))
+
+    pool = Pool(100)
+    pool.map(lambda recipient: sign_and_send(sender, activity, recipient), recipients)
 
 
-async def async_broadcast(recipients: list[str], sender, data: str):
-    """Send all the broadcasts simultaneously"""
-    timeout = aiohttp.ClientTimeout(total=10)
-    async with aiohttp.ClientSession(timeout=timeout) as session:
-        tasks = []
-        for recipient in recipients:
-            tasks.append(
-                asyncio.ensure_future(sign_and_send(session, sender, data, recipient))
-            )
-
-        results = await asyncio.gather(*tasks)
-        return results
-
-
-async def sign_and_send(
-    session: aiohttp.ClientSession, sender, data: str, destination: str, **kwargs
-):
-    """Sign the messages and send them in an asynchronous bundle"""
+def sign_and_send(sender, data: str, destination: str, **kwargs):
+    """Sign a message and send it to a single destination inbox"""
     now = http_date()
 
     if not sender.key_pair.private_key:
@@ -587,23 +573,17 @@ async def sign_and_send(
     }
 
     try:
-        async with session.post(destination, data=data, headers=headers) as response:
-            if not response.ok:
-                logger.exception(
-                    "Failed to send broadcast to %s: %s", destination, response.reason
-                )
-                if kwargs.get("use_legacy_key") is not True:
-                    logger.info("Trying again with legacy keyId header value")
-                    asyncio.ensure_future(
-                        sign_and_send(
-                            session, sender, data, destination, use_legacy_key=True
-                        )
-                    )
-
-            return response
-    except asyncio.TimeoutError:
+        response = requests.post(destination, data=data, headers=headers, timeout=10)
+        if not response.ok:
+            logger.error(
+                "Failed to send broadcast to %s: %s", destination, response.reason
+            )
+            if kwargs.get("use_legacy_key") is not True:
+                logger.info("Trying again with legacy keyId header value")
+                sign_and_send(sender, data, destination, use_legacy_key=True)
+    except requests.exceptions.Timeout:
         logger.info("Connection timed out for url: %s", destination)
-    except aiohttp.ClientError as err:
+    except requests.exceptions.RequestException as err:
         logger.exception(err)
 
 

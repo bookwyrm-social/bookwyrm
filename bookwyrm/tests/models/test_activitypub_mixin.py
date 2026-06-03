@@ -452,12 +452,14 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(page_2.orderedItems[-1]["content"], "<p>test status 0</p>")
 
     def test_broadcast_task(self, *_):
-        """Should be calling asyncio"""
+        """Should sign and send to each recipient"""
         recipients = [
             "https://instance.example/user/inbox",
             "https://instance.example/okay/inbox",
         ]
-        with patch("bookwyrm.models.activitypub_mixin.asyncio.run") as mock:
+        with patch("bookwyrm.models.activitypub_mixin.sign_and_send") as mock:
             broadcast_task(self.local_user.id, {}, recipients)
-        self.assertTrue(mock.called)
-        self.assertEqual(mock.call_count, 1)
+        self.assertEqual(mock.call_count, len(recipients))
+        self.assertEqual(
+            {call.args[2] for call in mock.call_args_list}, set(recipients)
+        )
