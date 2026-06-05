@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-23 18:40+0000\n"
-"PO-Revision-Date: 2026-06-05 18:52\n"
+"PO-Revision-Date: 2026-06-05 19:58\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -474,9 +474,9 @@ msgstr ""
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
-msgstr[0] "%(display_name)s оценили %(book_title)s: %(display_rating).1f звезда"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%(display_name)s оценил(а) %(book_title)s: %(display_rating).1f звезда"
+msgstr[1] "%(display_name)s оценил(а) %(book_title)s: %(display_rating).1f звезды"
+msgstr[2] "%(display_name)s оценил(а) %(book_title)s: %(display_rating).1f звёзд"
 msgstr[3] ""
 
 #: bookwyrm/models/user.py:40 bookwyrm/templates/book/book.html:359
@@ -7589,18 +7589,18 @@ msgstr[3] ""
 #, python-format
 msgid "set a goal to read %(counter)s book in %(year)s"
 msgid_plural "set a goal to read %(counter)s books in %(year)s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "поставил(а) цель прочитать %(counter)s книгу в %(year)s"
+msgstr[1] "поставил(а) цель прочитать %(counter)s книги в %(year)s"
+msgstr[2] "поставил(а) цель прочитать %(counter)s книг в %(year)s"
 msgstr[3] ""
 
 #: bookwyrm/templates/snippets/generated_status/rating.html:3
 #, python-format
 msgid "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
 msgid_plural "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "оценил(а) <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s звезда"
+msgstr[1] "оценил(а) <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s звезды"
+msgstr[2] "оценил(а) <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s звёзд"
 msgstr[3] ""
 
 #: bookwyrm/templates/snippets/generated_status/rating_pure_name.html:3
@@ -7616,15 +7616,15 @@ msgstr[3] ""
 #, python-format
 msgid "Review of \"%(book_title)s\" (%(display_rating)s star): %(review_title)s"
 msgid_plural "Review of \"%(book_title)s\" (%(display_rating)s stars): %(review_title)s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Рецензия на «%(book_title)s» (%(display_rating)s звезда): %(review_title)s"
+msgstr[1] "Рецензия на «%(book_title)s» (%(display_rating)s звезды): %(review_title)s"
+msgstr[2] "Рецензия на «%(book_title)s» (%(display_rating)s звёзд): %(review_title)s"
 msgstr[3] ""
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:12
 #, python-format
 msgid "Review of \"%(book_title)s\": %(review_title)s"
-msgstr ""
+msgstr "Рецензия на «%(book_title)s»: %(review_title)s"
 
 #: bookwyrm/templates/snippets/goal_form.html:4
 #, python-format
@@ -7891,7 +7891,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/rating.html:3
 #, python-format
 msgid "rated <a href=\"%(book_path)s\">%(book)s</a>:"
-msgstr ""
+msgstr "оценил(а) <a href=\"%(book_path)s\">%(book)s</a>:"
 
 #: bookwyrm/templates/snippets/status/headers/read.html:10
 #, python-format
@@ -7927,7 +7927,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/review.html:33
 #, python-format
 msgid "rated <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "оценил(а) <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
 #, python-format
