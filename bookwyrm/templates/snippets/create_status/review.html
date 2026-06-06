@@ -19,7 +19,6 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
                 name="name"
                 maxlength="255"
                 class="input"
-                required=""
                 id="id_name_{{ book.id }}"
                 placeholder="{% blocktrans with book_title=book.title %}Your review of '{{ book_title }}'{% endblocktrans %}"
                 value="{% firstof draft.name ''%}"

@@ -6,7 +6,7 @@
             <img src="{% if site.logo %}{% get_media_prefix %}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}" alt="BookWyrm logo" loading="lazy" decoding="async">
         </figure>
     </div>
-    <div class="content">
+    <div class="column content">
         <p class="block">
             {{ site.instance_description | safe }}
         </p>
