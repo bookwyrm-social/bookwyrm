@@ -64,17 +64,20 @@
 	</div>
 
 	<div class="columns is-multiline is-mobile">
-	{% for seriesbook in books %}
+	{% for seriesbook in series_books %}
 		<div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column" itemscope itemtype="https://schema.org/CreativeWork">
 		    <div class="is-flex-grow-1 mb-3">
 				<meta itemprop="isPartOf" content="{{series.name}}">
 				<meta itemprop="name" content="{{book.title}}">
                                 <span class="subtitle">{% if seriesbook.series_number %}{% blocktrans with series_number=seriesbook.series_number %}Book {{ series_number }}{% endblocktrans %}{% endif %}</span>
-				{% include 'landing/small-book.html' with book=seriesbook.book.work.default_edition %}
+				{% include 'snippets/small-book.html' with book=seriesbook.book.work.default_edition %}
 			</div>
 		</div>
 	{% endfor %}
 	</div>
 	{% endwith %}
+    <div>
+		{% include 'snippets/pagination.html' with page=series_books path=request.path %}
+	</div>
 </div>
 {% endblock %}

@@ -30,26 +30,20 @@ class Series(View):
         if is_api_request(request):
             return ActivitypubResponse(series.to_activity(**request.GET))
 
-        blocked_books = (
-            request.user.blocked_books.all() if request.user.is_authenticated else []
-        )
-        books = (
-            series.seriesbooks.exclude(book__in=blocked_books)
-            .prefetch_related("book__work", "book__authors")
-            .order_by("series_number")
-        )
-
-        works = models.Work.objects.filter(id__in=books.values_list("book", flat=True))
+        items = series.seriesbooks.prefetch_related(
+            "book__work", "book__work__editions__authors"
+        ).all()
+        series_books = sorted(items, key=lambda sb: sb.natural_sort_key)
         authors = models.Author.objects.filter(
-            id__in=works.values_list("authors", flat=True)
+            id__in=items.values_list("book__work__editions__authors")
         )
 
-        paginated = Paginator(books.all(), PAGE_LENGTH)
+        paginated = Paginator(series_books, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
 
         data = {
             "series": series,
-            "books": page,
+            "series_books": page,
             "series_authors": {"authors": authors},
         }
 

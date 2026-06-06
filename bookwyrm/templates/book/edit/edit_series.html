@@ -69,7 +69,7 @@
                     <meta itemprop="isPartOf" content="{{series.name}}">
                     <meta itemprop="name" content="{{seriesbook.book.title}}">
                     <span class="subtitle"></span>
-                    {% include 'landing/small-book.html' with book=seriesbook.book.work.default_edition %}
+                    {% include 'snippets/small-book.html' with book=seriesbook.book.work.default_edition %}
                 </div>
                 <div class="columns flex is-vcentered my-2 mr-2">
                     <label class="label column is-half" for="id_series_number">{% trans "Series position:" %}</label>
