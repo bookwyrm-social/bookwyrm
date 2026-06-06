@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-23 18:40+0000\n"
-"PO-Revision-Date: 2026-06-06 20:38\n"
+"PO-Revision-Date: 2026-06-06 21:57\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -2080,7 +2080,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a> хочет прочитать
 #: bookwyrm/templates/discover/card-header.html:13
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> finished reading <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> дочитал(а) <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:18
 #, python-format
@@ -2839,7 +2839,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/group.html:100
 msgid "Congratulations, you've finished the tour! Now you know the basics, but there is lots more to explore on your own. Happy reading!"
-msgstr ""
+msgstr "Поздравляем, вы завершили тур! Теперь вы знаете основы, но вам ещё предстоит многое открыть для себя самостоятельно. Приятного чтения!"
 
 #: bookwyrm/templates/guided_tour/group.html:115
 msgid "End tour"
@@ -7896,12 +7896,12 @@ msgstr "оценил(а) <a href=\"%(book_path)s\">%(book)s</a>:"
 #: bookwyrm/templates/snippets/status/headers/read.html:10
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "дочитал(а) <a href=\"%(book_path)s\">%(book)s</a> от <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/read.html:17
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "дочитал(а) <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:10
 #, python-format
@@ -7952,7 +7952,7 @@ msgstr "хочет прочитать <a href=\"%(book_path)s\">%(book)s</a>"
 #: bookwyrm/templates/snippets/status/layout.html:24
 #: bookwyrm/templates/snippets/status/status_options.html:17
 msgid "Delete status"
-msgstr ""
+msgstr "Удалить статус"
 
 #: bookwyrm/templates/snippets/status/layout.html:57
 #: bookwyrm/templates/snippets/status/layout.html:58
@@ -8157,7 +8157,7 @@ msgstr "Только цитаты"
 
 #: bookwyrm/templates/user/user.html:128
 msgid "Comments only"
-msgstr ""
+msgstr "Только комментарии"
 
 #: bookwyrm/templates/user/user.html:144
 msgid "No activities yet!"
