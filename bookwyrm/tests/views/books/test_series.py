@@ -190,14 +190,15 @@ class SeriesViews(TestCase):
         view = views.Series.as_view()
         request = self.factory.get("")
         request.user = self.user
-        result = view(request, self.seriesbook.id)
+        result = view(request, self.series.id)
 
-        books = result.context_data["books"]
-        self.assertEqual(books.object_list.count(), 2)
+        books = result.context_data["series_books"]
+        print(books.object_list)
+        self.assertEqual(len(books.object_list), 2)
 
         self.user.blocked_books.add(bad_work)
 
         result = view(request, self.series.id)
 
-        books = result.context_data["books"]
-        self.assertEqual(books.object_list.count(), 1)
+        books = result.context_data["series_books"]
+        self.assertEqual(len(books.object_list), 1)
