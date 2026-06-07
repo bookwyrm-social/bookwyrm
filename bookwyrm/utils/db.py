@@ -1,7 +1,7 @@
 """Database utilities"""
 
 from typing import Optional, Iterable, Set, cast
-import sqlparse  # type: ignore[import-untyped]
+import sqlparse
 
 
 def format_trigger(sql: str) -> str:
@@ -10,16 +10,13 @@ def format_trigger(sql: str) -> str:
     we remove whitespace and use consistent casing so as to avoid migrations
     due to formatting changes.
     """
-    return cast(
-        str,
-        sqlparse.format(
-            sql,
-            strip_comments=True,
-            strip_whitespace=True,
-            use_space_around_operators=True,
-            keyword_case="upper",
-            identifier_case="lower",
-        ),
+    return sqlparse.format(
+        sql,
+        strip_comments=True,
+        strip_whitespace=True,
+        use_space_around_operators=True,
+        keyword_case="upper",
+        identifier_case="lower",
     )
 
 
