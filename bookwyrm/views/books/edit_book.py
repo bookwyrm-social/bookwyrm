@@ -28,7 +28,6 @@ from bookwyrm.utils.isni import (
 )
 from bookwyrm.views.helpers import get_edition, get_mergeable_object_or_404
 
-
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.edit_book", raise_exception=True), name="dispatch"
@@ -61,6 +60,8 @@ class EditBook(View):
         data = {"book": book, "form": form}
         ensure_transient_values_persist(request, data)
         if not form.is_valid():
+            if "cover" in form.errors and form.has_error("cover", "invalid_image"):
+                del data["form"].files["cover"]
             ensure_transient_values_persist(request, data, add_author=True)
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
@@ -152,6 +153,8 @@ class CreateBook(View):
             }
 
         if not form.is_valid():
+            if "cover" in form.errors and form.has_error("cover", "invalid_image"):
+                del data["form"].files["cover"]
             ensure_transient_values_persist(request, data, form=form)
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
