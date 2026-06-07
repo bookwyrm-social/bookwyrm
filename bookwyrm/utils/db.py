@@ -1,6 +1,6 @@
 """Database utilities"""
 
-from typing import Optional, Iterable, Set, cast
+from typing import Optional, Iterable, Set
 import sqlparse
 
 
