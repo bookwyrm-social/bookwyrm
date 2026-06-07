@@ -33,7 +33,13 @@ class Report(View):
         if not form.is_valid():
             raise ValueError(form.errors)
 
-        report = form.save(request)
+        # don't broadcast before the statuses are attached
+        # there might be a better way to do this
+        report = form.save(request, commit=False)
+        report.save(broadcast=False)
+        form.save_m2m()
+        report.broadcast(report.to_activity(), report.user)
+
         if report.links.exists():
             # revert the domain to pending
             domain = report.links.first().domain
