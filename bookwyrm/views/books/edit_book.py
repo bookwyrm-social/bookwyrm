@@ -28,6 +28,7 @@ from bookwyrm.utils.isni import (
 )
 from bookwyrm.views.helpers import get_edition, get_mergeable_object_or_404
 
+
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.edit_book", raise_exception=True), name="dispatch"
