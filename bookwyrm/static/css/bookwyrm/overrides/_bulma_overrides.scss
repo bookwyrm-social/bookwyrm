@@ -58,10 +58,28 @@
 
 .card {
     overflow: visible;
+    box-shadow: none;
+    border: 1px solid $border;
 }
 
-.card.has-border {
-    border: 1px solid $border;
+.card, .card-header {
+  box-shadow: none;
+}
+
+.card-content {
+  padding: 1rem;
+}
+
+.card-footer {
+  border-top: none;
+}
+
+.card-footer-item {
+  border: none !important;
+}
+
+.card-footer-item {
+  padding: 0.25rem;
 }
 
 .scroll-x {

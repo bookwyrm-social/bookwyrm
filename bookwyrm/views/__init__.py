@@ -6,6 +6,7 @@ from .admin.announcements import EditAnnouncement, delete_announcement
 from .admin.automod import AutoMod, automod_delete, run_automod
 from .admin.automod import schedule_automod_task, unschedule_automod_task
 from .admin.celery_status import CeleryStatus, celery_ping
+from .admin.redis import RedisStatus
 from .admin.connectors import (
     ConnectorSettings,
     deactivate_connector,
@@ -86,7 +87,7 @@ from .books.books import (
     add_description,
     resolve_book,
 )
-from .books.series import BookSeriesBy
+
 from .books.books import update_book_from_remote
 from .books.edit_book import (
     EditBook,
@@ -96,6 +97,7 @@ from .books.edit_book import (
 )
 from .books.editions import Editions, switch_edition
 from .books.links import BookFileLinks, AddFileLink, delete_link
+from .books.series import Series, SeriesBook, EditSeries
 
 # landing
 from .landing.about import about, privacy, conduct, impressum

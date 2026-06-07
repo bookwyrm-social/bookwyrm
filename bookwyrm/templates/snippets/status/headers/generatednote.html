@@ -10,6 +10,8 @@
     {% include 'snippets/status/headers/read.html' with book=status.mention_books.first %}
 {% elif status.content == 'started reading' or status.content == '<p>started reading</p>' %}
     {% include 'snippets/status/headers/reading.html' with book=status.mention_books.first %}
+{% elif status.content == 'stopped reading' or status.content == '<p>stopped reading</p>' %}
+    {% include 'snippets/status/headers/stopped_reading.html' with book=status.mention_books.first %}
 {% else %}
     {{ status.content }}
 {% endif %}

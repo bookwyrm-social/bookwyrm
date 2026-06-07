@@ -3,7 +3,7 @@
 import os
 from typing import AnyStr
 
-from environs import Env
+from environs import FileAwareEnv
 
 
 import requests
@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ImproperlyConfigured
 
 
-env = Env()
+env = FileAwareEnv()
 env.read_env()
 DOMAIN = env("DOMAIN")
 
@@ -29,8 +29,6 @@ RELEASE_API = env(
 PAGE_LENGTH = env.int("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE", 3600 * 24 * 365)  # One year ...ish
-
-JS_CACHE = "8a89cad7"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
@@ -119,6 +117,8 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "csp.middleware.CSPMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "bookwyrm.middleware.RequireSignedGet",
+    "bookwyrm.middleware.RequireLoginNearlyEverywhere",
     "bookwyrm.middleware.TimezoneMiddleware",
     "bookwyrm.middleware.IPBlocklistMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -129,11 +129,16 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "bookwyrm.urls"
 
+
+default_loaders = [
+    "django.template.loaders.filesystem.Loader",
+    "django.template.loaders.app_directories.Loader",
+]
+cached_loaders = [("django.template.loaders.cached.Loader", default_loaders)]
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": ["templates"],
-        "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -142,6 +147,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "bookwyrm.context_processors.site_settings",
             ],
+            "loaders": default_loaders if DEBUG else cached_loaders,
         },
     },
 ]
@@ -243,6 +249,7 @@ SEARCH_TIMEOUT = env.int("SEARCH_TIMEOUT", 8)
 # timeout for a query to an individual connector
 QUERY_TIMEOUT = env.int("INTERACTIVE_QUERY_TIMEOUT", env.int("QUERY_TIMEOUT", 5))
 
+CACHE_KEY_PREFIX = "django_cache"
 # Redis cache backend
 if env.bool("USE_DUMMY_CACHE", False):
     CACHES = {
@@ -259,6 +266,7 @@ else:
         "default": {
             "BACKEND": "django.core.cache.backends.redis.RedisCache",
             "LOCATION": REDIS_ACTIVITY_URL,
+            "KEY_PREFIX": CACHE_KEY_PREFIX,
         },
         "file_resubmit": {
             "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
@@ -488,7 +496,7 @@ else:
             "BACKEND": "django.core.files.storage.FileSystemStorage",
         },
         "staticfiles": {
-            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+            "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
         },
     }
     # Static settings
@@ -524,6 +532,7 @@ if USE_S3_FOR_EXPORTS:
             "endpoint_url": env("EXPORTS_S3_ENDPOINT_URL", env("AWS_S3_ENDPOINT_URL")),
             "custom_domain": env("EXPORTS_S3_CUSTOM_DOMAIN", None),
             "bucket_name": env("EXPORTS_STORAGE_BUCKET_NAME"),
+            "querystring_auth": True,
         },
     }
 else:

@@ -9,9 +9,10 @@ from unittest.mock import patch
 from django.test import TestCase
 import responses
 
-from bookwyrm import models
+from bookwyrm import models, settings
 from bookwyrm.book_search import SearchResult
 from bookwyrm.connectors import connector_manager
+from bookwyrm.models.import_job import construct_search_term
 
 
 class ImportJob(TestCase):
@@ -20,14 +21,17 @@ class ImportJob(TestCase):
     @classmethod
     def setUpTestData(cls):
         """data is from a goodreads export of The Raven Tower"""
-        with (
-            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
-            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
-            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
-        ):
-            cls.local_user = models.User.objects.create_user(
-                "mouse", "mouse@mouse.mouse", "password", local=True
-            )
+
+        cls.local_user = models.User.objects.create_user(
+            "mouse", "mouse@mouse.mouse", "password", local=True
+        )
+
+        cls.instance_user = models.User.objects.create_user(
+            "instance@local.com",
+            local=True,
+            localname=settings.INSTANCE_ACTOR_USERNAME,
+            remote_id="https://example.com/users/instance_actor",
+        )
 
     def setUp(self):
         self.job = models.ImportJob.objects.create(user=self.local_user, mappings={})
@@ -43,6 +47,18 @@ class ImportJob(TestCase):
             },
         )
         self.assertEqual(item.isbn, "9780356506999")
+
+    def test_construct_search_term(self):
+        """formats queries"""
+        title = "the book title"
+        author = "author m. name"
+        result = construct_search_term(title, author)
+        self.assertEqual(result, "the book title author name")
+
+        title = "the book title (series)"
+        author = "author Name"
+        result = construct_search_term(title, author)
+        self.assertEqual(result, "the book title author Name")
 
     def test_shelf(self):
         """converts to the local shelf typology"""

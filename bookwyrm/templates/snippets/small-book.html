@@ -4,7 +4,7 @@
 {% if book %}
     {% with book=book %}
         <a href="{{ book.local_path }}">
-            {% include 'snippets/book_cover.html' with cover_class='is-w-l-mobile is-w-auto align to-b to-l' size='xxlarge' %}
+            {% include 'snippets/book_cover.html' with size='xlarge' %}
         </a>
 
         {% include 'snippets/stars.html' with rating=book|rating:request.user %}
@@ -13,7 +13,7 @@
             <a href="{{ book.local_path }}">{{ book.title }}</a>
         </h3>
 
-        {% if book.authors %}
+        {% if book.authors.exists %}
             <p class="subtitle is-6">
                 {% trans "by" %}
                 {% include 'snippets/authors.html' with limit=3 %}

@@ -15,7 +15,7 @@ from django.test import TestCase, Client
 from django.utils.http import http_date
 
 from bookwyrm import models
-from bookwyrm.activitypub import Follow
+from bookwyrm.activitypub import Follow, parse
 from bookwyrm.settings import DOMAIN, NETLOC
 from bookwyrm.signatures import create_key_pair, make_signature, make_digest
 
@@ -130,13 +130,17 @@ class Signature(TestCase):
             status=200,
         )
 
-        with patch("bookwyrm.models.user.get_remote_reviews.delay"):
-            with patch(
-                "bookwyrm.models.relationship.UserFollowRequest.accept"
-            ) as accept_mock:
-                response = self.send_test_request(sender=self.fake_remote)
-            self.assertEqual(response.status_code, 200)
-            self.assertTrue(accept_mock.called)
+        with patch(
+            "bookwyrm.views.inbox.activity_task.apply_async",
+            side_effect=parse(get_follow_activity(self.fake_remote, self.rat)).action(),
+        ):
+            with patch("bookwyrm.models.user.get_remote_reviews.delay"):
+                with patch(
+                    "bookwyrm.models.relationship.UserFollowRequest.accept"
+                ) as accept_mock:
+                    response = self.send_test_request(sender=self.fake_remote)
+                self.assertEqual(response.status_code, 200)
+                self.assertTrue(accept_mock.called)
 
     @responses.activate
     def test_key_needs_refresh(self):
@@ -158,13 +162,21 @@ class Signature(TestCase):
         data["publicKey"]["publicKeyPem"] = key_pair.public_key
         responses.add(responses.GET, self.fake_remote.remote_id, json=data, status=200)
 
-        with patch("bookwyrm.models.user.get_remote_reviews.delay"):
+        with (
+            patch("bookwyrm.models.user.get_remote_reviews.delay"),
+            patch(
+                "bookwyrm.views.inbox.activity_task.apply_async",
+                side_effect=parse(
+                    get_follow_activity(self.fake_remote, self.rat)
+                ).action(),
+            ),
+        ):
             # Key correct:
             with patch(
                 "bookwyrm.models.relationship.UserFollowRequest.accept"
             ) as accept_mock:
                 response = self.send_test_request(sender=self.fake_remote)
-            self.assertEqual(response.status_code, 200)  # BUG this is 401
+            self.assertEqual(response.status_code, 200)
             self.assertTrue(accept_mock.called)
 
             # Old key is cached, so still works:
