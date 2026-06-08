@@ -181,3 +181,62 @@ class LibrarythingImport(TestCase):
         self.assertEqual(review.rating, 4.5)
         self.assertEqual(review.published_date, make_date(2007, 5, 8))
         self.assertEqual(review.privacy, "unlisted")
+
+    def test_get_shelf_prefers_reading_dates(self, *_):
+        """a recorded finish/start date wins over the shelf column"""
+        self.assertEqual(
+            self.importer.get_shelf(
+                {
+                    "date_finished": "2007-05-08",
+                    "date_started": None,
+                    "shelf": "To read",
+                }
+            ),
+            models.Shelf.READ_FINISHED,
+        )
+        self.assertEqual(
+            self.importer.get_shelf(
+                {
+                    "date_finished": None,
+                    "date_started": "2007-04-16",
+                    "shelf": "Read",
+                }
+            ),
+            models.Shelf.READING,
+        )
+
+    def test_get_shelf_falls_back_to_shelf_column(self, *_):
+        """with no reading dates, recognised shelf values map to read statuses (#3887)"""
+        cases = [
+            ("Read", models.Shelf.READ_FINISHED),
+            ("read", models.Shelf.READ_FINISHED),
+            ("Currently reading", models.Shelf.READING),
+            ("to-read", models.Shelf.TO_READ),
+        ]
+        for value, expected in cases:
+            with self.subTest(value=value):
+                self.assertEqual(
+                    self.importer.get_shelf(
+                        {
+                            "date_finished": None,
+                            "date_started": None,
+                            "shelf": value,
+                        }
+                    ),
+                    expected,
+                )
+
+    def test_get_shelf_passes_through_custom_values(self, *_):
+        """an unrecognized shelf value becomes a custom shelf"""
+        self.assertEqual(
+            self.importer.get_shelf(
+                {"date_finished": None, "date_started": None, "shelf": "Favorites"}
+            ),
+            "Favorites",
+        )
+        self.assertEqual(
+            self.importer.get_shelf(
+                {"date_finished": None, "date_started": None, "shelf": None}
+            ),
+            models.Shelf.TO_READ,
+        )
