@@ -206,7 +206,7 @@ class LibrarythingImport(TestCase):
         )
 
     def test_get_shelf_falls_back_to_shelf_column(self, *_):
-        """with no reading dates, recognised shelf values map to read statuses (#3887)"""
+        """with no reading dates, recognised shelf values map to read statuses"""
         cases = [
             ("Read", models.Shelf.READ_FINISHED),
             ("read", models.Shelf.READ_FINISHED),
