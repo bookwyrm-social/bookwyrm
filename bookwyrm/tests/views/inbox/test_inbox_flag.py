@@ -51,7 +51,12 @@ class InboxFlag(TestCase):
             "content": "hello hello",
             "@context": "https://www.w3.org/ns/activitystreams",
         }
-        views.inbox.activity_task(activity)
+
+        with patch(
+            "bookwyrm.activitypub.verbs.resolve_remote_id",
+            side_effect=[self.local_user],
+        ):
+            views.inbox.activity_task(activity)
         # a report should now exist
         report = models.Report.objects.get(
             user=self.remote_user, reported_user=self.local_user
@@ -81,7 +86,12 @@ class InboxFlag(TestCase):
             "content": "hello hello",
             "@context": "https://www.w3.org/ns/activitystreams",
         }
-        views.inbox.activity_task(activity)
+
+        with patch(
+            "bookwyrm.activitypub.verbs.resolve_remote_id",
+            side_effect=[self.local_user, status_1, status_2],
+        ):
+            views.inbox.activity_task(activity)
         # a report should now exist
         report = models.Report.objects.get(
             user=self.remote_user, reported_user=self.local_user

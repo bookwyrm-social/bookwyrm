@@ -276,15 +276,15 @@ class Move(Verb):
 class Flag(Verb):
     """Report a user to their home server"""
 
-    to: str
+    to: str = None
     object: List[str] = None
     links: List[str] = None
     type: str = "Flag"
     content: str = None
 
-    def action(self, allow_external_connections=False):
+    def action(self):
         """Create the report and attach reported statuses"""
-        report = self.to_model(allow_external_connections=allow_external_connections)
+        report = self.to_model()
         # go through "objects" and figure out what they are
         for obj in self.object:
             # what type of obj is it?
@@ -293,8 +293,24 @@ class Flag(Verb):
                     remote_id=obj,
                     save=False,
                     model="Status",
-                    allow_external_connections=allow_external_connections,
                 )
             except ActivitySerializerError:
+                try:
+                    # Mastodon includes the user in the object
+                    item = resolve_remote_id(
+                        remote_id=obj,
+                        save=False,
+                        model="User",
+                    )
+                except ActivitySerializerError:
+                    # ¯\_(ツ)_/¯
+                    continue
+
+            # fix incoming Mastodon objects
+            if hasattr(item, "username"):
+                if not report.reported_user:
+                    report.reported_user = item
                 continue
+
             report.statuses.add(item)
+        report.save()
