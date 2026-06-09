@@ -145,7 +145,7 @@ class ActivitypubMixin:
         countdown = (
             10
             if (
-                isinstance(activity, object)
+                isinstance(activity, dict)
                 and not isinstance(activity["object"], str)
                 and activity["object"].get("type", None) in ["GeneratedNote", "Comment"]
             )
