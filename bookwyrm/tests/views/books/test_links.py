@@ -31,6 +31,16 @@ class LinkViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            cls.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
         group = Group.objects.create(name="editor")
         group.permissions.add(
             Permission.objects.create(

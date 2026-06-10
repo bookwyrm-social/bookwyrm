@@ -40,6 +40,18 @@ class User(TestCase):
                 name="hi",
                 bookwyrm_user=False,
             )
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            cls.remote_user = models.User.objects.create_user(
+                "badger",
+                "badger@badger.badger",
+                "badgerword",
+                local=False,
+                remote_id="https://example.com/users/badger",
+                inbox="https://example.com/users/badger/inbox",
+                outbox="https://example.com/users/badger/outbox",
+                bookwyrm_user=False,
+            )
+        cls.user.followers.add(cls.remote_user)
         initdb.init_groups()
         initdb.init_permissions()
 
