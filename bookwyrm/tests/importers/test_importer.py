@@ -48,17 +48,6 @@ class GenericImporter(TestCase):
             cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            cls.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@rat.com",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/users/rat",
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
-            )
-        cls.local_user.followers.add(cls.remote_user)
         work = models.Work.objects.create(title="Test Work")
         cls.book = models.Edition.objects.create(
             title="Example Edition",
@@ -164,7 +153,7 @@ class GenericImporter(TestCase):
             resolve.return_value = self.book
 
             with patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+                "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
             ) as mock:
                 import_item_task(import_item.id)
                 kwargs = mock.call_args.kwargs

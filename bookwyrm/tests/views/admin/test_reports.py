@@ -1,6 +1,5 @@
 """test for app action functionality"""
 
-import json
 from unittest.mock import patch
 
 from django.contrib.auth.models import Group
@@ -159,11 +158,11 @@ class ReportViews(TestCase):
 
         # de-activate
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as mock:
             views.moderator_delete_user(request, self.rat.id)
         self.assertEqual(mock.call_count, 1)
-        activity = json.loads(mock.call_args[1]["args"][1])
+        activity = mock.call_args[0][0]
         self.assertEqual(activity["type"], "Delete")
 
         self.rat.refresh_from_db()

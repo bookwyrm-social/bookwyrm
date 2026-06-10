@@ -1,7 +1,5 @@
 """testing models"""
 
-import json
-
 from unittest.mock import patch
 from django.contrib.auth.models import Group
 from django.db import IntegrityError
@@ -40,18 +38,6 @@ class User(TestCase):
                 name="hi",
                 bookwyrm_user=False,
             )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            cls.remote_user = models.User.objects.create_user(
-                "badger",
-                "badger@badger.badger",
-                "badgerword",
-                local=False,
-                remote_id="https://example.com/users/badger",
-                inbox="https://example.com/users/badger/inbox",
-                outbox="https://example.com/users/badger/outbox",
-                bookwyrm_user=False,
-            )
-        cls.user.followers.add(cls.remote_user)
         initdb.init_groups()
         initdb.init_permissions()
 
@@ -245,7 +231,7 @@ class User(TestCase):
         self.assertEqual(self.user.email, "mouse@mouse.mouse")
         with (
             patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+                "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
             ) as broadcast_mock,
             patch(
                 "bookwyrm.models.user.User.erase_user_statuses"
@@ -257,7 +243,7 @@ class User(TestCase):
 
         # make sure the deletion is broadcast
         self.assertEqual(broadcast_mock.call_count, 1)
-        activity = json.loads(broadcast_mock.call_args[1]["args"][1])
+        activity = broadcast_mock.call_args[0][0]
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"], self.user.remote_id)
 

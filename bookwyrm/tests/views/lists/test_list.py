@@ -248,14 +248,14 @@ class ListViews(TestCase):
 
         with (
             patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+                "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
             ) as mock,
             patch("bookwyrm.lists_stream.remove_list_task.delay"),
         ):
             result = view(request, self.list.id)
 
         self.assertEqual(mock.call_count, 1)
-        activity = json.loads(mock.call_args[1]["args"][1])
+        activity = mock.call_args[0][0]
         self.assertEqual(activity["type"], "Update")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["object"]["id"], self.list.remote_id)
@@ -289,13 +289,13 @@ class ListViews(TestCase):
         request.user = self.local_user
         with (
             patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+                "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
             ) as mock,
             patch("bookwyrm.lists_stream.remove_list_task.delay") as redis_mock,
         ):
             views.delete_list(request, self.list.id)
         self.assertTrue(redis_mock.called)
-        activity = json.loads(mock.call_args[1]["args"][1])
+        activity = mock.call_args[0][0]
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["object"]["id"], self.list.remote_id)
@@ -618,11 +618,11 @@ class ListViews(TestCase):
         request.user = self.rat
 
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as mock:
             views.add_book(request)
             self.assertEqual(mock.call_count, 1)
-            activity = json.loads(mock.call_args[1]["args"][1])
+            activity = mock.call_args[0][0]
             self.assertEqual(activity["type"], "Add")
             self.assertEqual(activity["actor"], self.rat.remote_id)
             self.assertEqual(activity["target"], self.list.remote_id)
@@ -647,12 +647,12 @@ class ListViews(TestCase):
         request.user = self.rat
 
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as mock:
             views.add_book(request)
 
         self.assertEqual(mock.call_count, 1)
-        activity = json.loads(mock.call_args[1]["args"][1])
+        activity = mock.call_args[0][0]
 
         self.assertEqual(activity["type"], "Add")
         self.assertEqual(activity["actor"], self.rat.remote_id)
@@ -680,11 +680,11 @@ class ListViews(TestCase):
         request.user = self.local_user
 
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as mock:
             views.add_book(request)
             self.assertEqual(mock.call_count, 1)
-            activity = json.loads(mock.call_args[1]["args"][1])
+            activity = mock.call_args[0][0]
             self.assertEqual(activity["type"], "Add")
             self.assertEqual(activity["actor"], self.local_user.remote_id)
             self.assertEqual(activity["target"], self.list.remote_id)

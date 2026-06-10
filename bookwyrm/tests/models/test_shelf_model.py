@@ -1,6 +1,5 @@
 """testing models"""
 
-import json
 from unittest.mock import patch
 from django.test import TestCase
 
@@ -26,17 +25,6 @@ class Shelf(TestCase):
             cls.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            cls.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@rat.com",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/users/rat",
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
-            )
-        cls.local_user.followers.add(cls.remote_user)
         work = models.Work.objects.create(title="Test Work")
         cls.book = models.Edition.objects.create(title="test book", parent_work=work)
 
@@ -67,22 +55,22 @@ class Shelf(TestCase):
         """create and broadcast shelf creation"""
 
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as mock:
             shelf = models.Shelf.objects.create(
                 name="Test Shelf", identifier="test-shelf", user=self.local_user
             )
-        activity = json.loads(mock.call_args[1]["args"][1])
+        activity = mock.call_args[0][0]
         self.assertEqual(activity["type"], "Create")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["object"]["name"], "Test Shelf")
 
         shelf.name = "arthur russel"
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as mock:
             shelf.save()
-        activity = json.loads(mock.call_args[1]["args"][1])
+        activity = mock.call_args[0][0]
         self.assertEqual(activity["type"], "Update")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["object"]["name"], "arthur russel")
@@ -96,13 +84,13 @@ class Shelf(TestCase):
             )
 
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as mock:
             shelf_book = models.ShelfBook.objects.create(
                 shelf=shelf, user=self.local_user, book=self.book
             )
         self.assertEqual(mock.call_count, 1)
-        activity = json.loads(mock.call_args[1]["args"][1])
+        activity = mock.call_args[0][0]
         self.assertEqual(activity["type"], "Add")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["object"]["id"], shelf_book.remote_id)
@@ -110,11 +98,11 @@ class Shelf(TestCase):
         self.assertEqual(shelf.books.first(), self.book)
 
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as mock:
             shelf_book.delete()
         self.assertEqual(mock.call_count, 1)
-        activity = json.loads(mock.call_args[1]["args"][1])
+        activity = mock.call_args[0][0]
         self.assertEqual(activity["type"], "Remove")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["object"]["id"], shelf_book.remote_id)
