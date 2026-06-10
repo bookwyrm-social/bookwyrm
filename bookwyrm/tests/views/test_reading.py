@@ -91,7 +91,7 @@ class ReadingViews(TestCase):
         )
         request.user = self.local_user
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as mock:
             views.ReadingStatus.as_view()(request, "start", self.book.id)
 
