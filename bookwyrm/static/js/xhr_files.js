@@ -35,9 +35,11 @@ let XhrFiles = new (class {
                 const file = item.getAsFile();
 
                 if (file.size > event.currentTarget.dataset.maxUpload) {
-                    alert(
-                        `File exceeds maximum size: ${event.currentTarget.dataset.maxUploadHuman}`
-                    );
+                    const errStr = interpolate(
+                        gettext("File exceeds maximum size: %s"),
+                        [event.currentTarget.dataset.maxUploadHuman]
+                    )
+                    alert(errStr);
 
                     return;
                 }
@@ -56,7 +58,7 @@ let XhrFiles = new (class {
                 console.error(this.response);
 
                 if (this.status == 422) {
-                    alert("The provided file isn't a valid image.");
+                    alert(gettext("The provided file isn't a valid image"));
                 }
 
                 return;
