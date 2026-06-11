@@ -35,10 +35,10 @@ let XhrFiles = new (class {
                 const file = item.getAsFile();
 
                 if (file.size > event.currentTarget.dataset.maxUpload) {
-                    const errStr = interpolate(
-                        gettext("File exceeds maximum size: %s"),
-                        [event.currentTarget.dataset.maxUploadHuman]
-                    )
+                    const errStr = interpolate(gettext("File exceeds maximum size: %s"), [
+                        event.currentTarget.dataset.maxUploadHuman,
+                    ]);
+
                     alert(errStr);
 
                     return;
