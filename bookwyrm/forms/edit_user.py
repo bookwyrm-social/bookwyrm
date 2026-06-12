@@ -11,6 +11,20 @@ from .custom_form import CustomForm
 
 
 class EditUserForm(CustomForm):
+    readwise_api_key = forms.CharField(
+        label=_("Readwise access token"),
+        required=False,
+        strip=True,
+        widget=forms.PasswordInput(
+            attrs={"aria-describedby": "desc_readwise_api_key"},
+            render_value=False,
+        ),
+    )
+    clear_readwise_api_key = forms.BooleanField(
+        label=_("Remove saved Readwise access token"),
+        required=False,
+    )
+
     class Meta:
         model = models.User
         fields = [
@@ -41,6 +55,27 @@ class EditUserForm(CustomForm):
                 attrs={"aria-describedby": "desc_discoverable"}
             ),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.readwise_api_key:
+            self.fields["readwise_api_key"].help_text = _(
+                "A Readwise access token is saved. Leave this blank to keep it."
+            )
+
+    def save(self, request, *args, **kwargs):
+        commit = kwargs.get("commit", True)
+        user = super().save(request, *args, **kwargs)
+        changed = False
+        if self.cleaned_data.get("clear_readwise_api_key"):
+            user.readwise_api_key = ""
+            changed = True
+        elif token := self.cleaned_data.get("readwise_api_key"):
+            user.readwise_api_key = token
+            changed = True
+        if changed and commit:
+            user.save(update_fields=["readwise_api_key"])
+        return user
 
 
 class LimitedEditUserForm(CustomForm):

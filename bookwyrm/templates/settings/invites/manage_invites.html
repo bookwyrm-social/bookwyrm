@@ -48,9 +48,10 @@
             <th>{% trans "Expires" %}</th>
             <th>{% trans "Max uses" %}</th>
             <th>{% trans "Times used" %}</th>
+            <th>{% trans "Action" %}</th>
         </tr>
         {% if not invites %}
-        <tr><td colspan="4">{% trans "No active invites" %}</td></tr>
+        <tr><td colspan="5">{% trans "No active invites" %}</td></tr>
         {% endif %}
         {% for invite in invites %}
         <tr>
@@ -58,6 +59,14 @@
             <td>{{ invite.expiry|naturaltime }}</td>
             <td>{{ invite.use_limit }}</td>
             <td>{{ invite.times_used }}</td>
+            <td>
+                <form name="delete-invite" method="post" action="{% url 'settings-invites' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="invite" value="{{ invite.id }}">
+                    <input type="hidden" name="delete" value="true">
+                    <button type="submit" class="button is-danger is-light is-small">{% trans "Delete" %}</button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
     </table>

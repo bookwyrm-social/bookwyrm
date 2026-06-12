@@ -21,6 +21,7 @@ from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import (
+    convert_to_markdown,
     is_api_request,
     maybe_redirect_local_path,
     redirect_to_referer,
@@ -240,6 +241,11 @@ def add_book(request):
         )
         increment_order_in_reverse(book_list.id, order_max + 1)
     item.order = order_max + 1
+
+    if item.notes:
+        item.raw_notes = item.notes
+        item.notes = convert_to_markdown(item.notes)
+
     item.save()
 
     return List().get(request, book_list.id, add_succeeded=True)

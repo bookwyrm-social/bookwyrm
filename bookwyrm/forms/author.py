@@ -4,6 +4,7 @@ from django import forms
 
 from bookwyrm import models
 from .custom_form import CustomForm
+from .widgets import SelectDateWidget
 
 
 class AuthorForm(CustomForm):
@@ -35,8 +36,8 @@ class AuthorForm(CustomForm):
             ),
             "wikidata": forms.TextInput(attrs={"aria-describedby": "desc_wikidata"}),
             "website": forms.TextInput(attrs={"aria-describedby": "desc_website"}),
-            "born": forms.SelectDateWidget(attrs={"aria-describedby": "desc_born"}),
-            "died": forms.SelectDateWidget(attrs={"aria-describedby": "desc_died"}),
+            "born": SelectDateWidget(attrs={"aria-describedby": "desc_born"}),
+            "died": SelectDateWidget(attrs={"aria-describedby": "desc_died"}),
             "openlibrary_key": forms.TextInput(
                 attrs={"aria-describedby": "desc_openlibrary_key"}
             ),

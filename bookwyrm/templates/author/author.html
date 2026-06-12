@@ -4,6 +4,7 @@
 {% load humanize %}
 {% load utilities %}
 {% load book_display_tags %}
+{% load date_ext %}
 
 {% block title %}{{ author.name }}{% endblock %}
 
@@ -44,19 +45,23 @@
                 </div>
                 {% endif %}
 
+                {% with date=author.born|naturalday_partial %}
                 {% if author.born %}
                 <div class="is-flex mt-1">
                     <dt class="has-text-weight-bold mr-1">{% trans "Born:" %}</dt>
-                    <dd itemprop="birthDate">{{ author.born|naturalday }}</dd>
+                    <dd itemprop="birthDate">{{ date }}</dd>
                 </div>
                 {% endif %}
+                {% endwith %}
 
+                {% with date=author.died|naturalday_partial %}
                 {% if author.died %}
                 <div class="is-flex mt-1">
                     <dt class="has-text-weight-bold mr-1">{% trans "Died:" %}</dt>
-                    <dd itemprop="deathDate">{{ author.died|naturalday }}</dd>
+                    <dd itemprop="deathDate">{{ date }}</dd>
                 </div>
                 {% endif %}
+                {% endwith %}
 
                 {% if series %}
                 <div class="is-flex mt-1">

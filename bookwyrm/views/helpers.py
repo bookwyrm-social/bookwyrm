@@ -6,6 +6,8 @@ import dateutil.parser
 import dateutil.tz
 from dateutil.parser import ParserError
 
+from markdown import markdown
+
 from requests import HTTPError
 from django.db.models import Q
 from django.conf import settings as django_settings
@@ -16,7 +18,7 @@ from django.utils import translation
 from bookwyrm import activitypub, models, settings
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.status import create_generated_note
-from bookwyrm.utils import regex
+from bookwyrm.utils import regex, sanitizer
 from bookwyrm.utils.validate import validate_url_domain
 
 
@@ -261,3 +263,10 @@ def get_mergeable_object_or_404(klass, id):
             pass
 
         raise Http404(f"No {queryset.model} with ID {id} exists")
+
+
+def convert_to_markdown(content):
+    """convert given content to markdown"""
+    content = markdown(content)
+    # sanitize resulting html
+    return sanitizer.clean(content)
