@@ -30,7 +30,7 @@
     {% firstof author.aliases author.born author.died as details %}
     {% firstof author.wikipedia_link author.website author.openlibrary_key author.inventaire_id author.isni author.isfdb author.wikidata as links %}
     {% if details or links %}
-    <div class="column is-3">
+    <div class="column is-3 is-one-quarter">
         {% if details %}
         <section class="block content">
             <h2 class="title is-4">{% trans "Author details" %}</h2>
@@ -170,7 +170,7 @@
     </div>
     {% endif %}
 
-    <div class="column">
+    <div class="column is-three-quarters">
         {% if author.bio %}
         {% include "snippets/trimmed_text.html" with full=author.bio trim_length=200 %}
         {% endif %}
