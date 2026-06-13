@@ -282,7 +282,7 @@ class Flag(Verb):
     type: str = "Flag"
     content: str = None
 
-    def action(self):
+    def action(self, allow_external_connections=True):
         """Create the report and attach reported statuses"""
         report = self.to_model()
         # go through "objects" and figure out what they are
