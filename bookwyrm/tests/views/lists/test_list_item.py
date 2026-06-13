@@ -72,3 +72,4 @@ class ListItemViews(TestCase):
 
         item.refresh_from_db()
         self.assertEqual(item.notes, "<p>beep boop</p>")
+        self.assertEqual(item.raw_notes, "beep boop")
