@@ -1,6 +1,5 @@
 """test for app action functionality"""
 
-import json
 from unittest.mock import patch
 import dateutil
 from django.core.exceptions import PermissionDenied
@@ -74,7 +73,7 @@ class StatusTransactions(TransactionTestCase):
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+@patch("bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast")
 class StatusViews(TestCase):
     """viewing and creating statuses"""
 
@@ -591,7 +590,7 @@ http://www.fish.com/"""
         with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             view(request, status.id)
             self.assertTrue(redis_mock.called)
-        activity = json.loads(mock.call_args_list[1][1]["args"][1])
+        activity = mock.call_args_list[1][0][0]
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"]["type"], "Tombstone")
         status.refresh_from_db()
@@ -625,7 +624,7 @@ http://www.fish.com/"""
         with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             view(request, status.id)
             self.assertTrue(redis_mock.called)
-        activity = json.loads(mock.call_args_list[1][1]["args"][1])
+        activity = mock.call_args_list[1][0][0]
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"]["type"], "Tombstone")
         status.refresh_from_db()
@@ -677,7 +676,7 @@ http://www.fish.com/"""
         request.user = self.local_user
 
         view(request, "comment", existing_status_id=status.id)
-        activity = json.loads(mock.call_args_list[1][1]["args"][1])
+        activity = mock.call_args_list[1][0][0]
         self.assertEqual(activity["type"], "Update")
         self.assertEqual(activity["object"]["id"], status.remote_id)
 

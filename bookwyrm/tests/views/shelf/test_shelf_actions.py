@@ -1,6 +1,5 @@
 """test for app action functionality"""
 
-import json
 from unittest.mock import patch
 
 from django.core.exceptions import PermissionDenied
@@ -65,12 +64,12 @@ class ShelfActionViews(TestCase):
         )
         request.user = self.local_user
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as mock:
             views.shelve(request)
 
         self.assertEqual(mock.call_count, 1)
-        activity = json.loads(mock.call_args[1]["args"][1])
+        activity = mock.call_args[0][0]
         self.assertEqual(activity["type"], "Add")
 
         item = models.ShelfBook.objects.get()
@@ -156,10 +155,10 @@ class ShelfActionViews(TestCase):
         request = self.factory.post("", {"book": self.book.id, "shelf": self.shelf.id})
         request.user = self.local_user
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as mock:
             views.unshelve(request)
-        activity = json.loads(mock.call_args[1]["args"][1])
+        activity = mock.call_args[0][0]
         self.assertEqual(activity["type"], "Remove")
         self.assertEqual(activity["object"]["id"], item.remote_id)
         self.assertEqual(self.shelf.books.count(), 0)

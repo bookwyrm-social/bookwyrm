@@ -1,6 +1,6 @@
 """testing model activitypub utilities"""
 
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from collections import namedtuple
 from dataclasses import dataclass
 import re
@@ -461,3 +461,14 @@ class ActivitypubMixins(TestCase):
             broadcast_task(self.local_user.id, {}, recipients)
         self.assertTrue(mock.called)
         self.assertEqual(mock.call_count, 1)
+
+    def test_broadcast_no_recipients(self, broadcast_mock, *_):
+        """should not queue a task when there is nobody to send to"""
+        mock_self = Mock()
+        mock_self.get_recipients.return_value = []
+
+        ActivitypubMixin.broadcast(
+            mock_self, {"type": "Create", "object": {}}, self.local_user
+        )
+
+        self.assertFalse(broadcast_mock.called)
