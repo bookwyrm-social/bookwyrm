@@ -143,6 +143,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     manually_approves_followers = fields.BooleanField(default=False)
     theme = models.ForeignKey("Theme", null=True, blank=True, on_delete=models.SET_NULL)
     hide_follows = fields.BooleanField(default=False)
+    is_private = models.BooleanField(default=False)
 
     # migration fields
     moved_to = fields.RemoteIdField(
