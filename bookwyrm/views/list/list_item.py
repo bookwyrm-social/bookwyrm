@@ -7,7 +7,6 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.views.helpers import convert_to_markdown, redirect_to_referer
-from bookwyrm.views.status import to_markdown
 
 
 @method_decorator(login_required, name="dispatch")
