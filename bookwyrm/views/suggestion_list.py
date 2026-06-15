@@ -18,6 +18,7 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views import Book
+from bookwyrm.views.helpers import convert_to_markdown
 from bookwyrm.views.helpers import get_user_from_username
 from bookwyrm.views.helpers import is_api_request, redirect_to_referer
 from bookwyrm.views.list.list import get_list_suggestions
@@ -138,7 +139,11 @@ def book_add_suggestion(request: HttpRequest, book_id: int) -> Any:
     if not form.is_valid():
         return Book().get(request, book_id, add_failed=True)
 
-    form.save(request)
+    item = form.save(request, commit=False)
+    if item.notes:
+        item.raw_notes = item.notes
+        item.notes = convert_to_markdown(item.notes)
+    item.save()
 
     return redirect_to_referer(request)
 
