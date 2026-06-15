@@ -467,7 +467,9 @@ class Work(OrderedCollectionPageMixin, Book):
     """a work (an abstract concept of a book that manifests in an edition)"""
 
     merged_model = MergedWork
-    pending_merge_target = models.ForeignKey("Work", related_name="merge_target", on_delete=models.PROTECT, null=True)
+    pending_merge_target = models.ForeignKey(
+        "Work", related_name="merge_target", on_delete=models.PROTECT, null=True
+    )
 
     # library of congress catalog control number
     lccn = fields.CharField(
@@ -614,7 +616,9 @@ class Edition(Book):
     """an edition of a book"""
 
     merged_model = MergedEdition
-    pending_merge_target = models.ForeignKey("Edition", related_name="merge_target", on_delete=models.PROTECT, null=True)
+    pending_merge_target = models.ForeignKey(
+        "Edition", related_name="merge_target", on_delete=models.PROTECT, null=True
+    )
 
     # these identifiers only apply to editions, not works
     isbn_10 = fields.CharField(
@@ -946,7 +950,9 @@ def preview_image(instance, *args, **kwargs):
 class Series(OrderedCollectionMixin, BookDataModel):
     """a series of books"""
 
-    pending_merge_target = models.ForeignKey("Series", related_name="merge_target", on_delete=models.PROTECT, null=True)
+    pending_merge_target = models.ForeignKey(
+        "Series", related_name="merge_target", on_delete=models.PROTECT, null=True
+    )
 
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor", related_name="+"
