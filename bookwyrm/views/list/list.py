@@ -130,9 +130,7 @@ def get_list_suggestions(
     suggestions = (
         user.shelfbook_set.filter(~Q(book__in=book_list.editions.all()))
         .exclude(book__parent_work=ignore_book)
-        .exclude(
-            book__parent_work__in=user.blocked_books.values_list("id", flat=True)
-        )
+        .exclude(book__parent_work__in=user.blocked_books.values_list("id", flat=True))
         .distinct()[:num_suggestions]
     )
     suggestions = [s.book for s in suggestions[:num_suggestions]]
@@ -142,9 +140,8 @@ def get_list_suggestions(
             for s in models.Work.objects.filter(
                 ~Q(editions__in=book_list.editions.all()),
                 ~Q(id=ignore_book.id if ignore_book else None),
-            ).exclude(
-                id__in=user.blocked_books.values_list("id", flat=True)
             )
+            .exclude(id__in=user.blocked_books.values_list("id", flat=True))
             .distinct()
             .order_by("-updated_date")[:num_suggestions]
         ]
