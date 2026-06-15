@@ -17,7 +17,7 @@ class ListForm(CustomForm):
 class ListItemForm(CustomForm):
     class Meta:
         model = models.ListItem
-        fields = ["user", "book", "book_list", "notes"]
+        fields = ["user", "book", "book_list", "notes", "raw_notes"]
 
 
 class SortListForm(forms.Form):
