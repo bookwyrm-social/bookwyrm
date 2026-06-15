@@ -143,6 +143,7 @@ class ActivitypubMixin:
             if (
                 isinstance(activity, object)
                 and not isinstance(activity["object"], str)
+                and not isinstance(activity["object"], list)
                 and activity["object"].get("type", None) in ["GeneratedNote", "Comment"]
             )
             else 0
