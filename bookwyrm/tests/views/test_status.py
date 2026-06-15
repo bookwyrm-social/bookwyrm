@@ -1,6 +1,5 @@
 """test for app action functionality"""
 
-import json
 from unittest.mock import patch
 import dateutil
 from django.core.exceptions import PermissionDenied
@@ -74,7 +73,7 @@ class StatusTransactions(TransactionTestCase):
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+@patch("bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast")
 class StatusViews(TestCase):
     """viewing and creating statuses"""
 
@@ -145,6 +144,29 @@ class StatusViews(TestCase):
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.book, self.book)
         self.assertIsNone(status.edited_date)
+
+    def test_create_status_quotation_syncs_readwise(self, *_):
+        """create a quote and enqueue Readwise sync"""
+        self.local_user.readwise_api_key = "readwise-token"
+        self.local_user.save(broadcast=False, update_fields=["readwise_api_key"])
+        view = views.CreateStatus.as_view()
+        form = forms.QuotationForm(
+            {
+                "quote": "a quotable bit",
+                "content": "a note",
+                "user": self.local_user.id,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with patch("bookwyrm.views.status.sync_readwise_quotation.delay") as task_mock:
+            view(request, "quotation")
+
+        status = models.Quotation.objects.get()
+        task_mock.assert_called_once_with(status.id)
 
     def test_create_status_rating(self, *_):
         """create a status"""
@@ -568,7 +590,7 @@ http://www.fish.com/"""
         with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             view(request, status.id)
             self.assertTrue(redis_mock.called)
-        activity = json.loads(mock.call_args_list[1][1]["args"][1])
+        activity = mock.call_args_list[1][0][0]
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"]["type"], "Tombstone")
         status.refresh_from_db()
@@ -602,7 +624,7 @@ http://www.fish.com/"""
         with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             view(request, status.id)
             self.assertTrue(redis_mock.called)
-        activity = json.loads(mock.call_args_list[1][1]["args"][1])
+        activity = mock.call_args_list[1][0][0]
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"]["type"], "Tombstone")
         status.refresh_from_db()
@@ -654,7 +676,7 @@ http://www.fish.com/"""
         request.user = self.local_user
 
         view(request, "comment", existing_status_id=status.id)
-        activity = json.loads(mock.call_args_list[1][1]["args"][1])
+        activity = mock.call_args_list[1][0][0]
         self.assertEqual(activity["type"], "Update")
         self.assertEqual(activity["object"]["id"], status.remote_id)
 

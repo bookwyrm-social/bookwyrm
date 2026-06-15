@@ -156,7 +156,7 @@ class FederatedServer(View):
         """update note"""
         server = get_object_or_404(models.FederatedServer, id=server)
         server.notes = request.POST.get("notes")
-        server.save(request)
+        server.save(update_fields=["notes"])
         return redirect("settings-federated-server", server.id)
 
 

@@ -1,6 +1,5 @@
 """test for app action functionality"""
 
-import json
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
@@ -81,11 +80,11 @@ class DeleteUserViews(TestCase):
 
         self.assertIsNone(self.local_user.name)
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as delay_mock:
             view(request)
         self.assertEqual(delay_mock.call_count, 1)
-        activity = json.loads(delay_mock.call_args[1]["args"][1])
+        activity = delay_mock.call_args[0][0]
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(

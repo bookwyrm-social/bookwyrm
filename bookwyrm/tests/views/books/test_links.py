@@ -1,6 +1,5 @@
 """test for app action functionality"""
 
-import json
 from unittest.mock import patch
 
 from django.contrib.auth.models import Group, Permission
@@ -76,12 +75,12 @@ class LinkViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as mock:
             view(request, self.book.id)
         self.assertEqual(mock.call_count, 1)
 
-        activity = json.loads(mock.call_args[1]["args"][1])
+        activity = mock.call_args[0][0]
         self.assertEqual(activity["type"], "Update")
         self.assertEqual(activity["object"]["type"], "Edition")
         self.assertIsInstance(activity["object"]["fileLinks"], list)
