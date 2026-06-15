@@ -12,6 +12,7 @@
     <li><a href="#profile">{% trans "Profile" %}</a></li>
     <li><a href="#display-preferences">{% trans "Display" %}</a></li>
     <li><a href="#privacy">{% trans "Privacy" %}</a></li>
+    <li><a href="#integrations">{% trans "Integrations" %}</a></li>
 </ul>
 {% endblock %}
 
@@ -141,6 +142,32 @@
             <p class="notification is-light">
                 {% blocktrans %}Looking for shelf privacy? You can set a separate visibility level for each of your shelves. Go to <a href="{{ path }}">Your Books</a>, pick a shelf from the tab bar, and click "Edit shelf."{% endblocktrans %}
             </p>
+        </div>
+    </section>
+
+    <hr aria-hidden="true">
+
+    <section class="block" id="integrations">
+        <h2 class="title is-4">{% trans "Integrations" %}</h2>
+        <div class="box">
+            <div class="field">
+                <label class="label" for="id_readwise_api_key">{% trans "Readwise access token:" %}</label>
+                {{ form.readwise_api_key }}
+
+                {% include 'snippets/form_errors.html' with errors_list=form.readwise_api_key.errors id="desc_readwise_api_key" %}
+                <p class="help">
+                    {% blocktrans %}Send new quote posts to Readwise. You can create a token at <a href="https://readwise.io/access_token">readwise.io/access_token</a>.{% endblocktrans %}
+                    {% if form.readwise_api_key.help_text %}{{ form.readwise_api_key.help_text }}{% endif %}
+                </p>
+            </div>
+            {% if request.user.readwise_api_key %}
+            <div class="field">
+                <label class="checkbox label" for="id_clear_readwise_api_key">
+                    {{ form.clear_readwise_api_key }}
+                    {% trans "Remove saved Readwise access token" %}
+                </label>
+            </div>
+            {% endif %}
         </div>
     </section>
     <div class="field"><button class="button is-primary" type="submit">{% trans "Save" %}</button></div>

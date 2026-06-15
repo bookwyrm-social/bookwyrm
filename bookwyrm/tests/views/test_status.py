@@ -146,6 +146,29 @@ class StatusViews(TestCase):
         self.assertEqual(status.book, self.book)
         self.assertIsNone(status.edited_date)
 
+    def test_create_status_quotation_syncs_readwise(self, *_):
+        """create a quote and enqueue Readwise sync"""
+        self.local_user.readwise_api_key = "readwise-token"
+        self.local_user.save(broadcast=False, update_fields=["readwise_api_key"])
+        view = views.CreateStatus.as_view()
+        form = forms.QuotationForm(
+            {
+                "quote": "a quotable bit",
+                "content": "a note",
+                "user": self.local_user.id,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with patch("bookwyrm.views.status.sync_readwise_quotation.delay") as task_mock:
+            view(request, "quotation")
+
+        status = models.Quotation.objects.get()
+        task_mock.assert_called_once_with(status.id)
+
     def test_create_status_rating(self, *_):
         """create a status"""
         view = views.CreateStatus.as_view()

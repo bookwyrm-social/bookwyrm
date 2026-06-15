@@ -162,6 +162,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     discoverable = fields.BooleanField(default=False)
     show_guided_tour = models.BooleanField(default=True)
     show_ratings = models.BooleanField(default=True)
+    readwise_api_key = models.CharField(max_length=255, null=True, blank=True)
 
     # feed options
     feed_status_types = DjangoArrayField(
