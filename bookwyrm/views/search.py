@@ -77,10 +77,23 @@ def book_search(request):
 
     # try a local-only search
     local_results = search(query, min_confidence=min_confidence)
-    paginated = Paginator(local_results, PAGE_LENGTH)
+
+    cleaned_results = local_results
+    if request.user.is_authenticated:
+        blocked = request.user.blocked_books.values_list("id", flat=True)
+        cleaned_results = list(
+            filter(lambda b: b.parent_work.id not in blocked, local_results)
+        )
+
+    blocked_books_excluded = (
+        True if len(cleaned_results) < len(local_results) else False
+    )
+
+    paginated = Paginator(cleaned_results, PAGE_LENGTH)
     page = paginated.get_page(request.GET.get("page"))
     data = {
         "query": query,
+        "blocked_books_excluded": blocked_books_excluded,
         "results": page,
         "type": "book",
         "remote": search_remote,

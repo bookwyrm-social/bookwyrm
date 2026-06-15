@@ -127,6 +127,23 @@ class ActivityStream(RedisStore):
             Q(id__in=status.user.blocks.all()) | Q(blocks=status.user)  # not blocked
         )
 
+        if hasattr(status, "book") and status.book and status.book.parent_work:
+            # exclude anyone who has blocked the book in a status
+            audience = audience.exclude(id__in=status.book.parent_work.blocked_by.all())
+
+        if status.thread_id:
+            # ...including any books from any status in the same thread
+            thread_statuses = models.Status.objects.filter(thread_id=status.thread_id)
+            for t_status in thread_statuses:
+                if (
+                    hasattr(t_status, "book")
+                    and t_status.book
+                    and t_status.book.parent_work
+                ):
+                    audience = audience.exclude(
+                        id__in=t_status.book.parent_work.blocked_by.all()
+                    )
+
         # only visible to the poster and mentioned users
         if status.privacy == "direct":
             audience = audience.filter(
@@ -174,6 +191,57 @@ class ActivityStream(RedisStore):
         user = models.User.objects.get(id=store.split("-")[0])
         return self.get_statuses_for_user(user)
 
+    def add_book_statuses(self, user, book):
+        """add statuses about a book to a user's feed"""
+        work = book.parent_work
+
+        statuses = models.Status.privacy_filter(
+            user,
+            privacy_levels=["public"],
+        )
+
+        book_comments = statuses.filter(Q(comment__book__parent_work=work))
+        book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
+        book_reviews = statuses.filter(Q(review__book__parent_work=work))
+        book_mentions = statuses.filter(Q(mention_books__parent_work=work))
+        book_statuses = book_comments.union(
+            book_quotations, book_reviews, book_mentions
+        )
+
+        self.bulk_add_objects_to_store(book_statuses, self.stream_id(user.id))
+
+        threads = book_statuses.values_list("thread_id", flat=True)
+        thread_statuses = statuses.exclude(
+            id__in=book_statuses.values_list("id", flat=True)
+        ).filter(thread_id__in=threads)
+
+        self.bulk_add_objects_to_store(thread_statuses, self.stream_id(user.id))
+
+    def remove_book_statuses(self, user, book):
+        """remove statuses about a book from a user's feed"""
+        work = book.parent_work
+        statuses = models.Status.privacy_filter(
+            user,
+            privacy_levels=["public"],
+        )
+
+        book_comments = statuses.filter(Q(comment__book__parent_work=work))
+        book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
+        book_reviews = statuses.filter(Q(review__book__parent_work=work))
+        book_mentions = statuses.filter(Q(mention_books__parent_work=work))
+        book_statuses = book_comments.union(
+            book_quotations, book_reviews, book_mentions
+        )
+
+        self.bulk_remove_objects_from_store(book_statuses, self.stream_id(user.id))
+
+        threads = book_statuses.values_list("thread_id", flat=True)
+        thread_statuses = statuses.exclude(
+            id__in=book_statuses.values_list("id", flat=True)
+        ).filter(thread_id__in=threads)
+
+        self.bulk_remove_objects_from_store(thread_statuses, self.stream_id(user.id))
+
 
 class HomeStream(ActivityStream):
     """users you follow"""
@@ -203,6 +271,39 @@ class HomeStream(ActivityStream):
                 | Q(mention_users=user)  # mentions user
             ),
         )
+
+    def add_book_statuses(self, user, book):
+        """add statuses about a book to a user's feed"""
+        work = book.parent_work
+
+        statuses = models.Status.privacy_filter(
+            user,
+            privacy_levels=["public", "unlisted", "followers"],
+        ).exclude(
+            ~Q(  # remove everything except
+                Q(user__followers=user)  # user following
+                | Q(user=user)  # is self
+                | Q(mention_users=user)  # mentions user
+            ),
+        )
+
+        book_comments = statuses.filter(Q(comment__book__parent_work=work))
+        book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
+        book_reviews = statuses.filter(Q(review__book__parent_work=work))
+        book_mentions = statuses.filter(Q(mention_books__parent_work=work))
+
+        book_statuses = book_comments.union(
+            book_quotations, book_reviews, book_mentions
+        )
+
+        self.bulk_add_objects_to_store(book_statuses, self.stream_id(user.id))
+
+        threads = book_statuses.values_list("thread_id", flat=True)
+        thread_statuses = statuses.exclude(
+            id__in=book_statuses.values_list("id", flat=True)
+        ).filter(thread_id__in=threads)
+
+        self.bulk_add_objects_to_store(thread_statuses, self.stream_id(user.id))
 
 
 class LocalStream(ActivityStream):
@@ -268,42 +369,6 @@ class BooksStream(ActivityStream):
             )
             .distinct()
         )
-
-    def add_book_statuses(self, user, book):
-        """add statuses about a book to a user's feed"""
-        work = book.parent_work
-        statuses = models.Status.privacy_filter(
-            user,
-            privacy_levels=["public"],
-        )
-
-        book_comments = statuses.filter(Q(comment__book__parent_work=work))
-        book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
-        book_reviews = statuses.filter(Q(review__book__parent_work=work))
-        book_mentions = statuses.filter(Q(mention_books__parent_work=work))
-
-        self.bulk_add_objects_to_store(book_comments, self.stream_id(user.id))
-        self.bulk_add_objects_to_store(book_quotations, self.stream_id(user.id))
-        self.bulk_add_objects_to_store(book_reviews, self.stream_id(user.id))
-        self.bulk_add_objects_to_store(book_mentions, self.stream_id(user.id))
-
-    def remove_book_statuses(self, user, book):
-        """add statuses about a book to a user's feed"""
-        work = book.parent_work
-        statuses = models.Status.privacy_filter(
-            user,
-            privacy_levels=["public"],
-        )
-
-        book_comments = statuses.filter(Q(comment__book__parent_work=work))
-        book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
-        book_reviews = statuses.filter(Q(review__book__parent_work=work))
-        book_mentions = statuses.filter(Q(mention_books__parent_work=work))
-
-        self.bulk_remove_objects_from_store(book_comments, self.stream_id(user.id))
-        self.bulk_remove_objects_from_store(book_quotations, self.stream_id(user.id))
-        self.bulk_remove_objects_from_store(book_reviews, self.stream_id(user.id))
-        self.bulk_remove_objects_from_store(book_mentions, self.stream_id(user.id))
 
 
 # determine which streams are enabled in settings.py
@@ -498,10 +563,30 @@ def add_book_statuses_task(user_id, book_id):
 
 @app.task(queue=STREAMS)
 def remove_book_statuses_task(user_id, book_id):
-    """remove statuses about a book from a user's books feed"""
+    """remove statuses about a book from a user's feeds"""
     user = models.User.objects.get(id=user_id)
     book = models.Edition.objects.get(id=book_id)
     BooksStream().remove_book_statuses(user, book)
+
+
+@app.task(queue=STREAMS)
+def add_blocked_book_statuses_task(user_id, book_id):
+    """add statuses related to a formerly blocked book"""
+    user = models.User.objects.get(id=user_id)
+    book = models.Edition.objects.get(id=book_id)
+    BooksStream().add_book_statuses(user, book)
+    LocalStream().add_book_statuses(user, book)
+    HomeStream().add_book_statuses(user, book)
+
+
+@app.task(queue=STREAMS)
+def remove_blocked_book_statuses_task(user_id, book_id):
+    """remove statuses about a book from a user's feeds"""
+    user = models.User.objects.get(id=user_id)
+    book = models.Edition.objects.get(id=book_id)
+    BooksStream().remove_book_statuses(user, book)
+    LocalStream().remove_book_statuses(user, book)
+    HomeStream().remove_book_statuses(user, book)
 
 
 @app.task(queue=STREAMS)
