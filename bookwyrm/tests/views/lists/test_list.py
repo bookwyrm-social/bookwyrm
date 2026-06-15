@@ -768,7 +768,7 @@ class ListViews(TestCase):
         list_item_one = models.ListItem.objects.create(
             book_list=self.list,
             user=self.local_user,
-            book=self.book,
+            edition=self.edition,
             approved=True,
             notes="hello",
             order=1,
@@ -777,7 +777,7 @@ class ListViews(TestCase):
         list_item_two = models.ListItem.objects.create(
             book_list=self.list,
             user=self.local_user,
-            book=self.book_two,
+            edition=self.book_two,
             approved=True,
             notes="goodbye",
             order=2,

@@ -53,7 +53,7 @@ class List(View):
 
         items = (
             book_list.listitem_set.filter(approved=True)
-            .exclude(book__parent_work__in=blocked)
+            .exclude(edition__parent_work__in=blocked)
             .prefetch_related("user", "edition", "edition__authors")
         )
 

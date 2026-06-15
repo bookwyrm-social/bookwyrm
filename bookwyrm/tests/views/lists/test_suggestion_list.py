@@ -118,7 +118,7 @@ class BookViews(TestCase):
         item = suggestion_list.suggestionlistitem_set.first()
         self.assertEqual(item.work, self.another_book.parent_work)
         self.assertEqual(item.user, self.local_user)
-        self.assertEqual(item.notes, "hello")
+        self.assertEqual(item.raw_notes, "hello")
 
     def test_book_remove_suggestion(self, *_):
         """Remove a book from the recommendation list"""
