@@ -46,9 +46,17 @@ class List(View):
         if redirect_option := maybe_redirect_local_path(request, book_list):
             return redirect_option
 
-        items = book_list.listitem_set.filter(approved=True).prefetch_related(
-            "user", "book", "book__authors"
+        # NOTE: do not use this exclude in decrement_order etc because it will mess up ordering
+        blocked = []
+        if request.user.is_authenticated:
+            blocked = request.user.blocked_books.values_list("id", flat=True)
+
+        items = (
+            book_list.listitem_set.filter(approved=True)
+            .exclude(book__parent_work__in=blocked)
+            .prefetch_related("user", "book", "book__authors")
         )
+
         items = sort_list(request, items)
 
         paginated = Paginator(items, PAGE_LENGTH)
@@ -110,14 +118,21 @@ def get_list_suggestions(book_list, user, query=None, num_suggestions=5):
             filters=[~Q(parent_work__editions__in=book_list.books.all())],
         )
     # just suggest whatever books are nearby
-    suggestions = user.shelfbook_set.filter(
-        ~Q(book__in=book_list.books.all())
-    ).distinct()[:num_suggestions]
+    suggestions = (
+        user.shelfbook_set.exclude(
+            book__parent_work__in=user.blocked_books.values_list("id", flat=True)
+        )
+        .filter(~Q(book__in=book_list.books.all()))
+        .distinct()[:num_suggestions]
+    )
     suggestions = [s.book for s in suggestions[:num_suggestions]]
     if len(suggestions) < num_suggestions:
         others = [
             s.default_edition
-            for s in models.Work.objects.filter(
+            for s in models.Work.objects.exclude(
+                id__in=user.blocked_books.values_list("id", flat=True)
+            )
+            .filter(
                 ~Q(editions__in=book_list.books.all()),
             )
             .distinct()

@@ -30,9 +30,10 @@ class Series(View):
         if is_api_request(request):
             return ActivitypubResponse(series.to_activity(**request.GET))
 
-        items = series.seriesbooks.prefetch_related(
+        blocked = request.user.blocked_books.all() if request.user else []
+        items = series.seriesbooks.exclude(book__in=blocked).prefetch_related(
             "book__work", "book__work__editions__authors"
-        ).all()
+        )
         series_books = sorted(items, key=lambda sb: sb.natural_sort_key)
         authors = models.Author.objects.filter(
             id__in=items.values_list("book__work__editions__authors")

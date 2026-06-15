@@ -34,8 +34,14 @@ class Author(View):
         if redirect_local_path := maybe_redirect_local_path(request, author):
             return redirect_local_path
 
+        blocked_books = (
+            request.user.blocked_books.values_list("id", flat=True)
+            if request.user.is_authenticated
+            else []
+        )
         books = (
             models.Work.objects.filter(editions__authors=author)
+            .exclude(id__in=blocked_books)
             .order_by("created_date")
             .distinct()
         )
