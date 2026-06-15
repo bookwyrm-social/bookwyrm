@@ -1,11 +1,13 @@
 """flagged for moderation"""
 
-from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from bookwyrm import activitypub
 from bookwyrm.settings import BASE_URL
+from .activitypub_mixin import ActivityMixin
 from .base_model import BookWyrmModel
+from . import fields
 
 
 # Report action enums
@@ -23,28 +25,60 @@ APPROVE_DOMAIN = "approve_domain"
 DELETE_ITEM = "delete_item"
 
 
-class Report(BookWyrmModel):
+class Report(ActivityMixin, BookWyrmModel):
     """reported status or user"""
 
-    reporter = models.ForeignKey(
-        "User", related_name="reporter", on_delete=models.PROTECT
+    activity_serializer = activitypub.Flag
+
+    user = fields.ForeignKey(
+        "User",
+        on_delete=models.PROTECT,
+        activitypub_field="actor",
     )
-    note = models.TextField(null=True, blank=True)
-    user = models.ForeignKey("User", on_delete=models.PROTECT, null=True, blank=True)
-    status = models.ForeignKey(
-        "Status",
+    note = fields.TextField(null=True, blank=True, activitypub_field="content")
+    reported_user = fields.ForeignKey(
+        "User",
+        related_name="reported_user",
+        on_delete=models.PROTECT,
         null=True,
         blank=True,
-        on_delete=models.PROTECT,
+        activitypub_field="to",
     )
-    links = models.ManyToManyField("Link", blank=True)
+    statuses = models.ManyToManyField(
+        "Status",
+        blank=True,
+    )
+    links = fields.ManyToManyField("Link", blank=True)
     resolved = models.BooleanField(default=False)
+    allow_broadcast = models.BooleanField(default=False)
 
-    def raise_not_editable(self, viewer):
-        """instead of user being the owner field, it's reporter"""
-        if self.reporter == viewer or viewer.has_perm("bookwyrm.moderate_user"):
+    def to_activity_dataclass(self, **kwargs):
+        """generate the objects field"""
+        activity = super().to_activity_dataclass(**kwargs)
+        activity.object = self.object()
+        return activity
+
+    def object(self):
+        """Generate a list of reported objects in a format Mastodon will like"""
+        items = [self.reported_user.remote_id]
+        if self.statuses:
+            items += self.statuses.values_list("remote_id", flat=True)
+
+        return items
+
+    def broadcast(self, activity, sender, *args, **kwargs):
+        """only need to send an activity for remote offenders"""
+        # don't try to broadcast if the reporter doesn't want you to,
+        # or if the reported user is local
+        if self.reported_user.local or not self.allow_broadcast:
             return
-        raise PermissionDenied()
+        super().broadcast(activity, sender, *args, **kwargs)
+
+    def get_recipients(self, software=None):
+        """Send this to the public inbox of the offending instance"""
+        if self.reported_user.local:
+            return []
+        return [self.reported_user.shared_inbox or self.reported_user.inbox]
 
     def get_remote_id(self):
         return f"{BASE_URL}/settings/reports/{self.id}"

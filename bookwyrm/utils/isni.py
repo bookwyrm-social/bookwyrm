@@ -1,11 +1,14 @@
 """ISNI author checking utilities"""
 
+import logging
 import xml.etree.ElementTree as ET
 from typing import Union, Optional
 
 import requests
 
-from bookwyrm import activitypub, models
+from bookwyrm import activitypub, models, settings
+
+logger = logging.getLogger(__name__)
 
 
 def get_element_text(element: Optional[ET.Element]) -> str:
@@ -15,7 +18,9 @@ def get_element_text(element: Optional[ET.Element]) -> str:
     return ""
 
 
-def request_isni_data(search_index: str, search_term: str, max_records: int = 5) -> str:
+def request_isni_data(
+    search_index: str, search_term: str, max_records: int = 5
+) -> str | None:
     """Request data from the ISNI API"""
 
     search_string = f'{search_index}="{search_term}"'
@@ -29,7 +34,22 @@ def request_isni_data(search_index: str, search_term: str, max_records: int = 5)
         "recordPacking": "xml",
         "sortKeys": "RLV,pica,0,,",
     }
-    result = requests.get("http://isni.oclc.org/sru/", params=query_params, timeout=15)
+
+    try:
+        result = requests.get(
+            "http://isni.oclc.org/sru/",
+            params=query_params,
+            timeout=settings.QUERY_TIMEOUT,
+        )
+
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as err:
+        logger.info("Connection Error connecting to ISNI database, %s", err)
+        return None
+
+    except Exception as err:
+        logger.info("Error connecting to ISNI database, %s", err)
+        return None
+
     # the OCLC ISNI server asserts the payload is encoded
     # in latin1, but we know better
     result.encoding = "utf-8"
@@ -105,14 +125,14 @@ def find_authors_by_name(
     """Query the ISNI database for possible author matches by name"""
 
     payload = request_isni_data("pica.na", name_string)
+    if payload is None:
+        return []
     # parse xml
     root = ET.fromstring(payload)
     # build list of possible authors
     possible_authors = []
     for element in root.iter("responseRecord"):
-        # TODO: we don't seem to do anything with the
-        # personal_name variable - is this code block needed?
-        personal_name = element.find(".//forename/..")
+        personal_name = element.find(".//personalName")
         if not personal_name:
             continue
 
@@ -138,6 +158,7 @@ def find_authors_by_name(
                 # some of the "titles" in ISNI are a little ...iffy
                 # @ is used by ISNI/OCLC to index the starting point ignoring stop words
                 # (e.g. "The @Government of no one")
+                # this should select the first title from the ISNI record
                 author.bio = ""
                 for title in titles:
                     if (
@@ -158,6 +179,8 @@ def get_author_from_isni(isni: str) -> Optional[activitypub.Author]:
     """Find data to populate a new author record from their ISNI"""
 
     payload = request_isni_data("pica.isn", isni)
+    if not payload:
+        return None
     # parse xml
     root = ET.fromstring(payload)
     # there should only be a single responseRecord
@@ -166,9 +189,13 @@ def get_author_from_isni(isni: str) -> Optional[activitypub.Author]:
     if element is None:
         return None
 
+    # make name with first personalName element that has a forename, otherwise
+    # use the first personalName element (i.e. it will only have surname)
     name = (
         make_name_string(forename)
         if (forename := element.find(".//forename/..")) is not None
+        else make_name_string(personal_name)
+        if (personal_name := element.find(".//personalName")) is not None
         else ""
     )
     viaf = get_other_identifier(element, "viaf")
@@ -180,13 +207,16 @@ def get_author_from_isni(isni: str) -> Optional[activitypub.Author]:
     bio = get_element_text(element.find(".//nameTitle"))
     wikipedia = get_external_information_uri(element, "Wikipedia")
 
+    sorted_aliases = list(aliases)
+    sorted_aliases.sort()  # ensure reliable order for tests
+
     author = activitypub.Author(
         id=get_element_text(element.find(".//isniURI")),
         name=name,
         isni=isni,
         viafId=viaf,
         # aliases needs to be list not set
-        aliases=list(aliases),
+        aliases=sorted_aliases,
         bio=bio,
         wikipediaLink=wikipedia,
     )
@@ -216,11 +246,12 @@ def augment_author_metadata(author: models.Author, isni: str) -> None:
 
     isni_author.to_model(model=models.Author, instance=author, overwrite=False)
 
-    # we DO want to overwrite aliases because we're adding them to the
-    # existing aliases and ISNI will usually have more.
+    # ISNI will usually have more aliases, so we want to add them.
     # We need to dedupe because ISNI records often have lots of dupe aliases
-    aliases = set(isni_author.aliases)
+    aliases = set(isni_author.aliases)  # add new aliases, dedupe using a set
     for alias in author.aliases:
-        aliases.add(alias)
-    author.aliases = list(aliases)
+        aliases.add(alias)  # add existing aliases
+    alias_list = list(aliases)  # aliases is a list
+    alias_list.sort()  # sort, mostly for tests
+    author.aliases = alias_list
     author.save()

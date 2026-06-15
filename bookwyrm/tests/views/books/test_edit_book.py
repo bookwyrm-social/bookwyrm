@@ -11,8 +11,8 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 from django.utils import timezone
 
-from bookwyrm import forms, models, views
-from bookwyrm.views.books.edit_book import add_authors
+from bookwyrm import forms, models, views, settings
+from bookwyrm.views.books.edit_book import add_or_remove_authors
 from bookwyrm.tests.validate_html import validate_html
 from bookwyrm.tests.views.books.test_book import _setup_cover_url
 
@@ -35,6 +35,12 @@ class EditBookViews(TestCase):
                 local=True,
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
+            )
+            cls.instance_user = models.User.objects.create_user(
+                "instance@local.com",
+                local=True,
+                localname=settings.INSTANCE_ACTOR_USERNAME,
+                remote_id="https://example.com/users/instance_actor",
             )
         cls.group = Group.objects.create(name="editor")
         cls.group.permissions.add(
@@ -354,7 +360,7 @@ class EditBookViews(TestCase):
         request.user = self.local_user
 
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as delay_mock:
             views.upload_cover(request, self.book.id)
             self.assertEqual(delay_mock.call_count, 1)
@@ -374,7 +380,7 @@ class EditBookViews(TestCase):
 
         with patch("bookwyrm.utils.isni.find_authors_by_name") as mock:
             mock.return_value = []
-            result = add_authors(request, form.data)
+            result = add_or_remove_authors(request, form.data)
 
         self.assertTrue(result["confirm_mode"])
         self.assertEqual(result["add_author"], ["Sappho", "Some Guy"])
@@ -401,7 +407,7 @@ class EditBookViews(TestCase):
 
             with patch("bookwyrm.utils.isni.find_authors_by_name") as mock:
                 mock.return_value = []
-                result = add_authors(request, form.data)
+                result = add_or_remove_authors(request, form.data)
 
             self.assertTrue(result["confirm_mode"])
             self.assertEqual(result["add_author"], [author_name])
@@ -429,7 +435,7 @@ class EditBookViews(TestCase):
 
             with patch("bookwyrm.views.books.edit_book.find_authors_by_name") as mock:
                 mock.return_value = []
-                result = add_authors(request, form.data)
+                result = add_or_remove_authors(request, form.data)
 
             self.assertTrue(result["confirm_mode"])
             self.assertEqual(result["add_author"], [author_name])

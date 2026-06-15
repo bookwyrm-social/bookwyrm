@@ -34,8 +34,20 @@ class Author(View):
         if redirect_local_path := maybe_redirect_local_path(request, author):
             return redirect_local_path
 
+        blocked_books = (
+            request.user.blocked_books.values_list("id", flat=True)
+            if request.user.is_authenticated
+            else []
+        )
         books = (
             models.Work.objects.filter(editions__authors=author)
+            .exclude(id__in=blocked_books)
+            .order_by("created_date")
+            .distinct()
+        )
+
+        series = (
+            models.Series.objects.filter(seriesbooks__book__authors=author)
             .order_by("created_date")
             .distinct()
         )
@@ -44,6 +56,7 @@ class Author(View):
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "author": author,
+            "series": series,
             "books": page,
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1

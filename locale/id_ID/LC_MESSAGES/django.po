@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-06 17:47+0000\n"
-"PO-Revision-Date: 2026-02-06 18:49\n"
+"POT-Creation-Date: 2026-05-23 18:40+0000\n"
+"PO-Revision-Date: 2026-06-14 15:16\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Indonesian\n"
 "Language: id\n"
@@ -19,51 +19,51 @@ msgstr ""
 
 #: bookwyrm/forms/admin.py:42
 msgid "One Day"
-msgstr ""
+msgstr "Satu Hari"
 
 #: bookwyrm/forms/admin.py:43
 msgid "One Week"
-msgstr ""
+msgstr "Satu Minggu"
 
 #: bookwyrm/forms/admin.py:44
 msgid "One Month"
-msgstr ""
+msgstr "Satu Bulan"
 
 #: bookwyrm/forms/admin.py:45
 msgid "Does Not Expire"
-msgstr ""
+msgstr "Tidak Kedaluwarsa"
 
 #: bookwyrm/forms/admin.py:50
 msgid "Unlimited"
-msgstr ""
+msgstr "Tanpa Batas"
 
 #: bookwyrm/forms/edit_user.py:100 bookwyrm/views/landing/password.py:117
 msgid "Incorrect password"
-msgstr ""
+msgstr "Sandi salah"
 
 #: bookwyrm/forms/edit_user.py:107 bookwyrm/forms/landing.py:93
 msgid "Password does not match"
-msgstr ""
+msgstr "Sandi tidak cocok"
 
 #: bookwyrm/forms/edit_user.py:130
 msgid "Incorrect Password"
-msgstr ""
+msgstr "Sandi Tidak Cocok"
 
 #: bookwyrm/forms/forms.py:60
 msgid "Reading finish date cannot be before start date."
-msgstr ""
+msgstr "Tanggal selesai baca tidak boleh sebelum tanggal mulai baca."
 
 #: bookwyrm/forms/forms.py:65
 msgid "Reading stopped date cannot be before start date."
-msgstr ""
+msgstr "Tangga berhenti baca tidak boleh sebelum tanggal mulai baca."
 
 #: bookwyrm/forms/forms.py:73
 msgid "Reading stopped date cannot be in the future."
-msgstr ""
+msgstr "Tanggal berhenti baca tidak boleh pada masa depan."
 
 #: bookwyrm/forms/forms.py:80
 msgid "Reading finished date cannot be in the future."
-msgstr ""
+msgstr "Tanggal selesai baca tidak boleh pada masa depan."
 
 #: bookwyrm/forms/landing.py:37
 msgid "Username or password are incorrect"
@@ -79,11 +79,11 @@ msgstr "Pengguna dengan surel ini sudah terdaftar."
 
 #: bookwyrm/forms/landing.py:69
 msgid "This email address cannot be registered."
-msgstr ""
+msgstr "Alamat surel ini tidak dapat didaftarkan."
 
 #: bookwyrm/forms/landing.py:114
 msgid "Password cannot be the same as your current password"
-msgstr ""
+msgstr "Sandi tidak boleh sama dengan sandi Anda saat ini"
 
 #: bookwyrm/forms/landing.py:144 bookwyrm/forms/landing.py:152
 msgid "Incorrect code"
@@ -91,15 +91,15 @@ msgstr "Kode salah"
 
 #: bookwyrm/forms/links.py:34
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
-msgstr ""
+msgstr "Domain ini diblokir. Silakan hubungi administrator Anda jika memang ada kesalahan."
 
 #: bookwyrm/forms/links.py:47
 msgid "This link has already been added for this book. If it is not visible, the domain is still pending."
-msgstr ""
+msgstr "Tautan ini sudah ditambahkan untuk buku ini. Jika tidak terlihat, domain masih tetap ditunda."
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
-msgstr ""
+msgstr "Urutan Daftar"
 
 #: bookwyrm/forms/lists.py:27
 msgid "Book Title"
@@ -107,7 +107,7 @@ msgstr "Judul buku"
 
 #: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:164
 #: bookwyrm/templates/shelf/shelf.html:196
-#: bookwyrm/templates/snippets/create_status/review.html:32
+#: bookwyrm/templates/snippets/create_status/review.html:31
 msgid "Rating"
 msgstr "Nilai"
 
@@ -117,15 +117,15 @@ msgstr "Urutkan"
 
 #: bookwyrm/forms/lists.py:34
 msgid "Ascending"
-msgstr ""
+msgstr "Naik"
 
 #: bookwyrm/forms/lists.py:35
 msgid "Descending"
-msgstr ""
+msgstr "Turun"
 
 #: bookwyrm/models/announcement.py:12
 msgid "Primary"
-msgstr ""
+msgstr "Utama"
 
 #: bookwyrm/models/announcement.py:13
 msgid "Success"
@@ -134,7 +134,7 @@ msgstr "Berhasil"
 #: bookwyrm/models/announcement.py:14
 #: bookwyrm/templates/settings/invites/manage_invites.html:47
 msgid "Link"
-msgstr ""
+msgstr "Tautan"
 
 #: bookwyrm/models/announcement.py:15
 msgid "Warning"
@@ -142,131 +142,135 @@ msgstr "Peringatan"
 
 #: bookwyrm/models/announcement.py:16
 msgid "Danger"
-msgstr ""
+msgstr "Bahaya"
 
 #: bookwyrm/models/antispam.py:114 bookwyrm/models/antispam.py:148
 msgid "Automatically generated report"
-msgstr ""
+msgstr "Laporan yang dibuat otomatis"
 
 #: bookwyrm/models/base_model.py:19 bookwyrm/models/import_job.py:50
 #: bookwyrm/models/job.py:18 bookwyrm/models/link.py:77
 #: bookwyrm/templates/import/import_status.html:214
 #: bookwyrm/templates/settings/link_domains/link_domains.html:19
 msgid "Pending"
-msgstr ""
+msgstr "Ditunda"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Self deletion"
-msgstr ""
+msgstr "Penghapusan mandiri"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Self deactivation"
-msgstr ""
+msgstr "Deaktivasi mandiri"
 
 #: bookwyrm/models/base_model.py:22
 msgid "Moderator suspension"
-msgstr ""
+msgstr "Penangguhan oleh moderator"
 
 #: bookwyrm/models/base_model.py:23
 msgid "Moderator deletion"
-msgstr ""
+msgstr "Penghapusan oleh moderator"
 
 #: bookwyrm/models/base_model.py:24
 msgid "Domain block"
-msgstr ""
+msgstr "Blokir domain"
 
-#: bookwyrm/models/book.py:500
+#: bookwyrm/models/book.py:532
 msgid "Audiobook"
-msgstr ""
+msgstr "Audiobook"
 
-#: bookwyrm/models/book.py:501
+#: bookwyrm/models/book.py:533
 msgid "eBook"
-msgstr ""
+msgstr "Buku-el"
 
-#: bookwyrm/models/book.py:502
+#: bookwyrm/models/book.py:534
 msgid "Graphic novel"
-msgstr ""
+msgstr "Novel grafik"
 
-#: bookwyrm/models/book.py:503
+#: bookwyrm/models/book.py:535
 msgid "Hardcover"
-msgstr ""
+msgstr "Sampul keras"
 
-#: bookwyrm/models/book.py:504
+#: bookwyrm/models/book.py:536
 msgid "Paperback"
-msgstr ""
+msgstr "Sampul tipis"
 
-#: bookwyrm/models/book.py:513 bookwyrm/models/book.py:520
-#: bookwyrm/models/book.py:526 bookwyrm/models/book.py:531
-#: bookwyrm/models/book.py:536 bookwyrm/models/book.py:554
-#: bookwyrm/models/book.py:560 bookwyrm/models/book.py:565
+#: bookwyrm/models/book.py:545 bookwyrm/models/book.py:552
+#: bookwyrm/models/book.py:558 bookwyrm/models/book.py:563
+#: bookwyrm/models/book.py:568 bookwyrm/models/book.py:586
+#: bookwyrm/models/book.py:592 bookwyrm/models/book.py:597
 #, python-format
 msgid "%(value)s doesn't look like an ISBN"
-msgstr ""
+msgstr "%(value)s tidak tampak seperti ISBN"
 
-#: bookwyrm/models/book.py:542 bookwyrm/models/book.py:582
+#: bookwyrm/models/book.py:574 bookwyrm/models/book.py:614
 #, python-format
 msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
-msgstr ""
+msgstr "%(value)s tidak sesuai dengan checksum ISBN, kami mengharapkan %(check_version)s"
+
+#: bookwyrm/models/book.py:797
+msgid "Book is already in this series"
+msgstr "Buku sudah ada di serial ini"
 
 #: bookwyrm/models/bookwyrm_import_job.py:151 bookwyrm/models/report.py:85
 #: bookwyrm/templates/settings/reports/report.html:115
 #: bookwyrm/templates/snippets/create_status.html:26
 msgid "Comment"
-msgstr ""
+msgstr "Komentar"
 
 #: bookwyrm/models/bookwyrm_import_job.py:152
 #: bookwyrm/templates/import/import_status.html:127
 #: bookwyrm/templates/import/manual_review.html:13
 #: bookwyrm/templates/snippets/create_status.html:16
 msgid "Review"
-msgstr ""
+msgstr "Ulasan"
 
 #: bookwyrm/models/bookwyrm_import_job.py:153
 msgid "Quotation"
-msgstr ""
+msgstr "Kutipan"
 
 #: bookwyrm/models/bookwyrm_import_job.py:181
 #: bookwyrm/templates/snippets/follow_button.html:24
 msgid "Follow"
-msgstr ""
+msgstr "Ikuti"
 
 #: bookwyrm/models/bookwyrm_import_job.py:182
 #: bookwyrm/templates/settings/federation/instance.html:116
 #: bookwyrm/templates/settings/link_domains/link_domains.html:87
 #: bookwyrm/templates/snippets/block_button.html:5
 msgid "Block"
-msgstr ""
+msgstr "Blokir"
 
 #: bookwyrm/models/bookwyrm_import_job.py:395
 msgid "Unknown error importing book"
-msgstr ""
+msgstr "Eror tidak diketahui saat mengimpor buku"
 
 #: bookwyrm/models/bookwyrm_import_job.py:490
 msgid "unauthorized"
-msgstr ""
+msgstr "tidak sah"
 
 #: bookwyrm/models/bookwyrm_import_job.py:496
 msgid "Unknown error importing book status"
-msgstr ""
+msgstr "Status eror tidak diketahui saat mengimpor buku"
 
 #: bookwyrm/models/bookwyrm_import_job.py:686
 #: bookwyrm/models/bookwyrm_import_job.py:711
 msgid "connection_error"
-msgstr ""
+msgstr "connection_error"
 
 #: bookwyrm/models/bookwyrm_import_job.py:721
 msgid "invalid_relationship"
-msgstr ""
+msgstr "invalid_relationship"
 
 #: bookwyrm/models/bookwyrm_import_job.py:729
 msgid "Unkown error importing relationship"
-msgstr ""
+msgstr "Eror tidak diketahui saat mengimpor hubungan"
 
 #: bookwyrm/models/federated_server.py:12
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
 #: bookwyrm/templates/settings/federation/instance_list.html:22
 msgid "Federated"
-msgstr ""
+msgstr "Terfederasi"
 
 #: bookwyrm/models/federated_server.py:13 bookwyrm/models/link.py:76
 #: bookwyrm/templates/settings/federation/edit_instance.html:56
@@ -274,26 +278,26 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance_list.html:26
 #: bookwyrm/templates/settings/link_domains/link_domains.html:27
 msgid "Blocked"
-msgstr ""
+msgstr "Diblokir"
 
 #: bookwyrm/models/fields.py:36
 #, python-format
 msgid "%(value)s is not a valid remote_id"
-msgstr ""
+msgstr "%(value)s bukan remote_id yang valid"
 
 #: bookwyrm/models/fields.py:45 bookwyrm/models/fields.py:54
 #, python-format
 msgid "%(value)s is not a valid username"
-msgstr ""
+msgstr "%(value)s buka nama pengguna yang valid"
 
 #: bookwyrm/models/fields.py:201 bookwyrm/templates/layout.html:129
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
-msgstr ""
+msgstr "nama pengguna"
 
 #: bookwyrm/models/fields.py:206
 msgid "A user with that username already exists."
-msgstr ""
+msgstr "Pengguna dengan nama tersebut sudah ada."
 
 #: bookwyrm/models/fields.py:225
 #: bookwyrm/templates/snippets/privacy-icons.html:3
@@ -301,7 +305,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/privacy_select.html:11
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:11
 msgid "Public"
-msgstr ""
+msgstr "Publik"
 
 #: bookwyrm/models/fields.py:226
 #: bookwyrm/templates/snippets/privacy-icons.html:7
@@ -309,7 +313,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/privacy_select.html:14
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:14
 msgid "Unlisted"
-msgstr ""
+msgstr "Tidak terdaftar"
 
 #: bookwyrm/models/fields.py:227
 #: bookwyrm/templates/snippets/privacy_select.html:17
@@ -318,7 +322,7 @@ msgstr ""
 #: bookwyrm/templates/user/relationships/followers.html:21
 #: bookwyrm/templates/user/relationships/layout.html:11
 msgid "Followers"
-msgstr ""
+msgstr "Pengikut"
 
 #: bookwyrm/models/fields.py:228
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:6
@@ -327,15 +331,15 @@ msgstr ""
 #: bookwyrm/templates/snippets/privacy_select.html:20
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:17
 msgid "Private"
-msgstr ""
+msgstr "Privat"
 
 #: bookwyrm/models/housekeeping.py:117
 msgid "Missing"
-msgstr ""
+msgstr "Hilang"
 
 #: bookwyrm/models/housekeeping.py:118
 msgid "Wrong Path"
-msgstr ""
+msgstr "Jalur Salah"
 
 #: bookwyrm/models/import_job.py:51 bookwyrm/models/job.py:19
 #: bookwyrm/templates/import/import.html:184
@@ -348,7 +352,7 @@ msgstr ""
 #: bookwyrm/templates/settings/imports/imports.html:270
 #: bookwyrm/templates/snippets/user_active_tag.html:8
 msgid "Active"
-msgstr ""
+msgstr "Aktif"
 
 #: bookwyrm/models/import_job.py:52 bookwyrm/models/job.py:20
 #: bookwyrm/templates/import/import.html:182
@@ -358,265 +362,265 @@ msgstr ""
 #: bookwyrm/templates/settings/files.html:160
 #: bookwyrm/templates/settings/files.html:342
 msgid "Complete"
-msgstr ""
+msgstr "Selesai"
 
 #: bookwyrm/models/import_job.py:53 bookwyrm/models/job.py:21
 msgid "Stopped"
-msgstr ""
+msgstr "Dihentikan"
 
 #: bookwyrm/models/import_job.py:87 bookwyrm/models/import_job.py:95
 msgid "Import stopped"
-msgstr ""
+msgstr "Impor dihentikan"
 
 #: bookwyrm/models/import_job.py:377 bookwyrm/models/import_job.py:402
 msgid "Error loading book"
-msgstr ""
+msgstr "Eror saat memuat buku"
 
 #: bookwyrm/models/import_job.py:386
 msgid "Could not find a match for book"
-msgstr ""
+msgstr "Tidak dapat menemukan buku yang cocok"
 
 #: bookwyrm/models/job.py:22
 #: bookwyrm/templates/import/user_import_status.html:69
 msgid "Failed"
-msgstr ""
+msgstr "Gagal"
 
 #: bookwyrm/models/link.py:56
 msgid "Free"
-msgstr ""
+msgstr "Gratis"
 
 #: bookwyrm/models/link.py:57
 msgid "Purchasable"
-msgstr ""
+msgstr "Dapat dibeli"
 
 #: bookwyrm/models/link.py:58
 msgid "Available for loan"
-msgstr ""
+msgstr "Dapat dipinjam"
 
 #: bookwyrm/models/link.py:75
 #: bookwyrm/templates/settings/link_domains/link_domains.html:23
 msgid "Approved"
-msgstr ""
+msgstr "Disetujui"
 
 #: bookwyrm/models/report.py:86
 msgid "Resolved report"
-msgstr ""
+msgstr "Laporan diselesaikan"
 
 #: bookwyrm/models/report.py:87
 msgid "Re-opened report"
-msgstr ""
+msgstr "Laporan dibuka kembali"
 
 #: bookwyrm/models/report.py:88
 msgid "Messaged reporter"
-msgstr ""
+msgstr "Pesan pelapor"
 
 #: bookwyrm/models/report.py:89
 msgid "Messaged reported user"
-msgstr ""
+msgstr "Pesan pengguna terlapor"
 
 #: bookwyrm/models/report.py:90
 msgid "Suspended user"
-msgstr ""
+msgstr "Pengguna yang ditangguhkan"
 
 #: bookwyrm/models/report.py:91
 msgid "Un-suspended user"
-msgstr ""
+msgstr "Pengguna yang batal ditangguhkan"
 
 #: bookwyrm/models/report.py:92
 msgid "Changed user permission level"
-msgstr ""
+msgstr "Level hak pengguna yang diubah"
 
 #: bookwyrm/models/report.py:93
 msgid "Deleted user account"
-msgstr ""
+msgstr "Akun pengguna yang dihapus"
 
 #: bookwyrm/models/report.py:94
 msgid "Blocked domain"
-msgstr ""
+msgstr "Domain yang diblokir"
 
 #: bookwyrm/models/report.py:95
 msgid "Approved domain"
-msgstr ""
+msgstr "Domain yang disetujui"
 
 #: bookwyrm/models/report.py:96
 msgid "Deleted item"
-msgstr ""
+msgstr "Item yang dihapus"
 
 #: bookwyrm/models/session.py:43
 msgid "Unknown"
-msgstr ""
+msgstr "Tidak diketahui"
 
 #: bookwyrm/models/status.py:191
 #, python-format
 msgid "%(display_name)s's status"
-msgstr ""
+msgstr "Status %(display_name)s"
 
 #: bookwyrm/models/status.py:365
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
-msgstr ""
+msgstr "Komentar %(display_name)s di %(book_title)s"
 
 #: bookwyrm/models/status.py:416
 #, python-format
 msgid "%(display_name)s's quote from %(book_title)s"
-msgstr ""
+msgstr "Kutipan %(display_name)s dari %(book_title)s"
 
-#: bookwyrm/models/status.py:452
+#: bookwyrm/models/status.py:456
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
-msgstr ""
+msgstr "Ulasan %(display_name)s terhadap %(book_title)s"
 
-#: bookwyrm/models/status.py:484
+#: bookwyrm/models/status.py:488
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
-msgstr[0] ""
+msgstr[0] "%(display_name)s menilai %(book_title)s: %(display_rating).1f bintang"
 
-#: bookwyrm/models/user.py:40 bookwyrm/templates/book/book.html:343
+#: bookwyrm/models/user.py:40 bookwyrm/templates/book/book.html:359
 msgid "Reviews"
-msgstr ""
+msgstr "Ulasan"
 
 #: bookwyrm/models/user.py:41
 msgid "Comments"
-msgstr ""
+msgstr "Komentar"
 
 #: bookwyrm/models/user.py:42 bookwyrm/templates/import/import_user.html:154
 msgid "Quotations"
-msgstr ""
+msgstr "Kutipan"
 
 #: bookwyrm/models/user.py:43
 msgid "Everything else"
-msgstr ""
+msgstr "Yang lainnya"
 
-#: bookwyrm/settings.py:236
+#: bookwyrm/settings.py:245
 msgid "Home Timeline"
-msgstr ""
+msgstr "Linimasa Beranda"
 
-#: bookwyrm/settings.py:236
+#: bookwyrm/settings.py:245
 msgid "Home"
-msgstr ""
+msgstr "Beranda"
 
-#: bookwyrm/settings.py:237
+#: bookwyrm/settings.py:246
 msgid "Books Timeline"
-msgstr ""
+msgstr "Linimasa Buku"
 
-#: bookwyrm/settings.py:237
+#: bookwyrm/settings.py:246
 #: bookwyrm/templates/guided_tour/user_profile.html:101
 #: bookwyrm/templates/import/user_import_status.html:73
 #: bookwyrm/templates/search/layout.html:22
 #: bookwyrm/templates/search/layout.html:44
 #: bookwyrm/templates/user/layout.html:107
 msgid "Books"
-msgstr ""
+msgstr "Buku"
 
-#: bookwyrm/settings.py:316
+#: bookwyrm/settings.py:325
 msgid "English"
 msgstr "Bahasa Inggris"
 
-#: bookwyrm/settings.py:317
+#: bookwyrm/settings.py:326
 msgid "Català (Catalan)"
 msgstr "Català (Bahasa Katalan)"
 
-#: bookwyrm/settings.py:318
+#: bookwyrm/settings.py:327
 msgid "Deutsch (German)"
 msgstr "Deutsch (Bahasa Jerman)"
 
-#: bookwyrm/settings.py:319
+#: bookwyrm/settings.py:328
 msgid "Esperanto (Esperanto)"
 msgstr "Esperanto (Bahasa Esperanto)"
 
-#: bookwyrm/settings.py:320
+#: bookwyrm/settings.py:329
 msgid "Español (Spanish)"
 msgstr "Español (Bahasa Spanyol)"
 
-#: bookwyrm/settings.py:321
+#: bookwyrm/settings.py:330
 msgid "Euskara (Basque)"
-msgstr ""
+msgstr "Euskara (Basque)"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:331
 msgid "Galego (Galician)"
-msgstr ""
+msgstr "Galego (Galician)"
 
-#: bookwyrm/settings.py:323
+#: bookwyrm/settings.py:332
 msgid "Italiano (Italian)"
 msgstr "Italiano (Bahasa Italia)"
 
-#: bookwyrm/settings.py:324
+#: bookwyrm/settings.py:333
 msgid "한국어 (Korean)"
-msgstr ""
+msgstr "한국어 (Korea)"
 
-#: bookwyrm/settings.py:325
+#: bookwyrm/settings.py:334
 msgid "Suomi (Finnish)"
 msgstr "Suomi (Bahasa Finlandia)"
 
-#: bookwyrm/settings.py:326
+#: bookwyrm/settings.py:335
 msgid "Français (French)"
 msgstr "Français (Bahasa Prancis)"
 
-#: bookwyrm/settings.py:327
+#: bookwyrm/settings.py:336
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (Bahasa Lithuania)"
 
-#: bookwyrm/settings.py:328
+#: bookwyrm/settings.py:337
 msgid "Nederlands (Dutch)"
 msgstr "Nederlands (Bahasa Belanda)"
 
-#: bookwyrm/settings.py:329
+#: bookwyrm/settings.py:338
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (Bahasa Norwegia)"
 
-#: bookwyrm/settings.py:330
+#: bookwyrm/settings.py:339
 msgid "Polski (Polish)"
 msgstr "Polski (Bahasa Polandia)"
 
-#: bookwyrm/settings.py:331
+#: bookwyrm/settings.py:340
 msgid "Português do Brasil (Brazilian Portuguese)"
-msgstr ""
+msgstr "Português do Brasil (Portugis Brazil)"
 
-#: bookwyrm/settings.py:332
+#: bookwyrm/settings.py:341
 msgid "Português Europeu (European Portuguese)"
-msgstr ""
+msgstr "Português Europeu (Portugis Eropa)"
 
-#: bookwyrm/settings.py:333
+#: bookwyrm/settings.py:342
 msgid "Română (Romanian)"
-msgstr ""
+msgstr "Română (Rumania)"
 
-#: bookwyrm/settings.py:334
+#: bookwyrm/settings.py:343
 msgid "Svenska (Swedish)"
-msgstr ""
+msgstr "Svenska (Swedia)"
 
-#: bookwyrm/settings.py:335
+#: bookwyrm/settings.py:344
 msgid "Українська (Ukrainian)"
-msgstr ""
+msgstr "Українська (Ukraina)"
 
-#: bookwyrm/settings.py:336
+#: bookwyrm/settings.py:345
 msgid "简体中文 (Simplified Chinese)"
-msgstr ""
+msgstr "简体中文 (Cina Sederhana)"
 
-#: bookwyrm/settings.py:337
+#: bookwyrm/settings.py:346
 msgid "繁體中文 (Traditional Chinese)"
-msgstr ""
+msgstr "繁體中文 (Cina Tradisional)"
 
 #: bookwyrm/templates/403.html:5
 msgid "Oh no!"
-msgstr ""
+msgstr "Oh tidak!"
 
 #: bookwyrm/templates/403.html:9 bookwyrm/templates/landing/invite.html:21
 msgid "Permission Denied"
-msgstr ""
+msgstr "Izin Ditolak"
 
 #: bookwyrm/templates/403.html:11
 #, python-format
 msgid "You do not have permission to view this page or perform this action. Your user permission level is <code>%(level)s</code>."
-msgstr ""
+msgstr "Anda tidak memiliki izin untuk melihat halaman ini atau melakukan hal ini. Level izin pengguna Anda adalah <code>%(level)s</code>."
 
 #: bookwyrm/templates/403.html:15
 msgid "If you think you should have access, please speak to your BookWyrm server administrator."
-msgstr ""
+msgstr "Jika Anda pikir Anda harus memiliki akses, silakan sampaikan ke administrator server BookWyrm Anda."
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
-msgstr ""
+msgstr "Tidak Ditemukan"
 
 #: bookwyrm/templates/404.html:9
 msgid "The page you requested doesn't seem to exist!"
@@ -624,15 +628,15 @@ msgstr "Laman tidak ditemukan"
 
 #: bookwyrm/templates/413.html:4 bookwyrm/templates/413.html:8
 msgid "File too large"
-msgstr ""
+msgstr "Berkas terlalu besar"
 
 #: bookwyrm/templates/413.html:9
 msgid "The file you are uploading is too large."
-msgstr ""
+msgstr "Berkas yang Anda unggah terlalu besar."
 
 #: bookwyrm/templates/413.html:11
 msgid "You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting."
-msgstr ""
+msgstr "Anda dapat mencoba dengan ukuran kecil, atau tanyakan ke administrator server BookWyrm Anda untuk meningkatkan pengaturan <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code>."
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -644,7 +648,7 @@ msgstr "Galat server"
 
 #: bookwyrm/templates/500.html:9
 msgid "Something went wrong! Sorry about that."
-msgstr ""
+msgstr "Ada yang salah! Mohon maaf."
 
 #: bookwyrm/templates/about/about.html:9
 #: bookwyrm/templates/about/layout.html:35
@@ -660,400 +664,406 @@ msgstr "Selamat datang di %(site_name)s!"
 #: bookwyrm/templates/about/about.html:26
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm network</a>, this community is unique."
-msgstr ""
+msgstr "%(site_name)s adalah bagian <em>BookWyrm</em>, jaringan independen, berbasis komunitas untuk pembaca. Anda pun dapat berinteraksi lancar dengan pengguna di mana saja di <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">jaringan BookWyrm</a>, komunitas ini unik."
 
 #: bookwyrm/templates/about/about.html:47
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> adalah buku yang paling disukai %(site_name)s, dengan rata-rata nilai %(rating)s dari 5."
 
 #: bookwyrm/templates/about/about.html:66
 #, python-format
 msgid "More %(site_name)s users want to read <a href=\"%(book_path)s\"><em>%(title)s</em></a> than any other book."
-msgstr ""
+msgstr "Lebih banyak pengguna %(site_name)s ingin membaca <a href=\"%(book_path)s\"><em>%(title)s</em></a> dari pada buku lainnya."
 
 #: bookwyrm/templates/about/about.html:85
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> has the most divisive ratings of any book on %(site_name)s."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> memiliki nilai paling kontroversial dibandingkan buku manapun di %(site_name)s."
 
 #: bookwyrm/templates/about/about.html:96
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
-msgstr ""
+msgstr "Lacak pembacaan Anda, ngobrol tentang buku, tulis ulasan, atau temukan bacaan lainnya. Akan selalu bebas iklan, anti-korporasi, dan berorientasi komunitas, BookWyrm adalah perangkat lunak yang diolah manusia, derancang untuk tetap kecil dan personal. Jika Anda memiliki permintaan fitur, laporan bug, atau impian, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">hubungi kami</a> dan buat Anda didengar."
 
 #: bookwyrm/templates/about/about.html:107
 msgid "Meet your admins"
-msgstr ""
+msgstr "Sapa admin Anda"
 
 #: bookwyrm/templates/about/about.html:110
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
-msgstr ""
+msgstr "Moderator dan administrator %(site_name)s menjaga situs tetap berjalan, dan menjaga <a href=\"%(coc_path)s\">kode etik</a>, serta merespon ketika pengguna melaporkan spam serta perilaku buruk."
 
 #: bookwyrm/templates/about/about.html:124
 msgid "Moderator"
-msgstr ""
+msgstr "Moderator"
 
 #: bookwyrm/templates/about/about.html:126 bookwyrm/templates/user_menu.html:62
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 #: bookwyrm/templates/about/about.html:142
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:28
 #: bookwyrm/templates/snippets/status/status_options.html:35
 #: bookwyrm/templates/snippets/user_options.html:14
 msgid "Send direct message"
-msgstr ""
+msgstr "Kirim pesan langsung"
 
 #: bookwyrm/templates/about/conduct.html:4
 #: bookwyrm/templates/about/conduct.html:9
 #: bookwyrm/templates/about/layout.html:41
 #: bookwyrm/templates/snippets/footer.html:27
 msgid "Code of Conduct"
-msgstr ""
+msgstr "Kode Etik"
 
 #: bookwyrm/templates/about/impressum.html:4
 #: bookwyrm/templates/about/impressum.html:9
 #: bookwyrm/templates/about/layout.html:54
 #: bookwyrm/templates/snippets/footer.html:34
 msgid "Impressum"
-msgstr ""
+msgstr "Impressum"
 
 #: bookwyrm/templates/about/layout.html:11
 msgid "Active users:"
-msgstr ""
+msgstr "Pengguna aktif:"
 
 #: bookwyrm/templates/about/layout.html:15
 msgid "Statuses posted:"
-msgstr ""
+msgstr "Status diposting:"
 
 #: bookwyrm/templates/about/layout.html:19
 #: bookwyrm/templates/setup/config.html:68
 msgid "Software version:"
-msgstr ""
+msgstr "Versi perangkat lunak:"
 
 #: bookwyrm/templates/about/layout.html:30
 #: bookwyrm/templates/embed-layout.html:34
 #: bookwyrm/templates/snippets/footer.html:8
 #, python-format
 msgid "About %(site_name)s"
-msgstr ""
+msgstr "Tentang %(site_name)s"
 
 #: bookwyrm/templates/about/layout.html:47
 #: bookwyrm/templates/about/privacy.html:4
 #: bookwyrm/templates/about/privacy.html:9
 #: bookwyrm/templates/snippets/footer.html:30
 msgid "Privacy Policy"
-msgstr ""
+msgstr "Kebijakan Privasi"
 
 #: bookwyrm/templates/annual_summary/layout.html:7
 #: bookwyrm/templates/feed/summary_card.html:8
 #, python-format
 msgid "%(year)s in the books"
-msgstr ""
+msgstr "%(year)s dalam buku"
 
 #: bookwyrm/templates/annual_summary/layout.html:43
 #, python-format
 msgid "%(year)s <em>in the books</em>"
-msgstr ""
+msgstr "%(year)s <em>dalam buku</em>"
 
 #: bookwyrm/templates/annual_summary/layout.html:47
 #, python-format
 msgid "<em>%(display_name)s’s</em> year of reading"
-msgstr ""
+msgstr "Tahun bacaan <em>%(display_name)s</em>"
 
 #: bookwyrm/templates/annual_summary/layout.html:53
 msgid "Share this page"
-msgstr ""
+msgstr "Bagikan halaman ini"
 
 #: bookwyrm/templates/annual_summary/layout.html:67
 msgid "Copy address"
-msgstr ""
+msgstr "Salin alamat"
 
 #: bookwyrm/templates/annual_summary/layout.html:68
 #: bookwyrm/templates/lists/list.html:277
 msgid "Copied!"
-msgstr ""
+msgstr "Disalin!"
 
 #: bookwyrm/templates/annual_summary/layout.html:77
 msgid "Sharing status: <strong>public with key</strong>"
-msgstr ""
+msgstr "Status berbagi: <strong>publik dengan kunci</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:78
 msgid "The page can be seen by anyone with the complete address."
-msgstr ""
+msgstr "Halaman ini dapat dilihat siapa saja dengan alamat lengkap."
 
 #: bookwyrm/templates/annual_summary/layout.html:83
 msgid "Make page private"
-msgstr ""
+msgstr "Buat halaman pribadi"
 
 #: bookwyrm/templates/annual_summary/layout.html:89
 msgid "Sharing status: <strong>private</strong>"
-msgstr ""
+msgstr "Status berbagi: <strong>pribadi</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:90
 msgid "The page is private, only you can see it."
-msgstr ""
+msgstr "Halaman ini pribadi, hanya Anda yang dapat melihatnya."
 
 #: bookwyrm/templates/annual_summary/layout.html:95
 msgid "Make page public"
-msgstr ""
+msgstr "Buat halaman publik"
 
 #: bookwyrm/templates/annual_summary/layout.html:99
 msgid "When you make your page private, the old key won’t give access to the page anymore. A new key will be created if the page is once again made public."
-msgstr ""
+msgstr "Saat menjadikan halaman Anda sebagai pribadi, kunci lama tidak akan memberi akses ke halaman ini lagi. Kunci baru akan dibuat lagi saat ia dijadikan publik."
 
 #: bookwyrm/templates/annual_summary/layout.html:112
 #, python-format
 msgid "Sadly %(display_name)s didn’t finish any books in %(year)s"
-msgstr ""
+msgstr "Sayangnya %(display_name)s tidak menyelesaikan buku apapun pada %(year)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:118
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr[0] ""
+msgstr[0] "Pada %(year)s, %(display_name)s membaca %(books_total)s buku<br />dengan total halaman %(pages_total)s!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
-msgstr ""
+msgstr "Hebat!"
 
 #: bookwyrm/templates/annual_summary/layout.html:128
 #, python-format
 msgid "That makes an average of %(pages)s pages per book."
-msgstr ""
+msgstr "Itu sekitar rata-rata %(pages)s halaman per buku."
 
 #: bookwyrm/templates/annual_summary/layout.html:134
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] ""
+msgstr[0] "(Tidak ada data halaman tersedia untuk %(no_page_number)s buku)"
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
-msgstr ""
+msgstr "Bacaan terpendek tahun ini…"
 
 #: bookwyrm/templates/annual_summary/layout.html:157
 #: bookwyrm/templates/annual_summary/layout.html:178
 #: bookwyrm/templates/annual_summary/layout.html:247
-#: bookwyrm/templates/book/book.html:73
+#: bookwyrm/templates/book/book.html:89 bookwyrm/templates/book/series.html:21
 #: bookwyrm/templates/discover/large-book.html:22
 #: bookwyrm/templates/landing/large-book.html:26
 #: bookwyrm/templates/landing/small-book.html:18
 msgid "by"
-msgstr ""
+msgstr "oleh"
 
 #: bookwyrm/templates/annual_summary/layout.html:163
 #: bookwyrm/templates/annual_summary/layout.html:184
 #, python-format
 msgid "<strong>%(pages)s</strong> pages"
-msgstr ""
+msgstr "<strong>%(pages)s</strong> halaman"
 
 #: bookwyrm/templates/annual_summary/layout.html:171
 msgid "…and the longest"
-msgstr ""
+msgstr "…dan yang terpanjang"
 
 #: bookwyrm/templates/annual_summary/layout.html:202
 #, python-format
 msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
-msgstr[0] ""
+msgstr[0] "%(display_name)s menarget membaca %(goal)s buku pada %(year)s,<br /> dan sudah mencapai %(goal_percent)s%% dari target tersebut"
 
 #: bookwyrm/templates/annual_summary/layout.html:211
 msgid "Way to go!"
-msgstr ""
+msgstr "Bagus sekali!"
 
 #: bookwyrm/templates/annual_summary/layout.html:226
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] ""
+msgstr[0] "%(display_name)s memberi nilai %(ratings_total)s, <br />rata-rata nilainya adalah %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:240
 msgid "Their best rated review"
-msgstr ""
+msgstr "Nilai ulasan terbaik mereka"
 
 #: bookwyrm/templates/annual_summary/layout.html:253
 #, python-format
 msgid "Their rating: <strong>%(rating)s</strong>"
-msgstr ""
+msgstr "Nilainya: <strong>%(rating)s</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:270
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
-msgstr ""
+msgstr "Semua buku yang dibaca %(display_name)s tahun %(year)s"
 
 #: bookwyrm/templates/author/author.html:19
 #: bookwyrm/templates/author/author.html:20
 msgid "Edit Author"
-msgstr ""
+msgstr "Edit Penulis"
 
 #: bookwyrm/templates/author/author.html:36
 msgid "Author details"
-msgstr ""
+msgstr "Rincian penulis"
 
 #: bookwyrm/templates/author/author.html:40
 #: bookwyrm/templates/author/edit_author.html:42
 msgid "Aliases:"
-msgstr ""
+msgstr "Alias:"
 
 #: bookwyrm/templates/author/author.html:49
 msgid "Born:"
-msgstr ""
+msgstr "Lahir:"
 
 #: bookwyrm/templates/author/author.html:56
 msgid "Died:"
-msgstr ""
+msgstr "Meninggal:"
 
-#: bookwyrm/templates/author/author.html:66
+#: bookwyrm/templates/author/author.html:63
+msgid "Series:"
+msgstr "Serial:"
+
+#: bookwyrm/templates/author/author.html:78
+#: bookwyrm/templates/book/series.html:41
 msgid "External links"
-msgstr ""
+msgstr "Tautan eksternal"
 
-#: bookwyrm/templates/author/author.html:71
+#: bookwyrm/templates/author/author.html:83
 msgid "Wikipedia"
-msgstr ""
+msgstr "Wikipedia"
 
-#: bookwyrm/templates/author/author.html:79
+#: bookwyrm/templates/author/author.html:91
 msgid "View on Wikidata"
-msgstr ""
+msgstr "Lihat di Wikidata"
 
-#: bookwyrm/templates/author/author.html:87
+#: bookwyrm/templates/author/author.html:99
 msgid "Website"
-msgstr ""
+msgstr "Situs web"
 
-#: bookwyrm/templates/author/author.html:95
+#: bookwyrm/templates/author/author.html:107
 msgid "View ISNI record"
-msgstr ""
+msgstr "Lihat data ISNI"
 
-#: bookwyrm/templates/author/author.html:103
-#: bookwyrm/templates/book/book.html:183
+#: bookwyrm/templates/author/author.html:115
+#: bookwyrm/templates/book/book.html:199
 msgid "View on ISFDB"
-msgstr ""
+msgstr "Lihat di ISFDB"
 
-#: bookwyrm/templates/author/author.html:108
+#: bookwyrm/templates/author/author.html:120
 #: bookwyrm/templates/author/sync_modal.html:5
-#: bookwyrm/templates/book/book.html:150
+#: bookwyrm/templates/book/book.html:166
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
-msgstr ""
+msgstr "Muat data"
 
-#: bookwyrm/templates/author/author.html:112
-#: bookwyrm/templates/book/book.html:154
+#: bookwyrm/templates/author/author.html:124
+#: bookwyrm/templates/book/book.html:170
 msgid "View on OpenLibrary"
-msgstr ""
+msgstr "Lihat di OpenLibrary"
 
-#: bookwyrm/templates/author/author.html:127
-#: bookwyrm/templates/book/book.html:168
+#: bookwyrm/templates/author/author.html:139
+#: bookwyrm/templates/book/book.html:184
 msgid "View on Inventaire"
-msgstr ""
+msgstr "Lihat di Inventaire"
 
-#: bookwyrm/templates/author/author.html:143
+#: bookwyrm/templates/author/author.html:155
 msgid "View on LibraryThing"
-msgstr ""
+msgstr "Lihat di LibraryThing"
 
-#: bookwyrm/templates/author/author.html:151
+#: bookwyrm/templates/author/author.html:163
 msgid "View on Goodreads"
-msgstr ""
+msgstr "Lihat di Goodreads"
 
-#: bookwyrm/templates/author/author.html:166
+#: bookwyrm/templates/author/author.html:178
 #, python-format
 msgid "Books by %(name)s"
-msgstr ""
+msgstr "Buku oleh %(name)s"
 
 #: bookwyrm/templates/author/edit_author.html:5
 msgid "Edit Author:"
-msgstr ""
+msgstr "Edit Penulis:"
 
 #: bookwyrm/templates/author/edit_author.html:13
 #: bookwyrm/templates/book/edit/edit_book.html:25
 msgid "Added:"
-msgstr ""
+msgstr "Ditambahkan:"
 
 #: bookwyrm/templates/author/edit_author.html:14
 #: bookwyrm/templates/book/edit/edit_book.html:28
 msgid "Updated:"
-msgstr ""
+msgstr "Diperbarui:"
 
 #: bookwyrm/templates/author/edit_author.html:16
 #: bookwyrm/templates/book/edit/edit_book.html:32
 msgid "Last edited by:"
-msgstr ""
+msgstr "Diedit terakhir oleh:"
 
 #: bookwyrm/templates/author/edit_author.html:33
 #: bookwyrm/templates/book/edit/edit_book_form.html:21
 msgid "Metadata"
-msgstr ""
+msgstr "Metadata"
 
 #: bookwyrm/templates/author/edit_author.html:35
 #: bookwyrm/templates/lists/form.html:9
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:14
 #: bookwyrm/templates/shelf/form.html:9
 msgid "Name:"
-msgstr ""
+msgstr "Nama:"
 
 #: bookwyrm/templates/author/edit_author.html:44
-#: bookwyrm/templates/book/edit/edit_book_form.html:91
-#: bookwyrm/templates/book/edit/edit_book_form.html:161
+#: bookwyrm/templates/book/edit/edit_book_form.html:68
+#: bookwyrm/templates/book/edit/edit_book_form.html:211
 msgid "Separate multiple values with commas."
-msgstr ""
+msgstr "Pisahkan banyak nilai dengan koma."
 
 #: bookwyrm/templates/author/edit_author.html:50
 msgid "Bio:"
-msgstr ""
+msgstr "Bio:"
 
 #: bookwyrm/templates/author/edit_author.html:56
 msgid "Wikipedia link:"
-msgstr ""
+msgstr "Tautan Wikipedia:"
 
 #: bookwyrm/templates/author/edit_author.html:58
 msgid "Wikidata:"
-msgstr ""
+msgstr "Wikidata:"
 
 #: bookwyrm/templates/author/edit_author.html:62
 msgid "Website:"
-msgstr ""
+msgstr "Situs web:"
 
 #: bookwyrm/templates/author/edit_author.html:67
 msgid "Birth date:"
-msgstr ""
+msgstr "Tanggal lahir:"
 
 #: bookwyrm/templates/author/edit_author.html:74
 msgid "Death date:"
-msgstr ""
+msgstr "Tanggal meninggal:"
 
 #: bookwyrm/templates/author/edit_author.html:81
 msgid "Author Identifiers"
-msgstr ""
+msgstr "Pengidentifikasi Penulis"
 
 #: bookwyrm/templates/author/edit_author.html:83
 msgid "Openlibrary key:"
-msgstr ""
+msgstr "Kunci Openlibrary:"
 
 #: bookwyrm/templates/author/edit_author.html:90
-#: bookwyrm/templates/book/edit/edit_book_form.html:336
+#: bookwyrm/templates/book/edit/edit_book_form.html:386
+#: bookwyrm/templates/book/edit/edit_series.html:54
 msgid "Inventaire ID:"
-msgstr ""
+msgstr "ID Inventaire:"
 
 #: bookwyrm/templates/author/edit_author.html:97
 msgid "Librarything key:"
-msgstr ""
+msgstr "Kunci Librarything:"
 
 #: bookwyrm/templates/author/edit_author.html:104
-#: bookwyrm/templates/book/edit/edit_book_form.html:345
+#: bookwyrm/templates/book/edit/edit_book_form.html:395
 msgid "Goodreads key:"
-msgstr ""
+msgstr "Kunci Goodreads:"
 
 #: bookwyrm/templates/author/edit_author.html:111
 msgid "ISFDB:"
-msgstr ""
+msgstr "ISFDB:"
 
 #: bookwyrm/templates/author/edit_author.html:118
 msgid "ISNI:"
-msgstr ""
+msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:128
-#: bookwyrm/templates/book/book.html:256
-#: bookwyrm/templates/book/edit/edit_book.html:150
+#: bookwyrm/templates/book/book.html:272
+#: bookwyrm/templates/book/edit/edit_book.html:186
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
 #: bookwyrm/templates/groups/form.html:32
@@ -1065,7 +1075,7 @@ msgstr ""
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:120
 #: bookwyrm/templates/settings/federation/edit_instance.html:98
 #: bookwyrm/templates/settings/federation/instance.html:105
-#: bookwyrm/templates/settings/federation/settings.html:45
+#: bookwyrm/templates/settings/federation/settings.html:78
 #: bookwyrm/templates/settings/registration.html:96
 #: bookwyrm/templates/settings/registration_limited.html:76
 #: bookwyrm/templates/settings/site.html:144
@@ -1073,14 +1083,14 @@ msgstr ""
 #: bookwyrm/templates/shelf/form.html:25
 #: bookwyrm/templates/snippets/reading_modals/layout.html:18
 msgid "Save"
-msgstr ""
+msgstr "Simpan"
 
 #: bookwyrm/templates/author/edit_author.html:129
 #: bookwyrm/templates/author/sync_modal.html:23
-#: bookwyrm/templates/book/book.html:257
+#: bookwyrm/templates/book/book.html:273
 #: bookwyrm/templates/book/cover_add_modal.html:33
-#: bookwyrm/templates/book/edit/edit_book.html:152
-#: bookwyrm/templates/book/edit/edit_book.html:155
+#: bookwyrm/templates/book/edit/edit_book.html:188
+#: bookwyrm/templates/book/edit/edit_book.html:191
 #: bookwyrm/templates/book/file_links/add_link_modal.html:59
 #: bookwyrm/templates/book/file_links/verification_modal.html:26
 #: bookwyrm/templates/book/sync_modal.html:23
@@ -1090,7 +1100,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/disable-2fa.html:19
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:27
 #: bookwyrm/templates/readthrough/readthrough_modal.html:80
-#: bookwyrm/templates/search/barcode_modal.html:43
+#: bookwyrm/templates/search/barcode_modal.html:41
 #: bookwyrm/templates/settings/federation/instance.html:106
 #: bookwyrm/templates/settings/files.html:193
 #: bookwyrm/templates/settings/files.html:354
@@ -1099,15 +1109,16 @@ msgstr ""
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:22
 #: bookwyrm/templates/snippets/report_modal.html:52
 msgid "Cancel"
-msgstr ""
+msgstr "Batal"
 
 #: bookwyrm/templates/author/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this author which aren't present here. Existing metadata will not be overwritten."
-msgstr ""
+msgstr "Memuat data akan menyambungkan ke <strong>%(source_name)s</strong> dan memeriksa matadata manapun tentang penulis yang tidak ditampilkan di sini. Metadata yang sudah ada tidak akan ditimpa."
 
 #: bookwyrm/templates/author/sync_modal.html:24
-#: bookwyrm/templates/book/edit/edit_book.html:137
+#: bookwyrm/templates/book/edit/edit_book.html:173
+#: bookwyrm/templates/book/edit/edit_series.html:84
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
 #: bookwyrm/templates/landing/force_password_reset.html:94
@@ -1118,101 +1129,120 @@ msgstr ""
 #: bookwyrm/templates/settings/users/force_password_reset.html:55
 #: bookwyrm/templates/snippets/remove_from_group_button.html:17
 msgid "Confirm"
-msgstr ""
+msgstr "Konfirmasi"
 
 #: bookwyrm/templates/book/book.html:24
 msgid "Unable to connect to remote source."
-msgstr ""
+msgstr "Tidak dapat terkoneksi dengan sumber jarak jauh."
 
-#: bookwyrm/templates/book/book.html:81 bookwyrm/templates/book/book.html:82
+#: bookwyrm/templates/book/book.html:52
+#, python-format
+msgid "This book might be part of the <em>%(series)s</em> series."
+msgstr "Buku ini mungkin bagian dari serial <em>%(series)s</em>."
+
+#: bookwyrm/templates/book/book.html:56
+msgid "Edit it to confirm."
+msgstr "Edit ini untuk mengonfirmasi."
+
+#: bookwyrm/templates/book/book.html:69
+#, python-format
+msgid "Book <span itemprop=\"position\">%(number)s</span> in <em><a href=\"%(path)s\">%(title)s</a></em>"
+msgstr "Buku <span itemprop=\"position\">%(number)s</span> di <em><a href=\"%(path)s\">%(title)s</a></em>"
+
+#: bookwyrm/templates/book/book.html:75
+#, python-format
+msgid "Part of <em><a href=\"%(path)s\">%(title)s</a></em>"
+msgstr "Bagian dari <em><a href=\"%(path)s\">%(title)s</a></em>"
+
+#: bookwyrm/templates/book/book.html:97 bookwyrm/templates/book/book.html:98
 msgid "Edit Book"
-msgstr ""
+msgstr "Edit Buku"
 
-#: bookwyrm/templates/book/book.html:107 bookwyrm/templates/book/book.html:110
+#: bookwyrm/templates/book/book.html:123 bookwyrm/templates/book/book.html:126
 msgid "Click to add cover"
-msgstr ""
+msgstr "Klik untuk menambahkan kover"
 
-#: bookwyrm/templates/book/book.html:116
+#: bookwyrm/templates/book/book.html:132
 msgid "Failed to load cover"
-msgstr ""
+msgstr "Gagal memuat kover"
 
-#: bookwyrm/templates/book/book.html:127
+#: bookwyrm/templates/book/book.html:143
 msgid "Click to enlarge"
-msgstr ""
+msgstr "Klik untuk membesarkan"
 
-#: bookwyrm/templates/book/book.html:190
+#: bookwyrm/templates/book/book.html:206
 msgid "View on Finna"
-msgstr ""
+msgstr "Lihat di Finna"
 
-#: bookwyrm/templates/book/book.html:205
+#: bookwyrm/templates/book/book.html:221
 msgid "View on Libris"
-msgstr ""
+msgstr "Lihat di Libris"
 
-#: bookwyrm/templates/book/book.html:229
+#: bookwyrm/templates/book/book.html:245
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
-msgstr[0] ""
+msgstr[0] "(%(review_count)s ulasan)"
 
-#: bookwyrm/templates/book/book.html:245
+#: bookwyrm/templates/book/book.html:261
 msgid "Add Description"
-msgstr ""
+msgstr "Tambahkan Deskripsi"
 
-#: bookwyrm/templates/book/book.html:252
+#: bookwyrm/templates/book/book.html:268
 #: bookwyrm/templates/book/edit/edit_book_form.html:55
 #: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
 msgid "Description:"
-msgstr ""
+msgstr "Deskripsi:"
 
-#: bookwyrm/templates/book/book.html:268
+#: bookwyrm/templates/book/book.html:284
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
-msgstr[0] ""
+msgstr[0] "%(count)s edisi"
 
-#: bookwyrm/templates/book/book.html:282
+#: bookwyrm/templates/book/book.html:298
 msgid "You have shelved this edition in:"
-msgstr ""
+msgstr "Anda sudah menyimpan edisi ini di:"
 
-#: bookwyrm/templates/book/book.html:297
+#: bookwyrm/templates/book/book.html:313
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\">Edisi berbeda</a> dari buku ini di rak <a href=\"%(shelf_path)s\">%(shelf_name)s</a>."
 
-#: bookwyrm/templates/book/book.html:308
+#: bookwyrm/templates/book/book.html:324
 msgid "Your reading activity"
-msgstr ""
+msgstr "Aktivitas membaca Anda"
 
-#: bookwyrm/templates/book/book.html:314
+#: bookwyrm/templates/book/book.html:330
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
-msgstr ""
+msgstr "Tambahkan tanggal baca"
 
-#: bookwyrm/templates/book/book.html:322
+#: bookwyrm/templates/book/book.html:338
 msgid "You don't have any reading activity for this book."
-msgstr ""
+msgstr "Anda tidak memiliki aktivitas membaca untuk buku ini."
 
-#: bookwyrm/templates/book/book.html:348
+#: bookwyrm/templates/book/book.html:364
 msgid "Your reviews"
-msgstr ""
+msgstr "Ulasan Anda"
 
-#: bookwyrm/templates/book/book.html:354
+#: bookwyrm/templates/book/book.html:370
 msgid "Your comments"
-msgstr ""
+msgstr "Komentar Anda"
 
-#: bookwyrm/templates/book/book.html:360
+#: bookwyrm/templates/book/book.html:376
 msgid "Your quotes"
-msgstr ""
+msgstr "Kutipan Anda"
 
-#: bookwyrm/templates/book/book.html:396
+#: bookwyrm/templates/book/book.html:412
 msgid "Subjects"
-msgstr ""
+msgstr "Subjek"
 
-#: bookwyrm/templates/book/book.html:408
+#: bookwyrm/templates/book/book.html:424
 msgid "Places"
-msgstr ""
+msgstr "Tempat"
 
-#: bookwyrm/templates/book/book.html:419
+#: bookwyrm/templates/book/book.html:435
 #: bookwyrm/templates/groups/group.html:19
 #: bookwyrm/templates/guided_tour/lists.html:14
 #: bookwyrm/templates/guided_tour/user_books.html:102
@@ -1225,94 +1255,95 @@ msgstr ""
 #: bookwyrm/templates/settings/celery.html:77
 #: bookwyrm/templates/user/layout.html:101 bookwyrm/templates/user/lists.html:6
 msgid "Lists"
-msgstr ""
+msgstr "Daftar"
 
-#: bookwyrm/templates/book/book.html:431
+#: bookwyrm/templates/book/book.html:447
 msgid "Add to list"
-msgstr ""
+msgstr "Tambahkan ke daftar"
 
-#: bookwyrm/templates/book/book.html:438
+#: bookwyrm/templates/book/book.html:454
 msgid "Create new list..."
-msgstr ""
+msgstr "Buat daftar baru..."
 
-#: bookwyrm/templates/book/book.html:442
+#: bookwyrm/templates/book/book.html:458
 #: bookwyrm/templates/book/cover_add_modal.html:32
 #: bookwyrm/templates/lists/add_item_modal.html:39
 #: bookwyrm/templates/lists/list.html:255
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:24
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:32
 msgid "Add"
-msgstr ""
+msgstr "Tambah"
 
 #: bookwyrm/templates/book/book_identifiers.html:8
 msgid "ISBN:"
-msgstr ""
+msgstr "ISBN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:12
 #: bookwyrm/templates/book/book_identifiers.html:13
 msgid "Copy ISBN"
-msgstr ""
+msgstr "Salin ISBN"
 
 #: bookwyrm/templates/book/book_identifiers.html:16
 msgid "Copied ISBN!"
-msgstr ""
+msgstr "ISBN disalin!"
 
 #: bookwyrm/templates/book/book_identifiers.html:23
-#: bookwyrm/templates/book/edit/edit_book_form.html:354
+#: bookwyrm/templates/book/edit/edit_book_form.html:404
 #: bookwyrm/templates/rss/edition.html:6
 msgid "OCLC Number:"
-msgstr ""
+msgstr "Nomor OCLC:"
 
 #: bookwyrm/templates/book/book_identifiers.html:30
-#: bookwyrm/templates/book/edit/edit_book_form.html:363
+#: bookwyrm/templates/book/edit/edit_book_form.html:413
 #: bookwyrm/templates/rss/edition.html:7
 msgid "ASIN:"
-msgstr ""
+msgstr "ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:37
-#: bookwyrm/templates/book/edit/edit_book_form.html:372
+#: bookwyrm/templates/book/edit/edit_book_form.html:422
 #: bookwyrm/templates/rss/edition.html:8
 msgid "Audible ASIN:"
-msgstr ""
+msgstr "Audible ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:44
-#: bookwyrm/templates/book/edit/edit_book_form.html:381
+#: bookwyrm/templates/book/edit/edit_book_form.html:431
+#: bookwyrm/templates/book/edit/edit_series.html:60
 #: bookwyrm/templates/rss/edition.html:9
 msgid "ISFDB ID:"
-msgstr ""
+msgstr "ISFDB ID:"
 
 #: bookwyrm/templates/book/book_identifiers.html:51
 #: bookwyrm/templates/rss/edition.html:10
 msgid "Goodreads:"
-msgstr ""
+msgstr "Goodreads:"
 
 #: bookwyrm/templates/book/book_identifiers.html:58
-#: bookwyrm/templates/book/edit/edit_book_form.html:390
+#: bookwyrm/templates/book/edit/edit_book_form.html:440
 msgid "Finna ID:"
-msgstr ""
+msgstr "Finna ID:"
 
 #: bookwyrm/templates/book/book_identifiers.html:65
-#: bookwyrm/templates/book/edit/edit_book_form.html:399
+#: bookwyrm/templates/book/edit/edit_book_form.html:449
 msgid "Libris ID:"
-msgstr ""
+msgstr "Libris ID:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
-msgstr ""
+msgstr "Tambahkan kover"
 
 #: bookwyrm/templates/book/cover_add_modal.html:17
-#: bookwyrm/templates/book/edit/edit_book_form.html:246
+#: bookwyrm/templates/book/edit/edit_book_form.html:296
 msgid "Upload cover:"
-msgstr ""
+msgstr "Unggah kover:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:23
-#: bookwyrm/templates/book/edit/edit_book_form.html:252
+#: bookwyrm/templates/book/edit/edit_book_form.html:302
 msgid "Load cover from URL:"
-msgstr ""
+msgstr "Muat kover dari URL:"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
 msgid "Book cover preview"
-msgstr ""
+msgstr "Pratinjau kover buku"
 
 #: bookwyrm/templates/book/cover_show_modal.html:11
 #: bookwyrm/templates/components/inline_form.html:8
@@ -1322,64 +1353,81 @@ msgstr ""
 #: bookwyrm/templates/get_started/layout.html:27
 #: bookwyrm/templates/get_started/layout.html:60
 msgid "Close"
-msgstr ""
+msgstr "Tutup"
 
 #: bookwyrm/templates/book/edit/edit_book.html:8
 #: bookwyrm/templates/book/edit/edit_book.html:18
 #, python-format
 msgid "Edit \"%(book_title)s\""
-msgstr ""
+msgstr "Edit \"%(book_title)s\""
 
 #: bookwyrm/templates/book/edit/edit_book.html:10
 #: bookwyrm/templates/book/edit/edit_book.html:20
 msgid "Add Book"
-msgstr ""
+msgstr "Tambah Buku"
 
 #: bookwyrm/templates/book/edit/edit_book.html:43
 msgid "Failed to save book, see errors below for more information."
-msgstr ""
+msgstr "Gagal menyimpan buku, lihat eror di bawah ini untuk informasi lebih banyak."
 
 #: bookwyrm/templates/book/edit/edit_book.html:70
 msgid "Confirm Book Info"
-msgstr ""
+msgstr "Konfirmasi Info Buku"
 
 #: bookwyrm/templates/book/edit/edit_book.html:78
 #, python-format
 msgid "Is \"%(name)s\" one of these authors?"
-msgstr ""
+msgstr "Benarkah \"%(name)s\" salah satu penulisnya?"
 
 #: bookwyrm/templates/book/edit/edit_book.html:89
 #, python-format
 msgid "Author of <em>%(book_title)s</em>"
-msgstr ""
+msgstr "Penulis <em>%(book_title)s</em>"
 
 #: bookwyrm/templates/book/edit/edit_book.html:93
 #, python-format
 msgid "Author of <em>%(alt_title)s</em>"
-msgstr ""
+msgstr "Penulis <em>%(alt_title)s</em>"
 
 #: bookwyrm/templates/book/edit/edit_book.html:95
 msgid "Find more information at isni.org"
-msgstr ""
+msgstr "Temukan lebih banyak informasi di isni.org"
 
 #: bookwyrm/templates/book/edit/edit_book.html:105
 msgid "This is a new author"
-msgstr ""
+msgstr "Ini adalah penulis baru"
 
 #: bookwyrm/templates/book/edit/edit_book.html:115
 #, python-format
 msgid "Creating a new author: %(name)s"
-msgstr ""
+msgstr "Buat penulis baru: %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book.html:122
+#: bookwyrm/templates/book/edit/edit_book.html:123
 msgid "Is this an edition of an existing work?"
-msgstr ""
+msgstr "Apakah ini edisi dari yang sudah ada?"
 
-#: bookwyrm/templates/book/edit/edit_book.html:130
+#: bookwyrm/templates/book/edit/edit_book.html:131
 msgid "This is a new work"
-msgstr ""
+msgstr "Ini buku baru"
 
-#: bookwyrm/templates/book/edit/edit_book.html:139
+#: bookwyrm/templates/book/edit/edit_book.html:142
+msgid "Are you sure this is a new series? The following series have similar names and a matching author."
+msgstr "Yakin ini serial baru? Serial berikutnya memiliki nama sama dan penulis sama."
+
+#: bookwyrm/templates/book/edit/edit_book.html:148
+msgid "Is this book part of one of these series?"
+msgstr "Apakah buku ini bagian dari serial ini?"
+
+#: bookwyrm/templates/book/edit/edit_book.html:160
+msgid "This is a new series"
+msgstr "Ini serial baru"
+
+#: bookwyrm/templates/book/edit/edit_book.html:165
+msgid "Creating a new series"
+msgstr "Membuat serial baru"
+
+#: bookwyrm/templates/book/edit/edit_book.html:175
+#: bookwyrm/templates/book/edit/edit_series.html:86
 #: bookwyrm/templates/feed/status.html:17
 #: bookwyrm/templates/guided_tour/book.html:44
 #: bookwyrm/templates/guided_tour/book.html:68
@@ -1426,222 +1474,288 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_profile.html:135
 #: bookwyrm/templates/user/user.html:102 bookwyrm/templates/user_menu.html:18
 msgid "Back"
-msgstr ""
+msgstr "Kembali"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:26
 #: bookwyrm/templates/snippets/create_status/review.html:15
 msgid "Title:"
-msgstr ""
+msgstr "Judul:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:36
 msgid "Sort Title:"
-msgstr ""
+msgstr "Urutkan Judul:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:46
 msgid "Subtitle:"
-msgstr ""
+msgstr "Subjudul:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:66
-msgid "Series:"
-msgstr ""
+#: bookwyrm/templates/book/edit/edit_book_form.html:64
+msgid "Languages:"
+msgstr "Bahasa:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:76
-msgid "Series number:"
-msgstr ""
-
-#: bookwyrm/templates/book/edit/edit_book_form.html:87
-msgid "Languages:"
-msgstr ""
-
-#: bookwyrm/templates/book/edit/edit_book_form.html:99
 msgid "Subjects:"
-msgstr ""
+msgstr "Subjek:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:103
+#: bookwyrm/templates/book/edit/edit_book_form.html:80
 msgid "Add subject"
-msgstr ""
+msgstr "Tambahkan subjek"
+
+#: bookwyrm/templates/book/edit/edit_book_form.html:98
+msgid "Remove subject"
+msgstr "Hapus subjek"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:121
-msgid "Remove subject"
-msgstr ""
-
-#: bookwyrm/templates/book/edit/edit_book_form.html:144
 msgid "Add Another Subject"
-msgstr ""
+msgstr "Tambahkan Subjek Lain"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:152
+#: bookwyrm/templates/book/edit/edit_book_form.html:130
+msgid "Series"
+msgstr "Serial"
+
+#: bookwyrm/templates/book/edit/edit_book_form.html:138
+#: bookwyrm/templates/book/series.html:12
+#: bookwyrm/templates/book/series.html:13
+msgid "Edit Series"
+msgstr "Edit Serial"
+
+#: bookwyrm/templates/book/edit/edit_book_form.html:141
+msgid "To edit details of a series itself, click the series name"
+msgstr "Untuk mengedit rincian serial, klik nama serial"
+
+#: bookwyrm/templates/book/edit/edit_book_form.html:150
+#: bookwyrm/templates/snippets/create_status/quotation.html:31
+msgid "Position:"
+msgstr "Posisi:"
+
+#: bookwyrm/templates/book/edit/edit_book_form.html:164
+#, python-format
+msgid "Remove this book from <em>%(series_name)s</em>"
+msgstr "Hapus buku ini dari <em>%(series_name)s</em>"
+
+#: bookwyrm/templates/book/edit/edit_book_form.html:175
+msgid "Add Series"
+msgstr "Tambahkan Serial"
+
+#: bookwyrm/templates/book/edit/edit_book_form.html:178
+msgid "Series name:"
+msgstr "Nama serial:"
+
+#: bookwyrm/templates/book/edit/edit_book_form.html:186
+#: bookwyrm/templates/book/edit/edit_series.html:75
+msgid "Series position:"
+msgstr "Posisi serial:"
+
+#: bookwyrm/templates/book/edit/edit_book_form.html:189
+msgid "This field was previously called \"Series number\""
+msgstr "Bidang ini sebelumnya disebut \"Nomor serial\""
+
+#: bookwyrm/templates/book/edit/edit_book_form.html:202
 msgid "Publication"
-msgstr ""
+msgstr "Publikasi"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:157
+#: bookwyrm/templates/book/edit/edit_book_form.html:207
 msgid "Publisher:"
-msgstr ""
+msgstr "Penerbit:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:169
+#: bookwyrm/templates/book/edit/edit_book_form.html:219
 msgid "First published date:"
-msgstr ""
+msgstr "Tanggal terbit pertama kali:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:177
+#: bookwyrm/templates/book/edit/edit_book_form.html:227
 msgid "Published date:"
-msgstr ""
+msgstr "Tanggal terbit:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:188
+#: bookwyrm/templates/book/edit/edit_book_form.html:238
 #: bookwyrm/templates/import/user_import_status.html:155
 #: bookwyrm/templates/search/layout.html:23
 #: bookwyrm/templates/search/layout.html:47
 msgid "Authors"
-msgstr ""
+msgstr "Penulis"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:199
+#: bookwyrm/templates/book/edit/edit_book_form.html:249
 #, python-format
 msgid "Remove %(name)s"
-msgstr ""
+msgstr "Hapus %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:202
+#: bookwyrm/templates/book/edit/edit_book_form.html:252
 #, python-format
 msgid "Author page for %(name)s"
-msgstr ""
+msgstr "Hapus halaman untuk %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:210
+#: bookwyrm/templates/book/edit/edit_book_form.html:260
 msgid "Add Authors:"
-msgstr ""
+msgstr "Tambahkan Penulis:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:213
-#: bookwyrm/templates/book/edit/edit_book_form.html:216
+#: bookwyrm/templates/book/edit/edit_book_form.html:263
+#: bookwyrm/templates/book/edit/edit_book_form.html:266
 msgid "Add Author"
-msgstr ""
+msgstr "Tambahkan Penulis"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:214
-#: bookwyrm/templates/book/edit/edit_book_form.html:217
+#: bookwyrm/templates/book/edit/edit_book_form.html:264
+#: bookwyrm/templates/book/edit/edit_book_form.html:267
 msgid "Jane Doe"
-msgstr ""
+msgstr "Jane Doe"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:223
+#: bookwyrm/templates/book/edit/edit_book_form.html:273
 msgid "Add Another Author"
-msgstr ""
+msgstr "Tambahkan Penulis Lain"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:233
+#: bookwyrm/templates/book/edit/edit_book_form.html:283
 #: bookwyrm/templates/shelf/shelf.html:155
 msgid "Cover"
-msgstr ""
+msgstr "Kover"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:265
+#: bookwyrm/templates/book/edit/edit_book_form.html:315
 msgid "Physical Properties"
-msgstr ""
+msgstr "Properti Fisik"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:272
+#: bookwyrm/templates/book/edit/edit_book_form.html:322
 #: bookwyrm/templates/book/editions/format_filter.html:6
 msgid "Format:"
-msgstr ""
+msgstr "Format:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:282
+#: bookwyrm/templates/book/edit/edit_book_form.html:332
 msgid "Format details:"
-msgstr ""
+msgstr "Rincian format:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:293
+#: bookwyrm/templates/book/edit/edit_book_form.html:343
 msgid "Pages:"
-msgstr ""
+msgstr "Halaman:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:304
+#: bookwyrm/templates/book/edit/edit_book_form.html:354
 msgid "Book Identifiers"
-msgstr ""
+msgstr "Pengidentifikasi Buku"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:309
+#: bookwyrm/templates/book/edit/edit_book_form.html:359
 #: bookwyrm/templates/rss/edition.html:5
 msgid "ISBN 13:"
-msgstr ""
+msgstr "ISBN 13:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:318
+#: bookwyrm/templates/book/edit/edit_book_form.html:368
 msgid "ISBN 10:"
-msgstr ""
+msgstr "ISBN 10:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:327
+#: bookwyrm/templates/book/edit/edit_book_form.html:377
 msgid "Openlibrary ID:"
-msgstr ""
+msgstr "Openlibrary ID:"
+
+#: bookwyrm/templates/book/edit/edit_series.html:9
+#, python-format
+msgid "Edit \"%(title)s\""
+msgstr "Edit \"%(title)s\""
+
+#: bookwyrm/templates/book/edit/edit_series.html:20
+#, python-format
+msgid "Edit \"%(name)s\""
+msgstr "Edit \"%(name)s\""
+
+#: bookwyrm/templates/book/edit/edit_series.html:30
+#: bookwyrm/templates/settings/schedules.html:22
+msgid "Name"
+msgstr "Nama"
+
+#: bookwyrm/templates/book/edit/edit_series.html:36
+#: bookwyrm/templates/book/series.html:29
+msgid "Alternative names"
+msgstr "Nama alternatif"
+
+#: bookwyrm/templates/book/edit/edit_series.html:39
+#: bookwyrm/templates/book/edit/edit_series.html:42
+msgid "Add Alternative name:"
+msgstr "Tambahkan nama Alternatif:"
+
+#: bookwyrm/templates/book/edit/edit_series.html:48
+msgid "Add an Alternative name"
+msgstr "Tambahkan nama Alternatif"
+
+#: bookwyrm/templates/book/edit/edit_series.html:57
+msgid "Wikidata ID:"
+msgstr "Wikidata ID:"
 
 #: bookwyrm/templates/book/editions/editions.html:4
 #, python-format
 msgid "Editions of %(book_title)s"
-msgstr ""
+msgstr "Edisi %(book_title)s"
 
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
 msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
-msgstr ""
+msgstr "Edisi <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
-msgstr ""
+msgstr "Tidak menemukan edisi yang Anda cari?"
 
 #: bookwyrm/templates/book/editions/editions.html:76
 msgid "Add another edition"
-msgstr ""
+msgstr "Tambahkan edisi lain"
 
 #: bookwyrm/templates/book/editions/format_filter.html:9
 #: bookwyrm/templates/book/editions/language_filter.html:9
 msgid "Any"
-msgstr ""
+msgstr "Apapun"
 
 #: bookwyrm/templates/book/editions/language_filter.html:6
 #: bookwyrm/templates/preferences/edit_user.html:101
 msgid "Language:"
-msgstr ""
+msgstr "Bahasa:"
 
 #: bookwyrm/templates/book/editions/search_filter.html:6
 msgid "Search editions"
-msgstr ""
+msgstr "Cari edisi"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:6
 msgid "Add file link"
-msgstr ""
+msgstr "Tambahkan tautan berkas"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:19
 msgid "Links from unknown domains will need to be approved by a moderator before they are added."
-msgstr ""
+msgstr "Tautan dari domain yang tidak dikenal harus melewati persetujuan moderator sebelum ditambahkan."
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:24
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:29
 msgid "File type:"
-msgstr ""
+msgstr "Tipe berkas:"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:48
 msgid "Availability:"
-msgstr ""
+msgstr "Ketersediaan:"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:5
 #: bookwyrm/templates/book/file_links/edit_links.html:21
 #: bookwyrm/templates/book/file_links/links.html:53
 msgid "Edit links"
-msgstr ""
+msgstr "Edit tautan"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:11
 #, python-format
 msgid "Links for \"<em>%(title)s</em>\""
-msgstr ""
+msgstr "Tautan untuk \"<em>%(title)s</em>\""
 
 #: bookwyrm/templates/book/file_links/edit_links.html:32
 #: bookwyrm/templates/settings/link_domains/link_table.html:6
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:33
 #: bookwyrm/templates/settings/link_domains/link_table.html:7
 msgid "Added by"
-msgstr ""
+msgstr "Ditambahkan oleh"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:34
 #: bookwyrm/templates/settings/link_domains/link_table.html:8
 msgid "Filetype"
-msgstr ""
+msgstr "Tipe berkas"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:35
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:25
 #: bookwyrm/templates/settings/reports/report_links_table.html:5
 msgid "Domain"
-msgstr ""
+msgstr "Domain"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:36
 #: bookwyrm/templates/import/import.html:149
@@ -1660,149 +1774,141 @@ msgstr ""
 #: bookwyrm/templates/settings/users/user_admin.html:56
 #: bookwyrm/templates/settings/users/user_info.html:35
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:37
 msgid "Availability"
-msgstr ""
+msgstr "Ketersediaan"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:48
 #: bookwyrm/templates/settings/link_domains/link_table.html:21
 msgid "Unknown user"
-msgstr ""
+msgstr "Pengguna tidak dikenal"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:57
 #: bookwyrm/templates/book/file_links/verification_modal.html:22
 msgid "Report spam"
-msgstr ""
+msgstr "Laporkan spam"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:102
 msgid "No links available for this book."
-msgstr ""
+msgstr "Tidak ada tautan tersedia untuk buku ini."
 
 #: bookwyrm/templates/book/file_links/edit_links.html:113
 #: bookwyrm/templates/book/file_links/links.html:18
 msgid "Add link to file"
-msgstr ""
+msgstr "Tambahkan tautan ke berkas"
 
 #: bookwyrm/templates/book/file_links/file_link_page.html:6
 msgid "File Links"
-msgstr ""
+msgstr "Tautan Berkas"
 
 #: bookwyrm/templates/book/file_links/links.html:9
 msgid "Get a copy"
-msgstr ""
+msgstr "Dapatkan salinan"
 
 #: bookwyrm/templates/book/file_links/links.html:47
 msgid "No links available"
-msgstr ""
+msgstr "Tautan tidak tersedia"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:5
 msgid "Leaving BookWyrm"
-msgstr ""
+msgstr "Meninggalkan BookWyrm"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:11
 #, python-format
 msgid "This link is taking you to: <code>%(link_url)s</code>.<br> Is that where you'd like to go?"
-msgstr ""
+msgstr "Tautan ini membawa Anda ke: <code>%(link_url)s</code>.<br> Benarkan Anda akan ke sini?"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:27
 #: bookwyrm/templates/setup/config.html:134
 msgid "Continue"
-msgstr ""
+msgstr "Lanjutkan"
 
 #: bookwyrm/templates/book/publisher_info.html:23
 #, python-format
 msgid "%(format)s, %(pages)s pages"
-msgstr ""
+msgstr "%(format)s, %(pages)s halaman"
 
 #: bookwyrm/templates/book/publisher_info.html:25
 #, python-format
 msgid "%(pages)s pages"
-msgstr ""
+msgstr "%(pages)s halaman"
 
 #: bookwyrm/templates/book/publisher_info.html:38
 #, python-format
 msgid "%(languages)s language"
-msgstr ""
+msgstr "%(languages)s halaman"
 
 #: bookwyrm/templates/book/publisher_info.html:63
 #, python-format
 msgid "Published %(date)s by %(publisher)s."
-msgstr ""
+msgstr "Diterbitkan %(date)s oleh %(publisher)s."
 
 #: bookwyrm/templates/book/publisher_info.html:65
 #, python-format
 msgid "Published by %(publisher)s."
-msgstr ""
+msgstr "Diterbitkan oleh %(publisher)s."
 
 #: bookwyrm/templates/book/publisher_info.html:67
 #, python-format
 msgid "Published %(date)s"
-msgstr ""
+msgstr "Diterbitkan %(date)s"
 
 #: bookwyrm/templates/book/rating.html:19
 msgid "rated it"
-msgstr ""
+msgstr "nilai ini"
 
-#: bookwyrm/templates/book/series.html:11
-msgid "Series by"
-msgstr ""
-
-#: bookwyrm/templates/book/series.html:28
+#: bookwyrm/templates/book/series.html:72
 #, python-format
 msgid "Book %(series_number)s"
-msgstr ""
-
-#: bookwyrm/templates/book/series.html:28
-msgid "Unsorted Book"
-msgstr ""
+msgstr "Buku %(series_number)s"
 
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this book which aren't present here. Existing metadata will not be overwritten."
-msgstr ""
+msgstr "Memuat data akan menyambungkan ke <strong>%(source_name)s</strong> dan memeriksa metadata buku yang tidak ditampilkan di sini. Metadata yang sudah ada tidak akan ditimpa."
 
 #: bookwyrm/templates/compose.html:7 bookwyrm/templates/compose.html:21
 msgid "Edit review"
-msgstr ""
+msgstr "Edit ulasan"
 
 #: bookwyrm/templates/compose.html:9 bookwyrm/templates/compose.html:23
 msgid "Edit quote"
-msgstr ""
+msgstr "Edit kutipan"
 
 #: bookwyrm/templates/compose.html:11 bookwyrm/templates/compose.html:25
 msgid "Edit comment"
-msgstr ""
+msgstr "Edit komentar"
 
 #: bookwyrm/templates/compose.html:13 bookwyrm/templates/compose.html:27
 msgid "Edit status"
-msgstr ""
+msgstr "Edit status"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
-msgstr ""
+msgstr "Konfirmasi surel"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:7
 msgid "Confirm your email address"
-msgstr ""
+msgstr "Konfirmasi alamat surel Anda"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:13
 msgid "A confirmation code has been sent to the email address you used to register your account."
-msgstr ""
+msgstr "Kode konfirmasi telah dikirimkan ke alamat surel yang Anda pakai untuk mendaftarkan akun."
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:15
 msgid "Sorry! We couldn't find that code."
-msgstr ""
+msgstr "Maaf! Kami tidak menemukan kodenya."
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:19
 #: bookwyrm/templates/settings/users/user_info.html:92
 msgid "Confirmation code:"
-msgstr ""
+msgstr "Kode konfirmasi:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/layout.html:81
-#: bookwyrm/templates/settings/dashboard/dashboard.html:107
+#: bookwyrm/templates/settings/dashboard/dashboard.html:106
 #: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Submit"
 msgstr ""
@@ -1863,7 +1969,7 @@ msgstr ""
 
 #: bookwyrm/templates/directory/directory.html:29
 #: bookwyrm/templates/directory/directory.html:31
-#: bookwyrm/templates/feed/goal_card.html:17
+#: bookwyrm/templates/feed/goal_card.html:19
 #: bookwyrm/templates/feed/summary_card.html:12
 #: bookwyrm/templates/feed/summary_card.html:14
 #: bookwyrm/templates/snippets/announcement.html:31
@@ -1955,21 +2061,22 @@ msgid "<a href=\"%(user_path)s\">%(username)s</a> started reading <a href=\"%(bo
 msgstr ""
 
 #: bookwyrm/templates/discover/card-header.html:23
+#: bookwyrm/templates/discover/card-header.html:32
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> rated <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/discover/card-header.html:27
+#: bookwyrm/templates/discover/card-header.html:28
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> reviewed <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/discover/card-header.html:31
+#: bookwyrm/templates/discover/card-header.html:37
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/discover/card-header.html:35
+#: bookwyrm/templates/discover/card-header.html:41
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> quoted <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr ""
@@ -2155,14 +2262,14 @@ msgstr ""
 msgid "Alternatively, you can try enabling more status types"
 msgstr ""
 
-#: bookwyrm/templates/feed/goal_card.html:6
+#: bookwyrm/templates/feed/goal_card.html:8
 #: bookwyrm/templates/feed/layout.html:14
 #: bookwyrm/templates/user/goal_form.html:6
 #, python-format
 msgid "%(year)s Reading Goal"
 msgstr ""
 
-#: bookwyrm/templates/feed/goal_card.html:18
+#: bookwyrm/templates/feed/goal_card.html:20
 #, python-format
 msgid "You can set or change your reading goal any time from your <a href=\"%(path)s\">profile page</a>"
 msgstr ""
@@ -2448,6 +2555,10 @@ msgstr ""
 
 #: bookwyrm/templates/groups/layout.html:17
 msgid "Edit group"
+msgstr ""
+
+#: bookwyrm/templates/groups/members.html:6
+msgid "Group Members"
 msgstr ""
 
 #: bookwyrm/templates/groups/members.html:11
@@ -3683,6 +3794,7 @@ msgid "Search for a book, author, user, or list"
 msgstr ""
 
 #: bookwyrm/templates/layout.html:54 bookwyrm/templates/layout.html:55
+#: bookwyrm/templates/search/barcode_modal.html:5
 msgid "Scan Barcode"
 msgstr ""
 
@@ -4290,7 +4402,7 @@ msgid_plural "%(display_count)s new <a href=\"%(path)s\">reports</a> need modera
 msgstr[0] ""
 
 #: bookwyrm/templates/notifications/items/status_preview.html:4
-#: bookwyrm/templates/snippets/status/content_status.html:62
+#: bookwyrm/templates/snippets/status/content_status.html:64
 msgid "Content warning"
 msgstr ""
 
@@ -4756,7 +4868,7 @@ msgstr ""
 msgid "Your CSV export file will include all the books on your shelves, books you have reviewed, and books with reading activity. <br/>Use this to import into a service like Goodreads."
 msgstr ""
 
-#: bookwyrm/templates/preferences/export.html:20
+#: bookwyrm/templates/preferences/export.html:19
 msgid "Download file"
 msgstr ""
 
@@ -4949,9 +5061,8 @@ msgid "You are deleting this readthrough and its %(count)s associated progress u
 msgstr ""
 
 #: bookwyrm/templates/readthrough/readthrough.html:6
-#: bookwyrm/templates/readthrough/readthrough_modal.html:8
 #, python-format
-msgid "Update read dates for \"<em>%(title)s</em>\""
+msgid "Update read dates for \"%(title)s\""
 msgstr ""
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:10
@@ -5006,6 +5117,11 @@ msgstr ""
 msgid "Delete these read dates"
 msgstr ""
 
+#: bookwyrm/templates/readthrough/readthrough_modal.html:8
+#, python-format
+msgid "Update read dates for \"<em>%(title)s</em>\""
+msgstr ""
+
 #: bookwyrm/templates/readthrough/readthrough_modal.html:12
 #, python-format
 msgid "Add read dates for \"<em>%(title)s</em>\""
@@ -5016,39 +5132,33 @@ msgstr ""
 msgid "Report"
 msgstr ""
 
-#: bookwyrm/templates/search/barcode_modal.html:5
-msgid "\n"
-"        Scan Barcode\n"
-"    "
-msgstr ""
-
-#: bookwyrm/templates/search/barcode_modal.html:21
+#: bookwyrm/templates/search/barcode_modal.html:19
 msgid "Requesting camera..."
 msgstr ""
 
-#: bookwyrm/templates/search/barcode_modal.html:22
+#: bookwyrm/templates/search/barcode_modal.html:20
 msgid "Grant access to the camera to scan a book's barcode."
 msgstr ""
 
-#: bookwyrm/templates/search/barcode_modal.html:27
+#: bookwyrm/templates/search/barcode_modal.html:25
 msgid "Could not access camera"
 msgstr ""
 
-#: bookwyrm/templates/search/barcode_modal.html:31
+#: bookwyrm/templates/search/barcode_modal.html:29
 msgctxt "barcode scanner"
 msgid "Scanning..."
 msgstr ""
 
-#: bookwyrm/templates/search/barcode_modal.html:32
+#: bookwyrm/templates/search/barcode_modal.html:30
 msgid "Align your book's barcode with the camera."
 msgstr ""
 
-#: bookwyrm/templates/search/barcode_modal.html:36
+#: bookwyrm/templates/search/barcode_modal.html:34
 msgctxt "barcode scanner"
 msgid "ISBN scanned"
 msgstr ""
 
-#: bookwyrm/templates/search/barcode_modal.html:37
+#: bookwyrm/templates/search/barcode_modal.html:35
 msgctxt "followed by ISBN"
 msgid "Searching for book:"
 msgstr ""
@@ -5147,13 +5257,13 @@ msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcement.html:57
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:79
-#: bookwyrm/templates/settings/dashboard/dashboard.html:85
+#: bookwyrm/templates/settings/dashboard/dashboard.html:84
 msgid "Start date:"
 msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcement.html:62
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:89
-#: bookwyrm/templates/settings/dashboard/dashboard.html:91
+#: bookwyrm/templates/settings/dashboard/dashboard.html:90
 msgid "End date:"
 msgstr ""
 
@@ -5527,7 +5637,7 @@ msgid "Dashboard"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
-#: bookwyrm/templates/settings/dashboard/dashboard.html:114
+#: bookwyrm/templates/settings/dashboard/dashboard.html:113
 msgid "Total users"
 msgstr ""
 
@@ -5541,31 +5651,31 @@ msgstr ""
 msgid "Works"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:79
+#: bookwyrm/templates/settings/dashboard/dashboard.html:78
 msgid "Instance Activity"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:97
+#: bookwyrm/templates/settings/dashboard/dashboard.html:96
 msgid "Interval:"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:101
+#: bookwyrm/templates/settings/dashboard/dashboard.html:100
 msgid "Days"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:102
+#: bookwyrm/templates/settings/dashboard/dashboard.html:101
 msgid "Weeks"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:120
+#: bookwyrm/templates/settings/dashboard/dashboard.html:119
 msgid "User signup activity"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:126
+#: bookwyrm/templates/settings/dashboard/dashboard.html:125
 msgid "Status activity"
 msgstr ""
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:132
+#: bookwyrm/templates/settings/dashboard/dashboard.html:131
 msgid "Works created"
 msgstr ""
 
@@ -5873,11 +5983,47 @@ msgid "Unable to save settings"
 msgstr ""
 
 #: bookwyrm/templates/settings/federation/settings.html:37
+msgid "Require signed GET requests"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:38
+msgid "Recommended"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:42
+msgid "Prevents anonymous requests from federated instances. Roughly equivalent to Mastodon's 'secure mode' or 'AUTHORIZED_FETCH'"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:48
+msgid "Prevent unauthenticated views"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:51
+msgid "Prevents anonymous users from seeing most pages. To block JSON requests as well, enable 'Require signed GET requests'"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:57
 msgid "Disable federation"
 msgstr ""
 
-#: bookwyrm/templates/settings/federation/settings.html:40
+#: bookwyrm/templates/settings/federation/settings.html:58
+msgid "Caution"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:61
 msgid "Prevents your instance from interacting with other federated services. Existing data from other instances will still be present."
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:67
+msgid "Block incoming search"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:68
+msgid "Not Recommended"
+msgstr ""
+
+#: bookwyrm/templates/settings/federation/settings.html:71
+msgid "Prevents other servers from searching your instance. It is strongly recommended you do NOT enable this setting."
 msgstr ""
 
 #: bookwyrm/templates/settings/files.html:7
@@ -6590,10 +6736,6 @@ msgstr ""
 msgid "Tasks"
 msgstr ""
 
-#: bookwyrm/templates/settings/schedules.html:22
-msgid "Name"
-msgstr ""
-
 #: bookwyrm/templates/settings/schedules.html:25
 msgid "Celery task"
 msgstr ""
@@ -7251,10 +7393,6 @@ msgstr ""
 msgid "An excerpt from '%(book_title)s'"
 msgstr ""
 
-#: bookwyrm/templates/snippets/create_status/quotation.html:31
-msgid "Position:"
-msgstr ""
-
 #: bookwyrm/templates/snippets/create_status/quotation.html:44
 msgid "On page:"
 msgstr ""
@@ -7267,12 +7405,12 @@ msgstr ""
 msgid "to"
 msgstr ""
 
-#: bookwyrm/templates/snippets/create_status/review.html:24
+#: bookwyrm/templates/snippets/create_status/review.html:23
 #, python-format
 msgid "Your review of '%(book_title)s'"
 msgstr ""
 
-#: bookwyrm/templates/snippets/create_status/review.html:39
+#: bookwyrm/templates/snippets/create_status/review.html:38
 msgid "Review:"
 msgstr ""
 
@@ -7367,6 +7505,12 @@ msgstr[0] ""
 #, python-format
 msgid "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
 msgid_plural "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
+msgstr[0] ""
+
+#: bookwyrm/templates/snippets/generated_status/rating_pure_name.html:3
+#, python-format
+msgid "Rated \"%(book_title)s\" %(display_rating)s star %(review_title)s"
+msgid_plural "Rated \"%(book_title)s\" %(display_rating)s stars %(review_title)s"
 msgstr[0] ""
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:4
@@ -7580,35 +7724,35 @@ msgstr ""
 msgid "Show rating"
 msgstr ""
 
-#: bookwyrm/templates/snippets/status/content_status.html:69
+#: bookwyrm/templates/snippets/status/content_status.html:71
 msgid "Show status"
 msgstr ""
 
-#: bookwyrm/templates/snippets/status/content_status.html:91
+#: bookwyrm/templates/snippets/status/content_status.html:93
 #, python-format
 msgid "(Page %(page)s"
 msgstr ""
 
-#: bookwyrm/templates/snippets/status/content_status.html:91
+#: bookwyrm/templates/snippets/status/content_status.html:93
 #, python-format
 msgid "%(endpage)s"
 msgstr ""
 
-#: bookwyrm/templates/snippets/status/content_status.html:93
+#: bookwyrm/templates/snippets/status/content_status.html:95
 #, python-format
 msgid "(%(percent)s%%"
 msgstr ""
 
-#: bookwyrm/templates/snippets/status/content_status.html:93
+#: bookwyrm/templates/snippets/status/content_status.html:95
 #, python-format
 msgid " - %(endpercent)s%%"
 msgstr ""
 
-#: bookwyrm/templates/snippets/status/content_status.html:116
+#: bookwyrm/templates/snippets/status/content_status.html:118
 msgid "Open image in new window"
 msgstr ""
 
-#: bookwyrm/templates/snippets/status/content_status.html:137
+#: bookwyrm/templates/snippets/status/content_status.html:139
 msgid "Hide status"
 msgstr ""
 
@@ -7667,14 +7811,20 @@ msgstr ""
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/snippets/status/headers/review.html:8
+#: bookwyrm/templates/snippets/status/headers/review.html:10
+#: bookwyrm/templates/snippets/status/headers/review.html:26
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/snippets/status/headers/review.html:15
+#: bookwyrm/templates/snippets/status/headers/review.html:17
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr ""
+
+#: bookwyrm/templates/snippets/status/headers/review.html:33
+#, python-format
+msgid "rated <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
@@ -7952,13 +8102,21 @@ msgid "%(num)d book - by %(user)s"
 msgid_plural "%(num)d books - by %(user)s"
 msgstr[0] ""
 
-#: bookwyrm/templatetags/utilities.py:50
+#: bookwyrm/templatetags/utilities.py:52
 #, python-format
 msgid "%(title)s: %(subtitle)s"
 msgstr ""
 
-#: bookwyrm/templatetags/utilities.py:133
+#: bookwyrm/templatetags/utilities.py:153
 msgid "a new user account"
+msgstr ""
+
+#: bookwyrm/views/books/edit_book.py:80 bookwyrm/views/books/edit_book.py:484
+msgid "There is another book in the series with the same value"
+msgstr ""
+
+#: bookwyrm/views/books/series.py:95
+msgid "Series position must be unique for each book"
 msgstr ""
 
 #: bookwyrm/views/updates.py:46

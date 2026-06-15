@@ -1,4 +1,4 @@
-<article class="card">
+<article class="{% block card-body-style %}card{% endblock %}">
     <header class="card-header">
         {% block card-header %}
         {% endblock %}
@@ -11,7 +11,7 @@
     </section>
     {% endif %}
 
-    <footer class="card-footer has-background-tertiary">
+    <footer class="card-footer">
         {% block card-footer %}
         {% endblock %}
     </footer>

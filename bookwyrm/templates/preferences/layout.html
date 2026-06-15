@@ -55,11 +55,15 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Export BookWyrm Account" %}</a>
             </li>
         </ul>
-        <h2 class="menu-label">{% trans "Relationships" %}</h2>
+        <h2 class="menu-label">{% trans "Safety" %}</h2>
         <ul class="menu-list">
             <li>
                 {% url 'prefs-block' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Blocked Users" %}</a>
+            </li>
+            <li>
+                {% url 'prefs-block-books' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Blocked Books" %}</a>
             </li>
         </ul>
     </nav>

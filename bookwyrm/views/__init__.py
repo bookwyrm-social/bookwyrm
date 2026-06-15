@@ -69,6 +69,7 @@ from .preferences.export import Export, ExportUser, ExportArchive
 from .preferences.move_user import MoveUser, AliasUser, remove_alias, unmove
 from .preferences.delete_user import DeleteUser, DeactivateUser, ReactivateUser
 from .preferences.block import Block, unblock
+from .preferences.books import BlockedBooks, unblock_book
 from .preferences.security import (
     UserSecurity,
     logout_session,
@@ -87,7 +88,7 @@ from .books.books import (
     add_description,
     resolve_book,
 )
-from .books.series import BookSeriesBy
+
 from .books.books import update_book_from_remote
 from .books.edit_book import (
     EditBook,
@@ -97,6 +98,7 @@ from .books.edit_book import (
 )
 from .books.editions import Editions, switch_edition
 from .books.links import BookFileLinks, AddFileLink, delete_link
+from .books.series import Series, SeriesBook, EditSeries
 
 # landing
 from .landing.about import about, privacy, conduct, impressum
