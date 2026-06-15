@@ -573,6 +573,9 @@ class PartialDateField(ActivitypubFieldMixin, PartialDateModel):
         return value.partial_isoformat() if value else None
 
     def field_from_activity(self, value, allow_external_connections=True, trigger=None):
+        if not value:
+            return None
+
         try:
             return from_partial_isoformat(value)
         except ValueError:

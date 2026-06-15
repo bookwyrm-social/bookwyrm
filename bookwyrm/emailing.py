@@ -52,9 +52,11 @@ def password_reset_email(reset_code):
 def moderation_report_email(report):
     """a report was created"""
     data = email_data()
-    data["reporter"] = report.reporter.localname or report.reporter.username
-    if report.user:
-        data["reportee"] = report.user.localname or report.user.username
+    data["reporter"] = report.user.localname or report.user.username
+    if report.reported_user:
+        data["reportee"] = (
+            report.reported_user.localname or report.reported_user.username
+        )
     data["report_link"] = report.remote_id
     data["link_domain"] = report.links.exists()
 

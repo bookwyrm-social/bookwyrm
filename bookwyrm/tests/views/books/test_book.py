@@ -216,7 +216,7 @@ class BookViews(TestCase):
         request.user = self.local_user
 
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as delay_mock:
             views.upload_cover(request, self.book.id)
             self.assertEqual(delay_mock.call_count, 1)
@@ -235,7 +235,7 @@ class BookViews(TestCase):
         request.user = self.local_user
 
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as delay_mock:
             views.upload_cover(request, self.book.id)
             self.assertEqual(delay_mock.call_count, 1)

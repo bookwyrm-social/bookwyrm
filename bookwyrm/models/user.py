@@ -123,6 +123,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         through_fields=("user_subject", "user_object"),
         related_name="blocked_by",
     )
+    blocked_books = models.ManyToManyField("Work", related_name="blocked_by")
     saved_lists = models.ManyToManyField(
         "List", symmetrical=False, related_name="saved_lists", blank=True
     )
@@ -162,6 +163,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     discoverable = fields.BooleanField(default=False)
     show_guided_tour = models.BooleanField(default=True)
     show_ratings = models.BooleanField(default=True)
+    readwise_api_key = models.CharField(max_length=255, null=True, blank=True)
 
     # feed options
     feed_status_types = DjangoArrayField(

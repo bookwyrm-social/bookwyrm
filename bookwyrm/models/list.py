@@ -228,6 +228,8 @@ class AbstractListItem(CollectionItemMixin, BookWyrmModel):
         "User", on_delete=models.PROTECT, activitypub_field="actor"
     )
     notes = fields.HtmlField(blank=True, null=True, max_length=300)
+    raw_notes = models.TextField(blank=True, null=True, max_length=300)
+
     endorsement = models.ManyToManyField("User", related_name="endorsers")
 
     activity_serializer = activitypub.ListItem

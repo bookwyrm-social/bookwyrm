@@ -854,10 +854,15 @@ class Edition(Book):
 
     @classmethod
     def viewer_aware_objects(cls, viewer):
-        """annotate a book query with metadata related to the user"""
+        """filter blocked books and annotate a book query with metadata related to the user"""
         queryset = cls.objects
+
         if not viewer or not viewer.is_authenticated:
             return queryset
+
+        queryset = queryset.exclude(
+            parent_work__in=viewer.blocked_books.values_list("id", flat=True)
+        )
 
         queryset = queryset.prefetch_related(
             Prefetch(
@@ -1003,3 +1008,14 @@ class SeriesBook(CollectionItemMixin, BookWyrmModel):
     def raise_not_editable(self, viewer):
         if not viewer.has_perm("bookwyrm.edit_book"):
             raise PermissionDenied()
+
+    @property
+    def natural_sort_key(self):
+        """numeric-aware key for series_number, so '2' sorts before '10'"""
+        value = self.series_number
+        if value is None or len(value) == 0:
+            return float("inf"), ""
+        match = re.match(r"\d+(?:\.\d+)?", value)
+        numeric_prefix = float(match.group()) if match else float("inf")
+        rest = value[match.end() :] if match else value
+        return numeric_prefix, rest

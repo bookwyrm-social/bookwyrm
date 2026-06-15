@@ -21,6 +21,7 @@ from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import (
+    convert_to_markdown,
     is_api_request,
     maybe_redirect_local_path,
     redirect_to_referer,
@@ -45,9 +46,17 @@ class List(View):
         if redirect_option := maybe_redirect_local_path(request, book_list):
             return redirect_option
 
-        items = book_list.listitem_set.filter(approved=True).prefetch_related(
-            "user", "edition", "edition__authors"
+        # NOTE: do not use this exclude in decrement_order etc because it will mess up ordering
+        blocked = []
+        if request.user.is_authenticated:
+            blocked = request.user.blocked_books.values_list("id", flat=True)
+
+        items = (
+            book_list.listitem_set.filter(approved=True)
+            .exclude(book__parent_work__in=blocked)
+            .prefetch_related("user", "edition", "edition__authors")
         )
+
         items = sort_list(request, items)
 
         paginated = Paginator(items, PAGE_LENGTH)
@@ -121,6 +130,9 @@ def get_list_suggestions(
     suggestions = (
         user.shelfbook_set.filter(~Q(book__in=book_list.editions.all()))
         .exclude(book__parent_work=ignore_book)
+        .exclude(
+            book__parent_work__in=user.blocked_books.values_list("id", flat=True)
+        )
         .distinct()[:num_suggestions]
     )
     suggestions = [s.book for s in suggestions[:num_suggestions]]
@@ -130,6 +142,8 @@ def get_list_suggestions(
             for s in models.Work.objects.filter(
                 ~Q(editions__in=book_list.editions.all()),
                 ~Q(id=ignore_book.id if ignore_book else None),
+            ).exclude(
+                id__in=user.blocked_books.values_list("id", flat=True)
             )
             .distinct()
             .order_by("-updated_date")[:num_suggestions]
@@ -237,6 +251,11 @@ def add_book(request):
         )
         increment_order_in_reverse(book_list.id, order_max + 1)
     item.order = order_max + 1
+
+    if item.notes:
+        item.raw_notes = item.notes
+        item.notes = convert_to_markdown(item.notes)
+
     item.save()
 
     return List().get(request, book_list.id, add_succeeded=True)

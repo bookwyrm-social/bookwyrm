@@ -64,6 +64,58 @@ class SeriesViews(TestCase):
 
         self.assertEqual(result.status_code, 200)
 
+    def test_series_page_orders_books_by_numeric_semantics(self):
+        """series books are ordered by numeric semantics, not lexicographically"""
+        series = models.Series.objects.create(
+            user=self.user,
+            name="ordering series",
+            remote_id="https://example.com/series/1",
+        )
+        for i, number in enumerate(
+            [
+                "10",
+                "2-beta",
+                "1",
+                "Prequel",
+                "Book 2",
+                "2",
+                "4.5",
+                "Book 1",
+                "2-alpha",
+                "1.5-rc",
+            ]
+        ):
+            book = models.Work.objects.create(title=f"book {i}")
+            models.SeriesBook.objects.create(
+                book=book,
+                series=series,
+                user=self.user,
+                series_number=number,
+                remote_id=f"https://example.com/seriesbook/{i}",
+            )
+
+        view = views.Series.as_view()
+        request = self.factory.get("")
+        request.user = self.user
+        result = view(request, series.id)
+
+        ordered = [sb.series_number for sb in result.context_data["series_books"]]
+        self.assertEqual(
+            ordered,
+            [
+                "1",
+                "1.5-rc",
+                "2",
+                "2-alpha",
+                "2-beta",
+                "4.5",
+                "10",
+                "Book 1",
+                "Book 2",
+                "Prequel",
+            ],
+        )
+
     def test_editseries_page(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.EditSeries.as_view()
@@ -122,3 +174,31 @@ class SeriesViews(TestCase):
             result = view(request, self.seriesbook.id)
             self.assertIsInstance(result, ActivitypubResponse)
             self.assertEqual(result.status_code, 200)
+
+    def test_series_page_with_blocked_book(self):
+        """do not display blocked books on series homepage"""
+
+        bad_work = models.Work.objects.create(title="awful book")
+
+        models.SeriesBook.objects.create(
+            book=bad_work,
+            series=self.series,
+            user=self.user,
+            remote_id="https://example.com/seriesbook/666",
+        )
+
+        view = views.Series.as_view()
+        request = self.factory.get("")
+        request.user = self.user
+        result = view(request, self.series.id)
+
+        books = result.context_data["series_books"]
+        print(books.object_list)
+        self.assertEqual(len(books.object_list), 2)
+
+        self.user.blocked_books.add(bad_work)
+
+        result = view(request, self.series.id)
+
+        books = result.context_data["series_books"]
+        self.assertEqual(len(books.object_list), 1)

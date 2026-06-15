@@ -115,8 +115,8 @@ class NotificationViews(TestCase):
     def test_notifications_page_report(self):
         """import completed notification"""
         report = models.Report.objects.create(
-            user=self.another_user,
-            reporter=self.local_user,
+            reported_user=self.another_user,
+            user=self.local_user,
         )
         notification = models.Notification.objects.create(
             user=self.local_user,

@@ -69,6 +69,7 @@ from .preferences.export import Export, ExportUser, ExportArchive
 from .preferences.move_user import MoveUser, AliasUser, remove_alias, unmove
 from .preferences.delete_user import DeleteUser, DeactivateUser, ReactivateUser
 from .preferences.block import Block, unblock
+from .preferences.books import BlockedBooks, unblock_book
 from .preferences.security import (
     UserSecurity,
     logout_session,

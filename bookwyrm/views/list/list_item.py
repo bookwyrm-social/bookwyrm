@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
-from bookwyrm.views.helpers import redirect_to_referer
+from bookwyrm.views.helpers import convert_to_markdown, redirect_to_referer
 from bookwyrm.views.status import to_markdown
 
 
@@ -44,7 +44,8 @@ def edit_list_item(request, list_id, list_item, item_model, form):
     form = form(request.POST, instance=list_item)
     if form.is_valid():
         item = form.save(request, commit=False)
-        item.notes = to_markdown(item.notes)
+        item.raw_notes = item.notes
+        item.notes = convert_to_markdown(item.notes)
         item.save()
     else:
         raise Exception(form.errors)
