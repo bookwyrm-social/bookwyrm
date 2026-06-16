@@ -93,15 +93,8 @@ class Book(View):
             listitem__approved=True,
             listitem__book__in=book.parent_work.editions.all(),
         )
-
-        # TODO: cache or background this query
-        edition_dupe = book.find_merge_candidate()
-        work_dupe = book.parent_work.find_merge_candidate()
-
         data = {
             "book": book,
-            "edition_dupe": edition_dupe,
-            "work_dupe": work_dupe,
             "statuses": paginated.get_page(request.GET.get("page")),
             "review_count": reviews.count(),
             "ratings": (

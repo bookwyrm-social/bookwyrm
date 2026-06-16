@@ -112,16 +112,3 @@ class UtilitiesTags(TestCase):
         self.assertEqual(utilities.get_file_size(5120), "5.00 KB")
         self.assertEqual(utilities.get_file_size(5242880), "5.00 MB")
         self.assertEqual(utilities.get_file_size(5368709000), "5.00 GB")
-
-    def test_get_dupe_match_field(self, *_):
-        """loads the verbose name of the dedupe fields that match between two objects"""
-        original = models.Edition.objects.create(
-            title="book 1", asin="1234", goodreads_key="abcd"
-        )
-        dupe = models.Edition.objects.create(
-            title="book 2", asin="1234", isbn_10="123456789x", goodreads_key="abcd"
-        )
-        result = utilities.get_dupe_match_field(original, dupe)
-        self.assertTrue("GoodReads key" in result)
-        self.assertTrue("ASIN" in result)
-        self.assertFalse("ISBN 10" in result)
