@@ -1,3 +1,5 @@
+"""Deduplicate various types of book-adjacent data on arbitary models"""
+
 from django.core.management.base import BaseCommand
 
 
