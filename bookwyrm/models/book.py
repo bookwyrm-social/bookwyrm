@@ -138,6 +138,8 @@ class BookDataModel(ObjectMixin, MergeableMixin, BookWyrmModel):
     )
 
     pending_merge_date = models.DateTimeField(null=True)
+    prevent_automatic_merge = models.BooleanField(default=False)
+
 
     @property
     def openlibrary_link(self):
