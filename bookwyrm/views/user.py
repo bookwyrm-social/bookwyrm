@@ -1,6 +1,7 @@
 """The user profile"""
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import Http404
@@ -15,15 +16,29 @@ from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH, INSTANCE_ACTOR_USERNAME
 from .helpers import get_user_from_username, is_api_request
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 
-class User(View):
+class PrivateProfileMixin:
+    def dispatch(self, request, *args, **kwargs):
+        username = kwargs.get("username")
+        if not username:
+            return super().dispatch(request, *args, **kwargs)
+
+        user = get_user_from_username(request.user, username)
+        if not user.is_visible_to(request.user.id):
+            raise PermissionDenied
+        # TODO: API
+        request.target_user = user
+        return super().dispatch(request, *args, **kwargs)
+
+class User(PrivateProfileMixin, View):
     """user profile page"""
 
     @vary_on_headers("Accept")
     def get(self, request, username):
         """profile page for a user"""
-        user = get_user_from_username(request.user, username)
+        user = request.target_user
 
         if not user.local and not request.user.is_authenticated:
             return redirect(user.remote_id)

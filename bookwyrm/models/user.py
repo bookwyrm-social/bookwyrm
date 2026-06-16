@@ -527,6 +527,13 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             if not cache_session.exists(session_key=sess.session_key):
                 sess.delete()
 
+    def is_visible_to(self, viewer_id):
+        if not self.is_private:
+            return True
+        if viewer_id is None:
+            return False
+        return self.followers.filter(id=viewer_id).exists()
+
 
 class KeyPair(ActivitypubMixin, BookWyrmModel):
     """public and private keys for a user"""
