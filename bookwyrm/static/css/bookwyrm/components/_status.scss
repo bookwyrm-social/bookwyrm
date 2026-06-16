@@ -42,8 +42,11 @@
 /* Threads
  ******************************************************************************/
 
-.thread .is-main .card {
+.is-thread-secondary .card {
     background-color: $background-secondary;
+}
+.is-thread-main .card {
+    box-shadow: 0.2em 0.2em $border;
 }
 
 .thread::after {
