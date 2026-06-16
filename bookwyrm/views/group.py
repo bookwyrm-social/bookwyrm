@@ -16,7 +16,7 @@ from django.db.models.functions import Greatest
 from bookwyrm import forms, models
 from bookwyrm.models import NotificationType
 from bookwyrm.suggested_users import suggested_users
-from .helpers import get_user_from_username, maybe_redirect_local_path
+from .helpers import get_user_from_username, maybe_redirect_local_path, PrivateProfileMixin
 
 
 class Group(View):
@@ -82,12 +82,12 @@ class Group(View):
         return redirect("group", user_group.id)
 
 
-class UserGroups(View):
+class UserGroups(PrivateProfileMixin, View):
     """a user's groups page"""
 
     def get(self, request, username, slug=None):
         """display a group"""
-        user = get_user_from_username(request.user, username)
+        user = request.target_user
         groups = (
             models.Group.privacy_filter(request.user)
             .filter(memberships__user=user)
