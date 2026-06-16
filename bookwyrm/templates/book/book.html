@@ -28,6 +28,7 @@
 
 {% with user_authenticated=request.user.is_authenticated can_edit_book=perms.bookwyrm.edit_book %}
 <div class="block" itemscope itemtype="https://schema.org/Book">
+    {% include "snippets/merge_banner/edition.html" with original=book dupe=edition_dupe %}
     <div class="columns is-mobile">
         <div class="column">
             <h1 class="title" itemprop="name" dir="auto">

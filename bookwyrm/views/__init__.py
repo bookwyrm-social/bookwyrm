@@ -35,6 +35,7 @@ from .admin.files_maintenance import (
 )
 from .admin.email_blocklist import EmailBlocklist
 from .admin.email_config import EmailConfig
+from .admin.data_quality import DataQuality, schedule_deduplication_task, unschedule_deduplication_task
 from .admin.imports import (
     ImportList,
     disable_imports,

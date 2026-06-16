@@ -54,8 +54,12 @@ class Author(View):
 
         paginated = Paginator(books, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
+        # TODO: cache or background this query
+        author_dupe = author.find_merge_candidate()
+
         data = {
             "author": author,
+            "author_dupe": author_dupe,
             "series": series,
             "books": page,
             "page_range": paginated.get_elided_page_range(
