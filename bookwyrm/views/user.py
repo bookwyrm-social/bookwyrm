@@ -1,7 +1,6 @@
 """The user profile"""
 
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import Http404
@@ -11,26 +10,12 @@ from django.utils import timezone
 from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.decorators.vary import vary_on_headers
+from bookwyrm.views.helpers import is_api_request, PrivateProfileMixin
 
 from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH, INSTANCE_ACTOR_USERNAME
-from .helpers import get_user_from_username, is_api_request
-from django.contrib.auth.mixins import UserPassesTestMixin
 
-
-class PrivateProfileMixin:
-    def dispatch(self, request, *args, **kwargs):
-        username = kwargs.get("username")
-        if not username:
-            return super().dispatch(request, *args, **kwargs)
-
-        user = get_user_from_username(request.user, username)
-        if not user.is_visible_to(request.user.id):
-            raise PermissionDenied
-        # TODO: API
-        request.target_user = user
-        return super().dispatch(request, *args, **kwargs)
 
 class User(PrivateProfileMixin, View):
     """user profile page"""
@@ -122,17 +107,18 @@ class User(PrivateProfileMixin, View):
             "shelf_count": shelves.count(),
             "activities": paginated.get_page(request.GET.get("page", 1)),
             "goal": goal,
+            "is_locked": False
         }
 
         return TemplateResponse(request, "user/user.html", data)
 
 
-class UserReviewsComments(View):
+class UserReviewsComments(PrivateProfileMixin, View):
     """user's activity filtered by reviews and comments"""
 
     def get(self, request, username):
         """user's activity filtered by reviews and comments"""
-        user = get_user_from_username(request.user, username)
+        user = request.target_user
         is_self = request.user.id == user.id
 
         activities = (

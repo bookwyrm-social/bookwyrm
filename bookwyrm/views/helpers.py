@@ -11,6 +11,7 @@ from django.db.models import Q
 from django.conf import settings as django_settings
 from django.shortcuts import redirect, _get_queryset
 from django.http import Http404
+from django.template.response import TemplateResponse
 from django.utils import translation
 
 from bookwyrm import activitypub, models, settings
@@ -43,6 +44,26 @@ def get_user_from_username(viewer, username):
         return models.User.viewer_aware_objects(viewer).get(username=username)
     except models.User.DoesNotExist:
         raise Http404()
+
+
+class PrivateProfileMixin:
+    def dispatch(self, request, *args, **kwargs):
+        username = kwargs.get("username")
+        if not username:
+            return super().dispatch(request, *args, **kwargs)
+
+        target_user = get_user_from_username(request.user, username)
+        is_self = target_user is request.user
+        if not is_self and not target_user.is_visible_to(request.user.id):
+            return TemplateResponse(
+                request,
+                "user/user.html",
+                {"user": target_user, "is_self": False, "is_locked": True},
+            )
+
+        # TODO: API
+        request.target_user = target_user
+        return super().dispatch(request, *args, **kwargs)
 
 
 def is_api_request(request):

@@ -16,17 +16,17 @@ from django.views.decorators.vary import vary_on_headers
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request, get_user_from_username
+from bookwyrm.views.helpers import is_api_request, get_user_from_username, PrivateProfileMixin
 from bookwyrm.book_search import search
 
 
-class Shelf(View):
+class Shelf(PrivateProfileMixin, View):
     """shelf page"""
 
     @vary_on_headers("Accept")
     def get(self, request, username, shelf_identifier=None):
         """display a shelf"""
-        user = get_user_from_username(request.user, username)
+        user = request.target_user
 
         is_self = user == request.user
 
