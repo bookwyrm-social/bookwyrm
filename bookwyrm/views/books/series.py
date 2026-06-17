@@ -42,12 +42,9 @@ class Series(View):
         paginated = Paginator(series_books, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
 
-        # TODO: cache or background this query
-        series_dupe = series.find_merge_candidate()
-
         data = {
             "series": series,
-            "series_dupe": series_dupe,
+            "series_dupe": series.pending_merge_target,
             "series_books": page,
             "series_authors": {"authors": authors},
         }
