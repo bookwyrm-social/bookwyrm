@@ -7,7 +7,12 @@ from django.core.exceptions import FieldError
 from django.db.models.query import QuerySet
 from bookwyrm import models
 
-def blocked_book_filter(queryset: QuerySet[models.Edition] | QuerySet[models.Work], model: str, viewer: models.User) -> QuerySet[models.Edition] | QuerySet[models.Work]:
+
+def blocked_book_filter(
+    queryset: QuerySet[models.Edition] | QuerySet[models.Work],
+    model: str,
+    viewer: models.User,
+) -> QuerySet[models.Edition] | QuerySet[models.Work]:
     """filter out blocked books from querysets"""
 
     if not viewer or not viewer.is_authenticated:
