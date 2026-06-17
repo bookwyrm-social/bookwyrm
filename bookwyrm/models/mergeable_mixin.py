@@ -6,7 +6,7 @@ import operator
 from typing import Any, Dict
 from typing_extensions import Self
 
-from django.db.models import ManyToManyField, Q
+from django.db.models import Count, ManyToManyField, Q
 
 from . import fields
 
@@ -23,6 +23,37 @@ class MergeableMixin:
             for f in model_fields
             if hasattr(f, "deduplication_field") and f.deduplication_field
         ]
+
+    @classmethod
+    def find_duplicate_fields(cls):
+        """scan the model for all dedupe fields with multiple objs with the same value"""
+        dedupe_fields = cls.deduplication_fields()
+        duplicates = {}
+        for field in dedupe_fields:
+            results = (
+                cls.objects.values(field.name)
+                .annotate(Count(field.name))
+                .filter(**{f"{field.name}__count__gt": 1})
+                .exclude(**{field.name: ""})
+                .exclude(**{f"{field.name}__isnull": True})
+                .values_list(field.name, flat=True)
+            )
+            if results.exists():
+                duplicates[field.name] = results
+        return duplicates
+
+    @classmethod
+    def mark_merge_candidates(cls):
+        """update duplicate entries with pending merge reference"""
+        dedupe_fields = cls.find_duplicate_fields()
+        for field_name, values in dedupe_fields.items():
+            for value in values:
+                objs = cls.objects.filter(**{field_name: value}).order_by("id")
+                if not objs.exists() or objs.count() <= 1:
+                    continue
+                canonical = objs.first()
+                candidates = objs.exclude(id=canonical.id)
+                candidates.update(pending_merge_target=canonical)
 
     def find_merge_candidate(self):
         """look for the first possible duplicate of the current object"""
