@@ -17,6 +17,7 @@ from django.views.decorators.http import require_POST
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.utils.block_books import blocked_book_filter
 from bookwyrm.views import Book
 from bookwyrm.views.helpers import convert_to_markdown
 from bookwyrm.views.helpers import get_user_from_username
@@ -52,8 +53,8 @@ class SuggestionList(View):
             .order_by("-endorsement_count")
         )
 
+        items = blocked_book_filter(items, "Work", request.user)
         paginated = Paginator(items, PAGE_LENGTH)
-
         page = paginated.get_page(request.GET.get("page"))
 
         embed_key = str(book_list.embed_key.hex)  # type: ignore
@@ -117,6 +118,7 @@ class UserSuggestions(View):
         suggestions = models.SuggestionListItem.objects.filter(
             user=user
         ).prefetch_related("book_list")
+        suggestions = blocked_book_filter(suggestions, "Work", request.user)
         paginated = Paginator(suggestions, 12)
         data = {
             "user": user,

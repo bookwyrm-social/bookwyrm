@@ -20,6 +20,7 @@ from django.views.decorators.vary import vary_on_headers
 from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.utils.block_books import blocked_book_filter
 from bookwyrm.views.helpers import (
     convert_to_markdown,
     is_api_request,
@@ -46,17 +47,11 @@ class List(View):
         if redirect_option := maybe_redirect_local_path(request, book_list):
             return redirect_option
 
-        # NOTE: do not use this exclude in decrement_order etc because it will mess up ordering
-        blocked = []
-        if request.user.is_authenticated:
-            blocked = request.user.blocked_books.values_list("id", flat=True)
-
-        items = (
-            book_list.listitem_set.filter(approved=True)
-            .exclude(edition__parent_work__in=blocked)
-            .prefetch_related("user", "edition", "edition__authors")
+        items = book_list.listitem_set.filter(approved=True).prefetch_related(
+            "user", "edition", "edition__authors"
         )
 
+        items = blocked_book_filter(items, "Edition", request.user)
         items = sort_list(request, items)
 
         paginated = Paginator(items, PAGE_LENGTH)
@@ -124,6 +119,7 @@ def get_list_suggestions(
             filters=[
                 ~Q(parent_work__editions__in=book_list.editions.all()),
                 ~Q(parent_work=ignore_book),
+                ~Q(parent_work__in=user.blocked_books.values_list("id", flat=True)),
             ],
         )
     # just suggest whatever books are nearby

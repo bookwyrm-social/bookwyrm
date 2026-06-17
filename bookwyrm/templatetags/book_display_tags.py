@@ -39,7 +39,7 @@ def get_author_edition(book, author):
 
 @register.filter(name="blocked_book_filter")
 def blocked_book_filter(queryset, viewer):
-    """filter out blocked books from querysets with editions as 'book'"""
+    """filter out blocked books from querysets"""
 
     if not viewer or not viewer.is_authenticated:
         return queryset
@@ -48,9 +48,7 @@ def blocked_book_filter(queryset, viewer):
     try:
         return queryset.exclude(book__parent_work__in=blocked)
     except FieldError:
-        pass
-
-    try:
-        return queryset.exclude(work__in=blocked)
-    except FieldError:
-        return queryset.exclude(edition__parent_work__in=blocked)
+        try:
+            return queryset.exclude(edition__parent_work__in=blocked)
+        except FieldError:
+            return queryset
