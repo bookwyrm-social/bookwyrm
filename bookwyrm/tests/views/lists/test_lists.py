@@ -1,6 +1,5 @@
 """test for app action functionality"""
 
-import json
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
@@ -186,14 +185,14 @@ class ListViews(TestCase):
         request.user = self.local_user
         with (
             patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+                "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
             ) as mock,
             patch("bookwyrm.lists_stream.remove_list_task.delay"),
         ):
             result = view(request)
 
         self.assertEqual(mock.call_count, 1)
-        activity = json.loads(mock.call_args[1]["args"][1])
+        activity = mock.call_args[0][0]
         self.assertEqual(activity["type"], "Create")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
 

@@ -4,14 +4,16 @@
 {% with 0|uuid as report_uuid %}
 
 {% join "report" report_uuid as modal_id %}
-<button
-    class="button is-small is-danger is-light is-fullwidth {{ class }}"
-    type="button"
-    data-modal-open="{{ modal_id }}"
-    {% if is_current %}disabled{% endif %}
->
-    {% trans "Report" %}
-</button>
-{% include 'snippets/report_modal.html' with user=user id=modal_id status_id=status.id %}
+<form name="fallback_form_{{ 0|uuid }}" method="GET" action="{% url 'report' user_id=user.id %}" autocomplete="off">
+    <button
+        class="button is-small is-danger is-light is-fullwidth {{ class }}"
+        type="submit"
+        data-modal-open="{{ modal_id }}"
+        {% if is_current %}disabled{% endif %}
+    >
+        {% trans "Report" %}
+    </button>
+</form>
+{% include 'snippets/report_modal.html' with reported_user=user id=modal_id status_id=status.id %}
 
 {% endwith %}

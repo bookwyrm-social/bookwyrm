@@ -70,7 +70,7 @@ class GetStartedViews(TestCase):
 
         self.assertIsNone(self.local_user.name)
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as delay_mock:
             view(request)
             self.assertEqual(delay_mock.call_count, 1)
@@ -112,7 +112,7 @@ class GetStartedViews(TestCase):
 
         self.assertFalse(self.local_user.shelfbook_set.exists())
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as delay_mock:
             view(request)
             self.assertEqual(delay_mock.call_count, 1)

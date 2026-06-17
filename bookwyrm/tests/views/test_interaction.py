@@ -1,6 +1,5 @@
 """test for app action functionality"""
 
-import json
 from unittest.mock import patch
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -116,12 +115,12 @@ class InteractionViews(TestCase):
             status = models.Status.objects.create(user=self.local_user, content="hi")
 
             with patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+                "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
             ) as broadcast_mock:
                 view(request, status.id)
 
         self.assertEqual(broadcast_mock.call_count, 1)
-        activity = json.loads(broadcast_mock.call_args[1]["args"][1])
+        activity = broadcast_mock.call_args[0][0]
         self.assertEqual(activity["type"], "Announce")
 
         boost = models.Boost.objects.get()

@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
-from bookwyrm.views.status import to_markdown
+from bookwyrm.views.helpers import convert_to_markdown
 
 
 @method_decorator(login_required, name="dispatch")
@@ -18,8 +18,10 @@ class ListItem(View):
         list_item = get_object_or_404(models.ListItem, id=list_item, book_list=list_id)
         form = forms.ListItemForm(request.POST, instance=list_item)
         if form.is_valid():
+            # save the plain, unformatted version of the status for future editing
             item = form.save(request, commit=False)
-            item.notes = to_markdown(item.notes)
+            item.raw_notes = item.notes
+            item.notes = convert_to_markdown(item.notes)
             item.save()
         else:
             raise Exception(form.errors)

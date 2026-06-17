@@ -123,6 +123,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         through_fields=("user_subject", "user_object"),
         related_name="blocked_by",
     )
+    blocked_books = models.ManyToManyField("Work", related_name="blocked_by")
     saved_lists = models.ManyToManyField(
         "List", symmetrical=False, related_name="saved_lists", blank=True
     )

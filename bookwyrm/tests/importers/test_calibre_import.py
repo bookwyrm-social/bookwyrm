@@ -82,3 +82,39 @@ class CalibreImport(TestCase):
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
+
+    def test_get_shelf_falls_back_to_shelf_column(self, *_):
+        """with no reading dates, recognised shelf values map to read statuses"""
+        cases = [
+            ("Read", models.Shelf.READ_FINISHED),
+            ("read", models.Shelf.READ_FINISHED),
+            ("Currently reading", models.Shelf.READING),
+            ("to-read", models.Shelf.TO_READ),
+        ]
+        for value, expected in cases:
+            with self.subTest(value=value):
+                self.assertEqual(
+                    self.importer.get_shelf(
+                        {
+                            "date_finished": None,
+                            "date_started": None,
+                            "shelf": value,
+                        }
+                    ),
+                    expected,
+                )
+
+    def test_get_shelf_passes_through_custom_values(self, *_):
+        """an unrecognized shelf value becomes a custom shelf"""
+        self.assertEqual(
+            self.importer.get_shelf(
+                {"date_finished": None, "date_started": None, "shelf": "Favorites"}
+            ),
+            "Favorites",
+        )
+        self.assertEqual(
+            self.importer.get_shelf(
+                {"date_finished": None, "date_started": None, "shelf": None}
+            ),
+            models.Shelf.TO_READ,
+        )

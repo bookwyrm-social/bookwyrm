@@ -304,3 +304,34 @@ class ShelfViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(len(result.context_data["books"].object_list), 0)
+
+    def test_shelf_excludes_blocked(self, *_):
+        """are blocked books actually blocked?"""
+        shelf = models.Shelf.objects.get(user=self.local_user, identifier="read")
+        work = models.Work.objects.create(title="Awful Book")
+        awful_book = models.Edition.objects.create(
+            title="Awful Edition",
+            remote_id="https://example.com/book/99",
+            parent_work=work,
+        )
+
+        models.ShelfBook.objects.create(
+            shelf=shelf, user=self.local_user, book=awful_book
+        )
+        models.ShelfBook.objects.create(
+            shelf=shelf, user=self.local_user, book=self.book
+        )
+
+        self.local_user.blocked_books.add(work)
+
+        view = views.Shelf.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request, request.user.username)
+
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(len(result.context_data["books"].object_list), 1)
+        self.assertFalse(awful_book in result.context_data["books"].object_list)
+        self.assertEqual(result.context_data["books"].object_list, [self.book])

@@ -153,7 +153,7 @@ class GenericImporter(TestCase):
             resolve.return_value = self.book
 
             with patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+                "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
             ) as mock:
                 import_item_task(import_item.id)
                 kwargs = mock.call_args.kwargs

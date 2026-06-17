@@ -61,7 +61,9 @@ class AnnualSummary(View):
             }
             return TemplateResponse(request, "annual_summary/layout.html", data)
 
-        read_books_in_year = get_books_from_shelfbooks(read_book_ids_in_year)
+        read_books_in_year = get_books_from_shelfbooks(
+            read_book_ids_in_year, request.user
+        )
 
         # pages stats queries
         page_stats = read_books_in_year.aggregate(Sum("pages"), Avg("pages"))
@@ -205,11 +207,14 @@ def is_year_available(user, year):
     return False
 
 
-def get_books_from_shelfbooks(books_ids):
+def get_books_from_shelfbooks(books_ids, viewer):
     """return an ordered QuerySet of books from a list"""
 
     ordered = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(books_ids)])
     books = models.Edition.objects.filter(id__in=books_ids).order_by(ordered)
+
+    if hasattr(viewer, "blocked_books"):
+        books = books.exclude(parent_work__in=viewer.blocked_books.all())
 
     return books
 

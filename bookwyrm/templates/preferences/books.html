@@ -1,0 +1,33 @@
+{% extends 'preferences/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Blocked Books" %}{% endblock %}
+
+{% block header %}
+{% trans "Blocked Books" %}
+{% endblock %}
+
+{% block panel %}
+{% if not request.user.blocked_books.exists %}
+<p><em>{% trans "No books currently blocked." %}</em></p>
+{% else %}
+<table class="table">
+    <thead>
+        <th>{% trans 'Title' %}</th>
+        <th>{% trans 'Authors' %}</th>
+        <th></th>
+    </thead>
+    <tbody>
+        {% for work in request.user.blocked_books.all %}
+        {% with book=work.default_edition %}
+        <tr>
+            <td><a href="{{book.remote_id}}">{{ book.title }}</a></td>
+            <td>{% include 'snippets/authors.html' with book=book %}</td>
+            <td>{% include 'snippets/block_book_button.html' with book=book blocks=True %}</td>
+        </tr>
+        {% endwith %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}
