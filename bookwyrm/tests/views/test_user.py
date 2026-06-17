@@ -385,7 +385,7 @@ class UserViews(TestCase):
         view = views.UserSuggestions.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        result = view(request, "mouse")
+        result = view(request, username="mouse")
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -398,7 +398,7 @@ class UserViews(TestCase):
         view = views.UserSuggestions.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        result = view(request, "mouse")
+        result = view(request, username="mouse")
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -411,6 +411,6 @@ class UserViews(TestCase):
         view = views.UserSuggestions.as_view()
         request = self.factory.get("")
         request.user = self.anonymous_user
-        result = view(request, "mouse")
+        result = view(request, username="mouse")
         self.assertEqual(result.status_code, 200)
         validate_html(result.render())
