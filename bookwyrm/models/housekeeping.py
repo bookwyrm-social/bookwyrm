@@ -11,7 +11,6 @@ from django.db.models import (
     ManyToManyField,
     TextChoices,
 )
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import models

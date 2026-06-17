@@ -33,7 +33,8 @@ class MergeableMixin:
         duplicates = {}
         for field in dedupe_fields:
             results = (
-                cls.objects.filter(pending_merge_target__isnull=True).values(field.name)
+                cls.objects.filter(pending_merge_target__isnull=True)
+                .values(field.name)
                 .annotate(Count(field.name))
                 .filter(**{f"{field.name}__count__gt": 1})
                 .exclude(**{field.name: ""})
@@ -57,7 +58,8 @@ class MergeableMixin:
                 canonical = objs.first()
                 candidates = objs.exclude(id=canonical.id)
                 candidates.update(
-                    pending_merge_target=canonical, pending_merge_date=week_from_today)
+                    pending_merge_target=canonical, pending_merge_date=week_from_today
+                )
 
     def find_merge_candidate(self):
         """look for the first possible duplicate of the current object"""
