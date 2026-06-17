@@ -20,9 +20,9 @@ from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.utils.block_books import blocked_book_filter
 from bookwyrm.views import Book
 from bookwyrm.views.helpers import convert_to_markdown
-from bookwyrm.views.helpers import get_user_from_username
 from bookwyrm.views.helpers import is_api_request, redirect_to_referer
 from bookwyrm.views.list.list import get_list_suggestions
+from bookwyrm.views.mixins import PrivateProfileMixin
 
 
 class SuggestionList(View):
@@ -105,14 +105,14 @@ class SuggestionList(View):
         return redirect_to_referer(request)
 
 
-class UserSuggestions(View):
+class UserSuggestions(PrivateProfileMixin, View):
     """view all suggestions made by a user"""
 
     def get(
         self, request: HttpRequest, username: str
     ) -> ActivitypubResponse | TemplateResponse:
         """display a book list"""
-        user = get_user_from_username(request.user, username)
+        user = request.profile_user
         is_self = request.user.id == user.id
 
         suggestions = models.SuggestionListItem.objects.filter(
