@@ -83,7 +83,7 @@ class UserLists(PrivateProfileMixin, View):
     def get(self, request, username):
         """display a book list"""
 
-        user = request.target_user
+        user = request.profile_user
         lists = models.List.privacy_filter(request.user).filter(user=user)
         paginated = Paginator(lists, 12)
 

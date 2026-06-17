@@ -88,7 +88,7 @@ class UserGroups(PrivateProfileMixin, View):
 
     def get(self, request, username, slug=None):
         """display a group"""
-        user = request.target_user
+        user = request.profile_user
         groups = (
             models.Group.privacy_filter(request.user)
             .filter(memberships__user=user)

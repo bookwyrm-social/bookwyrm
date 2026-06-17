@@ -150,19 +150,19 @@ class UserViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
-        self.assertTrue(result.context_data["is_locked"])
+        self.assertTrue(result.context_data["is_profile_locked"])
 
         request.user = self.local_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, username="rat")
-        self.assertTrue(result.context_data["is_locked"])
+        self.assertTrue(result.context_data["is_profile_locked"])
 
         self.rat.followers.add(self.local_user)
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, username="rat")
-        self.assertFalse(result.context_data["is_locked"])
+        self.assertFalse(result.context_data["is_profile_locked"])
 
     def test_user_page_activity_sorted(self):
         """the most recently shelved book should be displayed first"""

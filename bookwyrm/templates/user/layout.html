@@ -70,7 +70,7 @@
     {% endif %}
     </div>
     {% block tabs %}
-    {% if not user.moved_to and not is_locked %}
+    {% if not user.moved_to and not is_profile_locked %}
     {% with user|username as username %}
     <nav class="tabs">
         <ul>

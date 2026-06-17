@@ -24,7 +24,7 @@ class User(PrivateProfileMixin, View):
     @vary_on_headers("Accept")
     def get(self, request, username):
         """profile page for a user"""
-        user = request.target_user
+        user = request.profile_user
 
         if not user.local and not request.user.is_authenticated:
             return redirect(user.remote_id)
@@ -108,7 +108,7 @@ class User(PrivateProfileMixin, View):
             "shelf_count": shelves.count(),
             "activities": paginated.get_page(request.GET.get("page", 1)),
             "goal": goal,
-            "is_locked": False
+            "is_profile_locked": False
         }
 
         return TemplateResponse(request, "user/user.html", data)
@@ -119,7 +119,7 @@ class UserReviewsComments(PrivateProfileMixin, View):
 
     def get(self, request, username):
         """user's activity filtered by reviews and comments"""
-        user = request.target_user
+        user = request.profile_user
         is_self = request.user.id == user.id
 
         activities = (

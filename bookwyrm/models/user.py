@@ -143,7 +143,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     manually_approves_followers = fields.BooleanField(default=False)
     theme = models.ForeignKey("Theme", null=True, blank=True, on_delete=models.SET_NULL)
     hide_follows = fields.BooleanField(default=False)
-    is_private = models.BooleanField(default=False)
+    is_profile_private = models.BooleanField(default=False)
 
     # migration fields
     moved_to = fields.RemoteIdField(
@@ -527,8 +527,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             if not cache_session.exists(session_key=sess.session_key):
                 sess.delete()
 
-    def is_visible_to(self, viewer_id):
-        if not self.is_private:
+    def is_profile_visible_to(self, viewer_id):
+        if not self.is_profile_private:
             return True
         if viewer_id is None:
             return False

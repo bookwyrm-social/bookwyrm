@@ -19,7 +19,7 @@ class Relationships(PrivateProfileMixin, View):
     @vary_on_headers("Accept")
     def get(self, request, username, direction):
         """list of followers"""
-        user = request.target_user
+        user = request.profile_user
 
         if is_api_request(request):
             if direction == "followers":

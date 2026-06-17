@@ -69,15 +69,15 @@ class User(TestCase):
         self.assertEqual(user.username, "rat@example.com")
 
     def test_is_visible_to_public(self):
-        self.assertTrue(self.user.is_visible_to(None))
-        self.assertTrue(self.user.is_visible_to(self.another_user.id))
+        self.assertTrue(self.user.is_profile_visible_to(None))
+        self.assertTrue(self.user.is_profile_visible_to(self.another_user.id))
 
     def test_is_visible_to_private(self):
-        self.user.is_private = True
-        self.assertFalse(self.user.is_visible_to(None))
-        self.assertFalse(self.user.is_visible_to(self.another_user.id))
+        self.user.is_profile_private = True
+        self.assertFalse(self.user.is_profile_visible_to(None))
+        self.assertFalse(self.user.is_profile_visible_to(self.another_user.id))
         self.user.followers.add(self.another_user)
-        self.assertTrue(self.user.is_visible_to(self.another_user.id))
+        self.assertTrue(self.user.is_profile_visible_to(self.another_user.id))
 
     def test_user_shelves(self):
         shelves = models.Shelf.objects.filter(user=self.user).all()

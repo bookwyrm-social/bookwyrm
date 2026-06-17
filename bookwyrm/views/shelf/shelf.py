@@ -27,7 +27,7 @@ class Shelf(PrivateProfileMixin, View):
     @vary_on_headers("Accept")
     def get(self, request, username, shelf_identifier=None):
         """display a shelf"""
-        user = request.target_user
+        user = request.profile_user
 
         is_self = user == request.user
 
