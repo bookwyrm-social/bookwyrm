@@ -392,7 +392,9 @@ class ConfirmEditBook(View):
                     else:
                         # or it's just a name
                         author = models.Author.objects.create(name=match)
-                models.BookAuthor.objects.get_or_create(book=book, author=author, author_type=author_type)
+                models.BookAuthor.objects.get_or_create(
+                    book=book, author=author, author_type=author_type
+                )
 
             # create work, if needed
             if not book.parent_work:

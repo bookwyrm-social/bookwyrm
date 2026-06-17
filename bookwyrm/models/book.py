@@ -976,6 +976,7 @@ class BookAuthor(BookWyrmModel):
         db_table = "bookwyrm_book_authors"
         unique_together = ("book", "author", "author_type")
 
+
 class Series(OrderedCollectionMixin, BookDataModel):
     """a series of books"""
 
