@@ -999,7 +999,7 @@ class SeriesBook(CollectionItemMixin, BookWyrmModel):
 
     class Meta:
         ordering = ["series_number"]
-        unique_together = [("book", "series"), ("series", "series_number")]
+        unique_together = [("book", "series")]
 
     def get_remote_id(self):
         """need a remote id to provide the URI for series"""

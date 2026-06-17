@@ -6,7 +6,7 @@ import dateutil.parser
 import dateutil.tz
 from dateutil.parser import ParserError
 
-from markdown import markdown
+import mistune
 
 from requests import HTTPError
 from django.db.models import Q
@@ -267,6 +267,6 @@ def get_mergeable_object_or_404(klass, id):
 
 def convert_to_markdown(content):
     """convert given content to markdown"""
-    content = markdown(content)
+    content = mistune.html(content).rstrip()
     # sanitize resulting html
     return sanitizer.clean(content)
