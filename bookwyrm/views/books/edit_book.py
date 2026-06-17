@@ -16,6 +16,7 @@ from django.views.decorators.http import require_POST
 from django.views import View
 
 from bookwyrm import book_search, forms, models
+from bookwyrm.models.book import AuthorTypes
 
 from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
 from bookwyrm.utils.images import remove_uploaded_image_exif, set_cover_from_url
@@ -48,6 +49,7 @@ class EditBook(View):
         data = {
             "book": book,
             "seriesbooks": seriesbooks,
+            "author_types": AuthorTypes,
             "form": forms.EditionForm(instance=book),
         }
         return TemplateResponse(request, "book/edit/edit_book.html", data)
@@ -226,7 +228,9 @@ def add_or_remove_authors(request, data):
     """helper for adding authors"""
     # this isn't preserved because it isn't part of the form obj
     data["remove_authors"] = request.POST.getlist("remove_authors")
-    add_author = [author for author in request.POST.getlist("add_author") if author]
+    author_names = [author for author in request.POST.getlist("add_author") if author]
+    author_types = [at for at in request.POST.getlist("author_type") if at]
+    add_author = set(zip(author_names, author_types))
     if not add_author:
         data["add_author"] = []
         return data
@@ -238,7 +242,7 @@ def add_or_remove_authors(request, data):
     # creating a book or adding an author to a book needs another step
     data["confirm_mode"] = True
 
-    for author in add_author:
+    for author, author_type in add_author:
         # filter out empty author fields
         if not author:
             continue
@@ -273,6 +277,7 @@ def add_or_remove_authors(request, data):
                 "name": author.strip(),
                 "matches": matches,
                 "existing_isnis": exists,
+                "author_type": author_type,
             }
         )
     return data
@@ -359,6 +364,7 @@ class ConfirmEditBook(View):
             # get or create author as needed
             for i in range(int(request.POST.get("author-match-count", 0))):
                 match = request.POST.get(f"author_match-{i}")
+                author_type = request.POST.get(f"author_type-{i}")
                 if not match:
                     return HttpResponseBadRequest()
                 try:
@@ -386,7 +392,7 @@ class ConfirmEditBook(View):
                     else:
                         # or it's just a name
                         author = models.Author.objects.create(name=match)
-                book.authors.add(author)
+                models.BookAuthor.objects.get_or_create(book=book, author=author, author_type=author_type)
 
             # create work, if needed
             if not book.parent_work:
