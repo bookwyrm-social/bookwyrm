@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0232_user_readwise_api_key'),
+        ('bookwyrm', '0237_alter_seriesbook_unique_together'),
     ]
 
     operations = [
