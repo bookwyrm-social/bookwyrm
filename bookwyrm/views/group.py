@@ -16,7 +16,8 @@ from django.db.models.functions import Greatest
 from bookwyrm import forms, models
 from bookwyrm.models import NotificationType
 from bookwyrm.suggested_users import suggested_users
-from .helpers import get_user_from_username, maybe_redirect_local_path, PrivateProfileMixin
+from bookwyrm.views.helpers import get_user_from_username, maybe_redirect_local_path
+from bookwyrm.views.mixins import PrivateProfileMixin
 
 
 class Group(View):

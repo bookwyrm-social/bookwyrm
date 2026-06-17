@@ -11,16 +11,18 @@ class PrivateProfileMixin:
 
         username = kwargs.get("username")
         if not username:
+            # Should not reach this line unless the mixin is used in inappropriate view,
+            # which I think should be counted as noop
             return super().dispatch(request, *args, **kwargs)
 
         target_user = get_user_from_username(request.user, username)
         is_self = target_user is request.user
-        if not is_self and not target_user.is_visible_to(request.user.id):
-            return TemplateResponse(
-                request,
-                "user/user.html",
-                {"user": target_user, "is_self": False, "is_locked": True},
-            )
+        if is_self or target_user.is_visible_to(request.user.id):
+            request.target_user = target_user
+            return super().dispatch(request, *args, **kwargs)
 
-        request.target_user = target_user
-        return super().dispatch(request, *args, **kwargs)
+        return TemplateResponse(
+            request,
+            "user/user.html",
+            {"user": target_user, "is_self": False, "is_locked": True},
+        )

@@ -133,7 +133,7 @@ class GroupViews(TestCase):
             },
         )
         request.user = self.local_user
-        result = view(request, "username")
+        result = view(request, username="username")
 
         self.assertEqual(result.status_code, 302)
         new_group = models.Group.objects.filter(name="A group").get()
@@ -160,7 +160,7 @@ class GroupViews(TestCase):
         request.user = self.rat
 
         with self.assertRaises(PermissionDenied):
-            view(request, "username")
+            view(request, username="username")
 
     def test_group_edit(self, _):
         """test editing a "group" database entry"""

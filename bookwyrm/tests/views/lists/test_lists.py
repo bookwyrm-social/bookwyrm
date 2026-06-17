@@ -136,7 +136,7 @@ class ListViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
 
-        result = view(request, self.local_user.localname)
+        result = view(request, username=self.local_user.localname)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -155,7 +155,7 @@ class ListViews(TestCase):
         request = self.factory.get("")
         request.user = self.anonymous_user
 
-        result = view(request, self.local_user.username)
+        result = view(request, username=self.local_user.username)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)

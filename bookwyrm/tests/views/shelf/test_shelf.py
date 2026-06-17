@@ -66,7 +66,7 @@ class ShelfViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, self.local_user.username)
+            result = view(request, username=self.local_user.username)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -78,7 +78,7 @@ class ShelfViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, self.local_user.username)
+            result = view(request, username=self.local_user.username)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -100,7 +100,7 @@ class ShelfViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, self.local_user.username)
+            result = view(request, username=self.local_user.username)
         self.assertEqual(result.context_data["books"].object_list.count(), 1)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
@@ -113,7 +113,7 @@ class ShelfViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = True
-            result = view(request, self.local_user.username)
+            result = view(request, username=self.local_user.username)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -125,7 +125,7 @@ class ShelfViews(TestCase):
         request.user = self.anonymous_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, self.local_user.username)
+            result = view(request, username=self.local_user.username)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -138,7 +138,7 @@ class ShelfViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, self.local_user.username, shelf.identifier)
+            result = view(request, username=self.local_user.username, shelf_identifier=shelf.identifier)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -151,14 +151,14 @@ class ShelfViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, self.local_user.username, shelf.identifier)
+            result = view(request, username=self.local_user.username, shelf_identifier=shelf.identifier)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = True
-            result = view(request, self.local_user.username, shelf.identifier)
+            result = view(request, username=self.local_user.username, shelf_identifier=shelf.identifier)
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
@@ -166,7 +166,7 @@ class ShelfViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = True
-            result = view(request, self.local_user.username, shelf.identifier)
+            result = view(request, username=self.local_user.username, shelf_identifier=shelf.identifier)
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
@@ -185,7 +185,7 @@ class ShelfViews(TestCase):
             },
         )
         request.user = self.local_user
-        view(request, self.local_user.username, shelf.identifier)
+        view(request, username=self.local_user.username, shelf_identifier=shelf.identifier)
         shelf.refresh_from_db()
 
         self.assertEqual(shelf.privacy, "unlisted")
@@ -201,7 +201,7 @@ class ShelfViews(TestCase):
         )
         request.user = self.local_user
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            view(request, request.user.username, shelf.identifier)
+            view(request, username=request.user.username, shelf_identifier=shelf.identifier)
         shelf.refresh_from_db()
 
         self.assertEqual(shelf.name, "cool name")
@@ -218,7 +218,7 @@ class ShelfViews(TestCase):
         )
         request.user = self.local_user
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            view(request, request.user.username, shelf.identifier)
+            view(request, username=request.user.username, shelf_identifier=shelf.identifier)
 
         self.assertEqual(shelf.name, "To Read")
 
@@ -239,7 +239,7 @@ class ShelfViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, self.local_user.username)
+            result = view(request, username=self.local_user.username)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -261,7 +261,7 @@ class ShelfViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, self.local_user.username)
+            result = view(request, username=self.local_user.username)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
