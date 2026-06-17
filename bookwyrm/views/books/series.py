@@ -8,6 +8,7 @@ from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.vary import vary_on_headers
+from django_celery_beat.models import PeriodicTask
 
 from bookwyrm.forms import SeriesForm
 from bookwyrm import models
@@ -42,9 +43,11 @@ class Series(View):
         paginated = Paginator(series_books, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
 
+        merge_scheduled = PeriodicTask.objects.filter(name="dedupe-merge-task").exists()
         data = {
             "series": series,
             "series_dupe": series.pending_merge_target,
+            "merge_scheduled": merge_scheduled,
             "series_books": page,
             "series_authors": {"authors": authors},
         }

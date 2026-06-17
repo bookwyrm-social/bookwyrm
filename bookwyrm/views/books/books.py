@@ -9,6 +9,7 @@ from django.template.response import TemplateResponse
 from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.decorators.vary import vary_on_headers
+from django_celery_beat.models import PeriodicTask
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
@@ -94,13 +95,13 @@ class Book(View):
             listitem__book__in=book.parent_work.editions.all(),
         )
 
-        edition_dupe = book.pending_merge_target
-        work_dupe = book.parent_work.pending_merge_target
+        merge_scheduled = PeriodicTask.objects.filter(name="dedupe-merge-task").exists()
 
         data = {
             "book": book,
-            "edition_dupe": edition_dupe,
-            "work_dupe": work_dupe,
+            "edition_dupe": book.pending_merge_target,
+            "work_dupe": book.parent_work.pending_merge_target,
+            "merge_scheduled": merge_scheduled,
             "statuses": paginated.get_page(request.GET.get("page")),
             "review_count": reviews.count(),
             "ratings": (

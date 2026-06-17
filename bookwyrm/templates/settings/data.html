@@ -14,55 +14,142 @@
 {% block panel %}
 
 <div class="block">
-    <h2 class="title is-4">{% trans "Schedule book data deduplication" %}</h2>
+    <h2 class="title is-4">{% trans "Schedule duplicate data scan" %}</h2>
     <div class="box">
         <div class="content notification">
             <p>
                 {% trans "This job scans for duplicate editions, works, authors, and series." %}
+                <br>
+                <strong>{% trans "No changes will be made to the data." %}</strong>
             </p>
         </div>
         <div class="block">
-            {% if dedupe_task %}
+            {% if scan_task %}
             <dl class="block">
                 <dt class="is-pulled-left mr-5 has-text-weight-bold">
                     {% trans "Schedule:" %}
                 </dt>
                 <dd>
-                    {{ dedupe_task.schedule }}
+                    {{ scan_task.schedule }}
                 </dd>
 
                 <dt class="is-pulled-left mr-5 has-text-weight-bold">
                     {% trans "Last run:" %}
                 </dt>
                 <dd>
-                    {{ dedupe_task.last_run_at|naturaltime }}
+                    {{ scan_task.last_run_at|naturaltime }}
                 </dd>
 
                 <dt class="is-pulled-left mr-5 has-text-weight-bold">
                     {% trans "Total run count:" %}
                 </dt>
                 <dd>
-                    {{ dedupe_task.total_run_count }}
+                    {{ scan_task.total_run_count }}
                 </dd>
 
                 <dt class="is-pulled-left mr-5 has-text-weight-bold">
                     {% trans "Enabled:" %}
                 </dt>
                 <dd>
-                    <span class="tag {% if dedupe_task.enabled %}is-success{% else %}is-danger{% endif %}">
-                        {{ dedupe_task.enabled|yesno }}
+                    <span class="tag {% if scan_task.enabled %}is-success{% else %}is-danger{% endif %}">
+                        {{ scan_task.enabled|yesno }}
                     </span>
                 </dd>
             </dl>
 
             <div class="is-flex is-justify-content-space-between block">
-                <form name="unschedule-dedupe" method="POST" action="{% url 'settings-dedupe-unschedule' dedupe_task.id %}">
+                <form name="unschedule-dedupe" method="POST" action="{% url 'settings-dedupe-unschedule' scan_task.id %}">
                     {% csrf_token %}
                     <button class="button is-danger">{% trans "Delete schedule" %}</button>
                 </form>
             </div>
             {% else %}
-            <form name="schedule-dedupe" method="POST" action="{% url 'settings-dedupe-schedule' %}">
+            <form name="schedule-dedupe" method="POST" action="{% url 'settings-dedupe-schedule-scan' %}">
+                {% csrf_token %}
+                <div class="field">
+                    <label class="label" for="id_every">
+                        {{ task_form.every.label }}
+                    </label>
+                    <div class="columns">
+                        <div class="column is-one-fifth">
+                            {{ task_form.every }}
+                        </div>
+                    </div>
+                    <p class="help" id="desc_every">
+                        {{ task_form.every.help_text }}
+                    </p>
+                </div>
+                <div class="field">
+                    <label class="label" for="id_period">
+                    {{ task_form.period.label }}
+                    </label>
+                    <div class="select">
+                        {{ task_form.period }}
+                    </div>
+                    <p class="help" id="desc_period">
+                        {{ task_form.period.help_text }}
+                    </p>
+                </div>
+                <button class="button is-primary">{% trans "Schedule scan" %}</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+<div class="block">
+    <h2 class="title is-4">{% trans "Schedule data merge" %}</h2>
+    <div class="box">
+        <div class="content notification is-danger is-light">
+            <p>
+                {% trans "This job combines editions, works, authors, and series that are flagged as duplicates." %}
+                <br>
+                <strong>{% trans "This job will make irreversible changes to your data." %}</strong>
+            </p>
+        </div>
+        <div class="block">
+            {% if merge_task %}
+            <dl class="block">
+                <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                    {% trans "Schedule:" %}
+                </dt>
+                <dd>
+                    {{ merge_task.schedule }}
+                </dd>
+
+                <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                    {% trans "Last run:" %}
+                </dt>
+                <dd>
+                    {{ merge_task.last_run_at|naturaltime }}
+                </dd>
+
+                <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                    {% trans "Total run count:" %}
+                </dt>
+                <dd>
+                    {{ merge_task.total_run_count }}
+                </dd>
+
+                <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                    {% trans "Enabled:" %}
+                </dt>
+                <dd>
+                    <span class="tag {% if merge_task.enabled %}is-success{% else %}is-danger{% endif %}">
+                        {{ merge_task.enabled|yesno }}
+                    </span>
+                </dd>
+            </dl>
+
+            <div class="is-flex is-justify-content-space-between block">
+                <form name="unschedule-dedupe" method="POST" action="{% url 'settings-dedupe-unschedule' merge_task.id %}">
+                    {% csrf_token %}
+                    <button class="button is-danger">{% trans "Delete schedule" %}</button>
+                </form>
+            </div>
+            {% else %}
+            <form name="schedule-merge" method="POST" action="{% url 'settings-dedupe-schedule-merge' %}">
                 {% csrf_token %}
                 <div class="field">
                     <label class="label" for="id_every">

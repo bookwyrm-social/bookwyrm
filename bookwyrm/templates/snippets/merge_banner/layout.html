@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load utilities %}
+{% load humanize %}
 
 {% if dupe %}
 <aside class="notification has-background-danger-light">
@@ -9,6 +10,12 @@
             <span class="icon icon-warning" aria-hidden="true"></span>
             {% block content %}
             {% endblock %}
+
+            {% if original.pending_merge_date and merge_scheduled %}
+            {% blocktrans trimmed with date=original.pending_merge_date|naturalday %}
+            After {{ date }}, these will be automatically merged.
+            {% endblocktrans %}
+            {% endif %}
             </p>
         </summary>
         <div class="pt-3">

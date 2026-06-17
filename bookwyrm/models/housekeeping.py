@@ -11,6 +11,7 @@ from django.db.models import (
     ManyToManyField,
     TextChoices,
 )
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import models
@@ -253,7 +254,22 @@ def run_missing_covers_job(**kwargs):
 @app.task(queue=MISC)
 def mark_duplicate_data_task():
     """Find likely duplicates and store their canonical candidate"""
-    # Is there a better way to find these models? idk
-    scan_models = [models.Work, models.Edition, models.Author, models.Series]
-    for model in scan_models:
+    for model in get_mergeable_models():
         model.mark_merge_candidates()
+
+
+@app.task(queue=MISC)
+def merge_duplicate_data_task():
+    """Combine duplicates"""
+    for model in get_mergeable_models():
+        model.objects.filter(
+            pending_merge_target__isnull=False,
+            prevent_automatic_merge=False,
+            pending_merge_date__lte=timezone.now(),
+        )
+
+
+def get_mergeable_models():
+    """All models with the mergeable mixin"""
+    # Is there a way to get these programmatically??? idk
+    return [models.Work, models.Edition, models.Author, models.Series]

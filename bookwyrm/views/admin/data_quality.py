@@ -32,15 +32,35 @@ def schedule_deduplication_scan_task(request):
     form = forms.IntervalScheduleForm(request.POST)
     if not form.is_valid():
         data = data_quality_data()
-        data["task_form"] = form
+        data["scan_form"] = form
         return TemplateResponse(request, "settings/data.html", data)
 
     with transaction.atomic():
         schedule, _ = IntervalSchedule.objects.get_or_create(**form.cleaned_data)
         PeriodicTask.objects.get_or_create(
             interval=schedule,
-            name="dedupe-task",
+            name="dedupe-scan-task",
             task="bookwyrm.models.housekeeping.mark_duplicate_data_task",
+        )
+    return redirect("settings-data-quality")
+
+
+@require_POST
+@permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
+def schedule_deduplication_task(request):
+    """scheduler"""
+    form = forms.IntervalScheduleForm(request.POST)
+    if not form.is_valid():
+        data = data_quality_data()
+        data["merge_form"] = form
+        return TemplateResponse(request, "settings/data.html", data)
+
+    with transaction.atomic():
+        schedule, _ = IntervalSchedule.objects.get_or_create(**form.cleaned_data)
+        PeriodicTask.objects.get_or_create(
+            interval=schedule,
+            name="dedupe-merge-task",
+            task="bookwyrm.models.housekeeping.merge_duplicate_data_task",
         )
     return redirect("settings-data-quality")
 
@@ -56,11 +76,17 @@ def unschedule_deduplication_scan_task(request, task_id):
 def data_quality_data():
     """helper to get data used in the template"""
     try:
-        dedupe_task = PeriodicTask.objects.get(name="dedupe-task")
+        scan_task = PeriodicTask.objects.get(name="dedupe-scan-task")
     except PeriodicTask.DoesNotExist:
-        dedupe_task = None
+        scan_task = None
+
+    try:
+        merge_task = PeriodicTask.objects.get(name="dedupe-merge-task")
+    except PeriodicTask.DoesNotExist:
+        merge_task = None
 
     return {
-        "dedupe_task": dedupe_task,
+        "scan_task": scan_task,
+        "merge_task": merge_task,
         "task_form": forms.IntervalScheduleForm(),
     }
