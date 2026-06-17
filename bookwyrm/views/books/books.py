@@ -14,6 +14,7 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager, ConnectorException
 from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.utils.block_books import blocked_book_filter
 from bookwyrm.utils.images import remove_uploaded_image_exif, set_cover_from_url
 from bookwyrm.views.helpers import (
     is_api_request,
@@ -148,14 +149,15 @@ class Book(View):
                 data["item_count"] = data[
                     "suggestion_list"
                 ].suggestionlistitem_set.count()
-                data["items"] = (
+                items = (
                     data["suggestion_list"]
                     .suggestionlistitem_set.prefetch_related(
                         "user", "work", "work__authors", "endorsement"
                     )
                     .annotate(endorsement_count=Count("endorsement"))
-                    .order_by("-endorsement_count")[:3]
+                    .order_by("-endorsement_count")
                 )
+                data["items"] = blocked_book_filter(items, "Work", request.user)[:3]
 
                 data["suggested_books"] = get_list_suggestions(
                     data["suggestion_list"],
