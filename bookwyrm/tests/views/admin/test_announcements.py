@@ -143,7 +143,7 @@ class AnnouncementViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
 
-        result = view(request, self.local_user.localname)
+        result = view(request, username=self.local_user.localname)
 
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())

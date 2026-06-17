@@ -123,6 +123,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         through_fields=("user_subject", "user_object"),
         related_name="blocked_by",
     )
+    blocked_books = models.ManyToManyField("Work", related_name="blocked_by")
     saved_lists = models.ManyToManyField(
         "List", symmetrical=False, related_name="saved_lists", blank=True
     )
@@ -143,6 +144,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     manually_approves_followers = fields.BooleanField(default=False)
     theme = models.ForeignKey("Theme", null=True, blank=True, on_delete=models.SET_NULL)
     hide_follows = fields.BooleanField(default=False)
+    is_profile_private = models.BooleanField(default=False)
 
     # migration fields
     moved_to = fields.RemoteIdField(
@@ -162,6 +164,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     discoverable = fields.BooleanField(default=False)
     show_guided_tour = models.BooleanField(default=True)
     show_ratings = models.BooleanField(default=True)
+    readwise_api_key = models.CharField(max_length=255, null=True, blank=True)
 
     # feed options
     feed_status_types = DjangoArrayField(
@@ -205,7 +208,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
         indexes = [
             models.Index(fields=["username"]),
-            models.Index(fields=["is_active", "local"]),
+            models.Index(fields=["local", "is_active", "last_active_date"]),
         ]
 
     @property
@@ -524,6 +527,13 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         for sess in self.sessions.all():
             if not cache_session.exists(session_key=sess.session_key):
                 sess.delete()
+
+    def is_profile_visible_to(self, viewer_id):
+        if not self.is_profile_private:
+            return True
+        if viewer_id is None:
+            return False
+        return self.followers.filter(id=viewer_id).exists()
 
 
 class KeyPair(ActivitypubMixin, BookWyrmModel):

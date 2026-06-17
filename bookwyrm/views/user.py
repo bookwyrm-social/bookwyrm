@@ -10,20 +10,21 @@ from django.utils import timezone
 from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.decorators.vary import vary_on_headers
+from bookwyrm.views.helpers import is_api_request
 
 from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH, INSTANCE_ACTOR_USERNAME
-from .helpers import get_user_from_username, is_api_request
+from bookwyrm.views.mixins import PrivateProfileMixin
 
 
-class User(View):
+class User(PrivateProfileMixin, View):
     """user profile page"""
 
     @vary_on_headers("Accept")
     def get(self, request, username):
         """profile page for a user"""
-        user = get_user_from_username(request.user, username)
+        user = request.profile_user
 
         if not user.local and not request.user.is_authenticated:
             return redirect(user.remote_id)
@@ -52,21 +53,25 @@ class User(View):
         else:
             shelves = user.shelf_set.filter(books__isnull=False).distinct()
 
+        blocked = []
+        if request.user.is_authenticated:
+            blocked = request.user.blocked_books.values_list("id", flat=True)
+
         for user_shelf in shelves.all()[:3]:
             shelf_preview.append(
                 {
                     "name": user_shelf.name,
                     "local_path": user_shelf.local_path,
-                    "books": user_shelf.books.order_by(
-                        "-shelfbook__shelved_date"
-                    ).all()[:3],
+                    "books": user_shelf.books.exclude(parent_work__in=blocked)
+                    .order_by("-shelfbook__shelved_date")
+                    .all()[:3],
                     "size": user_shelf.books.count(),
                 }
             )
 
         # user's posts
         activities = (
-            models.Status.privacy_filter(
+            models.Status.blocked_book_filter(
                 request.user,
             )
             .filter(user=user)
@@ -107,17 +112,18 @@ class User(View):
             "shelf_count": shelves.count(),
             "activities": paginated.get_page(request.GET.get("page", 1)),
             "goal": goal,
+            "is_profile_locked": False,
         }
 
         return TemplateResponse(request, "user/user.html", data)
 
 
-class UserReviewsComments(View):
+class UserReviewsComments(PrivateProfileMixin, View):
     """user's activity filtered by reviews and comments"""
 
     def get(self, request, username):
         """user's activity filtered by reviews and comments"""
-        user = get_user_from_username(request.user, username)
+        user = request.profile_user
         is_self = request.user.id == user.id
 
         activities = (

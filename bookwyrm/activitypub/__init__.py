@@ -19,12 +19,13 @@ from .ordered_collection import CollectionItem, ListItem, ShelfItem
 from .ordered_collection import BookList, Shelf
 from .person import Person, PublicKey
 from .response import ActivitypubResponse
-from .book import Edition, Work, Author
+from .book import Edition, Work, Author, Series, SeriesBook
 from .verbs import Create, Delete, Undo, Update
 from .verbs import Follow, Accept, Reject, Block
 from .verbs import Add, Remove
 from .verbs import Announce, Like
 from .verbs import Move
+from .verbs import Flag
 
 # this creates a list of all the Activity types that we can serialize,
 # so when an Activity comes in from outside, we can check if it's known

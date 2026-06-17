@@ -11,7 +11,8 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 from bookwyrm.book_search import SearchResult
-from bookwyrm.settings import BASE_URL
+from bookwyrm.views.search import author_search
+from bookwyrm.settings import BASE_URL, DOMAIN
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -40,6 +41,10 @@ class Views(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=cls.work,
         )
+        cls.author = models.Author.objects.create(name="Philip Howard")
+        cls.another_author = models.Author.objects.create(name="Author Name")
+
+        cls.site = models.SiteSettings.get()
 
     def setUp(self):
         """individual test setup"""
@@ -224,3 +229,52 @@ class Views(TestCase):
         self.assertIsInstance(response, TemplateResponse)
         validate_html(response.render())
         self.assertEqual(response.context_data["results"][0], booklist)
+
+    def test_block_incoming_search(self):
+        """disallow search endpoint"""
+
+        response = self.client.get(
+            "/search/?q=beep",
+            headers={
+                "Host": DOMAIN,
+                "Accept": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.site.block_incoming_search = True
+        self.site.save(update_fields=["block_incoming_search"])
+
+        response = self.client.get(
+            "/search/?q=boop",
+            headers={
+                "Host": DOMAIN,
+                "Accept": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+            },
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_author_search(self):
+        """search for authors"""
+        request = self.factory.get("", {"q": "Author Name"})
+        response = author_search(request)
+        validate_html(response.render())
+        self.assertEqual(len(response.context_data["results"]), 1)
+        self.assertEqual(response.context_data["results"][0], self.another_author)
+
+    def test_search_books_blocked_book(self):
+        """don't return blocked books on search"""
+
+        self.local_user.blocked_books.add(self.work)
+
+        view = views.Search.as_view()
+        request = self.factory.get("", {"q": "Test Book", "remote": False})
+        request.user = self.local_user
+        with patch("bookwyrm.views.search.is_api_request") as is_api:
+            is_api.return_value = False
+            response = view(request)
+        self.assertIsInstance(response, TemplateResponse)
+        validate_html(response.render())
+
+        self.assertEqual(response.context_data["blocked_books_excluded"], True)
+        self.assertEqual(len(response.context_data["results"]), 0)

@@ -11,8 +11,8 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.lists_stream import ListsStream
-from bookwyrm.views.helpers import get_user_from_username
 from bookwyrm.views.list.list import add_book
+from bookwyrm.views.mixins import PrivateProfileMixin
 
 logger = logging.getLogger(__name__)
 
@@ -77,13 +77,13 @@ class SavedLists(View):
         return TemplateResponse(request, "lists/lists.html", data)
 
 
-class UserLists(View):
+class UserLists(PrivateProfileMixin, View):
     """a user's book list page"""
 
     def get(self, request, username):
         """display a book list"""
 
-        user = get_user_from_username(request.user, username)
+        user = request.profile_user
         lists = models.List.privacy_filter(request.user).filter(user=user)
         paginated = Paginator(lists, 12)
 

@@ -1,7 +1,5 @@
 """testing models"""
 
-import json
-
 from unittest.mock import patch
 from django.contrib.auth.models import Group
 from django.db import IntegrityError
@@ -67,6 +65,17 @@ class User(TestCase):
                 bookwyrm_user=False,
             )
         self.assertEqual(user.username, "rat@example.com")
+
+    def test_is_visible_to_public(self):
+        self.assertTrue(self.user.is_profile_visible_to(None))
+        self.assertTrue(self.user.is_profile_visible_to(self.another_user.id))
+
+    def test_is_visible_to_private(self):
+        self.user.is_profile_private = True
+        self.assertFalse(self.user.is_profile_visible_to(None))
+        self.assertFalse(self.user.is_profile_visible_to(self.another_user.id))
+        self.user.followers.add(self.another_user)
+        self.assertTrue(self.user.is_profile_visible_to(self.another_user.id))
 
     def test_user_shelves(self):
         shelves = models.Shelf.objects.filter(user=self.user).all()
@@ -233,7 +242,7 @@ class User(TestCase):
         self.assertEqual(self.user.email, "mouse@mouse.mouse")
         with (
             patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+                "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
             ) as broadcast_mock,
             patch(
                 "bookwyrm.models.user.User.erase_user_statuses"
@@ -245,7 +254,7 @@ class User(TestCase):
 
         # make sure the deletion is broadcast
         self.assertEqual(broadcast_mock.call_count, 1)
-        activity = json.loads(broadcast_mock.call_args[1]["args"][1])
+        activity = broadcast_mock.call_args[0][0]
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"], self.user.remote_id)
 

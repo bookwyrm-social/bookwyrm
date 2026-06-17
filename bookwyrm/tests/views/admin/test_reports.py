@@ -1,6 +1,5 @@
 """test for app action functionality"""
 
-import json
 from unittest.mock import patch
 
 from django.contrib.auth.models import Group
@@ -63,7 +62,7 @@ class ReportViews(TestCase):
         view = views.ReportsAdmin.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        models.Report.objects.create(reporter=self.local_user, user=self.rat)
+        models.Report.objects.create(user=self.local_user, reported_user=self.rat)
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
@@ -75,7 +74,9 @@ class ReportViews(TestCase):
         view = views.ReportAdmin.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
+        report = models.Report.objects.create(
+            user=self.local_user, reported_user=self.rat
+        )
 
         result = view(request, report.id)
 
@@ -88,7 +89,9 @@ class ReportViews(TestCase):
         view = views.ReportAdmin.as_view()
         request = self.factory.post("", {"note": "hi"})
         request.user = self.local_user
-        report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
+        report = models.Report.objects.create(
+            user=self.local_user, reported_user=self.rat
+        )
 
         view(request, report.id)
 
@@ -100,7 +103,9 @@ class ReportViews(TestCase):
 
     def test_resolve_report(self):
         """toggle report resolution status"""
-        report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
+        report = models.Report.objects.create(
+            user=self.local_user, reported_user=self.rat
+        )
         self.assertFalse(report.resolved)
         self.assertFalse(models.ReportAction.objects.exists())
         request = self.factory.post("")
@@ -159,11 +164,11 @@ class ReportViews(TestCase):
 
         # de-activate
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as mock:
             views.moderator_delete_user(request, self.rat.id)
         self.assertEqual(mock.call_count, 1)
-        activity = json.loads(mock.call_args[1]["args"][1])
+        activity = mock.call_args[0][0]
         self.assertEqual(activity["type"], "Delete")
 
         self.rat.refresh_from_db()

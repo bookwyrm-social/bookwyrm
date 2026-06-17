@@ -57,6 +57,11 @@ class SiteSettings(SiteModel):
     install_mode = models.BooleanField(default=False)
     admin_code = models.CharField(max_length=50, default=uuid.uuid4)
 
+    # security
+    require_signed_get = models.BooleanField(default=False)
+    require_login_nearly_everywhere = models.BooleanField(default=False)
+    block_incoming_search = models.BooleanField(default=False)
+
     # about page
     registration_closed_text = models.TextField(
         default="We aren't taking new users at this time. You can find an open "

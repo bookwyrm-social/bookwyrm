@@ -92,3 +92,51 @@ class SiteSettingsViews(TestCase):
 
         self.site.refresh_from_db()
         self.assertEqual(self.site.name, "BookWyrm")
+
+    def test_registration_limited_get(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.RegistrationLimited.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_registration_limited_post(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.RegistrationLimited.as_view()
+        form = forms.RegistrationLimitedForm()
+        form.data["registration_closed_text"] = "bleh"
+        form.data["invite_request_text"] = "hello"
+        form.data["invite_request_question"] = "why"
+        form.data["invite_question_text"] = "okay"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        result = view(request)
+
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+        site = models.SiteSettings.get()
+        self.assertEqual(site.registration_closed_text, "bleh")
+
+    def test_registration_limited_post_invalid(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.RegistrationLimited.as_view()
+        form = forms.RegistrationLimitedForm()
+        form.data["registration_closed_text"] = "bleh"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        result = view(request)
+
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+        site = models.SiteSettings.get()
+        self.assertNotEqual(site.registration_closed_text, "bleh")

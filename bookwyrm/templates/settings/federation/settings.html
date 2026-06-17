@@ -32,13 +32,46 @@
     {% csrf_token %}
     <section class="block box">
         <div class="field">
+            <label class="label" for="id_require_signed_get">
+                {{ form.require_signed_get }}
+                <span>{% trans "Require signed GET requests" %}</span>
+                <span class="tag is-success">{% trans 'Recommended' %}</span>
+            </label>
+
+            <span class="help" id="desc_require_signed_get">
+                {% trans "Prevents anonymous requests from federated instances. Roughly equivalent to Mastodon's 'secure mode' or 'AUTHORIZED_FETCH'" %}
+            </span>
+        </div>
+        <div class="field">
+            <label class="label" for="id_require_login_everywhere">
+                {{ form.require_login_nearly_everywhere }}
+                {% trans "Prevent unauthenticated views" %}
+            </label>
+            <span class="help" id="desc_require_login_everywhere">
+                {% trans "Prevents anonymous users from seeing most pages. To block JSON requests as well, enable 'Require signed GET requests'" %}
+            </span>
+        </div>
+        <div class="field">
             <label class="label" for="id_disable_federation">
                 {{ form.disable_federation }}
-                {% trans "Disable federation" %}
+                <span>{% trans "Disable federation" %}</span>
+                <span class="tag is-warning">{% trans 'Caution' %}</span>
             </label>
             <span class="help" id="desc_disable_federation">
                 {% trans "Prevents your instance from interacting with other federated services. Existing data from other instances will still be present." %}
             </span>
+        </div>
+        <div class="field">
+            <label class="label" for="id_block_incoming_search">
+                {{ form.block_incoming_search }}
+                <span>{% trans "Block incoming search" %}</span>
+                <span class="tag is-danger">{% trans 'Not Recommended' %}</span>
+            </label>
+            <span class="help" id="desc_block_incoming_search">
+                {% trans "Prevents other servers from searching your instance. It is strongly recommended you do NOT enable this setting." %}
+            </span>
+
+
         </div>
     </section>
     <footer class="block">
