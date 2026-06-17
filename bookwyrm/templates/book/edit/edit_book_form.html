@@ -115,12 +115,14 @@
                     {% include 'snippets/form_errors.html' with errors_list=form.subjects.errors id="desc_subjects" %}
                 </div>
 
+                {% if not confirm_mode %}
                 <span class="help">
                     <button class="button is-small" type="button" data-duplicate="id_add_subject" id="another_subject_field">
                         <span class="icon icon-plus" aria-hidden="true"></span>
                         <span>{% trans "Add Another Subject" %}</span>
                     </button>
                 </span>
+                {% endif %}
             </div>
         </section>
 
@@ -283,12 +285,14 @@
                     </div>
                     {% endfor %}
                 </div>
+                {% if not confirm_mode %}
                 <span class="help">
                     <button class="button is-small" type="button" data-duplicate="id_add_author" id="another_author_field">
                         <span class="icon icon-plus" aria-hidden="true"></span>
                         <span>{% trans "Add Another Author" %}</span>
                     </button>
                 </span>
+                {% endif %}
             </div>
         </section>
     </div>
