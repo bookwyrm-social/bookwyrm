@@ -30,11 +30,11 @@
         {% else %}
         <ol start="{{ items.start_index }}" class="ordered-list">
         {% for item in items %}
-        {% with book=item.book %}
+        {% with book=item.edition %}
             <li class="mb-5 card is-shadowless has-border">
                 <div class="card-content p-0 mb-0 columns is-gapless is-mobile">
                     <div class="column is-3-mobile is-2-tablet is-cover align to-t">
-                        <a href="{{ item.book.local_path }}" aria-hidden="true">
+                        <a href="{{ item.edition.local_path }}" aria-hidden="true">
                             {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-tablet is-align-items-flex-start' size='medium' %}
                         </a>
                     </div>
@@ -44,7 +44,7 @@
                             {% include 'snippets/book_titleby.html' %}
                         </h2>
                         <p>
-                            {% include 'snippets/stars.html' with rating=item.book|rating:request.user %}
+                            {% include 'snippets/stars.html' with rating=item.edition|rating:request.user %}
                         </p>
                         <div>
                             {{ book|book_description|to_markdown|default:""|safe|truncatewords_html:20 }}

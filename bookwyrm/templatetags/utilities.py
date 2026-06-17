@@ -33,6 +33,17 @@ def get_user_identifier(user):
     return user.localname if user.localname else user.username
 
 
+@register.filter(is_safe=True)
+@register.filter(name="user_link")
+def get_link_to_user(user):
+    """get a link to a user profile, or display if the user has been deleted"""
+    username = user.display_name
+    if user.is_active:
+        return mark_safe(f"<a href='{user.local_path}'>{username}</a>")
+    text = _("deactivated user")
+    return mark_safe(f"<em class='tag'>{text}</em>")
+
+
 @register.filter(name="user_from_remote_id")
 def get_user_identifier_from_remote_id(remote_id):
     """get the local user id from their remote id"""
@@ -97,7 +108,7 @@ def get_isni_bio(existing, author):
         return ""
     for value in existing:
         if hasattr(value, "bio") and auth_isni == re.sub(r"\D", "", str(value.isni)):
-            return mark_safe(f"Author of <em>{value.bio}</em>")
+            return mark_safe(_(f"Author of <em>{value.bio}</em>"))
 
     return ""
 

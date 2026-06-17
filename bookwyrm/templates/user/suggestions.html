@@ -1,0 +1,41 @@
+{% extends 'user/layout.html' %}
+{% load utilities %}
+{% load i18n %}
+
+{% block title %}
+{% trans "Suggestions" %} - {{ user|username }}
+{% endblock %}
+
+{% block header %}
+<div class="columns is-mobile">
+    <div class="column">
+        <h1 class="title">
+            {% trans "Your Suggestions" %}
+        </h1>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block panel %}
+<section class="block">
+    <div class="columns is-multiline mb-6">
+        {% for suggestion in suggestions %}
+        <div class="column is-4">
+            <div class="block">
+            <h4 class="has-text-weight-bold has-text-centered">
+                {% blocktrans trimmed with list_name=suggestion.book_list.name url=suggestion.book_list.remote_id %}
+                <a href="{{ url }}">{{ list_name }}</a>
+                {% endblocktrans %}
+            </h4>
+            {% url 'book-remove-suggestion' suggestion.book_list.id as remove_book_url %}
+            {% include "lists/list_item.html" with list=suggestion.book_list item=suggestion remove_book_url=remove_book_url %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+<div>
+    {% include 'snippets/pagination.html' with page=suggestions path=path %}
+</div>
+{% endblock %}

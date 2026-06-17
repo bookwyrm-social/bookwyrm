@@ -24,4 +24,4 @@ class Migration(migrations.Migration):
         ("bookwyrm", "0218_merge_0217_merge_20250816_0749_0217_usersession"),
     ]
 
-    operations = [migrations.RunPython(fix_isbn10_entries)]
+    operations = [migrations.RunPython(fix_isbn10_entries, reverse_code=migrations.RunPython.noop)]

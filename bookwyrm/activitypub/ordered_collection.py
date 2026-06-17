@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from typing import List
 
 from .base_activity import ActivityObject
+from .book import Work
 
 
 @dataclass(init=False)
@@ -43,6 +44,15 @@ class BookList(OrderedCollectionPrivate):
 
 
 @dataclass(init=False)
+class SuggestionList(OrderedCollectionPrivate):
+    """structure of an ordered collection activity"""
+
+    summary: str = None
+    book: Work = None
+    type: str = "SuggestionList"
+
+
+@dataclass(init=False)
 class OrderedCollectionPage(ActivityObject):
     """structure of an ordered collection activity"""
 
@@ -70,6 +80,15 @@ class ListItem(CollectionItem):
     approved: bool = True
     order: int = None
     type: str = "ListItem"
+
+
+@dataclass(init=False)
+class SuggestionListItem(CollectionItem):
+    """a book on a list"""
+
+    book: str
+    notes: str = None
+    type: str = "SuggestionListItem"
 
 
 @dataclass(init=False)

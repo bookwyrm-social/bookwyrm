@@ -229,8 +229,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     @property
     def alt_text(self):
         """alt text with username"""
-
-        return "avatar for {:s}".format(self.localname or self.username)
+        return _(f"avatar for {self.localname or self.username}")
 
     @property
     def display_name(self):
