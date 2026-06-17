@@ -52,7 +52,7 @@
         {% for book in goal.books|blocked_book_filter:request.user %}
             <div class="column is-cover">
                 <a href="{{ book.book.local_path }}">
-                    {% include 'snippets/book_cover.html' with book=book.book cover_class='is-h-xl is-h-l-mobile' %}
+                    {% include 'snippets/book_cover.html' with size='xlarge' book=book.book cover_class='is-h-xl is-h-l-mobile' %}
                 </a>
             </div>
         {% endfor %}

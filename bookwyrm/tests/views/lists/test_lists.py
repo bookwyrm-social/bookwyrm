@@ -135,7 +135,7 @@ class ListViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
 
-        result = view(request, self.local_user.localname)
+        result = view(request, username=self.local_user.localname)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -154,10 +154,20 @@ class ListViews(TestCase):
         request = self.factory.get("")
         request.user = self.anonymous_user
 
-        result = view(request, self.local_user.username)
+        result = view(request, username=self.local_user.username)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
+
+    def test_user_lists_private(self):
+        models.User.objects.filter(id=self.local_user.id).update(
+            is_profile_private=True
+        )
+        view = views.UserLists.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        result = view(request, username=self.local_user.localname)
+        self.assertTrue(result.context_data["is_profile_locked"])
 
     def test_lists_create(self):
         """create list view"""
