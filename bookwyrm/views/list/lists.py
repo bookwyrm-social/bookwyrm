@@ -11,8 +11,8 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.lists_stream import ListsStream
-from bookwyrm.views.helpers import get_user_from_username, PrivateProfileMixin
 from bookwyrm.views.list.list import add_book
+from bookwyrm.views.mixins import PrivateProfileMixin
 
 logger = logging.getLogger(__name__)
 

@@ -16,8 +16,9 @@ from django.views.decorators.vary import vary_on_headers
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request, get_user_from_username, PrivateProfileMixin
+from bookwyrm.views.helpers import is_api_request, get_user_from_username
 from bookwyrm.book_search import search
+from bookwyrm.views.mixins import PrivateProfileMixin
 
 
 class Shelf(PrivateProfileMixin, View):

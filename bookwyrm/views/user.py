@@ -10,11 +10,12 @@ from django.utils import timezone
 from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.decorators.vary import vary_on_headers
-from bookwyrm.views.helpers import is_api_request, PrivateProfileMixin
+from bookwyrm.views.helpers import is_api_request
 
 from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH, INSTANCE_ACTOR_USERNAME
+from bookwyrm.views.mixins import PrivateProfileMixin
 
 
 class User(PrivateProfileMixin, View):
