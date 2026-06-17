@@ -54,6 +54,9 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     libris_key = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    bookbrainz_id = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
     inventaire_id = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
@@ -118,6 +121,11 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     def libris_link(self):
         """generate the url from the libris key"""
         return f"https://libris.kb.se/bib/{self.libris_key}"
+
+    @property
+    def bookbrainz_link(self):
+        """generate the url from the bookbrainz id"""
+        return f"https://bookbrainz.org/edition/{self.bookbrainz_id}"
 
     class Meta:
         """can't initialize this model, that wouldn't make sense"""
@@ -429,6 +437,7 @@ class Book(BookDataModel):
                     "openlibrary_key",
                     "finna_key",
                     "libris_key",
+                    "bookbrainz_id",
                     "inventaire_id",
                     "librarything_key",
                     "goodreads_key",
