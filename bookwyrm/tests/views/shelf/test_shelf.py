@@ -327,7 +327,7 @@ class ShelfViews(TestCase):
         view = views.Shelf.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        result = view(request, request.user.username)
+        result = view(request, username=request.user.username)
 
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
