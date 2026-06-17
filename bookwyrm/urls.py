@@ -418,12 +418,12 @@ urlpatterns = [
     ),
     re_path(
         r"^settings/data-quality/schedule/?$",
-        views.schedule_deduplication_task,
+        views.schedule_deduplication_scan_task,
         name="settings-dedupe-schedule",
     ),
     re_path(
         r"^settings/data-quality/unschedule/(?P<task_id>\d+)/?$",
-        views.unschedule_deduplication_task,
+        views.unschedule_deduplication_scan_task,
         name="settings-dedupe-unschedule",
     ),
     re_path(

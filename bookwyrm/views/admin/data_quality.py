@@ -1,7 +1,5 @@
 """Data quality and deduplication"""
 
-import json
-
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
@@ -29,7 +27,7 @@ class DataQuality(View):
 
 @require_POST
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
-def schedule_deduplication_task(request):
+def schedule_deduplication_scan_task(request):
     """scheduler"""
     form = forms.IntervalScheduleForm(request.POST)
     if not form.is_valid():
@@ -42,15 +40,14 @@ def schedule_deduplication_task(request):
         PeriodicTask.objects.get_or_create(
             interval=schedule,
             name="dedupe-task",
-            task="bookwyrm.models.housekeeping.dedupe",
-            kwargs=json.dumps({"user": request.user.id}),
+            task="bookwyrm.models.housekeeping.mark_duplicate_data_task",
         )
     return redirect("settings-data-quality")
 
 
 @require_POST
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
-def unschedule_deduplication_task(request, task_id):
+def unschedule_deduplication_scan_task(request, task_id):
     """unscheduler"""
     get_object_or_404(PeriodicTask, id=task_id).delete()
     return redirect("settings-data-quality")
