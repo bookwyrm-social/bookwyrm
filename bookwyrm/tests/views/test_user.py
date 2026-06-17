@@ -139,7 +139,7 @@ class UserViews(TestCase):
                 view(request, username="rat")
 
     def test_user_page_private(self):
-        models.User.objects.filter(id=self.rat.id).update(is_private=True)
+        models.User.objects.filter(id=self.rat.id).update(is_profile_private=True)
         view = views.User.as_view()
         request = self.factory.get("")
 
@@ -165,7 +165,9 @@ class UserViews(TestCase):
         self.assertFalse(result.context_data["is_profile_locked"])
 
     def test_reviews_comments_private(self):
-        models.User.objects.filter(id=self.local_user.id).update(is_profile_private=True)
+        models.User.objects.filter(id=self.local_user.id).update(
+            is_profile_private=True
+        )
         view = views.UserReviewsComments.as_view()
         request = self.factory.get("")
         request.user = self.anonymous_user
@@ -173,11 +175,15 @@ class UserViews(TestCase):
         self.assertTrue(result.context_data["is_profile_locked"])
 
     def test_followers_page_private(self):
-        models.User.objects.filter(id=self.local_user.id).update(is_profile_private=True)
+        models.User.objects.filter(id=self.local_user.id).update(
+            is_profile_private=True
+        )
         view = views.Relationships.as_view()
         request = self.factory.get("")
         request.user = self.anonymous_user
-        result = view(request, username=self.local_user.localname, direction="followers")
+        result = view(
+            request, username=self.local_user.localname, direction="followers"
+        )
         self.assertTrue(result.context_data["is_profile_locked"])
 
     def test_user_page_activity_sorted(self):

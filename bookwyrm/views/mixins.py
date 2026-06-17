@@ -17,7 +17,6 @@ class PrivateProfileMixin:
             # The API reveals no private activities.
             return super().dispatch(request, *args, **kwargs)
 
-
         is_self = request.user.is_authenticated and profile_user.id == request.user.id
         if is_self or profile_user.is_profile_visible_to(request.user.id):
             return super().dispatch(request, *args, **kwargs)

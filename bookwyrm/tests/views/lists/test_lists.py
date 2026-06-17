@@ -161,7 +161,9 @@ class ListViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_user_lists_private(self):
-        models.User.objects.filter(id=self.local_user.id).update(is_profile_private=True)
+        models.User.objects.filter(id=self.local_user.id).update(
+            is_profile_private=True
+        )
         view = views.UserLists.as_view()
         request = self.factory.get("")
         request.user = self.anonymous_user

@@ -108,7 +108,7 @@ class User(PrivateProfileMixin, View):
             "shelf_count": shelves.count(),
             "activities": paginated.get_page(request.GET.get("page", 1)),
             "goal": goal,
-            "is_profile_locked": False
+            "is_profile_locked": False,
         }
 
         return TemplateResponse(request, "user/user.html", data)

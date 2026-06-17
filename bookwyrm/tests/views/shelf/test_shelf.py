@@ -131,7 +131,9 @@ class ShelfViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_shelf_private(self, *_):
-        models.User.objects.filter(id=self.local_user.id).update(is_profile_private=True)
+        models.User.objects.filter(id=self.local_user.id).update(
+            is_profile_private=True
+        )
         view = views.Shelf.as_view()
         request = self.factory.get("")
         request.user = self.anonymous_user
@@ -146,7 +148,11 @@ class ShelfViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, username=self.local_user.username, shelf_identifier=shelf.identifier)
+            result = view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -159,14 +165,22 @@ class ShelfViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, username=self.local_user.username, shelf_identifier=shelf.identifier)
+            result = view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = True
-            result = view(request, username=self.local_user.username, shelf_identifier=shelf.identifier)
+            result = view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
@@ -174,7 +188,11 @@ class ShelfViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = True
-            result = view(request, username=self.local_user.username, shelf_identifier=shelf.identifier)
+            result = view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
@@ -193,7 +211,11 @@ class ShelfViews(TestCase):
             },
         )
         request.user = self.local_user
-        view(request, username=self.local_user.username, shelf_identifier=shelf.identifier)
+        view(
+            request,
+            username=self.local_user.username,
+            shelf_identifier=shelf.identifier,
+        )
         shelf.refresh_from_db()
 
         self.assertEqual(shelf.privacy, "unlisted")
@@ -209,7 +231,11 @@ class ShelfViews(TestCase):
         )
         request.user = self.local_user
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            view(request, username=request.user.username, shelf_identifier=shelf.identifier)
+            view(
+                request,
+                username=request.user.username,
+                shelf_identifier=shelf.identifier,
+            )
         shelf.refresh_from_db()
 
         self.assertEqual(shelf.name, "cool name")
@@ -226,7 +252,11 @@ class ShelfViews(TestCase):
         )
         request.user = self.local_user
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            view(request, username=request.user.username, shelf_identifier=shelf.identifier)
+            view(
+                request,
+                username=request.user.username,
+                shelf_identifier=shelf.identifier,
+            )
 
         self.assertEqual(shelf.name, "To Read")
 

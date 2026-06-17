@@ -98,7 +98,9 @@ class GroupViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_usergroups_private(self, _):
-        models.User.objects.filter(id=self.local_user.id).update(is_profile_private=True)
+        models.User.objects.filter(id=self.local_user.id).update(
+            is_profile_private=True
+        )
         view = views.UserGroups.as_view()
         request = self.factory.get("")
         request.user = self.anonymous_user
@@ -141,7 +143,7 @@ class GroupViews(TestCase):
             },
         )
         request.user = self.local_user
-        result = view(request, username="username")
+        result = view(request, username="mouse@local.com")
 
         self.assertEqual(result.status_code, 302)
         new_group = models.Group.objects.filter(name="A group").get()
@@ -168,7 +170,7 @@ class GroupViews(TestCase):
         request.user = self.rat
 
         with self.assertRaises(PermissionDenied):
-            view(request, username="username")
+            view(request, username="mouse@local.com")
 
     def test_group_edit(self, _):
         """test editing a "group" database entry"""
