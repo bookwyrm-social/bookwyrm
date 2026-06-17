@@ -41,7 +41,7 @@ class ListViews(TestCase):
                 remote_id="https://example.com/users/rat",
             )
         work = models.Work.objects.create(title="Work")
-        cls.book = models.Edition.objects.create(
+        cls.edition = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=work,
@@ -86,7 +86,7 @@ class ListViews(TestCase):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book,
+                edition=self.edition,
                 approved=True,
                 notes="hello",
                 order=1,
@@ -116,11 +116,11 @@ class ListViews(TestCase):
         """there are so many views, this just makes sure it LOADS"""
         view = views.List.as_view()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            for i, book in enumerate([self.book, self.book_two, self.book_three]):
+            for i, book in enumerate([self.edition, self.book_two, self.book_three]):
                 models.ListItem.objects.create(
                     book_list=self.list,
                     user=self.local_user,
-                    book=book,
+                    edition=book,
                     approved=True,
                     order=i + 1,
                 )
@@ -181,7 +181,7 @@ class ListViews(TestCase):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book,
+                edition=self.edition,
                 notes="hi hello",
                 approved=True,
                 order=1,
@@ -205,7 +205,7 @@ class ListViews(TestCase):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book,
+                edition=self.edition,
                 approved=True,
                 order=1,
             )
@@ -273,14 +273,14 @@ class ListViews(TestCase):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book,
+                edition=self.edition,
                 approved=True,
                 order=1,
             )
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book_two,
+                edition=self.book_two,
                 approved=False,
                 order=2,
             )
@@ -316,7 +316,7 @@ class ListViews(TestCase):
         request = self.factory.post(
             "",
             {
-                "book": self.book.id,
+                "edition": self.edition.id,
                 "book_list": self.list.id,
                 "user": self.local_user.id,
             },
@@ -334,7 +334,7 @@ class ListViews(TestCase):
             self.assertEqual(activity["target"], self.list.remote_id)
 
         item = self.list.listitem_set.get()
-        self.assertEqual(item.book, self.book)
+        self.assertEqual(item.edition, self.edition)
         self.assertEqual(item.user, self.local_user)
         self.assertTrue(item.approved)
 
@@ -346,7 +346,7 @@ class ListViews(TestCase):
         request_one = self.factory.post(
             "",
             {
-                "book": self.book.id,
+                "edition": self.edition.id,
                 "book_list": self.list.id,
                 "user": self.local_user.id,
             },
@@ -356,7 +356,7 @@ class ListViews(TestCase):
         request_two = self.factory.post(
             "",
             {
-                "book": self.book_two.id,
+                "edition": self.book_two.id,
                 "book_list": self.list.id,
                 "user": self.local_user.id,
             },
@@ -367,8 +367,8 @@ class ListViews(TestCase):
             views.add_book(request_two)
 
         items = self.list.listitem_set.order_by("order").all()
-        self.assertEqual(items[0].book, self.book)
-        self.assertEqual(items[1].book, self.book_two)
+        self.assertEqual(items[0].edition, self.edition)
+        self.assertEqual(items[1].edition, self.book_two)
         self.assertEqual(items[0].order, 1)
         self.assertEqual(items[1].order, 2)
 
@@ -380,7 +380,7 @@ class ListViews(TestCase):
         request_one = self.factory.post(
             "",
             {
-                "book": self.book.id,
+                "edition": self.edition.id,
                 "book_list": self.list.id,
                 "user": self.local_user.id,
             },
@@ -390,7 +390,7 @@ class ListViews(TestCase):
         request_two = self.factory.post(
             "",
             {
-                "book": self.book_two.id,
+                "edition": self.book_two.id,
                 "book_list": self.list.id,
                 "user": self.local_user.id,
             },
@@ -400,7 +400,7 @@ class ListViews(TestCase):
         request_three = self.factory.post(
             "",
             {
-                "book": self.book_three.id,
+                "edition": self.book_three.id,
                 "book_list": self.list.id,
                 "user": self.local_user.id,
             },
@@ -413,9 +413,9 @@ class ListViews(TestCase):
             views.add_book(request_three)
 
         items = self.list.listitem_set.order_by("order").all()
-        self.assertEqual(items[0].book, self.book)
-        self.assertEqual(items[1].book, self.book_two)
-        self.assertEqual(items[2].book, self.book_three)
+        self.assertEqual(items[0].edition, self.edition)
+        self.assertEqual(items[1].edition, self.book_two)
+        self.assertEqual(items[2].edition, self.book_three)
         self.assertEqual(items[0].order, 1)
         self.assertEqual(items[1].order, 2)
         self.assertEqual(items[2].order, 3)
@@ -425,8 +425,8 @@ class ListViews(TestCase):
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.remove_book(remove_request, self.list.id)
         items = self.list.listitem_set.order_by("order").all()
-        self.assertEqual(items[0].book, self.book)
-        self.assertEqual(items[1].book, self.book_three)
+        self.assertEqual(items[0].edition, self.edition)
+        self.assertEqual(items[1].edition, self.book_three)
         self.assertEqual(items[0].order, 1)
         self.assertEqual(items[1].order, 2)
 
@@ -439,7 +439,7 @@ class ListViews(TestCase):
         request = self.factory.post(
             "",
             {
-                "book": self.book_three.id,
+                "edition": self.book_three.id,
                 "book_list": self.list.id,
                 "user": self.local_user.id,
             },
@@ -449,29 +449,29 @@ class ListViews(TestCase):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book,
+                edition=self.edition,
                 approved=True,
                 order=1,
             )
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.rat,
-                book=self.book_two,
+                edition=self.book_two,
                 approved=False,
                 order=2,
             )
             views.add_book(request)
 
         items = self.list.listitem_set.order_by("order").all()
-        self.assertEqual(items[0].book, self.book)
+        self.assertEqual(items[0].edition, self.edition)
         self.assertEqual(items[0].order, 1)
         self.assertTrue(items[0].approved)
 
-        self.assertEqual(items[1].book, self.book_three)
+        self.assertEqual(items[1].edition, self.book_three)
         self.assertEqual(items[1].order, 2)
         self.assertTrue(items[1].approved)
 
-        self.assertEqual(items[2].book, self.book_two)
+        self.assertEqual(items[2].edition, self.book_two)
         self.assertEqual(items[2].order, 3)
         self.assertFalse(items[2].approved)
 
@@ -486,28 +486,28 @@ class ListViews(TestCase):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book,
+                edition=self.edition,
                 approved=True,
                 order=1,
             )
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book_two,
+                edition=self.book_two,
                 approved=True,
                 order=2,
             )
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.rat,
-                book=self.book_three,
+                edition=self.book_three,
                 approved=False,
                 order=3,
             )
             to_be_approved = models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.rat,
-                book=self.book_four,
+                edition=self.book_four,
                 approved=False,
                 order=4,
             )
@@ -526,19 +526,19 @@ class ListViews(TestCase):
             view(request, self.list.id)
 
         items = self.list.listitem_set.order_by("order").all()
-        self.assertEqual(items[0].book, self.book)
+        self.assertEqual(items[0].edition, self.edition)
         self.assertEqual(items[0].order, 1)
         self.assertTrue(items[0].approved)
 
-        self.assertEqual(items[1].book, self.book_two)
+        self.assertEqual(items[1].edition, self.book_two)
         self.assertEqual(items[1].order, 2)
         self.assertTrue(items[1].approved)
 
-        self.assertEqual(items[2].book, self.book_four)
+        self.assertEqual(items[2].edition, self.book_four)
         self.assertEqual(items[2].order, 3)
         self.assertTrue(items[2].approved)
 
-        self.assertEqual(items[3].book, self.book_three)
+        self.assertEqual(items[3].edition, self.book_three)
         self.assertEqual(items[3].order, 4)
         self.assertFalse(items[3].approved)
 
@@ -550,7 +550,7 @@ class ListViews(TestCase):
         request_one = self.factory.post(
             "",
             {
-                "book": self.book.id,
+                "edition": self.edition.id,
                 "book_list": self.list.id,
                 "user": self.local_user.id,
             },
@@ -560,7 +560,7 @@ class ListViews(TestCase):
         request_two = self.factory.post(
             "",
             {
-                "book": self.book_two.id,
+                "edition": self.book_two.id,
                 "book_list": self.list.id,
                 "user": self.local_user.id,
             },
@@ -570,7 +570,7 @@ class ListViews(TestCase):
         request_three = self.factory.post(
             "",
             {
-                "book": self.book_three.id,
+                "edition": self.book_three.id,
                 "book_list": self.list.id,
                 "user": self.local_user.id,
             },
@@ -583,9 +583,9 @@ class ListViews(TestCase):
             views.add_book(request_three)
 
         items = self.list.listitem_set.order_by("order").all()
-        self.assertEqual(items[0].book, self.book)
-        self.assertEqual(items[1].book, self.book_two)
-        self.assertEqual(items[2].book, self.book_three)
+        self.assertEqual(items[0].edition, self.edition)
+        self.assertEqual(items[1].edition, self.book_two)
+        self.assertEqual(items[2].edition, self.book_three)
         self.assertEqual(items[0].order, 1)
         self.assertEqual(items[1].order, 2)
         self.assertEqual(items[2].order, 3)
@@ -595,9 +595,9 @@ class ListViews(TestCase):
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.set_book_position(set_position_request, items[2].id)
         items = self.list.listitem_set.order_by("order").all()
-        self.assertEqual(items[0].book, self.book_three)
-        self.assertEqual(items[1].book, self.book)
-        self.assertEqual(items[2].book, self.book_two)
+        self.assertEqual(items[0].edition, self.book_three)
+        self.assertEqual(items[1].edition, self.edition)
+        self.assertEqual(items[2].edition, self.book_two)
         self.assertEqual(items[0].order, 1)
         self.assertEqual(items[1].order, 2)
         self.assertEqual(items[2].order, 3)
@@ -609,7 +609,7 @@ class ListViews(TestCase):
         request = self.factory.post(
             "",
             {
-                "book": self.book.id,
+                "edition": self.edition.id,
                 "book_list": self.list.id,
                 "user": self.rat.id,
             },
@@ -627,7 +627,7 @@ class ListViews(TestCase):
             self.assertEqual(activity["target"], self.list.remote_id)
 
         item = self.list.listitem_set.get()
-        self.assertEqual(item.book, self.book)
+        self.assertEqual(item.edition, self.edition)
         self.assertEqual(item.user, self.rat)
         self.assertTrue(item.approved)
 
@@ -638,7 +638,7 @@ class ListViews(TestCase):
         request = self.factory.post(
             "",
             {
-                "book": self.book.id,
+                "edition": self.edition.id,
                 "book_list": self.list.id,
                 "user": self.rat.id,
             },
@@ -660,7 +660,7 @@ class ListViews(TestCase):
         item = self.list.listitem_set.get()
         self.assertEqual(activity["object"]["id"], item.remote_id)
 
-        self.assertEqual(item.book, self.book)
+        self.assertEqual(item.edition, self.edition)
         self.assertEqual(item.user, self.rat)
         self.assertFalse(item.approved)
 
@@ -671,7 +671,7 @@ class ListViews(TestCase):
         request = self.factory.post(
             "",
             {
-                "book": self.book.id,
+                "edition": self.edition.id,
                 "book_list": self.list.id,
                 "user": self.local_user.id,
             },
@@ -689,7 +689,7 @@ class ListViews(TestCase):
             self.assertEqual(activity["target"], self.list.remote_id)
 
         item = self.list.listitem_set.get()
-        self.assertEqual(item.book, self.book)
+        self.assertEqual(item.edition, self.edition)
         self.assertEqual(item.user, self.local_user)
         self.assertTrue(item.approved)
 
@@ -700,7 +700,7 @@ class ListViews(TestCase):
         request = self.factory.post(
             "",
             {
-                "book": self.book.id,
+                "edition": self.edition.id,
                 "book_list": self.list.id,
                 "user": self.rat.id,
             },
@@ -717,7 +717,7 @@ class ListViews(TestCase):
             item = models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book,
+                edition=self.edition,
                 order=1,
             )
         self.assertTrue(self.list.listitem_set.exists())
@@ -733,7 +733,7 @@ class ListViews(TestCase):
         """take an item off a list"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             item = models.ListItem.objects.create(
-                book_list=self.list, user=self.local_user, book=self.book, order=1
+                book_list=self.list, user=self.local_user, edition=self.edition, order=1
             )
         self.assertTrue(self.list.listitem_set.exists())
         request = self.factory.post("", {"item": item.id})
@@ -768,7 +768,7 @@ class ListViews(TestCase):
         list_item_one = models.ListItem.objects.create(
             book_list=self.list,
             user=self.local_user,
-            book=self.book,
+            edition=self.edition,
             approved=True,
             notes="hello",
             order=1,
@@ -777,7 +777,7 @@ class ListViews(TestCase):
         list_item_two = models.ListItem.objects.create(
             book_list=self.list,
             user=self.local_user,
-            book=self.book_two,
+            edition=self.book_two,
             approved=True,
             notes="goodbye",
             order=2,

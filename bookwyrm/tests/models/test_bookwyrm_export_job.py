@@ -137,7 +137,7 @@ class BookwyrmExportJob(TestCase):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.edition,
+                edition=self.edition,
                 approved=True,
                 order=1,
             )
