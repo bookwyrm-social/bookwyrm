@@ -130,6 +130,14 @@ class ShelfViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
+    def test_shelf_private(self, *_):
+        models.User.objects.filter(id=self.local_user.id).update(is_profile_private=True)
+        view = views.Shelf.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        result = view(request, username=self.local_user.localname)
+        self.assertTrue(result.context_data["is_profile_locked"])
+
     def test_shelf_page_sorted(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Shelf.as_view()

@@ -164,6 +164,22 @@ class UserViews(TestCase):
             result = view(request, username="rat")
         self.assertFalse(result.context_data["is_profile_locked"])
 
+    def test_reviews_comments_private(self):
+        models.User.objects.filter(id=self.local_user.id).update(is_profile_private=True)
+        view = views.UserReviewsComments.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        result = view(request, username=self.local_user.localname)
+        self.assertTrue(result.context_data["is_profile_locked"])
+
+    def test_followers_page_private(self):
+        models.User.objects.filter(id=self.local_user.id).update(is_profile_private=True)
+        view = views.Relationships.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        result = view(request, username=self.local_user.localname, direction="followers")
+        self.assertTrue(result.context_data["is_profile_locked"])
+
     def test_user_page_activity_sorted(self):
         """the most recently shelved book should be displayed first"""
         view = views.User.as_view()
