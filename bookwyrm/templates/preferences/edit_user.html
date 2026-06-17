@@ -119,6 +119,12 @@
         <h2 class="title is-4">{% trans "Privacy" %}</h2>
         <div class="box">
             <div class="field">
+                <label class="checkbox label" for="id_is_profile_private">
+                    {{ form.is_profile_private }}
+                    {% trans "Make profile private" %}
+                </label>
+            </div>
+            <div class="field">
                 <label class="checkbox label" for="id_manually_approves_followers">
                     {{ form.manually_approves_followers }}
                     {% trans "Manually approve followers" %}

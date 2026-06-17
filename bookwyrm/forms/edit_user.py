@@ -36,6 +36,7 @@ class EditUserForm(CustomForm):
             "show_ratings",
             "show_suggested_users",
             "manually_approves_followers",
+            "is_profile_private",
             "default_post_privacy",
             "discoverable",
             "hide_follows",
