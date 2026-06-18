@@ -532,6 +532,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             return True
         if viewer_id is None:
             return False
+        if self.id == viewer_id:
+            return True
         return self.followers.filter(id=viewer_id).exists()
 
 

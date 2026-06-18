@@ -70,6 +70,10 @@ class User(TestCase):
         self.assertTrue(self.user.is_profile_visible_to(None))
         self.assertTrue(self.user.is_profile_visible_to(self.another_user.id))
 
+    def test_is_visible_to_yourself(self):
+        self.user.is_profile_private = True
+        self.assertTrue(self.user.is_profile_visible_to(self.user.id))
+
     def test_is_visible_to_private(self):
         self.user.is_profile_private = True
         self.assertFalse(self.user.is_profile_visible_to(None))
