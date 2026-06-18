@@ -2,10 +2,11 @@
 <form
     name="edit-notes-{{ item.id }}"
     method="POST"
-    action="{% url 'list-item' list.id item.id %}"
+    action="{% url item.edit_path_name list.id item.id %}"
 >
     {% csrf_token %}
-    <input type="hidden" name="book" value="{{ book.id }}">
+    <input type="hidden" name="edition" value="{{ item.edition.id }}">
+    <input type="hidden" name="work" value="{{ item.work.id }}">
     <input type="hidden" name="book_list" value="{{ list.id }}">
     <input type="hidden" name="user" value="{{ request.user.id }}">
     {% include "lists/item_notes_field.html" with form_id=item.id %}
@@ -17,4 +18,3 @@
         </div>
     </div>
 </form>
-

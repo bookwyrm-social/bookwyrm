@@ -22,17 +22,17 @@
     <div class="thread">
         {% for parent in ancestors %}
         {% if parent.id %}
-        <div class="block">
+        <div class="is-thread-secondary block">
             {% include 'snippets/status/status.html' with status=parent|load_subclass %}
         </div>
         {% endif %}
         {% endfor %}
-        <div class="is-main block">
+        <div class="block is-thread-main">
             {% include 'snippets/status/status.html' with status=status main=True expand=True %}
         </div>
 
         {% for child in children %}
-        <div class="block">
+        <div class="is-thread-secondary block">
             {% include 'snippets/status/status.html' with status=child %}
         </div>
         {% endfor %}
