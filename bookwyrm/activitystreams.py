@@ -198,7 +198,7 @@ class ActivityStream(RedisStore):
         statuses = models.Status.privacy_filter(
             user,
             privacy_levels=["public"],
-        )
+        ).exclude(user=user.id)
 
         book_comments = statuses.filter(Q(comment__book__parent_work=work))
         book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
@@ -331,14 +331,14 @@ class BooksStream(ActivityStream):
     key = "books"
 
     def _get_audience(self, status):
-        """anyone with the mentioned book on their shelves"""
+        """anyone with the mentioned book on their shelves except the poster"""
         work = (
             status.book.parent_work
             if hasattr(status, "book")
             else status.mention_books.first().parent_work
         )
 
-        audience = super()._get_audience(status)
+        audience = super()._get_audience(status).exclude(id=status.user.id)
         return audience.filter(shelfbook__book__parent_work=work)
 
     def get_audience(self, status):
@@ -367,6 +367,7 @@ class BooksStream(ActivityStream):
                 | Q(review__book__parent_work__id__in=books)
                 | Q(mention_books__parent_work__id__in=books)
             )
+            .exclude(user=user.id)  # ignore your own statuses
             .distinct()
         )
 
