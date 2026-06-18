@@ -17,8 +17,8 @@
             <input type="text" class="input" name="q" value="{{ query }}" aria-label="{% trans 'Search query' %}" id="tour-search-page-input" spellcheck="false">
         </div>
         <div class="control">
-            <div class="select" aria-label="{% trans 'Search type' %}">
-                <select name="type">
+            <div class="select">
+                <select name="type" aria-label="{% trans 'Search type' %}">
                     <option value="book" {% if type == "book" %}selected{% endif %}>{% trans "Books" %}</option>
                     <option value="author" {% if type == "author" %}selected{% endif %}>{% trans "Authors" %}</option>
                     {% if request.user.is_authenticated %}
