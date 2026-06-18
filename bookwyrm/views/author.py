@@ -19,10 +19,13 @@ from bookwyrm.views.helpers import (
     get_mergeable_object_or_404,
     maybe_redirect_local_path,
 )
+from bookwyrm.views.mixins import MergeableViewMixin
 
 
-class Author(View):
+class Author(MergeableViewMixin, View):
     """this person wrote a book"""
+
+    merge_model = models.Author
 
     @vary_on_headers("Accept")
     def get(self, request, author_id, slug=None):

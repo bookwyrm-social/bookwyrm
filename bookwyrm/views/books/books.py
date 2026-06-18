@@ -22,11 +22,14 @@ from bookwyrm.views.helpers import (
     maybe_redirect_local_path,
     get_mergeable_object_or_404,
 )
+from bookwyrm.views.mixins import MergeableViewMixin
 from bookwyrm.views.list.list import get_list_suggestions
 
 
-class Book(View):
+class Book(MergeableViewMixin, View):
     """a book! this is the stuff"""
+
+    merge_model = models.Edition
 
     @vary_on_headers("Accept")
     def get(self, request, book_id, **kwargs):

@@ -4,9 +4,12 @@
 
 {% block content %}
 
-{% blocktrans trimmed with dupe_url=dupe.remote_id dupe_title=dupe|book_title %}
+{% blocktrans trimmed with dupe_url=dupe.local_path dupe_title=dupe|book_title %}
 This work been identified as a duplicate of <strong><a href="{{ dupe_url }}">{{ dupe_title }}</a></strong>.
 {% endblocktrans %}
 <span class="details-close mt-4 mr-4 icon icon-x is-small" aria-hidden></span>
 
 {% endblock %}
+
+
+{% block merge_path %}{{ original.local_path }}/editions{% endblock %}

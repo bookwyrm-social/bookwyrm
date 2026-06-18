@@ -11,7 +11,9 @@
             {% block content %}
             {% endblock %}
 
-            {% if original.pending_merge_date and merge_scheduled %}
+            {% if original.prevent_automatic_merge %}
+            {% trans "Automatic merging has been blocked for this item." %}
+            {% elif original.pending_merge_date and merge_scheduled %}
                 {% blocktrans trimmed with date=original.pending_merge_date|naturalday %}
                 After {{ date }}, these will be automatically merged.
                 {% endblocktrans %}
@@ -26,14 +28,15 @@
                 {% endfor %}
             </ol>
         </div>
+        {% if not original.prevent_automatic_merge %}
         <div class="block">
             <strong>{% trans "Is this mistaken?" %}</strong>
-            <form class="control" name="stop-merge" method="POST" action="">
+            <form class="control" name="stop-merge" method="POST" action="{% block merge_path %}{% endblock %}">
                 {% csrf_token %}
-                <input type="hidden" name="id" value="{{ original.id }}">
-                <button class="button is-small" type="submit">{% trans "Prevent automatic merge" %}</button>
+                <button class="button is-small" type="submit">{% trans "Block automatic merge" %}</button>
             </form>
         </div>
+        {% endif %}
     </details>
 </aside>
 {% endif %}

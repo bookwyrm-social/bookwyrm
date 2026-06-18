@@ -18,10 +18,13 @@ from bookwyrm.views.helpers import (
     is_api_request,
     get_mergeable_object_or_404,
 )
+from bookwyrm.views.mixins import MergeableViewMixin
 
 
-class Series(View):
+class Series(MergeableViewMixin, View):
     """a series of books"""
+
+    merge_model = models.Series
 
     @vary_on_headers("Accept")
     def get(self, request, series_id, slug=None):

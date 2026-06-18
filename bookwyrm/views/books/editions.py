@@ -17,11 +17,14 @@ from django.views.decorators.vary import vary_on_headers
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.views.mixins import MergeableViewMixin
 from bookwyrm.views.helpers import is_api_request, get_mergeable_object_or_404
 
 
-class Editions(View):
-    """list of editions"""
+class Editions(MergeableViewMixin, View):
+    """list of editions/also the work page"""
+
+    merge_model = models.Work
 
     @vary_on_headers("Accept")
     def get(self, request, book_id):
