@@ -9,7 +9,7 @@ from django.views import View
 from django.views.decorators.http import require_POST
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
-from bookwyrm import forms
+from bookwyrm import forms, models
 
 
 @method_decorator(login_required, name="dispatch")
@@ -88,5 +88,34 @@ def data_quality_data():
     return {
         "scan_task": scan_task,
         "merge_task": merge_task,
+        "work_count": models.Work.objects.filter(
+            pending_merge_target__isnull=False
+        ).count(),
+        "work_example": models.Work.objects.filter(
+            pending_merge_target__isnull=False
+        ).first(),
+        "edition_count": models.Edition.objects.filter(
+            pending_merge_target__isnull=False
+        ).count(),
+        "edition_example": models.Edition.objects.filter(
+            pending_merge_target__isnull=False
+        ).first(),
+        "author_count": models.Author.objects.filter(
+            pending_merge_target__isnull=False
+        ).count(),
+        "author_example": models.Author.objects.filter(
+            pending_merge_target__isnull=False
+        ).first(),
+        "series_count": models.Series.objects.filter(
+            pending_merge_target__isnull=False
+        ).count(),
+        "series_example": models.Series.objects.filter(
+            pending_merge_target__isnull=False
+        ).first(),
+        "edition_orphan_count": models.Edition.objects.filter(
+            parent_work__isnull=True
+        ).count(),
+        "work_orphan_count": models.Work.objects.filter(editions__isnull=True).count(),
+        "author_orphan_count": models.Author.objects.filter(book__isnull=True).count(),
         "task_form": forms.IntervalScheduleForm(),
     }

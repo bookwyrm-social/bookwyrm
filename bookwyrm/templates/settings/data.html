@@ -13,6 +13,57 @@
 
 {% block panel %}
 
+<section class="block content">
+    <h2>{% trans "Duplicates detected" %}</h2>
+    <aside class="help">{% trans "Duplicates will be detected when a duplicate data scan has run" %}</aside>
+    <div class="columns has-text-centered is-multiline">
+        <div class="column is-3">
+            <div class="notification mb-0">
+                <p class="header">{% trans "Duplicate works" %}</p>
+                <p class="title is-5">{{ work_count|intcomma }}</p>
+            </div>
+            {% if work_count %}
+            <aside class="help pt-0 has-text-left">
+                <a target="_blank" href="{{ work_example.local_path }}">{% trans "View first" %}</a>
+            </aside>
+            {% endif %}
+        </div>
+        <div class="column is-3">
+            <div class="notification mb-0">
+                <p class="header">{% trans "Duplicate editions" %}</p>
+                <p class="title is-5">{{ edition_count|intcomma }}</p>
+            </div>
+            {% if edition_count %}
+            <aside class="help pt-0 has-text-left">
+                <a target="_blank" href="{{ edition_example.local_path }}">{% trans "View first" %}</a>
+            </aside>
+            {% endif %}
+        </div>
+        <div class="column is-3">
+            <div class="notification mb-0">
+                <p class="header">{% trans "Duplicate authors" %}</p>
+                <p class="title is-5">{{ author_count|intcomma }}</p>
+            </div>
+            {% if author_count %}
+            <aside class="help pt-0 has-text-left">
+                <a target="_blank" href="{{ author_example.local_path }}">{% trans "View first" %}</a>
+            </aside>
+            {% endif %}
+        </div>
+        <div class="column is-3">
+            <div class="notification mb-0">
+                <p class="header">{% trans "Duplicate series" %}</p>
+                <p class="title is-5">{{ series_count|intcomma }}</p>
+            </div>
+            {% if series_count %}
+            <aside class="help pt-0 has-text-left">
+                <a target="_blank" href="{{ series_example.local_path }}">{% trans "View first" %}</a>
+            </aside>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
 <div class="block">
     <h2 class="title is-4">{% trans "Schedule duplicate data scan" %}</h2>
     <div class="box">
@@ -181,5 +232,37 @@
         </div>
     </div>
 </div>
+
+<section class="block content">
+    <h2>{% trans "Editions with to associated work" %}</h2>
+    <aside class="help">{% trans "Editions with no work can cause errors in the application" %}</aside>
+    <div class="columns has-text-centered is-multiline">
+        <div class="column is-12">
+            <div class="notification">
+                <p class="header">{% trans "Broken editions" %}</p>
+                <p class="title is-5">{{ edition_orphan_count|intcomma }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="block content">
+    <h2>{% trans "Orphaned data" %}</h2>
+    <aside class="help">{% trans "Works and authors with no associated books" %}</aside>
+    <div class="columns has-text-centered is-multiline">
+        <div class="column is-6">
+            <div class="notification">
+                <p class="header">{% trans "Orphaned works" %}</p>
+                <p class="title is-5">{{ work_orphan_count|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-6">
+            <div class="notification">
+                <p class="header">{% trans "Orphaned authors" %}</p>
+                <p class="title is-5">{{ author_orphan_count|intcomma }}</p>
+            </div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}
