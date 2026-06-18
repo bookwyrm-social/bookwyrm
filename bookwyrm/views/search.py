@@ -48,6 +48,7 @@ class Search(View):
             "author": author_search,
             "user": user_search,
             "list": list_search,
+            "subject": subject_search,
         }
         if search_type not in endpoints:
             search_type = "book"
@@ -206,6 +207,29 @@ def list_search(request):
         page.number, on_each_side=2, on_ends=1
     )
     return TemplateResponse(request, "search/list.html", data)
+
+
+def subject_search(request):
+    """let's use the subjects"""
+    viewer = request.user
+    query = request.GET.get("q").strip()
+    shelves_filter = request.GET.get("shelved")
+    data = {"query": query, "type": "subject", "shelved": shelves_filter}
+    books = models.Edition.viewer_aware_objects(viewer)
+    if shelves_filter == "true" or shelves_filter == "false":
+        shelved_books = viewer.shelfbook_set.values_list("book_id", flat=True)
+        if shelves_filter == "true":
+            books = books.filter(id__in=shelved_books)
+        else:
+            books = books.exclude(id__in=shelved_books)
+    results = books.filter(subjects__contains=[query])
+    paginated = Paginator(results, PAGE_LENGTH)
+    page = paginated.get_page(request.GET.get("page"))
+    data["results"] = page
+    data["page_range"] = paginated.get_elided_page_range(
+        page.number, on_each_side=2, on_ends=1
+    )
+    return TemplateResponse(request, "search/subject.html", data)
 
 
 def isbn_check_and_format(query):
