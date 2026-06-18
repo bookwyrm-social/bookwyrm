@@ -34,6 +34,11 @@
 
 {% block panel %}
 
+{% if is_profile_locked %}
+<div class="notification is-light">
+    <p>{% trans "This profile is private. Follow this user to see their activity." %}</p>
+</div>
+{% else %}
 {% if user.bookwyrm_user %}
 <div class="block">
     <h2 class="title">
@@ -147,6 +152,7 @@
 
     {% include 'snippets/pagination.html' with page=activities path=user.local_path anchor="#feed" mode="chronological" %}
 </div>
+{% endif %}
 
 {% endblock %}
 

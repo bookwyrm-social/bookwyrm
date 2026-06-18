@@ -50,7 +50,7 @@ class ListItemViews(TestCase):
             item = models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book,
+                edition=self.book,
                 approved=True,
                 order=1,
             )
@@ -58,7 +58,7 @@ class ListItemViews(TestCase):
             "",
             {
                 "book_list": self.list.id,
-                "book": self.book.id,
+                "edition": self.book.id,
                 "user": self.local_user.id,
                 "notes": "beep boop",
             },

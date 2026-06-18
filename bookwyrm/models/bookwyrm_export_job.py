@@ -245,7 +245,7 @@ def export_book(user: User, edition: Edition):
     # Lists and ListItems
     # ListItems include "notes" and "approved" so we need them
     # even though we know it's this book
-    list_items = ListItem.objects.filter(book=edition, user=user).distinct()
+    list_items = ListItem.objects.filter(edition=edition, user=user).distinct()
 
     data["lists"] = []
     for item in list_items:
@@ -302,7 +302,7 @@ def get_books_for_user(user):
         "book_id", flat=True
     )
     reviews = Review.objects.filter(user=user).values_list("book_id", flat=True)
-    lists = ListItem.objects.filter(user=user).values_list("book_id", flat=True)
+    lists = ListItem.objects.filter(user=user).values_list("edition_id", flat=True)
     comments = Comment.objects.filter(user=user, deleted=False).values_list(
         "book_id", flat=True
     )

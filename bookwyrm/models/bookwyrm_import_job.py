@@ -547,13 +547,13 @@ def upsert_lists(
             booklist.privacy = blist["privacy"]
             booklist.save()
 
-        item = models.ListItem.objects.filter(book=book, book_list=booklist).exists()
+        item = models.ListItem.objects.filter(edition=book, book_list=booklist).exists()
         if not item:
-            count = booklist.books.count()
+            count = booklist.editions.count()
             notes = blist["list_item"].get("notes", "")
             approved = blist["list_item"].get("approved", False)
             models.ListItem.objects.create(
-                book=book,
+                edition=book,
                 book_list=booklist,
                 user=user,
                 notes=notes,

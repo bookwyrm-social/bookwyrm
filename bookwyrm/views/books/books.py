@@ -2,7 +2,7 @@
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.db.models import Avg, Q
+from django.db.models import Avg, Q, Count
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -15,12 +15,14 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager, ConnectorException
 from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.utils.block_books import blocked_book_filter
 from bookwyrm.utils.images import remove_uploaded_image_exif, set_cover_from_url
 from bookwyrm.views.helpers import (
     is_api_request,
     maybe_redirect_local_path,
     get_mergeable_object_or_404,
 )
+from bookwyrm.views.list.list import get_list_suggestions
 
 
 class Book(View):
@@ -92,7 +94,7 @@ class Book(View):
             request.user,
         ).filter(
             listitem__approved=True,
-            listitem__book__in=book.parent_work.editions.all(),
+            listitem__edition__in=book.parent_work.editions.all(),
         )
 
         merge_scheduled = PeriodicTask.objects.filter(name="dedupe-merge-task").exists()
@@ -102,6 +104,7 @@ class Book(View):
             "edition_dupe": book.pending_merge_target,
             "work_dupe": book.parent_work.pending_merge_target,
             "merge_scheduled": merge_scheduled,
+            "work": book.parent_work,
             "statuses": paginated.get_page(request.GET.get("page")),
             "review_count": reviews.count(),
             "ratings": (
@@ -114,6 +117,7 @@ class Book(View):
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
             "lists": lists,
             "update_error": kwargs.get("update_error", False),
+            "query": request.GET.get("suggestion_query", ""),
         }
 
         if request.user.is_authenticated:
@@ -147,6 +151,27 @@ class Book(View):
                 "comment_count": book.comment_set.filter(**filters).count(),
                 "quotation_count": book.quotation_set.filter(**filters).count(),
             }
+            if hasattr(book.parent_work, "suggestion_list"):
+                data["suggestion_list"] = book.parent_work.suggestion_list
+                data["item_count"] = data[
+                    "suggestion_list"
+                ].suggestionlistitem_set.count()
+                items = (
+                    data["suggestion_list"]
+                    .suggestionlistitem_set.prefetch_related(
+                        "user", "work", "work__authors", "endorsement"
+                    )
+                    .annotate(endorsement_count=Count("endorsement"))
+                    .order_by("-endorsement_count")
+                )
+                data["items"] = blocked_book_filter(items, "Work", request.user)[:3]
+
+                data["suggested_books"] = get_list_suggestions(
+                    data["suggestion_list"],
+                    request.user,
+                    query=request.GET.get("suggestion_query", ""),
+                    ignore_book=book.parent_work,
+                )
 
         return TemplateResponse(request, "book/book.html", data)
 
