@@ -630,7 +630,7 @@ class BookwyrmImport(TestCase):
             )
 
             models.ListItem.objects.create(
-                book=self.book, book_list=book_list, user=self.local_user, order=1
+                edition=self.book, book_list=book_list, user=self.local_user, order=1
             )
 
         self.assertTrue(models.List.objects.filter(id=book_list.id).exists())
@@ -666,7 +666,7 @@ class BookwyrmImport(TestCase):
         if they don't already exist"""
 
         self.assertEqual(models.List.objects.filter(user=self.local_user).count(), 0)
-        self.assertFalse(models.ListItem.objects.filter(book=self.book.id).exists())
+        self.assertFalse(models.ListItem.objects.filter(edition=self.book.id).exists())
 
         with (
             patch("bookwyrm.lists_stream.remove_list_task.delay"),

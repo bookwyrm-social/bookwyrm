@@ -134,7 +134,7 @@ from .imports.manually_review import (
 # lists
 from .list.curate import Curate
 from .list.embed import unsafe_embed_list
-from .list.list_item import ListItem
+from .list.list_item import ListItem, SuggestionListItem
 from .list.lists import Lists, SavedLists, UserLists
 from .list.list import (
     List,
@@ -144,6 +144,14 @@ from .list.list import (
     add_book,
     remove_book,
     set_book_position,
+)
+
+# suggestion lists
+from .suggestion_list import SuggestionList, UserSuggestions
+from .suggestion_list import (
+    book_add_suggestion,
+    book_remove_suggestion,
+    endorse_suggestion,
 )
 
 # misc views

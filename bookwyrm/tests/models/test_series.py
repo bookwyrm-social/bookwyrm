@@ -74,3 +74,23 @@ class TestSeriesModel(TestCase):
             with self.subTest(series_number=number):
                 seriesbook = models.SeriesBook(series_number=number)
                 self.assertEqual(seriesbook.natural_sort_key, expected)
+
+    def test_series_uniqueness(self):
+        """There CAN be two books that are #1 in a series because of poor data quality"""
+        duplicate_edition = models.Edition.objects.create(
+            title="Test Book",
+            parent_work=models.Work.objects.create(title="Another work"),
+        )
+        models.SeriesBook.objects.create(
+            user=self.instance_user,
+            book=self.edition,
+            series_number=1,
+            series=self.series,
+        )
+        models.SeriesBook.objects.create(
+            user=self.instance_user,
+            book=duplicate_edition,
+            series_number=1,
+            series=self.series,
+        )
+        self.assertEqual(self.series.seriesbooks.count(), 2)

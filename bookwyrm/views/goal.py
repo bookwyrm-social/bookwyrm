@@ -12,7 +12,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.status import create_generated_note
-from .helpers import get_user_from_username
+from .helpers import get_user_from_username, redirect_to_referer
 
 
 @method_decorator(login_required, name="dispatch")
@@ -68,7 +68,7 @@ class Goal(View):
                 privacy=goal.privacy,
             )
 
-        return redirect("user-goal", request.user.localname, year)
+        return redirect_to_referer(request)
 
 
 @require_POST
