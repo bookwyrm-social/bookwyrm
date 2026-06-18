@@ -7,6 +7,7 @@ import operator
 from typing import Any, Dict
 from typing_extensions import Self
 
+from django.db import transaction
 from django.db.models import Count, ManyToManyField, Q
 from django.utils import timezone
 
@@ -77,6 +78,7 @@ class MergeableMixin:
         )
         return dupe.first()
 
+    @transaction.atomic
     def merge_into(self, canonical: Self, dry_run=False) -> Dict[str, Any]:
         """merge this entity into another entity"""
         if canonical.id == self.id:
