@@ -53,6 +53,13 @@
                 {% plural %}
                 {{ display_count }} duplicates of this item have been detected.
             {% endblocktrans %}
+
+            {% if merge_scheduled %}
+                {% blocktrans trimmed with date=original.pending_merge_date|naturalday %}
+                These will be automatically merged unless the duplicate entry has been manually blocked.
+                {% endblocktrans %}
+            {% endif %}
+
             <span class="details-close mt-4 mr-4 icon icon-x is-small" aria-hidden></span>
             </p>
         </summary>
