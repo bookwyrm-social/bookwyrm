@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load utilities %}
+{% load humanize %}
 
 {% if dupe %}
 <aside class="notification has-background-danger-light">
@@ -22,3 +23,37 @@
     </details>
 </aside>
 {% endif %}
+
+{% with original.merge_candidates as candidates %}
+{% if candidates.exists %}
+<aside class="notification has-background-warning-light">
+    <details class="content">
+        <summary>
+            <p>
+            <span class="icon icon-warning" aria-hidden="true"></span>
+            {% blocktrans trimmed count counter=candidates.count with display_count=candidates.count|intcomma %}
+                A duplicate of this item has been identified.
+                {% plural %}
+                {{ display_count }} duplicates of this item have been detected.
+            {% endblocktrans %}
+            <span class="details-close mt-4 mr-4 icon icon-x is-small" aria-hidden></span>
+            </p>
+        </summary>
+        <div class="pt-3">
+            <ol>
+                {% for candidate in candidates|slice:":20" %}
+                <li>
+                    <a href="{{ candidate.local_path }}">{{ candidate.remote_id }}</a>
+                </li>
+                {% endfor %}
+            </ol>
+            {% if candidates.count > 20 %}
+            {% blocktrans trimmed with count=candidates.count|add:"-20" %}
+            And {{ count }} other(s).
+            {% endblocktrans %}
+            {% endif %}
+        </div>
+    </details>
+</aside>
+{% endif %}
+{% endwith %}
