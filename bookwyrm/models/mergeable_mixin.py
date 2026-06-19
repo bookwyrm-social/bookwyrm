@@ -1,15 +1,14 @@
 """models that can be deduplicated and merged"""
 
 from datetime import timedelta
-from functools import reduce
-import operator
 
 from typing import Any, Dict
 from typing_extensions import Self
 
 from django.db import transaction
-from django.db.models import Count, ManyToManyField, Q
+from django.db.models import Count, ManyToManyField
 from django.utils import timezone
+
 
 from . import fields
 
@@ -62,21 +61,11 @@ class MergeableMixin:
                     pending_merge_target=canonical, pending_merge_date=week_from_today
                 )
 
-    def find_merge_candidate(self):
-        """look for the first possible duplicate of the current object"""
+    @property
+    def merge_candidates(self):
+        """aggregate duplicates of this item"""
         model = self.__class__
-        # filter based on the dedupe fields on this obj that are set
-        dedupe_fields = model.deduplication_fields()
-        filters = [
-            {f.name: getattr(self, f.name)}
-            for f in dedupe_fields
-            if getattr(self, f.name) and getattr(self, f.name) != ""
-        ]
-        # look up objects that aren't the current object but match any dedupe field
-        dupe = model.objects.exclude(id=self.id).filter(
-            reduce(operator.or_, (Q(**f) for f in filters))
-        )
-        return dupe.first()
+        return model.objects.filter(pending_merge_target=self.id)
 
     @transaction.atomic
     def merge_into(self, canonical: Self, dry_run=False) -> Dict[str, Any]:
