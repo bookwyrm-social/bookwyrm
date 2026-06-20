@@ -51,17 +51,28 @@ def get_imagefont(name, size):
 
 def get_font(weight, size=28):
     """Gets a custom font with the given weight and size"""
-    font = get_imagefont(DEFAULT_FONT, size)
 
-    try:
-        if weight == "light":
-            font.set_variation_by_name("Light")
-        if weight == "bold":
-            font.set_variation_by_name("Bold")
-        if weight == "regular":
-            font.set_variation_by_name("Regular")
-    except OSError:
-        pass
+    fonts = DEFAULT_FONT.split(",")
+    for file in fonts:
+        file = file.strip()
+        font = get_imagefont(file, size)
+        if weight in file.lower():
+            break
+
+        try:
+            variations = font.get_variation_names()
+            variations_lower = [
+                v.decode("UTF-8").lower() for v in font.get_variation_names()
+            ]
+            idx = (
+                variations_lower.index(weight.lower())
+                if weight.lower() in variations_lower
+                else 0
+            )
+            font.set_variation_by_name(variations[idx])
+
+        except:
+            pass
 
     return font
 
