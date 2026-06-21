@@ -80,7 +80,7 @@ def get_header_template(context, status):
         header_type = status.status_type.lower()
     filename = f"snippets/status/headers/{header_type}.html"
     header_template = select_template([filename, "snippets/status/headers/note.html"])
-    return header_template.render({"status": status}, context["request"])
+    return header_template.render({"status": status}, context.get("request"))
 
 
 @register.simple_tag(takes_context=False)
