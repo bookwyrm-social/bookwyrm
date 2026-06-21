@@ -4,6 +4,7 @@ import datetime
 from unittest.mock import patch
 
 from django.test import TestCase
+from django.test.client import RequestFactory
 from django.utils import timezone
 
 from bookwyrm import models
@@ -124,3 +125,19 @@ class StatusDisplayTags(TestCase):
             )
             result = status_display.get_published_date(date)
         self.assertEqual(result, "January 1")
+
+    def test_get_header_template_rating_forwards_request(self, *_):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            rating = models.ReviewRating.objects.create(
+                user=self.user, book=self.book, rating=3
+            )
+        request = RequestFactory().get("")
+        request.user = self.user
+
+        self.user.show_ratings = True
+        shown = status_display.get_header_template({"request": request}, rating)
+        self.assertNotIn("Show rating", shown)
+
+        self.user.show_ratings = False
+        hidden = status_display.get_header_template({"request": request}, rating)
+        self.assertIn("Show rating", hidden)
