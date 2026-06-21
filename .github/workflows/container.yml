@@ -17,6 +17,14 @@ on:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        image: [bookwyrm, postgres-backup]
+        include:
+          - image: bookwyrm
+            context: .
+          - image: postgres-backup
+            context: postgres-docker
     uses: docker/github-builder/.github/workflows/build.yml@v1
     permissions:
       contents: read # for checkout
@@ -25,13 +33,14 @@ jobs:
     with:
       output: image
       push: ${{ github.event_name != 'pull_request' }}
-      context: .
+      context: ${{ matrix.context }}
       platforms: linux/amd64,linux/arm64
       cache: true
       cache-mode: max
       fail-fast: true
       sbom: true
-      meta-images: ghcr.io/${{ github.repository_owner }}/bookwyrm
+      cache-scope: ${{ matrix.image }}
+      meta-images: ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}
       meta-tags: |
         type=raw,value=${{ inputs.tag }},event=workflow_dispatch
         type=semver,pattern=v{{version}}
