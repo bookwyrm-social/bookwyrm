@@ -39,6 +39,7 @@ jobs:
       cache-mode: max
       fail-fast: true
       sbom: true
+      sign: false
       cache-scope: ${{ matrix.image }}
       meta-images: ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}
       meta-tags: |
