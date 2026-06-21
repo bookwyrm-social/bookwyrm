@@ -41,6 +41,7 @@ absolute_redirect off;
 
 location ~ ^/(login[^-/]|password-reset|resend-link|2fa-check) {
     limit_req zone=loginlimit;
+    limit_req_status 429;
     proxy_pass http://web;
 }
 
