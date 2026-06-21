@@ -52,3 +52,19 @@ jobs:
         - registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+  cleanup:
+    needs: build
+    if: ${{ github.ref_name == 'main' }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image: [bookwyrm, postgres-backup]
+    permissions:
+      packages: write
+
+    steps:
+      - uses: actions/delete-package-versions@v5
+        with:
+          package-name: ${{ matrix.image }}
+          package-type: "container"
+          delete-only-untagged-versions: "true"
