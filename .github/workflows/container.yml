@@ -3,6 +3,11 @@ name: Container building for release
 on:
   pull_request:
     branches: ["main"]
+    paths:
+      - ".github/workflows/container.yml"
+      - "Dockerfile"
+      - "entrypoint.sh"
+      - "postgres-docker/*"
   push:
     branches: ["main"]
     tags:
