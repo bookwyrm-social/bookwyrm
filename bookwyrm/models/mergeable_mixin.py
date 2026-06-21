@@ -81,8 +81,6 @@ class MergeableMixin:
         if dry_run:
             return absorbed_fields
 
-        canonical.save()
-
         self.merged_model.objects.create(deleted_id=self.id, merged_into=canonical)
 
         # move related models to canonical
