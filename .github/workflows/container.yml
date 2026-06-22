@@ -71,8 +71,7 @@ jobs:
       packages: write
 
     steps:
-      - uses: actions/delete-package-versions@v5
+      - uses: dataaxiom/ghcr-cleanup-action@v1
         with:
-          package-name: ${{ matrix.image }}
-          package-type: "container"
-          delete-only-untagged-versions: "true"
+          package: ${{ matrix.image }}
+          delete-untagged: true
