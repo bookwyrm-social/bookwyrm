@@ -72,7 +72,7 @@ def data_quality_data():
     }
 
 
-def get_diff_string(canonical: str, candidate: str, joiner="") -> str:
+def get_diff_string(canonical: str, candidate: str, array=False) -> str:
     """create and return a diff string for object fields"""
 
     canonical = canonical or ""
@@ -82,14 +82,14 @@ def get_diff_string(canonical: str, candidate: str, joiner="") -> str:
     string = []
 
     for word in delta:
-        segment = word[2:] if joiner == "" or delta[-1] == word else f"{word[2:]}, "
         match word[0]:
             case "+":
-                string += f"<span class='has-background-success-light has-text-success has-text-weight-semibold'>{segment}</span>"
+                string += f"<span class='has-background-success-light has-text-success has-text-weight-semibold'>{word[2:]}</span>"
             case "-":
-                string += f"<span class='has-background-danger-light has-text-danger has-text-weight-semibold'><strike>{segment}</strike></span>"
+                if not array:
+                    string += f"<span class='has-background-danger-light has-text-danger has-text-weight-semibold'><strike>{word[2:]}</strike></span>"
             case _:
-                string += segment
+                string += word[2:]
     return "".join(string)
 
 
@@ -172,6 +172,7 @@ class ManualMerge(View):
         ]
         update_fields.sort()
         fields_obj = {field: {"name": field} for field in update_fields}
+        array_fields = []
 
         for field in update_fields:
             if model._meta.get_field(field).get_internal_type() == "DateTimeField":
@@ -184,10 +185,13 @@ class ManualMerge(View):
                 diff = get_diff_string(canonical_date, merged_date)
                 value = request.POST.get(field)
             elif model._meta.get_field(field).get_internal_type() == "ArrayField":
-                diff = get_diff_string(
-                    getattr(canonical, field), request.POST.getlist(field), joiner=", "
-                )
-                value = request.POST.getlist(field)
+                for f in request.POST.getlist(field):
+                    obj = { "name": field, "value": f, "diff": get_diff_string(
+                    getattr(canonical, field), [f], array=True
+                    )}
+                    array_fields.append(obj)
+                del fields_obj[field]
+                continue
             else:
                 diff = get_diff_string(
                     getattr(canonical, field), request.POST.get(field)
@@ -200,7 +204,7 @@ class ManualMerge(View):
 
         data = {
             "update_fields": update_fields,
-            "fields": fields,
+            "fields": fields + array_fields,
             "model_name": model_name.capitalize(),
             "canonical_id": canonical.id,
         }
@@ -224,9 +228,7 @@ def confirm_manual_merge(request, model_name, canonical_id):
             value = datetime.fromisoformat(f"{value}T12:00:00Z")
         if model._meta.get_field(field).get_internal_type() == "ArrayField":
             value = request.POST.getlist(field)
-            array_field = model._meta.get_field(field)
-            array_field = value
-            continue
+
         setattr(canonical, field, value)
     canonical.save(update_fields=update_fields)
 
