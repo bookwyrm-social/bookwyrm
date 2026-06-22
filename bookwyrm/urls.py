@@ -417,6 +417,16 @@ urlpatterns = [
         name="settings-data-quality",
     ),
     re_path(
+        r"^settings/data-quality/manual-merge/(?P<model_name>\w+)/(?P<canonical_id>\d+)/?$",
+        views.ManualMerge.as_view(),
+        name="settings-manual-merge",
+    ),
+    re_path(
+        r"^settings/data-quality/confirm-manual-merge/(?P<model_name>\w+)/(?P<canonical_id>\d+)/?$",
+        views.confirm_manual_merge,
+        name="settings-confirm-manual-merge",
+    ),
+    re_path(
         r"^settings/data-quality/schedule/?$",
         views.schedule_deduplication_scan_task,
         name="settings-dedupe-schedule",

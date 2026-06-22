@@ -1,0 +1,103 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% load humanize %}
+{% load static %}
+{% load utilities %}
+{% load date_ext %}
+
+{% block title %}
+{% trans 'Merge candidates' %}
+{% endblock %}
+
+{% block header %}
+{% trans 'Merge candidates' %}
+{% endblock %}
+
+{% block panel %}
+{% with tab_id=request.GET.tab_id %}
+<div class="block">
+    <section>
+        <p class="mb-4">
+            {% trans 'Choose which values to use in the merged object. Click the object ID to select fields.' %}
+        </p>
+    </section>
+    <form class="tab-group" method="post">
+    {% csrf_token %}
+    <div class="tabs" role="tablist">
+        <ul >
+          {% for candidate in objects %}
+          <li
+          role="tab"
+          id="tab_candidate_{{candidate.id}}"
+          class="{% if tab_id == candidate.id|stringformat:"i" or not tab_id and candidate.id == canonical.id %}is-active{% endif %}"
+          aria-selected="{% if tab_id and tab_id == candidate.id|stringformat:"i" %}true{% elif candidate.id == canonical.id %}true{% else %}false{% endif %}"
+          aria-controls="candidate_{{ candidate.id }}"
+          data-category="tab-option-{{ candidate.id }}"
+          >
+            <a
+
+            href="{{ request.path }}?tab_id={{ candidate.id }}"
+
+            >{{candidate.id}}</a>
+          </li>
+          {% endfor %}
+        </ul>
+    </div>
+    {% for candidate in objects %}
+    <div
+        class="table-container tab-option-{{candidate.id}}"
+        id="candidate_{{candidate.id}}"
+        role="tabpanel"
+        aria-labelledby="tab_candidate_{{ candidate.id }}"
+    >
+
+    <table class="table is-fullwidth">
+        <tbody>
+            {% for field in simple_fields %}
+            <tr>
+                {% with canonical|getattr_filter:field.name as canonical_value %}
+                <td>
+                    <!-- need to translate this -->
+                    <strong {% if not candidate|getattr_filter:field.name %}class="has-text-grey" {% endif %} >{{field.name}}</strong>
+                </td>
+
+                <td>
+                    <input
+                        type="radio" name="{{field.name}}" value="{{candidate|getattr_filter:field.name}}"
+                        {% if canonical_value and canonical_value == candidate|getattr_filter:field.name %}checked{% elif field.unique == candidate.id %}checked{% else %}{% endif %}
+                    />
+                </td>
+                <td>
+                    <label for="{{field}}" class="mr-4">{{candidate|getattr_filter:field.name}}</label>
+                </td>
+                {% endwith %}
+            </tr>
+            {% endfor %}
+            {% for field in array_fields %}
+            <tr>
+                <td>
+                    <!-- need to translate this -->
+                    <strong>{{field}}</strong>
+                </td>
+                <td colspan="2">
+                    {% for val in candidate|getattr_filter:field %}
+                    <input type="checkbox" name="{{field}}" value="{{val}}" checked/>
+                    <label for="{{field}}" class="mr-4">{{ val }}</label>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% endfor %}
+    <button type="submit" class="button is-pulled-right is-primary">{% trans 'Next' %}</button>
+    </form>
+
+</div>
+{% endwith %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static "js/tabs.js" %}"></script>
+{% endblock %}
