@@ -224,6 +224,9 @@ def confirm_manual_merge(request, model_name, canonical_id):
             value = datetime.fromisoformat(f"{value}T12:00:00Z")
         if model._meta.get_field(field).get_internal_type() == "ArrayField":
             value = request.POST.getlist(field)
+            array_field = model._meta.get_field(field)
+            array_field = value
+            continue
         setattr(canonical, field, value)
     canonical.save(update_fields=update_fields)
 
