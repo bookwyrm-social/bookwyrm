@@ -114,7 +114,6 @@ class ManualMerge(View):
 
         simple_fields = []
         array_fields = []
-        unique_fields = dict()
         for field in candidates.model._meta.get_fields():
             if (
                 field.name in ["remote_id", "origin_id", "sort_title", "edition_rank"]
@@ -146,7 +145,7 @@ class ManualMerge(View):
         for field in simple_fields:
             value_kwargs = {f"{field['name']}__isnull": False}
             has_value = candidates.filter(**value_kwargs)
-            if has_value.count() == 1 and getattr(canonical, field["name"]) is None:
+            if has_value.count() == 1 and getattr(canonical, field["name"]) is None or getattr(canonical, field["name"]) == "":
                 field["unique"] = has_value.first().id
         objects = candidates.union(candidates.model.objects.filter(id=canonical.id))
 
@@ -155,7 +154,6 @@ class ManualMerge(View):
             "array_fields": array_fields,
             "canonical": canonical,
             "objects": objects.reverse(),
-            "unique_fields": unique_fields,
             "model_name": model_name,
         }
         return TemplateResponse(
