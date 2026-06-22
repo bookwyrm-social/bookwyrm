@@ -1,7 +1,7 @@
 FROM postgres:17
 
 # crontab
-RUN apt-get update && apt-get -y install cron
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked apt-get update && apt-get -y install cron
 
 RUN mkdir /backups
 COPY ./backup.sh /usr/local/bin/bookwyrm-backup.sh
