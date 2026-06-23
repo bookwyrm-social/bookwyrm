@@ -233,36 +233,4 @@
     </div>
 </div>
 
-<section class="block content">
-    <h2>{% trans "Editions with no associated work" %}</h2>
-    <aside class="help">{% trans "Editions with no work can cause errors in the application" %}</aside>
-    <div class="columns has-text-centered is-multiline">
-        <div class="column is-12">
-            <div class="notification">
-                <p class="header">{% trans "Broken editions" %}</p>
-                <p class="title is-5">{{ edition_orphan_count|intcomma }}</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="block content">
-    <h2>{% trans "Orphaned data" %}</h2>
-    <aside class="help">{% trans "Works and authors with no associated books" %}</aside>
-    <div class="columns has-text-centered is-multiline">
-        <div class="column is-6">
-            <div class="notification">
-                <p class="header">{% trans "Orphaned works" %}</p>
-                <p class="title is-5">{{ work_orphan_count|intcomma }}</p>
-            </div>
-        </div>
-        <div class="column is-6">
-            <div class="notification">
-                <p class="header">{% trans "Orphaned authors" %}</p>
-                <p class="title is-5">{{ author_orphan_count|intcomma }}</p>
-            </div>
-        </div>
-    </div>
-</section>
-
 {% endblock %}
