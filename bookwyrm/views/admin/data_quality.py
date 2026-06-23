@@ -112,10 +112,5 @@ def data_quality_data():
         "series_example": models.Series.objects.filter(
             pending_merge_target__isnull=False
         ).first(),
-        "edition_orphan_count": models.Edition.objects.filter(
-            parent_work__isnull=True
-        ).count(),
-        "work_orphan_count": models.Work.objects.filter(editions__isnull=True).count(),
-        "author_orphan_count": models.Author.objects.filter(book__isnull=True).count(),
         "task_form": forms.IntervalScheduleForm(),
     }
