@@ -18,7 +18,7 @@ def get_opengraph_title(book_list: models.List) -> str:
 @register.filter(name="opengraph_description")
 def get_opengraph_description(book_list: models.List) -> str:
     """Construct description for Open Graph"""
-    num_books = book_list.books.all().count()
+    num_books = book_list.editions.all().count()
     num_books_str = ngettext(
         "%(num)d book - by %(user)s", "%(num)d books - by %(user)s", num_books
     ) % {"num": num_books, "user": book_list.user}

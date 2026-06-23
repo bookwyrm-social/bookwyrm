@@ -4,52 +4,54 @@
 
 {% with 0|uuid as uuid %}
 {% firstof trim_length 150 as trim_length %}
-    {% if full %}
-        {% with full|to_markdown|safe as full %}
-            {% with full|to_markdown|safe|truncatewords_html:trim_length as trimmed %}
-                {% if not no_trim and trimmed != full %}
-                    <div id="hide_full_{{ uuid }}">
-                        <div class="content" id="trimmed_{{ uuid }}">
-                            <div dir="auto" class="preserve-whitespace">{{ trimmed }}</div>
+{% if full %}
 
-                            <div>
-                            {% if not hide_more %}
-                                {% trans "Show more" as button_text %}
-                                {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="full" controls_uid=uuid class="is-small" %}
-                            {% endif %}
-                            </div>
-                        </div>
-                    </div>
+{% with full|to_markdown|safe as full_formatted %}
+    {% with full_formatted|truncatewords_html:trim_length as trimmed %}
+        {% if not no_trim and trimmed|length < full_formatted|length %}
+            <div id="hide_full_{{ uuid }}">
+                <div class="content" id="trimmed_{{ uuid }}">
+                    <div dir="auto" class="preserve-whitespace">{{ trimmed }}</div>
+
+                    <div>
                     {% if not hide_more %}
-                    <div id="full_{{ uuid }}" class="is-hidden">
-                        <div class="content">
-                            <div
-                                dir="auto"
-                                class="preserve-whitespace"
-                                {% if itemprop %}itemprop="{{ itemprop }}"{% endif %}
-                            >
-                                {{ full }}
-                            </div>
-
-                            <div>
-                                {% trans "Show less" as button_text %}
-                                {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="full" controls_uid=uuid class="is-small" %}
-                            </div>
-                        </div>
-                    </div>
+                        {% trans "Show more" as button_text %}
+                        {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="full" controls_uid=uuid class="is-small" %}
                     {% endif %}
-                {% else %}
-                    <div class="content">
-                        <div
-                            dir="auto"
-                            class="preserve-whitespace"
-                            {% if itemprop %}itemprop="{{ itemprop }}"{% endif %}
-                        >
-                            {{ full }}
-                        </div>
                     </div>
-                {% endif %}
-            {% endwith %}
-        {% endwith %}
-    {% endif %}
+                </div>
+            </div>
+            {% if not hide_more %}
+            <div id="full_{{ uuid }}" class="is-hidden">
+                <div class="content">
+                    <div
+                        dir="auto"
+                        class="preserve-whitespace"
+                        {% if itemprop %}itemprop="{{ itemprop }}"{% endif %}
+                    >
+                        {{ full_formatted }}
+                    </div>
+
+                    <div>
+                        {% trans "Show less" as button_text %}
+                        {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="full" controls_uid=uuid class="is-small" %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="content">
+                <div
+                    dir="auto"
+                    class="preserve-whitespace"
+                    {% if itemprop %}itemprop="{{ itemprop }}"{% endif %}
+                >
+                    {{ full_formatted }}
+                </div>
+            </div>
+        {% endif %}
+    {% endwith %}
+{% endwith %}
+
+{% endif %}
 {% endwith %}

@@ -16,7 +16,7 @@ from django.forms import ClearableFileInput, ImageField as DjangoImageField
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.encoding import filepath_to_uri
-from markdown import markdown
+import mistune
 
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_image
@@ -573,6 +573,9 @@ class PartialDateField(ActivitypubFieldMixin, PartialDateModel):
         return value.partial_isoformat() if value else None
 
     def field_from_activity(self, value, allow_external_connections=True, trigger=None):
+        if not value:
+            return None
+
         try:
             return from_partial_isoformat(value)
         except ValueError:
@@ -605,7 +608,7 @@ class HtmlField(ActivitypubFieldMixin, models.TextField):
         return clean(value)
 
     def field_to_activity(self, value):
-        return markdown(value) if value else value
+        return mistune.html(value).rstrip() if value else value
 
 
 class ArrayField(ActivitypubFieldMixin, DjangoArrayField):
@@ -636,11 +639,11 @@ class BooleanField(ActivitypubFieldMixin, models.BooleanField):
 
 
 class IntegerField(ActivitypubFieldMixin, models.IntegerField):
-    """activitypub-aware boolean field"""
+    """activitypub-aware integer field"""
 
 
 class DecimalField(ActivitypubFieldMixin, models.DecimalField):
-    """activitypub-aware boolean field"""
+    """activitypub-aware decimal field"""
 
     def field_to_activity(self, value):
         if not value:

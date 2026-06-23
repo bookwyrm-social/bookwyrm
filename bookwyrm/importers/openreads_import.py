@@ -58,4 +58,5 @@ class OpenReadsImporter(Importer):
             return Shelf.READ_FINISHED
         if normalized_row["date_started"]:
             return Shelf.READING
-        return Shelf.TO_READ
+        # no reading dates: fall back to the "shelf" column
+        return super().get_shelf(normalized_row) or Shelf.TO_READ

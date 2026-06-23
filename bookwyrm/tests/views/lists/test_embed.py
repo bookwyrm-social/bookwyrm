@@ -59,7 +59,7 @@ class ListViews(TestCase):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book,
+                edition=self.book,
                 approved=True,
                 order=1,
             )
@@ -78,7 +78,7 @@ class ListViews(TestCase):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book,
+                edition=self.book,
                 approved=True,
                 order=1,
             )

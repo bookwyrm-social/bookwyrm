@@ -1,0 +1,19 @@
+{% extends 'lists/list.html' %}
+{% load i18n %}
+{% load group_tags %}
+{% load utilities %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'book' list.suggests_for.id %}">{{ list.suggests_for|book_title }}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {{ list.name|truncatechars:30 }}
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+
+{% block emded_link %}{% endblock %}

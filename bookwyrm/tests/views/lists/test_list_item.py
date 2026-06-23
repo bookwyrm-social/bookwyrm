@@ -50,7 +50,7 @@ class ListItemViews(TestCase):
             item = models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
-                book=self.book,
+                edition=self.book,
                 approved=True,
                 order=1,
             )
@@ -58,17 +58,18 @@ class ListItemViews(TestCase):
             "",
             {
                 "book_list": self.list.id,
-                "book": self.book.id,
+                "edition": self.book.id,
                 "user": self.local_user.id,
                 "notes": "beep boop",
             },
         )
         request.user = self.local_user
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as mock:
             view(request, self.list.id, item.id)
         self.assertEqual(mock.call_count, 1)
 
         item.refresh_from_db()
         self.assertEqual(item.notes, "<p>beep boop</p>")
+        self.assertEqual(item.raw_notes, "beep boop")

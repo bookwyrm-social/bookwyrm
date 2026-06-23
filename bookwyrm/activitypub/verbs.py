@@ -4,7 +4,12 @@ from dataclasses import dataclass, field
 from typing import List
 from django.apps import apps
 
-from .base_activity import ActivityObject, Signature, resolve_remote_id
+from .base_activity import (
+    ActivityObject,
+    ActivitySerializerError,
+    Signature,
+    resolve_remote_id,
+)
 from .ordered_collection import CollectionItem
 
 
@@ -265,3 +270,47 @@ class Move(Verb):
         else:
             # we might do something with this to move other objects at some point
             pass
+
+
+@dataclass(init=False)
+class Flag(Verb):
+    """Report a user to their home server"""
+
+    to: str = None
+    object: List[str] = None
+    links: List[str] = None
+    type: str = "Flag"
+    content: str = None
+
+    def action(self, allow_external_connections=True):
+        """Create the report and attach reported statuses"""
+        report = self.to_model()
+        # go through "objects" and figure out what they are
+        for obj in self.object:
+            # what type of obj is it?
+            try:
+                item = resolve_remote_id(
+                    remote_id=obj,
+                    save=False,
+                    model="Status",
+                )
+            except ActivitySerializerError:
+                try:
+                    # Mastodon includes the user in the object
+                    item = resolve_remote_id(
+                        remote_id=obj,
+                        save=False,
+                        model="User",
+                    )
+                except ActivitySerializerError:
+                    # ¯\_(ツ)_/¯
+                    continue
+
+            # fix incoming Mastodon objects
+            if hasattr(item, "username"):
+                if not report.reported_user:
+                    report.reported_user = item
+                continue
+
+            report.statuses.add(item)
+        report.save()

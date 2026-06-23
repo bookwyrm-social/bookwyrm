@@ -4,6 +4,7 @@
 {% load humanize %}
 {% load utilities %}
 {% load book_display_tags %}
+{% load date_ext %}
 
 {% block title %}{{ author.name }}{% endblock %}
 
@@ -30,7 +31,7 @@
     {% firstof author.aliases author.born author.died as details %}
     {% firstof author.wikipedia_link author.website author.openlibrary_key author.inventaire_id author.isni author.isfdb author.wikidata as links %}
     {% if details or links %}
-    <div class="column is-3">
+    <div class="column is-3 is-one-quarter">
         {% if details %}
         <section class="block content">
             <h2 class="title is-4">{% trans "Author details" %}</h2>
@@ -44,19 +45,23 @@
                 </div>
                 {% endif %}
 
+                {% with date=author.born|naturalday_partial %}
                 {% if author.born %}
                 <div class="is-flex mt-1">
                     <dt class="has-text-weight-bold mr-1">{% trans "Born:" %}</dt>
-                    <dd itemprop="birthDate">{{ author.born|naturalday }}</dd>
+                    <dd itemprop="birthDate">{{ date }}</dd>
                 </div>
                 {% endif %}
+                {% endwith %}
 
+                {% with date=author.died|naturalday_partial %}
                 {% if author.died %}
                 <div class="is-flex mt-1">
                     <dt class="has-text-weight-bold mr-1">{% trans "Died:" %}</dt>
-                    <dd itemprop="deathDate">{{ author.died|naturalday }}</dd>
+                    <dd itemprop="deathDate">{{ date }}</dd>
                 </div>
                 {% endif %}
+                {% endwith %}
 
                 {% if series %}
                 <div class="is-flex mt-1">
@@ -170,7 +175,7 @@
     </div>
     {% endif %}
 
-    <div class="column">
+    <div class="column is-three-quarters">
         {% if author.bio %}
         {% include "snippets/trimmed_text.html" with full=author.bio trim_length=200 %}
         {% endif %}

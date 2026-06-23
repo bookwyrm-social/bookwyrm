@@ -75,6 +75,13 @@
     </form>
 </li>
 {% endif %}
-
+<li role="menuitem" class="dropdown-item p-0" data-extra-options>
+    <form name="block-{{ uuid }}-{{ shelf.identifier }}" action="/block-book/{{book.id}}" method="post">
+        {% csrf_token %}
+        <button class="button is-fullwidth is-small{% if dropdown %} is-radiusless{% endif %} is-danger is-light" type="submit">
+            {% trans 'Block this book' %}
+        </button>
+    </form>
+</li>
 {% endwith %}
 

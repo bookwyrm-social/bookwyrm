@@ -16,9 +16,10 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 
-from markdown import markdown
+import mistune
 from bookwyrm import forms, models
 from bookwyrm.models.report import DELETE_ITEM
+from bookwyrm.readwise import sync_readwise_quotation
 from bookwyrm.utils import regex, sanitizer
 from bookwyrm.views.helpers import get_mergeable_object_or_404
 from .helpers import handle_remote_webfinger, is_api_request
@@ -124,6 +125,8 @@ class CreateStatus(View):
             status.quote = to_markdown(status.quote)
 
         status.save(created=created)
+        if isinstance(status, models.Quotation) and status.user.readwise_api_key:
+            sync_readwise_quotation.delay(status.id)
 
         # update a readthrough, if needed
         if bool(request.POST.get("id")):
@@ -344,6 +347,6 @@ def _unwrap(text):
 def to_markdown(content):
     """catch links and convert to markdown"""
     content = format_links(content)
-    content = markdown(content)
+    content = mistune.html(content).rstrip()
     # sanitize resulting html
     return sanitizer.clean(content)

@@ -854,10 +854,15 @@ class Edition(Book):
 
     @classmethod
     def viewer_aware_objects(cls, viewer):
-        """annotate a book query with metadata related to the user"""
+        """filter blocked books and annotate a book query with metadata related to the user"""
         queryset = cls.objects
+
         if not viewer or not viewer.is_authenticated:
             return queryset
+
+        queryset = queryset.exclude(
+            parent_work__in=viewer.blocked_books.values_list("id", flat=True)
+        )
 
         queryset = queryset.prefetch_related(
             Prefetch(
@@ -994,7 +999,7 @@ class SeriesBook(CollectionItemMixin, BookWyrmModel):
 
     class Meta:
         ordering = ["series_number"]
-        unique_together = [("book", "series"), ("series", "series_number")]
+        unique_together = [("book", "series")]
 
     def get_remote_id(self):
         """need a remote id to provide the URI for series"""
