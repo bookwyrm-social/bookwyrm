@@ -1,6 +1,7 @@
 """handle reading a csv from an external service, defaults are from Goodreads"""
 
 import csv
+import itertools
 from datetime import timedelta
 from typing import Iterable, Optional
 
@@ -56,8 +57,9 @@ class Importer:
     ) -> ImportJob:
         """check over a csv and creates a database entry for the job"""
         csv_reader = csv.DictReader(csv_file, delimiter=self.delimiter)
-        rows = list(csv_reader)
-        if len(rows) < 1:
+        try:
+            first_row = next(csv_reader)
+        except StopIteration:
             raise ValueError("CSV file is empty")
 
         mappings = (
@@ -79,7 +81,7 @@ class Importer:
         if enforce_limit and allowed_imports <= 0:
             job.complete_job()
             return job
-        for index, entry in enumerate(rows):
+        for index, entry in enumerate(itertools.chain([first_row], csv_reader)):
             if enforce_limit and index >= allowed_imports:
                 break
             self.create_item(job, index, entry)

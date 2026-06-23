@@ -87,11 +87,8 @@ class Import(View):
         privacy = request.POST.get("privacy")
         source = request.POST.get("source")
 
-        importer = None
-
         if source == "BookWyrm":
             importer = BookwyrmBooksImporter()
-            print("BookwyrmBooksImporter")
         elif source == "LibraryThing":
             importer = LibrarythingImporter()
         elif source == "Storygraph":
