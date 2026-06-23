@@ -9,7 +9,7 @@ from django.views import View
 from django.views.decorators.http import require_POST
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
-from bookwyrm import forms
+from bookwyrm import forms, models
 
 
 @method_decorator(login_required, name="dispatch")
@@ -32,14 +32,14 @@ def schedule_deduplication_scan_task(request):
     form = forms.IntervalScheduleForm(request.POST)
     if not form.is_valid():
         data = data_quality_data()
-        data["task_form"] = form
+        data["scan_form"] = form
         return TemplateResponse(request, "settings/data.html", data)
 
     with transaction.atomic():
         schedule, _ = IntervalSchedule.objects.get_or_create(**form.cleaned_data)
         PeriodicTask.objects.get_or_create(
             interval=schedule,
-            name="dedupe-task",
+            name="dedupe-scan-task",
             task="bookwyrm.models.housekeeping.mark_duplicate_data_task",
         )
     return redirect("settings-data-quality")
@@ -56,11 +56,35 @@ def unschedule_deduplication_scan_task(request, task_id):
 def data_quality_data():
     """helper to get data used in the template"""
     try:
-        dedupe_task = PeriodicTask.objects.get(name="dedupe-task")
+        scan_task = PeriodicTask.objects.get(name="dedupe-scan-task")
     except PeriodicTask.DoesNotExist:
-        dedupe_task = None
+        scan_task = None
 
     return {
-        "dedupe_task": dedupe_task,
+        "scan_task": scan_task,
+        "work_count": models.Work.objects.filter(
+            pending_merge_target__isnull=False
+        ).count(),
+        "work_example": models.Work.objects.filter(
+            pending_merge_target__isnull=False
+        ).first(),
+        "edition_count": models.Edition.objects.filter(
+            pending_merge_target__isnull=False
+        ).count(),
+        "edition_example": models.Edition.objects.filter(
+            pending_merge_target__isnull=False
+        ).first(),
+        "author_count": models.Author.objects.filter(
+            pending_merge_target__isnull=False
+        ).count(),
+        "author_example": models.Author.objects.filter(
+            pending_merge_target__isnull=False
+        ).first(),
+        "series_count": models.Series.objects.filter(
+            pending_merge_target__isnull=False
+        ).count(),
+        "series_example": models.Series.objects.filter(
+            pending_merge_target__isnull=False
+        ).first(),
         "task_form": forms.IntervalScheduleForm(),
     }

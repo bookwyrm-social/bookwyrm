@@ -13,56 +13,109 @@
 
 {% block panel %}
 
+<section class="block content">
+    <h2>{% trans "Duplicates detected" %}</h2>
+    <aside class="help">{% trans "Duplicates will be detected when a duplicate data scan has run" %}</aside>
+    <div class="columns has-text-centered is-multiline">
+        <div class="column is-3">
+            <div class="notification mb-0">
+                <p class="header">{% trans "Duplicate works" %}</p>
+                <p class="title is-5">{{ work_count|intcomma }}</p>
+            </div>
+            {% if work_count %}
+            <aside class="help pt-0 has-text-left">
+                <a target="_blank" href="{{ work_example.local_path }}">{% trans "View first" %}</a>
+            </aside>
+            {% endif %}
+        </div>
+        <div class="column is-3">
+            <div class="notification mb-0">
+                <p class="header">{% trans "Duplicate editions" %}</p>
+                <p class="title is-5">{{ edition_count|intcomma }}</p>
+            </div>
+            {% if edition_count %}
+            <aside class="help pt-0 has-text-left">
+                <a target="_blank" href="{{ edition_example.local_path }}">{% trans "View first" %}</a>
+            </aside>
+            {% endif %}
+        </div>
+        <div class="column is-3">
+            <div class="notification mb-0">
+                <p class="header">{% trans "Duplicate authors" %}</p>
+                <p class="title is-5">{{ author_count|intcomma }}</p>
+            </div>
+            {% if author_count %}
+            <aside class="help pt-0 has-text-left">
+                <a target="_blank" href="{{ author_example.local_path }}">{% trans "View first" %}</a>
+            </aside>
+            {% endif %}
+        </div>
+        <div class="column is-3">
+            <div class="notification mb-0">
+                <p class="header">{% trans "Duplicate series" %}</p>
+                <p class="title is-5">{{ series_count|intcomma }}</p>
+            </div>
+            {% if series_count %}
+            <aside class="help pt-0 has-text-left">
+                <a target="_blank" href="{{ series_example.local_path }}">{% trans "View first" %}</a>
+            </aside>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
 <div class="block">
-    <h2 class="title is-4">{% trans "Schedule book data deduplication" %}</h2>
+    <h2 class="title is-4">{% trans "Schedule duplicate data scan" %}</h2>
     <div class="box">
         <div class="content notification">
             <p>
                 {% trans "This job scans for duplicate editions, works, authors, and series." %}
+                <br>
+                <strong>{% trans "No changes will be made to the data." %}</strong>
             </p>
         </div>
         <div class="block">
-            {% if dedupe_task %}
+            {% if scan_task %}
             <dl class="block">
                 <dt class="is-pulled-left mr-5 has-text-weight-bold">
                     {% trans "Schedule:" %}
                 </dt>
                 <dd>
-                    {{ dedupe_task.schedule }}
+                    {{ scan_task.schedule }}
                 </dd>
 
                 <dt class="is-pulled-left mr-5 has-text-weight-bold">
                     {% trans "Last run:" %}
                 </dt>
                 <dd>
-                    {{ dedupe_task.last_run_at|naturaltime }}
+                    {{ scan_task.last_run_at|naturaltime }}
                 </dd>
 
                 <dt class="is-pulled-left mr-5 has-text-weight-bold">
                     {% trans "Total run count:" %}
                 </dt>
                 <dd>
-                    {{ dedupe_task.total_run_count }}
+                    {{ scan_task.total_run_count }}
                 </dd>
 
                 <dt class="is-pulled-left mr-5 has-text-weight-bold">
                     {% trans "Enabled:" %}
                 </dt>
                 <dd>
-                    <span class="tag {% if dedupe_task.enabled %}is-success{% else %}is-danger{% endif %}">
-                        {{ dedupe_task.enabled|yesno }}
+                    <span class="tag {% if scan_task.enabled %}is-success{% else %}is-danger{% endif %}">
+                        {{ scan_task.enabled|yesno }}
                     </span>
                 </dd>
             </dl>
 
             <div class="is-flex is-justify-content-space-between block">
-                <form name="unschedule-dedupe" method="POST" action="{% url 'settings-dedupe-unschedule' dedupe_task.id %}">
+                <form name="unschedule-dedupe" method="POST" action="{% url 'settings-dedupe-unschedule' scan_task.id %}">
                     {% csrf_token %}
                     <button class="button is-danger">{% trans "Delete schedule" %}</button>
                 </form>
             </div>
             {% else %}
-            <form name="schedule-dedupe" method="POST" action="{% url 'settings-dedupe-schedule' %}">
+            <form name="schedule-dedupe" method="POST" action="{% url 'settings-dedupe-schedule-scan' %}">
                 {% csrf_token %}
                 <div class="field">
                     <label class="label" for="id_every">
