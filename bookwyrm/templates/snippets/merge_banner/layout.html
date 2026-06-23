@@ -10,9 +10,17 @@
             <span class="icon icon-warning" aria-hidden="true"></span>
             {% block content %}
             {% endblock %}
+
+            {% if original.prevent_automatic_merge %}
+            {% trans "Automatic merging has been blocked for this item." %}
+            {% elif original.pending_merge_date and merge_scheduled %}
+                {% blocktrans trimmed with date=original.pending_merge_date|naturalday %}
+                After {{ date }}, these will be automatically merged.
+                {% endblocktrans %}
+            {% endif %}
             </p>
         </summary>
-        <div class="pt-3">
+        <div class="block">
             <p>{% trans "These identifiers are the same for both:" %}</p>
             <ol>
                 {% for field in original|dedupe_fields:dupe %}
@@ -20,6 +28,15 @@
                 {% endfor %}
             </ol>
         </div>
+        {% if not original.prevent_automatic_merge %}
+        <div class="block">
+            <strong>{% trans "Is this mistaken?" %}</strong>
+            <form class="control" name="stop-merge" method="POST" action="{% block merge_path %}{% endblock %}">
+                {% csrf_token %}
+                <button class="button is-small" type="submit">{% trans "Block automatic merge" %}</button>
+            </form>
+        </div>
+        {% endif %}
     </details>
 </aside>
 {% endif %}
@@ -36,6 +53,13 @@
                 {% plural %}
                 {{ display_count }} duplicates of this item have been detected.
             {% endblocktrans %}
+
+            {% if merge_scheduled %}
+                {% blocktrans trimmed with date=original.pending_merge_date|naturalday %}
+                These will be automatically merged unless the duplicate entry has been manually blocked.
+                {% endblocktrans %}
+            {% endif %}
+
             <span class="details-close mt-4 mr-4 icon icon-x is-small" aria-hidden></span>
             </p>
         </summary>

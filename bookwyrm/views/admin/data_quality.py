@@ -47,6 +47,26 @@ def schedule_deduplication_scan_task(request):
 
 @require_POST
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
+def schedule_deduplication_task(request):
+    """scheduler"""
+    form = forms.IntervalScheduleForm(request.POST)
+    if not form.is_valid():
+        data = data_quality_data()
+        data["merge_form"] = form
+        return TemplateResponse(request, "settings/data.html", data)
+
+    with transaction.atomic():
+        schedule, _ = IntervalSchedule.objects.get_or_create(**form.cleaned_data)
+        PeriodicTask.objects.get_or_create(
+            interval=schedule,
+            name="dedupe-merge-task",
+            task="bookwyrm.models.housekeeping.merge_duplicate_data_task",
+        )
+    return redirect("settings-data-quality")
+
+
+@require_POST
+@permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
 def unschedule_deduplication_scan_task(request, task_id):
     """unscheduler"""
     get_object_or_404(PeriodicTask, id=task_id).delete()
@@ -60,8 +80,14 @@ def data_quality_data():
     except PeriodicTask.DoesNotExist:
         scan_task = None
 
+    try:
+        merge_task = PeriodicTask.objects.get(name="dedupe-merge-task")
+    except PeriodicTask.DoesNotExist:
+        merge_task = None
+
     return {
         "scan_task": scan_task,
+        "merge_task": merge_task,
         "work_count": models.Work.objects.filter(
             pending_merge_target__isnull=False
         ).count(),

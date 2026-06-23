@@ -1,7 +1,7 @@
 """cleanup tasks"""
 
 import math
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 from itertools import chain
 
 from django.db.models import (
@@ -11,6 +11,7 @@ from django.db.models import (
     ManyToManyField,
     TextChoices,
 )
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import models
@@ -102,7 +103,7 @@ def start_export_deletions(**kwargs):
     site = models.SiteSettings.objects.get()
     hours = site.export_files_lifetime_hours
 
-    expiry_date = datetime.now(timezone.utc) - timedelta(hours=hours)
+    expiry_date = timezone.now() - timedelta(hours=hours)
     job = CleanUpUserExportFilesJob.objects.create(user=user, expiry_date=expiry_date)
 
     job.start_job()
@@ -253,7 +254,25 @@ def run_missing_covers_job(**kwargs):
 @app.task(queue=MISC)
 def mark_duplicate_data_task():
     """Find likely duplicates and store their canonical candidate"""
-    # Is there a better way to find these models? idk
-    scan_models = [models.Work, models.Edition, models.Author, models.Series]
-    for model in scan_models:
+    for model in get_mergeable_models():
         model.mark_merge_candidates()
+
+
+@app.task(queue=MISC)
+def merge_duplicate_data_task():
+    """Combine duplicates"""
+    for model in get_mergeable_models():
+        objs = model.objects.filter(
+            pending_merge_target__isnull=False,
+            prevent_automatic_merge=False,
+            pending_merge_date__lte=timezone.now(),
+        )
+
+        for obj in objs:
+            obj.merge_into(obj.pending_merge_target)
+
+
+def get_mergeable_models():
+    """All models with the mergeable mixin"""
+    # Is there a way to get these programmatically??? idk
+    return [models.Work, models.Edition, models.Author, models.Series]
