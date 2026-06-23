@@ -248,3 +248,12 @@ def run_missing_covers_job(**kwargs):
     job.editions.set(editions)
 
     job.start_job()
+
+
+@app.task(queue=MISC)
+def mark_duplicate_data_task():
+    """Find likely duplicates and store their canonical candidate"""
+    # Is there a better way to find these models? idk
+    scan_models = [models.Work, models.Edition, models.Author, models.Series]
+    for model in scan_models:
+        model.mark_merge_candidates()
