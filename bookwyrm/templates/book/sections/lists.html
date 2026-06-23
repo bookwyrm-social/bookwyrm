@@ -1,0 +1,36 @@
+{% load i18n %}
+
+{% if lists.exists or list_options.exists %}
+<section class="content block is-clipped">
+    <h2 class="title is-5">{% trans "Lists" %}</h2>
+    <ul>
+    {% for list in lists %}
+        <li><a href="{{ list.local_path }}">{{ list.name }}</a></li>
+    {% endfor %}
+    </ul>
+
+    {% if list_options.exists %}
+    <form name="list-add" method="post" action="{% url 'list-add-book' %}">
+        {% csrf_token %}
+        <input type="hidden" name="book" value="{{ book.id }}">
+        <input type="hidden" name="user" value="{{ request.user.id }}">
+        <label class="label" for="id_list">{% trans "Add to list" %}</label>
+        <div class="field has-addons">
+            <div class="select control is-clipped">
+                <select name="book_list" id="id_list">
+                    {% for list in list_options %}
+                    <option value="{{ list.id }}">{{ list.name }}</option>
+                    {% endfor %}
+                    <option value="NEW_LIST_CREATION">+ {% trans "Create new list..." %}</option>
+                </select>
+            </div>
+            <div class="control">
+                <button type="button" class="button is-link" name="button-book-list">{% trans "Add" %}</button>
+            </div>
+        </div>
+    </form>
+    {% include "lists/create_list_modal.html" with id="modal-create-list-with-book" %}
+    {% endif %}
+</section>
+{% endif %}
+

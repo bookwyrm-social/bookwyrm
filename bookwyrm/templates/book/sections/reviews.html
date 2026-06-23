@@ -1,0 +1,67 @@
+{% load i18n %}
+{% load utilities %} 
+
+{% if user_authenticated %}
+<section class="box">
+    {% with 0|uuid as controls_uid %}
+    {% include 'snippets/create_status.html' with book=book hide_cover=True %}
+    {% endwith %}
+</section>
+{% endif %}
+<div class="block" id="reviews">
+    {% if request.user.is_authenticated %}
+    {% if user_statuses.review_count or user_statuses.comment_count or user_statuses.quotation_count %}
+    <nav class="tabs">
+        <ul>
+            {% url 'book' book.id book.name|slugify as tab_url %}
+            <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                <a href="{{ tab_url }}#reviews">{% trans "Reviews" %} ({{ review_count }})</a>
+            </li>
+            {% if user_statuses.review_count %}
+            {% url 'book-user-statuses' book.id 'review' as tab_url %}
+            <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                <a href="{{ tab_url }}#reviews">{% trans "Your reviews" %} ({{ user_statuses.review_count }})</a>
+            </li>
+            {% endif %}
+            {% if user_statuses.comment_count %}
+            {% url 'book-user-statuses' book.id 'comment' as tab_url %}
+            <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                <a href="{{ tab_url }}#reviews">{% trans "Your comments" %} ({{ user_statuses.comment_count }})</a>
+            </li>
+            {% endif %}
+            {% if user_statuses.quotation_count %}
+            {% url 'book-user-statuses' book.id 'quote' as tab_url %}
+            <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                <a href="{{ tab_url }}#reviews">{% trans "Your quotes" %} ({{ user_statuses.quotation_count }})</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    {% endif %}
+
+    {% for status in statuses %}
+        <div
+            class="block"
+            {% if status.status_type == 'Review' or status.status_type == 'Rating' %}
+            itemprop="review"
+            itemscope
+            itemtype="https://schema.org/Review"
+            {% endif %}
+        >
+            {% include 'snippets/status/status.html' with status=status hide_book=True depth=1 %}
+        </div>
+    {% endfor %}
+
+    {% if ratings %}
+    <div class="block is-flex is-flex-wrap-wrap">
+        {% for rating in ratings %}
+            {% include 'book/rating.html' with user=rating.user rating=rating %}
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="block">
+        {% include 'snippets/pagination.html' with page=statuses path=request.path anchor="#reviews" %}
+    </div>
+</div>
+

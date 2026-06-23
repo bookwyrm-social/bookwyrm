@@ -1,0 +1,52 @@
+{% load i18n %}
+{% load book_display_tags %}
+
+<div
+    class="field is-grouped"
+    itemprop="aggregateRating"
+    itemscope
+    itemtype="https://schema.org/AggregateRating"
+>
+    <meta itemprop="ratingValue" content="{{ rating|floatformat }}">
+    <meta itemprop="reviewCount" content="{{ review_count }}">
+
+    {% if review_count > 0 %}
+    <a href="#reviews" class="has-text-link">
+    {% endif %}
+    <span>
+        {% include 'snippets/stars.html' with rating=rating %}
+
+        {% blocktrans count counter=review_count trimmed %}
+            ({{ review_count }} review)
+        {% plural %}
+            ({{ review_count }} reviews)
+        {% endblocktrans %}
+    </span>
+    {% if review_count > 0 %}
+    </a>
+    {% endif %}
+</div>
+
+{% with full=book|book_description itemprop='abstract' %}
+    {% include 'snippets/trimmed_text.html' %}
+{% endwith %}
+
+{% if user_authenticated and can_edit_book and not book|book_description %}
+{% trans 'Add Description' as button_text %}
+{% include 'snippets/toggle/open_button.html' with class="mb-2 is-small" text=button_text controls_text="add_description" controls_uid=book.id focus="id_description" hide_active=True id="hide_description" %}
+
+<div class="box is-hidden" id="add_description_{{ book.id }}">
+    <form name="add-description" method="POST" action="{% url "add-description" book.id %}">
+        {% csrf_token %}
+        <div class="field">
+            <label class="label" for="id_description_{{ book.id }}">{% trans "Description:" %}</label>
+            <textarea name="description" cols="None" rows="None" class="textarea" id="id_description_{{ book.id }}"></textarea>
+        </div>
+        <div class="field">
+            <button class="button is-primary" type="submit">{% trans "Save" %}</button>
+            {% trans "Cancel" as button_text %}
+            {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="add_description" controls_uid=book.id hide_inactive=True %}
+        </div>
+    </form>
+</div>
+{% endif %}
