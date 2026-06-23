@@ -9,6 +9,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.http import require_POST
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
@@ -134,13 +135,13 @@ class ManualMerge(View):
                 if any(all_vals) and not all(
                     val == getattr(canonical, field.name) for val in all_vals
                 ):
-                    simple_fields.append({"name": field.name})
+                    simple_fields.append({"name": field.name, "trans_name": _(field.name)})
             if (
                 candidates.model._meta.get_field(field.name).get_internal_type()
                 == "ArrayField"
             ):
                 if any([getattr(x, field.name) for x in candidates]):
-                    array_fields.append(field.name)
+                    array_fields.append({"name": field.name, "trans_name": _(field.name)})
 
         for field in simple_fields:
             value_kwargs = {f"{field['name']}__isnull": False}
@@ -183,7 +184,7 @@ class ManualMerge(View):
                 diff = get_diff_string(canonical_date, merged_date)
                 value = request.POST.get(field)
             elif model._meta.get_field(field).get_internal_type() == "ArrayField":
-                for f in request.POST.getlist(field):
+                for f in set(request.POST.getlist(field)):
                     obj = { "name": field, "value": f, "diff": get_diff_string(
                     getattr(canonical, field), [f], array=True
                     )}

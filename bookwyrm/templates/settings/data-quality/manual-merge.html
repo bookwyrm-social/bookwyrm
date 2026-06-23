@@ -23,22 +23,20 @@
     </section>
     <form class="tab-group" method="post">
     {% csrf_token %}
-    <div class="tabs" role="tablist">
+    <div class="tabs is-toggle" role="tablist">
         <ul >
           {% for candidate in objects %}
           <li
-          role="tab"
-          id="tab_candidate_{{candidate.id}}"
-          class="{% if tab_id == candidate.id|stringformat:"i" or not tab_id and candidate.id == canonical.id %}is-active{% endif %}"
-          aria-selected="{% if tab_id and tab_id == candidate.id|stringformat:"i" %}true{% elif candidate.id == canonical.id %}true{% else %}false{% endif %}"
-          aria-controls="candidate_{{ candidate.id }}"
-          data-category="tab-option-{{ candidate.id }}"
+            role="tab"
+            id="tab_candidate_{{candidate.id}}"
+            class="{% if tab_id == candidate.id|stringformat:"i" or not tab_id and candidate.id == canonical.id %}is-active{% endif %}"
+            aria-selected="{% if tab_id and tab_id == candidate.id|stringformat:"i" %}true{% elif candidate.id == canonical.id %}true{% else %}false{% endif %}"
+            aria-controls="candidate_{{ candidate.id }}"
+            data-category="tab-option-{{ candidate.id }}"
           >
-            <a
-
-            href="{{ request.path }}?tab_id={{ candidate.id }}"
-
-            >{{candidate.id}}</a>
+        <a href="{{ request.path }}?tab_id={{ candidate.id }}">
+            <span>{{candidate.id}}</span>
+        </a>
           </li>
           {% endfor %}
         </ul>
@@ -57,8 +55,7 @@
             <tr>
                 {% with canonical|getattr_filter:field.name as canonical_value %}
                 <td>
-                    <!-- need to translate this -->
-                    <strong {% if not candidate|getattr_filter:field.name %}class="has-text-grey" {% endif %} >{{field.name}}</strong>
+                    <strong {% if not candidate|getattr_filter:field.name %}class="has-text-grey" {% endif %} >{{field.trans_name}}</strong>
                 </td>
 
                 <td>
@@ -76,13 +73,12 @@
             {% for field in array_fields %}
             <tr>
                 <td>
-                    <!-- need to translate this -->
-                    <strong>{{field}}</strong>
+                    <strong>{{field.trans_name}}</strong>
                 </td>
                 <td colspan="2">
-                    {% for val in candidate|getattr_filter:field %}
-                    <input type="checkbox" name="{{field}}" value="{{val}}" checked/>
-                    <label for="{{field}}" class="mr-4">{{ val }}</label>
+                    {% for val in candidate|getattr_filter:field.name %}
+                    <input type="checkbox" name="{{field.name}}" value="{{val}}" checked/>
+                    <label for="{{field.name}}" class="mr-4">{{ val }}</label>
                     {% endfor %}
                 </td>
             </tr>
