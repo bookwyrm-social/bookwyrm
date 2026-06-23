@@ -259,7 +259,7 @@
 
                 {% if user_authenticated and can_edit_book and not book|book_description %}
                 {% trans 'Add Description' as button_text %}
-                {% include 'snippets/toggle/open_button.html' with class="mb-2" text=button_text controls_text="add_description" controls_uid=book.id focus="id_description" hide_active=True id="hide_description" %}
+                {% include 'snippets/toggle/open_button.html' with class="mb-2 is-small" text=button_text controls_text="add_description" controls_uid=book.id focus="id_description" hide_active=True id="hide_description" %}
 
                 <div class="box is-hidden" id="add_description_{{ book.id }}">
                     <form name="add-description" method="POST" action="{% url "add-description" book.id %}">
