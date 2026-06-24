@@ -8,7 +8,7 @@
     {% if readthroughs.exists %}
     <div class="columns is-multiline">
         {% for readthrough in readthroughs %}
-        <div class="column is-4">
+        <div class="column is-4 pb-0">
         {% include 'readthrough/readthrough_list.html' with readthrough=readthrough %}
         </div>
         {% endfor %}

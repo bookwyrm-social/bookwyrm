@@ -28,7 +28,7 @@
 </div>
 
 {% with full=book|book_description itemprop='abstract' %}
-    {% include 'snippets/trimmed_text.html' %}
+    {% include 'snippets/trimmed_text.html' with trim_length=90 %}
 {% endwith %}
 
 {% if user_authenticated and can_edit_book and not book|book_description %}
