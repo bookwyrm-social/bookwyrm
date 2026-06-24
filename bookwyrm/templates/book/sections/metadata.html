@@ -1,12 +1,17 @@
 {% load i18n %}
 {% load humanize %}
 <section class="is-clipped">
+    <details class="details-panel box">
     {% with book=book %}
-        <div class="content">
+        <summary>
+            <h2 class="title is-6 mb-0">{% trans "Edition details" %}</h2>
+            <span class="details-close icon icon-x" aria-hidden="true"></span>
+        </summary>
+        <div>
             {% include 'book/publisher_info.html' %}
         </div>
 
-        <div class="my-3">
+        <div class="control">
             {% include 'book/book_identifiers.html' %}
         </div>
     {% endwith %}
@@ -82,4 +87,5 @@
         </a>
     </p>
     {% endwith %}
+    </details>
 </section>

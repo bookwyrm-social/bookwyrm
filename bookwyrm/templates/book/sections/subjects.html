@@ -1,24 +1,28 @@
 {% load i18n %}
-{% if book.subjects %}
+{% if book.subjects or book.subject_places %}
 <section class="content block">
-    <h2 class="title is-5">{% trans "Subjects" %}</h2>
+    <details class="details-panel box">
+        <summary>
+            <h2 class="title is-6 mb-0">{% trans "Subjects" %}</h2>
+            <span class="details-close icon icon-x" aria-hidden="true"></span>
+        </summary>
 
-    <ul>
-        {% for subject in book.subjects %}
-            <li itemprop="about">{{ subject }}</li>
-        {% endfor %}
-    </ul>
+        {% if book.subjects %}
+            <ul>
+            {% for subject in book.subjects %}
+                <li itemprop="about">{{ subject }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if book.subject_places %}
+            <h2 class="title is-6">{% trans "Places" %}</h2>
+            <ul>
+            {% for place in book.subject_places %}
+                <li>{{ place }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    </details>
 </section>
 {% endif %}
-
-{% if book.subject_places %}
-<section class="content block">
-    <h2 class="title is-5">{% trans "Places" %}</h2>
-    <ul>
-    {% for place in book.subject_places %}
-        <li>{{ place }}</li>
-    {% endfor %}
-    </ul>
-</section>
-{% endif %}
-
