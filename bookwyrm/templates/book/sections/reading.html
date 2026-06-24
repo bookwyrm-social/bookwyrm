@@ -2,29 +2,26 @@
 {% load shelf_tags %}
 
 {% if user_authenticated %}
-<section class="block">
-    <header class="columns">
-        <div class="column">
-        <h2 class="title is-5">{% trans "Your reading activity" %}</h2>
-        </div>
-        <div class="column is-narrow">
-            <button class="button is-small" data-modal-open="add-readthrough" id="tour-add-readthrough">
-                <span class="icon icon-plus m-mobile-0" aria-hidden="true"></span>
-                <span class="is-sr-only-mobile">
-                    {% trans "Add read dates" %}
-                </span>
-            </button>
-        </div>
-    </header>
-    {% include "readthrough/readthrough_modal.html" with id="add-readthrough" %}
+<div class="block">
+    <h2 class="title is-6 mb-2 mt-5">{% trans "Reading history" %}</h2>
+
 
     {% if not readthroughs.exists %}
-    <p>{% trans "You don't have any reading activity for this book." %}</p>
+    <p><em>{% trans "No reading activity" %}</em></p>
     {% endif %}
     {% for readthrough in readthroughs %}
     {% include 'readthrough/readthrough_list.html' with readthrough=readthrough %}
     {% endfor %}
-</section>
+    <div class="control">
+        <button class="button is-small" data-modal-open="add-readthrough" id="tour-add-readthrough">
+            <span class="icon icon-plus m-mobile-0" aria-hidden="true"></span>
+            <span class="is-sr-only-mobile">
+                {% trans "Add read dates" %}
+            </span>
+        </button>
+    </div>
+    {% include "readthrough/readthrough_modal.html" with id="add-readthrough" %}
+</div>
 {% endif %}
 
 {% if other_edition_shelves %}
