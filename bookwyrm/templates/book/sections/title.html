@@ -4,6 +4,13 @@
     <h1 class="title" itemprop="name" dir="auto">
         {{ book.title }}
     </h1>
+
+    {% if book.authors.exists %}
+    <div class="subtitle" dir="auto">
+        {% include 'snippets/authors.html' with book=book %}
+    </div>
+    {% endif %}
+
     {% if book.subtitle or book.series or book.parent_work.seriesbooks %}
         {% if book.subtitle %}
         <p class="subtitle title is-5">
@@ -53,12 +60,6 @@
         {% endfor%}
         {% endif %}
 
-    {% endif %}
-
-    {% if book.authors.exists %}
-    <div class="subtitle" dir="auto">
-        {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
-    </div>
     {% endif %}
 </div>
 
