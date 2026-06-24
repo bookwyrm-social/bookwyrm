@@ -1,6 +1,7 @@
 """template filters"""
 
 from django import template
+from django.core.exceptions import FieldError
 from bookwyrm import models
 
 
@@ -34,3 +35,20 @@ def get_book_file_links(book):
 def get_author_edition(book, author):
     """default edition for a book on the author page"""
     return book.author_edition(author)
+
+
+@register.filter(name="blocked_book_filter")
+def blocked_book_filter(queryset, viewer):
+    """filter out blocked books from querysets"""
+
+    if not viewer or not viewer.is_authenticated:
+        return queryset
+
+    blocked = viewer.blocked_books.all().values_list("id", flat=True)
+    try:
+        return queryset.exclude(book__parent_work__in=blocked)
+    except FieldError:
+        try:
+            return queryset.exclude(edition__parent_work__in=blocked)
+        except FieldError:
+            return queryset

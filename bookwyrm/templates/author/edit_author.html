@@ -65,14 +65,14 @@
 
             <div class="field">
                 <label class="label" for="id_born">{% trans "Birth date:" %}</label>
-                <input type="date" name="born" value="{{ form.born.value|date:'Y-m-d' }}" class="input" id="id_born">
+                {{ form.born }}
 
                 {% include 'snippets/form_errors.html' with errors_list=form.born.errors id="desc_born" %}
             </div>
 
             <div class="field">
                 <label class="label" for="id_died">{% trans "Death date:" %}</label>
-                <input type="date" name="died" value="{{ form.died.value|date:'Y-m-d' }}" class="input" id="id_died">
+                {{ form.died }}
 
                 {% include 'snippets/form_errors.html' with errors_list=form.died.errors id="desc_died" %}
             </div>

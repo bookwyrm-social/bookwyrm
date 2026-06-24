@@ -3,11 +3,13 @@
 from typing import Optional, Iterable
 import uuid
 
+from django.apps import apps
 from django.contrib.postgres.indexes import Index
 from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import activitypub
 from bookwyrm.settings import BASE_URL
@@ -24,15 +26,107 @@ CurationType = models.TextChoices(
 )
 
 
-class List(OrderedCollectionMixin, BookWyrmModel):
-    """a list of books"""
+class AbstractList(OrderedCollectionMixin, BookWyrmModel):
+    """Abstract model for regular lists and suggestion lists"""
 
-    name = fields.CharField(max_length=100)
+    embed_key = models.UUIDField(unique=True, null=True, editable=False)
+    activity_serializer = activitypub.BookList
+    privacy = fields.PrivacyField()
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="owner"
     )
+
+    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
+        """on save, update embed_key and avoid clash with existing code"""
+        if not self.embed_key:
+            self.embed_key = uuid.uuid4()
+            update_fields = add_update_fields(update_fields, "embed_key")
+
+        super().save(*args, update_fields=update_fields, **kwargs)
+
+    @property
+    def collection_queryset(self):
+        raise NotImplementedError
+
+    class Meta:
+        """default sorting"""
+
+        ordering = ("-updated_date",)
+        abstract = True
+
+
+class SuggestionList(AbstractList):
+    """a list of user-provided suggested things to read next"""
+
+    works = models.ManyToManyField(
+        "Work",
+        symmetrical=False,
+        through="SuggestionListItem",
+        through_fields=("book_list", "work"),
+    )
+
+    suggests_for = fields.OneToOneField(
+        "Work",
+        on_delete=models.PROTECT,
+        activitypub_field="book",
+        related_name="suggestion_list",
+        unique=True,
+    )
+    activity_serializer = activitypub.SuggestionList
+
+    @property
+    def collection_queryset(self):
+        """list of books for this shelf, overrides OrderedCollectionMixin"""
+        return self.works.order_by("suggestionlistitem")
+
+    @property
+    def editions(self):
+        default_editions = [w.default_edition.id for w in self.works.all()]
+        edition_model = apps.get_model("bookwyrm", "Edition")
+        return edition_model.objects.filter(id__in=default_editions)
+
+    def save(self, *args, **kwargs):
+        """on save, update embed_key and avoid clash with existing code"""
+        self.user = activitypub.get_representative()
+        self.privacy = "public"
+
+        super().save(*args, **kwargs)
+
+    def raise_not_editable(self, viewer):
+        """anyone can create a suggestion list, no one can edit"""
+        return
+
+    def get_remote_id(self):
+        """don't want the user to be in there in this case"""
+        return f"{BASE_URL}/book/{self.suggests_for.id}/suggestions"
+
+    @property
+    def name(self):
+        """The name comes from the book title if it's a suggestion list"""
+        return _("Suggestions for %(title)s") % {"title": self.suggests_for.title}
+
+    @property
+    def description(self):
+        """The description comes from the book title if it's a suggestion list"""
+        return _(
+            "This is the list of suggestions for <a href='%(url)s'>%(title)s</a>"
+        ) % {
+            "title": self.suggests_for.title,
+            "url": self.suggests_for.local_path,
+        }
+
+
+class List(AbstractList):
+    """a list of books"""
+
+    editions = models.ManyToManyField(
+        "Edition",
+        symmetrical=False,
+        through="ListItem",
+        through_fields=("book_list", "edition"),
+    )
+    name = fields.CharField(max_length=100)
     description = fields.TextField(blank=True, null=True, activitypub_field="summary")
-    privacy = fields.PrivacyField()
     curation = fields.CharField(
         max_length=255, default="closed", choices=CurationType.choices
     )
@@ -43,30 +137,26 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         blank=True,
         null=True,
     )
-    books = models.ManyToManyField(
-        "Edition",
-        symmetrical=False,
-        through="ListItem",
-        through_fields=("book_list", "book"),
-    )
-    embed_key = models.UUIDField(unique=True, null=True, editable=False)
-    activity_serializer = activitypub.BookList
-
-    def get_remote_id(self):
-        """don't want the user to be in there in this case"""
-        return f"{BASE_URL}/list/{self.id}"
-
-    @property
-    def collection_queryset(self):
-        """list of books for this shelf, overrides OrderedCollectionMixin"""
-        return self.books.filter(listitem__approved=True).order_by("listitem")
 
     class Meta:
         """default sorting"""
 
-        ordering = ("-updated_date",)
-
         indexes = [Index(fields=["privacy", "-updated_date"])]
+
+    @property
+    def works(self):
+        work_model = apps.get_model("bookwyrm", "Work")
+        works = self.editions.all().values_list("parent_work__id", flat=True).distinct()
+        return work_model.objects.filter(id__in=works)
+
+    @property
+    def collection_queryset(self):
+        """list of books for this shelf, overrides OrderedCollectionMixin"""
+        return self.editions.filter(listitem__approved=True).order_by("listitem")
+
+    def get_remote_id(self):
+        """don't want the user to be in there in this case"""
+        return f"{BASE_URL}/list/{self.id}"
 
     def raise_not_editable(self, viewer):
         """the associated user OR the list owner can edit"""
@@ -130,44 +220,79 @@ class List(OrderedCollectionMixin, BookWyrmModel):
             group=None, curation="closed"
         )
 
-    def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
-        """on save, update embed_key and avoid clash with existing code"""
-        if not self.embed_key:
-            self.embed_key = uuid.uuid4()
-            update_fields = add_update_fields(update_fields, "embed_key")
 
-        super().save(*args, update_fields=update_fields, **kwargs)
+class AbstractListItem(CollectionItemMixin, BookWyrmModel):
+    """Abstract class for list items for all types of lists"""
 
-
-class ListItem(CollectionItemMixin, BookWyrmModel):
-    """ok"""
-
-    book = fields.ForeignKey(
-        "Edition", on_delete=models.PROTECT, activitypub_field="book"
-    )
-    book_list = models.ForeignKey("List", on_delete=models.CASCADE)
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor"
     )
     notes = fields.HtmlField(blank=True, null=True, max_length=300)
-    approved = models.BooleanField(default=True)
-    order = fields.IntegerField()
+    raw_notes = models.TextField(blank=True, null=True, max_length=300)
+
     endorsement = models.ManyToManyField("User", related_name="endorsers")
 
     activity_serializer = activitypub.ListItem
     collection_field = "book_list"
 
-    def save(self, *args, **kwargs):
-        """Update the list's date"""
-        super().save(*args, **kwargs)
-        # tick the updated date on the parent list
-        self.book_list.updated_date = timezone.now()
-        self.book_list.save(broadcast=False, update_fields=["updated_date"])
+    def endorse(self, user):
+        """another user supports this suggestion"""
+        # you can't endorse your own contribution, silly
+        if user == self.user:
+            return
+        self.endorsement.add(user)
+
+    def unendorse(self, user):
+        """the user rescinds support this suggestion"""
+        if user == self.user:
+            return
+        self.endorsement.remove(user)
 
     def raise_not_deletable(self, viewer):
         """the associated user OR the list owner can delete"""
         if self.book_list.user == viewer:
             return
+        super().raise_not_deletable(viewer)
+
+    class Meta:
+        """A book may only be placed into a list once,
+        and each order in the list may be used only once"""
+
+        ordering = ("-created_date",)
+        abstract = True
+
+
+class ListItem(AbstractListItem):
+    """ok"""
+
+    edition = fields.ForeignKey(
+        "Edition", on_delete=models.PROTECT, activitypub_field="book"
+    )
+
+    book_list = models.ForeignKey("List", on_delete=models.CASCADE)
+    approved = models.BooleanField(default=True)
+    order = fields.IntegerField()
+
+    @property
+    def work(self):
+        """match the suggestion list model by producing a work"""
+        return self.edition.parent_work
+
+    @property
+    def edit_path_name(self):
+        """the form submit link to edit this item"""
+        return "list-item"
+
+    @property
+    def privacy(self):
+        """inherit the privacy of the list, or direct if pending"""
+        collection_field = getattr(self, self.collection_field)
+        if self.approved:
+            return collection_field.privacy
+        return "direct"
+
+    def raise_not_deletable(self, viewer):
+        """the associated user OR the list owner can delete"""
         # group members can delete items in group lists
         is_group_member = GroupMember.objects.filter(
             group=self.book_list.group, user=viewer
@@ -176,9 +301,40 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
             return
         super().raise_not_deletable(viewer)
 
+    def save(self, *args, **kwargs):
+        """Update the list's date"""
+        super().save(*args, **kwargs)
+        # tick the updated date on the parent list
+        self.book_list.updated_date = timezone.now()
+        self.book_list.save(broadcast=False, update_fields=["updated_date"])
+
     class Meta:
         """A book may only be placed into a list once,
         and each order in the list may be used only once"""
 
-        unique_together = (("book", "book_list"), ("order", "book_list"))
-        ordering = ("-created_date",)
+        unique_together = (("edition", "book_list"), ("order", "book_list"))
+
+
+class SuggestionListItem(AbstractListItem):
+    """items on a suggestion list"""
+
+    work = fields.ForeignKey("Work", on_delete=models.PROTECT, activitypub_field="book")
+    book_list = models.ForeignKey("SuggestionList", on_delete=models.CASCADE)
+    endorsement = models.ManyToManyField("User", related_name="suggestion_endorsers")
+    activity_serializer = activitypub.SuggestionListItem
+
+    @property
+    def edition(self):
+        """match the list model by producing an edition"""
+        return self.work.default_edition
+
+    @property
+    def edit_path_name(self):
+        """the form submit link to edit this item"""
+        return "suggestion-list-item"
+
+    class Meta:
+        """A book may only be placed into a list once,
+        and each order in the list may be used only once"""
+
+        unique_together = ("work", "book_list")

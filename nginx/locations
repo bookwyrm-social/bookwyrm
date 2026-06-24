@@ -21,7 +21,7 @@ add_header X-Cache-Status $upstream_cache_status;
 
 # ignore the set cookie header when deciding to
 # store a response in the cache
-proxy_ignore_headers Set-Cookie;
+proxy_ignore_headers Cache-Control Set-Cookie Expires;
 
 # PUT requests always bypass the cache
 # logged in sessions also do not populate the cache
@@ -40,7 +40,8 @@ proxy_redirect off;
 absolute_redirect off;
 
 location ~ ^/(login[^-/]|password-reset|resend-link|2fa-check) {
-    limit_req zone=loginlimit;
+    limit_req zone=loginlimit burst=1 nodelay;
+    limit_req_status 429;
     proxy_pass http://web;
 }
 

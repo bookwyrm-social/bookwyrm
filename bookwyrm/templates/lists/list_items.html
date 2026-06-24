@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load markdown %}
 {% load interaction %}
+{% load book_display_tags %}
 
 <div class="columns is-multiline">
     {% for list in lists %}
@@ -20,12 +21,12 @@
                 {% endif %}
             </header>
 
-            {% with list_books=list.listitem_set.all|slice:5 %}
+            {% with list_books=list.listitem_set.all|blocked_book_filter:request.user|slice:5 %}
                 {% if list_books %}
                     <div class="card-image columns is-mobile is-gapless is-clipped">
                         {% for book in list_books %}
-                            <a class="column is-cover" href="{{ book.book.local_path }}">
-                                {% include 'snippets/book_cover.html' with book=book.book cover_class='is-h-s' size='small' aria='show' %}
+                            <a class="column is-cover" href="{{ book.edition.local_path }}">
+                                {% include 'snippets/book_cover.html' with book=book.edition cover_class='is-h-s' size='small' aria='show' %}
                             </a>
                         {% endfor %}
                     </div>

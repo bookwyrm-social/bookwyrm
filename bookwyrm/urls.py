@@ -377,7 +377,7 @@ urlpatterns = [
         r"^settings/reports/?$", views.ReportsAdmin.as_view(), name="settings-reports"
     ),
     re_path(
-        r"^settings/reports/(?P<report_id>\d+)/?$",
+        r"^settings/reports/(?P<report_id>\d+)(.json)?/?$",
         views.ReportAdmin.as_view(),
         name="settings-report",
     ),
@@ -647,12 +647,22 @@ urlpatterns = [
         name="reject-group-invitation",
     ),
     # lists
+    re_path(
+        rf"{USER_PATH}/suggestions/?$",
+        views.UserSuggestions.as_view(),
+        name="user-suggestions",
+    ),
     re_path(rf"{USER_PATH}/lists/?$", views.UserLists.as_view(), name="user-lists"),
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),
     re_path(r"^list/saved/?$", views.SavedLists.as_view(), name="saved-lists"),
     re_path(r"^list/(?P<list_id>\d+)(\.json)?/?$", views.List.as_view(), name="list"),
     re_path(
         rf"^list/(?P<list_id>\d+){regex.SLUG}/?$", views.List.as_view(), name="list"
+    ),
+    re_path(
+        r"^suggestionlist/(?P<list_id>\d+)/item/(?P<list_item>\d+)/?$",
+        views.SuggestionListItem.as_view(),
+        name="suggestion-list-item",
     ),
     re_path(
         r"^list/(?P<list_id>\d+)/item/(?P<list_item>\d+)/?$",
@@ -789,9 +799,16 @@ urlpatterns = [
         views.ReactivateUser.as_view(),
         name="prefs-reactivate",
     ),
+    # block users
     re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),
     re_path(r"^block/(?P<user_id>\d+)/?$", views.Block.as_view()),
     re_path(r"^unblock/(?P<user_id>\d+)/?$", views.unblock),
+    # block books
+    re_path(
+        r"^preferences/books/?$", views.BlockedBooks.as_view(), name="prefs-block-books"
+    ),
+    re_path(r"^block-book/(?P<book_id>\d+)/?$", views.BlockedBooks.as_view()),
+    re_path(r"^unblock-book/(?P<book_id>\d+)/?$", views.unblock_book),
     # statuses
     re_path(rf"{STATUS_PATH}(.json)?/?$", views.Status.as_view(), name="status"),
     re_path(rf"{STATUS_PATH}{regex.SLUG}/?$", views.Status.as_view(), name="status"),
@@ -887,6 +904,26 @@ urlpatterns = [
         rf"{BOOK_PATH}/update/(?P<connector_identifier>[\w\.]+)/?$",
         views.update_book_from_remote,
         name="book-update-remote",
+    ),
+    re_path(
+        rf"{BOOK_PATH}/suggestions(.json)?/?$",
+        views.SuggestionList.as_view(),
+        name="suggestion-list",
+    ),
+    re_path(
+        rf"{BOOK_PATH}/suggestions/add/?$",
+        views.book_add_suggestion,
+        name="book-add-suggestion",
+    ),
+    re_path(
+        r"^suggestion/(?P<list_id>\d+)/remove/?$",
+        views.book_remove_suggestion,
+        name="book-remove-suggestion",
+    ),
+    re_path(
+        rf"{BOOK_PATH}/suggestions/endorse/(?P<item_id>\d+)/?$",
+        views.endorse_suggestion,
+        name="suggestion-endorse",
     ),
     re_path(
         r"^author/(?P<author_id>\d+)/update/(?P<connector_identifier>[\w\.]+)/?$",

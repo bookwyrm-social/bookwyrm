@@ -9,16 +9,17 @@ from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from .helpers import get_user_from_username, is_api_request
+from bookwyrm.views.helpers import is_api_request
+from bookwyrm.views.mixins import PrivateProfileMixin
 
 
-class Relationships(View):
+class Relationships(PrivateProfileMixin, View):
     """list of followers/following view"""
 
     @vary_on_headers("Accept")
     def get(self, request, username, direction):
         """list of followers"""
-        user = get_user_from_username(request.user, username)
+        user = request.profile_user
 
         if is_api_request(request):
             if direction == "followers":

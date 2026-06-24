@@ -573,6 +573,9 @@ class PartialDateField(ActivitypubFieldMixin, PartialDateModel):
         return value.partial_isoformat() if value else None
 
     def field_from_activity(self, value, allow_external_connections=True, trigger=None):
+        if not value:
+            return None
+
         try:
             return from_partial_isoformat(value)
         except ValueError:
@@ -636,11 +639,11 @@ class BooleanField(ActivitypubFieldMixin, models.BooleanField):
 
 
 class IntegerField(ActivitypubFieldMixin, models.IntegerField):
-    """activitypub-aware boolean field"""
+    """activitypub-aware integer field"""
 
 
 class DecimalField(ActivitypubFieldMixin, models.DecimalField):
-    """activitypub-aware boolean field"""
+    """activitypub-aware decimal field"""
 
     def field_to_activity(self, value):
         if not value:

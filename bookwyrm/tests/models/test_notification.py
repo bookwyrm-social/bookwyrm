@@ -116,7 +116,7 @@ class Notification(TestCase):
         test_list = models.List.objects.create(user=self.local_user, name="hi")
 
         models.ListItem.objects.create(
-            user=self.local_user, book=self.book, book_list=test_list, order=1
+            user=self.local_user, edition=self.book, book_list=test_list, order=1
         )
         self.assertFalse(models.Notification.objects.exists())
 
@@ -127,7 +127,7 @@ class Notification(TestCase):
         test_list = models.List.objects.create(user=self.remote_user, name="hi")
 
         models.ListItem.objects.create(
-            user=self.local_user, book=self.book, book_list=test_list, order=1
+            user=self.local_user, edition=self.book, book_list=test_list, order=1
         )
         self.assertFalse(models.Notification.objects.exists())
 
@@ -137,7 +137,7 @@ class Notification(TestCase):
         """Add list item notification"""
         test_list = models.List.objects.create(user=self.local_user, name="hi")
         list_item = models.ListItem.objects.create(
-            user=self.remote_user, book=self.book, book_list=test_list, order=2
+            user=self.remote_user, edition=self.book, book_list=test_list, order=2
         )
         notification = models.Notification.objects.get()
         self.assertEqual(notification.related_users.count(), 1)
@@ -146,7 +146,10 @@ class Notification(TestCase):
         self.assertEqual(notification.related_list_items.first(), list_item)
 
         models.ListItem.objects.create(
-            user=self.remote_user, book=self.another_book, book_list=test_list, order=3
+            user=self.remote_user,
+            edition=self.another_book,
+            book_list=test_list,
+            order=3,
         )
         notification = models.Notification.objects.get()
         self.assertEqual(notification.related_users.count(), 1)

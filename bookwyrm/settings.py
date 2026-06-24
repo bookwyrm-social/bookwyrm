@@ -110,7 +110,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "django.middleware.cache.UpdateCacheMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -126,7 +125,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "bookwyrm.middleware.FileTooBig",
     "bookwyrm.middleware.ForceLogoutMiddleware",
-    "django.middleware.cache.FetchFromCacheMiddleware",
 ]
 
 ROOT_URLCONF = "bookwyrm.urls"
@@ -154,7 +152,6 @@ TEMPLATES = [
     },
 ]
 
-CACHE_MIDDLEWARE_SECONDS = 0 if DEBUG else env.int("CACHE_MIDDLEWARE_SECONDS", 60)
 LOG_LEVEL = env("LOG_LEVEL", "INFO").upper()
 # Override aspects of the default handler to our taste
 # See https://docs.djangoproject.com/en/3.2/topics/logging/#default-logging-configuration

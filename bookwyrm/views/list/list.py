@@ -20,7 +20,9 @@ from django.views.decorators.vary import vary_on_headers
 from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.utils.block_books import blocked_book_filter
 from bookwyrm.views.helpers import (
+    convert_to_markdown,
     is_api_request,
     maybe_redirect_local_path,
     redirect_to_referer,
@@ -46,8 +48,10 @@ class List(View):
             return redirect_option
 
         items = book_list.listitem_set.filter(approved=True).prefetch_related(
-            "user", "book", "book__authors"
+            "user", "edition", "edition__authors"
         )
+
+        items = blocked_book_filter(items, "Edition", request.user)
         items = sort_list(request, items)
 
         paginated = Paginator(items, PAGE_LENGTH)
@@ -75,11 +79,15 @@ class List(View):
             "embed_url": embed_url,
             "add_failed": add_failed,
             "add_succeeded": add_succeeded,
+            "add_book_url": reverse("list-add-book"),
+            "remove_book_url": reverse("list-remove-book", args=[list_id]),
         }
 
         if request.user.is_authenticated:
             data["suggested_books"] = get_list_suggestions(
-                book_list, request.user, query=query
+                book_list,
+                request.user,
+                query=query,
             )
         return TemplateResponse(request, "lists/list.html", data)
 
@@ -91,7 +99,7 @@ class List(View):
         form = forms.ListForm(request.POST, instance=book_list)
         if not form.is_valid():
             # this shouldn't happen
-            raise Exception(form.errors)
+            raise Exception(form.errors)  # pylint: disable=broad-exception-raised
         book_list = form.save(request)
         if not book_list.curation == "group":
             book_list.group = None
@@ -100,25 +108,36 @@ class List(View):
         return redirect_to_referer(request, book_list.local_path)
 
 
-def get_list_suggestions(book_list, user, query=None, num_suggestions=5):
+def get_list_suggestions(
+    book_list, user, query=None, num_suggestions=6, ignore_book=None
+):
     """What books might a user want to add to a list"""
     if query:
         # search for books
         return book_search.search(
             query,
-            filters=[~Q(parent_work__editions__in=book_list.books.all())],
+            filters=[
+                ~Q(parent_work__editions__in=book_list.editions.all()),
+                ~Q(parent_work=ignore_book),
+                ~Q(parent_work__in=user.blocked_books.values_list("id", flat=True)),
+            ],
         )
     # just suggest whatever books are nearby
-    suggestions = user.shelfbook_set.filter(
-        ~Q(book__in=book_list.books.all())
-    ).distinct()[:num_suggestions]
+    suggestions = (
+        user.shelfbook_set.filter(~Q(book__in=book_list.editions.all()))
+        .exclude(book__parent_work=ignore_book)
+        .exclude(book__parent_work__in=user.blocked_books.values_list("id", flat=True))
+        .distinct()[:num_suggestions]
+    )
     suggestions = [s.book for s in suggestions[:num_suggestions]]
     if len(suggestions) < num_suggestions:
         others = [
             s.default_edition
             for s in models.Work.objects.filter(
-                ~Q(editions__in=book_list.books.all()),
+                ~Q(editions__in=book_list.editions.all()),
+                ~Q(id=ignore_book.id if ignore_book else None),
             )
+            .exclude(id__in=user.blocked_books.values_list("id", flat=True))
             .distinct()
             .order_by("-updated_date")[:num_suggestions]
         ]
@@ -141,7 +160,7 @@ def sort_list(request, items):
 
     directional_sort_by = {
         "order": "order",
-        "sort_title": "book__sort_title",
+        "sort_title": "edition__sort_title",
         "rating": "average_rating",
     }[sort_by]
     if direction == "descending":
@@ -150,7 +169,7 @@ def sort_list(request, items):
     if sort_by == "rating":
         items = items.annotate(
             average_rating=Avg(
-                Coalesce("book__review__rating", 0.0),
+                Coalesce("edition__review__rating", 0.0),
                 output_field=DecimalField(),
             )
         )
@@ -225,6 +244,11 @@ def add_book(request):
         )
         increment_order_in_reverse(book_list.id, order_max + 1)
     item.order = order_max + 1
+
+    if item.notes:
+        item.raw_notes = item.notes
+        item.notes = convert_to_markdown(item.notes)
+
     item.save()
 
     return List().get(request, book_list.id, add_succeeded=True)
