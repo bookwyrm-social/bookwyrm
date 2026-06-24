@@ -3,12 +3,16 @@
 
 {% if user_authenticated %}
 <div class="block">
-    <h2 class="title is-6 mb-2 mt-5">{% trans "Reading history" %}</h2>
+    <h2 class="title is-6 mb-2">{% trans "Your reading" %}</h2>
 
     {% if readthroughs.exists %}
+    <div class="columns is-multiline">
         {% for readthrough in readthroughs %}
+        <div class="column is-4">
         {% include 'readthrough/readthrough_list.html' with readthrough=readthrough %}
+        </div>
         {% endfor %}
+    </div>
     {% endif %}
 
     <div class="control">
