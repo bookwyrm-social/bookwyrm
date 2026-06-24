@@ -1,12 +1,21 @@
 {% load i18n %}
 {% load utilities %} 
 
+
+<div class="column is-four-fifths">
+<h2 class="title is-4">{% trans "Reviews" %}</h2>
 {% if user_authenticated %}
-<section class="box">
-    {% with 0|uuid as controls_uid %}
-    {% include 'snippets/create_status.html' with book=book hide_cover=True %}
-    {% endwith %}
-</section>
+<details class="details-panel box">
+    <summary>
+        <h3 class="title is-6 mb-0">{% trans "Add your thoughts" %}</h3>
+        <span class="details-close icon icon-x" aria-hidden="true"></span>
+    </summary>
+    <div class="control">
+        {% with 0|uuid as controls_uid %}
+        {% include 'snippets/create_status.html' with book=book hide_cover=True %}
+        {% endwith %}
+    </div>
+</details>
 {% endif %}
 <div class="block" id="reviews">
     {% if request.user.is_authenticated %}
@@ -65,3 +74,4 @@
     </div>
 </div>
 
+</div>

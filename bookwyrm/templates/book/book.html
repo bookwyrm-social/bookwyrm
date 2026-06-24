@@ -52,6 +52,7 @@
             <div class="block">
                 {% include "book/sections/reading.html" %}
             </div>
+            <hr aria-hidden="true" />
         </div>
 
         <div class="column is-one-fifth">
@@ -63,9 +64,13 @@
     </div>
 </div>
 
+<section class="block">
 {% include "book/suggestion_list/list.html" %}
+</section>
 
+<section class="block columns">
 {% include "book/sections/reviews.html" %}
+</section>
 
 
 {% endwith %}
