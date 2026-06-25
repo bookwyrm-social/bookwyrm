@@ -38,8 +38,8 @@
     {% include "book/suggestion_list/search.html" with list=suggestion_list is_suggestion=True controls_text="suggestion_search" %}
 
     {% endif %}
+</section>
 {% else %}
-
 <section class="notification">
     <form name="create-list" method="post" action="{% url 'suggestion-list' book_id=book.id %}#suggestions-section">
         {% csrf_token %}
