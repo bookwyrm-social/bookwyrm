@@ -15,12 +15,17 @@
 <section>
 
     {% if items|length == 0 %}
-    <section class="notification is-flex is-flex-direction-column is-align-items-center">
+    <div class="notification is-flex is-flex-direction-column is-align-items-center">
         <div class="column is-full is-centered">
-    <p>{% trans "Have a recommendation for someone who liked this book?" %}</p>
-           {% include "book/suggestion_list/search.html" with list=suggestion_list is_suggestion=True %}
+            <p>{% trans "Have a recommendation for someone who liked this book?" %}</p>
+            <div>
+                <button class="button is-small" type="button" data-modal-open="suggestion_search">
+                    <span class="icon icon-plus m-mobile-0" aria-hidden="true"></span>
+                    <span class="is-sr-only-mobile">{% trans "Add suggestion" %}</span>
+                </button>
+            </div>
         </div>
-    </section>
+    </div>
     {% else %}
     <ol class="columns is-multiline mb-0">
     {% for item in items %}
@@ -31,13 +36,13 @@
     </ol>
 
     <div>
-        {% trans "Add suggestion" as button_text %}
-        {% include 'snippets/toggle/open_button.html' with class="is-small" controls_text="suggestion_search" icon_with_text="plus" text=button_text focus="suggestion_search_header" %}
+        <button class="button is-small" type="button" data-modal-open="suggestion_search">
+            <span class="icon icon-plus m-mobile-0" aria-hidden="true"></span>
+            <span class="is-sr-only-mobile">{% trans "Add suggestion" %}</span>
+        </button>
     </div>
-
-    {% include "book/suggestion_list/search.html" with list=suggestion_list is_suggestion=True controls_text="suggestion_search" %}
-
     {% endif %}
+    {% include "book/suggestion_list/search.html" with list=suggestion_list is_suggestion=True id="suggestion_search" %}
 </section>
 {% else %}
 <section class="notification">
@@ -46,7 +51,7 @@
         <input type="hidden" name="user" value="{{ request.user.id }}">
         <input type="hidden" name="suggests_for" value="{{ work.id }}">
         <p>{% trans "Have a recommendation for someone who liked this book?" %}</p>
-        <button type="submit" class="button">{% trans "Load books" %}</button>
+        <button type="submit" class="button is-small">{% trans "Load books" %}</button>
     </form>
 </section>
 {% endif %}

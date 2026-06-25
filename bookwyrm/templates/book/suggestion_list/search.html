@@ -1,12 +1,12 @@
-{% extends 'components/inline_form.html' %}
+{% extends 'components/modal.html' %}
 {% load i18n %}
 {% load utilities %}
 
-{% block header %}
+{% block modal-title %}
     {% trans "Add suggestions" %}
 {% endblock %}
 
-{% block form %}
+{% block modal-body %}
 
 {% if request.user.is_authenticated %}
     {% with search_url=request.path|add:"#add-suggestions" %}
