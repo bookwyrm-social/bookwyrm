@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load humanize %}
 <section class="is-clipped">
-    <details class="details-panel notification">
+    <details class="details-panel notification mb-1">
         <summary>
             <h2 class="title is-6 mb-0">{% trans "Edition details" %}</h2>
             <span class="details-close icon icon-x" aria-hidden="true"></span>
@@ -13,18 +13,6 @@
         <div class="control">
             {% include 'book/book_identifiers.html' %}
         </div>
-
-        {% with work=book.parent_work editions_count=book.parent_work.editions.count %}
-        <p>
-            <a href="{{ work.local_path }}/editions" id="tour-other-editions-link">
-                {% blocktrans trimmed count counter=editions_count with count=editions_count|intcomma %}
-                    {{ count }} edition
-                    {% plural %}
-                    {{ count }} editions
-                {% endblocktrans %}
-            </a>
-        </p>
-        {% endwith %}
 
         {% trans "Load data" as button_text %}
         {% if book.openlibrary_key %}
@@ -91,4 +79,16 @@
         {% endif %}
 
     </details>
+
+    {% with work=book.parent_work editions_count=book.parent_work.editions.count %}
+    <div>
+        <a href="{{ work.local_path }}/editions" id="tour-other-editions-link">
+            {% blocktrans trimmed count counter=editions_count with count=editions_count|intcomma %}
+                {{ count }} edition
+                {% plural %}
+                {{ count }} editions
+            {% endblocktrans %}
+        </a>
+    </p>
+    {% endwith %}
 </section>
