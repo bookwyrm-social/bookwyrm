@@ -106,15 +106,22 @@ class ManualMerge(View):
         """View merge objects page"""
 
         model = apps.get_model(
-            f"bookwyrm.{model_name.capitalize()}", require_ready=True
+            f"bookwyrm.{model_name}", require_ready=True
         )
+        plural_model = f"{_(model_name)}s"
         canonical = get_object_or_404(model.objects.filter(id=canonical_id))
         candidates = canonical.merge_candidates
         if not candidates:
             raise Http404
 
+        ids = list(candidates.values_list("id", flat=True))
+        ids.append(canonical.id)
+        all_objects = model.objects.filter(id__in=ids)
+
         simple_fields = []
         array_fields = []
+        identical_fields = []
+
         for field in candidates.model._meta.get_fields():
             if (
                 field.name in ["remote_id", "origin_id", "sort_title", "edition_rank"]
@@ -131,6 +138,7 @@ class ManualMerge(View):
                 "born",
                 "died",
             ]:
+
                 all_vals = [getattr(x, field.name) for x in candidates]
                 if any(all_vals) and not all(
                     val == getattr(canonical, field.name) for val in all_vals
@@ -144,18 +152,27 @@ class ManualMerge(View):
                     array_fields.append({"name": field.name, "trans_name": _(field.name)})
 
         for field in simple_fields:
-            value_kwargs = {f"{field['name']}__isnull": False}
-            has_value = candidates.filter(**value_kwargs)
-            if has_value.count() == 1 and getattr(canonical, field["name"]) is None or getattr(canonical, field["name"]) == "":
-                field["unique"] = has_value.first().id
-        objects = candidates.union(candidates.model.objects.filter(id=canonical.id))
+            not_null = {f"{field['name']}__isnull": False}
+            if model._meta.get_field(field['name']).get_internal_type() == "DateTimeField":
+                has_value = all_objects.filter(**not_null)
+            else:
+                has_value = all_objects.filter(**not_null).exclude(**{field['name']: ""})
+            distinct_value = has_value.order_by(field["name"]).distinct(field["name"])
+            if distinct_value.count() == 1:
+                if distinct_value.filter(id=canonical.id):
+                    identical_fields.append(field["name"])
+                    continue
+                else:
+                    field["unique"] = has_value.first().id
+        simple_fields = [field for field in simple_fields if field["name"] not in identical_fields]
 
         data = {
             "simple_fields": simple_fields,
             "array_fields": array_fields,
             "canonical": canonical,
-            "objects": objects.reverse(),
+            "objects": all_objects.reverse(),
             "model_name": model_name,
+            "plural_model": plural_model
         }
         return TemplateResponse(
             request, "settings/data-quality/manual-merge.html", data
@@ -234,4 +251,4 @@ def confirm_manual_merge(request, model_name, canonical_id):
     for candidate in canonical.merge_candidates:
         candidate.merge_into(canonical)
 
-    return redirect("settings-data-quality")
+    return redirect(f"/book/{canonical.id}")

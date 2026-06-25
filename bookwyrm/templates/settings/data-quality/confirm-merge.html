@@ -13,11 +13,17 @@
 {% block panel %}
 
 <div class="block">
+    {% blocktrans trimmed %}
     <p>
-        {% blocktrans trimmed %}
-        The merged {{model_name}} will have the following values. Related fields such as series attached to books or editions attached to authors will automatically be merged into this {{model_name}}.
-        {% endblocktrans %}
+        The merged {{model_name}} will have the following values.
     </p>
+    <p>
+        Only fields where values differ are shown – other fields will automatically merge.
+    </p>
+    <p>
+         Related fields such as series attached to books or editions attached to authors will automatically be merged into this {{model_name}}.
+    </p>
+    {% endblocktrans %}
 </div>
 
 <form action="{% url 'settings-confirm-manual-merge' model_name canonical_id %}" method="post">

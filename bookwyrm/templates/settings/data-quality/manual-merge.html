@@ -6,11 +6,15 @@
 {% load date_ext %}
 
 {% block title %}
-{% trans 'Merge candidates' %}
+{% blocktrans %}
+Merge {{plural_model}}
+{% endblocktrans %}
 {% endblock %}
 
 {% block header %}
-{% trans 'Merge candidates' %}
+{% blocktrans %}
+Merge {{plural_model}}
+{% endblocktrans %}
 {% endblock %}
 
 {% block panel %}
@@ -18,67 +22,78 @@
 <div class="block">
     <section>
         <p class="mb-4">
-            {% trans 'Choose which values to use in the merged object. Click the item ID in the header to select a field to use from any merge candidate.' %}
+            {% trans 'Choose which values to use in the merged object. Only values that differ are shown – other values will automatically merge.' %}
         </p>
     </section>
-    <form class="tab-group" method="post">
+    <form class="form" method="post">
     {% csrf_token %}
-    <div class="tabs is-toggle" role="tablist">
-        <ul >
-          {% for candidate in objects %}
-          <li
-            role="tab"
-            id="tab_candidate_{{candidate.id}}"
-            class="{% if tab_id == candidate.id|stringformat:"i" or not tab_id and candidate.id == canonical.id %}is-active{% endif %}"
-            aria-selected="{% if tab_id and tab_id == candidate.id|stringformat:"i" %}true{% elif candidate.id == canonical.id %}true{% else %}false{% endif %}"
-            aria-controls="candidate_{{ candidate.id }}"
-            data-category="tab-option-{{ candidate.id }}"
-          >
-        <a href="{{ request.path }}?tab_id={{ candidate.id }}">
-            <span>{{candidate.id}}</span>
-        </a>
-          </li>
-          {% endfor %}
-        </ul>
-    </div>
-    {% for candidate in objects %}
-    <div
-        class="table-container tab-option-{{candidate.id}}"
-        id="candidate_{{candidate.id}}"
-        role="tabpanel"
-        aria-labelledby="tab_candidate_{{ candidate.id }}"
-    >
 
     <table class="table is-fullwidth">
+        <thead>
+            <tr class="has-text-centered">
+                <td class="is-primary">{% trans 'Field' %}</td>
+                <td colspan="2" class="is-primary">{% trans 'Canonical values' %}</td>
+                <td colspan="2" class="is-primary">{% trans 'Duplicate values' %}</td>
+            </tr>
+        </thead>
         <tbody>
             {% for field in simple_fields %}
             <tr>
                 {% with canonical|getattr_filter:field.name as canonical_value %}
-                <td>
-                    <strong {% if not candidate|getattr_filter:field.name %}class="has-text-grey" {% endif %} >{{field.trans_name}}</strong>
+                <td class="has-background-grey-lighter">
+                    <strong>{{field.trans_name}}</strong>
                 </td>
-
                 <td>
+                    {% if canonical_value %}
                     <input
-                        type="radio" name="{{field.name}}" value="{{candidate|getattr_filter:field.name}}"
-                        {% if canonical_value and canonical_value == candidate|getattr_filter:field.name %}checked{% elif field.unique == candidate.id %}checked{% else %}{% endif %}
+                        type="radio" name="{{field.name}}" value="{{canonical|getattr_filter:field.name}}"
+                        checked
                     />
+                    {% endif %}
                 </td>
                 <td>
-                    <label for="{{field}}" class="mr-4">{{candidate|getattr_filter:field.name}}</label>
+                    <label for="{{field}}" class="mr-4">{{canonical|getattr_filter:field.name}}</label>
+                </td>
+                <td class="has-background-white-ter">
+                {% for candidate in objects %}
+                {% if candidate.id != canonical.id and candidate|getattr_filter:field.name %}
+                    <div>
+                        <input
+                        type="radio" name="{{field.name}}" value="{{candidate|getattr_filter:field.name}}"
+                        {% if field.unique == candidate.id %}checked{% endif %}
+                        />
+                        <label for="{{field}}" class="mr-4">{{candidate|getattr_filter:field.name}}</label>
+                    </div>
+
+                {% endif %}
+                {% endfor %}
                 </td>
                 {% endwith %}
             </tr>
             {% endfor %}
             {% for field in array_fields %}
             <tr>
-                <td>
+                <td class="has-background-grey-lighter">
                     <strong>{{field.trans_name}}</strong>
                 </td>
                 <td colspan="2">
+                    {% for val in canonical|getattr_filter:field.name %}
+                    <div>
+                        <input type="checkbox" name="{{field.name}}" value="{{val}}" checked/>
+                        <label for="{{field.name}}" class="mr-4">{{ val }}</label>
+                    </div>
+                    {% endfor %}
+                </td>
+                <td colspan="2" class="has-background-white-ter">
+                    {% for candidate in objects %}
+                    {% if candidate.id != canonical.id %}
                     {% for val in candidate|getattr_filter:field.name %}
-                    <input type="checkbox" name="{{field.name}}" value="{{val}}" checked/>
-                    <label for="{{field.name}}" class="mr-4">{{ val }}</label>
+                    <div>
+                        <input type="checkbox" name="{{field.name}}" value="{{val}}" checked/>
+                        <label for="{{field.name}}" class="mr-4">{{ val }}</label>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
                     {% endfor %}
                 </td>
             </tr>
@@ -86,7 +101,6 @@
         </tbody>
     </table>
     </div>
-    {% endfor %}
     <button type="submit" class="button is-pulled-right is-primary">{% trans 'Next' %}</button>
     </form>
 
