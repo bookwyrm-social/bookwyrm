@@ -1,11 +1,11 @@
 {% load i18n %}
-{% load utilities %} 
+{% load utilities %}
 
 <h2 class="title is-4">{% trans "Reviews" %}</h2>
 {% if user_authenticated %}
 <details class="details-panel box">
     <summary>
-        <h3 class="title is-6 mb-0">{% trans "Add your thoughts" %}</h3>
+        <span class="title is-6 mb-0" role="heading" aria-level="3">{% trans "Add your thoughts" %}</span>
         <span class="details-close icon icon-pencil" aria-hidden="true"></span>
     </summary>
     <div class="control">
