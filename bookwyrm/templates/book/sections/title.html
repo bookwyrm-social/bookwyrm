@@ -5,24 +5,25 @@
         {{ book.title }}
     </h1>
 
+    {% if book.subtitle %}
+    <p class="subtitle title is-5">
+        <meta
+            itemprop="alternativeHeadline"
+            content="{{ book.subtitle | escape }}"
+        >
+        <span class="has-text-weight-bold" dir="auto">
+            {{ book.subtitle }}
+        </span>
+    </p>
+    {% endif %}
+
     {% if book.authors.exists %}
     <div class="subtitle" dir="auto">
         {% include 'snippets/authors.html' with book=book %}
     </div>
     {% endif %}
 
-    {% if book.subtitle or book.series or book.parent_work.seriesbooks %}
-        {% if book.subtitle %}
-        <p class="subtitle title is-5">
-            <meta
-                itemprop="alternativeHeadline"
-                content="{{ book.subtitle | escape }}"
-            >
-            <span class="has-text-weight-bold" dir="auto">
-                {{ book.subtitle }}
-            </span>
-        </p>
-        {% endif %}
+    {% if book.series or book.parent_work.seriesbooks %}
         {% if book.series %}
             {% spaceless %}
             <div columns>
