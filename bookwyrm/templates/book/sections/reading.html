@@ -2,17 +2,18 @@
 {% load shelf_tags %}
 
 {% if user_authenticated %}
-<div class="block">
-    <h2 class="title is-6 mb-2">{% trans "Your reading" %}</h2>
-
+<section class="block">
     {% if readthroughs.exists %}
-    <div class="columns is-multiline">
+    <details class="details-panel notification mb-1">
+        <summary>
+            <h2 class="title is-6 mb-0">{% trans "Your reading" %}</h2>
+            <span class="details-close icon icon-x" aria-hidden="true"></span>
+        </summary>
+
         {% for readthrough in readthroughs %}
-        <div class="column is-4 pb-0">
         {% include 'readthrough/readthrough_list.html' with readthrough=readthrough %}
-        </div>
         {% endfor %}
-    </div>
+    </details>
     {% endif %}
 
     <div class="control">
@@ -24,7 +25,7 @@
         </button>
     </div>
     {% include "readthrough/readthrough_modal.html" with id="add-readthrough" %}
-</div>
+</section>
 {% endif %}
 
 {% if other_edition_shelves %}
