@@ -3,7 +3,6 @@
 
 {% if item.notes %}
 <div class="notification">
-    {% if not no_header %}
     <div class="is-flex mb-3">
         <figure class="mr-3" aria-hidden="true">
             {% include "snippets/avatar.html" with user=item.user %}
@@ -15,7 +14,6 @@
             {% endblocktrans %}
         </header>
     </div>
-    {% endif %}
     <div class="block">
 
         {% include 'snippets/trimmed_text.html' with no_trim=no_trim full=item.notes %}

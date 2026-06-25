@@ -32,14 +32,19 @@
     </div>
 
     <div class="columns">
-        <div class="column is-one-fifth">
+        <div class="column is-2">
             {% include "book/sections/cover.html" %}
             <div class="mb-3" id="tour-shelve-button">
                 {% include 'snippets/shelve_button/shelve_button.html' %}
             </div>
+
+            {% include "book/sections/lists.html" %}
+            <section class="content block" id="tour-book-file-links">
+                {% include "book/file_links/links.html" %}
+            </section>
         </div>
 
-        <div class="column is-three-fifths">
+        <div class="column">
             <div class="block">
                 {% include "book/sections/description.html" %}
             </div>
@@ -52,27 +57,20 @@
             <div class="block">
                 {% include "book/sections/reading.html" %}
             </div>
+
             <hr aria-hidden="true" />
+            <section class="block">
+            {% include "book/sections/reviews.html" %}
+            </section>
         </div>
 
-        <div class="column is-one-fifth">
-            {% include "book/sections/lists.html" %}
-            <section class="content block" id="tour-book-file-links">
-                {% include "book/file_links/links.html" %}
+        <div class="column is-3">
+            <section class="block">
+            {% include "book/suggestion_list/list.html" %}
             </section>
         </div>
     </div>
 </div>
-
-<section class="block">
-{% include "book/suggestion_list/list.html" %}
-</section>
-
-<hr aria-hidden="true" />
-
-<section class="block columns">
-{% include "book/sections/reviews.html" %}
-</section>
 
 
 {% endwith %}

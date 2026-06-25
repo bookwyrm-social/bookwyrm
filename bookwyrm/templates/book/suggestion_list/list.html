@@ -2,20 +2,14 @@
 {% load humanize %}
 
 {% if request.user.is_authenticated or suggestion_list %}
-<div class="is-flex">
-    <h2 class="title is-4 is-flex-grow-1" id="suggestions-section">
-        {% trans "Readers also recommend:" %}
-        {% if suggestion_list and items|length > 0 %}
-        <a class="help has-text-weight-normal" href="{% url 'suggestion-list' book_id=work.id %}">
-            {% trans "View all suggestions" %} ({{ item_count }})
-        </a>
-        {% endif %}
-    </h2>
-    <div>
-        {% trans "Add suggestion" as button_text %}
-        {% include 'snippets/toggle/open_button.html' with class="is-small" controls_text="suggestion_search" icon_with_text="plus" text=button_text focus="suggestion_search_header" %}
-    </div>
-</div>
+<h2 class="title is-4 is-flex-grow-1" id="suggestions-section">
+    {% trans "Readers also recommend:" %}
+    {% if suggestion_list and items|length > 0 %}
+    <a class="help has-text-weight-normal" href="{% url 'suggestion-list' book_id=work.id %}">
+        {% trans "View all suggestions" %} ({{ item_count }})
+    </a>
+    {% endif %}
+</h2>
 
 {% if suggestion_list %}
 <section>
@@ -28,17 +22,21 @@
         </div>
     </section>
     {% else %}
-    <ol class="columns is-multiline">
+    <ol class="columns is-multiline mb-0">
     {% for item in items %}
-        <li class="column is-one-third">
+        <li class="column">
             {% include "book/suggestion_list/book_card.html" with list=suggestion_list %}
         </li>
     {% endfor %}
     </ol>
 
-    <div class="column is-full pt-0">
-        {% include "book/suggestion_list/search.html" with list=suggestion_list is_suggestion=True controls_text="suggestion_search" %}
+    <div>
+        {% trans "Add suggestion" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with class="is-small" controls_text="suggestion_search" icon_with_text="plus" text=button_text focus="suggestion_search_header" %}
     </div>
+
+    {% include "book/suggestion_list/search.html" with list=suggestion_list is_suggestion=True controls_text="suggestion_search" %}
+
     {% endif %}
 {% else %}
 
