@@ -33,11 +33,11 @@
                 </div>
             </div>
             {% if item.notes %}
-            <div class="column notification suggestion-note mb-0">
+            <div class="column notification suggestion-note mb-0 mr-3">
                 {% include 'snippets/trimmed_text.html' with full=item.notes trim_length=15 %}
             </div>
             {% endif %}
-            <div class="column">
+            <div class="column{% if item.notes %} is-full{% endif %}">
                 {% include 'snippets/book_titleby.html' with book=item_book %}
             </div>
         </div>
