@@ -82,38 +82,6 @@ class MergeableMixin(TestCase):
         dupe_2.refresh_from_db()
         self.assertEqual(dupe_2.pending_merge_target.id, book.id)
 
-    def test_find_merge_candidate(self):
-        """look for duplicates for a specific item"""
-        models.Edition.objects.create(
-            title="Unrelated Edition",
-            isbn_13="9780064471831",
-            parent_work=models.Work.objects.create(title="Unrelated Work"),
-        )
-        book = models.Edition.objects.create(
-            title="Example Edition",
-            isbn_13="9780810160118",
-            parent_work=models.Work.objects.create(title="Example Work"),
-        )
-        dupe = models.Edition.objects.create(
-            title="Duplicate Edition",
-            isbn_13="9780810160118",
-            parent_work=models.Work.objects.create(title="Duplicate Work"),
-        )
-
-        candidate = book.find_merge_candidate()
-        self.assertEqual(candidate, dupe)
-
-    def test_find_merge_candidate_no_match(self):
-        """look for duplicates"""
-        book = models.Edition.objects.create(
-            title="Example Edition",
-            isbn_13="9780810160118",
-            parent_work=models.Work.objects.create(title="Example Work"),
-        )
-
-        candidate = book.find_merge_candidate()
-        self.assertIsNone(candidate)
-
     def test_merge_into(self):
         """merge duplicates"""
         models.Edition.objects.create(
@@ -135,8 +103,7 @@ class MergeableMixin(TestCase):
         )
         self.assertFalse(models.MergedEdition.objects.exists())
 
-        candidate = book.find_merge_candidate()
-        absorbed = book.merge_into(candidate)
+        absorbed = book.merge_into(dupe)
 
         self.assertEqual(absorbed["description"], "don't lose me in the merge")
         self.assertFalse(models.Edition.objects.filter(id=book.id).exists())
@@ -167,8 +134,7 @@ class MergeableMixin(TestCase):
         )
         self.assertFalse(models.MergedEdition.objects.exists())
 
-        candidate = book.find_merge_candidate()
-        absorbed = book.merge_into(candidate, dry_run=True)
+        absorbed = book.merge_into(dupe, dry_run=True)
 
         self.assertEqual(absorbed["description"], "don't lose me in the merge")
         self.assertTrue(models.Edition.objects.filter(id=book.id).exists())

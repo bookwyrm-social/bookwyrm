@@ -416,6 +416,7 @@ urlpatterns = [
         views.DataQuality.as_view(),
         name="settings-data-quality",
     ),
+    # TODO: change these paths
     re_path(
         r"^settings/data-quality/manual-merge/(?P<model_name>\w+)/(?P<canonical_id>\d+)/?$",
         views.ManualMerge.as_view(),
@@ -428,8 +429,9 @@ urlpatterns = [
     ),
     re_path(
         r"^settings/data-quality/schedule/?$",
+        r"^settings/data-quality/schedule-scan/?$",
         views.schedule_deduplication_scan_task,
-        name="settings-dedupe-schedule",
+        name="settings-dedupe-schedule-scan",
     ),
     re_path(
         r"^settings/data-quality/unschedule/(?P<task_id>\d+)/?$",

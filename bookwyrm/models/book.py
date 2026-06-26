@@ -951,6 +951,8 @@ def preview_image(instance, *args, **kwargs):
 class Series(OrderedCollectionMixin, BookDataModel):
     """a series of books"""
 
+    merged_model = MergedSeries
+
     pending_merge_target = models.ForeignKey(
         "Series", related_name="merge_target", on_delete=models.PROTECT, null=True
     )
