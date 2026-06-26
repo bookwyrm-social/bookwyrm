@@ -17,13 +17,13 @@ def convert_review_rating(app_registry, schema_editor):
     )
 
     with connection.cursor() as cursor:
-        values = [(r.id,) for r in reviews]
-        cursor.executemany(
-            """
+        for review in reviews:
+            cursor.execute(
+                """
 INSERT INTO bookwyrm_reviewrating(review_ptr_id)
-VALUES %s""",
-            values,
-        )
+VALUES (%s)""",
+                (review.id,),
+            )
 
 
 def unconvert_review_rating(app_registry, schema_editor):
