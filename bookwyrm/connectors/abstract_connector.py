@@ -5,7 +5,6 @@ from abc import ABC, abstractmethod
 from typing import Optional, TypedDict, Any, Callable, Union, Iterator
 from urllib.parse import quote_plus
 
-from datetime import datetime, UTC
 import logging
 import re
 import asyncio
@@ -16,6 +15,7 @@ import aiohttp
 
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.core.files.base import ContentFile
+from django.utils import timezone
 from django.db import transaction
 from django.db.models import Subquery
 
@@ -586,10 +586,10 @@ def update_connector_status(
         connector = models.Connector.objects.get(pk=connector_id)
         if error_message:
             connector.latest_error = error_message
-            connector.most_recent_error = datetime.now(UTC)
+            connector.most_recent_error = timezone.now()
             connector.save(update_fields=["latest_error", "most_recent_error"])
         else:
-            connector.most_recent_success = datetime.now(UTC)
+            connector.most_recent_success = timezone.now()
             connector.save(update_fields=["most_recent_success"])
     except Exception as err:
         logger.exception(err)
