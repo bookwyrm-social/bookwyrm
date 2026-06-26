@@ -428,7 +428,6 @@ urlpatterns = [
         name="settings-confirm-manual-merge",
     ),
     re_path(
-        r"^settings/data-quality/schedule/?$",
         r"^settings/data-quality/schedule-scan/?$",
         views.schedule_deduplication_scan_task,
         name="settings-dedupe-schedule-scan",
