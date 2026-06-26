@@ -39,10 +39,10 @@ class ReportsAdmin(View):
 
         server = request.GET.get("server")
         if server:
-            filters["user__federated_server__server_name"] = server
+            filters["reported_user__federated_server__server_name"] = server
         username = request.GET.get("username")
         if username:
-            filters["user__username__icontains"] = username
+            filters["reported_user__username__icontains"] = username
         if resolved != "all":
             filters["resolved"] = resolved
 
