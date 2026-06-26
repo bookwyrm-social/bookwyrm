@@ -15,11 +15,13 @@ import aiohttp
 
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.core.files.base import ContentFile
+from django.utils import timezone
 from django.db import transaction
 from django.db.models import Subquery
 
 from bookwyrm import activitypub, models, settings
 from bookwyrm.settings import USER_AGENT, INSTANCE_ACTOR_USERNAME
+from bookwyrm.tasks import app, CONNECTORS
 from .connector_manager import load_more_data, ConnectorException, raise_not_valid_url
 from .format_mappings import format_mappings
 from ..book_search import SearchResult
@@ -92,15 +94,24 @@ class AbstractMinimalConnector(ABC):
         try:
             async with session.get(url, headers=headers, params=params) as response:
                 if not response.ok:
+                    update_connector_status.delay(
+                        self.connector.pk,
+                        f"Unable to connect to {url}: {response.reason}",
+                    )
                     logger.info("Unable to connect to %s: %s", url, response.reason)
                     return None
 
                 try:
                     raw_data = await response.json()
                 except aiohttp.client_exceptions.ContentTypeError as err:
+                    update_connector_status.delay(
+                        self.connector.pk, f"ContentType Error: {str(err)}"
+                    )
                     logger.exception(err)
+
                     return None
 
+                update_connector_status.delay(self.connector.id)
                 return ConnectorResults(
                     connector=self,
                     results=self.process_search_response(
@@ -108,8 +119,14 @@ class AbstractMinimalConnector(ABC):
                     ),
                 )
         except asyncio.TimeoutError:
+            update_connector_status.delay(
+                self.connector.pk, f"Timed out for url: {url}"
+            )
             logger.info("Connection timed out for url: %s", url)
         except aiohttp.ClientError as err:
+            update_connector_status.delay(
+                self.connector.pk, f"Client Error: {str(err)}"
+            )
             logger.info(err)
         return None
 
@@ -559,3 +576,20 @@ def activitydata_to_seriesbook(
         series=series,
         defaults={"user": user, "series_number": work.series_number},
     )
+
+
+@app.task(queue=CONNECTORS)
+def update_connector_status(
+    connector_id: int, error_message: str | None = None
+) -> None:
+    try:
+        connector = models.Connector.objects.get(pk=connector_id)
+        if error_message:
+            connector.latest_error = error_message
+            connector.most_recent_error = timezone.now()
+            connector.save(update_fields=["latest_error", "most_recent_error"])
+        else:
+            connector.most_recent_success = timezone.now()
+            connector.save(update_fields=["most_recent_success"])
+    except Exception as err:
+        logger.exception(err)

@@ -23,6 +23,9 @@ class Connector(BookWyrmModel):
     deactivation_reason = models.CharField(
         max_length=255, choices=DeactivationReason, null=True, blank=True
     )
+    most_recent_success = models.DateTimeField(null=True)
+    most_recent_error = models.DateTimeField(null=True)
+    latest_error = models.CharField(max_length=255, null=True, blank=True)
 
     base_url = models.CharField(max_length=255)
     books_url = models.CharField(max_length=255)
