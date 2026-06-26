@@ -37,6 +37,21 @@
                     </div>
                 </div>
             {% endif %}
+                <div class="card-footer-item">
+                    <div>
+                        <h3 class="menu-label">{% trans 'Latest successfull request' %}</h3>
+                        <p>{{ connector.most_recent_success }}</p>
+                    </div>
+                </div>
+            {% if connector.most_recent_error %}
+                <div class="card-footer-item">
+                    <div>
+                        <h3 class="menu-label">{% trans 'Latest error' %}</h3>
+                        <p>{{ connector.most_recent_error}}</p>
+                        <p>{{ connector.latest_error }}</p>
+                    </div>
+                </div>
+            {% endif %}
 
             {% if connector.active %}
              <form
