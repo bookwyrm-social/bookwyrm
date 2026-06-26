@@ -54,6 +54,7 @@ class Importer:
         include_reviews: bool,
         privacy: str,
         create_shelves: bool = True,
+        default_shelf: str | None = None,
     ) -> ImportJob:
         """check over a csv and creates a database entry for the job"""
         csv_reader = csv.DictReader(csv_file, delimiter=self.delimiter)
@@ -84,7 +85,7 @@ class Importer:
         for index, entry in enumerate(itertools.chain([first_row], csv_reader)):
             if enforce_limit and index >= allowed_imports:
                 break
-            self.create_item(job, index, entry)
+            self.create_item(job, index, entry, default_shelf)
         return job
 
     def update_legacy_job(self, job: ImportJob) -> None:
@@ -116,10 +117,10 @@ class Importer:
             mappings[key] = value
         return mappings
 
-    def create_item(self, job: ImportJob, index: int, data: dict[str, str]) -> None:
+    def create_item(self, job: ImportJob, index: int, data: dict[str, str], default_shelf: str | None = None) -> None:
         """creates and saves an import item"""
         normalized = self.normalize_row(data, job.mappings)
-        normalized["shelf"] = self.get_shelf(normalized)
+        normalized["shelf"] = default_shelf if default_shelf else self.get_shelf(normalized)
         ImportItem(job=job, index=index, data=data, normalized_data=normalized).save()
 
     def get_shelf(self, normalized_row: dict[str, Optional[str]]) -> Optional[str]:
