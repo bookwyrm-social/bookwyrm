@@ -1,6 +1,7 @@
 {% extends 'preferences/layout.html' %}
 {% load i18n %}
 {% load humanize %}
+{% load shelf_tags %}
 
 {% block title %}{% trans "Import Book List" %}{% endblock %}
 {% block header %}{% trans "Import Book List" %}{% endblock %}
@@ -103,6 +104,24 @@
                     <label class="label">
                         <input type="checkbox" name="create_shelves" checked> {% trans "Create new shelves if they do not exist" %}
                     </label>
+                </div>
+                <div class="field">
+                    <label class="label" for="default_shelf">
+                        {% trans "Shelve all imported books on:" %}
+                    </label>
+
+                    <div class="select">
+                        <select name="default_shelf" id="default_shelf">
+                            <option value="">{% trans "Use the status from the file" %}</option>
+                            {% for shelf in user_shelves %}
+                            <option value="{{ shelf.name }}">{{ shelf|translate_shelf_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <p class="help" id="desc_default_shelf">
+                        {% trans "Useful when your file has no shelf column." %}
+                    </p>
                 </div>
                 <div class="field">
                     <label class="label" for="privacy_import">

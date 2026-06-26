@@ -45,6 +45,7 @@ class Import(View):
         data = {
             "import_form": forms.ImportForm(),
             "jobs": page,
+            "user_shelves": models.Shelf.objects.filter(user=request.user),
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
