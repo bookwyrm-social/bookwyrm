@@ -247,6 +247,16 @@ urlpatterns = [
         name="settings-activate-user",
     ),
     re_path(
+        r"^settings/users/set-merge-permissions/(?P<user_id>\d+)/?$",
+        views.SetMergePermission.as_view(),
+        name="settings-user-manage-data-perms",
+    ),
+    re_path(
+        r"^settings/manage-data/merge/?$",
+        views.MergeData.as_view(),
+        name="settings-merge-data",
+    ),
+    re_path(
         r"^settings/federation-settings/?$",
         views.FederationSettings.as_view(),
         name="settings-federation-settings",

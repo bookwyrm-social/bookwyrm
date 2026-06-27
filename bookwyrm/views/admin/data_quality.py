@@ -88,3 +88,18 @@ def data_quality_data():
         ).first(),
         "task_form": forms.IntervalScheduleForm(),
     }
+
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.manage_data", raise_exception=True),
+    name="dispatch",
+)
+class MergeData(View):
+    """deduplication task settings"""
+
+    def get(self, request):
+        """view maintenance task settings"""
+        return TemplateResponse(
+            request, "settings/manage-data/merge.html", data_quality_data()
+        )
