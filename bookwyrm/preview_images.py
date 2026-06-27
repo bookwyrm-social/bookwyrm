@@ -238,6 +238,9 @@ def generate_instance_layer(content_width):
     font_instance = get_font("light", size=28)
 
     site = models.SiteSettings.get()
+    site_name = process_arabic_script(site.name)
+    site_name_width = round(font_instance.getlength(site_name))
+    site_name_direction = get_text_direction(site_name)
 
     if site.logo_small:
         with Image.open(site.logo_small) as logo_img:
@@ -250,30 +253,25 @@ def generate_instance_layer(content_width):
         except FileNotFoundError:
             logo_img = None
 
-    instance_layer = Image.new("RGBA", (content_width, 62), color=TRANSPARENT_COLOR)
-
-    instance_text_x = 0
+    logo_gutter_width = 60 if logo_img else 0
+    layer_width = logo_gutter_width + site_name_width
+    instance_layer = Image.new("RGBA", (layer_width, 62), color=TRANSPARENT_COLOR)
 
     if logo_img:
         logo_img.thumbnail((50, 50), Image.Resampling.LANCZOS)
-
-        instance_layer.paste(logo_img, (0, 0))
-
-        instance_text_x = instance_text_x + 60
+        logo_img_x = 0 if site_name_direction == "left" else layer_width - 50
+        instance_layer.paste(logo_img, (logo_img_x, 0))
 
     instance_layer_draw = ImageDraw.Draw(instance_layer)
+    text_x = logo_gutter_width if site_name_direction == "left" else 0
     instance_layer_draw.text(
-        (instance_text_x, 10), site.name, font=font_instance, fill=TEXT_COLOR
+        (text_x, 10), site_name, font=font_instance, fill=TEXT_COLOR
     )
-
-    line_width = 50 + 10 + round(font_instance.getlength(site.name))
 
     line_layer = Image.new(
-        "RGBA", (line_width, 2), color=(*(ImageColor.getrgb(TEXT_COLOR)), 50)
+        "RGBA", (layer_width, 2), color=(*(ImageColor.getrgb(TEXT_COLOR)), 50)
     )
     instance_layer.alpha_composite(line_layer, (0, 60))
-
-    instance_layer = instance_layer.crop((0, 0, line_width, instance_layer.height))
 
     return instance_layer
 
@@ -434,6 +432,8 @@ def generate_preview_image(
             rating_layer_x = (
                 0 if text_align == "left" else content_width - rating_layer.width
             )
+            if text_align == "right":
+                rating_layer = ImageOps.mirror(rating_layer)
             contents_layer.alpha_composite(
                 rating_layer, (rating_layer_x, contents_composite_y)
             )
