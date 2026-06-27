@@ -94,7 +94,9 @@ class GenericImporter(TestCase):
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "public", shelf_override=to_read.name
         )
-        import_items = models.ImportItem.objects.filter(job=import_job).all().order_by("id")
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")
+        )
         self.assertEqual(len(import_items), 4)
         for import_item in import_items:
             self.assertEqual(import_item.normalized_data["shelf"], to_read.name)

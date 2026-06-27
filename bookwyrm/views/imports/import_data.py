@@ -112,7 +112,7 @@ class Import(View):
                 include_reviews,
                 privacy,
                 create_shelves,
-                shelf_override
+                shelf_override,
             )
         except (UnicodeDecodeError, ValueError, KeyError):
             return self.get(request, invalid=True)

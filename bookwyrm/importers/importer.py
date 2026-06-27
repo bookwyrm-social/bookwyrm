@@ -117,10 +117,18 @@ class Importer:
             mappings[key] = value
         return mappings
 
-    def create_item(self, job: ImportJob, index: int, data: dict[str, str], shelf_override: str | None = None) -> None:
+    def create_item(
+        self,
+        job: ImportJob,
+        index: int,
+        data: dict[str, str],
+        shelf_override: str | None = None,
+    ) -> None:
         """creates and saves an import item"""
         normalized = self.normalize_row(data, job.mappings)
-        normalized["shelf"] = shelf_override if shelf_override else self.get_shelf(normalized)
+        normalized["shelf"] = (
+            shelf_override if shelf_override else self.get_shelf(normalized)
+        )
         ImportItem(job=job, index=index, data=data, normalized_data=normalized).save()
 
     def get_shelf(self, normalized_row: dict[str, Optional[str]]) -> Optional[str]:
