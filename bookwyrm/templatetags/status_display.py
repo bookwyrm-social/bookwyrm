@@ -67,8 +67,8 @@ def get_published_date(date):
     return naturaltime(date)
 
 
-@register.simple_tag()
-def get_header_template(status):
+@register.simple_tag(takes_context=True)
+def get_header_template(context, status):
     """get the path for the status template"""
     if isinstance(status, models.Boost):
         status = status.boosted_status
@@ -80,7 +80,7 @@ def get_header_template(status):
         header_type = status.status_type.lower()
     filename = f"snippets/status/headers/{header_type}.html"
     header_template = select_template([filename, "snippets/status/headers/note.html"])
-    return header_template.render({"status": status})
+    return header_template.render({"status": status}, context.get("request"))
 
 
 @register.simple_tag(takes_context=False)
