@@ -118,18 +118,17 @@ class UserViews(TestCase):
             is_api.return_value = True
             result = view(request, username="mouse")
         activity = json.loads(result.content)
-        self.assertEqual(activity["icon"],
-           {
+        self.assertEqual(
+            activity["icon"],
+            {
                 "type": "Image",
                 "url": f"{BASE_URL}{self.local_user.avatar.url}",
                 "name": "avatar for mouse",
                 "@context": [
                     "https://www.w3.org/ns/activitystreams",
-                    {
-                    "Hashtag": "as:Hashtag"
-                    }
-                ]
-            }
+                    {"Hashtag": "as:Hashtag"},
+                ],
+            },
         )
 
     def test_user_page_domain(self):
