@@ -101,5 +101,5 @@ class MergeData(View):
     def get(self, request):
         """view maintenance task settings"""
         return TemplateResponse(
-            request, "settings/manage-data/merge.html", data_quality_data()
+            request, "settings/manage-data/merge.html", {}
         )
