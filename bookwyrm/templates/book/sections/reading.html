@@ -1,0 +1,42 @@
+{% load i18n %}
+{% load shelf_tags %}
+
+{% if user_authenticated %}
+<section class="block">
+    {% if readthroughs.exists %}
+    <details class="details-panel notification mb-1">
+        <summary>
+            <span class="title is-6 mb-0" role="heading" aria-level="2">{% trans "Your reading" %}</span>
+            <span class="details-close icon icon-x" aria-hidden="true"></span>
+        </summary>
+
+        {% for readthrough in readthroughs %}
+        {% include 'readthrough/readthrough_list.html' with readthrough=readthrough %}
+        {% endfor %}
+    </details>
+    {% endif %}
+
+    <div class="control">
+        <button class="button is-small" data-modal-open="add-readthrough" id="tour-add-readthrough">
+            <span class="icon icon-plus m-mobile-0" aria-hidden="true"></span>
+            <span class="is-sr-only-mobile">
+                {% trans "Add read dates" %}
+            </span>
+        </button>
+    </div>
+    {% include "readthrough/readthrough_modal.html" with id="add-readthrough" %}
+</section>
+{% endif %}
+
+{% if other_edition_shelves %}
+<div class="block">
+    {% for shelf in other_edition_shelves %}
+    <p>
+        {% blocktrans trimmed with book_path=shelf.book.local_path shelf_path=shelf.shelf.local_path shelf_name=shelf.shelf|translate_shelf_name %}
+        A <a href="{{ book_path }}">different edition</a> of this book is on your <a href="{{ shelf_path }}">{{ shelf_name }}</a> shelf.
+        {% endblocktrans %}
+        {% include 'snippets/switch_edition_button.html' with edition=book %}
+    </p>
+    {% endfor %}
+</div>
+{% endif %}
