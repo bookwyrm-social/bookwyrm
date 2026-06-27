@@ -1,4 +1,5 @@
 """testing models"""
+
 import pathlib
 
 from unittest.mock import patch
@@ -126,18 +127,17 @@ class User(TestCase):
         with open(avatar_path, "rb") as avatar_file:
             self.user.avatar.save("mouse-avatar.jpg", avatar_file)
         activity = self.user.to_activity()
-        self.assertEqual(activity["icon"],
-           {
+        self.assertEqual(
+            activity["icon"],
+            {
                 "type": "Image",
                 "url": f"{BASE_URL}{self.user.avatar.url}",
                 "name": "avatar for mouse",
                 "@context": [
                     "https://www.w3.org/ns/activitystreams",
-                    {
-                    "Hashtag": "as:Hashtag"
-                    }
-                ]
-            }
+                    {"Hashtag": "as:Hashtag"},
+                ],
+            },
         )
 
     def test_activitypub_outbox(self):
