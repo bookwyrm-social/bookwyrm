@@ -106,21 +106,21 @@
                     </label>
                 </div>
                 <div class="field">
-                    <label class="label" for="default_shelf">
+                    <label class="label" for="shelf_override">
                         {% trans "Shelve all imported books on:" %}
                     </label>
 
                     <div class="select">
-                        <select name="default_shelf" id="default_shelf">
-                            <option value="">{% trans "Use the status from the file" %}</option>
+                        <select name="shelf_override" id="shelf_override">
+                            <option value="">{% trans "Use shelf/status from the file" %}</option>
                             {% for shelf in user_shelves %}
                             <option value="{{ shelf.name }}">{{ shelf|translate_shelf_name }}</option>
                             {% endfor %}
                         </select>
                     </div>
 
-                    <p class="help" id="desc_default_shelf">
-                        {% trans "Useful when your file has no shelf column." %}
+                    <p class="help" id="desc_shelf_override">
+                        {% trans "Choose a shelf to use instead of any shelf or reading status in the file." %}
                     </p>
                 </div>
                 <div class="field">

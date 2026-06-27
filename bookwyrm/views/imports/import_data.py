@@ -87,7 +87,7 @@ class Import(View):
         create_shelves = request.POST.get("create_shelves") == "on"
         privacy = request.POST.get("privacy")
         source = request.POST.get("source")
-        default_shelf = request.POST.get("default_shelf") or None
+        shelf_override = request.POST.get("shelf_override") or None
 
         if source == "BookWyrm":
             importer = BookwyrmBooksImporter()
@@ -112,7 +112,7 @@ class Import(View):
                 include_reviews,
                 privacy,
                 create_shelves,
-                default_shelf
+                shelf_override
             )
         except (UnicodeDecodeError, ValueError, KeyError):
             return self.get(request, invalid=True)
