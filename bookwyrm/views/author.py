@@ -54,8 +54,10 @@ class Author(View):
 
         paginated = Paginator(books, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
+
         data = {
             "author": author,
+            "author_dupe": author.pending_merge_target,
             "series": series,
             "books": page,
             "page_range": paginated.get_elided_page_range(

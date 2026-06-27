@@ -414,6 +414,21 @@ urlpatterns = [
         name="report-link",
     ),
     re_path(
+        r"^settings/data-quality/?$",
+        views.DataQuality.as_view(),
+        name="settings-data-quality",
+    ),
+    re_path(
+        r"^settings/data-quality/schedule-scan/?$",
+        views.schedule_deduplication_scan_task,
+        name="settings-dedupe-schedule-scan",
+    ),
+    re_path(
+        r"^settings/data-quality/unschedule/(?P<task_id>\d+)/?$",
+        views.unschedule_deduplication_scan_task,
+        name="settings-dedupe-unschedule",
+    ),
+    re_path(
         r"^settings/imports/(?P<status>(complete|active))?/?$",
         views.ImportList.as_view(),
         name="settings-imports",
@@ -947,6 +962,9 @@ urlpatterns = [
         name="edit-author",
     ),
     # series
+    re_path(
+        r"^series/(?P<series_id>\d+)(.json)?/?$", views.Series.as_view(), name="series"
+    ),
     re_path(
         rf"^series/(?P<series_id>\d+)(.json)?{regex.SLUG}/?$",
         views.Series.as_view(),

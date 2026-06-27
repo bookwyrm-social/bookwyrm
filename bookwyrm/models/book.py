@@ -4,14 +4,13 @@ from itertools import chain
 from functools import reduce
 import re
 import operator
-from typing import Any, Dict, Optional, Iterable
-from typing_extensions import Self
+from typing import Any, Optional, Iterable
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex, BloomIndex, Index
 from django.core.cache import cache
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import models, transaction
-from django.db.models import Prefetch, ManyToManyField, Q
+from django.db.models import Prefetch, Q
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
@@ -38,48 +37,97 @@ from .activitypub_mixin import (
     ObjectMixin,
 )
 from .base_model import BookWyrmModel
+from .mergeable_mixin import MergeableMixin
 from . import fields
 
 
-class BookDataModel(ObjectMixin, BookWyrmModel):
+class BookDataModel(ObjectMixin, MergeableMixin, BookWyrmModel):
     """fields shared between editable book data (books, works, authors)"""
 
     origin_id = models.CharField(max_length=255, null=True, blank=True)
     openlibrary_key = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("OpenLibrary key"),
     )
     finna_key = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("Finna key"),
     )
     libris_key = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("Libris key"),
     )
     inventaire_id = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("Inventaire ID"),
     )
     librarything_key = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("LibraryThing key"),
     )
     goodreads_key = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("GoodReads key"),
     )
     bnf_id = fields.CharField(  # Bibliothèque nationale de France
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("BNF ID"),
     )
     viaf = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("VIAF"),
     )
     wikidata = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("Wikidata ID"),
     )
     asin = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("ASIN"),
     )
     aasin = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("AASIN"),
     )
     isfdb = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("ISFDB ID"),
     )
     search_vector = SearchVectorField(null=True)
 
@@ -88,6 +136,9 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         on_delete=models.PROTECT,
         null=True,
     )
+
+    pending_merge_date = models.DateTimeField(null=True)
+    prevent_automatic_merge = models.BooleanField(default=False)
 
     @property
     def openlibrary_link(self):
@@ -142,80 +193,6 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         """only send book data updates to other bookwyrm instances"""
         super().broadcast(activity, sender, software=software, **kwargs)
 
-    def merge_into(self, canonical: Self, dry_run=False) -> Dict[str, Any]:
-        """merge this entity into another entity"""
-        if canonical.id == self.id:
-            raise ValueError(f"Cannot merge {self} into itself")
-
-        absorbed_fields = canonical.absorb_data_from(self, dry_run=dry_run)
-
-        if dry_run:
-            return absorbed_fields
-
-        canonical.save()
-
-        self.merged_model.objects.create(deleted_id=self.id, merged_into=canonical)
-
-        # move related models to canonical
-        related_models = [
-            (r.remote_field.name, r.related_model) for r in self._meta.related_objects
-        ]
-        for related_field, related_model in related_models:
-            # Skip the ManyToMany fields that aren’t auto-created. These
-            # should have a corresponding OneToMany field in the model for
-            # the linking table anyway. If we update it through that model
-            # instead then we won’t lose the extra fields in the linking
-            # table.
-
-            related_field_obj = related_model._meta.get_field(related_field)
-            if isinstance(related_field_obj, ManyToManyField):
-                through = related_field_obj.remote_field.through
-                if not through._meta.auto_created:
-                    continue
-            related_objs = related_model.objects.filter(**{related_field: self})
-            for related_obj in related_objs:
-                try:
-                    setattr(related_obj, related_field, canonical)
-                    related_obj.save()
-                except TypeError:
-                    getattr(related_obj, related_field).add(canonical)
-                    getattr(related_obj, related_field).remove(self)
-
-        self.delete()
-        return absorbed_fields
-
-    def absorb_data_from(self, other: Self, dry_run=False) -> Dict[str, Any]:
-        """fill empty fields with values from another entity"""
-        absorbed_fields = {}
-        for data_field in self._meta.get_fields():
-            if not hasattr(data_field, "activitypub_field"):
-                continue
-            canonical_value = getattr(self, data_field.name)
-            other_value = getattr(other, data_field.name)
-            if not other_value:
-                continue
-            if isinstance(data_field, fields.ArrayField):
-                if new_values := list(set(other_value) - set(canonical_value)):
-                    # append at the end (in no particular order)
-                    if not dry_run:
-                        setattr(self, data_field.name, canonical_value + new_values)
-                    absorbed_fields[data_field.name] = new_values
-            elif isinstance(data_field, fields.PartialDateField):
-                if (
-                    (not canonical_value)
-                    or (other_value.has_day and not canonical_value.has_day)
-                    or (other_value.has_month and not canonical_value.has_month)
-                ):
-                    if not dry_run:
-                        setattr(self, data_field.name, other_value)
-                    absorbed_fields[data_field.name] = other_value
-            else:
-                if not canonical_value:
-                    if not dry_run:
-                        setattr(self, data_field.name, other_value)
-                    absorbed_fields[data_field.name] = other_value
-        return absorbed_fields
-
 
 class MergedBookDataModel(models.Model):
     """a BookDataModel instance that has been merged into another instance. kept
@@ -229,11 +206,19 @@ class MergedBookDataModel(models.Model):
         abstract = True
 
 
-class MergedBook(MergedBookDataModel):
+class MergedEdition(MergedBookDataModel):
     """an Book that has been merged into another one"""
 
     merged_into = models.ForeignKey(
-        "Book", on_delete=models.PROTECT, related_name="absorbed"
+        "edition", on_delete=models.PROTECT, related_name="absorbed"
+    )
+
+
+class MergedWork(MergedBookDataModel):
+    """an Book that has been merged into another one"""
+
+    merged_into = models.ForeignKey(
+        "work", on_delete=models.PROTECT, related_name="absorbed"
     )
 
 
@@ -255,8 +240,6 @@ class MergedSeries(MergedBookDataModel):
 
 class Book(BookDataModel):
     """a generic book, which can mean either an edition or a work"""
-
-    merged_model = MergedBook
 
     connector = models.ForeignKey("Connector", on_delete=models.PROTECT, null=True)
 
@@ -484,9 +467,18 @@ class Book(BookDataModel):
 class Work(OrderedCollectionPageMixin, Book):
     """a work (an abstract concept of a book that manifests in an edition)"""
 
+    merged_model = MergedWork
+    pending_merge_target = models.ForeignKey(
+        "Work", related_name="merge_target", on_delete=models.PROTECT, null=True
+    )
+
     # library of congress catalog control number
     lccn = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("LCCN"),
     )
 
     def save(self, *args, **kwargs):
@@ -624,6 +616,11 @@ def validate_isbn13(maybe_isbn: str) -> None:
 class Edition(Book):
     """an edition of a book"""
 
+    merged_model = MergedEdition
+    pending_merge_target = models.ForeignKey(
+        "Edition", related_name="merge_target", on_delete=models.PROTECT, null=True
+    )
+
     # these identifiers only apply to editions, not works
     isbn_10 = fields.CharField(
         max_length=255,
@@ -631,6 +628,7 @@ class Edition(Book):
         null=True,
         deduplication_field=True,
         validators=[validate_isbn10],
+        verbose_name=_("ISBN 10"),
     )
     isbn_13 = fields.CharField(
         max_length=255,
@@ -638,9 +636,14 @@ class Edition(Book):
         null=True,
         deduplication_field=True,
         validators=[validate_isbn13],
+        verbose_name=_("ISBN 13"),
     )
     oclc_number = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        verbose_name=_("OCLC number"),
     )
     pages = fields.IntegerField(blank=True, null=True)
     physical_format = fields.CharField(
@@ -947,6 +950,12 @@ def preview_image(instance, *args, **kwargs):
 
 class Series(OrderedCollectionMixin, BookDataModel):
     """a series of books"""
+
+    merged_model = MergedSeries
+
+    pending_merge_target = models.ForeignKey(
+        "Series", related_name="merge_target", on_delete=models.PROTECT, null=True
+    )
 
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor", related_name="+"
