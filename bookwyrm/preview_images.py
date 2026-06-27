@@ -7,6 +7,8 @@ from io import BytesIO
 from uuid import uuid4
 import logging
 
+import arabic_reshaper
+from bidi.algorithm import get_display
 import colorsys
 from colorthief import ColorThief
 from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor
@@ -80,6 +82,8 @@ def get_font(weight, size=28):
 def get_wrapped_text(text, font, content_width):
     """text wrap length depends on the max width of the content"""
 
+    text = process_arabic_script(text)
+
     low = 0
     high = len(text)
 
@@ -106,6 +110,13 @@ def get_wrapped_text(text, font, content_width):
         height = 26
 
     return wrapped_text, height
+
+
+def process_arabic_script(text):
+    """First we need to re-shape the text, then apply the bidirectional text algo"""
+    reshaped_text = arabic_reshaper.reshape(text)
+    bidi_text = get_display(reshaped_text)
+    return bidi_text
 
 
 def generate_texts_layer(texts, content_width):
