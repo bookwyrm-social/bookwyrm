@@ -11,7 +11,7 @@
     </h1>
 </div>
 
-<form class="block" action="{% url 'search' %}" method="GET">
+<form class="block" action="{% url 'search' %}" method="GET" id="search_form">
     <div class="field has-addons">
         <div class="control">
             <input type="text" class="input" name="q" value="{{ query }}" aria-label="{% trans 'Search query' %}" id="tour-search-page-input" spellcheck="false">
@@ -25,6 +25,7 @@
                     <option value="user" {% if type == "user" %}selected{% endif %}>{% trans "Users" %}</option>
                     {% endif %}
                     <option value="list" {% if type == "list" %}selected{% endif %}>{% trans "Lists" %}</option>
+                    <option value="subject" {% if type == "subject" %}selected{% endif %}>{% trans "Subjects" %}</option>
                 </select>
             </div>
         </div>
@@ -54,8 +55,14 @@
         <li{% if type == "list" %} class="is-active"{% endif %}>
             <a href="{% url 'search' %}?q={{ query|urlencode }}&type=list">{% trans "Lists" %}</a>
         </li>
+        <li{% if type == "subject" %} class="is-active"{% endif %}>
+            <a href="{% url 'search' %}?q={{ query|urlencode }}&type=subject">{% trans "Subjects" %}</a>
+        </li>
     </ul>
 </nav>
+
+{% block filters %}
+{% endblock %}
 
 <section class="block" id="search-results-block">
     <p class="block">
