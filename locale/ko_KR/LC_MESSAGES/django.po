@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-17 23:40+0000\n"
-"PO-Revision-Date: 2026-06-18 00:19\n"
+"POT-Creation-Date: 2026-06-26 17:10+0000\n"
+"PO-Revision-Date: 2026-06-26 18:38\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -908,7 +908,7 @@ msgstr ""
 #: bookwyrm/templates/annual_summary/layout.html:270
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
-msgstr "%(year)s년 한 해 동안 %(display_name)s 님이 읽은 책들"
+msgstr "%(display_name)s 님이 %(year)s년 한 해 동안 읽은 책"
 
 #: bookwyrm/templates/author/author.html:20
 #: bookwyrm/templates/author/author.html:21
@@ -1170,7 +1170,7 @@ msgstr ""
 #: bookwyrm/templates/book/book.html:69
 #, python-format
 msgid "Book <span itemprop=\"position\">%(number)s</span> in <em><a href=\"%(path)s\">%(title)s</a></em>"
-msgstr ""
+msgstr "<em><a href=\"%(path)s\">%(title)s</a></em>의 <span itemprop=\"position\">%(number)s</span>권"
 
 #: bookwyrm/templates/book/book.html:75
 #, python-format
@@ -1549,7 +1549,7 @@ msgstr ""
 #: bookwyrm/templates/book/edit/edit_book_form.html:150
 #: bookwyrm/templates/snippets/create_status/quotation.html:31
 msgid "Position:"
-msgstr ""
+msgstr "위치:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:164
 #, python-format
@@ -1567,7 +1567,7 @@ msgstr ""
 #: bookwyrm/templates/book/edit/edit_book_form.html:186
 #: bookwyrm/templates/book/edit/edit_series.html:75
 msgid "Series position:"
-msgstr ""
+msgstr "시리즈 순서:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:189
 msgid "This field was previously called \"Series number\""
@@ -1682,7 +1682,7 @@ msgstr ""
 #: bookwyrm/templates/book/edit/edit_series.html:36
 #: bookwyrm/templates/book/series.html:29
 msgid "Alternative names"
-msgstr ""
+msgstr "다른 제목"
 
 #: bookwyrm/templates/book/edit/edit_series.html:39
 #: bookwyrm/templates/book/edit/edit_series.html:42
@@ -2423,7 +2423,7 @@ msgstr "읽음"
 #: bookwyrm/templates/shelf/shelf.html:96 bookwyrm/templates/user/user.html:54
 #: bookwyrm/templatetags/shelf_tags.py:18
 msgid "Stopped Reading"
-msgstr "읽다 멈춘 것"
+msgstr "읽다가 멈춤"
 
 #: bookwyrm/templates/get_started/books.html:6
 msgid "What are you reading?"
@@ -3928,7 +3928,7 @@ msgstr ""
 #: bookwyrm/templates/lists/created_text.html:7
 #, python-format
 msgid "Created and curated by <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "작성 및 큐레이트: <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/created_text.html:9
 #, python-format
@@ -4083,7 +4083,7 @@ msgstr "읽을 책 제안"
 
 #: bookwyrm/templates/lists/list.html:103
 msgid "Embed this list on a website"
-msgstr ""
+msgstr "이 목록을 웹사이트에 임베드하기"
 
 #: bookwyrm/templates/lists/list.html:111
 msgid "Copy embed code"
@@ -4099,7 +4099,7 @@ msgid "List position"
 msgstr "목록 위치"
 
 #: bookwyrm/templates/lists/list_item.html:63
-#: bookwyrm/templates/settings/connectors/connector.html:28
+#: bookwyrm/templates/settings/connectors/connector.html:29
 #: bookwyrm/templates/settings/connectors/update.html:27
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:23
 msgid "Set"
@@ -5303,7 +5303,7 @@ msgstr ""
 msgid "Search query"
 msgstr "검색 쿼리"
 
-#: bookwyrm/templates/search/layout.html:20
+#: bookwyrm/templates/search/layout.html:21
 msgid "Search type"
 msgstr "유형 검색"
 
@@ -5636,7 +5636,7 @@ msgid "Run time"
 msgstr "실행 시간"
 
 #: bookwyrm/templates/settings/celery.html:134
-#: bookwyrm/templates/settings/connectors/connector.html:22
+#: bookwyrm/templates/settings/connectors/connector.html:23
 #: bookwyrm/templates/settings/connectors/update.html:21
 msgid "Priority"
 msgstr "우선도"
@@ -5683,18 +5683,26 @@ msgstr ""
 msgid "Create new connector"
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/connector.html:35
+#: bookwyrm/templates/settings/connectors/connector.html:36
 #: bookwyrm/templates/settings/connectors/update.html:33
 #: bookwyrm/templates/settings/users/user_info.html:87
 msgid "Deactivation reason:"
 msgstr ""
 
+#: bookwyrm/templates/settings/connectors/connector.html:43
+msgid "Latest successful request"
+msgstr ""
+
 #: bookwyrm/templates/settings/connectors/connector.html:50
+msgid "Latest error"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connector.html:66
 #: bookwyrm/templates/settings/connectors/update.html:47
 msgid "Deactivate"
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/connector.html:61
+#: bookwyrm/templates/settings/connectors/connector.html:77
 #: bookwyrm/templates/settings/connectors/update.html:58
 msgid "Activate"
 msgstr ""
@@ -7397,7 +7405,7 @@ msgstr ""
 
 #: bookwyrm/templates/shelf/shelves_filter_field.html:7
 msgid "Enter text here"
-msgstr ""
+msgstr "여기에 텍스트 입력"
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:16
 msgid "Invite"
@@ -7471,14 +7479,14 @@ msgstr "퍼센트"
 msgid "of %(pages)s pages"
 msgstr ""
 
-#: bookwyrm/templates/snippets/create_status/content_field.html:18
+#: bookwyrm/templates/snippets/create_status/content_field.html:21
 #: bookwyrm/templates/snippets/status/layout.html:34
 #: bookwyrm/templates/snippets/status/layout.html:53
 #: bookwyrm/templates/snippets/status/layout.html:54
 msgid "Reply"
 msgstr "답하기"
 
-#: bookwyrm/templates/snippets/create_status/content_field.html:18
+#: bookwyrm/templates/snippets/create_status/content_field.html:21
 msgid "Content"
 msgstr "컨텐트"
 
@@ -7514,7 +7522,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:44
 msgid "On page:"
-msgstr ""
+msgstr "쪽:"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:50
 msgid "At percent:"
@@ -7760,7 +7768,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/shelf_selector.html:53
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:21
 msgid "Stopped reading"
-msgstr "읽다 멈춘 것"
+msgstr "읽다가 멈춤"
 
 #: bookwyrm/templates/snippets/reading_modals/want_to_read_modal.html:6
 #, python-format
@@ -7886,7 +7894,7 @@ msgstr "숨기기"
 #: bookwyrm/templates/snippets/status/header.html:45
 #, python-format
 msgid "edited %(date)s"
-msgstr ""
+msgstr "%(date)s일에 편집"
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:8
 #, python-format
@@ -7901,22 +7909,22 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/note.html:8
 #, python-format
 msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
-msgstr "독자가 <a href=\"%(user_path)s\">%(username)s</a>'독자의 <a href=\"%(status_path)s\">게시물</a>에 회신"
+msgstr "님이 <a href=\"%(user_path)s\">%(username)s</a>'독자의 <a href=\"%(status_path)s\">게시물</a>에 회신"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:8
 #, python-format
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr "독자가 인용한 <a href=\"%(author_path)s\">%(author_name)s</a> 의 <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "님이 인용한 <a href=\"%(author_path)s\">%(author_name)s</a> 의 <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:15
 #, python-format
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr "<a href=\"%(book_path)s\">%(book)s</a> 인용"
+msgstr "님이 <a href=\"%(book_path)s\">%(book)s</a> 인용"
 
 #: bookwyrm/templates/snippets/status/headers/rating.html:3
 #, python-format
 msgid "rated <a href=\"%(book_path)s\">%(book)s</a>:"
-msgstr ""
+msgstr "님이 <a href=\"%(book_path)s\">%(book)s</a>에 별점:"
 
 #: bookwyrm/templates/snippets/status/headers/read.html:10
 #, python-format
@@ -7931,12 +7939,12 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/reading.html:10
 #, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "님이 <a href=\"%(author_path)s\">%(author_name)s</a>의 <a href=\"%(book_path)s\">%(book)s</a> 읽기 시작"
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:17
 #, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr "독자가 읽기 시작한 <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "님이 읽기 시작한 <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/review.html:10
 #: bookwyrm/templates/snippets/status/headers/review.html:26
@@ -7952,7 +7960,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/review.html:33
 #, python-format
 msgid "rated <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "님이 <a href=\"%(book_path)s\">%(book)s</a>에 별점"
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
 #, python-format
@@ -8261,7 +8269,7 @@ msgstr ""
 
 #: bookwyrm/views/books/series.py:91
 msgid "Series position must be unique for each book"
-msgstr ""
+msgstr "시리즈 순서는 각 권마다 고유해야함"
 
 #: bookwyrm/views/updates.py:46
 #, python-format
