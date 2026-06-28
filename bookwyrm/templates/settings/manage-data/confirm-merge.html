@@ -1,0 +1,55 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title %}
+{% trans 'Confirm merge' %}
+{% endblock %}
+
+{% block header %}
+{% trans 'Confirm merge' %}
+{% endblock %}
+
+{% block panel %}
+
+<div class="block">
+    {% blocktrans trimmed %}
+    <p>
+        The merged {{model_name}} will have the following values.
+    </p>
+    <p>
+        Only fields where values differ are shown – other fields will automatically merge.
+    </p>
+    <p>
+         Related fields such as series attached to books or editions attached to authors will automatically be merged into this {{model_name}}.
+    </p>
+    {% endblocktrans %}
+</div>
+
+<form action="{% url 'settings-confirm-manual-merge' model_name canonical_id %}" method="post">
+    {% csrf_token %}
+    <table class="table is-fullwidth">
+        <thead>
+            <tr class="has-text-weight-bold">
+                <td>{% trans 'Field' %}</td>
+                <td>{% trans 'Merged value' %}</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for field in fields %}
+            <tr>
+                <td><strong>{{ field.name }}</strong></td>
+                <td>{{ field.diff|safe }}</td>
+            </tr>
+            <input name={{field.name}} value="{{field.value}}" hidden>
+            {% endfor %}
+        </tbody>
+    </table>
+    <section class="is-pulled-right">
+        <a href="#" class="button" data-back>
+            <span>{% trans "Back" %}</span>
+        </a>
+        <button class="button is-primary" type="submit">{% trans "Confirm" %}</button>
+    </section>
+</form>
+{% endblock %}

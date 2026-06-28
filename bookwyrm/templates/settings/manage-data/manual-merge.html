@@ -1,0 +1,121 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% load humanize %}
+{% load static %}
+{% load utilities %}
+{% load date_ext %}
+
+{% block title %}
+{% blocktrans %}
+Merge {{plural_model}}
+{% endblocktrans %}
+{% endblock %}
+
+{% block header %}
+{% blocktrans %}
+Merge {{plural_model}}
+{% endblocktrans %}
+{% endblock %}
+
+{% block panel %}
+{% with tab_id=request.GET.tab_id canonical_id=canonical.id %}
+<div class="block">
+    {% if not simple_fields and not array_fields %}
+    <form class="form" method="post" action="{% url 'settings-confirm-manual-merge' model_name canonical_id %}">
+        {% csrf_token %}
+        <div class="has-text-centered m-4">
+            <p>
+            {% blocktrans %}
+            All mergable fields in {{ trans_model }} {{ canonical_id }} and its duplicate {{ plural_model }} are identical.
+            {% endblocktrans %}
+            </p>
+            <button type="submit" class="button is-primary m-4">{% trans 'Merge' %}</button>
+        </div>
+    </form>
+    {% else %}
+    <section>
+        <p class="mb-4">
+            {% trans 'Choose which values to use in the merged object. Only values that differ are shown – other values will automatically merge.' %}
+        </p>
+    </section>
+    <form class="form" method="post">
+    {% csrf_token %}
+    <table class="table is-fullwidth">
+        <thead>
+            <tr class="has-text-centered">
+                <td class="is-primary">{% trans 'Field' %}</td>
+                <td colspan="2" class="is-primary">{% trans 'Canonical values' %}</td>
+                <td colspan="2" class="is-primary">{% trans 'Duplicate values' %}</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for field in simple_fields %}
+            <tr>
+                {% with canonical|getattr_filter:field.name as canonical_value %}
+                <td class="has-background-grey-lighter">
+                    <strong>{{field.trans_name}}</strong>
+                </td>
+                <td>
+                    {% if canonical_value %}
+                    <input
+                        type="radio" name="{{field.name}}" value="{{canonical|getattr_filter:field.name}}"
+                        checked
+                    />
+                    {% endif %}
+                </td>
+                <td>
+                    <label for="{{field}}" class="mr-4">{{canonical|getattr_filter:field.name}}</label>
+                </td>
+                <td class="has-background-white-ter">
+                {% for candidate in objects %}
+                {% if candidate.id != canonical.id and candidate|getattr_filter:field.name %}
+                    <div>
+                        <input
+                        type="radio" name="{{field.name}}" value="{{candidate|getattr_filter:field.name}}"
+                        {% if field.unique == candidate.id %}checked{% endif %}
+                        />
+                        <label for="{{field}}" class="mr-4">{{candidate|getattr_filter:field.name}}</label>
+                    </div>
+
+                {% endif %}
+                {% endfor %}
+                </td>
+                {% endwith %}
+            </tr>
+            {% endfor %}
+            {% for field in array_fields %}
+            <tr>
+                <td class="has-background-grey-lighter">
+                    <strong>{{field.trans_name}}</strong>
+                </td>
+                <td colspan="2">
+                    {% for val in canonical|getattr_filter:field.name %}
+                    <div>
+                        <input type="checkbox" name="{{field.name}}" value="{{val}}" checked/>
+                        <label for="{{field.name}}" class="mr-4">{{ val }}</label>
+                    </div>
+                    {% endfor %}
+                </td>
+                <td colspan="2" class="has-background-white-ter">
+                    {% for candidate in objects %}
+                    {% if candidate.id != canonical.id %}
+                    {% for val in candidate|getattr_filter:field.name %}
+                    <div>
+                        <input type="checkbox" name="{{field.name}}" value="{{val}}" checked/>
+                        <label for="{{field.name}}" class="mr-4">{{ val }}</label>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <button type="submit" class="button is-pulled-right is-primary">{% trans 'Next' %}</button>
+    </form>
+    {% endif %}
+</div>
+{% endwith %}
+{% endblock %}
