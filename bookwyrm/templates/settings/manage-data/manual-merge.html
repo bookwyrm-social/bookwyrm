@@ -18,16 +18,28 @@ Merge {{plural_model}}
 {% endblock %}
 
 {% block panel %}
-{% with tab_id=request.GET.tab_id %}
+{% with tab_id=request.GET.tab_id canonical_id=canonical.id %}
 <div class="block">
+    {% if not simple_fields and not array_fields %}
+    <form class="form" method="post" action="{% url 'settings-confirm-manual-merge' model_name canonical_id %}">
+        {% csrf_token %}
+        <div class="has-text-centered m-4">
+            <p>
+            {% blocktrans %}
+            All mergable fields in {{ trans_model }} {{ canonical_id }} and its duplicate {{ plural_model }} are identical.
+            {% endblocktrans %}
+            </p>
+            <button type="submit" class="button is-primary m-4">{% trans 'Merge' %}</button>
+        </div>
+    </form>
+    {% else %}
     <section>
         <p class="mb-4">
-            {% trans 'Choose which values to use in the merged object. Only values that differ are shown – other values will automatically merge.' %}
+            {% trans 'Choose which values to use in the merged object. Only values that differ are shown – other values will automatically merge.' %}
         </p>
     </section>
     <form class="form" method="post">
     {% csrf_token %}
-
     <table class="table is-fullwidth">
         <thead>
             <tr class="has-text-centered">
@@ -103,7 +115,7 @@ Merge {{plural_model}}
     </div>
     <button type="submit" class="button is-pulled-right is-primary">{% trans 'Next' %}</button>
     </form>
-
+    {% endif %}
 </div>
 {% endwith %}
 {% endblock %}

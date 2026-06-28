@@ -29,6 +29,12 @@
 <form action="{% url 'settings-confirm-manual-merge' model_name canonical_id %}" method="post">
     {% csrf_token %}
     <table class="table is-fullwidth">
+        <thead>
+            <tr class="has-text-weight-bold">
+                <td>{% trans 'Field' %}</td>
+                <td>{% trans 'Merged value' %}</td>
+            </tr>
+        </thead>
         <tbody>
             {% for field in fields %}
             <tr>

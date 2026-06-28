@@ -132,7 +132,8 @@ class ManualMerge(View):
         model = apps.get_model(
             f"bookwyrm.{model_name}", require_ready=True
         )
-        plural_model = f"{_(model_name)}s"
+        plural_model = model._meta.verbose_name_plural
+        trans_model = model._meta.verbose_name
         canonical = get_object_or_404(model.objects.filter(id=canonical_id))
         candidates = canonical.merge_candidates
         if not candidates:
@@ -196,10 +197,11 @@ class ManualMerge(View):
             "canonical": canonical,
             "objects": all_objects.reverse(),
             "model_name": model_name,
-            "plural_model": plural_model
+            "plural_model": plural_model,
+            "trans_model": trans_model,
         }
         return TemplateResponse(
-            request, "settings/data-quality/manual-merge.html", data
+            request, "settings/manage-data/manual-merge.html", data
         )
 
     def post(self, request, model_name, canonical_id):
@@ -245,11 +247,11 @@ class ManualMerge(View):
         data = {
             "update_fields": update_fields,
             "fields": fields + array_fields,
-            "model_name": model_name.capitalize(),
+            "model_name": model_name,
             "canonical_id": canonical.id,
         }
         return TemplateResponse(
-            request, "settings/data-quality/confirm-merge.html", data
+            request, "settings/manage-data/confirm-merge.html", data
         )
 
 
@@ -262,17 +264,17 @@ def confirm_manual_merge(request, model_name, canonical_id):
     canonical = get_object_or_404(model.objects.filter(id=canonical_id))
     update_fields = [field for field in request.POST if field != "csrfmiddlewaretoken"]
 
-    for field in update_fields:
-        value = request.POST.get(field)
-        if model._meta.get_field(field).get_internal_type() == "DateTimeField":
-            value = datetime.fromisoformat(f"{value}T12:00:00Z")
-        if model._meta.get_field(field).get_internal_type() == "ArrayField":
-            value = request.POST.getlist(field)
-
-        setattr(canonical, field, value)
-    canonical.save(update_fields=update_fields)
+    if update_fields:
+        for field in update_fields:
+            value = request.POST.get(field)
+            if model._meta.get_field(field).get_internal_type() == "DateTimeField":
+                value = datetime.fromisoformat(f"{value}T12:00:00Z")
+            if model._meta.get_field(field).get_internal_type() == "ArrayField":
+                value = request.POST.getlist(field)
+            setattr(canonical, field, value)
+        canonical.save(update_fields=update_fields)
 
     for candidate in canonical.merge_candidates:
         candidate.merge_into(canonical)
 
-    return redirect(f"/book/{canonical.id}")
+    return redirect(canonical.remote_id)
