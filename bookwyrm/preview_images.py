@@ -6,7 +6,11 @@ import textwrap
 from io import BytesIO
 from uuid import uuid4
 import logging
+import unicodedata as ud
+from collections import Counter
 
+import arabic_reshaper
+from bidi.algorithm import get_display
 import colorsys
 from colorthief import ColorThief
 from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor
@@ -51,23 +55,36 @@ def get_imagefont(name, size):
 
 def get_font(weight, size=28):
     """Gets a custom font with the given weight and size"""
-    font = get_imagefont(DEFAULT_FONT, size)
 
-    try:
-        if weight == "light":
-            font.set_variation_by_name("Light")
-        if weight == "bold":
-            font.set_variation_by_name("Bold")
-        if weight == "regular":
-            font.set_variation_by_name("Regular")
-    except OSError:
-        pass
+    fonts = DEFAULT_FONT.split(",")
+    for file in fonts:
+        file = file.strip()
+        font = get_imagefont(file, size)
+        if weight in file.lower():
+            break
+
+        try:
+            variations = font.get_variation_names()
+            variations_lower = [
+                v.decode("UTF-8").lower() for v in font.get_variation_names()
+            ]
+            idx = (
+                variations_lower.index(weight.lower())
+                if weight.lower() in variations_lower
+                else 0
+            )
+            font.set_variation_by_name(variations[idx])
+
+        except:
+            pass
 
     return font
 
 
 def get_wrapped_text(text, font, content_width):
     """text wrap length depends on the max width of the content"""
+
+    text = process_arabic_script(text)
 
     low = 0
     high = len(text)
@@ -97,6 +114,26 @@ def get_wrapped_text(text, font, content_width):
     return wrapped_text, height
 
 
+def process_arabic_script(text):
+    """First we need to re-shape the text, then apply the bidirectional text algo"""
+    reshaped_text = arabic_reshaper.reshape(text)
+    bidi_text = get_display(reshaped_text)
+    return bidi_text
+
+
+def get_text_direction(text):
+    """Get the dominant strong direction
+    We we will not be using direction="rtl" | "ltr" property in multiline_text()
+    because the bidirectionality has already been treated with process_arabic_script
+    instead, we use this property to set the align property
+    """
+    # from https://stackoverflow.com/a/75739782
+    count = Counter([ud.bidirectional(c) for c in list(text)])
+    rtl_count = count["R"] + count["AL"] + count["RLE"] + count["RLI"]
+    ltr_count = count["L"] + count["LRE"] + count["LRI"]
+    return "right" if rtl_count > ltr_count else "left"
+
+
 def generate_texts_layer(texts, content_width):
     """Adds text for images"""
     font_text_zero = get_font("bold", size=20)
@@ -107,7 +144,15 @@ def generate_texts_layer(texts, content_width):
     text_layer = Image.new("RGBA", (content_width, IMG_HEIGHT), color=TRANSPARENT_COLOR)
     text_layer_draw = ImageDraw.Draw(text_layer)
 
+    text_x = 0
+    text_anchor = None
     text_y = 0
+    main_title = texts["text_one"] if "text_one" in texts else ""
+    text_align = get_text_direction(main_title)
+
+    if text_align == "right":
+        text_x = content_width
+        text_anchor = "ra"
 
     if "text_zero" in texts and texts["text_zero"]:
         # Text zero (Site preview domain name)
@@ -116,7 +161,12 @@ def generate_texts_layer(texts, content_width):
         )
 
         text_layer_draw.multiline_text(
-            (0, text_y), text_zero, font=font_text_zero, fill=TEXT_COLOR
+            (text_x, text_y),
+            text_zero,
+            font=font_text_zero,
+            fill=TEXT_COLOR,
+            align=text_align,
+            anchor=text_anchor,
         )
 
         try:
@@ -131,7 +181,12 @@ def generate_texts_layer(texts, content_width):
         )
 
         text_layer_draw.multiline_text(
-            (0, text_y), text_one, font=font_text_one, fill=TEXT_COLOR
+            (text_x, text_y),
+            text_one,
+            font=font_text_one,
+            fill=TEXT_COLOR,
+            align=text_align,
+            anchor=text_anchor,
         )
 
         try:
@@ -146,7 +201,12 @@ def generate_texts_layer(texts, content_width):
         )
 
         text_layer_draw.multiline_text(
-            (0, text_y), text_two, font=font_text_two, fill=TEXT_COLOR
+            (text_x, text_y),
+            text_two,
+            font=font_text_two,
+            fill=TEXT_COLOR,
+            align=text_align,
+            anchor=text_anchor,
         )
 
         try:
@@ -161,11 +221,16 @@ def generate_texts_layer(texts, content_width):
         )
 
         text_layer_draw.multiline_text(
-            (0, text_y), text_three, font=font_text_three, fill=TEXT_COLOR
+            (text_x, text_y),
+            text_three,
+            font=font_text_three,
+            fill=TEXT_COLOR,
+            align=text_align,
+            anchor=text_anchor,
         )
 
     text_layer_box = text_layer.getbbox()
-    return text_layer.crop(text_layer_box)
+    return text_layer.crop(text_layer_box), text_align
 
 
 def generate_instance_layer(content_width):
@@ -208,10 +273,12 @@ def generate_instance_layer(content_width):
     )
     instance_layer.alpha_composite(line_layer, (0, 60))
 
+    instance_layer = instance_layer.crop((0, 0, line_width, instance_layer.height))
+
     return instance_layer
 
 
-def generate_rating_layer(rating, content_width):
+def generate_rating_layer(rating):
     """Places components for rating preview"""
     path_star_full = os.path.join(settings.STATIC_ROOT, "images/icons/star-full.png")
     path_star_empty = os.path.join(settings.STATIC_ROOT, "images/icons/star-empty.png")
@@ -220,12 +287,14 @@ def generate_rating_layer(rating, content_width):
     icon_size = 64
     icon_margin = 10
 
+    layer_width = (5 * icon_size) + (4 * icon_margin)
+
     rating_layer_base = Image.new(
-        "RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR
+        "RGBA", (layer_width, icon_size), color=TRANSPARENT_COLOR
     )
-    rating_layer_color = Image.new("RGBA", (content_width, icon_size), color=TEXT_COLOR)
+    rating_layer_color = Image.new("RGBA", (layer_width, icon_size), color=TEXT_COLOR)
     rating_layer_mask = Image.new(
-        "RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR
+        "RGBA", (layer_width, icon_size), color=TRANSPARENT_COLOR
     )
 
     position_x = 0
@@ -327,10 +396,16 @@ def generate_preview_image(
     img = Image.new("RGBA", (IMG_WIDTH, IMG_HEIGHT), color=image_bg_color)
 
     # Contents
-    inner_img_x = margin + inner_img_width - inner_img_layer.width
     inner_img_y = math.floor((IMG_HEIGHT - inner_img_layer.height) / 2)
-    content_x = margin + inner_img_width + gutter
-    content_width = IMG_WIDTH - content_x - margin
+    content_width = IMG_WIDTH - margin - gutter - inner_img_width - margin
+
+    texts_layer, text_align = generate_texts_layer(texts, content_width)
+    if text_align == "left":
+        inner_img_x = margin + inner_img_width - inner_img_layer.width
+        content_x = margin + inner_img_width + gutter
+    elif text_align == "right":
+        inner_img_x = IMG_WIDTH - margin - inner_img_width
+        content_x = margin
 
     contents_layer = Image.new(
         "RGBA", (content_width, IMG_HEIGHT), color=TRANSPARENT_COLOR
@@ -339,20 +414,29 @@ def generate_preview_image(
 
     if show_instance_layer:
         instance_layer = generate_instance_layer(content_width)
-        contents_layer.alpha_composite(instance_layer, (0, contents_composite_y))
+        instance_layer_x = (
+            0 if text_align == "left" else content_width - instance_layer.width
+        )
+        contents_layer.alpha_composite(
+            instance_layer, (instance_layer_x, contents_composite_y)
+        )
         contents_composite_y = contents_composite_y + instance_layer.height + gutter
 
-    texts_layer = generate_texts_layer(texts, content_width)
-    contents_layer.alpha_composite(texts_layer, (0, contents_composite_y))
+    texts_layer_x = 0 if text_align == "left" else content_width - texts_layer.width
+    contents_layer.alpha_composite(texts_layer, (texts_layer_x, contents_composite_y))
     contents_composite_y = contents_composite_y + texts_layer.height + gutter
 
     if rating:
         # Add some more margin
         contents_composite_y = contents_composite_y + gutter
-        rating_layer = generate_rating_layer(rating, content_width)
-
+        rating_layer = generate_rating_layer(rating)
         if rating_layer:
-            contents_layer.alpha_composite(rating_layer, (0, contents_composite_y))
+            rating_layer_x = (
+                0 if text_align == "left" else content_width - rating_layer.width
+            )
+            contents_layer.alpha_composite(
+                rating_layer, (rating_layer_x, contents_composite_y)
+            )
             contents_composite_y = contents_composite_y + rating_layer.height + gutter
 
     contents_layer_box = contents_layer.getbbox()
