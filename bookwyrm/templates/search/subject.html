@@ -1,0 +1,28 @@
+{% extends 'search/book.html' %}
+{% load i18n %}
+
+{% block search_footer %}
+{% endblock %}
+
+{% block filters %}
+<section class="block" id="search-filters">
+    <div class="field is-horizontal">
+      <div class="field-label is-normal is-flex-grow-0">
+        <label for="shelves_filter_field" class="label">{% trans "Filter" %}</label>
+      </div>
+      <div class="field-body">
+        <div class="field is-narrow">
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select name="shelved" form="search_form" id="shelves_filter_field">
+                <option {% if shelved not in "true,false" %}{% endif %} value="">All books</option>
+                <option {% if shelved == "true" %}selected{% endif %} value="true">Only my books</option>
+                <option {% if shelved == "false" %}selected{% endif %} value="false">Outside of my books</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+{% endblock %}
