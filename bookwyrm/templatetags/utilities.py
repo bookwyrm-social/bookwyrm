@@ -183,10 +183,16 @@ def get_file_size(nbytes):
 
 
 @register.filter(name="get_user_permission")
-def get_user_permission(user):
-    """given a user, return their permission level"""
+def get_user_permission_group(user):
+    """given a user, return their permission group"""
 
     return user.groups.first() or "User"
+
+
+@register.filter(name="has_perm")
+def check_user_has_permission(user, perm_name):
+    """does the given user have a specific permission?"""
+    return user.has_perm(f"bookwyrm.{perm_name}")
 
 
 @register.filter(name="is_instance_admin")
