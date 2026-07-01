@@ -19,6 +19,9 @@ class Author(BookDataModel):
     """basic biographic info"""
 
     merged_model = MergedAuthor
+    pending_merge_target = models.ForeignKey(
+        "Author", related_name="merge_target", on_delete=models.PROTECT, null=True
+    )
 
     wikipedia_link = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
