@@ -314,22 +314,22 @@ class HomeStream(ActivityStream):
 
 
 class LocalStream(ActivityStream):
-    """users you follow"""
+    """Posts from local users"""
 
     key = "local"
 
-    def get_audience(self, status):
+    def get_audience(self, status, exclude_self=True):
         # this stream wants no part in non-public statuses
         if status.privacy != "public" or not status.user.local:
             return []
-        return super().get_audience(status)
+        return super().get_audience(status, exclude_self=exclude_self)
 
     def get_statuses_for_user(self, user):
         # all public statuses by a local user
         return models.Status.privacy_filter(
             user,
             privacy_levels=["public"],
-        ).filter(user__local=True)
+        ).filter(user__local=True).exclude(user=user.id)
 
 
 class BooksStream(ActivityStream):
