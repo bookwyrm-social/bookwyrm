@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-17 23:40+0000\n"
-"PO-Revision-Date: 2026-06-18 00:18\n"
+"POT-Creation-Date: 2026-06-26 17:10+0000\n"
+"PO-Revision-Date: 2026-06-29 03:35\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -39,16 +39,16 @@ msgstr "Sans limite"
 
 #: bookwyrm/forms/edit_user.py:15
 msgid "Readwise access token"
-msgstr ""
+msgstr "Jeton d'accès Readwise"
 
 #: bookwyrm/forms/edit_user.py:24
 #: bookwyrm/templates/preferences/edit_user.html:173
 msgid "Remove saved Readwise access token"
-msgstr ""
+msgstr "Supprimer le jeton d'accès Readwise enregistré"
 
 #: bookwyrm/forms/edit_user.py:64
 msgid "A Readwise access token is saved. Leave this blank to keep it."
-msgstr ""
+msgstr "Un jeton d'accès Readwise est enregistré. Laissez ce champ vide pour le conserver."
 
 #: bookwyrm/forms/edit_user.py:136 bookwyrm/views/landing/password.py:117
 msgid "Incorrect password"
@@ -419,12 +419,12 @@ msgstr "Approuvé"
 #: bookwyrm/models/list.py:106
 #, python-format
 msgid "Suggestions for %(title)s"
-msgstr ""
+msgstr "Suggestions pour %(title)s"
 
 #: bookwyrm/models/list.py:112
 #, python-format
 msgid "This is the list of suggestions for <a href='%(url)s'>%(title)s</a>"
-msgstr ""
+msgstr "Voici la liste des suggestions pour <a href=“%(url)s”>%(title)s</a>"
 
 #: bookwyrm/models/report.py:120
 msgid "Resolved report"
@@ -1899,43 +1899,43 @@ msgstr "Livre %(series_number)s"
 #: bookwyrm/templates/lists/list_item.html:37
 #, python-format
 msgid "Added by %(user_link)s"
-msgstr ""
+msgstr "Ajouté par %(user_link)s"
 
 #: bookwyrm/templates/book/suggestion_list/endorsement_button.html:4
 msgid "Endorse this suggestion"
-msgstr ""
+msgstr "Soutenir cette suggestion"
 
 #: bookwyrm/templates/book/suggestion_list/endorsement_button.html:5
 msgid "Endorsements"
-msgstr ""
+msgstr "Recommandations"
 
 #: bookwyrm/templates/book/suggestion_list/list.html:6
 #: bookwyrm/templates/user/layout.html:111
 #: bookwyrm/templates/user/suggestions.html:6
 msgid "Suggestions"
-msgstr ""
+msgstr "Suggestions"
 
 #: bookwyrm/templates/book/suggestion_list/list.html:9
 msgid "View all suggestions"
-msgstr ""
+msgstr "Voir toutes les suggestions"
 
 #: bookwyrm/templates/book/suggestion_list/list.html:18
 #, python-format
 msgid "Readers who liked <em>%(title)s</em> recommend giving these books a try:"
-msgstr ""
+msgstr "Les lecteurs qui ont aimé <em>%(title)s</em> vous recommandent de découvrir ces livres :"
 
 #: bookwyrm/templates/book/suggestion_list/list.html:27
 #: bookwyrm/templates/book/suggestion_list/list.html:51
 msgid "Have a recommendation for someone who liked this book?"
-msgstr ""
+msgstr "Vous avez une recommandation à faire à quelqu'un qui a aimé ce livre ?"
 
 #: bookwyrm/templates/book/suggestion_list/list.html:52
 msgid "Load books"
-msgstr ""
+msgstr "Charger des livres"
 
 #: bookwyrm/templates/book/suggestion_list/search.html:8
 msgid "Add suggestions"
-msgstr ""
+msgstr "Ajouter des suggestions"
 
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
@@ -2138,7 +2138,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a> a commencé <a href=\"%(book_
 #: bookwyrm/templates/discover/card-header.html:23
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> stopped reading <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> a arrêté de lire <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:28
 #: bookwyrm/templates/discover/card-header.html:37
@@ -4113,7 +4113,7 @@ msgid "List position"
 msgstr "Position"
 
 #: bookwyrm/templates/lists/list_item.html:63
-#: bookwyrm/templates/settings/connectors/connector.html:28
+#: bookwyrm/templates/settings/connectors/connector.html:29
 #: bookwyrm/templates/settings/connectors/update.html:27
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:23
 msgid "Set"
@@ -4128,7 +4128,7 @@ msgstr "Retirer"
 #: bookwyrm/templates/lists/list_item_notes.html:12
 #, python-format
 msgid "%(user_link)s says:"
-msgstr ""
+msgstr "%(user_link)s dit :"
 
 #: bookwyrm/templates/lists/list_item_notes.html:26
 msgid "Edit notes"
@@ -4710,11 +4710,11 @@ msgstr "Aucun compte bloqué actuellement"
 #: bookwyrm/templates/preferences/books.html:7
 #: bookwyrm/templates/preferences/layout.html:66
 msgid "Blocked Books"
-msgstr ""
+msgstr "Livres interdits"
 
 #: bookwyrm/templates/preferences/books.html:12
 msgid "No books currently blocked."
-msgstr ""
+msgstr "Aucun livre n'est actuellement bloqué."
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
@@ -4806,7 +4806,7 @@ msgstr "Confidentialité"
 #: bookwyrm/templates/preferences/edit_user.html:15
 #: bookwyrm/templates/preferences/edit_user.html:157
 msgid "Integrations"
-msgstr ""
+msgstr "Intégrations"
 
 #: bookwyrm/templates/preferences/edit_user.html:70
 msgid "Show reading goal prompt in feed"
@@ -4839,7 +4839,7 @@ msgstr "Thème :"
 
 #: bookwyrm/templates/preferences/edit_user.html:124
 msgid "Make profile private"
-msgstr ""
+msgstr "Rendre le profil privé"
 
 #: bookwyrm/templates/preferences/edit_user.html:130
 msgid "Manually approve followers"
@@ -4860,11 +4860,11 @@ msgstr "Vous souhaitez protéger vos étagères ? Vous pouvez définir un nive
 
 #: bookwyrm/templates/preferences/edit_user.html:160
 msgid "Readwise access token:"
-msgstr ""
+msgstr "Jeton d'accès Readwise :"
 
 #: bookwyrm/templates/preferences/edit_user.html:165
 msgid "Send new quote posts to Readwise. You can create a token at <a href=\"https://readwise.io/access_token\">readwise.io/access_token</a>."
-msgstr ""
+msgstr "Envoyez les nouvelles publications de citations vers Readwise. Vous pouvez créer un jeton à l'adresse <a href=\"https://readwise.io/access_token\">readwise.io/access_token</a>."
 
 #: bookwyrm/templates/preferences/export-user.html:6
 #: bookwyrm/templates/preferences/export-user.html:9
@@ -5010,7 +5010,7 @@ msgstr "Données"
 
 #: bookwyrm/templates/preferences/layout.html:58
 msgid "Safety"
-msgstr ""
+msgstr "Sécurité"
 
 #: bookwyrm/templates/preferences/move_user.html:12
 msgid "Migrate account to another server"
@@ -5286,7 +5286,7 @@ msgstr "Recherche du livre :"
 #: bookwyrm/templates/search/book.html:12
 #, python-format
 msgid "<em>Some <a href=\"%(bb_path)s\">blocked books</a> have been excluded.</em>"
-msgstr ""
+msgstr "<em>Certains <a href=\"%(bb_path)s\">livres bloqués</a> ont été écartés.</em>"
 
 #: bookwyrm/templates/search/book.html:35
 #, python-format
@@ -5324,7 +5324,7 @@ msgstr "Authentifiez-vous pour importer ou ajouter des livres."
 msgid "Search query"
 msgstr "Requête"
 
-#: bookwyrm/templates/search/layout.html:20
+#: bookwyrm/templates/search/layout.html:21
 msgid "Search type"
 msgstr "Type de recherche"
 
@@ -5658,7 +5658,7 @@ msgid "Run time"
 msgstr "Durée"
 
 #: bookwyrm/templates/settings/celery.html:134
-#: bookwyrm/templates/settings/connectors/connector.html:22
+#: bookwyrm/templates/settings/connectors/connector.html:23
 #: bookwyrm/templates/settings/connectors/update.html:21
 msgid "Priority"
 msgstr "Priorité"
@@ -5705,18 +5705,26 @@ msgstr "Libris est le catalogue de la Bibliothèque nationale de Suède, qui don
 msgid "Create new connector"
 msgstr "Créer un nouveau connecteur"
 
-#: bookwyrm/templates/settings/connectors/connector.html:35
+#: bookwyrm/templates/settings/connectors/connector.html:36
 #: bookwyrm/templates/settings/connectors/update.html:33
 #: bookwyrm/templates/settings/users/user_info.html:87
 msgid "Deactivation reason:"
 msgstr "Raison de la désactivation :"
 
+#: bookwyrm/templates/settings/connectors/connector.html:43
+msgid "Latest successful request"
+msgstr "Dernière requête réussie"
+
 #: bookwyrm/templates/settings/connectors/connector.html:50
+msgid "Latest error"
+msgstr "Dernière erreur"
+
+#: bookwyrm/templates/settings/connectors/connector.html:66
 #: bookwyrm/templates/settings/connectors/update.html:47
 msgid "Deactivate"
 msgstr "Désactiver"
 
-#: bookwyrm/templates/settings/connectors/connector.html:61
+#: bookwyrm/templates/settings/connectors/connector.html:77
 #: bookwyrm/templates/settings/connectors/update.html:58
 msgid "Activate"
 msgstr "Activer"
@@ -6443,7 +6451,7 @@ msgstr "Envoyer l’invitation de nouveau"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:96
 msgid "Revoke invite"
-msgstr ""
+msgstr "Annuler l'invitation"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:112
 msgid "Ignore"
@@ -6767,7 +6775,7 @@ msgstr "Mise à jour de votre rapport :"
 
 #: bookwyrm/templates/settings/reports/report.html:37
 msgid "Reported statuses"
-msgstr ""
+msgstr "Statuts signalés"
 
 #: bookwyrm/templates/settings/reports/report.html:41
 msgid "Status has been deleted"
@@ -6835,11 +6843,11 @@ msgstr "Signalé par <a href=\"%(path)s\">@%(username)s</a>"
 
 #: bookwyrm/templates/settings/reports/report_preview.html:29
 msgid "Sent to remote instance"
-msgstr ""
+msgstr "Envoyé vers une instance distante"
 
 #: bookwyrm/templates/settings/reports/report_preview.html:31
 msgid "<b>Not</b> sent to remote instance"
-msgstr ""
+msgstr "<b>Non</b> envoyé à l'instance distante"
 
 #: bookwyrm/templates/settings/reports/report_preview.html:43
 msgid "Re-open"
@@ -7499,14 +7507,14 @@ msgstr "pourcent"
 msgid "of %(pages)s pages"
 msgstr "sur %(pages)s pages"
 
-#: bookwyrm/templates/snippets/create_status/content_field.html:18
+#: bookwyrm/templates/snippets/create_status/content_field.html:21
 #: bookwyrm/templates/snippets/status/layout.html:34
 #: bookwyrm/templates/snippets/status/layout.html:53
 #: bookwyrm/templates/snippets/status/layout.html:54
 msgid "Reply"
 msgstr "Répondre"
 
-#: bookwyrm/templates/snippets/create_status/content_field.html:18
+#: bookwyrm/templates/snippets/create_status/content_field.html:21
 msgid "Content"
 msgstr "Contenu"
 
@@ -7835,7 +7843,7 @@ msgstr "Les liens vers ce domaine seront retirés jusqu’à ce que votre signal
 
 #: bookwyrm/templates/snippets/report_modal.html:42
 msgid "Also send this report to the user's instance admins"
-msgstr ""
+msgstr "Envoyez également ce rapport aux administrateurs de l'instance de l'utilisateur"
 
 #: bookwyrm/templates/snippets/report_modal.html:49
 msgid "More info about this report:"
@@ -7875,7 +7883,7 @@ msgstr "Interrompre la lecture"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:82
 msgid "Block this book"
-msgstr ""
+msgstr "Bloquer ce livre"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:40
 msgid "Finish reading"
@@ -8170,12 +8178,12 @@ msgstr "Aucune critique ou commentaire pour le moment !"
 
 #: bookwyrm/templates/user/suggestions.html:13
 msgid "Your Suggestions"
-msgstr ""
+msgstr "Vos suggestions"
 
 #: bookwyrm/templates/user/suggestions.html:27
 #, python-format
 msgid "<a href=\"%(url)s\">%(list_name)s</a>"
-msgstr ""
+msgstr "<a href=\"%(url)s\">%(list_name)s</a>"
 
 #: bookwyrm/templates/user/user.html:20
 msgid "Edit profile"
@@ -8187,7 +8195,7 @@ msgstr "La Fédération est actuellement désactivée, vous ne pourrez donc pas 
 
 #: bookwyrm/templates/user/user.html:39
 msgid "This profile is private. Follow this user to see their activity."
-msgstr ""
+msgstr "Ce profil est privé. Suivez cet utilisateur pour voir son activité."
 
 #: bookwyrm/templates/user/user.html:56
 #, python-format
@@ -8281,7 +8289,7 @@ msgstr[1] "%(num)d livres - par %(user)s"
 
 #: bookwyrm/templatetags/utilities.py:43
 msgid "deactivated user"
-msgstr ""
+msgstr "utilisateur désactivé"
 
 #: bookwyrm/templatetags/utilities.py:63
 #, python-format
