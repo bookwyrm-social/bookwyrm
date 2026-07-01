@@ -3,6 +3,7 @@
 import datetime
 from unittest.mock import patch
 
+from django.template.loader import render_to_string
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django.utils import timezone
@@ -135,9 +136,13 @@ class StatusDisplayTags(TestCase):
         request.user = self.user
 
         self.user.show_ratings = True
-        shown = status_display.get_header_template({"request": request}, rating)
+        shown = render_to_string(
+            "snippets/status/header_content.html", {"status": rating}, request=request
+        )
         self.assertNotIn("Show rating", shown)
 
         self.user.show_ratings = False
-        hidden = status_display.get_header_template({"request": request}, rating)
+        hidden = render_to_string(
+            "snippets/status/header_content.html", {"status": rating}, request=request
+        )
         self.assertIn("Show rating", hidden)
