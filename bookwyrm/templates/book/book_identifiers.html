@@ -6,15 +6,17 @@
     {% if book.isbn_13 %}
         <div class="is-flex is-flex-wrap-wrap">
             <dt class="mr-1">{% trans "ISBN:" %}</dt>
-            <dd itemprop="isbn" class="mr-1" id="isbn_content">{{ book.hyphenated_isbn13 }}</dd>
-            <div>
-                <button class="button is-small" data-copywithtooltip data-content-id="isbn_content" data-tooltip-id="isbn_tooltip">
-                    <span class="icon icon-copy" title="{% trans "Copy ISBN" %}">
-                        <span class="is-sr-only">{% trans "Copy ISBN" %}</span>
-                    </span>
-                </button>
-                <span class="copy-tooltip" id="isbn_tooltip">{% trans "Copied ISBN!" %}</span>
-            </div>
+            <dd itemprop="isbn" class="mr-1 is-flex" id="isbn_content">
+                {{ book.hyphenated_isbn13 }}
+                <div>
+                    <button class="button is-small ml-3" data-copywithtooltip data-content-id="isbn_content" data-tooltip-id="isbn_tooltip">
+                        <span class="icon icon-copy" title="{% trans "Copy ISBN" %}">
+                            <span class="is-sr-only">{% trans "Copy ISBN" %}</span>
+                        </span>
+                    </button>
+                    <span class="copy-tooltip" id="isbn_tooltip">{% trans "Copied ISBN!" %}</span>
+                </div>
+            </dd>
         </div>
     {% endif %}
 
