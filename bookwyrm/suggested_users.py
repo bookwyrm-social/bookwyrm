@@ -100,6 +100,9 @@ class SuggestedUsers(RedisStore):
             When(pk=int(pk), then=self.get_counts_from_rank(score)["mutuals"])
             for (pk, score) in values
         ]
+        invalid_suggestion = (
+            Q(id=user.id) | Q(followers=user) | Q(follower_requests=user)
+        )
         # annotate users with mutuals and shared book counts
         users = (
             models.User.objects.filter(
@@ -109,6 +112,7 @@ class SuggestedUsers(RedisStore):
                 mutuals=Case(*annotations, output_field=IntegerField(), default=0)
             )
             .exclude(localname=INSTANCE_ACTOR_USERNAME)
+            .exclude(invalid_suggestion)
         )
         if local:
             users = users.filter(local=True)

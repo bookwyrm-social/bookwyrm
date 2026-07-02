@@ -102,7 +102,7 @@ def automod_users(reporter):
         reduce(operator.or_, (Q(**f) for f in filters)),
         is_active=True,
         local=True,
-        report__isnull=True,  # don't flag users that already have reports
+        reported_user__isnull=True,  # don't flag users that already have reports
     ).distinct()
 
     report_model = apps.get_model("bookwyrm", "Report", require_ready=True)

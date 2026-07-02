@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
 
 from bookwyrm.models import User
-from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
+from bookwyrm.settings import INSTANCE_ACTOR_USERNAME, DATA_UPLOAD_MAX_MEMORY_SIZE
 
 register = template.Library()
 
@@ -182,11 +182,27 @@ def get_file_size(nbytes):
     return f"{raw_size / 1024**3:.2f} GB"
 
 
+@register.simple_tag(takes_context=False)
+def max_upload_size():
+    return DATA_UPLOAD_MAX_MEMORY_SIZE
+
+
+@register.simple_tag(takes_context=False)
+def max_upload_size_human():
+    return get_file_size(DATA_UPLOAD_MAX_MEMORY_SIZE)
+
+
 @register.filter(name="get_user_permission")
-def get_user_permission(user):
-    """given a user, return their permission level"""
+def get_user_permission_group(user):
+    """given a user, return their permission group"""
 
     return user.groups.first() or "User"
+
+
+@register.filter(name="has_perm")
+def check_user_has_permission(user, perm_name):
+    """does the given user have a specific permission?"""
+    return user.has_perm(f"bookwyrm.{perm_name}")
 
 
 @register.filter(name="is_instance_admin")
