@@ -86,5 +86,16 @@ module.exports = {
             },
         ],
         "space-before-blocks": "error",
+    },
+    "globals": {
+        "gettext": "readonly",
+        "ngettext": "readonly",
+        "interpolate": "readonly",
+        "get_format": "readonly",
+        "gettext_noop": "readonly",
+        "pgettext": "readonly",
+        "npgettext": "readonly",
+        "pluralidx": "readonly",
+        "django": "readonly"
     }
 };
