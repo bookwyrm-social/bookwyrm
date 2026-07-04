@@ -432,6 +432,7 @@ def get_activitypub_data(url):
                 "Accept": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
                 "Date": now,
                 "Signature": make_signature("get", sender, url, now),
+                "User-Agent": settings.USER_AGENT,
             },
             timeout=15,
         )

@@ -131,6 +131,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         if activity.type == "Announce":
             boosted = activitypub.resolve_remote_id(
                 activity.object,
+                model=cls,
                 get_activity=True,
                 allow_external_connections=allow_external_connections,
             )
