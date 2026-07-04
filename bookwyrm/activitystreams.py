@@ -326,10 +326,14 @@ class LocalStream(ActivityStream):
 
     def get_statuses_for_user(self, user):
         # all public statuses by a local user
-        return models.Status.privacy_filter(
-            user,
-            privacy_levels=["public"],
-        ).filter(user__local=True).exclude(user=user.id)
+        return (
+            models.Status.privacy_filter(
+                user,
+                privacy_levels=["public"],
+            )
+            .filter(user__local=True)
+            .exclude(user=user.id)
+        )
 
 
 class BooksStream(ActivityStream):
