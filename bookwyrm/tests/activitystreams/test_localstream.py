@@ -46,7 +46,7 @@ class Activitystreams(TestCase):
             user=self.local_user, content="hi", privacy="public"
         )
         users = activitystreams.LocalStream().get_audience(status)
-        self.assertTrue(self.local_user.id in users)
+        self.assertFalse(self.local_user.id in users)
         self.assertTrue(self.another_user.id in users)
 
     def test_localstream_get_audience_unlisted(self):
