@@ -578,6 +578,39 @@ class Status(TestCase):
         self.assertFalse(models.Status.ignore_activity(activity))
 
     @responses.activate
+    def test_ignore_activity_boost_include_review(self, *_):
+        """don't ignore remote reviews"""
+        activity = activitypub.Announce(
+            id="http://www.faraway.com/boost/12",
+            actor=self.remote_user.remote_id,
+            object="http://fish.com/nothing",
+            published="2021-03-24T18:59:41.841208+00:00",
+            cc="",
+            to="",
+        )
+        status = {
+            "id": "http://fish.com/nothing",
+            "type": "Article",
+            "published": "2026-07-06T16:05:15.746622+00:00",
+            "attributedTo": "http://fish.com/user/mouse",
+            "content": "<p>review content</p>",
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "cc": ["http://fish.com/user/mouse/followers"],
+            "replies": {},
+            "sensitive": False,
+            "inReplyToBook": "http://fish.com/book/2265331",
+            "name": 'Review of "Radiant Star": Leckie\'s Study of Provincial Life',
+            "@context": [
+                "https://www.w3.org/ns/activitystreams",
+                {"Hashtag": "as:Hashtag"},
+            ],
+        }
+
+        responses.add(responses.GET, "http://fish.com/nothing", json=status, status=200)
+
+        self.assertFalse(models.Status.ignore_activity(activity))
+
+    @responses.activate
     def test_ignore_activity_boost(self, *_):
         """don't bother with most remote statuses"""
         responses.add(responses.GET, "http://fish.com/nothing")
