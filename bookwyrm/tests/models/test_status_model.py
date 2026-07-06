@@ -556,6 +556,27 @@ class Status(TestCase):
 
         self.assertEqual(status.recipients, [self.remote_user])
 
+    def test_ignore_activity_boost_include(self, *_):
+        """do bother with some boost statuses"""
+        activity = activitypub.Announce(
+            id="http://www.faraway.com/boost/12",
+            actor=self.remote_user.remote_id,
+            object="http://fish.com/nothing",
+            published="2021-03-24T18:59:41.841208+00:00",
+            cc="",
+            to="",
+        )
+        status = models.Quotation.objects.create(
+            quote="<p>my quote</p>",
+            content="",
+            user=self.local_user,
+            book=self.book,
+        )
+        status.remote_id = "http://fish.com/nothing"
+        status.save(broadcast=False)
+
+        self.assertFalse(models.Status.ignore_activity(activity))
+
     @responses.activate
     def test_ignore_activity_boost(self, *_):
         """don't bother with most remote statuses"""
