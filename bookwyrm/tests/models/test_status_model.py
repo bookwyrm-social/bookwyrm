@@ -589,23 +589,24 @@ class Status(TestCase):
             to="",
         )
         status = {
-            "id": "http://fish.com/nothing",
-            "type": "Article",
+            "id": "https://fish.com/user/mouse/review/11934130",
+            "type": "Review",
             "published": "2026-07-06T16:05:15.746622+00:00",
-            "attributedTo": "http://fish.com/user/mouse",
-            "content": "<p>review content</p>",
+            "attributedTo": "https://fish.com/user/mouse",
+            "content": "<p>content</p>",
             "to": ["https://www.w3.org/ns/activitystreams#Public"],
-            "cc": ["http://fish.com/user/mouse/followers"],
+            "cc": ["https://fish.com/user/mouse/followers"],
             "replies": {},
+            "tag": [],
+            "attachment": [],
             "sensitive": False,
-            "inReplyToBook": "http://fish.com/book/2265331",
-            "name": 'Review of "Radiant Star": Leckie\'s Study of Provincial Life',
+            "inReplyToBook": "https://fish.com/book/2265331",
+            "name": "Leckie's Study of Provincial Life",
             "@context": [
                 "https://www.w3.org/ns/activitystreams",
                 {"Hashtag": "as:Hashtag"},
             ],
         }
-
         responses.add(responses.GET, "http://fish.com/nothing", json=status, status=200)
 
         self.assertFalse(models.Status.ignore_activity(activity))
