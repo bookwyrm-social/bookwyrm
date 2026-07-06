@@ -3,6 +3,7 @@
 from datetime import datetime
 import difflib
 from django.contrib.auth.decorators import login_required, permission_required
+from django.db.models import Count
 from django.db import transaction
 from django.apps import apps
 from django.http import Http404
@@ -28,7 +29,7 @@ class DataQuality(View):
     def get(self, request):
         """view maintenance task settings"""
         return TemplateResponse(
-            request, "settings/data-quality/data.html", data_quality_data()
+            request, "settings/manage-data/data.html", data_quality_data()
         )
 
 
@@ -96,13 +97,43 @@ def data_quality_data():
         "task_form": forms.IntervalScheduleForm(),
     }
 
+
+def mergable_objects_data():
+    """all mergable objects, not just counts"""
+
+    return {
+        "works": models.Work.objects.filter(merge_target__isnull=False)
+        .annotate(targets=Count("merge_target"))
+        .order_by("-targets")
+        .order_by("title"),
+        "editions": models.Edition.objects.filter(merge_target__isnull=False)
+        .annotate(targets=Count("merge_target"))
+        .order_by("-targets")
+        .order_by("title"),
+        "authors": models.Author.objects.filter(merge_target__isnull=False)
+        .annotate(targets=Count("merge_target"))
+        .order_by("-targets")
+        .order_by("name"),
+        "series": models.Series.objects.filter(merge_target__isnull=False)
+        .annotate(targets=Count("merge_target"))
+        .order_by("-targets")
+        .order_by("name"),
+    }
+
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.manage_data", raise_exception=True),
+    name="dispatch",
+)
 class MergeData(View):
-    """deduplication task settings"""
+    """deduplication tasks"""
 
     def get(self, request):
-        """view maintenance task settings"""
-        return TemplateResponse(request, "settings/manage-data/merge.html", {})
+        """view deduplication tasks"""
 
+        data = mergable_objects_data()
+        return TemplateResponse(request, "settings/manage-data/merge.html", data)
 
 
 def get_diff_string(canonical: str, candidate: str, array=False) -> str:
@@ -137,9 +168,7 @@ class ManualMerge(View):
     def get(self, request, model_name, canonical_id):
         """View merge objects page"""
 
-        model = apps.get_model(
-            f"bookwyrm.{model_name}", require_ready=True
-        )
+        model = apps.get_model(f"bookwyrm.{model_name}", require_ready=True)
         plural_model = model._meta.verbose_name_plural
         trans_model = model._meta.verbose_name
         canonical = get_object_or_404(model.objects.filter(id=canonical_id))
@@ -171,25 +200,33 @@ class ManualMerge(View):
                 "born",
                 "died",
             ]:
-
                 all_vals = [getattr(x, field.name) for x in candidates]
                 if any(all_vals) and not all(
                     val == getattr(canonical, field.name) for val in all_vals
                 ):
-                    simple_fields.append({"name": field.name, "trans_name": _(field.name)})
+                    simple_fields.append(
+                        {"name": field.name, "trans_name": _(field.name)}
+                    )
             if (
                 candidates.model._meta.get_field(field.name).get_internal_type()
                 == "ArrayField"
             ):
                 if any([getattr(x, field.name) for x in candidates]):
-                    array_fields.append({"name": field.name, "trans_name": _(field.name)})
+                    array_fields.append(
+                        {"name": field.name, "trans_name": _(field.name)}
+                    )
 
         for field in simple_fields:
             not_null = {f"{field['name']}__isnull": False}
-            if model._meta.get_field(field['name']).get_internal_type() == "DateTimeField":
+            if (
+                model._meta.get_field(field["name"]).get_internal_type()
+                == "DateTimeField"
+            ):
                 has_value = all_objects.filter(**not_null)
             else:
-                has_value = all_objects.filter(**not_null).exclude(**{field['name']: ""})
+                has_value = all_objects.filter(**not_null).exclude(
+                    **{field["name"]: ""}
+                )
             distinct_value = has_value.order_by(field["name"]).distinct(field["name"])
             if distinct_value.count() == 1:
                 if distinct_value.filter(id=canonical.id):
@@ -197,7 +234,9 @@ class ManualMerge(View):
                     continue
                 else:
                     field["unique"] = has_value.first().id
-        simple_fields = [field for field in simple_fields if field["name"] not in identical_fields]
+        simple_fields = [
+            field for field in simple_fields if field["name"] not in identical_fields
+        ]
 
         data = {
             "simple_fields": simple_fields,
@@ -208,9 +247,7 @@ class ManualMerge(View):
             "plural_model": plural_model,
             "trans_model": trans_model,
         }
-        return TemplateResponse(
-            request, "settings/manage-data/manual-merge.html", data
-        )
+        return TemplateResponse(request, "settings/manage-data/manual-merge.html", data)
 
     def post(self, request, model_name, canonical_id):
         """receiving a form submission"""
@@ -236,9 +273,13 @@ class ManualMerge(View):
                 value = request.POST.get(field)
             elif model._meta.get_field(field).get_internal_type() == "ArrayField":
                 for f in set(request.POST.getlist(field)):
-                    obj = { "name": field, "value": f, "diff": get_diff_string(
-                    getattr(canonical, field), [f], array=True
-                    )}
+                    obj = {
+                        "name": field,
+                        "value": f,
+                        "diff": get_diff_string(
+                            getattr(canonical, field), [f], array=True
+                        ),
+                    }
                     array_fields.append(obj)
                 del fields_obj[field]
                 continue
@@ -286,8 +327,3 @@ def confirm_manual_merge(request, model_name, canonical_id):
         candidate.merge_into(canonical)
 
     return redirect(canonical.remote_id)
-@method_decorator(login_required, name="dispatch")
-@method_decorator(
-    permission_required("bookwyrm.manage_data", raise_exception=True),
-    name="dispatch",
-)

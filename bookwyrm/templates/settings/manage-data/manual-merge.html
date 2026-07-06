@@ -41,18 +41,18 @@ Merge {{plural_model}}
     <form class="form" method="post">
     {% csrf_token %}
     <table class="table is-fullwidth">
-        <thead>
+        <thead class="has-background-secondary">
             <tr class="has-text-centered">
-                <td class="is-primary">{% trans 'Field' %}</td>
-                <td colspan="2" class="is-primary">{% trans 'Canonical values' %}</td>
-                <td colspan="2" class="is-primary">{% trans 'Duplicate values' %}</td>
+                <td>{% trans 'Field' %}</td>
+                <td colspan="2">{% trans 'Canonical values' %}</td>
+                <td colspan="2">{% trans 'Duplicate values' %}</td>
             </tr>
         </thead>
         <tbody>
             {% for field in simple_fields %}
             <tr>
                 {% with canonical|getattr_filter:field.name as canonical_value %}
-                <td class="has-background-grey-lighter">
+                <td class="has-background-secondary">
                     <strong>{{field.trans_name}}</strong>
                 </td>
                 <td>
@@ -66,7 +66,7 @@ Merge {{plural_model}}
                 <td>
                     <label for="{{field}}" class="mr-4">{{canonical|getattr_filter:field.name}}</label>
                 </td>
-                <td class="has-background-white-ter">
+                <td>
                 {% for candidate in objects %}
                 {% if candidate.id != canonical.id and candidate|getattr_filter:field.name %}
                     <div>
@@ -85,7 +85,7 @@ Merge {{plural_model}}
             {% endfor %}
             {% for field in array_fields %}
             <tr>
-                <td class="has-background-grey-lighter">
+                <td class="has-background-secondary">
                     <strong>{{field.trans_name}}</strong>
                 </td>
                 <td colspan="2">
@@ -96,7 +96,7 @@ Merge {{plural_model}}
                     </div>
                     {% endfor %}
                 </td>
-                <td colspan="2" class="has-background-white-ter">
+                <td colspan="2">
                     {% for candidate in objects %}
                     {% if candidate.id != canonical.id %}
                     {% for val in candidate|getattr_filter:field.name %}

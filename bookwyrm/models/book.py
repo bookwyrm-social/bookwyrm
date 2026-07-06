@@ -995,6 +995,7 @@ class Series(OrderedCollectionMixin, BookDataModel):
         verbose_name = _("Series")
         verbose_name_plural = _("Series")
 
+
 class SeriesBook(CollectionItemMixin, BookWyrmModel):
     """connect a book to a series with a series number"""
 

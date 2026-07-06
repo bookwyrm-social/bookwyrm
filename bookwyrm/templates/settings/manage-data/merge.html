@@ -1,13 +1,187 @@
 {% extends 'settings/layout.html' %}
 {% load i18n %}
 {% load utilities %}
+{% load static %}
 
-{% block title %}{% trans "Manage Data" %}{% endblock %}
+{% block title %}{% trans "Merge Data" %}{% endblock %}
 
-{% block header %}{% trans "Manage Data" %}{% endblock %}
+{% block header %}{% trans "Merge Data" %}{% endblock %}
 
 {% block panel %}
-    <div>
-        <p>{% trans 'Manual merging of items is currently unavailable.' %}</p>
+{% with merge_type=request.GET.merge_type %}
+    <div class="tab-group">
+
+        <div class="tabs" role="tablist">
+        <ul>
+          <li class="{% if merge_type == 'edition' or not merge_type %}is-active{% endif %}">
+                <a
+                    role="tab"
+                    href="{{ request.path }}?merge_type=edition"
+                    id="tab_editions"
+                    aria-selected="{% if merge_type == 'edition' or not merge_type %}true{% else %}false{% endif %}"
+                    aria-controls="editions"
+                    data-category="tab-option-editions"
+                >{% trans 'Editions' %}{% if editions.count %}<span class="tag is-info is-light ml-2">{{editions.count}}</span>{% endif %}</a>
+            </li>
+            <li class="{% if merge_type == 'work' %}is-active{% endif %}">
+                <a
+                    role="tab"
+                    href="{{ request.path }}?merge_type=work"
+                    id="tab_works"
+                    aria-selected="{% if merge_type == 'work' %}true{% else %}false{% endif %}"
+                    aria-controls="works"
+                    data-category="tab-option-works"
+                >{% trans 'Works' %}{% if works.count %}<span class="tag is-info is-light ml-2">{{works.count}}</span>{% endif %}
+                </a>
+            </li>
+            <li>
+                <a
+                    role="tab"
+                    href="{{ request.path }}?merge_type=author"
+                    id="tab_authors"
+                    aria-selected="{% if merge_type == 'author' %}true{% else %}false{% endif %}"
+                    aria-controls="authors"
+                    data-category="tab-option-authors"
+                >{% trans 'Authors' %}{% if authors.count %}<span class="tag is-info is-light ml-2">{{authors.count}}</span>{% endif %}</a>
+            </li>
+            <li>
+                <a
+                    role="tab"
+                    href="{{ request.path }}?merge_type=series"
+                    id="tab_series"
+                    aria-selected="{% if merge_type == 'series' %}true{% else %}false{% endif %}"
+                    aria-controls="series"
+                    data-category="tab-option-series"
+                >{% trans 'Series' %}{% if series.count %}<span class="tag is-info is-light ml-2">{{series.count}}</span>{% endif %}</a>
+            </li>
+        </ul>
     </div>
+
+    <div class="p-4">
+        <p>{% trans 'Click "Merge" on an item to manually select fields to merge.' %}</p>
+    </div>
+
+    <div class="tab-option-editions" id="editions" role="tabpanel" aria-labelledby="tab_editions" {% if merge_type and merge_type != "edition" %}hidden{% endif %}>
+        <h2 class="is-size-3 my-4">{% trans 'Editions with merge candidates' %}</h2>
+        {% if editions %}
+        <table class="table is-fullwidth is-striped">
+            <thead>
+                <tr class="has-text-centered">
+                    <td>{% trans 'Title' %}</td>
+                    <td>{% trans 'Authors' %}</td>
+                    <td>{% trans 'Merge Candidates' %}</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for edition in editions %}
+                <tr class="has-text-centered">
+                    <td><a href="{{edition.remote_id}}">{{edition.title}}</a></td>
+                    <td>{% for author in edition.authors.all %}{{author.name}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                    <td>{{edition.merge_candidates.count}}</td>
+                    <td><a class="button is-small is-link" href="{% url 'settings-manual-merge' 'edition' edition.id %}">{% trans 'Merge' %}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="p-4">
+            <p>{% trans 'There are no editions to merge.' %}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="tab-option-works" id="works" role="tabpanel" aria-labelledby="tab_works" {% if merge_type != "work" %}hidden{% endif %}>
+        <h2 class="is-size-3 my-4">{% trans 'Works with merge candidates' %}</h2>
+        {% if works %}
+        <table class="table is-fullwidth is-striped">
+            <thead>
+                <tr class="has-text-centered">
+                    <td>{% trans 'Title' %}</td>
+                    <td>{% trans 'Authors' %}</td>
+                    <td>{% trans 'Merge Candidates' %}</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for work in works %}
+                <tr class="has-text-centered">
+                    <td><a href="{{work.remote_id}}">{{work.title}}</a></td>
+                    <td>{% for author in work.default_edition.authors.all %}{{author.name}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                    <td>{{work.merge_candidates.count}}</td>
+                    <td><a class="button is-small is-link" href="{% url 'settings-manual-merge' 'work' edition.id %}">{% trans 'Merge' %}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="p-4">
+            <p>{% trans 'There are no works to merge.' %}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="tab-option-works" id="authors" role="tabpanel" aria-labelledby="tab_authors" {% if merge_type != "author" %}hidden{% endif %}>
+        <h2 class="is-size-3 my-4">{% trans 'Authors with merge candidates' %}</h2>
+        {% if authors %}
+        <table class="table is-fullwidth">
+            <thead>
+                <tr class="has-text-centered">
+                    <td>{% trans 'Name' %}</td>
+                    <td>{% trans 'Merge Candidates' %}</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for author in authors %}
+                <tr class="has-text-centered">
+                    <td><a href="{{author.remote_id}}">{{author.name}}</a></td>
+                    <td>{{author.merge_candidates.count}}</td>
+                    <td><a class="button is-small is-link" href="{% url 'settings-manual-merge' 'author' author.id %}">{% trans 'Merge' %}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="p-4">
+            <p>{% trans 'There are no authors to merge.' %}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="tab-option-works" id="series" role="tabpanel" aria-labelledby="tab_series" {% if merge_type != "series" %}hidden{% endif %}>
+        <h2 class="is-size-3 my-4">{% trans 'Series with merge candidates' %}</h2>
+        {% if series %}
+        <table class="table is-fullwidth is-striped">
+            <thead>
+                <tr class="has-text-centered">
+                    <td>{% trans 'Name' %}</td>
+                    <td>{% trans 'Merge Candidates' %}</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for serie in series %}
+                <tr class="has-text-centered">
+                    <td><a href="{{serie.remote_id}}">{{serie.name}}</a></td>
+                    <td>{{serie.merge_candidates.count}}</td>
+                    <td><a class="button is-small is-link" href="{% url 'settings-manual-merge' 'series' serie.id %}">{% trans 'Merge' %}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="p-4">
+            <p>{% trans 'There are no series to merge.' %}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    </div>
+
+{% endwith %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static "js/tabs.js" %}"></script>
 {% endblock %}
