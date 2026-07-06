@@ -133,6 +133,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
                 activity.object,
                 get_activity=True,
                 allow_external_connections=allow_external_connections,
+                model=cls,
             )
             if not boosted:
                 # if we can't load the status, definitely ignore it
