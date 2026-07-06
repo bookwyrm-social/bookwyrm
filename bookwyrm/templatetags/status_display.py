@@ -79,8 +79,7 @@ def get_header_template(status):
     except AttributeError:
         header_type = status.status_type.lower()
     filename = f"snippets/status/headers/{header_type}.html"
-    header_template = select_template([filename, "snippets/status/headers/note.html"])
-    return header_template.render({"status": status})
+    return select_template([filename, "snippets/status/headers/note.html"])
 
 
 @register.simple_tag(takes_context=False)

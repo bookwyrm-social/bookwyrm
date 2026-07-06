@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, re_path, include
 from django.views.generic.base import TemplateView
+from django.views.i18n import JavaScriptCatalog
 
 from bookwyrm import settings, views
 from bookwyrm.utils import regex
@@ -30,6 +31,7 @@ BOOK_PATH = r"^book/(?P<book_id>\d+)"
 STREAMS = "|".join(s["key"] for s in settings.STREAMS)
 
 urlpatterns = [
+    path("jsi18n/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
     path("admin/", admin.site.urls),
     path(
         "robots.txt",
@@ -245,6 +247,16 @@ urlpatterns = [
         r"^settings/users/(?P<user_id>\d+)/activate/?$",
         views.ActivateUserAdmin.as_view(),
         name="settings-activate-user",
+    ),
+    re_path(
+        r"^settings/users/set-merge-permissions/(?P<user_id>\d+)/?$",
+        views.SetMergePermission.as_view(),
+        name="settings-user-manage-data-perms",
+    ),
+    re_path(
+        r"^settings/manage-data/merge/?$",
+        views.MergeData.as_view(),
+        name="settings-merge-data",
     ),
     re_path(
         r"^settings/federation-settings/?$",
@@ -862,6 +874,8 @@ urlpatterns = [
         views.DeleteStatus.as_view(),
         name="delete-status",
     ),
+    # upload
+    re_path(r"^upload/?$", views.CreateUserUpload.as_view(), name="user-upload"),
     # interact
     re_path(r"^favorite/(?P<status_id>\d+)/?$", views.Favorite.as_view(), name="fav"),
     re_path(

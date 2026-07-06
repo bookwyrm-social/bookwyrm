@@ -20,6 +20,7 @@
 
 <div class="block columns">
     <nav class="menu column is-one-quarter">
+        {% if perms.bookwyrm.moderate_user %}
         <h2 class="menu-label">
             {% url 'settings-dashboard' as url %}
             <a
@@ -27,6 +28,7 @@
                 {% if url in request.path %} class="is-active" aria-selected="true"{% endif %}
             >{% trans "Dashboard" %}</a>
         </h2>
+        {% endif %}
         {% if perms.bookwyrm.create_invites %}
         <h2 class="menu-label">{% trans "Manage Users" %}</h2>
         <ul class="menu-list">
@@ -45,6 +47,21 @@
             <li>
                 {% url 'settings-force-password-reset' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Force Password Reset" %}</a>
+            </li>
+            {% endif %}
+        </ul>
+        {% endif %}
+        {% if perms.bookwyrm.manage_data %}
+        <h2 class="menu-label">{% trans "Manage Data" %}</h2>
+        <ul class="menu-list">
+            <li>
+                {% url 'settings-data-quality' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Data Quality" %}</a>
+            </li>
+            {% if perms.bookwyrm.edit_instance_settings %}
+            <li>
+                {% url 'settings-merge-data' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Merge data" %}</a>
             </li>
             {% endif %}
         </ul>
@@ -92,10 +109,6 @@
         {% if perms.bookwyrm.edit_instance_settings %}
         <h2 class="menu-label">{% trans "System" %}</h2>
         <ul class="menu-list">
-            <li>
-                {% url 'settings-data-quality' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Data Quality" %}</a>
-            </li>
             <li>
                 {% url 'settings-imports' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Imports" %}</a>
