@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-26 17:10+0000\n"
-"PO-Revision-Date: 2026-06-26 18:38\n"
+"POT-Creation-Date: 2026-07-06 15:05+0000\n"
+"PO-Revision-Date: 2026-07-06 20:04\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -356,7 +356,7 @@ msgid "Wrong Path"
 msgstr ""
 
 #: bookwyrm/models/import_job.py:51 bookwyrm/models/job.py:19
-#: bookwyrm/templates/import/import.html:184
+#: bookwyrm/templates/import/import.html:203
 #: bookwyrm/templates/import/import_user.html:225
 #: bookwyrm/templates/import/user_import_status.html:56
 #: bookwyrm/templates/preferences/export-user.html:146
@@ -369,7 +369,7 @@ msgid "Active"
 msgstr ""
 
 #: bookwyrm/models/import_job.py:52 bookwyrm/models/job.py:20
-#: bookwyrm/templates/import/import.html:182
+#: bookwyrm/templates/import/import.html:201
 #: bookwyrm/templates/import/import_user.html:223
 #: bookwyrm/templates/import/user_import_status.html:54
 #: bookwyrm/templates/preferences/export-user.html:144
@@ -519,19 +519,24 @@ msgstr "Цитаты"
 msgid "Everything else"
 msgstr "Всё остальное"
 
-#: bookwyrm/settings.py:242
+#: bookwyrm/models/user.py:232
+#, python-brace-format
+msgid "avatar for {name}"
+msgstr ""
+
+#: bookwyrm/settings.py:258
 msgid "Home Timeline"
 msgstr "Главная лента"
 
-#: bookwyrm/settings.py:242
+#: bookwyrm/settings.py:258
 msgid "Home"
 msgstr "Главная"
 
-#: bookwyrm/settings.py:243
+#: bookwyrm/settings.py:259
 msgid "Books Timeline"
 msgstr "Хронология книг"
 
-#: bookwyrm/settings.py:243
+#: bookwyrm/settings.py:259
 #: bookwyrm/templates/guided_tour/user_profile.html:101
 #: bookwyrm/templates/import/user_import_status.html:73
 #: bookwyrm/templates/search/layout.html:22
@@ -540,91 +545,91 @@ msgstr "Хронология книг"
 msgid "Books"
 msgstr "Книги"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:338
 msgid "English"
 msgstr "English (Английский)"
 
-#: bookwyrm/settings.py:323
+#: bookwyrm/settings.py:339
 msgid "Català (Catalan)"
 msgstr "Català (Каталанский)"
 
-#: bookwyrm/settings.py:324
+#: bookwyrm/settings.py:340
 msgid "Deutsch (German)"
 msgstr "Deutsch (немецкий)"
 
-#: bookwyrm/settings.py:325
+#: bookwyrm/settings.py:341
 msgid "Esperanto (Esperanto)"
 msgstr "Esperanto (Эсперанто)"
 
-#: bookwyrm/settings.py:326
+#: bookwyrm/settings.py:342
 msgid "Español (Spanish)"
 msgstr "Español (испанский)"
 
-#: bookwyrm/settings.py:327
+#: bookwyrm/settings.py:343
 msgid "Euskara (Basque)"
 msgstr "Euskara (Баскский)"
 
-#: bookwyrm/settings.py:328
+#: bookwyrm/settings.py:344
 msgid "Galego (Galician)"
 msgstr "Galego (Галицкий)"
 
-#: bookwyrm/settings.py:329
+#: bookwyrm/settings.py:345
 msgid "Italiano (Italian)"
 msgstr "Italiano (Итальянский)"
 
-#: bookwyrm/settings.py:330
+#: bookwyrm/settings.py:346
 msgid "한국어 (Korean)"
 msgstr "한국어 (Корейский)"
 
-#: bookwyrm/settings.py:331
+#: bookwyrm/settings.py:347
 msgid "Suomi (Finnish)"
 msgstr "Suomi (Финский)"
 
-#: bookwyrm/settings.py:332
+#: bookwyrm/settings.py:348
 msgid "Français (French)"
 msgstr "Français (французский)"
 
-#: bookwyrm/settings.py:333
+#: bookwyrm/settings.py:349
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (литовский)"
 
-#: bookwyrm/settings.py:334
+#: bookwyrm/settings.py:350
 msgid "Nederlands (Dutch)"
 msgstr "Нидерланды (голландский)"
 
-#: bookwyrm/settings.py:335
+#: bookwyrm/settings.py:351
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (норвежский)"
 
-#: bookwyrm/settings.py:336
+#: bookwyrm/settings.py:352
 msgid "Polski (Polish)"
 msgstr "Polski (Польский)"
 
-#: bookwyrm/settings.py:337
+#: bookwyrm/settings.py:353
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (Бразильский Португальский)"
 
-#: bookwyrm/settings.py:338
+#: bookwyrm/settings.py:354
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Европейский Португальский)"
 
-#: bookwyrm/settings.py:339
+#: bookwyrm/settings.py:355
 msgid "Română (Romanian)"
 msgstr "Română (румынский)"
 
-#: bookwyrm/settings.py:340
+#: bookwyrm/settings.py:356
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Шведский)"
 
-#: bookwyrm/settings.py:341
+#: bookwyrm/settings.py:357
 msgid "Українська (Ukrainian)"
 msgstr "Українська (Украинский)"
 
-#: bookwyrm/settings.py:342
+#: bookwyrm/settings.py:358
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (упрощенный китайский)"
 
-#: bookwyrm/settings.py:343
+#: bookwyrm/settings.py:359
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Традиционный китайский)"
 
@@ -1803,7 +1808,7 @@ msgid "Domain"
 msgstr "Домен"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:36
-#: bookwyrm/templates/import/import.html:149
+#: bookwyrm/templates/import/import.html:168
 #: bookwyrm/templates/import/import_status.html:134
 #: bookwyrm/templates/import/import_user.html:192
 #: bookwyrm/templates/import/user_import_status.html:162
@@ -3239,17 +3244,17 @@ msgstr ""
 msgid "No activities for this hashtag yet!"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:6
+#: bookwyrm/templates/import/import.html:7
 #: bookwyrm/templates/preferences/layout.html:43
 msgid "Import Book List"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:12
+#: bookwyrm/templates/import/import.html:13
 msgid "Not a valid CSV file"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:20
+#: bookwyrm/templates/import/import.html:21
 #, python-format
 msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
 msgid_plural "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s days."
@@ -3258,117 +3263,129 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] "Сейчас вам можно импортировать %(display_size)s книг в %(import_limit_reset)s дней."
 
-#: bookwyrm/templates/import/import.html:26
+#: bookwyrm/templates/import/import.html:27
 #, python-format
 msgid "You have %(display_left)s left."
 msgstr "У вас осталось %(display_left)s."
 
-#: bookwyrm/templates/import/import.html:33
+#: bookwyrm/templates/import/import.html:34
 #: bookwyrm/templates/import/import_user.html:40
 #, python-format
 msgid "On average, recent imports have taken %(hours)s hours."
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:37
+#: bookwyrm/templates/import/import.html:38
 #: bookwyrm/templates/import/import_user.html:44
 #, python-format
 msgid "On average, recent imports have taken %(minutes)s minutes."
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:52
+#: bookwyrm/templates/import/import.html:53
 msgid "Data source:"
 msgstr "Источник данных:"
 
-#: bookwyrm/templates/import/import.html:58
+#: bookwyrm/templates/import/import.html:59
 msgid "Goodreads (CSV)"
 msgstr "Goodreads (CSV)"
 
-#: bookwyrm/templates/import/import.html:61
+#: bookwyrm/templates/import/import.html:62
 msgid "Storygraph (CSV)"
 msgstr "Storygraph (CSV)"
 
-#: bookwyrm/templates/import/import.html:64
+#: bookwyrm/templates/import/import.html:65
 msgid "LibraryThing (TSV)"
 msgstr "LibraryThing (TSV)"
 
-#: bookwyrm/templates/import/import.html:67
+#: bookwyrm/templates/import/import.html:68
 msgid "OpenLibrary (CSV)"
 msgstr "OpenLibrary (CSV)"
 
-#: bookwyrm/templates/import/import.html:70
+#: bookwyrm/templates/import/import.html:71
 msgid "OpenReads (CSV)"
 msgstr "OpenReads (CSV)"
 
-#: bookwyrm/templates/import/import.html:73
+#: bookwyrm/templates/import/import.html:74
 msgid "Calibre (CSV)"
 msgstr "Calibre (CSV)"
 
-#: bookwyrm/templates/import/import.html:76
+#: bookwyrm/templates/import/import.html:77
 msgid "BookWyrm (CSV)"
 msgstr "BookWyrm (CSV)"
 
-#: bookwyrm/templates/import/import.html:82
+#: bookwyrm/templates/import/import.html:83
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
 msgstr "Вы можете загрузить данные Goodreadsх с <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">страницы импорта/экспорта</a> вашей учетной записи Goodreads."
 
-#: bookwyrm/templates/import/import.html:91
+#: bookwyrm/templates/import/import.html:92
 #: bookwyrm/templates/import/import_user.html:64
 msgid "Data file:"
 msgstr "Файл данных:"
 
-#: bookwyrm/templates/import/import.html:99
+#: bookwyrm/templates/import/import.html:100
 msgid "Include reviews"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:104
+#: bookwyrm/templates/import/import.html:105
 msgid "Create new shelves if they do not exist"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:109
+#: bookwyrm/templates/import/import.html:110
+msgid "Shelve all imported books on:"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:115
+msgid "Use shelf/status from the file"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:123
+msgid "Choose a shelf to use instead of any shelf or reading status in the file."
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:128
 msgid "Privacy setting for imported reviews and shelves:"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:116
-#: bookwyrm/templates/import/import.html:118
+#: bookwyrm/templates/import/import.html:135
+#: bookwyrm/templates/import/import.html:137
 #: bookwyrm/templates/import/import_user.html:170
 #: bookwyrm/templates/import/import_user.html:172
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:78
 msgid "Import"
 msgstr "Импортировать"
 
-#: bookwyrm/templates/import/import.html:119
+#: bookwyrm/templates/import/import.html:138
 #: bookwyrm/templates/import/import_user.html:173
 msgid "You've reached the import limit."
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:128
+#: bookwyrm/templates/import/import.html:147
 #: bookwyrm/templates/import/import_user.html:27
 msgid "Imports are temporarily disabled; thank you for your patience."
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:135
+#: bookwyrm/templates/import/import.html:154
 #: bookwyrm/templates/import/import_user.html:181
 msgid "Recent Imports"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:140
+#: bookwyrm/templates/import/import.html:159
 #: bookwyrm/templates/import/import_user.html:186
 #: bookwyrm/templates/settings/imports/imports.html:202
 #: bookwyrm/templates/settings/imports/imports.html:292
 msgid "Date Created"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:143
+#: bookwyrm/templates/import/import.html:162
 #: bookwyrm/templates/import/import_user.html:189
 msgid "Last Updated"
 msgstr "Последнее обновление"
 
-#: bookwyrm/templates/import/import.html:146
+#: bookwyrm/templates/import/import.html:165
 #: bookwyrm/templates/settings/imports/imports.html:211
 msgid "Items"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:155
+#: bookwyrm/templates/import/import.html:174
 #: bookwyrm/templates/import/import_user.html:198
 #: bookwyrm/templates/preferences/export-user.html:122
 msgid "No recent imports"
