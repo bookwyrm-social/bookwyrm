@@ -75,3 +75,4 @@ jobs:
         with:
           package: ${{ matrix.image }}
           delete-untagged: true
+          older-than: 1 hour

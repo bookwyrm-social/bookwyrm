@@ -119,6 +119,24 @@ class PasswordViews(TestCase):
         self.assertEqual(resp.status_code, 302)
         self.assertFalse(models.PasswordReset.objects.exists())
 
+    def test_password_reset_post_expired_code(self):
+        view = views.PasswordReset.as_view()
+        code = models.PasswordReset.objects.create(
+            user=self.local_user, expiry=timezone.now() - timedelta(days=2)
+        )
+        request = self.factory.post(
+            "", {"password": "longwordsecure", "confirm_password": "longwordsecure"}
+        )
+        with patch("bookwyrm.views.landing.password.login"):
+            resp = view(request, code.code)
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("Invalid password reset link", resp.context_data["errors"])
+
+        self.local_user.refresh_from_db()
+        self.assertFalse(self.local_user.check_password("longwordsecure"))
+        self.assertTrue(models.PasswordReset.objects.exists())
+
     def test_password_reset_wrong_code(self):
         """reset from code"""
         view = views.PasswordReset.as_view()

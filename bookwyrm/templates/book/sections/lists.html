@@ -14,7 +14,7 @@
     {% if list_options.exists %}
     <form name="list-add" method="post" action="{% url 'list-add-book' %}">
         {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.id }}">
+        <input type="hidden" name="edition" value="{{ book.id }}">
         <input type="hidden" name="user" value="{{ request.user.id }}">
         <label class="label" for="id_list">{% trans "Add to list" %}</label>
         <div class="field has-addons">

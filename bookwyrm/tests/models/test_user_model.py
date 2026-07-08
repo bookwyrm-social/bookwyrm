@@ -1,5 +1,7 @@
 """testing models"""
 
+import pathlib
+
 from unittest.mock import patch
 from django.contrib.auth.models import Group
 from django.db import IntegrityError
@@ -14,30 +16,25 @@ from bookwyrm.settings import DOMAIN, BASE_URL
 class User(TestCase):
     @classmethod
     def setUpTestData(cls):
-        with (
-            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
-            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
-            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
-        ):
-            cls.user = models.User.objects.create_user(
-                f"mouse@{DOMAIN}",
-                "mouse@mouse.mouse",
-                "mouseword",
-                local=True,
-                localname="mouse",
-                name="hi",
-                summary="a summary",
-                bookwyrm_user=False,
-            )
-            cls.another_user = models.User.objects.create_user(
-                f"nutria@{DOMAIN}",
-                "nutria@nutria.nutria",
-                "nutriaword",
-                local=True,
-                localname="nutria",
-                name="hi",
-                bookwyrm_user=False,
-            )
+        cls.user = models.User.objects.create_user(
+            f"mouse@{DOMAIN}",
+            "mouse@mouse.mouse",
+            "mouseword",
+            local=True,
+            localname="mouse",
+            name="hi",
+            summary="a summary",
+            bookwyrm_user=False,
+        )
+        cls.another_user = models.User.objects.create_user(
+            f"nutria@{DOMAIN}",
+            "nutria@nutria.nutria",
+            "nutriaword",
+            local=True,
+            localname="nutria",
+            name="hi",
+            bookwyrm_user=False,
+        )
         initdb.init_groups()
         initdb.init_permissions()
 
@@ -121,6 +118,27 @@ class User(TestCase):
         self.assertEqual(activity["bookwyrmUser"], False)
         self.assertEqual(activity["discoverable"], False)
         self.assertEqual(activity["type"], "Person")
+
+    def test_activitypub_serialize_avatar(self):
+        """Make sure the avatar is rendered correctly in the activity"""
+        avatar_path = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/default_avi.jpg"
+        )
+        with open(avatar_path, "rb") as avatar_file:
+            self.user.avatar.save("mouse-avatar.jpg", avatar_file)
+        activity = self.user.to_activity()
+        self.assertEqual(
+            activity["icon"],
+            {
+                "type": "Image",
+                "url": f"{BASE_URL}{self.user.avatar.url}",
+                "name": "avatar for mouse",
+                "@context": [
+                    "https://www.w3.org/ns/activitystreams",
+                    {"Hashtag": "as:Hashtag"},
+                ],
+            },
+        )
 
     def test_activitypub_outbox(self):
         activity = self.user.to_outbox()

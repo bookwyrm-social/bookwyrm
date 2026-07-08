@@ -107,7 +107,7 @@ class ActivityStream(RedisStore):
         self.populate_store(self.stream_id(user.id))
 
     @tracer.start_as_current_span("ActivityStream._get_audience")
-    def _get_audience(self, status):
+    def _get_audience(self, status, exclude_self=False):
         """given a status, what users should see it, excluding the author"""
         trace.get_current_span().set_attribute("status_type", status.status_type)
         trace.get_current_span().set_attribute("status_privacy", status.privacy)
@@ -126,6 +126,9 @@ class ActivityStream(RedisStore):
         ).exclude(
             Q(id__in=status.user.blocks.all()) | Q(blocks=status.user)  # not blocked
         )
+
+        if exclude_self:
+            audience = audience.exclude(id=status.user.id)
 
         if hasattr(status, "book") and status.book and status.book.parent_work:
             # exclude anyone who has blocked the book in a status
@@ -167,13 +170,17 @@ class ActivityStream(RedisStore):
         return audience.distinct("id")
 
     @tracer.start_as_current_span("ActivityStream.get_audience")
-    def get_audience(self, status):
+    def get_audience(self, status, exclude_self=False):
         """given a status, what users should see it"""
         trace.get_current_span().set_attribute("stream_id", self.key)
-        audience = self._get_audience(status).values_list("id", flat=True)
+        audience = self._get_audience(status, exclude_self=exclude_self).values_list(
+            "id", flat=True
+        )
         status_author = models.User.objects.filter(
             local=True, is_active=True, id=status.user.id
         ).values_list("id", flat=True)
+        if exclude_self:
+            return list(set(audience))
         return list(set(audience) | set(status_author))
 
     def get_stores_for_users(self, user_ids):
@@ -198,7 +205,7 @@ class ActivityStream(RedisStore):
         statuses = models.Status.privacy_filter(
             user,
             privacy_levels=["public"],
-        )
+        ).exclude(user=user.id)
 
         book_comments = statuses.filter(Q(comment__book__parent_work=work))
         book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
@@ -307,22 +314,26 @@ class HomeStream(ActivityStream):
 
 
 class LocalStream(ActivityStream):
-    """users you follow"""
+    """Posts from local users"""
 
     key = "local"
 
-    def get_audience(self, status):
+    def get_audience(self, status, exclude_self=True):
         # this stream wants no part in non-public statuses
         if status.privacy != "public" or not status.user.local:
             return []
-        return super().get_audience(status)
+        return super().get_audience(status, exclude_self=exclude_self)
 
     def get_statuses_for_user(self, user):
         # all public statuses by a local user
-        return models.Status.privacy_filter(
-            user,
-            privacy_levels=["public"],
-        ).filter(user__local=True)
+        return (
+            models.Status.privacy_filter(
+                user,
+                privacy_levels=["public"],
+            )
+            .filter(user__local=True)
+            .exclude(user=user.id)
+        )
 
 
 class BooksStream(ActivityStream):
@@ -330,18 +341,18 @@ class BooksStream(ActivityStream):
 
     key = "books"
 
-    def _get_audience(self, status):
-        """anyone with the mentioned book on their shelves"""
+    def _get_audience(self, status, exclude_self=True):
+        """anyone with the mentioned book on their shelves except the poster"""
         work = (
             status.book.parent_work
             if hasattr(status, "book")
             else status.mention_books.first().parent_work
         )
 
-        audience = super()._get_audience(status)
+        audience = super()._get_audience(status, exclude_self=exclude_self)
         return audience.filter(shelfbook__book__parent_work=work)
 
-    def get_audience(self, status):
+    def get_audience(self, status, exclude_self=True):
         # only show public statuses on the books feed,
         # and only statuses that mention books
         if status.privacy != "public" or not (
@@ -349,7 +360,7 @@ class BooksStream(ActivityStream):
         ):
             return []
 
-        return super().get_audience(status)
+        return super().get_audience(status, exclude_self=exclude_self)
 
     def get_statuses_for_user(self, user):
         """any public status that mentions the user's books"""
@@ -367,6 +378,7 @@ class BooksStream(ActivityStream):
                 | Q(review__book__parent_work__id__in=books)
                 | Q(mention_books__parent_work__id__in=books)
             )
+            .exclude(user=user.id)  # ignore your own statuses
             .distinct()
         )
 
