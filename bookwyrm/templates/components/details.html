@@ -1,0 +1,18 @@
+{% load i18n %}
+<div class="preview-details">
+    <div class="preview">
+        {% block always-visible %}{% endblock %}
+    </div>
+    {% if content_count > 1 %}
+    <details>
+        <summary>
+            <span class="details-close icon icon-x">
+                <span class="is-sr-only" role="heading" aria-level="2">{% trans "Show more" %}</span>
+            </span>
+        </summary>
+        <div>
+            {% block sometimes-visible %}{% endblock %}
+        </div>
+    </details>
+    {% endif %}
+</div>
