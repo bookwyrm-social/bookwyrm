@@ -129,7 +129,10 @@ class PasswordViews(TestCase):
         )
         with patch("bookwyrm.views.landing.password.login"):
             resp = view(request, code.code)
+
         self.assertEqual(resp.status_code, 200)
+        self.assertIn("Invalid password reset link", resp.context_data["errors"])
+
         self.local_user.refresh_from_db()
         self.assertFalse(self.local_user.check_password("longwordsecure"))
         self.assertTrue(models.PasswordReset.objects.exists())
