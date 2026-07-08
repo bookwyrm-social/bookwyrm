@@ -134,9 +134,12 @@ details[open] summary .details-close {
 /** Special tyoe of details panel that shows some content
  ******************************************************************************/
 .preview-details {
-    @extend .notification;
+    background-color: $notification-background-color;
+    border-radius: $notification-radius;
+    position: relative;
     padding: 0.75rem;
 }
+
 .preview-details .details-close {
   top: 0.75rem;
   right: 0.75rem;
