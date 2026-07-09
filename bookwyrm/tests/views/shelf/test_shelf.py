@@ -157,6 +157,25 @@ class ShelfViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
+    def test_shelf_implicit_sort(self, *_):
+        """ensure the shelf view always has a sort in its response"""
+        view = views.Shelf.as_view()
+        shelf = self.local_user.shelf_set.first()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertIsNotNone(result.context_data["sort"])
+        self.assertNotEqual("", result.context_data["sort"])
+        self.assertEqual(result.status_code, 200)
+
     def test_shelf_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Shelf.as_view()
