@@ -52,24 +52,24 @@
         </li>
         {% endif %}
         <li class="column">
-    <div class="field has-addons is-pulled-right">
-        <div class="control">
-            {% trans "Edit read dates" as button_text %}
-            <button class="button is-small" type="button" data-modal-open="edit_readthrough_{{ readthrough.id }}">
-                <span class="icon icon-pencil" title="{{ button_text }}">
-                    <span class="is-sr-only">{{ button_text }}</span>
-                </span>
-            </button>
-        </div>
-        <div class="control">
-            {% trans "Delete these read dates" as button_text %}
-            <button class="button is-small" type="button" data-modal-open="delete_readthrough_{{ readthrough.id }}">
-                <span class="icon icon-x" title="{{ button_text }}">
-                    <span class="is-sr-only">{{ button_text }}</span>
-                </span>
-            </button>
-        </div>
-    </div>
+            <div class="field has-addons is-pulled-right">
+                <div class="control">
+                    {% trans "Edit read dates" as button_text %}
+                    <button class="button is-small" type="button" data-modal-open="edit_readthrough_{{ readthrough.id }}">
+                        <span class="icon icon-pencil" title="{{ button_text }}">
+                            <span class="is-sr-only">{{ button_text }}</span>
+                        </span>
+                    </button>
+                </div>
+                <div class="control">
+                    {% trans "Delete these read dates" as button_text %}
+                    <button class="button is-small" type="button" data-modal-open="delete_readthrough_{{ readthrough.id }}">
+                        <span class="icon icon-x" title="{{ button_text }}">
+                            <span class="is-sr-only">{{ button_text }}</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
         </li>
 
     </ul>
