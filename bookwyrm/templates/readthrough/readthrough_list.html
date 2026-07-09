@@ -3,7 +3,7 @@
 {% load tz %}
 {% load utilities %}
 <div>
-    <ul class="columns mr-5">
+    <ul class="columns mr-5 is-clipped">
         {% if readthrough.start_date %}
         <li class="column is-one-third">
             {% trans "Started:" %} {{ readthrough.start_date | localtime | naturalday }}

@@ -1,8 +1,6 @@
 {% load i18n %}
 <div class="preview-details">
-    <div class="preview">
-        {% block always-visible %}{% endblock %}
-    </div>
+    {% block always-visible %}{% endblock %}
     {% if content_count > 1 %}
     <details>
         <summary>
@@ -10,9 +8,7 @@
                 <span class="is-sr-only" role="heading" aria-level="2">{% trans "Show more" %}</span>
             </span>
         </summary>
-        <div>
-            {% block sometimes-visible %}{% endblock %}
-        </div>
+        {% block sometimes-visible %}{% endblock %}
     </details>
     {% endif %}
 </div>
