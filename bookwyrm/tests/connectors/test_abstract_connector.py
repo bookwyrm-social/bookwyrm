@@ -10,6 +10,7 @@ from bookwyrm.connectors.abstract_connector import (
     Mapping,
     get_data,
     activitydata_to_seriesbook,
+    update_connector_status,
 )
 from bookwyrm.settings import BASE_URL, INSTANCE_ACTOR_USERNAME
 
@@ -325,3 +326,25 @@ class AbstractConnector(TestCase):
 
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.SeriesBook.objects.count(), 1)
+
+    def test_update_connector_status(self):
+        """make sure we save errors correctly"""
+        self.assertIsNone(self.connector.connector.most_recent_error)
+
+        message = "normal length message"
+        update_connector_status(self.connector.connector.id, message)
+
+        self.connector.connector.refresh_from_db()
+        self.assertIsNotNone(self.connector.connector.most_recent_error)
+        self.assertEqual(self.connector.connector.latest_error, "normal length message")
+
+    def test_update_connector_status_long(self):
+        """make sure we save errors correctly"""
+        self.assertIsNone(self.connector.connector.most_recent_error)
+
+        message = "abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz"
+        update_connector_status(self.connector.connector.id, message)
+
+        self.connector.connector.refresh_from_db()
+        self.assertIsNotNone(self.connector.connector.most_recent_error)
+        self.assertEqual(self.connector.connector.latest_error, message[:255])
