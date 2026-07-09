@@ -110,7 +110,7 @@ class Shelf(PrivateProfileMixin, View):
             "books": page,
             "edit_form": forms.ShelfForm(instance=shelf if shelf_identifier else None),
             "create_form": forms.ShelfForm(),
-            "sort": request.GET.get("sort"),
+            "sort": request.GET.get("sort") or "-shelved_date",
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
