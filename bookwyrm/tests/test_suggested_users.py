@@ -143,11 +143,67 @@ class SuggestedUsers(TestCase):
 
     def test_get_suggestions(self, *_):
         """load from store"""
+        suggestion_candidate = models.User.objects.create_user(
+            "rat", "rat@local.rat", "password", local=True, localname="rat"
+        )
         with patch("bookwyrm.suggested_users.SuggestedUsers.get_store") as mock:
-            mock.return_value = [(self.local_user.id, 7.9)]
+            mock.return_value = [(suggestion_candidate.id, 7.9)]
             results = suggested_users.get_suggestions(self.local_user)
-        self.assertEqual(results[0], self.local_user)
+        self.assertEqual(results[0], suggestion_candidate)
         self.assertEqual(results[0].mutuals, 7)
+
+    def test_get_suggestions_excludes_self(self, *_):
+        suggestion_candidate = models.User.objects.create_user(
+            "rat", "rat@local.rat", "password", local=True, localname="rat"
+        )
+        with patch("bookwyrm.suggested_users.SuggestedUsers.get_store") as mock:
+            mock.return_value = [
+                (self.local_user.id, 1.0),
+                (suggestion_candidate.id, 1.0),
+            ]
+            results = suggested_users.get_suggestions(self.local_user)
+        self.assertEqual(list(results), [suggestion_candidate])
+
+    def test_get_suggestions_excludes_followed_users(self, *_):
+        followed_user = models.User.objects.create_user(
+            "rat", "rat@local.rat", "password", local=True, localname="rat"
+        )
+        suggestion_candidate = models.User.objects.create_user(
+            "fish", "fish@fish.fish", "password", local=True, localname="fish"
+        )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            self.local_user.following.add(followed_user)
+        with patch("bookwyrm.suggested_users.SuggestedUsers.get_store") as mock:
+            mock.return_value = [
+                (followed_user.id, 1.0),
+                (suggestion_candidate.id, 1.0),
+            ]
+            results = suggested_users.get_suggestions(self.local_user)
+        self.assertEqual(list(results), [suggestion_candidate])
+
+    def test_get_suggestions_excludes_follow_requests(self, *_):
+        requested_user = models.User.objects.create_user(
+            "nutria",
+            "nutria@nutria.nutria",
+            "password",
+            local=True,
+            localname="nutria",
+            manually_approves_followers=True,
+        )
+        suggestion_candidate = models.User.objects.create_user(
+            "fish", "fish@fish.fish", "password", local=True, localname="fish"
+        )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            models.UserFollowRequest.objects.create(
+                user_subject=self.local_user, user_object=requested_user
+            )
+        with patch("bookwyrm.suggested_users.SuggestedUsers.get_store") as mock:
+            mock.return_value = [
+                (requested_user.id, 1.0),
+                (suggestion_candidate.id, 1.0),
+            ]
+            results = suggested_users.get_suggestions(self.local_user)
+        self.assertEqual(list(results), [suggestion_candidate])
 
     def test_get_annotated_users(self, *_):
         """list of people you might know"""

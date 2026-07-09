@@ -410,7 +410,7 @@ def handle_imported_book(item):
         # shelve the book if it hasn't been shelved already
 
         shelved_date = item.date_added or timezone.now()
-        shelfname = getattr(item, "shelf_name", item.shelf)
+        shelfname = getattr(item, "shelf", item.shelf)
 
         try:
             shelf = Shelf.objects.get(name=shelfname, user=user)

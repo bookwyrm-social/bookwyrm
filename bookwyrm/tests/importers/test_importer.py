@@ -88,6 +88,19 @@ class GenericImporter(TestCase):
         self.assertEqual(import_items[3].normalized_data["id"], "10")
         self.assertEqual(import_items[3].normalized_data["title"], "Patisserie at Home")
 
+    def test_create_job_shelf_override(self, *_):
+        """override the shelf for every imported item"""
+        to_read = self.local_user.shelf_set.get(identifier=models.Shelf.TO_READ)
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "public", shelf_override=to_read.name
+        )
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).all().order_by("id")
+        )
+        self.assertEqual(len(import_items), 4)
+        for import_item in import_items:
+            self.assertEqual(import_item.normalized_data["shelf"], to_read.name)
+
     def test_create_retry_job(self, *_):
         """trying again with items that didn't import"""
         import_job = self.importer.create_job(
@@ -234,6 +247,26 @@ class GenericImporter(TestCase):
                 identifier=models.Shelf.READ_FINISHED
             ).books.first()
         )
+
+    def test_handle_imported_book_shelf_override(self, *_):
+        """shelve the book on the chosen shelf, not the csv one"""
+        to_read = self.local_user.shelf_set.get(identifier=models.Shelf.TO_READ)
+        read = self.local_user.shelf_set.get(identifier=models.Shelf.READ_FINISHED)
+
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "public", shelf_override=to_read.name
+        )
+        import_item = import_job.items.first()
+        import_item.book = self.book
+        import_item.save()
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            handle_imported_book(import_item)
+
+        to_read.refresh_from_db()
+        read.refresh_from_db()
+        self.assertEqual(to_read.books.first(), self.book)
+        self.assertIsNone(read.books.first())
 
     def test_handle_import_twice(self, *_):
         """re-importing books"""

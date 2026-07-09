@@ -3,7 +3,7 @@
 from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Prefetch, Q, prefetch_related_objects
 from django.http import HttpResponseNotFound, Http404
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
@@ -67,11 +67,18 @@ class Feed(View):
             else []
         )
 
+        page = paginated.get_page(request.GET.get("page"))
+        # prefetch on the objects, not the queryset, so the cache lands directly on status.book.
+        prefetch_related_objects(
+            [status.book for status in page if getattr(status, "book", None)],
+            Prefetch("authors", queryset=models.Author.objects.order_by("id")),
+        )
+
         data = {
             **feed_page_data(request.user),
             **{
                 "user": request.user,
-                "activities": paginated.get_page(request.GET.get("page")),
+                "activities": page,
                 "suggested_users": suggestions,
                 "tab": tab,
                 "streams": STREAMS,

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-17 23:40+0000\n"
-"PO-Revision-Date: 2026-06-18 00:19\n"
+"POT-Creation-Date: 2026-07-06 15:05+0000\n"
+"PO-Revision-Date: 2026-07-06 20:03\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -356,7 +356,7 @@ msgid "Wrong Path"
 msgstr ""
 
 #: bookwyrm/models/import_job.py:51 bookwyrm/models/job.py:19
-#: bookwyrm/templates/import/import.html:184
+#: bookwyrm/templates/import/import.html:203
 #: bookwyrm/templates/import/import_user.html:225
 #: bookwyrm/templates/import/user_import_status.html:56
 #: bookwyrm/templates/preferences/export-user.html:146
@@ -369,7 +369,7 @@ msgid "Active"
 msgstr "활성화"
 
 #: bookwyrm/models/import_job.py:52 bookwyrm/models/job.py:20
-#: bookwyrm/templates/import/import.html:182
+#: bookwyrm/templates/import/import.html:201
 #: bookwyrm/templates/import/import_user.html:223
 #: bookwyrm/templates/import/user_import_status.html:54
 #: bookwyrm/templates/preferences/export-user.html:144
@@ -516,19 +516,24 @@ msgstr "인용구"
 msgid "Everything else"
 msgstr "그 밖의 것들"
 
-#: bookwyrm/settings.py:242
+#: bookwyrm/models/user.py:232
+#, python-brace-format
+msgid "avatar for {name}"
+msgstr ""
+
+#: bookwyrm/settings.py:258
 msgid "Home Timeline"
 msgstr "홈 타임라인"
 
-#: bookwyrm/settings.py:242
+#: bookwyrm/settings.py:258
 msgid "Home"
 msgstr "홈"
 
-#: bookwyrm/settings.py:243
+#: bookwyrm/settings.py:259
 msgid "Books Timeline"
 msgstr "도서 타임라임"
 
-#: bookwyrm/settings.py:243
+#: bookwyrm/settings.py:259
 #: bookwyrm/templates/guided_tour/user_profile.html:101
 #: bookwyrm/templates/import/user_import_status.html:73
 #: bookwyrm/templates/search/layout.html:22
@@ -537,91 +542,91 @@ msgstr "도서 타임라임"
 msgid "Books"
 msgstr "도서"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:338
 msgid "English"
 msgstr "English"
 
-#: bookwyrm/settings.py:323
+#: bookwyrm/settings.py:339
 msgid "Català (Catalan)"
 msgstr "Català (Catalan)"
 
-#: bookwyrm/settings.py:324
+#: bookwyrm/settings.py:340
 msgid "Deutsch (German)"
 msgstr "Deutsch (German)"
 
-#: bookwyrm/settings.py:325
+#: bookwyrm/settings.py:341
 msgid "Esperanto (Esperanto)"
 msgstr "Esperanto (Esperanto)"
 
-#: bookwyrm/settings.py:326
+#: bookwyrm/settings.py:342
 msgid "Español (Spanish)"
 msgstr "Español (Spanish)"
 
-#: bookwyrm/settings.py:327
+#: bookwyrm/settings.py:343
 msgid "Euskara (Basque)"
 msgstr "Euskara (Basque)"
 
-#: bookwyrm/settings.py:328
+#: bookwyrm/settings.py:344
 msgid "Galego (Galician)"
 msgstr "Galego (Galician)"
 
-#: bookwyrm/settings.py:329
+#: bookwyrm/settings.py:345
 msgid "Italiano (Italian)"
 msgstr "Italiano (Italian)"
 
-#: bookwyrm/settings.py:330
+#: bookwyrm/settings.py:346
 msgid "한국어 (Korean)"
 msgstr "한국어 (Korean)"
 
-#: bookwyrm/settings.py:331
+#: bookwyrm/settings.py:347
 msgid "Suomi (Finnish)"
 msgstr "Suomi (Finnish)"
 
-#: bookwyrm/settings.py:332
+#: bookwyrm/settings.py:348
 msgid "Français (French)"
 msgstr "Français (French)"
 
-#: bookwyrm/settings.py:333
+#: bookwyrm/settings.py:349
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (Lithuanian)"
 
-#: bookwyrm/settings.py:334
+#: bookwyrm/settings.py:350
 msgid "Nederlands (Dutch)"
 msgstr "네덜란드 (Dutch)"
 
-#: bookwyrm/settings.py:335
+#: bookwyrm/settings.py:351
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (Norwegian)"
 
-#: bookwyrm/settings.py:336
+#: bookwyrm/settings.py:352
 msgid "Polski (Polish)"
 msgstr "Polski (Polish)"
 
-#: bookwyrm/settings.py:337
+#: bookwyrm/settings.py:353
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (Brazilian Portuguese)"
 
-#: bookwyrm/settings.py:338
+#: bookwyrm/settings.py:354
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (European Portuguese)"
 
-#: bookwyrm/settings.py:339
+#: bookwyrm/settings.py:355
 msgid "Română (Romanian)"
 msgstr "Română (Romanian)"
 
-#: bookwyrm/settings.py:340
+#: bookwyrm/settings.py:356
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Swedish)"
 
-#: bookwyrm/settings.py:341
+#: bookwyrm/settings.py:357
 msgid "Українська (Ukrainian)"
 msgstr "Українська (우크라이나)"
 
-#: bookwyrm/settings.py:342
+#: bookwyrm/settings.py:358
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Simplified Chinese)"
 
-#: bookwyrm/settings.py:343
+#: bookwyrm/settings.py:359
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Traditional Chinese)"
 
@@ -908,7 +913,7 @@ msgstr ""
 #: bookwyrm/templates/annual_summary/layout.html:270
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
-msgstr "%(year)s년 한 해 동안 %(display_name)s 님이 읽은 책들"
+msgstr "%(display_name)s 님이 %(year)s년 한 해 동안 읽은 책"
 
 #: bookwyrm/templates/author/author.html:20
 #: bookwyrm/templates/author/author.html:21
@@ -1170,7 +1175,7 @@ msgstr ""
 #: bookwyrm/templates/book/book.html:69
 #, python-format
 msgid "Book <span itemprop=\"position\">%(number)s</span> in <em><a href=\"%(path)s\">%(title)s</a></em>"
-msgstr ""
+msgstr "<em><a href=\"%(path)s\">%(title)s</a></em>의 <span itemprop=\"position\">%(number)s</span>권"
 
 #: bookwyrm/templates/book/book.html:75
 #, python-format
@@ -1549,7 +1554,7 @@ msgstr ""
 #: bookwyrm/templates/book/edit/edit_book_form.html:150
 #: bookwyrm/templates/snippets/create_status/quotation.html:31
 msgid "Position:"
-msgstr ""
+msgstr "위치:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:164
 #, python-format
@@ -1567,7 +1572,7 @@ msgstr ""
 #: bookwyrm/templates/book/edit/edit_book_form.html:186
 #: bookwyrm/templates/book/edit/edit_series.html:75
 msgid "Series position:"
-msgstr ""
+msgstr "시리즈 순서:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:189
 msgid "This field was previously called \"Series number\""
@@ -1682,7 +1687,7 @@ msgstr ""
 #: bookwyrm/templates/book/edit/edit_series.html:36
 #: bookwyrm/templates/book/series.html:29
 msgid "Alternative names"
-msgstr ""
+msgstr "다른 제목"
 
 #: bookwyrm/templates/book/edit/edit_series.html:39
 #: bookwyrm/templates/book/edit/edit_series.html:42
@@ -1782,7 +1787,7 @@ msgid "Domain"
 msgstr "도메인"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:36
-#: bookwyrm/templates/import/import.html:149
+#: bookwyrm/templates/import/import.html:168
 #: bookwyrm/templates/import/import_status.html:134
 #: bookwyrm/templates/import/import_user.html:192
 #: bookwyrm/templates/import/user_import_status.html:162
@@ -2423,7 +2428,7 @@ msgstr "읽음"
 #: bookwyrm/templates/shelf/shelf.html:96 bookwyrm/templates/user/user.html:54
 #: bookwyrm/templatetags/shelf_tags.py:18
 msgid "Stopped Reading"
-msgstr "읽다 멈춘 것"
+msgstr "읽다가 멈춤"
 
 #: bookwyrm/templates/get_started/books.html:6
 msgid "What are you reading?"
@@ -3206,133 +3211,145 @@ msgstr ""
 msgid "No activities for this hashtag yet!"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:6
+#: bookwyrm/templates/import/import.html:7
 #: bookwyrm/templates/preferences/layout.html:43
 msgid "Import Book List"
 msgstr "도서 목록 가져오기"
 
-#: bookwyrm/templates/import/import.html:12
+#: bookwyrm/templates/import/import.html:13
 msgid "Not a valid CSV file"
 msgstr "유효하지 않은 CSV 파일"
 
-#: bookwyrm/templates/import/import.html:20
+#: bookwyrm/templates/import/import.html:21
 #, python-format
 msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
 msgid_plural "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s days."
 msgstr[0] ""
 
-#: bookwyrm/templates/import/import.html:26
+#: bookwyrm/templates/import/import.html:27
 #, python-format
 msgid "You have %(display_left)s left."
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:33
+#: bookwyrm/templates/import/import.html:34
 #: bookwyrm/templates/import/import_user.html:40
 #, python-format
 msgid "On average, recent imports have taken %(hours)s hours."
 msgstr "최근 가져오기에 걸린 시간은 평균 %(hours)s시간입니다."
 
-#: bookwyrm/templates/import/import.html:37
+#: bookwyrm/templates/import/import.html:38
 #: bookwyrm/templates/import/import_user.html:44
 #, python-format
 msgid "On average, recent imports have taken %(minutes)s minutes."
 msgstr "최근 가져오기에 걸린 시간은 평균 %(minutes)s분입니다."
 
-#: bookwyrm/templates/import/import.html:52
+#: bookwyrm/templates/import/import.html:53
 msgid "Data source:"
 msgstr "데이터 출처:"
 
-#: bookwyrm/templates/import/import.html:58
+#: bookwyrm/templates/import/import.html:59
 msgid "Goodreads (CSV)"
 msgstr "Goodreads (CSV)"
 
-#: bookwyrm/templates/import/import.html:61
+#: bookwyrm/templates/import/import.html:62
 msgid "Storygraph (CSV)"
 msgstr "Storygraph (CSV)"
 
-#: bookwyrm/templates/import/import.html:64
+#: bookwyrm/templates/import/import.html:65
 msgid "LibraryThing (TSV)"
 msgstr "LibraryThing (TSV)"
 
-#: bookwyrm/templates/import/import.html:67
+#: bookwyrm/templates/import/import.html:68
 msgid "OpenLibrary (CSV)"
 msgstr "OpenLibrary (CSV)"
 
-#: bookwyrm/templates/import/import.html:70
+#: bookwyrm/templates/import/import.html:71
 msgid "OpenReads (CSV)"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:73
+#: bookwyrm/templates/import/import.html:74
 msgid "Calibre (CSV)"
 msgstr "Calibre (CSV)"
 
-#: bookwyrm/templates/import/import.html:76
+#: bookwyrm/templates/import/import.html:77
 msgid "BookWyrm (CSV)"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:82
+#: bookwyrm/templates/import/import.html:83
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
 msgstr "Goodreads 데이터는 계정의 <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">가져오기/내보내기t</a>페이지에서 내려받을 수 있습니다."
 
-#: bookwyrm/templates/import/import.html:91
+#: bookwyrm/templates/import/import.html:92
 #: bookwyrm/templates/import/import_user.html:64
 msgid "Data file:"
 msgstr "데이터 파일:"
 
-#: bookwyrm/templates/import/import.html:99
+#: bookwyrm/templates/import/import.html:100
 msgid "Include reviews"
 msgstr "서평 포함"
 
-#: bookwyrm/templates/import/import.html:104
+#: bookwyrm/templates/import/import.html:105
 msgid "Create new shelves if they do not exist"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:109
+#: bookwyrm/templates/import/import.html:110
+msgid "Shelve all imported books on:"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:115
+msgid "Use shelf/status from the file"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:123
+msgid "Choose a shelf to use instead of any shelf or reading status in the file."
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:128
 msgid "Privacy setting for imported reviews and shelves:"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:116
-#: bookwyrm/templates/import/import.html:118
+#: bookwyrm/templates/import/import.html:135
+#: bookwyrm/templates/import/import.html:137
 #: bookwyrm/templates/import/import_user.html:170
 #: bookwyrm/templates/import/import_user.html:172
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:78
 msgid "Import"
 msgstr "가져오기"
 
-#: bookwyrm/templates/import/import.html:119
+#: bookwyrm/templates/import/import.html:138
 #: bookwyrm/templates/import/import_user.html:173
 msgid "You've reached the import limit."
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:128
+#: bookwyrm/templates/import/import.html:147
 #: bookwyrm/templates/import/import_user.html:27
 msgid "Imports are temporarily disabled; thank you for your patience."
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:135
+#: bookwyrm/templates/import/import.html:154
 #: bookwyrm/templates/import/import_user.html:181
 msgid "Recent Imports"
 msgstr "최근의 가져온 작업"
 
-#: bookwyrm/templates/import/import.html:140
+#: bookwyrm/templates/import/import.html:159
 #: bookwyrm/templates/import/import_user.html:186
 #: bookwyrm/templates/settings/imports/imports.html:202
 #: bookwyrm/templates/settings/imports/imports.html:292
 msgid "Date Created"
 msgstr "만든 날짜"
 
-#: bookwyrm/templates/import/import.html:143
+#: bookwyrm/templates/import/import.html:162
 #: bookwyrm/templates/import/import_user.html:189
 msgid "Last Updated"
 msgstr "갱신 날짜"
 
-#: bookwyrm/templates/import/import.html:146
+#: bookwyrm/templates/import/import.html:165
 #: bookwyrm/templates/settings/imports/imports.html:211
 msgid "Items"
 msgstr "항목"
 
-#: bookwyrm/templates/import/import.html:155
+#: bookwyrm/templates/import/import.html:174
 #: bookwyrm/templates/import/import_user.html:198
 #: bookwyrm/templates/preferences/export-user.html:122
 msgid "No recent imports"
@@ -3928,7 +3945,7 @@ msgstr ""
 #: bookwyrm/templates/lists/created_text.html:7
 #, python-format
 msgid "Created and curated by <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "작성 및 큐레이트: <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/created_text.html:9
 #, python-format
@@ -4083,7 +4100,7 @@ msgstr "읽을 책 제안"
 
 #: bookwyrm/templates/lists/list.html:103
 msgid "Embed this list on a website"
-msgstr ""
+msgstr "이 목록을 웹사이트에 임베드하기"
 
 #: bookwyrm/templates/lists/list.html:111
 msgid "Copy embed code"
@@ -4099,7 +4116,7 @@ msgid "List position"
 msgstr "목록 위치"
 
 #: bookwyrm/templates/lists/list_item.html:63
-#: bookwyrm/templates/settings/connectors/connector.html:28
+#: bookwyrm/templates/settings/connectors/connector.html:29
 #: bookwyrm/templates/settings/connectors/update.html:27
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:23
 msgid "Set"
@@ -5303,7 +5320,7 @@ msgstr ""
 msgid "Search query"
 msgstr "검색 쿼리"
 
-#: bookwyrm/templates/search/layout.html:20
+#: bookwyrm/templates/search/layout.html:21
 msgid "Search type"
 msgstr "유형 검색"
 
@@ -5636,7 +5653,7 @@ msgid "Run time"
 msgstr "실행 시간"
 
 #: bookwyrm/templates/settings/celery.html:134
-#: bookwyrm/templates/settings/connectors/connector.html:22
+#: bookwyrm/templates/settings/connectors/connector.html:23
 #: bookwyrm/templates/settings/connectors/update.html:21
 msgid "Priority"
 msgstr "우선도"
@@ -5683,18 +5700,26 @@ msgstr ""
 msgid "Create new connector"
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/connector.html:35
+#: bookwyrm/templates/settings/connectors/connector.html:36
 #: bookwyrm/templates/settings/connectors/update.html:33
 #: bookwyrm/templates/settings/users/user_info.html:87
 msgid "Deactivation reason:"
 msgstr ""
 
+#: bookwyrm/templates/settings/connectors/connector.html:43
+msgid "Latest successful request"
+msgstr ""
+
 #: bookwyrm/templates/settings/connectors/connector.html:50
+msgid "Latest error"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connector.html:66
 #: bookwyrm/templates/settings/connectors/update.html:47
 msgid "Deactivate"
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/connector.html:61
+#: bookwyrm/templates/settings/connectors/connector.html:77
 #: bookwyrm/templates/settings/connectors/update.html:58
 msgid "Activate"
 msgstr ""
@@ -7397,7 +7422,7 @@ msgstr ""
 
 #: bookwyrm/templates/shelf/shelves_filter_field.html:7
 msgid "Enter text here"
-msgstr ""
+msgstr "여기에 텍스트 입력"
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:16
 msgid "Invite"
@@ -7471,14 +7496,14 @@ msgstr "퍼센트"
 msgid "of %(pages)s pages"
 msgstr ""
 
-#: bookwyrm/templates/snippets/create_status/content_field.html:18
+#: bookwyrm/templates/snippets/create_status/content_field.html:21
 #: bookwyrm/templates/snippets/status/layout.html:34
 #: bookwyrm/templates/snippets/status/layout.html:53
 #: bookwyrm/templates/snippets/status/layout.html:54
 msgid "Reply"
 msgstr "답하기"
 
-#: bookwyrm/templates/snippets/create_status/content_field.html:18
+#: bookwyrm/templates/snippets/create_status/content_field.html:21
 msgid "Content"
 msgstr "컨텐트"
 
@@ -7514,7 +7539,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:44
 msgid "On page:"
-msgstr ""
+msgstr "쪽:"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:50
 msgid "At percent:"
@@ -7760,7 +7785,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/shelf_selector.html:53
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:21
 msgid "Stopped reading"
-msgstr "읽다 멈춘 것"
+msgstr "읽다가 멈춤"
 
 #: bookwyrm/templates/snippets/reading_modals/want_to_read_modal.html:6
 #, python-format
@@ -7886,7 +7911,7 @@ msgstr "숨기기"
 #: bookwyrm/templates/snippets/status/header.html:45
 #, python-format
 msgid "edited %(date)s"
-msgstr ""
+msgstr "%(date)s일에 편집"
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:8
 #, python-format
@@ -7901,22 +7926,22 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/note.html:8
 #, python-format
 msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
-msgstr "독자가 <a href=\"%(user_path)s\">%(username)s</a>'독자의 <a href=\"%(status_path)s\">게시물</a>에 회신"
+msgstr "님이 <a href=\"%(user_path)s\">%(username)s</a>'독자의 <a href=\"%(status_path)s\">게시물</a>에 회신"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:8
 #, python-format
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr "독자가 인용한 <a href=\"%(author_path)s\">%(author_name)s</a> 의 <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "님이 인용한 <a href=\"%(author_path)s\">%(author_name)s</a> 의 <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:15
 #, python-format
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr "<a href=\"%(book_path)s\">%(book)s</a> 인용"
+msgstr "님이 <a href=\"%(book_path)s\">%(book)s</a> 인용"
 
 #: bookwyrm/templates/snippets/status/headers/rating.html:3
 #, python-format
 msgid "rated <a href=\"%(book_path)s\">%(book)s</a>:"
-msgstr ""
+msgstr "님이 <a href=\"%(book_path)s\">%(book)s</a>에 별점:"
 
 #: bookwyrm/templates/snippets/status/headers/read.html:10
 #, python-format
@@ -7931,12 +7956,12 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/reading.html:10
 #, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "님이 <a href=\"%(author_path)s\">%(author_name)s</a>의 <a href=\"%(book_path)s\">%(book)s</a> 읽기 시작"
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:17
 #, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr "독자가 읽기 시작한 <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "님이 읽기 시작한 <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/review.html:10
 #: bookwyrm/templates/snippets/status/headers/review.html:26
@@ -7952,7 +7977,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/headers/review.html:33
 #, python-format
 msgid "rated <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "님이 <a href=\"%(book_path)s\">%(book)s</a>에 별점"
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
 #, python-format
@@ -8261,7 +8286,7 @@ msgstr ""
 
 #: bookwyrm/views/books/series.py:91
 msgid "Series position must be unique for each book"
-msgstr ""
+msgstr "시리즈 순서는 각 권마다 고유해야함"
 
 #: bookwyrm/views/updates.py:46
 #, python-format
