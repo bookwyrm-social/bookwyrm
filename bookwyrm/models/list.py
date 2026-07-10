@@ -69,14 +69,16 @@ class SuggestionList(MergeableMixin, AbstractList):
     suggests_for = fields.ForeignKey(
         "Work",
         on_delete=models.PROTECT,
-        activitypub_field="book",
-        related_name="suggestion_list",
+        related_name="suggests_for",
         deduplication_field=True,
     )
     activity_serializer = activitypub.SuggestionList
 
     pending_merge_target = models.ForeignKey(
-        "SuggestionList", related_name="merge_target", on_delete=models.PROTECT, null=True
+        "SuggestionList",
+        related_name="merge_target",
+        on_delete=models.PROTECT,
+        null=True,
     )
 
     @property

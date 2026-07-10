@@ -35,12 +35,13 @@ class MergeableMixin(Model):
         dedupe_fields = cls.deduplication_fields()
         duplicates = {}
         for field in dedupe_fields:
-            print(field)
             results = (
                 cls.objects.values(field.name)
                 .annotate(Count(field.name))
                 .filter(**{f"{field.name}__count__gt": 1})
-                .exclude(**{field.name: ""})
+                .exclude(
+                    **{field.name: None if isinstance(field, fields.ForeignKey) else ""}
+                )
                 .exclude(**{f"{field.name}__isnull": True})
                 .values_list(field.name, flat=True)
             )
