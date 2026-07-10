@@ -35,6 +35,7 @@ class MergeableMixin(Model):
         dedupe_fields = cls.deduplication_fields()
         duplicates = {}
         for field in dedupe_fields:
+            print(field)
             results = (
                 cls.objects.values(field.name)
                 .annotate(Count(field.name))
