@@ -5,7 +5,7 @@ import uuid
 
 from django.apps import apps
 from django.contrib.postgres.indexes import Index
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
@@ -96,6 +96,16 @@ class SuggestionList(MergeableMixin, AbstractList):
         """on save, update embed_key and avoid clash with existing code"""
         self.user = activitypub.get_representative()
         self.privacy = "public"
+
+        # check for uniqueness on create, but don't enforce it at the database level
+        if (
+            not self.id
+            and self.__class__.objects.filter(suggests_for=self.suggests_for).exists()
+        ):
+            raise ValidationError(
+                "Attempting to create duplicate suggestion list for work",
+                self.suggests_for,
+            )
 
         super().save(*args, **kwargs)
 
