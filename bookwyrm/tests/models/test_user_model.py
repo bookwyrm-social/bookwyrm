@@ -51,6 +51,13 @@ class User(TestCase):
         self.assertIsNotNone(self.user.key_pair.private_key)
         self.assertIsNotNone(self.user.key_pair.public_key)
 
+    def test_filters_applied_all_types_selected(self):
+        self.assertFalse(self.user.filters_applied)
+
+    def test_filters_applied_with_excluded_type(self):
+        self.user.feed_status_types = ["review"]
+        self.assertTrue(self.user.filters_applied)
+
     def test_remote_user(self):
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             user = models.User.objects.create_user(

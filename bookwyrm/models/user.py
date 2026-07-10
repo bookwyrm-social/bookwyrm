@@ -256,6 +256,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             notification_type__in=["REPLY", "MENTION", "TAG", "REPORT"],
         ).exists()
 
+    @property
+    def filters_applied(self):
+        return set(self.feed_status_types) != set(get_feed_filter_choices())
+
     activity_serializer = activitypub.Person
 
     @classmethod
