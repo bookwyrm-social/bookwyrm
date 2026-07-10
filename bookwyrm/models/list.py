@@ -5,7 +5,7 @@ import uuid
 
 from django.apps import apps
 from django.contrib.postgres.indexes import Index
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
@@ -18,6 +18,7 @@ from bookwyrm.utils.db import add_update_fields
 from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
 from .base_model import BookWyrmModel
 from .group import GroupMember
+from .mergeable_mixin import MergeableMixin
 from . import fields
 
 CurationType = models.TextChoices(
@@ -55,7 +56,7 @@ class AbstractList(OrderedCollectionMixin, BookWyrmModel):
         abstract = True
 
 
-class SuggestionList(AbstractList):
+class SuggestionList(MergeableMixin, AbstractList):
     """a list of user-provided suggested things to read next"""
 
     works = models.ManyToManyField(
@@ -65,14 +66,20 @@ class SuggestionList(AbstractList):
         through_fields=("book_list", "work"),
     )
 
-    suggests_for = fields.OneToOneField(
+    suggests_for = fields.ForeignKey(
         "Work",
         on_delete=models.PROTECT,
-        activitypub_field="book",
-        related_name="suggestion_list",
-        unique=True,
+        related_name="suggests_for",
+        deduplication_field=True,
     )
     activity_serializer = activitypub.SuggestionList
+
+    pending_merge_target = models.ForeignKey(
+        "SuggestionList",
+        related_name="merge_target",
+        on_delete=models.PROTECT,
+        null=True,
+    )
 
     @property
     def collection_queryset(self):
@@ -89,6 +96,16 @@ class SuggestionList(AbstractList):
         """on save, update embed_key and avoid clash with existing code"""
         self.user = activitypub.get_representative()
         self.privacy = "public"
+
+        # check for uniqueness on create, but don't enforce it at the database level
+        if (
+            not self.id
+            and self.__class__.objects.filter(suggests_for=self.suggests_for).exists()
+        ):
+            raise ValidationError(
+                "Attempting to create duplicate suggestion list for work",
+                self.suggests_for,
+            )
 
         super().save(*args, **kwargs)
 
@@ -332,9 +349,3 @@ class SuggestionListItem(AbstractListItem):
     def edit_path_name(self):
         """the form submit link to edit this item"""
         return "suggestion-list-item"
-
-    class Meta:
-        """A book may only be placed into a list once,
-        and each order in the list may be used only once"""
-
-        unique_together = ("work", "book_list")

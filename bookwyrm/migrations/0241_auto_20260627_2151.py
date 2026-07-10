@@ -23,5 +23,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(add_manage_data_perm),
+        migrations.RunPython(add_manage_data_perm, reverse_code=migrations.RunPython.noop),
     ]

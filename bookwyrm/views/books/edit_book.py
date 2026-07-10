@@ -117,7 +117,13 @@ class EditBook(View):
         elif "cover" in form.files:
             book.cover = remove_uploaded_image_exif(form.files["cover"])
 
+        # now that the book has been edited, it's duplicates need to be re-checked
+        book.pending_merge_target = None
         book.save()
+
+        # and also any books that are dupes of this one need to be re-checked
+        book.merge_target.update(pending_merge_target=None)
+
         return redirect(f"/book/{book.id}")
 
 

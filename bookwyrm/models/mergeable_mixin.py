@@ -6,15 +6,22 @@ from typing import Any, Dict
 from typing_extensions import Self
 
 from django.db import transaction
-from django.db.models import Count, ManyToManyField
+from django.db.models import BooleanField, Count, DateTimeField, ManyToManyField, Model
 from django.utils import timezone
-
 
 from . import fields
 
 
-class MergeableMixin:
+class MergeableMixin(Model):
     """A bookwyrm data object that can be deduplicated"""
+
+    pending_merge_date = DateTimeField(null=True)
+    prevent_automatic_merge = BooleanField(default=False)
+
+    class Meta:
+        """can't initialize this model, that wouldn't make sense"""
+
+        abstract = True
 
     @classmethod
     def deduplication_fields(cls):
@@ -37,7 +44,9 @@ class MergeableMixin:
                 .values(field.name)
                 .annotate(Count(field.name))
                 .filter(**{f"{field.name}__count__gt": 1})
-                .exclude(**{field.name: ""})
+                .exclude(
+                    **{field.name: None if isinstance(field, fields.ForeignKey) else ""}
+                )
                 .exclude(**{f"{field.name}__isnull": True})
                 .values_list(field.name, flat=True)
             )

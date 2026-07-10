@@ -17,9 +17,9 @@
     <h2>{% trans "Duplicates detected" %}</h2>
     <aside class="help">{% trans "Duplicates will be detected when a duplicate data scan has run" %}</aside>
     <div class="columns has-text-centered is-multiline">
-        <div class="column is-3">
+        <div class="column is-one-fifth">
             <div class="notification mb-0">
-                <p class="header">{% trans "Duplicate works" %}</p>
+                <p class="header">{% trans "Works" %}</p>
                 <p class="title is-5">{{ work_count|intcomma }}</p>
             </div>
             {% if work_count %}
@@ -28,9 +28,9 @@
             </aside>
             {% endif %}
         </div>
-        <div class="column is-3">
+        <div class="column is-one-fifth">
             <div class="notification mb-0">
-                <p class="header">{% trans "Duplicate editions" %}</p>
+                <p class="header">{% trans "Editions" %}</p>
                 <p class="title is-5">{{ edition_count|intcomma }}</p>
             </div>
             {% if edition_count %}
@@ -39,9 +39,9 @@
             </aside>
             {% endif %}
         </div>
-        <div class="column is-3">
+        <div class="column is-one-fifth">
             <div class="notification mb-0">
-                <p class="header">{% trans "Duplicate authors" %}</p>
+                <p class="header">{% trans "Authors" %}</p>
                 <p class="title is-5">{{ author_count|intcomma }}</p>
             </div>
             {% if author_count %}
@@ -50,9 +50,9 @@
             </aside>
             {% endif %}
         </div>
-        <div class="column is-3">
+        <div class="column is-one-fifth">
             <div class="notification mb-0">
-                <p class="header">{% trans "Duplicate series" %}</p>
+                <p class="header">{% trans "Series" %}</p>
                 <p class="title is-5">{{ series_count|intcomma }}</p>
             </div>
             {% if series_count %}
@@ -61,7 +61,24 @@
             </aside>
             {% endif %}
         </div>
+        <div class="column is-one-fifth">
+            <div class="notification mb-0">
+                <p class="header">{% trans "Suggestion list" %}</p>
+                <p class="title is-5">{{ suggestion_list_count|intcomma }}</p>
+            </div>
+            {% if suggestion_list_count %}
+            <aside class="help pt-0 has-text-left">
+                <a target="_blank" href="{{ suggestion_list_example.local_path }}">{% trans "View first" %}</a>
+            </aside>
+            {% endif %}
+        </div>
     </div>
+    <form name="run_scan" method="POST" action="{% url 'settings-dedupe-run-scan' %}">
+        {% csrf_token %}
+        <button type="submit" class="button">
+            {% trans "Run scan task" %}
+        </button>
+    </form>
 </section>
 
 <div class="block">
