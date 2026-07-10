@@ -429,6 +429,11 @@ urlpatterns = [
         name="settings-data-quality",
     ),
     re_path(
+        r"^settings/data-quality/run-scan/?$",
+        views.run_deduplication_scan_task,
+        name="settings-dedupe-run-scan",
+    ),
+    re_path(
         r"^settings/data-quality/schedule-scan/?$",
         views.schedule_deduplication_scan_task,
         name="settings-dedupe-schedule-scan",

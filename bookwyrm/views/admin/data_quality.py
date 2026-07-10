@@ -27,6 +27,14 @@ class DataQuality(View):
 
 @require_POST
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
+def run_deduplication_scan_task(request):
+    """run now"""
+    models.housekeeping.mark_duplicate_data_task.delay()
+    return redirect("settings-data-quality")
+
+
+@require_POST
+@permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
 def schedule_deduplication_scan_task(request):
     """scheduler"""
     form = forms.IntervalScheduleForm(request.POST)
