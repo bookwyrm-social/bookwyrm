@@ -40,7 +40,10 @@ class SuggestionList(View):
         ).distinct()
         work = work.first()
 
-        book_list = get_object_or_404(models.SuggestionList, suggests_for=work)
+        try:
+            book_list = models.SuggestionList.objects.filter(suggests_for=work).first()
+        except models.SuggestionList.DoesNotExist:
+            raise Http404
 
         if is_api_request(request):
             return ActivitypubResponse(book_list.to_activity(**request.GET))

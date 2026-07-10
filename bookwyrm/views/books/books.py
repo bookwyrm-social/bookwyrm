@@ -150,8 +150,8 @@ class Book(View):
                 "comment_count": book.comment_set.filter(**filters).count(),
                 "quotation_count": book.quotation_set.filter(**filters).count(),
             }
-            if book.parent_work.suggestion_list.exists():
-                data["suggestion_list"] = book.parent_work.suggestion_list.first()
+            if book.parent_work.suggests_for.exists():
+                data["suggestion_list"] = book.parent_work.suggests_for.first()
                 data["item_count"] = data[
                     "suggestion_list"
                 ].suggestionlistitem_set.count()
