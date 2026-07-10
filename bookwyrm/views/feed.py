@@ -34,7 +34,7 @@ class Feed(View):
             user = form.save(request, commit=False)
             user.save(broadcast=False, update_fields=["feed_status_types"])
 
-        return redirect(request.path)
+        return redirect("feed", tab=tab)
 
     def get(self, request, tab):
         """user's homepage with activity feed"""

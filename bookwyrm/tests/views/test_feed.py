@@ -80,7 +80,8 @@ class FeedViews(TestCase):
 
         result = view(request, "home")
 
-        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.status_code, 302)
+        self.assertEqual(result.url, "/home")
         self.local_user.refresh_from_db()
         self.assertEqual(self.local_user.feed_status_types, ["review"])
 
