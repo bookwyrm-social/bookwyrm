@@ -18,6 +18,7 @@ from bookwyrm.utils.db import add_update_fields
 from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
 from .base_model import BookWyrmModel
 from .group import GroupMember
+from .mergeable_mixin import MergeableMixin
 from . import fields
 
 CurationType = models.TextChoices(
@@ -55,7 +56,7 @@ class AbstractList(OrderedCollectionMixin, BookWyrmModel):
         abstract = True
 
 
-class SuggestionList(AbstractList):
+class SuggestionList(MergeableMixin, AbstractList):
     """a list of user-provided suggested things to read next"""
 
     works = models.ManyToManyField(
@@ -70,7 +71,7 @@ class SuggestionList(AbstractList):
         on_delete=models.PROTECT,
         activitypub_field="book",
         related_name="suggestion_list",
-        unique=True,
+        deduplication_field=True,
     )
     activity_serializer = activitypub.SuggestionList
 
@@ -332,9 +333,3 @@ class SuggestionListItem(AbstractListItem):
     def edit_path_name(self):
         """the form submit link to edit this item"""
         return "suggestion-list-item"
-
-    class Meta:
-        """A book may only be placed into a list once,
-        and each order in the list may be used only once"""
-
-        unique_together = ("work", "book_list")
