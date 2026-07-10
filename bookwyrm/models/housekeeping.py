@@ -254,6 +254,6 @@ def run_missing_covers_job(**kwargs):
 def mark_duplicate_data_task():
     """Find likely duplicates and store their canonical candidate"""
     # Is there a better way to find these models? idk
-    scan_models = [models.Work, models.Edition, models.Author, models.Series]
+    scan_models = [models.Work, models.Edition, models.Author, models.Series, models.SuggestionList]
     for model in scan_models:
         model.mark_merge_candidates()

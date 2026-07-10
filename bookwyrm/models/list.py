@@ -75,6 +75,10 @@ class SuggestionList(MergeableMixin, AbstractList):
     )
     activity_serializer = activitypub.SuggestionList
 
+    pending_merge_target = models.ForeignKey(
+        "SuggestionList", related_name="merge_target", on_delete=models.PROTECT, null=True
+    )
+
     @property
     def collection_queryset(self):
         """list of books for this shelf, overrides OrderedCollectionMixin"""
