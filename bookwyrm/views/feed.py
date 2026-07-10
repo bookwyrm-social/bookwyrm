@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Prefetch, Q, prefetch_related_objects
 from django.http import HttpResponseNotFound, Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -28,17 +28,15 @@ class Feed(View):
 
     def post(self, request, tab):
         """save feed settings form, with a silent validation fail"""
-        filters_applied = False
         form = forms.FeedStatusTypesForm(request.POST, instance=request.user)
         if form.is_valid():
             # workaround to avoid broadcasting this change
             user = form.save(request, commit=False)
             user.save(broadcast=False, update_fields=["feed_status_types"])
-            filters_applied = True
 
-        return self.get(request, tab, filters_applied)
+        return redirect(request.path)
 
-    def get(self, request, tab, filters_applied=False):
+    def get(self, request, tab):
         """user's homepage with activity feed"""
         tab = [s for s in STREAMS if s["key"] == tab]
         tab = tab[0] if tab else STREAMS[0]
@@ -84,7 +82,7 @@ class Feed(View):
                 "streams": STREAMS,
                 "goal_form": forms.GoalForm(),
                 "feed_status_types_options": FeedFilterChoices,
-                "filters_applied": filters_applied,
+                "feed_filters_applied": request.user.filters_applied,
                 "path": f"/{tab['key']}",
                 "annual_summary_year": get_annual_summary_year(),
                 "has_tour": True,
