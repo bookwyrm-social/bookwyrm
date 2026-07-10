@@ -66,7 +66,7 @@ class SuggestionList(MergeableMixin, AbstractList):
         through_fields=("book_list", "work"),
     )
 
-    suggests_for = fields.OneToOneField(
+    suggests_for = fields.ForeignKey(
         "Work",
         on_delete=models.PROTECT,
         activitypub_field="book",
