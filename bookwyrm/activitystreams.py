@@ -222,8 +222,9 @@ class ActivityStream(RedisStore):
         # ``thread_id__in`` makes Postgres re-run the whole UNION each time,
         # which is what makes the book-status tasks slow.
         book_status_rows = list(book_statuses.values_list("id", "thread_id"))
-        book_status_ids = [row[0] for row in book_status_rows]
-        threads = [row[1] for row in book_status_rows]
+        book_status_ids, threads = (
+            zip(*book_status_rows) if book_status_rows else ((), ())
+        )
         thread_statuses = statuses.exclude(id__in=book_status_ids).filter(
             thread_id__in=threads
         )
@@ -250,8 +251,9 @@ class ActivityStream(RedisStore):
 
         # Evaluate the union once; see add_book_statuses for the rationale.
         book_status_rows = list(book_statuses.values_list("id", "thread_id"))
-        book_status_ids = [row[0] for row in book_status_rows]
-        threads = [row[1] for row in book_status_rows]
+        book_status_ids, threads = (
+            zip(*book_status_rows) if book_status_rows else ((), ())
+        )
         thread_statuses = statuses.exclude(id__in=book_status_ids).filter(
             thread_id__in=threads
         )
@@ -316,8 +318,9 @@ class HomeStream(ActivityStream):
 
         # Evaluate the union once; see add_book_statuses for the rationale.
         book_status_rows = list(book_statuses.values_list("id", "thread_id"))
-        book_status_ids = [row[0] for row in book_status_rows]
-        threads = [row[1] for row in book_status_rows]
+        book_status_ids, threads = (
+            zip(*book_status_rows) if book_status_rows else ((), ())
+        )
         thread_statuses = statuses.exclude(id__in=book_status_ids).filter(
             thread_id__in=threads
         )
