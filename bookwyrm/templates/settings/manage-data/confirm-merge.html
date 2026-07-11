@@ -17,7 +17,7 @@
         {% blocktrans %}The merged {{model_name}} will have the following values.{% endblocktrans %}
     </p>
     <p>
-        Only fields where values differ are shown – other fields will automatically merge.
+        {% trans "Only fields where values differ are shown – other fields will automatically merge." %}
     </p>
     <p>
          Related fields such as series attached to books or editions attached to authors will automatically be merged into this {{model_name}}.
