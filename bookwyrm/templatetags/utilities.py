@@ -214,12 +214,4 @@ def is_instance_admin(localname):
 @register.filter(name="dedupe_fields")
 def get_dupe_match_field(original, dupe):
     """Identify which field is matching for a dedupe"""
-    dedupe_fields = original.__class__.deduplication_fields()
-    original_fields = [
-        (f.name, getattr(original, f.name), f.verbose_name) for f in dedupe_fields
-    ]
-    return [
-        verbose_name
-        for (field_name, value, verbose_name) in original_fields
-        if value and value != "" and getattr(dupe, field_name) == value
-    ]
+    return [f.verbose_name for f in original.get_shared_fields(dupe)]
