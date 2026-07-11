@@ -59,7 +59,7 @@
             {% endif %}
         </div>
         {% if perms.bookwyrm.manage_data %}
-        <div class="has-text-right">
+        <div class="has-text-right control">
             <a class="button is-small is-link is-outlined" href="{% url 'settings-manual-merge' 'edition' original.id %}">{% trans 'Merge now' %}</a>
         </div>
         {% endif %}
