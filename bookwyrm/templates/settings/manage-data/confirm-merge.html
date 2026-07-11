@@ -26,7 +26,7 @@
     {% endblocktrans %}
 </div>
 
-<form action="{% url 'settings-confirm-manual-merge' model_name canonical_id %}" method="post">
+<form action="{% url 'settings-confirm-manual-merge' model_name canonical_id %}?source={{source}}" method="post">
     {% csrf_token %}
     <table class="table is-fullwidth">
         <thead>

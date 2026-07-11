@@ -67,12 +67,16 @@ class MergeableMixin(Model):
         model = self.__class__
         return model.objects.filter(pending_merge_target=self.id)
 
-    def merge_into(self, canonical: Self, dry_run=False) -> Dict[str, Any]:
+    def merge_into(
+        self, canonical: Self, dry_run=False, manual=False
+    ) -> Dict[str, Any]:
         """merge this entity into another entity"""
         if canonical.id == self.id:
             raise ValueError(f"Cannot merge {self} into itself")
 
-        absorbed_fields = canonical.absorb_data_from(self, dry_run=dry_run)
+        absorbed_fields = (
+            canonical.absorb_data_from(self, dry_run=dry_run) if not manual else []
+        )
 
         if dry_run:
             return absorbed_fields

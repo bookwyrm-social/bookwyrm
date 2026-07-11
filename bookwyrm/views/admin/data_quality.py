@@ -11,6 +11,7 @@ from django.http import Http404
 from bookwyrm.settings import PAGE_LENGTH
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
@@ -177,8 +178,8 @@ class MergeData(View):
 def get_diff_string(canonical: str, candidate: str, array=False) -> str:
     """create and return a diff string for object fields"""
 
-    canonical = str(canonical) if type(canonical) == int else canonical or ""
-    candidate = str(candidate) if type(candidate) == int else candidate or ""
+    canonical = str(canonical) if type(canonical) is int else canonical or ""
+    candidate = str(candidate) if type(candidate) is int else candidate or ""
     diff = difflib.Differ()
     delta = list(diff.compare(canonical, candidate))
     string = []
@@ -221,12 +222,11 @@ class ManualMerge(View):
         simple_fields = []
         array_fields = []
         datetime_fields = [
-                "first_published_date",
-                "published_date",
-                "born",
-                "died",
-            ]
-        identical_fields = []
+            "first_published_date",
+            "published_date",
+            "born",
+            "died",
+        ]
 
         for field in candidates.model._meta.get_fields():
             if (
@@ -234,11 +234,15 @@ class ManualMerge(View):
                 or "date_precision" in field.name
             ):
                 continue
-            if candidates.model._meta.get_field(field.name).get_internal_type() in [
-                "CharField",
-                "TextField",
-                "IntegerField",
-            ] or field.name in datetime_fields:
+            if (
+                candidates.model._meta.get_field(field.name).get_internal_type()
+                in [
+                    "CharField",
+                    "TextField",
+                    "IntegerField",
+                ]
+                or field.name in datetime_fields
+            ):
                 all_vals = [getattr(x, field.name) for x in candidates]
                 if any(all_vals) and not all(
                     val == getattr(canonical, field.name) for val in all_vals
@@ -249,7 +253,11 @@ class ManualMerge(View):
                             if value not in values:
                                 values.append(value)
                     simple_fields.append(
-                        {"name": field.name, "trans_name": _(field.name), "values": values}
+                        {
+                            "name": field.name,
+                            "trans_name": _(field.name),
+                            "values": values,
+                        }
                     )
             if (
                 candidates.model._meta.get_field(field.name).get_internal_type()
@@ -263,28 +271,17 @@ class ManualMerge(View):
                                 if value not in values:
                                     values.append(value)
                     array_fields.append(
-                        {"name": field.name, "trans_name": _(field.name), "values": values}
+                        {
+                            "name": field.name,
+                            "trans_name": _(field.name),
+                            "values": values,
+                        }
                     )
-
-        for field in simple_fields:
-            not_null = {f"{field['name']}__isnull": False}
-            if model._meta.get_field(field["name"]).get_internal_type() in [
-                "DateTimeField",
-                "IntegerField",
-            ]:
-                has_value = all_objects.filter(**not_null)
-            else:
-                has_value = all_objects.filter(**not_null).exclude(
-                    **{field["name"]: ""}
-                )
-        simple_fields = [
-            field for field in simple_fields if field["name"] not in identical_fields
-        ]
 
         data = {
             "simple_fields": simple_fields,
             "array_fields": array_fields,
-            "datetime_fields":datetime_fields,
+            "datetime_fields": datetime_fields,
             "canonical": canonical,
             "objects": all_objects.reverse(),
             "model_name": model_name,
@@ -342,6 +339,7 @@ class ManualMerge(View):
             "fields": fields + array_fields,
             "model_name": model_name,
             "canonical_id": canonical.id,
+            "source": request.GET.get("source"),
         }
         return TemplateResponse(
             request, "settings/manage-data/confirm-merge.html", data
@@ -368,6 +366,8 @@ def confirm_manual_merge(request, model_name, canonical_id):
         canonical.save(update_fields=update_fields)
 
     for candidate in canonical.merge_candidates:
-        candidate.merge_into(canonical)
+        candidate.merge_into(canonical, manual=True)
 
+    if request.GET.get("source") == "admin":
+        return redirect(reverse("settings-merge-data"))
     return redirect(canonical.remote_id)

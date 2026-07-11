@@ -20,7 +20,7 @@
                 <td><a href="{{edition.remote_id}}">{{edition.title}}</a></td>
                 <td>{% for author in edition.authors.all %}{{author.name}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
                 <td>{{edition.merge_candidates.count}}</td>
-                <td><a class="button is-small is-link" href="{% url 'settings-manual-merge' 'edition' edition.id %}">{% trans 'Merge' %}</a></td>
+                <td><a class="button is-small is-link" href="{% url 'settings-manual-merge' 'edition' edition.id %}?source=admin">{% trans 'Merge' %}</a></td>
             </tr>
             {% endfor %}
         </tbody>

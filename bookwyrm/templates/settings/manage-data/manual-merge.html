@@ -21,7 +21,7 @@ Merge {{plural_model}}
 {% with tab_id=request.GET.tab_id canonical_id=canonical.id %}
 <div class="block">
     {% if not simple_fields and not array_fields %}
-    <form class="form" method="post" action="{% url 'settings-confirm-manual-merge' model_name canonical_id %}">
+    <form class="form" method="post" action="{% url 'settings-confirm-manual-merge' model_name canonical_id %}?source={{source}}">
         {% csrf_token %}
         <div class="has-text-centered m-4">
             <p>
@@ -71,7 +71,13 @@ Merge {{plural_model}}
                 {% for val in field.values %}
                     <div>
                         <input
-                        type="radio" name="{{field.name}}" value="{{val}}"
+                        type="radio"
+                        name="{{field.name}}"
+                        {% if field.name in datetime_fields %}
+                        value="{{ val|date:'Y-m-d' }}"
+                        {% else %}
+                        value="{{val}}"
+                        {% endif %}
                         {% if field.values|length == 1 and not canonical_value %}checked{% endif %}
                         />
                         <label for="{{field.name}}" class="mr-4">
