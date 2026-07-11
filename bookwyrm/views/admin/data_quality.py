@@ -209,7 +209,6 @@ class ManualMerge(View):
 
         model = apps.get_model(f"bookwyrm.{model_name}", require_ready=True)
         plural_model = model._meta.verbose_name_plural
-        trans_model = model._meta.verbose_name
         canonical = get_object_or_404(model.objects.filter(id=canonical_id))
         candidates = canonical.merge_candidates
         if not candidates:
@@ -286,7 +285,7 @@ class ManualMerge(View):
             "objects": all_objects.reverse(),
             "model_name": model_name,
             "plural_model": plural_model,
-            "trans_model": trans_model,
+            "source": request.GET.get("source"),
         }
         return TemplateResponse(request, "settings/manage-data/manual-merge.html", data)
 
