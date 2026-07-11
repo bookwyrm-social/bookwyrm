@@ -22,7 +22,6 @@
     <p>
          {% blocktrans %}Related fields such as series attached to books or editions attached to authors will automatically be merged into this {{model_name}}.{% endblocktrans %}
     </p>
-    {% endblocktrans %}
 </div>
 
 <form action="{% url 'settings-confirm-manual-merge' model_name canonical_id %}?source={{source}}" method="post">
