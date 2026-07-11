@@ -209,20 +209,20 @@ class ActivityStream(RedisStore):
             privacy_levels=["public"],
         ).exclude(user=user.id)
 
-        book_comments = statuses.filter(Q(comment__book__parent_work=work))
-        book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
-        book_reviews = statuses.filter(Q(review__book__parent_work=work))
-        book_mentions = statuses.filter(Q(mention_books__parent_work=work))
-        book_statuses = book_comments.union(
-            book_quotations, book_reviews, book_mentions
+        book_statuses = statuses.filter(
+            Q(comment__book__parent_work=work)
+            | Q(quotation__book__parent_work=work)
+            | Q(review__book__parent_work=work)
+            | Q(mention_books__parent_work=work)
         )
 
         self.bulk_add_objects_to_store(book_statuses, self.stream_id(user.id))
 
-        threads = book_statuses.values_list("thread_id", flat=True)
-        thread_statuses = statuses.exclude(
-            id__in=book_statuses.values_list("id", flat=True)
-        ).filter(thread_id__in=threads)
+        status_ids, thread_ids = zip(*book_statuses.values_list("id", "thread_id"))
+
+        thread_statuses = statuses.exclude(id__in=status_ids).filter(
+            thread_id__in=thread_ids
+        )
 
         self.bulk_add_objects_to_store(thread_statuses, self.stream_id(user.id))
 
