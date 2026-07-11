@@ -218,12 +218,10 @@ class ActivityStream(RedisStore):
 
         self.bulk_add_objects_to_store(book_statuses, self.stream_id(user.id))
 
-        status_ids, thread_ids = zip(*book_statuses.values_list("id", "thread_id"))
-
-        thread_statuses = statuses.exclude(id__in=status_ids).filter(
-            thread_id__in=thread_ids
-        )
-
+        threads = book_statuses.values_list("thread_id", flat=True)
+        thread_statuses = statuses.exclude(
+            id__in=book_statuses.values_list("id", flat=True)
+        ).filter(thread_id__in=threads)
         self.bulk_add_objects_to_store(thread_statuses, self.stream_id(user.id))
 
     def remove_book_statuses(self, user, book):
