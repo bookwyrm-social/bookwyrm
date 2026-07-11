@@ -25,7 +25,7 @@ Merge {{plural_model}}
         {% csrf_token %}
         <div class="has-text-centered m-4">
             <p>
-            {% blocktrans %}
+            {% blocktrans trimmed %}
             All mergable fields in {{ trans_model }} {{ canonical_id }} and its duplicate {{ plural_model }} are identical.
             {% endblocktrans %}
             </p>
