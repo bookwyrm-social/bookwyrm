@@ -1,0 +1,32 @@
+{% load i18n %}
+{% load utilities %}
+{% load static %}
+
+<div>
+    <h2 class="is-size-3 p-4">{% trans 'Series with merge candidates' %}</h2>
+    {% if series %}
+    <table class="table is-fullwidth is-striped">
+        <thead>
+            <tr class="has-text-centered">
+                <td>{% trans 'Name' %}</td>
+                <td>{% trans 'Merge Candidates' %}</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for serie in series %}
+            <tr class="has-text-centered">
+                <td><a href="{{serie.remote_id}}">{{serie.name}}</a></td>
+                <td>{{serie.merge_candidates.count}}</td>
+                <td><a class="button is-small is-link" href="{% url 'settings-manual-merge' 'series' serie.id %}">{% trans 'Merge' %}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include 'snippets/pagination.html' with page=series path=request.path %}
+    {% else %}
+    <div class="p-4">
+        <p>{% trans 'There are no series to merge.' %}</p>
+    </div>
+    {% endif %}
+</div>

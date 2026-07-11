@@ -3,10 +3,12 @@
 from datetime import datetime
 import difflib
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db import transaction
 from django.apps import apps
 from django.http import Http404
+from bookwyrm.settings import PAGE_LENGTH
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -98,29 +100,6 @@ def data_quality_data():
     }
 
 
-def mergable_objects_data():
-    """all mergable objects, not just counts"""
-
-    return {
-        "works": models.Work.objects.filter(merge_target__isnull=False)
-        .annotate(targets=Count("merge_target"))
-        .order_by("-targets")
-        .order_by("title"),
-        "editions": models.Edition.objects.filter(merge_target__isnull=False)
-        .annotate(targets=Count("merge_target"))
-        .order_by("-targets")
-        .order_by("title"),
-        "authors": models.Author.objects.filter(merge_target__isnull=False)
-        .annotate(targets=Count("merge_target"))
-        .order_by("-targets")
-        .order_by("name"),
-        "series": models.Series.objects.filter(merge_target__isnull=False)
-        .annotate(targets=Count("merge_target"))
-        .order_by("-targets")
-        .order_by("name"),
-    }
-
-
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.manage_data", raise_exception=True),
@@ -132,15 +111,66 @@ class MergeData(View):
     def get(self, request):
         """view deduplication tasks"""
 
-        data = mergable_objects_data()
+        data = {
+            "works_count": models.Work.objects.filter(merge_target__isnull=False)
+            .distinct()
+            .count(),
+            "editions_count": models.Edition.objects.filter(merge_target__isnull=False)
+            .distinct()
+            .count(),
+            "authors_count": models.Author.objects.filter(merge_target__isnull=False)
+            .distinct()
+            .count(),
+            "series_count": models.Series.objects.filter(merge_target__isnull=False)
+            .distinct()
+            .count(),
+        }
+
+        match request.GET.get("merge_type"):
+            case "work":
+                items = (
+                    models.Work.objects.filter(merge_target__isnull=False)
+                    .annotate(targets=Count("merge_target"))
+                    .order_by("-targets")
+                    .order_by("title")
+                )
+                paginated = Paginator(items, PAGE_LENGTH)
+                data["works"] = paginated.get_page(request.GET.get("page"))
+            case "author":
+                items = (
+                    models.Author.objects.filter(merge_target__isnull=False)
+                    .annotate(targets=Count("merge_target"))
+                    .order_by("-targets")
+                    .order_by("name")
+                )
+                paginated = Paginator(items, PAGE_LENGTH)
+                data["authors"] = paginated.get_page(request.GET.get("page"))
+            case "series":
+                items = (
+                    models.Series.objects.filter(merge_target__isnull=False)
+                    .annotate(targets=Count("merge_target"))
+                    .order_by("-targets")
+                    .order_by("name")
+                )
+                paginated = Paginator(items, PAGE_LENGTH)
+                data["series"] = paginated.get_page(request.GET.get("page"))
+            case _:
+                items = (
+                    models.Edition.objects.filter(merge_target__isnull=False)
+                    .annotate(targets=Count("merge_target"))
+                    .order_by("-targets")
+                    .order_by("title")
+                )
+                paginated = Paginator(items, PAGE_LENGTH)
+                data["editions"] = paginated.get_page(request.GET.get("page"))
         return TemplateResponse(request, "settings/manage-data/merge.html", data)
 
 
 def get_diff_string(canonical: str, candidate: str, array=False) -> str:
     """create and return a diff string for object fields"""
 
-    canonical = canonical or ""
-    candidate = candidate or ""
+    canonical = str(canonical) or ""
+    candidate = str(candidate) or ""
     diff = difflib.Differ()
     delta = list(diff.compare(canonical, candidate))
     string = []
@@ -159,7 +189,7 @@ def get_diff_string(canonical: str, candidate: str, array=False) -> str:
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("bookwyrm.edit_instance_settings", raise_exception=True),
+    permission_required("bookwyrm.manage_data", raise_exception=True),
     name="dispatch",
 )
 class ManualMerge(View):
@@ -218,10 +248,10 @@ class ManualMerge(View):
 
         for field in simple_fields:
             not_null = {f"{field['name']}__isnull": False}
-            if (
-                model._meta.get_field(field["name"]).get_internal_type()
-                == "DateTimeField"
-            ):
+            if model._meta.get_field(field["name"]).get_internal_type() in [
+                "DateTimeField",
+                "IntegerField",
+            ]:
                 has_value = all_objects.filter(**not_null)
             else:
                 has_value = all_objects.filter(**not_null).exclude(
@@ -305,7 +335,7 @@ class ManualMerge(View):
 
 
 @require_POST
-@permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
+@permission_required("bookwyrm.manage_data", raise_exception=True)
 def confirm_manual_merge(request, model_name, canonical_id):
     """receiving a manual merge confirmation"""
 
