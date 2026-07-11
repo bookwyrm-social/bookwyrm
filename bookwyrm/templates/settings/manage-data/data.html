@@ -62,6 +62,12 @@
             {% endif %}
         </div>
     </div>
+    <form name="run_scan" method="POST" action="{% url 'settings-dedupe-run-scan' %}">
+        {% csrf_token %}
+        <button type="submit" class="button">
+            {% trans "Run scan task" %}
+        </button>
+    </form>
 </section>
 
 <div class="block">
