@@ -177,8 +177,8 @@ class MergeData(View):
 def get_diff_string(canonical: str, candidate: str, array=False) -> str:
     """create and return a diff string for object fields"""
 
-    canonical = str(canonical) or ""
-    candidate = str(candidate) or ""
+    canonical = str(canonical) if type(canonical) == int else canonical or ""
+    candidate = str(candidate) if type(candidate) == int else candidate or ""
     diff = difflib.Differ()
     delta = list(diff.compare(canonical, candidate))
     string = []
@@ -220,6 +220,12 @@ class ManualMerge(View):
 
         simple_fields = []
         array_fields = []
+        datetime_fields = [
+                "first_published_date",
+                "published_date",
+                "born",
+                "died",
+            ]
         identical_fields = []
 
         for field in candidates.model._meta.get_fields():
@@ -232,26 +238,32 @@ class ManualMerge(View):
                 "CharField",
                 "TextField",
                 "IntegerField",
-            ] or field.name in [
-                "first_published_date",
-                "published_date",
-                "born",
-                "died",
-            ]:
+            ] or field.name in datetime_fields:
                 all_vals = [getattr(x, field.name) for x in candidates]
                 if any(all_vals) and not all(
                     val == getattr(canonical, field.name) for val in all_vals
                 ):
+                    values = []
+                    for obj in candidates:
+                        if value := getattr(obj, field.name):
+                            if value not in values:
+                                values.append(value)
                     simple_fields.append(
-                        {"name": field.name, "trans_name": _(field.name)}
+                        {"name": field.name, "trans_name": _(field.name), "values": values}
                     )
             if (
                 candidates.model._meta.get_field(field.name).get_internal_type()
                 == "ArrayField"
             ):
                 if any([getattr(x, field.name) for x in candidates]):
+                    values = []
+                    for obj in candidates:
+                        if array := getattr(obj, field.name):
+                            for value in array:
+                                if value not in values:
+                                    values.append(value)
                     array_fields.append(
-                        {"name": field.name, "trans_name": _(field.name)}
+                        {"name": field.name, "trans_name": _(field.name), "values": values}
                     )
 
         for field in simple_fields:
@@ -265,13 +277,6 @@ class ManualMerge(View):
                 has_value = all_objects.filter(**not_null).exclude(
                     **{field["name"]: ""}
                 )
-            distinct_value = has_value.order_by(field["name"]).distinct(field["name"])
-            if distinct_value.count() == 1:
-                if distinct_value.filter(id=canonical.id):
-                    identical_fields.append(field["name"])
-                    continue
-                else:
-                    field["unique"] = has_value.first().id
         simple_fields = [
             field for field in simple_fields if field["name"] not in identical_fields
         ]
@@ -279,6 +284,7 @@ class ManualMerge(View):
         data = {
             "simple_fields": simple_fields,
             "array_fields": array_fields,
+            "datetime_fields":datetime_fields,
             "canonical": canonical,
             "objects": all_objects.reverse(),
             "model_name": model_name,

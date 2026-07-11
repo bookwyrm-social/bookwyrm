@@ -55,29 +55,33 @@ Merge {{plural_model}}
                 <td class="has-background-secondary">
                     <strong>{{field.trans_name}}</strong>
                 </td>
-                <td>
+                <td colspan="2">
                     {% if canonical_value %}
                     <input
                         type="radio" name="{{field.name}}" value="{{canonical|getattr_filter:field.name}}"
                         checked
                     />
+                    {% else %}
+                    <input type="radio" name="{{field.name}}" value=""/>
+                    <span class="is-italic" >{% trans 'no value' %}</span>
                     {% endif %}
+                    <label for="{{field.name}}" class="mr-4">{{canonical|getattr_filter:field.name}}</label>
                 </td>
                 <td>
-                    <label for="{{field}}" class="mr-4">{{canonical|getattr_filter:field.name}}</label>
-                </td>
-                <td>
-                {% for candidate in objects %}
-                {% if candidate.id != canonical.id and candidate|getattr_filter:field.name %}
+                {% for val in field.values %}
                     <div>
                         <input
-                        type="radio" name="{{field.name}}" value="{{candidate|getattr_filter:field.name}}"
-                        {% if field.unique == candidate.id %}checked{% endif %}
+                        type="radio" name="{{field.name}}" value="{{val}}"
+                        {% if field.values|length == 1 and not canonical_value %}checked{% endif %}
                         />
-                        <label for="{{field}}" class="mr-4">{{candidate|getattr_filter:field.name}}</label>
+                        <label for="{{field.name}}" class="mr-4">
+                            {% if field.name in datetime_fields %}
+                            {{ val|date:'Y-m-d' }}
+                            {% else %}
+                            {{val}}
+                            {% endif %}
+                        </label>
                     </div>
-
-                {% endif %}
                 {% endfor %}
                 </td>
                 {% endwith %}
@@ -97,15 +101,11 @@ Merge {{plural_model}}
                     {% endfor %}
                 </td>
                 <td colspan="2">
-                    {% for candidate in objects %}
-                    {% if candidate.id != canonical.id %}
-                    {% for val in candidate|getattr_filter:field.name %}
+                    {% for val in field.values %}
                     <div>
                         <input type="checkbox" name="{{field.name}}" value="{{val}}" checked/>
                         <label for="{{field.name}}" class="mr-4">{{ val }}</label>
                     </div>
-                    {% endfor %}
-                    {% endif %}
                     {% endfor %}
                 </td>
             </tr>
