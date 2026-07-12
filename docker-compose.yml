@@ -65,7 +65,8 @@ services:
       - ./certbot/logs:/var/log/letsencrypt
       - ./certbot/data:/var/www/certbot
   db-backup-job:
-    image: ghcr.io/bookwyrm-social/postgres-docker:latest
+    image: ghcr.io/bookwyrm-social/postgres-backup:latest
+    build: postgres-docker
     environment:
       - DEBUG=${DEBUG}
       - PGPASSWORD=${POSTGRES_PASSWORD}
