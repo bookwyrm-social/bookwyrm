@@ -98,6 +98,7 @@ services:
   web:
     restart: unless-stopped
     image: ghcr.io/bookwyrm-social/bookwyrm:latest
+    build: .
     env_file: .env
     command: gunicorn bookwyrm.wsgi:application
     volumes:
