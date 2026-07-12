@@ -25,6 +25,7 @@ services:
     volumes:
       - .:/app
   dev-tools:
+    image: ghcr.io/bookwyrm-social/bookwyrm-dev-tools:main
     build: dev-tools
     env_file:
       - .env
