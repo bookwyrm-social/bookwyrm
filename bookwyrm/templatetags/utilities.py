@@ -27,6 +27,20 @@ def join(*args):
     return "_".join(str(a) for a in args)
 
 
+@register.filter(name="getattr_filter")
+def getattr_filter(object, arg):
+    """get attribute value from an object"""
+
+    if object.__class__._meta.get_field(arg).get_internal_type() == "ArrayField":
+        return getattr(object, arg, [])
+    if object.__class__._meta.get_field(arg).get_internal_type() == "DateTimeField":
+        if getattr(object, arg) is not None:
+            return getattr(object, arg, "").strftime("%Y-%m-%d")
+        return ""
+
+    return getattr(object, arg, "") or ""
+
+
 @register.filter(name="username")
 def get_user_identifier(user):
     """use localname for local users, username for remote"""
