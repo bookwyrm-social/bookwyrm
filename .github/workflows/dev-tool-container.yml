@@ -1,0 +1,49 @@
+name: Dev-tool Container building
+
+on:
+  workflow_run:
+    branches: ["main"]
+    workflows: [Container building for release]
+    types: [completed]
+
+jobs:
+  build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    uses: docker/github-builder/.github/workflows/build.yml@v1
+    permissions:
+      contents: read # for checkout
+      packages: write # to upload build to GHCR
+      id-token: write # signing attestations with github oidc token
+    with:
+      output: image
+      push: true
+      context: dev-tools
+      platforms: linux/amd64,linux/arm64
+      cache: true
+      cache-mode: max
+      fail-fast: true
+      sbom: true
+      sign: false
+      cache-scope: bookwyrm-dev-tools
+      meta-images: ghcr.io/${{ github.repository_owner }}/bookwyrm-dev-tools
+      meta-tags: |
+        type=ref,event=branch
+      set-meta-labels: true
+      set-meta-annotations: true
+    secrets:
+      registry-auths: |
+        - registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+  cleanup:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+
+    steps:
+      - uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          package: bookwyrm-dev-tools
+          delete-untagged: true
+          older-than: 1 hour
