@@ -22,8 +22,13 @@
     width: max-content;
 }
 
-/* All stars are visually filled by default. */
+/* All stars are visually empty by default. */
 .form-rate-stars .icon::before {
+    content: "\e9d7"; /* icon-star-empty */
+}
+
+// if a star container is checked, fill all stars
+.form-rate-stars:has(input:checked) .icon::before {
     content: "\e9d9"; /* icon-star-full */
 }
 
@@ -74,8 +79,6 @@
 .form-rate-stars input.full {
     width: 0.75rem !important;
     position:relative;
-    opacity: 0;
-    pointer-events: none;
 }
 
 .form-rate-stars .star-container {
