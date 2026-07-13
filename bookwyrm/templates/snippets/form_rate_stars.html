@@ -21,32 +21,25 @@
     </label>
 
     {% for i in '12345'|make_list %}
-        <label
-            class="is-sr-only"
-            for="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter0 }}_half"
-        >
-                {% blocktranslate trimmed count rating=forloop.counter0 with half_rating=forloop.counter0|half_star %}
-                    {{ half_rating }} star
-                {% plural %}
-                    {{ half_rating }} stars
-                {% endblocktranslate %}
-        </label>
-        <input
-            id="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter0 }}_half"
-            class="is-sr-only half"
-            type="radio"
-            name="rating"
-            value="{{ forloop.counter0 }}.5"
-            {% if default_rating > 0 and default_rating > forloop.counter0 %}checked{% endif %}
-        />
-        <input
-            id="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter }}"
-            class="is-sr-only"
-            type="radio"
-            name="rating"
-            value="{{ forloop.counter }}"
-            {% if default_rating >= forloop.counter %}checked{% endif %}
-        />
+    <div class="star-container">
+        <div class="inputs-container">
+            <input
+                id="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter0 }}_half"
+                class="half"
+                type="radio"
+                name="rating"
+                value="{{ forloop.counter0 }}.5"
+                {% if default_rating > 0 and default_rating > forloop.counter0 %}checked{% endif %}
+            />
+            <input
+                id="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter }}_full"
+                class="full"
+                type="radio"
+                name="rating"
+                value="{{ forloop.counter }}"
+                {% if default_rating >= forloop.counter %}checked{% endif %}
+            />
+        </div>
 
         <label
             class="
@@ -68,6 +61,7 @@
                 {% endblocktranslate %}
             </span>
         </label>
+    </div>
     {% endfor %}
 </div>
 {% endspaceless %}
