@@ -20,7 +20,7 @@
             <input
                 id="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter0 }}_half"
                 class="half"
-                type="checkbox"
+                type="radio"
                 name="rating"
                 value="{{ forloop.counter0 }}.5"
                 {% if default_rating > 0 and default_rating > forloop.counter0 %}checked{% endif %}
@@ -28,7 +28,7 @@
             <input
                 id="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter }}_full"
                 class="full"
-                type="checkbox"
+                type="radio"
                 name="rating"
                 value="{{ forloop.counter }}"
                 {% if default_rating >= forloop.counter %}checked{% endif %}
