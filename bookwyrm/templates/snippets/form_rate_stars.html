@@ -17,6 +17,15 @@
     {% for i in '12345'|make_list %}
     <div class="star-container">
         <div class="inputs-container">
+            <label for="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter0 }}_half">
+                <span class="is-sr-only">
+                    {% blocktranslate trimmed count rating=forloop.counter0 %}
+                        {{ rating }} star
+                    {% plural %}
+                        {{ rating }}.5 stars
+                    {% endblocktranslate %}
+                </span>
+            </label>
             <input
                 id="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter0 }}_half"
                 class="half"
@@ -25,8 +34,17 @@
                 value="{{ forloop.counter0 }}.5"
                 {% if default_rating > 0 and default_rating > forloop.counter0 %}checked{% endif %}
             />
+            <label for="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter }}">
+                <span class="is-sr-only">
+                    {% blocktranslate trimmed count rating=forloop.counter %}
+                        {{ rating }} star
+                    {% plural %}
+                        {{ rating }} stars
+                    {% endblocktranslate %}
+                </span>
+            </label>
             <input
-                id="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter }}_full"
+                id="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter }}"
                 class="full"
                 type="radio"
                 name="rating"
@@ -35,7 +53,7 @@
             />
         </div>
 
-        <label
+        <div
             class="
                 icon
                 {% if forloop.counter <= default_rating %}
@@ -44,16 +62,9 @@
                 icon-star-empty
                 {% endif %}
             "
-            for="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter }}"
         >
-            <span class="is-sr-only">
-                {% blocktranslate trimmed count rating=forloop.counter %}
-                    {{ rating }} star
-                {% plural %}
-                    {{ rating }} stars
-                {% endblocktranslate %}
-            </span>
-        </label>
+
+        </div>
     </div>
     {% endfor %}
 </div>
