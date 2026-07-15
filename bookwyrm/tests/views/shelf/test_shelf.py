@@ -3,6 +3,7 @@
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
+from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -259,6 +260,38 @@ class ShelfViews(TestCase):
 
         self.assertEqual(shelf.name, "cool name")
         self.assertEqual(shelf.identifier, f"testshelf-{shelf.id}")
+
+    def test_edit_shelf_by_non_owner_blocked(self, *_):
+        view = views.Shelf.as_view()
+        shelf = models.Shelf.objects.create(name="Test Shelf", user=self.local_user)
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            attacker = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.com",
+                "ratword",
+                local=True,
+                localname="rat",
+                remote_id="https://example.com/users/rat",
+            )
+
+        request = self.factory.post(
+            "", {"privacy": "public", "user": attacker.pk, "name": "Hijacked"}
+        )
+        request.user = attacker
+        with self.assertRaises(Http404):
+            view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
+        shelf.refresh_from_db()
+
+        self.assertEqual(shelf.name, "Test Shelf")
+        self.assertEqual(shelf.user, self.local_user)
 
     def test_edit_shelf_name_not_editable(self, *_):
         """can't change the name of an non-editable shelf"""

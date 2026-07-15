@@ -123,8 +123,7 @@ class Shelf(PrivateProfileMixin, View):
     @method_decorator(login_required, name="dispatch")
     def post(self, request, username, shelf_identifier):
         """edit a shelf"""
-        user = get_user_from_username(request.user, username)
-        shelf = get_object_or_404(user.shelf_set, identifier=shelf_identifier)
+        shelf = get_object_or_404(request.user.shelf_set, identifier=shelf_identifier)
 
         # you can't change the name of the default shelves
         if not shelf.editable and request.POST.get("name") != shelf.name:
