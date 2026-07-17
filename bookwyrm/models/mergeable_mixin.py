@@ -1,10 +1,11 @@
 """models that can be deduplicated and merged"""
 
-from typing import Any, Dict
+from typing import Any, Dict, Optional, Iterable
 from typing_extensions import Self
 
 from django.db.models import BooleanField, Count, DateTimeField, ManyToManyField, Model
 
+from bookwyrm.utils.db import add_update_fields
 from . import fields
 
 
@@ -18,6 +19,59 @@ class MergeableMixin(Model):
         """can't initialize this model, that wouldn't make sense"""
 
         abstract = True
+
+    def save(
+        self, *args: Any, update_fields: Optional[Iterable[str]] = None, **kwargs: Any
+    ) -> None:
+        """Check for duplicates that may be invalidated"""
+        # do this check for objects that are being edited, not created
+        if self.id:
+            # check if the current target still matches the dedupe fields
+            if self.pending_merge_target and not self.get_shared_fields(
+                self.pending_merge_target
+            ):
+                self.pending_merge_target = None
+                self.pending_merge_date = None
+                self.prevent_automatic_merge = False
+                update_fields = add_update_fields(
+                    update_fields,
+                    "pending_merge_target",
+                    "prevent_automatic_merge",
+                    "pending_merge_date",
+                )
+
+            # also check if this is the canonical for other rditions
+            for target in self.merge_target.all():
+                if not self.get_shared_fields(target):
+                    target.pending_merge_target = None
+                    target.pending_merge_date = None
+                    target.prevent_automatic_merge = False
+                    target.save(
+                        broadcast=False,
+                        update_fields=[
+                            "pending_merge_target",
+                            "prevent_automatic_merge",
+                            "pending_merge_date",
+                        ],
+                    )
+
+        super().save(*args, update_fields=update_fields, **kwargs)
+
+    def get_shared_fields(self, candidate):
+        """list the fields that two items have in common"""
+        if type(self) is not type(candidate) or (
+            self.pending_merge_target != candidate
+            and candidate.pending_merge_target != self
+        ):
+            raise ValueError("Invalid deduplication comparison for:", self, candidate)
+
+        shared_fields = []
+        for field in self.deduplication_fields():
+            origin_value = getattr(self, field.name)
+            candidate_value = getattr(candidate, field.name)
+            if origin_value and origin_value == candidate_value:
+                shared_fields.append(field)
+        return shared_fields
 
     @classmethod
     def deduplication_fields(cls):
@@ -68,12 +122,16 @@ class MergeableMixin(Model):
         model = self.__class__
         return model.objects.filter(pending_merge_target=self.id)
 
-    def merge_into(self, canonical: Self, dry_run=False) -> Dict[str, Any]:
+    def merge_into(
+        self, canonical: Self, dry_run=False, manual=False
+    ) -> Dict[str, Any]:
         """merge this entity into another entity"""
         if canonical.id == self.id:
             raise ValueError(f"Cannot merge {self} into itself")
 
-        absorbed_fields = canonical.absorb_data_from(self, dry_run=dry_run)
+        absorbed_fields = (
+            canonical.absorb_data_from(self, dry_run=dry_run) if not manual else []
+        )
 
         if dry_run:
             return absorbed_fields

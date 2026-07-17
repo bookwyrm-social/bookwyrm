@@ -1,13 +1,76 @@
 {% extends 'settings/layout.html' %}
 {% load i18n %}
 {% load utilities %}
+{% load static %}
 
-{% block title %}{% trans "Manage Data" %}{% endblock %}
+{% block title %}{% trans "Merge Data" %}{% endblock %}
 
-{% block header %}{% trans "Manage Data" %}{% endblock %}
+{% block header %}{% trans "Merge Data" %}{% endblock %}
 
 {% block panel %}
-    <div>
-        <p>{% trans 'Manual merging of items is currently unavailable.' %}</p>
+{% with merge_type=request.GET.merge_type %}
+
+    <div class="tabs">
+        <ul>
+          <li class="{% if merge_type == 'edition' or not merge_type %}is-active{% endif %}">
+                <a
+                    role="tab"
+                    href="{{ request.path }}?merge_type=edition"
+                    id="tab_editions"
+                    aria-selected="{% if merge_type == 'edition' or not merge_type %}true{% else %}false{% endif %}"
+                    aria-controls="editions"
+                >{% trans 'Editions' %}{% if editions_count %}<span class="tag is-info is-light ml-2">{{editions_count}}</span>{% endif %}</a>
+            </li>
+            <li class="{% if merge_type == 'work' %}is-active{% endif %}">
+                <a
+                    role="tab"
+                    href="{{ request.path }}?merge_type=work"
+                    id="tab_works"
+                    aria-selected="{% if merge_type == 'work' %}true{% else %}false{% endif %}"
+                    aria-controls="works"
+                >{% trans 'Works' %}{% if works_count %}<span class="tag is-info is-light ml-2">{{works_count}}</span>{% endif %}
+                </a>
+            </li>
+            <li>
+                <a
+                    role="tab"
+                    href="{{ request.path }}?merge_type=author"
+                    id="tab_authors"
+                    aria-selected="{% if merge_type == 'author' %}true{% else %}false{% endif %}"
+                    aria-controls="authors"
+                >{% trans 'Authors' %}{% if authors_count %}<span class="tag is-info is-light ml-2">{{authors_count}}</span>{% endif %}</a>
+            </li>
+            <li>
+                <a
+                    role="tab"
+                    href="{{ request.path }}?merge_type=series"
+                    id="tab_series"
+                    aria-selected="{% if merge_type == 'series' %}true{% else %}false{% endif %}"
+                    aria-controls="series"
+                >{% trans 'Series' %}{% if series_count %}<span class="tag is-info is-light ml-2">{{series_count}}</span>{% endif %}</a>
+            </li>
+        </ul>
     </div>
+
+    <div class="p-4">
+        <p>{% trans 'Click "Merge" on an item to manually select fields to merge.' %}</p>
+    </div>
+
+    {% if merge_type == 'edition' or not merge_type %}
+        {% include 'settings/manage-data/merge_editions.html' %}
+    {% endif %}
+
+    {% if merge_type == 'work' %}
+        {% include 'settings/manage-data/merge_works.html' %}
+    {% endif %}
+
+    {% if merge_type == 'author' %}
+        {% include 'settings/manage-data/merge_authors.html' %}
+    {% endif %}
+
+    {% if merge_type == 'series' %}
+        {% include 'settings/manage-data/merge_series.html' %}
+    {% endif %}
+
+{% endwith %}
 {% endblock %}
