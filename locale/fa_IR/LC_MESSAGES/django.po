@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-17 23:40+0000\n"
-"PO-Revision-Date: 2026-06-18 00:19\n"
+"POT-Creation-Date: 2026-07-06 15:05+0000\n"
+"PO-Revision-Date: 2026-07-06 20:04\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Persian\n"
 "Language: fa\n"
@@ -356,7 +356,7 @@ msgid "Wrong Path"
 msgstr "مسیر نادرست"
 
 #: bookwyrm/models/import_job.py:51 bookwyrm/models/job.py:19
-#: bookwyrm/templates/import/import.html:184
+#: bookwyrm/templates/import/import.html:203
 #: bookwyrm/templates/import/import_user.html:225
 #: bookwyrm/templates/import/user_import_status.html:56
 #: bookwyrm/templates/preferences/export-user.html:146
@@ -369,7 +369,7 @@ msgid "Active"
 msgstr "فعال"
 
 #: bookwyrm/models/import_job.py:52 bookwyrm/models/job.py:20
-#: bookwyrm/templates/import/import.html:182
+#: bookwyrm/templates/import/import.html:201
 #: bookwyrm/templates/import/import_user.html:223
 #: bookwyrm/templates/import/user_import_status.html:54
 #: bookwyrm/templates/preferences/export-user.html:144
@@ -517,19 +517,24 @@ msgstr "نقل قول‌ها"
 msgid "Everything else"
 msgstr "سایر موارد"
 
-#: bookwyrm/settings.py:242
+#: bookwyrm/models/user.py:232
+#, python-brace-format
+msgid "avatar for {name}"
+msgstr ""
+
+#: bookwyrm/settings.py:258
 msgid "Home Timeline"
 msgstr "خط زمانی خانه"
 
-#: bookwyrm/settings.py:242
+#: bookwyrm/settings.py:258
 msgid "Home"
 msgstr "خانه"
 
-#: bookwyrm/settings.py:243
+#: bookwyrm/settings.py:259
 msgid "Books Timeline"
 msgstr "خط زمانی کتاب‌ها"
 
-#: bookwyrm/settings.py:243
+#: bookwyrm/settings.py:259
 #: bookwyrm/templates/guided_tour/user_profile.html:101
 #: bookwyrm/templates/import/user_import_status.html:73
 #: bookwyrm/templates/search/layout.html:22
@@ -538,91 +543,91 @@ msgstr "خط زمانی کتاب‌ها"
 msgid "Books"
 msgstr "کتاب‌ها"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:338
 msgid "English"
 msgstr "انگلیسی"
 
-#: bookwyrm/settings.py:323
+#: bookwyrm/settings.py:339
 msgid "Català (Catalan)"
 msgstr "کاتالان (Catalan)"
 
-#: bookwyrm/settings.py:324
+#: bookwyrm/settings.py:340
 msgid "Deutsch (German)"
 msgstr "آلمانی (German)"
 
-#: bookwyrm/settings.py:325
+#: bookwyrm/settings.py:341
 msgid "Esperanto (Esperanto)"
 msgstr "اسپرانتو (Esperanto)"
 
-#: bookwyrm/settings.py:326
+#: bookwyrm/settings.py:342
 msgid "Español (Spanish)"
 msgstr "اسپانیایی (Spanish)"
 
-#: bookwyrm/settings.py:327
+#: bookwyrm/settings.py:343
 msgid "Euskara (Basque)"
 msgstr "باسکی (Basque)"
 
-#: bookwyrm/settings.py:328
+#: bookwyrm/settings.py:344
 msgid "Galego (Galician)"
 msgstr "گالیسی (Galician)"
 
-#: bookwyrm/settings.py:329
+#: bookwyrm/settings.py:345
 msgid "Italiano (Italian)"
 msgstr "ایتالیایی (Italian)"
 
-#: bookwyrm/settings.py:330
+#: bookwyrm/settings.py:346
 msgid "한국어 (Korean)"
 msgstr "کره‌ای (Korean)"
 
-#: bookwyrm/settings.py:331
+#: bookwyrm/settings.py:347
 msgid "Suomi (Finnish)"
 msgstr "فنلاندی (Finnish)"
 
-#: bookwyrm/settings.py:332
+#: bookwyrm/settings.py:348
 msgid "Français (French)"
 msgstr "فرانسوی (French)"
 
-#: bookwyrm/settings.py:333
+#: bookwyrm/settings.py:349
 msgid "Lietuvių (Lithuanian)"
 msgstr "لیتوانیایی (Lithuanian)"
 
-#: bookwyrm/settings.py:334
+#: bookwyrm/settings.py:350
 msgid "Nederlands (Dutch)"
 msgstr "هلندی (Dutch)"
 
-#: bookwyrm/settings.py:335
+#: bookwyrm/settings.py:351
 msgid "Norsk (Norwegian)"
 msgstr "نروژی (Norwegian)"
 
-#: bookwyrm/settings.py:336
+#: bookwyrm/settings.py:352
 msgid "Polski (Polish)"
 msgstr "لهستانی (Polish)"
 
-#: bookwyrm/settings.py:337
+#: bookwyrm/settings.py:353
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "پرتغالی برزیلی (Brazilian Portuguese)"
 
-#: bookwyrm/settings.py:338
+#: bookwyrm/settings.py:354
 msgid "Português Europeu (European Portuguese)"
 msgstr "پرتغالی اروپایی (Português Europeu)"
 
-#: bookwyrm/settings.py:339
+#: bookwyrm/settings.py:355
 msgid "Română (Romanian)"
 msgstr "رومانیایی (Română)"
 
-#: bookwyrm/settings.py:340
+#: bookwyrm/settings.py:356
 msgid "Svenska (Swedish)"
 msgstr "سوئدی (Svenska)"
 
-#: bookwyrm/settings.py:341
+#: bookwyrm/settings.py:357
 msgid "Українська (Ukrainian)"
 msgstr "اوکراینی (Українська)"
 
-#: bookwyrm/settings.py:342
+#: bookwyrm/settings.py:358
 msgid "简体中文 (Simplified Chinese)"
 msgstr "چینی ساده (简体中文)"
 
-#: bookwyrm/settings.py:343
+#: bookwyrm/settings.py:359
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "چینی سنتی (繁體中文)"
 
@@ -1789,7 +1794,7 @@ msgid "Domain"
 msgstr "دامنه"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:36
-#: bookwyrm/templates/import/import.html:149
+#: bookwyrm/templates/import/import.html:168
 #: bookwyrm/templates/import/import_status.html:134
 #: bookwyrm/templates/import/import_user.html:192
 #: bookwyrm/templates/import/user_import_status.html:162
@@ -3217,134 +3222,146 @@ msgstr "وضعیت‌های دارای برچسب را در جامعه محلی 
 msgid "No activities for this hashtag yet!"
 msgstr "برای این هشتگ هنوز فعالیتی وجود ندارد!"
 
-#: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:6
+#: bookwyrm/templates/import/import.html:7
 #: bookwyrm/templates/preferences/layout.html:43
 msgid "Import Book List"
 msgstr "فهرست کتاب را وارد کنید"
 
-#: bookwyrm/templates/import/import.html:12
+#: bookwyrm/templates/import/import.html:13
 msgid "Not a valid CSV file"
 msgstr "این فایل CSV معتبر نیست"
 
-#: bookwyrm/templates/import/import.html:20
+#: bookwyrm/templates/import/import.html:21
 #, python-format
 msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
 msgid_plural "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s days."
 msgstr[0] "در حال حاضر، شما اجازه دارید که %(display_size)s کتاب را هر %(import_limit_reset)s روز وارد کنید."
 msgstr[1] "در حال حاضر، شما اجازه دارید که %(display_size)s کتاب را هر %(import_limit_reset)s روز وارد کنید."
 
-#: bookwyrm/templates/import/import.html:26
+#: bookwyrm/templates/import/import.html:27
 #, python-format
 msgid "You have %(display_left)s left."
 msgstr "شما %(display_left)s باقی مانده دارید."
 
-#: bookwyrm/templates/import/import.html:33
+#: bookwyrm/templates/import/import.html:34
 #: bookwyrm/templates/import/import_user.html:40
 #, python-format
 msgid "On average, recent imports have taken %(hours)s hours."
 msgstr "به طور متوسط، واردات اخیر %(hours)s ساعت طول کشیده است."
 
-#: bookwyrm/templates/import/import.html:37
+#: bookwyrm/templates/import/import.html:38
 #: bookwyrm/templates/import/import_user.html:44
 #, python-format
 msgid "On average, recent imports have taken %(minutes)s minutes."
 msgstr "به طور متوسط، واردات اخیر %(minutes)s دقیقه طول کشیده است."
 
-#: bookwyrm/templates/import/import.html:52
+#: bookwyrm/templates/import/import.html:53
 msgid "Data source:"
 msgstr "منبع داده:"
 
-#: bookwyrm/templates/import/import.html:58
+#: bookwyrm/templates/import/import.html:59
 msgid "Goodreads (CSV)"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:61
+#: bookwyrm/templates/import/import.html:62
 msgid "Storygraph (CSV)"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:64
+#: bookwyrm/templates/import/import.html:65
 msgid "LibraryThing (TSV)"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:67
+#: bookwyrm/templates/import/import.html:68
 msgid "OpenLibrary (CSV)"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:70
+#: bookwyrm/templates/import/import.html:71
 msgid "OpenReads (CSV)"
 msgstr "OpenReads (CSV)"
 
-#: bookwyrm/templates/import/import.html:73
+#: bookwyrm/templates/import/import.html:74
 msgid "Calibre (CSV)"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:76
+#: bookwyrm/templates/import/import.html:77
 msgid "BookWyrm (CSV)"
 msgstr ""
 
-#: bookwyrm/templates/import/import.html:82
+#: bookwyrm/templates/import/import.html:83
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
 msgstr "شما می‌توانید داده‌های Goodreads خود را از <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">صفحه وارد/صادر</a> حساب Goodreads خود دانلود کنید."
 
-#: bookwyrm/templates/import/import.html:91
+#: bookwyrm/templates/import/import.html:92
 #: bookwyrm/templates/import/import_user.html:64
 msgid "Data file:"
 msgstr "فایل داده:"
 
-#: bookwyrm/templates/import/import.html:99
+#: bookwyrm/templates/import/import.html:100
 msgid "Include reviews"
 msgstr "شامل نظرات"
 
-#: bookwyrm/templates/import/import.html:104
+#: bookwyrm/templates/import/import.html:105
 msgid "Create new shelves if they do not exist"
 msgstr "اگر قفسه‌ها وجود ندارند، قفسه‌های جدید ایجاد کنید"
 
-#: bookwyrm/templates/import/import.html:109
+#: bookwyrm/templates/import/import.html:110
+msgid "Shelve all imported books on:"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:115
+msgid "Use shelf/status from the file"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:123
+msgid "Choose a shelf to use instead of any shelf or reading status in the file."
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:128
 msgid "Privacy setting for imported reviews and shelves:"
 msgstr "تنظیم حریم خصوصی برای نظرات و قفسه‌های وارد شده:"
 
-#: bookwyrm/templates/import/import.html:116
-#: bookwyrm/templates/import/import.html:118
+#: bookwyrm/templates/import/import.html:135
+#: bookwyrm/templates/import/import.html:137
 #: bookwyrm/templates/import/import_user.html:170
 #: bookwyrm/templates/import/import_user.html:172
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:78
 msgid "Import"
 msgstr "وارد کردن"
 
-#: bookwyrm/templates/import/import.html:119
+#: bookwyrm/templates/import/import.html:138
 #: bookwyrm/templates/import/import_user.html:173
 msgid "You've reached the import limit."
 msgstr "شما به حد واردات رسیده‌اید."
 
-#: bookwyrm/templates/import/import.html:128
+#: bookwyrm/templates/import/import.html:147
 #: bookwyrm/templates/import/import_user.html:27
 msgid "Imports are temporarily disabled; thank you for your patience."
 msgstr "واردات به طور موقت غیرفعال است؛ از صبر شما سپاسگزاریم."
 
-#: bookwyrm/templates/import/import.html:135
+#: bookwyrm/templates/import/import.html:154
 #: bookwyrm/templates/import/import_user.html:181
 msgid "Recent Imports"
 msgstr "واردات اخیر"
 
-#: bookwyrm/templates/import/import.html:140
+#: bookwyrm/templates/import/import.html:159
 #: bookwyrm/templates/import/import_user.html:186
 #: bookwyrm/templates/settings/imports/imports.html:202
 #: bookwyrm/templates/settings/imports/imports.html:292
 msgid "Date Created"
 msgstr "تاریخ ایجاد"
 
-#: bookwyrm/templates/import/import.html:143
+#: bookwyrm/templates/import/import.html:162
 #: bookwyrm/templates/import/import_user.html:189
 msgid "Last Updated"
 msgstr "آخرین بروزرسانی"
 
-#: bookwyrm/templates/import/import.html:146
+#: bookwyrm/templates/import/import.html:165
 #: bookwyrm/templates/settings/imports/imports.html:211
 msgid "Items"
 msgstr "اقلام"
 
-#: bookwyrm/templates/import/import.html:155
+#: bookwyrm/templates/import/import.html:174
 #: bookwyrm/templates/import/import_user.html:198
 #: bookwyrm/templates/preferences/export-user.html:122
 msgid "No recent imports"
@@ -4113,7 +4130,7 @@ msgid "List position"
 msgstr "موقعیت لیست"
 
 #: bookwyrm/templates/lists/list_item.html:63
-#: bookwyrm/templates/settings/connectors/connector.html:28
+#: bookwyrm/templates/settings/connectors/connector.html:29
 #: bookwyrm/templates/settings/connectors/update.html:27
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:23
 msgid "Set"
@@ -5324,7 +5341,7 @@ msgstr "برای درونریزی یا اضافه کردن کتاب وارد ش�
 msgid "Search query"
 msgstr "جستجوی پرس و جو"
 
-#: bookwyrm/templates/search/layout.html:20
+#: bookwyrm/templates/search/layout.html:21
 msgid "Search type"
 msgstr "نوع جستجو"
 
@@ -5658,7 +5675,7 @@ msgid "Run time"
 msgstr "مدت اجرا"
 
 #: bookwyrm/templates/settings/celery.html:134
-#: bookwyrm/templates/settings/connectors/connector.html:22
+#: bookwyrm/templates/settings/connectors/connector.html:23
 #: bookwyrm/templates/settings/connectors/update.html:21
 msgid "Priority"
 msgstr "اولویت"
@@ -5705,18 +5722,26 @@ msgstr "Libris فهرست کتابخانه‌ی ملی سوئد است که دس
 msgid "Create new connector"
 msgstr "ایجاد اتصال‌دهنده جدید"
 
-#: bookwyrm/templates/settings/connectors/connector.html:35
+#: bookwyrm/templates/settings/connectors/connector.html:36
 #: bookwyrm/templates/settings/connectors/update.html:33
 #: bookwyrm/templates/settings/users/user_info.html:87
 msgid "Deactivation reason:"
 msgstr "دلیل غیرفعال‌سازی:"
 
+#: bookwyrm/templates/settings/connectors/connector.html:43
+msgid "Latest successful request"
+msgstr ""
+
 #: bookwyrm/templates/settings/connectors/connector.html:50
+msgid "Latest error"
+msgstr ""
+
+#: bookwyrm/templates/settings/connectors/connector.html:66
 #: bookwyrm/templates/settings/connectors/update.html:47
 msgid "Deactivate"
 msgstr "غیرفعال کردن"
 
-#: bookwyrm/templates/settings/connectors/connector.html:61
+#: bookwyrm/templates/settings/connectors/connector.html:77
 #: bookwyrm/templates/settings/connectors/update.html:58
 msgid "Activate"
 msgstr "فعال کردن"
@@ -7499,14 +7524,14 @@ msgstr ""
 msgid "of %(pages)s pages"
 msgstr ""
 
-#: bookwyrm/templates/snippets/create_status/content_field.html:18
+#: bookwyrm/templates/snippets/create_status/content_field.html:21
 #: bookwyrm/templates/snippets/status/layout.html:34
 #: bookwyrm/templates/snippets/status/layout.html:53
 #: bookwyrm/templates/snippets/status/layout.html:54
 msgid "Reply"
 msgstr ""
 
-#: bookwyrm/templates/snippets/create_status/content_field.html:18
+#: bookwyrm/templates/snippets/create_status/content_field.html:21
 msgid "Content"
 msgstr ""
 

@@ -64,9 +64,8 @@ class PasswordReset(View):
 
     def post(self, request, code):
         """allow a user to change their password through an emailed token"""
-        try:
-            reset_code = models.PasswordReset.objects.get(code=code)
-        except models.PasswordReset.DoesNotExist:
+        reset_code = models.PasswordReset.objects.filter(code=code).first()
+        if not reset_code or not reset_code.valid():
             data = {"errors": ["Invalid password reset link"]}
             return TemplateResponse(request, "landing/password_reset.html", data)
 

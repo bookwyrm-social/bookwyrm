@@ -16,7 +16,12 @@ from bookwyrm import models
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.models import base_model
 from bookwyrm.signatures import make_signature
-from bookwyrm.settings import DOMAIN, INSTANCE_ACTOR_USERNAME
+from bookwyrm.settings import (
+    DOMAIN,
+    INSTANCE_ACTOR_USERNAME,
+    USER_AGENT,
+    SEARCH_TIMEOUT,
+)
 from bookwyrm.tasks import app, MISC
 
 logger = logging.getLogger(__name__)
@@ -432,8 +437,9 @@ def get_activitypub_data(url):
                 "Accept": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
                 "Date": now,
                 "Signature": make_signature("get", sender, url, now),
+                "User-Agent": USER_AGENT,
             },
-            timeout=15,
+            timeout=SEARCH_TIMEOUT,
         )
     except requests.RequestException:
         raise ConnectorException()

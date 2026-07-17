@@ -13,44 +13,80 @@
  *
  * Specificity makes hovering taking over checked inputs.
  *
- * \e9d9: filled star
  * \e9d7: empty star;
+ * \e9d8: half-filled star;
+ * \e9d9: filled star
  * -------------------------------------------------------------------------- */
 
 .form-rate-stars {
     width: max-content;
 }
 
-/* All stars are visually filled by default. */
+/* All stars are visually empty by default. */
 .form-rate-stars .icon::before {
+    content: "\e9d7"; /* icon-star-empty */
+}
+
+// if a star container is checked, fill all stars
+.form-rate-stars:has(input:checked) .icon::before {
     content: "\e9d9"; /* icon-star-full */
 }
 
-/* Icons directly following half star inputs are marked as half */
-.form-rate-stars input.half:checked ~ .icon::before {
+// if a star container has a half-input checked, its icon is a half-star
+.form-rate-stars .star-container:has(input.half:checked) .icon::before {
     content: "\e9d8"; /* icon-star-half */
 }
 
-/* stylelint-disable no-descending-specificity */
-.form-rate-stars input.half:checked + input + .icon:hover::before {
-    content: "\e9d8" !important; /* icon-star-half */
+// if a star container has a full-input checked, its icon is a full-star
+.form-rate-stars .star-container:has(input.full:checked) .icon::before {
+    content: "\e9d9"; /* icon-star-full */
 }
 
-/* Icons directly following half check inputs that follow the checked input are emptied. */
-.form-rate-stars input.half:checked + input + .icon ~ .icon::before {
+// stars following stars with checked inputs have icons that are empty
+.form-rate-stars .star-container:has(input:checked) ~ .star-container .icon::before {
     content: "\e9d7"; /* icon-star-empty */
 }
 
-/* Icons directly following inputs that follow the checked input are emptied. */
-.form-rate-stars input:checked ~ input + .icon::before {
-    content: "\e9d7"; /* icon-star-empty */
-}
-
-/* When a label is hovered, repeat the fill-all-then-empty-following pattern. */
-.form-rate-stars:hover .icon.icon::before {
+// When a star is hovered, pre-fill all icons as full
+.form-rate-stars:hover .icon::before
+{
     content: "\e9d9" !important; /* icon-star-full */
 }
 
-.form-rate-stars .icon:hover ~ .icon::before {
+// when an star is hovered, following icons are emptied
+.form-rate-stars .star-container:hover ~ .star-container .icon::before
+{
     content: "\e9d7" !important; /* icon-star-empty */
+}
+
+// if you hover over a star's half-input make its icon a half-star
+.inputs-container:has(input.half:hover) + .icon::before
+{
+    content: "\e9d8" !important; /* icon-star-half */
+}
+
+// if you hover over a star's full-input make its icon a full-star
+.inputs-container:has(input.full:hover) + .icon::before
+{
+    content: "\e9d9" !important; /* icon-star-full */
+}
+
+.form-rate-stars input.half {
+    width: 0.75rem !important;
+    position:relative;
+
+}
+
+.form-rate-stars input.full {
+    width: 0.75rem !important;
+    position:relative;
+}
+
+.form-rate-stars .star-container {
+    position: relative;
+}
+
+.inputs-container {
+    position: absolute;
+    opacity: 0;
 }

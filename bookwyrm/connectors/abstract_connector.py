@@ -585,7 +585,7 @@ def update_connector_status(
     try:
         connector = models.Connector.objects.get(pk=connector_id)
         if error_message:
-            connector.latest_error = error_message
+            connector.latest_error = error_message[:255]
             connector.most_recent_error = timezone.now()
             connector.save(update_fields=["latest_error", "most_recent_error"])
         else:
