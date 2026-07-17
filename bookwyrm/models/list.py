@@ -71,6 +71,7 @@ class SuggestionList(MergeableMixin, AbstractList):
         on_delete=models.PROTECT,
         related_name="suggests_for",
         deduplication_field=True,
+        activitypub_field="book",
     )
     activity_serializer = activitypub.SuggestionList
 
