@@ -1,17 +1,11 @@
-{% extends 'components/modal.html' %}
+{% extends 'layout.html' %}
 {% load i18n %}
-{% load utilities %}
 
-{% block modal-title %}
-    {% trans "Add suggestions" %}
+{% block title %}
+{% trans "Add suggestions" %}
 {% endblock %}
 
-{% block modal-body %}
-
-{% if request.user.is_authenticated %}
-    {% with search_url=request.path|add:"#add-suggestions" %}
-    {% include "lists/suggestion_search.html" with is_suggestion=True query_param="suggestion_query" columns=True %}
-    {% endwith %}
-{% endif %}
-
+{% block content %}
+{% url 'book-add-suggestion' book.parent_work.id|default:work_id as search_url %}
+{% include "book/suggestion_list/search_modal.html" with active=True %}
 {% endblock %}

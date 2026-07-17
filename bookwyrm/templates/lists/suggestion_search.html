@@ -5,7 +5,7 @@
 <form name="search" action="{{ search_url }}" method="GET" class="block">
     <div class="field has-addons">
         <div class="control">
-            <input aria-label="{% trans 'Search for a book' %}" class="input" type="text" name="{{ query_param }}" placeholder="{% trans 'Search for a book' %}" value="{{ suggestion_query }}" spellcheck="false">
+            <input aria-label="{% trans 'Search for a book' %}" class="input" type="text" name="{{ query_param }}" placeholder="{% trans 'Search for a book' %}" value="{{ suggestion_query|default:'' }}" spellcheck="false">
         </div>
         <div class="control">
             <button class="button" type="submit">
@@ -54,7 +54,7 @@
                         {% trans "Suggest" %}
                     {% endif %}
                 </button>
-                {% include "lists/add_item_modal.html" with id=modal_id is_suggestion=is_suggestion list=list %}
+                {% include "lists/add_item_modal.html" with id=modal_id is_suggestion=is_suggestion list=list active=False %}
             </div>
         </div>
     </div>

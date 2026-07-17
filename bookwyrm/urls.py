@@ -912,7 +912,7 @@ urlpatterns = [
     ),
     re_path(
         rf"{BOOK_PATH}/suggestions/add/?$",
-        views.book_add_suggestion,
+        views.AddSuggestion.as_view(),
         name="book-add-suggestion",
     ),
     re_path(

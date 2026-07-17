@@ -19,10 +19,13 @@
         <div class="column is-full is-centered">
             <p>{% trans "Have a recommendation for someone who liked this book?" %}</p>
             <div>
-                <button class="button is-small" type="button" data-modal-open="suggestion_search">
-                    <span class="icon icon-plus m-mobile-0" aria-hidden="true"></span>
-                    <span class="is-sr-only-mobile">{% trans "Add suggestion" %}</span>
-                </button>
+                {% url 'book-add-suggestion' book.parent_work.id as fallback_url %}
+                <form name="add-suggestion" method="get" action="{{ fallback_url }}">
+                    <button class="button is-small" type="submit" data-modal-open="suggestion_search">
+                        <span class="icon icon-plus m-mobile-0" aria-hidden="true"></span>
+                        <span class="is-sr-only-mobile">{% trans "Add suggestion" %}</span>
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -36,13 +39,17 @@
     </ol>
 
     <div>
-        <button class="button is-small" type="button" data-modal-open="suggestion_search">
+        <form name="add-suggestion-2" method="get" action="{{ fallback_url }}">
+        <button class="button is-small" type="submit" data-modal-open="suggestion_search">
             <span class="icon icon-plus m-mobile-0" aria-hidden="true"></span>
             <span class="is-sr-only-mobile">{% trans "Add suggestion" %}</span>
         </button>
+        </form>
     </div>
     {% endif %}
-    {% include "book/suggestion_list/search.html" with list=suggestion_list is_suggestion=True id="suggestion_search" %}
+    {% with search_url=request.path %}
+    {% include "book/suggestion_list/search_modal.html" with list=suggestion_list is_suggestion=True id="suggestion_search" active=suggestion_query %}
+    {% endwith %}
 </section>
 {% else %}
 <section class="notification">
