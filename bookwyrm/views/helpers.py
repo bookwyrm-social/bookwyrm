@@ -239,11 +239,11 @@ def maybe_redirect_local_path(request, model):
     return redirect(new_path, permanent=True)
 
 
-def redirect_to_referer(request, strip_params=False, *args, **kwargs):
+def redirect_to_referer(request, *args, strip_params=False, **kwargs):
     """Redirect to the referrer, if it's in our domain, with get params"""
     # make sure the refer is part of this instance
     validated = validate_url_domain(request.headers.get("referer", ""))
-    if strip_params:
+    if validated and strip_params:
         validated = urlunsplit(urlsplit(validated)._replace(query="", fragment=""))
 
     if validated:
