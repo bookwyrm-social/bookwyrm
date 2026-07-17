@@ -38,9 +38,9 @@ Merge {{plural_model}}
             {% trans 'Choose which values to use in the merged object. Only values that differ are shown – other values will automatically merge.' %}
         </p>
     </section>
+    <table class="table is-fullwidth">
     <form class="form" method="post">
     {% csrf_token %}
-    <table class="table is-fullwidth">
         <thead class="has-background-secondary">
             <tr class="has-text-centered">
                 <td>{% trans 'Field' %}</td>
@@ -116,11 +116,15 @@ Merge {{plural_model}}
                 </td>
             </tr>
             {% endfor %}
+            <tr>
+                <td colspan="5">
+                <button type="submit" class="button is-pulled-right is-primary">{% trans 'Next' %}</button>
+                </td>
+            </tr>
         </tbody>
-    </table>
     </div>
-    <button type="submit" class="button is-pulled-right is-primary">{% trans 'Next' %}</button>
     </form>
+    </table>
     {% endif %}
 </div>
 {% endwith %}
