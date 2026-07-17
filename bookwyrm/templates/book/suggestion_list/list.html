@@ -48,7 +48,7 @@
     </div>
     {% endif %}
     {% with search_url=request.path %}
-    {% include "book/suggestion_list/search_modal.html" with list=suggestion_list is_suggestion=True id="suggestion_search" active=suggestion_query %}
+    {% include "book/suggestion_list/search_modal.html" with list=suggestion_list is_suggestion=True id="suggestion_search" active=suggestion_query close_path=request.path %}
     {% endwith %}
 </section>
 {% else %}
