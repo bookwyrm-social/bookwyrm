@@ -951,6 +951,11 @@ urlpatterns = [
         name="suggestion-list",
     ),
     re_path(
+        rf"{BOOK_PATH}/suggestions{regex.SLUG}/?$",
+        views.SuggestionList.as_view(),
+        name="suggestion-list",
+    ),
+    re_path(
         rf"{BOOK_PATH}/suggestions/add/?$",
         views.book_add_suggestion,
         name="book-add-suggestion",

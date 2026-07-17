@@ -105,6 +105,12 @@ def data_quality_data():
         "series_example": models.Series.objects.filter(
             pending_merge_target__isnull=False
         ).first(),
+        "suggestion_list_count": models.SuggestionList.objects.filter(
+            pending_merge_target__isnull=False
+        ).count(),
+        "suggestion_list_example": models.SuggestionList.objects.filter(
+            pending_merge_target__isnull=False
+        ).first(),
         "task_form": forms.IntervalScheduleForm(),
     }
 
