@@ -119,7 +119,11 @@ class UtilitiesTags(TestCase):
             title="book 1", asin="1234", goodreads_key="abcd"
         )
         dupe = models.Edition.objects.create(
-            title="book 2", asin="1234", isbn_10="123456789x", goodreads_key="abcd"
+            title="book 2",
+            asin="1234",
+            isbn_10="123456789x",
+            goodreads_key="abcd",
+            pending_merge_target=original,
         )
         result = utilities.get_dupe_match_field(original, dupe)
         self.assertTrue("GoodReads key" in result)

@@ -3,10 +3,11 @@
 from typing import Any
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Count, Q
-from django.http import HttpRequest
+from django.http import HttpRequest, Http404
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -40,7 +41,10 @@ class SuggestionList(View):
         ).distinct()
         work = work.first()
 
-        book_list = get_object_or_404(models.SuggestionList, suggests_for=work)
+        try:
+            book_list = models.SuggestionList.objects.filter(suggests_for=work).first()
+        except models.SuggestionList.DoesNotExist:
+            raise Http404
 
         if is_api_request(request):
             return ActivitypubResponse(book_list.to_activity(**request.GET))
@@ -100,7 +104,18 @@ class SuggestionList(View):
         # saving in two steps means django uses the model's custom save functionality,
         # which adds an embed key and fixes the privacy and curation settings
         suggestion_list = form.save(request, commit=False)
-        suggestion_list.save()
+        try:
+            suggestion_list.save()
+        except ValidationError as e:
+            # we may be sitting on an outdated book page where someone already created
+            # a suggestion list for this book, thus trigging an error
+            if models.SuggestionList.objects.filter(
+                suggests_for=suggestion_list.suggests_for
+            ).exists():
+                # in which case this request basically worked, sort of
+                return redirect_to_referer(request)
+            else:
+                raise e
 
         return redirect_to_referer(request)
 

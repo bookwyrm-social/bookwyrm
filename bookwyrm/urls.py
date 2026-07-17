@@ -429,6 +429,21 @@ urlpatterns = [
         name="settings-data-quality",
     ),
     re_path(
+        r"^settings/manage-data/manual-merge/(?P<model_name>\w+)/(?P<canonical_id>\d+)/?$",
+        views.ManualMerge.as_view(),
+        name="settings-manual-merge",
+    ),
+    re_path(
+        r"^settings/manage-data/confirm-manual-merge/(?P<model_name>\w+)/(?P<canonical_id>\d+)/?$",
+        views.confirm_manual_merge,
+        name="settings-confirm-manual-merge",
+    ),
+    re_path(
+        r"^settings/data-quality/run-scan/?$",
+        views.run_deduplication_scan_task,
+        name="settings-dedupe-run-scan",
+    ),
+    re_path(
         r"^settings/data-quality/schedule-scan/?$",
         views.schedule_deduplication_scan_task,
         name="settings-dedupe-schedule-scan",
@@ -545,7 +560,7 @@ urlpatterns = [
         name="get-started-users",
     ),
     # feeds
-    re_path(rf"^(?P<tab>{STREAMS})/?$", views.Feed.as_view()),
+    re_path(rf"^(?P<tab>{STREAMS})/?$", views.Feed.as_view(), name="feed"),
     re_path(
         r"^direct-messages/?$", views.DirectMessage.as_view(), name="direct-messages"
     ),
@@ -937,6 +952,11 @@ urlpatterns = [
     ),
     re_path(
         rf"{BOOK_PATH}/suggestions(.json)?/?$",
+        views.SuggestionList.as_view(),
+        name="suggestion-list",
+    ),
+    re_path(
+        rf"{BOOK_PATH}/suggestions{regex.SLUG}/?$",
         views.SuggestionList.as_view(),
         name="suggestion-list",
     ),

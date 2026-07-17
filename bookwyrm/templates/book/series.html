@@ -13,7 +13,7 @@
 			<span class="is-hidden-mobile">{% trans "Edit Series" %}</span>
 		</a>
 	</div>
-        {% include "snippets/merge_banner/series.html" with original=series dupe=series_dupe model="series" %}
+        {% include "snippets/merge_banner/series.html" with original=series dupe=series_dupe object_type='series' %}
 	{% endif %}
 	<div class="content" itemscope itemtype="https://schema.org/BookSeries">
 		<h1 class="title is-1" itemprop="name">{{ series.name }}</h1>

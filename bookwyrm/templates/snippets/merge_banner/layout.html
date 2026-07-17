@@ -37,6 +37,12 @@
             </form>
         </div>
         {% endif %}
+
+        {% if perms.bookwyrm.manage_data %}
+        <div class="has-text-right control">
+            <a class="button is-small is-link is-outlined" href="{% url 'settings-manual-merge' object_type dupe.id %}">{% trans 'Merge now' %}</a>
+        </div>
+        {% endif %}
     </details>
 </aside>
 {% endif %}
@@ -77,6 +83,11 @@
             {% endblocktrans %}
             {% endif %}
         </div>
+        {% if perms.bookwyrm.manage_data %}
+        <div class="has-text-right control">
+            <a class="button is-small is-link is-outlined" href="{% url 'settings-manual-merge' 'edition' original.id %}">{% trans 'Merge now' %}</a>
+        </div>
+        {% endif %}
     </details>
 </aside>
 {% endif %}

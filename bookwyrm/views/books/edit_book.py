@@ -118,6 +118,7 @@ class EditBook(View):
             book.cover = remove_uploaded_image_exif(form.files["cover"])
 
         book.save()
+
         return redirect(f"/book/{book.id}")
 
 

@@ -28,8 +28,7 @@
 
 {% with user_authenticated=request.user.is_authenticated can_edit_book=perms.bookwyrm.edit_book %}
 <div class="block" itemscope itemtype="https://schema.org/Book">
-    {% include "snippets/merge_banner/work.html" with original=book.parent_work dupe=work_dupe model="work" %}
-    {% include "snippets/merge_banner/edition.html" with original=book dupe=edition_dupe model="edition" %}
+    {% include "snippets/merge_banner/edition.html" with original=book dupe=edition_dupe object_type='edition' %}
     <div class="columns is-mobile">
         <div class="column">
             <h1 class="title" itemprop="name" dir="auto">
@@ -444,7 +443,7 @@
                 {% if list_options.exists %}
                 <form name="list-add" method="post" action="{% url 'list-add-book' %}">
                     {% csrf_token %}
-                    <input type="hidden" name="book" value="{{ book.id }}">
+                    <input type="hidden" name="edition" value="{{ book.id }}">
                     <input type="hidden" name="user" value="{{ request.user.id }}">
                     <label class="label" for="id_list">{% trans "Add to list" %}</label>
                     <div class="field has-addons">
