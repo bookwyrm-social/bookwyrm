@@ -111,6 +111,7 @@ class Book(View):
             "lists": lists,
             "update_error": kwargs.get("update_error", False),
             "suggestion_query": request.GET.get("suggestion_query", ""),
+            "show_suggestions": request.GET.get("show_suggestions", False)
         }
 
         if request.user.is_authenticated:

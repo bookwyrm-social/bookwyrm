@@ -16,7 +16,7 @@
         </div>
     </div>
     {% if suggestion_query %}
-    <p class="help"><a href="{{ search_url }}">{% trans "Clear search" %}</a></p>
+    <p class="help"><a href="{{ search_url }}?show_suggestions=true">{% trans "Clear search" %}</a></p>
     {% endif %}
 </form>
 {% if not suggested_books %}
