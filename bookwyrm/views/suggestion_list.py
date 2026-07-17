@@ -138,7 +138,6 @@ class AddSuggestion(View):
     ) -> TemplateResponse:
         """static view for add suggestion modal"""
         book_list = models.SuggestionList.objects.filter(suggests_for=book_id).first()
-        print(reverse('book-add-suggestion', args=[book_id]))
         if not book_list:
             raise Http404()
         query = request.GET.get("suggestion_query")
@@ -147,7 +146,7 @@ class AddSuggestion(View):
                 book_list, request.user, query=query, ignore_book=book_list.suggests_for
             ),
             "suggestion_query": query,
-            "search_url": reverse('book-add-suggestion', args=[book_id]),
+            "search_url": reverse("book-add-suggestion", args=[book_id]),
             "work_id": book_id,
             "list": book_list,
         }
@@ -156,7 +155,9 @@ class AddSuggestion(View):
     def post(self, request: HttpRequest, book_id: int) -> Any:
         """put a book on the suggestion list"""
         _ = get_object_or_404(
-            models.SuggestionList, suggests_for=book_id, id=request.POST.get("book_list")
+            models.SuggestionList,
+            suggests_for=book_id,
+            id=request.POST.get("book_list"),
         )
 
         form = forms.SuggestionListItemForm(request.POST)

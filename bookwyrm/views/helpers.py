@@ -246,7 +246,6 @@ def redirect_to_referer(request, strip_params=False, *args, **kwargs):
     if strip_params:
         validated = urlunsplit(urlsplit(validated)._replace(query="", fragment=""))
 
-
     if validated:
         return redirect(validated)
 
