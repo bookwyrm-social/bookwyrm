@@ -7,20 +7,13 @@
     stars form-rate-stars
     {% if classes %}{{classes}}{% endif%}
 ">
-
-    {% if not default_rating %}
-        <label class="is-sr-only" for="{{ type|slugify }}_{{ book.id }}_no_rating">
-            {% trans "No rating" %}
-        </label>
-    {% endif %}
-
     {% for i in '12345'|make_list %}
     <div class="star-container">
         <div class="inputs-container">
             <label for="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter0 }}_half">
                 <span class="is-sr-only">
                     {% blocktranslate trimmed count rating=forloop.counter0 %}
-                        {{ rating }} star
+                        {{ rating }}.5 stars
                     {% plural %}
                         {{ rating }}.5 stars
                     {% endblocktranslate %}
