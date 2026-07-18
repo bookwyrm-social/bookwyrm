@@ -3,9 +3,15 @@
 
 {% if report.statuses.exists %}
 
+{% if report.reported_user %}
 {% blocktrans trimmed with report_id=report.id username=report.reported_user|username %}
 Report #{{ report_id }}: Status posted by @{{ username }}
 {% endblocktrans %}
+{% else %}
+{% blocktrans trimmed with report_id=report.id %}
+Report #{{ report_id }}
+{% endblocktrans %}
+{% endif %}
 
 {% elif report.links.exists %}
 

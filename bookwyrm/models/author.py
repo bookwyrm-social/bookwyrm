@@ -5,6 +5,7 @@ from typing import Any
 
 from django.db import models
 from django.contrib.postgres.indexes import GinIndex
+from django.utils.translation import gettext_lazy as _
 import pgtrigger
 
 from bookwyrm import activitypub
@@ -114,5 +115,8 @@ class Author(BookDataModel):
                 ),
             ),
         ]
+
+        verbose_name = _("Author")
+        verbose_name_plural = _("Authors")
 
     activity_serializer = activitypub.Author

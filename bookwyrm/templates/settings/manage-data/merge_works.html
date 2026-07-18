@@ -1,0 +1,34 @@
+{% load i18n %}
+{% load utilities %}
+{% load static %}
+
+<div>
+    <h2 class="is-size-3 p-4">{% trans 'Works with merge candidates' %}</h2>
+    {% if works %}
+    <table class="table is-fullwidth is-striped">
+        <thead>
+            <tr class="has-text-centered">
+                <td>{% trans 'Title' %}</td>
+                <td>{% trans 'Authors' %}</td>
+                <td>{% trans 'Merge Candidates' %}</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for work in works %}
+            <tr class="has-text-centered">
+                <td><a href="{{work.remote_id}}">{{work.title}}</a></td>
+                <td>{% for author in work.default_edition.authors.all %}{{author.name}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                <td>{{work.merge_candidates.count}}</td>
+                <td><a class="button is-small is-link" href="{% url 'settings-manual-merge' 'work' edition.id %}?source=admin">{% trans 'Merge' %}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include 'snippets/pagination.html' with page=works path=request.path %}
+    {% else %}
+    <div class="p-4">
+        <p>{% trans 'There are no works to merge.' %}</p>
+    </div>
+    {% endif %}
+</div>

@@ -45,7 +45,7 @@ class ConnectorSettings(View):
         # other BookWyrm instances
         bookwrym_connectors = Connector.objects.filter(
             connector_file="bookwyrm_connector"
-        ).order_by("identifier")
+        ).order_by("-active", "latest_error", "identifier")
 
         # Optional and new connectors e.g. Finna
         # These are not yet Connector objects so we have to describe them in the

@@ -1,25 +1,26 @@
 {% load i18n %}
-<details class="details-panel box is-size-{{ size|default:'normal' }}" {% if filters_applied %}open{% endif %}>
+<details class="details-panel box is-size-{{ size|default:'normal' }}">
     <summary class="is-flex is-align-items-center is-flex-wrap-wrap is-gap-2">
         <span class="mb-0 title {% if size == 'small' %}is-6{% else %}is-5{% endif %} is-flex-shrink-0">
             {% trans "Filters" %}
         </span>
 
-        {% if filters_applied %}
-        <span class="tag is-success is-light ml-2 mb-0 is-{{ size|default:'normal' }}">
-            {% trans "Filters are applied" %}
-        </span>
-        {% endif %}
-
-        {% if method != "post" and request.GET %}
-        <span class="mb-0 tags has-addons">
-            <span class="mb-0 tag is-success is-light is-{{ size|default:'normal' }}">
-                {% trans "Filters are applied" %}
+        {% if feed_filters_applied is not None %}
+            {# Feed filters persist on the user record, not in the query string. #}
+            {% if feed_filters_applied %}
+                <span class="tag is-success is-light ml-2 mb-0 is-{{ size|default:'normal' }}">
+                    {% trans "Filters are applied" %}
+                </span>
+            {% endif %}
+        {% elif method != "post" and request.GET %}
+            <span class="mb-0 tags has-addons">
+                <span class="mb-0 tag is-success is-light is-{{ size|default:'normal' }}">
+                    {% trans "Filters are applied" %}
+                </span>
+                <a class="mb-0 tag is-success is-{{ size|default:'normal' }}" href="{{ request.path }}">
+                    {% trans "Clear filters" %}
+                </a>
             </span>
-            <a class="mb-0 tag is-success is-{{ size|default:'normal' }}" href="{{ request.path }}">
-                {% trans "Clear filters" %}
-            </a>
-        </span>
         {% endif %}
 
         <span class="details-close icon icon-x is-{{ size|default:'normal' }}" aria-hidden="true"></span>

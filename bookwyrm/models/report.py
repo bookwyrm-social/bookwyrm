@@ -60,7 +60,9 @@ class Report(ActivityMixin, BookWyrmModel):
 
     def object(self):
         """Generate a list of reported objects in a format Mastodon will like"""
-        items = [self.reported_user.remote_id]
+        items = []
+        if self.reported_user and hasattr(self.reported_user, "remote_id"):
+            items.append(self.reported_user.remote_id)
         if self.statuses:
             items += self.statuses.values_list("remote_id", flat=True)
 

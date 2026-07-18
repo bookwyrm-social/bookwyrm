@@ -7,7 +7,7 @@ bots:
       all:
         - 'userAgent.startsWith("BookWyrm")'
         - '"Accept" in headers'
-        - 'headers["Accept"] == "application/activity+json"'
+        - 'headers["Accept"].contains("application/activity+json")'
   - name: Allow access to manifest.json directly
     action: ALLOW
     path_regex: "^/manifest.json$"

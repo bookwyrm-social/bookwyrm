@@ -3,6 +3,7 @@
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
+from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -157,6 +158,25 @@ class ShelfViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
+    def test_shelf_implicit_sort(self, *_):
+        """ensure the shelf view always has a sort in its response"""
+        view = views.Shelf.as_view()
+        shelf = self.local_user.shelf_set.first()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertIsNotNone(result.context_data["sort"])
+        self.assertNotEqual("", result.context_data["sort"])
+        self.assertEqual(result.status_code, 200)
+
     def test_shelf_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Shelf.as_view()
@@ -240,6 +260,38 @@ class ShelfViews(TestCase):
 
         self.assertEqual(shelf.name, "cool name")
         self.assertEqual(shelf.identifier, f"testshelf-{shelf.id}")
+
+    def test_edit_shelf_by_non_owner_blocked(self, *_):
+        view = views.Shelf.as_view()
+        shelf = models.Shelf.objects.create(name="Test Shelf", user=self.local_user)
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            attacker = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.com",
+                "ratword",
+                local=True,
+                localname="rat",
+                remote_id="https://example.com/users/rat",
+            )
+
+        request = self.factory.post(
+            "", {"privacy": "public", "user": attacker.pk, "name": "Hijacked"}
+        )
+        request.user = attacker
+        with self.assertRaises(Http404):
+            view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
+        shelf.refresh_from_db()
+
+        self.assertEqual(shelf.name, "Test Shelf")
+        self.assertEqual(shelf.user, self.local_user)
 
     def test_edit_shelf_name_not_editable(self, *_):
         """can't change the name of an non-editable shelf"""

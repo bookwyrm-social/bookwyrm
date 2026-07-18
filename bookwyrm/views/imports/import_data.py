@@ -45,6 +45,7 @@ class Import(View):
         data = {
             "import_form": forms.ImportForm(),
             "jobs": page,
+            "user_shelves": models.Shelf.objects.filter(user=request.user),
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
@@ -86,12 +87,10 @@ class Import(View):
         create_shelves = request.POST.get("create_shelves") == "on"
         privacy = request.POST.get("privacy")
         source = request.POST.get("source")
-
-        importer = None
+        shelf_override = request.POST.get("shelf_override") or None
 
         if source == "BookWyrm":
             importer = BookwyrmBooksImporter()
-            print("BookwyrmBooksImporter")
         elif source == "LibraryThing":
             importer = LibrarythingImporter()
         elif source == "Storygraph":
@@ -113,6 +112,7 @@ class Import(View):
                 include_reviews,
                 privacy,
                 create_shelves,
+                shelf_override,
             )
         except (UnicodeDecodeError, ValueError, KeyError):
             return self.get(request, invalid=True)

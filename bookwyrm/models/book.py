@@ -688,6 +688,9 @@ class Edition(Book):
             Index(fields=["parent_work", "-edition_rank"]),
         ]
 
+        verbose_name = _("Edition")
+        verbose_name_plural = _("Editions")
+
     @classmethod
     def find_existing(cls, data):
         """compare data to fields that can be used for deduplication.
@@ -984,6 +987,10 @@ class Series(OrderedCollectionMixin, BookDataModel):
     def isfdb_link(self):
         """generate the url from the isfdb id"""
         return f"https://www.isfdb.org/cgi-bin/pe.cgi?{self.isfdb}"
+
+    class Meta:
+        verbose_name = _("Series")
+        verbose_name_plural = _("Series")
 
 
 class SeriesBook(CollectionItemMixin, BookWyrmModel):
