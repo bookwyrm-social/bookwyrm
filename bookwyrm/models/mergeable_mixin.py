@@ -1,9 +1,14 @@
 """models that can be deduplicated and merged"""
 
+from datetime import timedelta
+
 from typing import Any, Dict, Optional, Iterable
 from typing_extensions import Self
 
+from django.db import transaction
+from django.db.models import Count, ManyToManyField
 from django.db.models import BooleanField, Count, DateTimeField, ManyToManyField, Model
+from django.utils import timezone
 
 from bookwyrm.utils.db import add_update_fields
 from . import fields
@@ -90,7 +95,8 @@ class MergeableMixin(Model):
         duplicates = {}
         for field in dedupe_fields:
             results = (
-                cls.objects.values(field.name)
+                cls.objects.filter(pending_merge_target__isnull=True)
+                .values(field.name)
                 .annotate(Count(field.name))
                 .filter(**{f"{field.name}__count__gt": 1})
                 .exclude(
@@ -107,6 +113,7 @@ class MergeableMixin(Model):
     def mark_merge_candidates(cls):
         """update duplicate entries with pending merge reference"""
         dedupe_fields = cls.find_duplicate_fields()
+        week_from_today = timezone.now() + timedelta(days=7)
         for field_name, values in dedupe_fields.items():
             for value in values:
                 objs = cls.objects.filter(**{field_name: value}).order_by("id")
@@ -114,7 +121,9 @@ class MergeableMixin(Model):
                     continue
                 canonical = objs.first()
                 candidates = objs.exclude(id=canonical.id)
-                candidates.update(pending_merge_target=canonical)
+                candidates.update(
+                    pending_merge_target=canonical, pending_merge_date=week_from_today
+                )
 
     @property
     def merge_candidates(self):
@@ -122,6 +131,7 @@ class MergeableMixin(Model):
         model = self.__class__
         return model.objects.filter(pending_merge_target=self.id)
 
+    @transaction.atomic
     def merge_into(
         self, canonical: Self, dry_run=False, manual=False
     ) -> Dict[str, Any]:
@@ -138,7 +148,9 @@ class MergeableMixin(Model):
 
         canonical.save()
 
-        self.merged_model.objects.create(deleted_id=self.id, merged_into=canonical)
+        # generally we create a merged model, but not for suggestion lists
+        if hasattr(self, "merged_model"):
+            self.merged_model.objects.create(deleted_id=self.id, merged_into=canonical)
 
         # move related models to canonical
         related_models = [
