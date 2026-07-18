@@ -148,7 +148,9 @@ class MergeableMixin(Model):
 
         canonical.save()
 
-        self.merged_model.objects.create(deleted_id=self.id, merged_into=canonical)
+        # generally we create a merged model, but not for suggestion lists
+        if hasattr(self, "merged_model"):
+            self.merged_model.objects.create(deleted_id=self.id, merged_into=canonical)
 
         # move related models to canonical
         related_models = [
