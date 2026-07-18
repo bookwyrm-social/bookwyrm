@@ -186,5 +186,7 @@ def unblock_server(request, server):
 def refresh_server(request, server):
     """unblock a server"""
     server = get_object_or_404(models.FederatedServer, id=server)
-    get_or_create_remote_server(server.server_name, refresh=True)
+    get_or_create_remote_server(
+        server.server_name, allow_external_connections=True, refresh=True
+    )
     return redirect("settings-federated-server", server.id)
