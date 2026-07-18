@@ -1,7 +1,10 @@
 """access the activity stores stored in redis"""
 
 from abc import ABC, abstractmethod
+from typing import Any
+
 import redis
+from django.db.models.query import QuerySet
 
 from bookwyrm import settings
 
@@ -45,27 +48,28 @@ class RedisStore(ABC):
             pipeline.zrem(store, -1, obj_id)
         pipeline.execute()
 
-    def bulk_add_objects_to_store(self, objs, store):
+    def bulk_add_objects_to_store(self, objs: QuerySet[Any], store: str) -> None:
         """add a list of objects to a given store"""
         pipeline = r.pipeline()
-        for obj in objs[: self.max_length]:
+        max_length_objs = objs[: self.max_length]
+        for obj in max_length_objs:
             pipeline.zadd(store, self.get_value(obj))
-        if objs and self.max_length:
+        if max_length_objs and self.max_length:
             pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
         pipeline.execute()
 
-    def bulk_remove_objects_from_store(self, objs, store):
+    def bulk_remove_objects_from_store(self, objs: QuerySet[Any], store: str) -> None:
         """remove a list of objects from a given store"""
         pipeline = r.pipeline()
         for obj in objs[: self.max_length]:
             pipeline.zrem(store, -1, obj.id)
         pipeline.execute()
 
-    def get_store(self, store, **kwargs):
+    def get_store(self, store: str, **kwargs) -> list[int]:
         """load the values in a store"""
         return r.zrevrange(store, 0, -1, **kwargs)
 
-    def populate_store(self, store):
+    def populate_store(self, store: str) -> None:
         """go from zero to a store"""
         pipeline = r.pipeline()
         queryset = self.get_objects_for_store(store)
