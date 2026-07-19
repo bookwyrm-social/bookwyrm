@@ -45,7 +45,7 @@
                     </div>
                 </div>
             {% if connector.most_recent_error %}
-                <div class="card-footer-item">
+                <div class="card-footer-item is-break-word">
                     <div>
                         <h3 class="menu-label">{% trans 'Latest error' %}</h3>
                         <p>{{ connector.most_recent_error|naturaltime}}</p>
@@ -59,7 +59,7 @@
                 name="deactivate-{{ connector.id }}"
                 method="post"
                 action="{% url 'settings-deactivate-connector' connector.id %}"
-                class="card-footer-item m-2"
+                class="card-footer-item m-2 is-flex-grow-0"
             >
                 {% csrf_token %}
                 <input type="hidden" name="item" value="{{ connector.id }}">
@@ -70,7 +70,7 @@
                 name="activate-{{ connector.id }}"
                 method="post"
                 action="{% url 'settings-activate-connector' connector.id %}"
-                class="card-footer-item"
+                class="card-footer-item m-2 is-flex-grow-0"
             >
                 {% csrf_token %}
                 <input type="hidden" name="item" value="{{ connector.id }}">

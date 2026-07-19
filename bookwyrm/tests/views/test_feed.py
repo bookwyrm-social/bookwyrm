@@ -80,9 +80,21 @@ class FeedViews(TestCase):
 
         result = view(request, "home")
 
-        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.status_code, 302)
+        self.assertEqual(result.url, "/home")
         self.local_user.refresh_from_db()
         self.assertEqual(self.local_user.feed_status_types, ["review"])
+
+    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
+    def test_feed_shows_filters_applied_badge(self, *_):
+        self.local_user.feed_status_types = ["review"]
+        view = views.Feed.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        result = view(request, "home")
+
+        self.assertContains(result, "Filters are applied")
 
     def test_status_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""

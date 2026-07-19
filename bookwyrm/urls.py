@@ -515,7 +515,7 @@ urlpatterns = [
         name="get-started-users",
     ),
     # feeds
-    re_path(rf"^(?P<tab>{STREAMS})/?$", views.Feed.as_view()),
+    re_path(rf"^(?P<tab>{STREAMS})/?$", views.Feed.as_view(), name="feed"),
     re_path(
         r"^direct-messages/?$", views.DirectMessage.as_view(), name="direct-messages"
     ),
