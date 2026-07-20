@@ -59,6 +59,7 @@ class Shelf(PrivateProfileMixin, View):
             )
 
             shelf = FakeShelf("all", _("All books"), user, books, "public")
+        books = books.annotate(shelved_date=Max("shelfbook__shelved_date"))
 
         if is_api_request(request) and shelf_identifier:
             return ActivitypubResponse(shelf.to_activity(**request.GET))
@@ -80,18 +81,6 @@ class Shelf(PrivateProfileMixin, View):
             "start_date"
         )
 
-        books = books.annotate(shelved_date=Max("shelfbook__shelved_date"))
-        books = books.annotate(
-            rating=Subquery(reviews.values("rating")[:1]),
-            start_date=Subquery(reading.values("start_date")[:1]),
-            finish_date=Subquery(reading.values("finish_date")[:1]),
-            author=Subquery(
-                models.Book.objects.filter(id=OuterRef("id")).values("authors__name")[
-                    :1
-                ]
-            ),
-        ).prefetch_related("authors")
-
         books = sort_books(books, request.GET.get("sort"))
 
         if shelves_filter_query:
@@ -102,6 +91,16 @@ class Shelf(PrivateProfileMixin, View):
             PAGE_LENGTH,
         )
         page = paginated.get_page(request.GET.get("page"))
+        page.object_list = page.object_list.annotate(
+            rating=Subquery(reviews.values("rating")[:1]),
+            start_date=Subquery(reading.values("start_date")[:1]),
+            finish_date=Subquery(reading.values("finish_date")[:1]),
+            author=Subquery(
+                models.Book.objects.filter(id=OuterRef("id")).values("authors__name")[
+                    :1
+                ]
+            ),
+        ).prefetch_related("authors")
         data = {
             "user": user,
             "is_self": is_self,
