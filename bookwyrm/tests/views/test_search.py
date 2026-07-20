@@ -40,6 +40,7 @@ class Views(TestCase):
             title="Test Book",
             remote_id="https://example.com/book/1",
             parent_work=cls.work,
+            subjects=["porcupine"],
         )
         cls.author = models.Author.objects.create(name="Philip Howard")
         cls.another_author = models.Author.objects.create(name="Author Name")
@@ -229,6 +230,59 @@ class Views(TestCase):
         self.assertIsInstance(response, TemplateResponse)
         validate_html(response.render())
         self.assertEqual(response.context_data["results"][0], booklist)
+
+    def test_search_subject(self):
+        """searches books by subject"""
+        view = views.Search.as_view()
+        request = self.factory.get("", {"q": "porcupine", "type": "subject"})
+        request.user = self.local_user
+        response = view(request)
+
+        self.assertIsInstance(response, TemplateResponse)
+        validate_html(response.render())
+        self.assertEqual(response.context_data["results"][0], self.book)
+
+    def test_search_subject_shelves(self):
+        """searches books by subject, with shelves"""
+        self.local_work = models.Work.objects.create(title="Test Work Two")
+        self.local_book = models.Edition.objects.create(
+            title="Test Book Two",
+            remote_id="https://example.com/book/2",
+            parent_work=self.work,
+            subjects=["porcupine"],
+        )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            self.shelf = models.Shelf.objects.create(
+                name="Test Shelf", identifier="test-shelf", user=self.local_user
+            )
+        models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.shelf,
+            user=self.local_user,
+        )
+
+        view = views.Search.as_view()
+        # Shelved books only
+        request = self.factory.get(
+            "", {"q": "porcupine", "type": "subject", "shelved": "true"}
+        )
+        request.user = self.local_user
+        response = view(request)
+
+        self.assertIsInstance(response, TemplateResponse)
+        validate_html(response.render())
+        self.assertEqual(response.context_data["results"][0], self.book)
+
+        # Unshelved books only
+        request = self.factory.get(
+            "", {"q": "porcupine", "type": "subject", "shelved": "false"}
+        )
+        request.user = self.local_user
+        response = view(request)
+
+        self.assertIsInstance(response, TemplateResponse)
+        validate_html(response.render())
+        self.assertEqual(response.context_data["results"][0], self.local_book)
 
     def test_block_incoming_search(self):
         """disallow search endpoint"""

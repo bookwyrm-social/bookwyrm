@@ -413,7 +413,9 @@
 
                 <ul>
                     {% for subject in book.subjects %}
-                        <li itemprop="about">{{ subject }}</li>
+                        <li itemprop="about">
+                            <a href="{% url 'search' %}?q={{ subject|urlencode }}&type=subject">{{ subject }}</a>
+                        </li>
                     {% endfor %}
                 </ul>
             </section>
