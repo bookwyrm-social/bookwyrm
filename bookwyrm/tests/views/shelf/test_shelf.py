@@ -184,7 +184,7 @@ class ShelfViews(TestCase):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.first()
-        request = self.factory.get("", {"sort": "finished_date"})
+        request = self.factory.get("", {"sort": "finish_date"})
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
@@ -218,7 +218,24 @@ class ShelfViews(TestCase):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.first()
-        request = self.factory.get("", {"sort": "title"})
+        request = self.factory.get("", {"sort": "sort_title"})
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_shelf_page_sorted_garbled(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Shelf.as_view()
+        shelf = self.local_user.shelf_set.first()
+        request = self.factory.get("", {"sort": "sort_titledfdfgfdg"})
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
