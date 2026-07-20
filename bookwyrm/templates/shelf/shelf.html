@@ -183,13 +183,13 @@
                     </td>
                     {% if request.user.is_authenticated %}
                         {% if is_self %}
-                    <td data-title="{% trans "Shelved" %}">
+                    <td data-title="{% trans "Shelved" %}" class="nowrap-date-whitespace">
                         {{ book.shelved_date|naturalday }}
                     </td>
-                    <td data-title="{% trans "Started" %}">
+                    <td data-title="{% trans "Started" %}" class="nowrap-date-whitespace">
                         {{ book.start_date|naturalday|default_if_none:""}}
                     </td>
-                    <td data-title="{% if shelf.identifier == 'read' %}{% trans "Finished"  as text %}{% else %}{% trans "Until" as text %}{% endif %}">
+                    <td data-title="{% if shelf.identifier == 'read' %}{% trans "Finished"  as text %}{% else %}{% trans "Until" as text %}{% endif %}" class="nowrap-date-whitespace">
                         {{ book.finish_date|naturalday|default_if_none:""}}
                     </td>
                         {% endif %}
