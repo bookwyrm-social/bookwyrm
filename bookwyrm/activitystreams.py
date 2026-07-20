@@ -130,22 +130,24 @@ class ActivityStream(RedisStore):
         if exclude_self:
             audience = audience.exclude(id=status.user.id)
 
-        if hasattr(status, "book") and status.book and status.book.parent_work:
-            # exclude anyone who has blocked the book in a status
-            audience = audience.exclude(id__in=status.book.parent_work.blocked_by.all())
+        thread_books = models.Status.objects.filter(
+            # load all the statuses in this thread with an associated book
+            Q(id=status.id) | Q(thread_id=status.thread_id)
+        ).values_list(
+            "comment__book__parent_work",
+            "review__book__parent_work",
+            "quotation__book__parent_work",
+            "mention_books__parent_work",
+        )
+        # flatten the list of sets into a single set of only non-None values
+        thread_book_ids = set(j for i in thread_books for j in i if j)
+        if thread_book_ids:
+            # collect a list of all users that block any of these books
+            users_blocking = models.User.objects.filter(
+                blocked_books__in=thread_book_ids
+            ).values_list("id", flat=True)
 
-        if status.thread_id:
-            # ...including any books from any status in the same thread
-            thread_statuses = models.Status.objects.filter(thread_id=status.thread_id)
-            for t_status in thread_statuses:
-                if (
-                    hasattr(t_status, "book")
-                    and t_status.book
-                    and t_status.book.parent_work
-                ):
-                    audience = audience.exclude(
-                        id__in=t_status.book.parent_work.blocked_by.all()
-                    )
+            audience = audience.exclude(id__in=users_blocking)
 
         # only visible to the poster and mentioned users
         if status.privacy == "direct":
