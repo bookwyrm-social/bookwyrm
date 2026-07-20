@@ -1,0 +1,13 @@
+{% load i18n %}
+<button class="control button is-light is-small {{ class }}">
+    <a
+    class="button is-light is-small {{ class }}"
+    href="{% url 'remote-follow-page' %}?user={{ user.username }}"
+    target="_blank"
+    rel="nofollow noopener noreferrer"
+    onclick="BookWyrm.displayPopUp(`{% url 'remote-follow-page' %}?user={{ user.username }}`, `remoteFollow`); return false;"
+    aria-describedby="remote_follow_warning"
+    >
+    {% trans "Follow from Fediverse" %}
+    </a>
+</button>

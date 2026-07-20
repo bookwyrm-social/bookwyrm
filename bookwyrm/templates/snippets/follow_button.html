@@ -1,10 +1,12 @@
 {% load i18n %}
 {% load interaction %}
 
-{% if request.user == user or not request.user.is_authenticated %}
-{# nothing to see here -- either it's yourself or your logged out #}
+{% if request.user == user %}
+{# nothing to see here -- it's yourself #}
 {% elif site.disable_federation and not user.local %}
 {# can't follow remote users without federation #}
+{% elif not request.user.is_authenticated %}
+{% include  'ostatus/remote_follow_button.html' %}
 {% else %}
 
 {% get_relationship user as relationship %}

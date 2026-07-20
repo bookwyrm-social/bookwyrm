@@ -12,7 +12,7 @@
             onclick="BookWyrm.displayPopUp(`{% url 'remote-follow-page' %}?user={{ user.username }}`, `remoteFollow`); return false;"
             aria-describedby="remote_follow_warning"
         >
-            {% blocktrans with username=user.localname %}Follow on Fediverse{% endblocktrans %}
+            {% trans 'Follow from Fediverse' %}
         </a>
     </div>
     <p id="remote_follow_warning" class="mt-1 is-size-7 has-text-weight-light">
