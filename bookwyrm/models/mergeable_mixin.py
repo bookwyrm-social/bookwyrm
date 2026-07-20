@@ -177,8 +177,45 @@ class MergeableMixin(Model):
                     getattr(related_obj, related_field).add(canonical)
                     getattr(related_obj, related_field).remove(self)
 
+
+        """
+        self could be a Work, Edition, Author, Series, SuggestionList
+        self could have a PARENT (editions have Work);
+        self could have related objects that have children:
+
+            ### These are M2M so we don't know which one to merge
+            ### Leave it if they're marked for merging already
+            ### Otherwise delete
+
+            - editions have book_series() which have seriesbooks (foreignkey from seriesbook to series)
+                - for b in book_series() if not b.seriesbooks
+                - if series no longer has seriesbooks and not marked, delete
+
+            - editions and works have AUTHORS which have Books (M2M)
+                - models.Book_authors__contains(author.id)
+                - if author no longer has any books and not marked, delete
+
+            ### We know these are the same - attempt a merge
+            - editions have parent WORKS
+                - self.parent_work.editions (check whether it has any editions after deleting)
+                - if not more editions after this edition is deleted, merge the work into canonical.parent_work
+
+            - works have suggests_for (a list of SuggestionLists)
+                - each SL in suggests_for has its own suggests_for value which should be the id of the work
+                - merge any suggestionlists that both point to canonical in suggests_for
+
+
+            # TODO
+            - need to merge duplicate SuggestionListItems - bit more complicated because we need to change how comments work, but should look like:
+
+            - suggestionlists have suggestions, suggestions have (endorsement, notes, raw_notes)
+            - leave model as-is but in the _view_ allow for multiple SuggestionListItems and display together in one card
+            - not changes needed for merging, it's fine actually
+
+
+        """
+
         self.delete()
-        return absorbed_fields
 
     def absorb_data_from(self, other: Self, dry_run=False) -> Dict[str, Any]:
         """fill empty fields with values from another entity"""

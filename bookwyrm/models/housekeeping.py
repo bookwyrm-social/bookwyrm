@@ -274,11 +274,5 @@ def merge_duplicate_data_task():
 
 def get_mergeable_models():
     """All models with the mergeable mixin"""
-    # Is there a way to get these programmatically??? idk
-    return [
-        models.Work,
-        models.Edition,
-        models.Author,
-        models.Series,
-        models.SuggestionList,
-    ]
+
+    return [model for model in models if hasattr(model, "merge_candidates")]
