@@ -143,9 +143,11 @@ class ActivityStream(RedisStore):
         thread_book_ids = set(j for i in thread_books for j in i if j)
         if thread_book_ids:
             # collect a list of all users that block any of these books
-            users_blocking = models.User.objects.filter(
-                blocked_books__in=thread_book_ids
-            ).values_list("id", flat=True)
+            users_blocking = list(
+                models.User.objects.filter(
+                    blocked_books__in=thread_book_ids
+                ).values_list("id", flat=True)
+            )
 
             audience = audience.exclude(id__in=users_blocking)
 
