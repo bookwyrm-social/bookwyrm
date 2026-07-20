@@ -110,7 +110,8 @@ class Book(View):
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
             "lists": lists,
             "update_error": kwargs.get("update_error", False),
-            "query": request.GET.get("suggestion_query", ""),
+            "suggestion_query": request.GET.get("suggestion_query", ""),
+            "show_suggestions": request.GET.get("show_suggestions", False),
         }
 
         if request.user.is_authenticated:

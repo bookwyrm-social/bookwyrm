@@ -16,7 +16,7 @@ from django.views.decorators.vary import vary_on_headers
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request, get_user_from_username
+from bookwyrm.views.helpers import is_api_request
 from bookwyrm.book_search import search
 from bookwyrm.views.mixins import PrivateProfileMixin
 
@@ -123,8 +123,7 @@ class Shelf(PrivateProfileMixin, View):
     @method_decorator(login_required, name="dispatch")
     def post(self, request, username, shelf_identifier):
         """edit a shelf"""
-        user = get_user_from_username(request.user, username)
-        shelf = get_object_or_404(user.shelf_set, identifier=shelf_identifier)
+        shelf = get_object_or_404(request.user.shelf_set, identifier=shelf_identifier)
 
         # you can't change the name of the default shelves
         if not shelf.editable and request.POST.get("name") != shelf.name:

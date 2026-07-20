@@ -5,7 +5,7 @@
 <form name="search" action="{{ search_url }}" method="GET" class="block">
     <div class="field has-addons">
         <div class="control">
-            <input aria-label="{% trans 'Search for a book' %}" class="input" type="text" name="{{ query_param }}" placeholder="{% trans 'Search for a book' %}" value="{{ query }}" spellcheck="false">
+            <input aria-label="{% trans 'Search for a book' %}" class="input" type="text" name="{{ query_param }}" placeholder="{% trans 'Search for a book' %}" value="{{ suggestion_query|default:'' }}" spellcheck="false">
         </div>
         <div class="control">
             <button class="button" type="submit">
@@ -15,13 +15,13 @@
             </button>
         </div>
     </div>
-    {% if query %}
-    <p class="help"><a href="{{ search_url }}">{% trans "Clear search" %}</a></p>
+    {% if suggestion_query %}
+    <p class="help"><a href="{{ search_url }}?show_suggestions=true">{% trans "Clear search" %}</a></p>
     {% endif %}
 </form>
 {% if not suggested_books %}
-{% if query %}
-<p>{% blocktrans %}No books found matching the query "{{ query }}"{% endblocktrans %}</p>{% else %}
+{% if suggestion_query %}
+<p>{% blocktrans %}No books found matching the query "{{ suggestion_query }}"{% endblocktrans %}</p>{% else %}
 <p>{% trans "No books found" %}</p>
 {% endif %}
 {% endif %}
@@ -29,7 +29,7 @@
 {% if suggested_books|length > 0 %}
 <div{% if columns %} class="columns is-multiline"{% endif %}>
     {% for book in suggested_books %}
-    <div class="block {% if columns %}column is-5 m-0{% endif %}">
+    <div class="block {% if columns %}column is-6 m-0{% endif %}">
         <div class="columns is-mobile is-gapless">
             <a
                 class="column is-2-mobile is-3-tablet is-cover align to-c"
@@ -54,7 +54,7 @@
                         {% trans "Suggest" %}
                     {% endif %}
                 </button>
-                {% include "lists/add_item_modal.html" with id=modal_id is_suggestion=is_suggestion list=list %}
+                {% include "lists/add_item_modal.html" with id=modal_id is_suggestion=is_suggestion list=list active=False %}
             </div>
         </div>
     </div>

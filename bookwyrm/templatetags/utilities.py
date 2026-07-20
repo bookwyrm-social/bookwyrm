@@ -39,7 +39,7 @@ def get_link_to_user(user):
     """get a link to a user profile, or display if the user has been deleted"""
     username = user.display_name
     if user.is_active:
-        return mark_safe(f"<a href='{user.local_path}'>{username}</a>")
+        return mark_safe(f'<a href="{user.local_path}">{username}</a>')
     text = _("deactivated user")
     return mark_safe(f"<em class='tag'>{text}</em>")
 
