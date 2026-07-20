@@ -6,7 +6,10 @@
 {% elif site.disable_federation and not user.local %}
 {# can't follow remote users without federation #}
 {% elif not request.user.is_authenticated %}
-{% include  'ostatus/remote_follow_button.html' %}
+<div class="field mb-0">
+    {% include  'snippets/remote_follow_button.html' %}
+</div>
+
 {% else %}
 
 {% get_relationship user as relationship %}
