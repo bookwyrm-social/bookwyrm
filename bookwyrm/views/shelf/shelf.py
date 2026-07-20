@@ -87,11 +87,19 @@ class Shelf(PrivateProfileMixin, View):
         elif "rating" in sort:
             books = books.annotate(rating=Subquery(reviews.values("rating")[:1]))
         elif "start_date" in sort:
-            books = books.annotate(start_date=Subquery(reading.values("start_date")[:1]))
+            books = books.annotate(
+                start_date=Subquery(reading.values("start_date")[:1])
+            )
         elif "finish_date" in sort:
-            books = books.annotate(finish_date=Subquery(reading.values("finish_date")[:1]))
+            books = books.annotate(
+                finish_date=Subquery(reading.values("finish_date")[:1])
+            )
         elif "author" in sort:
-            books = books.annotate(models.Book.objects.filter(id=OuterRef("id")).values("authors__name")[:1])
+            books = books.annotate(
+                models.Book.objects.filter(id=OuterRef("id")).values("authors__name")[
+                    :1
+                ]
+            )
 
         books = books.prefetch_related("authors")
 
