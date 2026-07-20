@@ -3,13 +3,14 @@
 import inspect
 import sys
 
-from .book import Book, Work, Edition, BookDataModel
+from .book import Book, Work, Edition, BookDataModel, Series, SeriesBook
 from .author import Author
 from .link import Link, FileLink, LinkDomain
 from .connector import Connector
 
 from .shelf import Shelf, ShelfBook
 from .list import List, ListItem
+from .list import SuggestionList, SuggestionListItem
 
 from .status import Status, GeneratedNote, Comment, Quotation
 from .status import Review, ReviewRating
@@ -23,6 +24,7 @@ from .annual_goal import AnnualGoal
 from .relationship import UserFollows, UserFollowRequest, UserBlocks
 from .report import Report, ReportAction
 from .federated_server import FederatedServer
+from .user_upload import UserUpload, UserUploadVersion
 
 from .group import Group, GroupMember, GroupMemberInvitation
 

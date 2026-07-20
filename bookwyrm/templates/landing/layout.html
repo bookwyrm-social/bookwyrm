@@ -34,13 +34,13 @@
 {% block about_panel %}
 <section class="tile is-ancestor">
     <div class="tile is-7 is-parent">
-        <div class="tile is-child box">
+        <div class="tile is-child notification">
             {% include 'snippets/about.html' %}
         </div>
     </div>
     <div class="tile is-5 is-parent">
         {% if not request.user.is_authenticated %}
-        <div class="tile is-child box has-background-primary-light content">
+        <div class="tile is-child box content">
             <h2 class="title">
                 {% if site.allow_registration %}
                     {% blocktrans with name=site.name %}Join {{ name }}{% endblocktrans %}

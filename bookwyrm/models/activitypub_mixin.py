@@ -136,13 +136,18 @@ class ActivitypubMixin:
         except PermissionDenied:
             return
 
+        recipients = self.get_recipients(software=software)
+        if len(recipients) == 0:
+            return
+
         # if we're posting about ShelfBooks, set a delay to give the base activity
         # time to add the book on remote servers first to avoid race conditions
         countdown = (
             10
             if (
-                isinstance(activity, object)
+                isinstance(activity, dict)
                 and not isinstance(activity["object"], str)
+                and not isinstance(activity["object"], list)
                 and activity["object"].get("type", None) in ["GeneratedNote", "Comment"]
             )
             else 0
@@ -152,7 +157,7 @@ class ActivitypubMixin:
             args=(
                 sender.id,
                 json.dumps(activity, cls=activitypub.ActivityEncoder),
-                self.get_recipients(software=software),
+                recipients,
             ),
             queue=queue,
         )
@@ -410,11 +415,9 @@ class CollectionItemMixin(ActivitypubMixin):
 
     @property
     def privacy(self):
-        """inherit the privacy of the list, or direct if pending"""
+        """inherit the privacy of the list"""
         collection_field = getattr(self, self.collection_field)
-        if self.approved:
-            return collection_field.privacy
-        return "direct"
+        return collection_field.privacy
 
     @property
     def recipients(self):

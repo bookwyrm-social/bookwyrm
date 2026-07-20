@@ -97,6 +97,16 @@ class GroupViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
+    def test_usergroups_private(self, _):
+        models.User.objects.filter(id=self.local_user.id).update(
+            is_profile_private=True
+        )
+        view = views.UserGroups.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        result = view(request, username=self.local_user.localname)
+        self.assertTrue(result.context_data["is_profile_locked"])
+
     @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
     def test_findusers_get(self, *_):
         """there are so many views, this just makes sure it LOADS"""
@@ -133,7 +143,7 @@ class GroupViews(TestCase):
             },
         )
         request.user = self.local_user
-        result = view(request, "username")
+        result = view(request, username="mouse@local.com")
 
         self.assertEqual(result.status_code, 302)
         new_group = models.Group.objects.filter(name="A group").get()
@@ -160,7 +170,7 @@ class GroupViews(TestCase):
         request.user = self.rat
 
         with self.assertRaises(PermissionDenied):
-            view(request, "username")
+            view(request, username="mouse@local.com")
 
     def test_group_edit(self, _):
         """test editing a "group" database entry"""

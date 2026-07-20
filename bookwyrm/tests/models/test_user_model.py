@@ -1,6 +1,6 @@
 """testing models"""
 
-import json
+import pathlib
 
 from unittest.mock import patch
 from django.contrib.auth.models import Group
@@ -16,30 +16,25 @@ from bookwyrm.settings import DOMAIN, BASE_URL
 class User(TestCase):
     @classmethod
     def setUpTestData(cls):
-        with (
-            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
-            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
-            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
-        ):
-            cls.user = models.User.objects.create_user(
-                f"mouse@{DOMAIN}",
-                "mouse@mouse.mouse",
-                "mouseword",
-                local=True,
-                localname="mouse",
-                name="hi",
-                summary="a summary",
-                bookwyrm_user=False,
-            )
-            cls.another_user = models.User.objects.create_user(
-                f"nutria@{DOMAIN}",
-                "nutria@nutria.nutria",
-                "nutriaword",
-                local=True,
-                localname="nutria",
-                name="hi",
-                bookwyrm_user=False,
-            )
+        cls.user = models.User.objects.create_user(
+            f"mouse@{DOMAIN}",
+            "mouse@mouse.mouse",
+            "mouseword",
+            local=True,
+            localname="mouse",
+            name="hi",
+            summary="a summary",
+            bookwyrm_user=False,
+        )
+        cls.another_user = models.User.objects.create_user(
+            f"nutria@{DOMAIN}",
+            "nutria@nutria.nutria",
+            "nutriaword",
+            local=True,
+            localname="nutria",
+            name="hi",
+            bookwyrm_user=False,
+        )
         initdb.init_groups()
         initdb.init_permissions()
 
@@ -56,6 +51,13 @@ class User(TestCase):
         self.assertIsNotNone(self.user.key_pair.private_key)
         self.assertIsNotNone(self.user.key_pair.public_key)
 
+    def test_filters_applied_all_types_selected(self):
+        self.assertFalse(self.user.filters_applied)
+
+    def test_filters_applied_with_excluded_type(self):
+        self.user.feed_status_types = ["review"]
+        self.assertTrue(self.user.filters_applied)
+
     def test_remote_user(self):
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             user = models.User.objects.create_user(
@@ -67,6 +69,21 @@ class User(TestCase):
                 bookwyrm_user=False,
             )
         self.assertEqual(user.username, "rat@example.com")
+
+    def test_is_visible_to_public(self):
+        self.assertTrue(self.user.is_profile_visible_to(None))
+        self.assertTrue(self.user.is_profile_visible_to(self.another_user.id))
+
+    def test_is_visible_to_yourself(self):
+        self.user.is_profile_private = True
+        self.assertTrue(self.user.is_profile_visible_to(self.user.id))
+
+    def test_is_visible_to_private(self):
+        self.user.is_profile_private = True
+        self.assertFalse(self.user.is_profile_visible_to(None))
+        self.assertFalse(self.user.is_profile_visible_to(self.another_user.id))
+        self.user.followers.add(self.another_user)
+        self.assertTrue(self.user.is_profile_visible_to(self.another_user.id))
 
     def test_user_shelves(self):
         shelves = models.Shelf.objects.filter(user=self.user).all()
@@ -108,6 +125,27 @@ class User(TestCase):
         self.assertEqual(activity["bookwyrmUser"], False)
         self.assertEqual(activity["discoverable"], False)
         self.assertEqual(activity["type"], "Person")
+
+    def test_activitypub_serialize_avatar(self):
+        """Make sure the avatar is rendered correctly in the activity"""
+        avatar_path = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/default_avi.jpg"
+        )
+        with open(avatar_path, "rb") as avatar_file:
+            self.user.avatar.save("mouse-avatar.jpg", avatar_file)
+        activity = self.user.to_activity()
+        self.assertEqual(
+            activity["icon"],
+            {
+                "type": "Image",
+                "url": f"{BASE_URL}{self.user.avatar.url}",
+                "name": "avatar for mouse",
+                "@context": [
+                    "https://www.w3.org/ns/activitystreams",
+                    {"Hashtag": "as:Hashtag"},
+                ],
+            },
+        )
 
     def test_activitypub_outbox(self):
         activity = self.user.to_outbox()
@@ -233,7 +271,7 @@ class User(TestCase):
         self.assertEqual(self.user.email, "mouse@mouse.mouse")
         with (
             patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+                "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
             ) as broadcast_mock,
             patch(
                 "bookwyrm.models.user.User.erase_user_statuses"
@@ -245,7 +283,7 @@ class User(TestCase):
 
         # make sure the deletion is broadcast
         self.assertEqual(broadcast_mock.call_count, 1)
-        activity = json.loads(broadcast_mock.call_args[1]["args"][1])
+        activity = broadcast_mock.call_args[0][0]
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"], self.user.remote_id)
 

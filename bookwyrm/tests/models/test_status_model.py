@@ -375,6 +375,34 @@ class Status(TestCase):
         self.assertEqual(activity["content"], "<p>test content</p>")
         self.assertEqual(activity["inReplyToBook"], self.book.remote_id)
 
+    def test_review_to_activity_no_name(self, *_):
+        """subclass of the base model version with a "pure" serializer and no name"""
+        status = models.Review.objects.create(
+            content="test content",
+            rating=3.0,
+            user=self.local_user,
+            book=self.book,
+        )
+        activity = status.to_activity()
+        self.assertEqual(activity["id"], status.remote_id)
+        self.assertEqual(activity["type"], "Review")
+        self.assertEqual(activity["rating"], 3)
+        self.assertEqual(activity["content"], "<p>test content</p>")
+        self.assertEqual(activity["inReplyToBook"], self.book.remote_id)
+
+    def test_review_to_activity_no_name_or_content(self, *_):
+        """subclass of the base model version with a "pure" serializer and no content or name"""
+        status = models.Review.objects.create(
+            rating=3.0,
+            user=self.local_user,
+            book=self.book,
+        )
+        activity = status.to_activity()
+        self.assertEqual(activity["id"], status.remote_id)
+        self.assertEqual(activity["type"], "Review")
+        self.assertEqual(activity["rating"], 3)
+        self.assertEqual(activity["inReplyToBook"], self.book.remote_id)
+
     def test_review_to_pure_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""
         status = models.Review.objects.create(
@@ -527,6 +555,61 @@ class Status(TestCase):
         status.mention_users.set([self.remote_user])
 
         self.assertEqual(status.recipients, [self.remote_user])
+
+    def test_ignore_activity_boost_include(self, *_):
+        """do bother with some boost statuses"""
+        activity = activitypub.Announce(
+            id="http://www.faraway.com/boost/12",
+            actor=self.remote_user.remote_id,
+            object="http://fish.com/nothing",
+            published="2021-03-24T18:59:41.841208+00:00",
+            cc="",
+            to="",
+        )
+        status = models.Quotation.objects.create(
+            quote="<p>my quote</p>",
+            content="",
+            user=self.local_user,
+            book=self.book,
+        )
+        status.remote_id = "http://fish.com/nothing"
+        status.save(broadcast=False)
+
+        self.assertFalse(models.Status.ignore_activity(activity))
+
+    @responses.activate
+    def test_ignore_activity_boost_include_review(self, *_):
+        """don't ignore remote reviews"""
+        activity = activitypub.Announce(
+            id="http://www.faraway.com/boost/12",
+            actor=self.remote_user.remote_id,
+            object="http://fish.com/nothing",
+            published="2021-03-24T18:59:41.841208+00:00",
+            cc="",
+            to="",
+        )
+        status = {
+            "id": "https://fish.com/user/mouse/review/11934130",
+            "type": "Review",
+            "published": "2026-07-06T16:05:15.746622+00:00",
+            "attributedTo": "https://fish.com/user/mouse",
+            "content": "<p>content</p>",
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "cc": ["https://fish.com/user/mouse/followers"],
+            "replies": {},
+            "tag": [],
+            "attachment": [],
+            "sensitive": False,
+            "inReplyToBook": "https://fish.com/book/2265331",
+            "name": "Leckie's Study of Provincial Life",
+            "@context": [
+                "https://www.w3.org/ns/activitystreams",
+                {"Hashtag": "as:Hashtag"},
+            ],
+        }
+        responses.add(responses.GET, "http://fish.com/nothing", json=status, status=200)
+
+        self.assertFalse(models.Status.ignore_activity(activity))
 
     @responses.activate
     def test_ignore_activity_boost(self, *_):

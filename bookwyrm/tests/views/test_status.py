@@ -1,12 +1,12 @@
 """test for app action functionality"""
 
-import json
 from unittest.mock import patch
 import dateutil
 from django.core.exceptions import PermissionDenied
 from django.test import TestCase, TransactionTestCase
 from django.test.client import RequestFactory
 from django.utils import timezone
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from bookwyrm import forms, models, views
 from bookwyrm.views.status import find_mentions, find_or_create_hashtags
@@ -74,7 +74,7 @@ class StatusTransactions(TransactionTestCase):
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+@patch("bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast")
 class StatusViews(TestCase):
     """viewing and creating statuses"""
 
@@ -146,6 +146,29 @@ class StatusViews(TestCase):
         self.assertEqual(status.book, self.book)
         self.assertIsNone(status.edited_date)
 
+    def test_create_status_quotation_syncs_readwise(self, *_):
+        """create a quote and enqueue Readwise sync"""
+        self.local_user.readwise_api_key = "readwise-token"
+        self.local_user.save(broadcast=False, update_fields=["readwise_api_key"])
+        view = views.CreateStatus.as_view()
+        form = forms.QuotationForm(
+            {
+                "quote": "a quotable bit",
+                "content": "a note",
+                "user": self.local_user.id,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with patch("bookwyrm.views.status.sync_readwise_quotation.delay") as task_mock:
+            view(request, "quotation")
+
+        status = models.Quotation.objects.get()
+        task_mock.assert_called_once_with(status.id)
+
     def test_create_status_rating(self, *_):
         """create a status"""
         view = views.CreateStatus.as_view()
@@ -214,6 +237,40 @@ class StatusViews(TestCase):
         request.user = self.local_user
         with self.assertRaises(PermissionDenied):
             view(request, "comment")
+
+    def test_create_status_uploads(self, *_):
+        """status with an uploaded image"""
+        view = views.CreateStatus.as_view()
+        user = self.local_user
+        fake_file = SimpleUploadedFile("foo.jpg", b"a")
+        upload = models.UserUpload.objects.create(
+            original_name="foo.jpg", original_file=fake_file, user=user
+        )
+        models.UserUploadVersion.objects.create(
+            user_upload=upload,
+            max_dimension="240",
+            file=fake_file,
+        )
+        img_path = upload.original_file.name
+        form = forms.CommentForm(
+            {
+                "content": f"pic !image({img_path})",
+                "user": self.local_user.id,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = user
+
+        view(request, "comment")
+
+        status = models.Status.objects.get()
+        self.assertEqual(list(status.user_image_uploads.all()), [upload])
+        self.assertEqual(
+            status.content,
+            f'<p>pic <img srcset="/images/uploads/user_{user.id}/{upload.id}/240.jpg 240w" sizes="(width &lt;= 600px) 100vw, 60vw" src="/images/uploads/user_{user.id}/{upload.id}/240.jpg"></p>',
+        )
 
     def test_create_status_reply(self, *_):
         """create a status in reply to an existing status"""
@@ -438,6 +495,33 @@ class StatusViews(TestCase):
         hashtag = models.Hashtag.objects.filter(name="#ひぐま").first()
         self.assertEqual(result["#ひぐま"], hashtag)
 
+    def test_format_image_helper(self, *_):
+        """find and format images into tags"""
+        fake_file = SimpleUploadedFile("foo.jpg", b"a")
+        user = self.local_user
+        upload = models.UserUpload.objects.create(
+            original_name="foo.jpg", original_file=fake_file, user=self.local_user
+        )
+        models.UserUploadVersion.objects.create(
+            user_upload=upload,
+            max_dimension="240",
+            file=fake_file,
+        )
+        models.UserUploadVersion.objects.create(
+            user_upload=upload,
+            max_dimension="600",
+            file=fake_file,
+        )
+        img_path = upload.original_file.name
+        text = f"!image({img_path})"
+        expected = f'<img srcset="/images/uploads/user_{user.id}/{upload.id}/240.jpg 240w, /images/uploads/user_{user.id}/{upload.id}/600.jpg 600w" sizes="(width <= 600px) 100vw, 60vw" src="/images/uploads/user_{user.id}/{upload.id}/600.jpg" />'
+        self.assertEqual(
+            views.status.format_images(
+                text, views.status.find_images(text, self.local_user)
+            ),
+            expected,
+        )
+
     def test_format_links_simple_url(self, *_):
         """find and format urls into a tags"""
         url = "http://www.fish.com/"
@@ -568,7 +652,7 @@ http://www.fish.com/"""
         with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             view(request, status.id)
             self.assertTrue(redis_mock.called)
-        activity = json.loads(mock.call_args_list[1][1]["args"][1])
+        activity = mock.call_args_list[1][0][0]
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"]["type"], "Tombstone")
         status.refresh_from_db()
@@ -602,7 +686,7 @@ http://www.fish.com/"""
         with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             view(request, status.id)
             self.assertTrue(redis_mock.called)
-        activity = json.loads(mock.call_args_list[1][1]["args"][1])
+        activity = mock.call_args_list[1][0][0]
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"]["type"], "Tombstone")
         status.refresh_from_db()
@@ -654,7 +738,7 @@ http://www.fish.com/"""
         request.user = self.local_user
 
         view(request, "comment", existing_status_id=status.id)
-        activity = json.loads(mock.call_args_list[1][1]["args"][1])
+        activity = mock.call_args_list[1][0][0]
         self.assertEqual(activity["type"], "Update")
         self.assertEqual(activity["object"]["id"], status.remote_id)
 

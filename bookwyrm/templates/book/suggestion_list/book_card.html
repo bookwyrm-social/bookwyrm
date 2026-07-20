@@ -1,0 +1,55 @@
+{% load i18n %}
+{% load book_display_tags %}
+{% load utilities %}
+
+<div class="card">
+    <div class="card-content pb-0 mb-0 ">
+        <div class="is-flex mb-3">
+            <figure class="mr-3" aria-hidden="true">
+                {% include "snippets/avatar.html" with user=item.user %}
+            </figure>
+            <header>
+                {% url 'user-feed' item.user|username as user_path %}
+
+                {% if item.notes %}
+                    {% blocktrans trimmed with user_link=item.user|user_link %}
+                    {{ user_link }} says:
+                    {% endblocktrans %}
+                {% else %}
+                    {% blocktrans trimmed with user_link=item.user|user_link %}
+                    {{ user_link }} recommends:
+                    {% endblocktrans %}
+                {% endif %}
+            </header>
+        </div>
+
+        {% with item_book=item.work.default_edition %}
+        <div class="columns is-mobile is-multiline">
+            <div class="column is-narrow pb-0 mb-3">
+                <div class="is-cover">
+                    <a href="{{ item_book.local_path }}" aria-hidden="true">
+                        {% include 'snippets/book_cover.html' with cover_class='is-w-s-mobile is-w-s-tablet is-align-items-flex-start' size='medium' book=item_book %}
+                    </a>
+                </div>
+            </div>
+            {% if item.notes %}
+            <div class="column notification suggestion-note mb-0 mr-3">
+                {% include 'snippets/trimmed_text.html' with full=item.notes trim_length=15 %}
+            </div>
+            {% endif %}
+            <div class="column{% if item.notes %} is-full{% endif %}">
+                {% include 'snippets/book_titleby.html' with book=item_book %}
+            </div>
+        </div>
+        {% endwith %}
+    </div>
+    <div class="card-footer pt-0 px-3 pb-3">
+        <div class="card-footer-item">
+            {% include "snippets/shelve_button/shelve_button.html" with book=item.work.default_edition %}
+        </div>
+        <div class="card-footer-item">
+            {% include "book/suggestion_list/endorsement_button.html" %}
+        </div>
+    </div>
+</div>
+

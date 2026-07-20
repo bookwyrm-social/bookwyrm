@@ -7,6 +7,7 @@ from django.test.client import RequestFactory
 from django.utils import timezone
 
 from bookwyrm import models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 @patch("bookwyrm.activitystreams.add_status_task.delay")
@@ -53,6 +54,24 @@ class ReadingViews(TestCase):
         """individual test setup"""
         self.factory = RequestFactory()
 
+    def test_reading_status_get(self, *_):
+        """reading status modal"""
+        view = views.ReadingStatus.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        result = view(request, "want", self.book.id)
+        validate_html(result.render())
+
+        result = view(request, "start", self.book.id)
+        validate_html(result.render())
+
+        result = view(request, "finish", self.book.id)
+        validate_html(result.render())
+
+        result = view(request, "stop", self.book.id)
+        validate_html(result.render())
+
     def test_start_reading(self, *_):
         """begin a book"""
         shelf = self.local_user.shelf_set.get(identifier=models.Shelf.READING)
@@ -72,7 +91,7 @@ class ReadingViews(TestCase):
         )
         request.user = self.local_user
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            "bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"
         ) as mock:
             views.ReadingStatus.as_view()(request, "start", self.book.id)
 
@@ -261,6 +280,23 @@ class ReadingViews(TestCase):
         self.assertEqual(readthrough.finish_date.day, 7)
         self.assertEqual(readthrough.book, self.book)
         self.assertEqual(readthrough.user, self.local_user)
+
+    def test_create_readthrough_with_error(self, *_):
+        """adding new read dates"""
+        request = self.factory.post(
+            "",
+            {
+                "start_date": "2019-01-01",
+                "finish_date": "2017-03-07",
+                "book": self.book.id,
+                "id": "",
+                "user": self.local_user.id,
+            },
+        )
+        request.user = self.local_user
+        result = views.ReadThrough.as_view()(request)
+        self.assertEqual(models.ReadThrough.objects.count(), 0)
+        validate_html(result.render())
 
     def test_update_progress_comment(self, *_):
         """update progress with commentary"""

@@ -35,8 +35,9 @@ class Book(BookData):
     subtitle: str = None
     description: str = ""
     languages: list[str] = field(default_factory=list)
-    series: str = ""
-    seriesNumber: str = ""
+    series: str = ""  # legacy, now deprecated
+    seriesNumber: str = ""  # legacy, now deprecated
+    seriesBooks: list[str] = field(default_factory=list)
     subjects: list[str] = field(default_factory=list)
     subjectPlaces: list[str] = field(default_factory=list)
 

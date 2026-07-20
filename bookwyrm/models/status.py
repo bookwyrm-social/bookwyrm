@@ -133,6 +133,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
                 activity.object,
                 get_activity=True,
                 allow_external_connections=allow_external_connections,
+                model=apps.get_model("bookwyrm.Status", require_ready=True),
             )
             if not boosted:
                 # if we can't load the status, definitely ignore it
@@ -274,6 +275,36 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """Overridden filter for "direct" privacy level"""
         return queryset.exclude(
             ~Q(Q(user=viewer) | Q(mention_users=viewer)), privacy="direct"
+        )
+
+    @classmethod
+    def blocked_book_filter(cls, viewer, privacy_levels=None):
+        """filter out all statuses related to a book this user has blocked"""
+
+        queryset = super().privacy_filter(viewer, privacy_levels=privacy_levels)
+
+        if not viewer or not viewer.is_authenticated:
+            return queryset
+
+        blocked = viewer.blocked_books.values_list("id", flat=True)
+
+        book_comments = queryset.filter(comment__book__parent_work__in=blocked)
+        book_quotations = queryset.filter(quotation__book__parent_work__in=blocked)
+        book_reviews = queryset.filter(review__book__parent_work__in=blocked)
+        book_mentions = queryset.filter(mention_books__parent_work__in=blocked)
+        book_statuses = book_comments.union(
+            book_quotations, book_reviews, book_mentions
+        )
+
+        threads = book_statuses.values_list("thread_id", flat=True)
+        thread_statuses = queryset.exclude(
+            id__in=book_statuses.values_list("id", flat=True)
+        ).filter(thread_id__in=threads)
+
+        exclude = book_statuses.union(thread_statuses).values_list("id", flat=True)
+
+        return queryset.exclude(id__in=exclude).filter(
+            deleted=False, user__is_active=True
         )
 
     @classmethod
@@ -422,7 +453,7 @@ class Quotation(BookStatus):
 class Review(BookStatus):
     """a book review"""
 
-    name = fields.CharField(max_length=255, null=True)
+    name = fields.CharField(max_length=255, null=True, blank=True)
     rating = fields.DecimalField(
         default=None,
         null=True,
@@ -445,7 +476,11 @@ class Review(BookStatus):
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
-        return self.content
+        if self.content:
+            return self.content
+        else:
+            template = get_template("snippets/generated_status/rating_pure_name.html")
+            return template.render({"book": self.book, "rating": self.rating}).strip()
 
     @property
     def page_title(self):

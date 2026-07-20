@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load humanize %}
 
 <li class="block">
     <div class="card">
@@ -19,7 +20,7 @@
                 {% csrf_token %}
                 <div class="field has-addons mb-0">
                     <div class="control">
-                        <label for="input-priority" class="button is-transparent is-small">{% trans "Priority" %}</label>
+                        <label for="input_priority_{{ connector.id }}" class="button is-transparent is-small">{% trans "Priority" %}</label>
                     </div>
                     <div class="control">
                         <input id="input_priority_{{ connector.id }}" class="input is-small" type="number" min="1" name="priority" value="{{connector.priority}}">
@@ -37,13 +38,28 @@
                     </div>
                 </div>
             {% endif %}
+                <div class="card-footer-item">
+                    <div>
+                        <h3 class="menu-label">{% trans 'Latest successful request' %}</h3>
+                        <p>{{ connector.most_recent_success|naturaltime }}</p>
+                    </div>
+                </div>
+            {% if connector.most_recent_error %}
+                <div class="card-footer-item is-break-word">
+                    <div>
+                        <h3 class="menu-label">{% trans 'Latest error' %}</h3>
+                        <p>{{ connector.most_recent_error|naturaltime}}</p>
+                        <p>{{ connector.latest_error }}</p>
+                    </div>
+                </div>
+            {% endif %}
 
             {% if connector.active %}
              <form
                 name="deactivate-{{ connector.id }}"
                 method="post"
                 action="{% url 'settings-deactivate-connector' connector.id %}"
-                class="card-footer-item m-2"
+                class="card-footer-item m-2 is-flex-grow-0"
             >
                 {% csrf_token %}
                 <input type="hidden" name="item" value="{{ connector.id }}">
@@ -54,7 +70,7 @@
                 name="activate-{{ connector.id }}"
                 method="post"
                 action="{% url 'settings-activate-connector' connector.id %}"
-                class="card-footer-item"
+                class="card-footer-item m-2 is-flex-grow-0"
             >
                 {% csrf_token %}
                 <input type="hidden" name="item" value="{{ connector.id }}">

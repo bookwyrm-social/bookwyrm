@@ -13,11 +13,15 @@ import requests
 from requests.exceptions import RequestException
 import aiohttp
 
+from django.contrib.postgres.search import SearchRank, SearchVector
 from django.core.files.base import ContentFile
+from django.utils import timezone
 from django.db import transaction
+from django.db.models import Subquery
 
 from bookwyrm import activitypub, models, settings
-from bookwyrm.settings import USER_AGENT
+from bookwyrm.settings import USER_AGENT, INSTANCE_ACTOR_USERNAME
+from bookwyrm.tasks import app, CONNECTORS
 from .connector_manager import load_more_data, ConnectorException, raise_not_valid_url
 from .format_mappings import format_mappings
 from ..book_search import SearchResult
@@ -90,15 +94,24 @@ class AbstractMinimalConnector(ABC):
         try:
             async with session.get(url, headers=headers, params=params) as response:
                 if not response.ok:
+                    update_connector_status.delay(
+                        self.connector.pk,
+                        f"Unable to connect to {url}: {response.reason}",
+                    )
                     logger.info("Unable to connect to %s: %s", url, response.reason)
                     return None
 
                 try:
                     raw_data = await response.json()
                 except aiohttp.client_exceptions.ContentTypeError as err:
+                    update_connector_status.delay(
+                        self.connector.pk, f"ContentType Error: {str(err)}"
+                    )
                     logger.exception(err)
+
                     return None
 
+                update_connector_status.delay(self.connector.id)
                 return ConnectorResults(
                     connector=self,
                     results=self.process_search_response(
@@ -106,10 +119,88 @@ class AbstractMinimalConnector(ABC):
                     ),
                 )
         except asyncio.TimeoutError:
+            update_connector_status.delay(
+                self.connector.pk, f"Timed out for url: {url}"
+            )
             logger.info("Connection timed out for url: %s", url)
         except aiohttp.ClientError as err:
+            update_connector_status.delay(
+                self.connector.pk, f"Client Error: {str(err)}"
+            )
             logger.info(err)
         return None
+
+    def get_or_create_seriesbook_from_data(  # pylint: disable=no-self-use
+        self,
+        work: models.Work,
+        edition: models.Edition,
+    ) -> None:
+        """series may be a a string or an obj"""
+        user = models.User.objects.get(localname=INSTANCE_ACTOR_USERNAME)
+        series_to_process = []
+        authors = work.authors.all().union(edition.authors.all())
+
+        # Inventaire series will be a list of activity strings
+        if hasattr(work, "series") and isinstance(work.series, list):
+            if len(work.series) > 0:
+                for data in work.series:
+                    series_data = models.Series(**data)  # type: ignore
+                    series_to_process.append(series_data)
+
+        else:
+            # otherwise it's just a a name
+            name = work.series or edition.series
+            if not name or name == "":
+                return
+            series_to_process.append(models.Series(name=name))  # type: ignore
+            work.series_number = work.series_number or edition.series_number
+
+        for series in series_to_process:
+            instance = None
+
+            vector = SearchVector("name", weight="A") + SearchVector(
+                "alternative_names", weight="B"
+            )
+            possible_series = (
+                models.Series.objects.annotate(search=vector)
+                .annotate(rank=SearchRank(vector, series.name, normalization=32))
+                .filter(
+                    rank__gt=0.19
+                )  # short alias names like XY get rank around 0.1956
+                .order_by("-rank")[:5]
+            )
+
+            if possible_series.exists():
+                books = models.Book.objects.filter(
+                    authors__in=Subquery(authors.values("pk"))
+                )
+
+                if same_author_sb := models.SeriesBook.objects.filter(
+                    book__in=books
+                ).filter(series__in=Subquery(possible_series.values("pk"))):
+                    # there is already a series with a seriesbook by a matching author
+                    # let's feel lucky
+                    instance = same_author_sb.first().series  # type: ignore
+
+                else:
+                    # leave it for the user to work out
+                    if work.series:
+                        edition.series = series.name
+                        edition.series_number = work.series_number
+                        edition.save()
+
+                    continue
+
+            edition.series = None
+            edition.series_number = None
+            edition.save()
+
+            activitydata_to_seriesbook(
+                user=user,
+                work=work,
+                new=series,
+                instance=instance,  # type: ignore
+            )
 
     @abstractmethod
     def get_or_create_book(self, remote_id: str) -> Optional[models.Book]:
@@ -186,6 +277,9 @@ class AbstractConnector(AbstractMinimalConnector):
                 work.authors.add(author)
 
             edition = self.create_edition_from_data(work, edition_data)
+
+        self.get_or_create_seriesbook_from_data(work, edition)
+
         load_more_data.delay(self.connector.id, work.id)
         return edition
 
@@ -443,3 +537,59 @@ def maybe_isbn(query: str) -> bool:
         10,
         13,
     ]  # ISBN10 or ISBN13, or maybe ISBN10 missing a leading zero
+
+
+def activitydata_to_seriesbook(
+    user: models.User,
+    work: models.Work,
+    new: models.Series,
+    instance: Optional[models.Series],
+) -> None:
+    """make a series & seriesbook from incoming data"""
+
+    if instance:
+        for field in [
+            "inventaire_id",
+            "librarything_key",
+            "goodreads_key",
+            "wikidata",
+            "isfdb",
+            "name",
+        ]:
+            if not getattr(instance, field) and getattr(new, field):
+                setattr(instance, field, getattr(new, field))
+
+        for name in new.alternative_names:
+            if name not in instance.alternative_names and name != instance.name:
+                instance.alternative_names.append(name)
+        series = instance
+        series.save()
+    else:
+        new.user = user
+        series = new
+        series.save()
+
+    # using the work.series_number for every series is safe because
+    # Inventaire doesn't supply series ordinal when more than one series
+    models.SeriesBook.objects.get_or_create(
+        book=work,
+        series=series,
+        defaults={"user": user, "series_number": work.series_number},
+    )
+
+
+@app.task(queue=CONNECTORS)
+def update_connector_status(
+    connector_id: int, error_message: str | None = None
+) -> None:
+    try:
+        connector = models.Connector.objects.get(pk=connector_id)
+        if error_message:
+            connector.latest_error = error_message[:255]
+            connector.most_recent_error = timezone.now()
+            connector.save(update_fields=["latest_error", "most_recent_error"])
+        else:
+            connector.most_recent_success = timezone.now()
+            connector.save(update_fields=["most_recent_success"])
+    except Exception as err:
+        logger.exception(err)

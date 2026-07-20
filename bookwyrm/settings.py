@@ -3,7 +3,7 @@
 import os
 from typing import AnyStr
 
-from environs import Env
+from environs import FileAwareEnv
 
 
 import requests
@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ImproperlyConfigured
 
 
-env = Env()
+env = FileAwareEnv()
 env.read_env()
 DOMAIN = env("DOMAIN")
 
@@ -29,8 +29,6 @@ RELEASE_API = env(
 PAGE_LENGTH = env.int("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE", 3600 * 24 * 365)  # One year ...ish
-
-JS_CACHE = "8a89cad7"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
@@ -63,15 +61,31 @@ PREVIEW_TEXT_COLOR = env.str("PREVIEW_TEXT_COLOR", "#363636")
 PREVIEW_IMG_WIDTH = env.int("PREVIEW_IMG_WIDTH", 1200)
 PREVIEW_IMG_HEIGHT = env.int("PREVIEW_IMG_HEIGHT", 630)
 PREVIEW_DEFAULT_COVER_COLOR = env.str("PREVIEW_DEFAULT_COVER_COLOR", "#002549")
-PREVIEW_DEFAULT_FONT = env.str("PREVIEW_DEFAULT_FONT", "Source Han Sans")
+PREVIEW_DEFAULT_FONT = env.str(
+    "PREVIEW_DEFAULT_FONT",
+    "NotoSansMultilanguage-Bold, NotoSansMultilanguage-Regular, NotoSansMultilanguage-Light",
+)
 
-FONTS = {
-    "Source Han Sans": {
-        "directory": "source_han_sans",
-        "filename": "SourceHanSans-VF.ttf.ttc",
-        "url": "https://github.com/adobe-fonts/source-han-sans/raw/release/Variable/OTC/SourceHanSans-VF.ttf.ttc",
-    }
-}
+FONTS = env.json(
+    "FONTS",
+    {
+        "NotoSansMultilanguage-Bold": {
+            "directory": "NotoMultilanguageFonts",
+            "filename": "NotoSansMultilanguage-Bold.ttf",
+            "url": "https://github.com/sefadogann/noto-multilanguage/raw/refs/heads/main/NotoMultilanguageFonts/NotoSansMultilanguage-Bold.ttf",
+        },
+        "NotoSansMultilanguage-Regular": {
+            "directory": "NotoMultilanguageFonts",
+            "filename": "NotoSansMultilanguage-Regular.ttf",
+            "url": "https://github.com/sefadogann/noto-multilanguage/raw/refs/heads/main/NotoMultilanguageFonts/NotoSansMultilanguage-Regular.ttf",
+        },
+        "NotoSansMultilanguage-Light": {
+            "directory": "NotoMultilanguageFonts",
+            "filename": "NotoSansMultilanguage-Light.ttf",
+            "url": "https://github.com/sefadogann/noto-multilanguage/raw/refs/heads/main/NotoMultilanguageFonts/NotoSansMultilanguage-Light.ttf",
+        },
+    },
+)
 FONT_DIR = os.path.join(STATIC_ROOT, "fonts")
 
 # Quick-start development settings - unsuitable for production
@@ -120,6 +134,8 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "csp.middleware.CSPMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "bookwyrm.middleware.RequireSignedGet",
+    "bookwyrm.middleware.RequireLoginNearlyEverywhere",
     "bookwyrm.middleware.TimezoneMiddleware",
     "bookwyrm.middleware.IPBlocklistMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -131,11 +147,16 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "bookwyrm.urls"
 
+
+default_loaders = [
+    "django.template.loaders.filesystem.Loader",
+    "django.template.loaders.app_directories.Loader",
+]
+cached_loaders = [("django.template.loaders.cached.Loader", default_loaders)]
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": ["templates"],
-        "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -144,6 +165,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "bookwyrm.context_processors.site_settings",
             ],
+            "loaders": default_loaders if DEBUG else cached_loaders,
         },
     },
 ]
@@ -245,6 +267,7 @@ SEARCH_TIMEOUT = env.int("SEARCH_TIMEOUT", 8)
 # timeout for a query to an individual connector
 QUERY_TIMEOUT = env.int("INTERACTIVE_QUERY_TIMEOUT", env.int("QUERY_TIMEOUT", 5))
 
+CACHE_KEY_PREFIX = "django_cache"
 # Redis cache backend
 if env.bool("USE_DUMMY_CACHE", False):
     CACHES = {
@@ -261,6 +284,7 @@ else:
         "default": {
             "BACKEND": "django.core.cache.backends.redis.RedisCache",
             "LOCATION": REDIS_ACTIVITY_URL,
+            "KEY_PREFIX": CACHE_KEY_PREFIX,
         },
         "file_resubmit": {
             "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
@@ -490,7 +514,7 @@ else:
             "BACKEND": "django.core.files.storage.FileSystemStorage",
         },
         "staticfiles": {
-            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+            "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
         },
     }
     # Static settings
@@ -526,6 +550,7 @@ if USE_S3_FOR_EXPORTS:
             "endpoint_url": env("EXPORTS_S3_ENDPOINT_URL", env("AWS_S3_ENDPOINT_URL")),
             "custom_domain": env("EXPORTS_S3_CUSTOM_DOMAIN", None),
             "bucket_name": env("EXPORTS_STORAGE_BUCKET_NAME"),
+            "querystring_auth": True,
         },
     }
 else:
@@ -564,3 +589,6 @@ INSTANCE_ACTOR_USERNAME = "bookwyrm.instance.actor"
 # We only allow specifying DATA_UPLOAD_MAX_MEMORY_SIZE in MiB from .env
 # (note the difference in variable names).
 DATA_UPLOAD_MAX_MEMORY_SIZE = env.int("DATA_UPLOAD_MAX_MEMORY_MiB", 100) << 20
+
+
+UPLOAD_IMAGE_DIMENSIONS = env.list("UPLOAD_IMAGE_DIMENSIONS", [400, 1200], subcast=int)

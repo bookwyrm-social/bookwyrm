@@ -1,0 +1,13 @@
+{% extends "components/details.html" %}
+
+{% block always-visible %}
+    {% include 'readthrough/readthrough_list.html' with readthrough=readthroughs.first %}
+{% endblock %}
+
+{% block sometimes-visible %}
+    {% for readthrough in readthroughs %}
+    {% if not forloop.first %}
+        {% include 'readthrough/readthrough_list.html' with readthrough=readthrough %}
+    {% endif %}
+    {% endfor %}
+{% endblock %}

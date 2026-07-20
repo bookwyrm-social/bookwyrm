@@ -107,7 +107,7 @@ class ActivityStream(RedisStore):
         self.populate_store(self.stream_id(user.id))
 
     @tracer.start_as_current_span("ActivityStream._get_audience")
-    def _get_audience(self, status):
+    def _get_audience(self, status, exclude_self=False):
         """given a status, what users should see it, excluding the author"""
         trace.get_current_span().set_attribute("status_type", status.status_type)
         trace.get_current_span().set_attribute("status_privacy", status.privacy)
@@ -121,11 +121,31 @@ class ActivityStream(RedisStore):
 
         # everybody who could plausibly see this status
         audience = models.User.objects.filter(
-            is_active=True,
             local=True,  # we only create feeds for users of this instance
+            is_active=True,
         ).exclude(
             Q(id__in=status.user.blocks.all()) | Q(blocks=status.user)  # not blocked
         )
+
+        if exclude_self:
+            audience = audience.exclude(id=status.user.id)
+
+        if hasattr(status, "book") and status.book and status.book.parent_work:
+            # exclude anyone who has blocked the book in a status
+            audience = audience.exclude(id__in=status.book.parent_work.blocked_by.all())
+
+        if status.thread_id:
+            # ...including any books from any status in the same thread
+            thread_statuses = models.Status.objects.filter(thread_id=status.thread_id)
+            for t_status in thread_statuses:
+                if (
+                    hasattr(t_status, "book")
+                    and t_status.book
+                    and t_status.book.parent_work
+                ):
+                    audience = audience.exclude(
+                        id__in=t_status.book.parent_work.blocked_by.all()
+                    )
 
         # only visible to the poster and mentioned users
         if status.privacy == "direct":
@@ -150,13 +170,17 @@ class ActivityStream(RedisStore):
         return audience.distinct("id")
 
     @tracer.start_as_current_span("ActivityStream.get_audience")
-    def get_audience(self, status):
+    def get_audience(self, status, exclude_self=False):
         """given a status, what users should see it"""
         trace.get_current_span().set_attribute("stream_id", self.key)
-        audience = self._get_audience(status).values_list("id", flat=True)
+        audience = self._get_audience(status, exclude_self=exclude_self).values_list(
+            "id", flat=True
+        )
         status_author = models.User.objects.filter(
-            is_active=True, local=True, id=status.user.id
+            local=True, is_active=True, id=status.user.id
         ).values_list("id", flat=True)
+        if exclude_self:
+            return list(set(audience))
         return list(set(audience) | set(status_author))
 
     def get_stores_for_users(self, user_ids):
@@ -174,6 +198,68 @@ class ActivityStream(RedisStore):
         user = models.User.objects.get(id=store.split("-")[0])
         return self.get_statuses_for_user(user)
 
+    def add_book_statuses(self, user, book):
+        """add statuses about a book to a user's feed"""
+        work = book.parent_work
+
+        statuses = models.Status.privacy_filter(
+            user,
+            privacy_levels=["public"],
+        ).exclude(user=user.id)
+
+        book_comments = statuses.filter(Q(comment__book__parent_work=work))
+        book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
+        book_reviews = statuses.filter(Q(review__book__parent_work=work))
+        book_mentions = statuses.filter(Q(mention_books__parent_work=work))
+        book_statuses = book_comments.union(
+            book_quotations, book_reviews, book_mentions
+        )
+
+        self.bulk_add_objects_to_store(book_statuses, self.stream_id(user.id))
+
+        # Evaluate the union once instead of embedding it as a subquery in the
+        # two lookups below: reusing the union queryset inside ``id__in`` /
+        # ``thread_id__in`` makes Postgres re-run the whole UNION each time,
+        # which is what makes the book-status tasks slow.
+        book_status_rows = list(book_statuses.values_list("id", "thread_id"))
+        book_status_ids, threads = (
+            zip(*book_status_rows) if book_status_rows else ((), ())
+        )
+        thread_statuses = statuses.exclude(id__in=book_status_ids).filter(
+            thread_id__in=threads
+        )
+
+        self.bulk_add_objects_to_store(thread_statuses, self.stream_id(user.id))
+
+    def remove_book_statuses(self, user, book):
+        """remove statuses about a book from a user's feed"""
+        work = book.parent_work
+        statuses = models.Status.privacy_filter(
+            user,
+            privacy_levels=["public"],
+        )
+
+        book_comments = statuses.filter(Q(comment__book__parent_work=work))
+        book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
+        book_reviews = statuses.filter(Q(review__book__parent_work=work))
+        book_mentions = statuses.filter(Q(mention_books__parent_work=work))
+        book_statuses = book_comments.union(
+            book_quotations, book_reviews, book_mentions
+        )
+
+        self.bulk_remove_objects_from_store(book_statuses, self.stream_id(user.id))
+
+        # Evaluate the union once; see add_book_statuses for the rationale.
+        book_status_rows = list(book_statuses.values_list("id", "thread_id"))
+        book_status_ids, threads = (
+            zip(*book_status_rows) if book_status_rows else ((), ())
+        )
+        thread_statuses = statuses.exclude(id__in=book_status_ids).filter(
+            thread_id__in=threads
+        )
+
+        self.bulk_remove_objects_from_store(thread_statuses, self.stream_id(user.id))
+
 
 class HomeStream(ActivityStream):
     """users you follow"""
@@ -188,7 +274,7 @@ class HomeStream(ActivityStream):
         audience = audience.filter(following=status.user).values_list("id", flat=True)
         # if the user is the post's author
         status_author = models.User.objects.filter(
-            is_active=True, local=True, id=status.user.id
+            local=True, is_active=True, id=status.user.id
         ).values_list("id", flat=True)
         return list(set(audience) | set(status_author))
 
@@ -204,24 +290,65 @@ class HomeStream(ActivityStream):
             ),
         )
 
+    def add_book_statuses(self, user, book):
+        """add statuses about a book to a user's feed"""
+        work = book.parent_work
+
+        statuses = models.Status.privacy_filter(
+            user,
+            privacy_levels=["public", "unlisted", "followers"],
+        ).exclude(
+            ~Q(  # remove everything except
+                Q(user__followers=user)  # user following
+                | Q(user=user)  # is self
+                | Q(mention_users=user)  # mentions user
+            ),
+        )
+
+        book_comments = statuses.filter(Q(comment__book__parent_work=work))
+        book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
+        book_reviews = statuses.filter(Q(review__book__parent_work=work))
+        book_mentions = statuses.filter(Q(mention_books__parent_work=work))
+
+        book_statuses = book_comments.union(
+            book_quotations, book_reviews, book_mentions
+        )
+
+        self.bulk_add_objects_to_store(book_statuses, self.stream_id(user.id))
+
+        # Evaluate the union once; see add_book_statuses for the rationale.
+        book_status_rows = list(book_statuses.values_list("id", "thread_id"))
+        book_status_ids, threads = (
+            zip(*book_status_rows) if book_status_rows else ((), ())
+        )
+        thread_statuses = statuses.exclude(id__in=book_status_ids).filter(
+            thread_id__in=threads
+        )
+
+        self.bulk_add_objects_to_store(thread_statuses, self.stream_id(user.id))
+
 
 class LocalStream(ActivityStream):
-    """users you follow"""
+    """Posts from local users"""
 
     key = "local"
 
-    def get_audience(self, status):
+    def get_audience(self, status, exclude_self=True):
         # this stream wants no part in non-public statuses
         if status.privacy != "public" or not status.user.local:
             return []
-        return super().get_audience(status)
+        return super().get_audience(status, exclude_self=exclude_self)
 
     def get_statuses_for_user(self, user):
         # all public statuses by a local user
-        return models.Status.privacy_filter(
-            user,
-            privacy_levels=["public"],
-        ).filter(user__local=True)
+        return (
+            models.Status.privacy_filter(
+                user,
+                privacy_levels=["public"],
+            )
+            .filter(user__local=True)
+            .exclude(user=user.id)
+        )
 
 
 class BooksStream(ActivityStream):
@@ -229,18 +356,18 @@ class BooksStream(ActivityStream):
 
     key = "books"
 
-    def _get_audience(self, status):
-        """anyone with the mentioned book on their shelves"""
+    def _get_audience(self, status, exclude_self=True):
+        """anyone with the mentioned book on their shelves except the poster"""
         work = (
             status.book.parent_work
             if hasattr(status, "book")
             else status.mention_books.first().parent_work
         )
 
-        audience = super()._get_audience(status)
+        audience = super()._get_audience(status, exclude_self=exclude_self)
         return audience.filter(shelfbook__book__parent_work=work)
 
-    def get_audience(self, status):
+    def get_audience(self, status, exclude_self=True):
         # only show public statuses on the books feed,
         # and only statuses that mention books
         if status.privacy != "public" or not (
@@ -248,7 +375,7 @@ class BooksStream(ActivityStream):
         ):
             return []
 
-        return super().get_audience(status)
+        return super().get_audience(status, exclude_self=exclude_self)
 
     def get_statuses_for_user(self, user):
         """any public status that mentions the user's books"""
@@ -266,44 +393,9 @@ class BooksStream(ActivityStream):
                 | Q(review__book__parent_work__id__in=books)
                 | Q(mention_books__parent_work__id__in=books)
             )
+            .exclude(user=user.id)  # ignore your own statuses
             .distinct()
         )
-
-    def add_book_statuses(self, user, book):
-        """add statuses about a book to a user's feed"""
-        work = book.parent_work
-        statuses = models.Status.privacy_filter(
-            user,
-            privacy_levels=["public"],
-        )
-
-        book_comments = statuses.filter(Q(comment__book__parent_work=work))
-        book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
-        book_reviews = statuses.filter(Q(review__book__parent_work=work))
-        book_mentions = statuses.filter(Q(mention_books__parent_work=work))
-
-        self.bulk_add_objects_to_store(book_comments, self.stream_id(user.id))
-        self.bulk_add_objects_to_store(book_quotations, self.stream_id(user.id))
-        self.bulk_add_objects_to_store(book_reviews, self.stream_id(user.id))
-        self.bulk_add_objects_to_store(book_mentions, self.stream_id(user.id))
-
-    def remove_book_statuses(self, user, book):
-        """add statuses about a book to a user's feed"""
-        work = book.parent_work
-        statuses = models.Status.privacy_filter(
-            user,
-            privacy_levels=["public"],
-        )
-
-        book_comments = statuses.filter(Q(comment__book__parent_work=work))
-        book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
-        book_reviews = statuses.filter(Q(review__book__parent_work=work))
-        book_mentions = statuses.filter(Q(mention_books__parent_work=work))
-
-        self.bulk_remove_objects_from_store(book_comments, self.stream_id(user.id))
-        self.bulk_remove_objects_from_store(book_quotations, self.stream_id(user.id))
-        self.bulk_remove_objects_from_store(book_reviews, self.stream_id(user.id))
-        self.bulk_remove_objects_from_store(book_mentions, self.stream_id(user.id))
 
 
 # determine which streams are enabled in settings.py
@@ -498,10 +590,30 @@ def add_book_statuses_task(user_id, book_id):
 
 @app.task(queue=STREAMS)
 def remove_book_statuses_task(user_id, book_id):
-    """remove statuses about a book from a user's books feed"""
+    """remove statuses about a book from a user's feeds"""
     user = models.User.objects.get(id=user_id)
     book = models.Edition.objects.get(id=book_id)
     BooksStream().remove_book_statuses(user, book)
+
+
+@app.task(queue=STREAMS)
+def add_blocked_book_statuses_task(user_id, book_id):
+    """add statuses related to a formerly blocked book"""
+    user = models.User.objects.get(id=user_id)
+    book = models.Edition.objects.get(id=book_id)
+    BooksStream().add_book_statuses(user, book)
+    LocalStream().add_book_statuses(user, book)
+    HomeStream().add_book_statuses(user, book)
+
+
+@app.task(queue=STREAMS)
+def remove_blocked_book_statuses_task(user_id, book_id):
+    """remove statuses about a book from a user's feeds"""
+    user = models.User.objects.get(id=user_id)
+    book = models.Edition.objects.get(id=book_id)
+    BooksStream().remove_book_statuses(user, book)
+    LocalStream().remove_book_statuses(user, book)
+    HomeStream().remove_book_statuses(user, book)
 
 
 @app.task(queue=STREAMS)

@@ -1,8 +1,9 @@
 """test for app action functionality"""
 
-from unittest.mock import patch
-
 import datetime
+import json
+import pathlib
+from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
 from django.http.response import Http404
@@ -13,6 +14,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.tests.validate_html import validate_html
+from bookwyrm.settings import BASE_URL
 
 
 def make_date(*args):
@@ -26,23 +28,21 @@ class UserViews(TestCase):
     @classmethod
     def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with (
-            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
-            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
-            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
-        ):
-            cls.local_user = models.User.objects.create_user(
-                "mouse@local.com",
-                "mouse@mouse.mouse",
-                "password",
-                local=True,
-                localname="mouse",
-            )
-            cls.rat = models.User.objects.create_user(
-                "rat@local.com", "rat@rat.rat", "password", local=True, localname="rat"
-            )
+        cls.local_user = models.User.objects.create_user(
+            "mouse@local.com",
+            "mouse@mouse.mouse",
+            "password",
+            local=True,
+            localname="mouse",
+        )
+        cls.rat = models.User.objects.create_user(
+            "rat@local.com", "rat@rat.rat", "password", local=True, localname="rat"
+        )
         cls.book = models.Edition.objects.create(
             title="test", parent_work=models.Work.objects.create(title="test work")
+        )
+        cls.another_book = models.Edition.objects.create(
+            title="test 2", parent_work=models.Work.objects.create(title="test work 2")
         )
         cls.book_recently_shelved = models.Edition.objects.create(
             title="recently shelved",
@@ -85,7 +85,7 @@ class UserViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse")
+            result = view(request, username="mouse")
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -93,16 +93,43 @@ class UserViews(TestCase):
         request.user = self.anonymous_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse")
+            result = view(request, username="mouse")
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = True
-            result = view(request, "mouse")
+            result = view(request, username="mouse")
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
+
+    def test_user_page_activitypub(self):
+        """Make sure the avatar is rendered correctly in the activity"""
+        avatar_path = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/default_avi.jpg"
+        )
+        with open(avatar_path, "rb") as avatar_file:
+            self.local_user.avatar.save("mouse-avatar.jpg", avatar_file)
+        view = views.User.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.user.is_api_request") as is_api:
+            is_api.return_value = True
+            result = view(request, username="mouse")
+        activity = json.loads(result.content)
+        self.assertEqual(
+            activity["icon"],
+            {
+                "type": "Image",
+                "url": f"{BASE_URL}{self.local_user.avatar.url}",
+                "name": "avatar for mouse",
+                "@context": [
+                    "https://www.w3.org/ns/activitystreams",
+                    {"Hashtag": "as:Hashtag"},
+                ],
+            },
+        )
 
     def test_user_page_domain(self):
         """when the user domain has dashes in it"""
@@ -122,7 +149,7 @@ class UserViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "nutria@ex--ample.co----m")
+            result = view(request, username="nutria@ex--ample.co----m")
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -136,7 +163,55 @@ class UserViews(TestCase):
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
             with self.assertRaises(Http404):
-                view(request, "rat")
+                view(request, username="rat")
+
+    def test_user_page_private(self):
+        models.User.objects.filter(id=self.rat.id).update(is_profile_private=True)
+        view = views.User.as_view()
+        request = self.factory.get("")
+
+        request.user = self.anonymous_user
+        with patch("bookwyrm.views.user.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, username="rat")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertTrue(result.context_data["is_profile_locked"])
+
+        request.user = self.local_user
+        with patch("bookwyrm.views.user.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, username="rat")
+        self.assertTrue(result.context_data["is_profile_locked"])
+
+        self.rat.followers.add(self.local_user)
+        with patch("bookwyrm.views.user.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, username="rat")
+        self.assertFalse(result.context_data["is_profile_locked"])
+
+    def test_reviews_comments_private(self):
+        models.User.objects.filter(id=self.local_user.id).update(
+            is_profile_private=True
+        )
+        view = views.UserReviewsComments.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        result = view(request, username=self.local_user.localname)
+        self.assertTrue(result.context_data["is_profile_locked"])
+
+    def test_followers_page_private(self):
+        models.User.objects.filter(id=self.local_user.id).update(
+            is_profile_private=True
+        )
+        view = views.Relationships.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        result = view(
+            request, username=self.local_user.localname, direction="followers"
+        )
+        self.assertTrue(result.context_data["is_profile_locked"])
 
     def test_user_page_activity_sorted(self):
         """the most recently shelved book should be displayed first"""
@@ -145,7 +220,7 @@ class UserViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse")
+            result = view(request, username="mouse")
 
         self.assertIsInstance(result, TemplateResponse)
         self.assertEqual(result.status_code, 200)
@@ -162,7 +237,7 @@ class UserViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse", "followers")
+            result = view(request, username="mouse", direction="followers")
 
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
@@ -175,7 +250,7 @@ class UserViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.relationships.is_api_request") as is_api:
             is_api.return_value = True
-            result = view(request, "mouse", "followers")
+            result = view(request, username="mouse", direction="followers")
 
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
@@ -187,7 +262,7 @@ class UserViews(TestCase):
         request.user = self.anonymous_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse", "followers")
+            result = view(request, username="mouse", direction="followers")
 
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
@@ -211,7 +286,7 @@ class UserViews(TestCase):
         request.user = self.anonymous_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "nutria@example.com")
+            result = view(request, username="nutria@example.com")
         result.client = Client()
         self.assertRedirects(
             result, "https://example.com/users/nutria", fetch_redirect_response=False
@@ -228,7 +303,7 @@ class UserViews(TestCase):
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
             with self.assertRaises(Http404):
-                view(request, "rat", "followers")
+                view(request, username="rat", direction="followers")
 
     def test_following_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -237,7 +312,7 @@ class UserViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse", "following")
+            result = view(request, username="mouse", direction="following")
 
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
@@ -250,7 +325,7 @@ class UserViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.relationships.is_api_request") as is_api:
             is_api.return_value = True
-            result = view(request, "mouse", "following")
+            result = view(request, username="mouse", direction="following")
 
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
@@ -262,7 +337,7 @@ class UserViews(TestCase):
         request.user = self.anonymous_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse", "following")
+            result = view(request, username="mouse", direction="following")
 
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
@@ -277,7 +352,7 @@ class UserViews(TestCase):
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
             with self.assertRaises(Http404):
-                view(request, "rat", "following")
+                view(request, username="rat", direction="following")
 
     def test_hide_suggestions(self):
         """update suggestions settings"""
@@ -304,13 +379,62 @@ class UserViews(TestCase):
         view = views.UserReviewsComments.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        result = view(request, "mouse")
+        result = view(request, username="mouse")
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         request.user = self.anonymous_user
-        result = view(request, "mouse")
+        result = view(request, username="mouse")
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
+
+    def test_suggestions_page(self):
+        """view of all suggestions made by the user"""
+        suggestion_list = models.SuggestionList.objects.create(
+            suggests_for=self.book.parent_work
+        )
+        models.SuggestionListItem.objects.create(
+            book_list=suggestion_list,
+            user=self.local_user,
+            work=self.book_recently_shelved.parent_work,
+        )
+        models.SuggestionListItem.objects.create(
+            book_list=suggestion_list,
+            user=self.rat,
+            work=self.another_book.parent_work,
+        )
+
+        view = views.UserSuggestions.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request, username="mouse")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+        suggestions = result.context_data["suggestions"]
+        self.assertEqual(len(suggestions.object_list), 1)
+
+    def test_suggestions_page_empty(self):
+        """view of all suggestions made by the user"""
+        view = views.UserSuggestions.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request, username="mouse")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+        suggestions = result.context_data["suggestions"]
+        self.assertEqual(len(suggestions.object_list), 0)
+
+    def test_suggestions_page_is_not_self(self):
+        """view of all suggestions made by the user"""
+        view = views.UserSuggestions.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        result = view(request, username="mouse")
+        self.assertEqual(result.status_code, 200)
+        validate_html(result.render())

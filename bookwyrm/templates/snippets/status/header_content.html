@@ -1,4 +1,5 @@
 {% spaceless %}
 {% load status_display %}
-{% get_header_template status %}
+{% get_header_template status as header_template %}
+{% include header_template %}
 {% endspaceless %}

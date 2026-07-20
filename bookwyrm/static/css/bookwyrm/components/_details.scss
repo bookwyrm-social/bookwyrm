@@ -80,8 +80,6 @@ details.dropdown .dropdown-menu a:focus-visible {
  ******************************************************************************/
 
 details.details-panel {
-    box-shadow: 0 0 0 1px $border;
-    transition: box-shadow 0.2s ease;
     padding: 0;
 
     > * {
@@ -95,11 +93,6 @@ details.details-panel {
             padding: 0.75rem;
         }
     }
-}
-
-details[open].details-panel,
-details.details-panel:hover {
-    box-shadow: 0 0 0 1px $border;
 }
 
 details summary .details-close {
@@ -136,4 +129,18 @@ details[open] summary .details-close {
 
 #navbar-dropdown .navbar-item:hover {
     background-color: $background-secondary;
+}
+
+/** Special tyoe of details panel that shows some content
+ ******************************************************************************/
+.preview-details {
+    background-color: $notification-background-color;
+    border-radius: $notification-radius;
+    position: relative;
+    padding: 0.75rem;
+}
+
+.preview-details .details-close {
+  top: 0.75rem;
+  right: 0.75rem;
 }

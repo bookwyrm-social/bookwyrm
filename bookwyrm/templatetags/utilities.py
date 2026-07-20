@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
 
 from bookwyrm.models import User
-from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
+from bookwyrm.settings import INSTANCE_ACTOR_USERNAME, DATA_UPLOAD_MAX_MEMORY_SIZE
 
 register = template.Library()
 
@@ -33,11 +33,24 @@ def get_user_identifier(user):
     return user.localname if user.localname else user.username
 
 
+@register.filter(is_safe=True)
+@register.filter(name="user_link")
+def get_link_to_user(user):
+    """get a link to a user profile, or display if the user has been deleted"""
+    username = user.display_name
+    if user.is_active:
+        return mark_safe(f'<a href="{user.local_path}">{username}</a>')
+    text = _("deactivated user")
+    return mark_safe(f"<em class='tag'>{text}</em>")
+
+
 @register.filter(name="user_from_remote_id")
 def get_user_identifier_from_remote_id(remote_id):
     """get the local user id from their remote id"""
-    user = User.objects.get(remote_id=remote_id)
-    return user if user else None
+    try:
+        return User.objects.get(remote_id=remote_id)
+    except User.DoesNotExist:
+        return None
 
 
 @register.filter(name="book_title")
@@ -95,9 +108,27 @@ def get_isni_bio(existing, author):
         return ""
     for value in existing:
         if hasattr(value, "bio") and auth_isni == re.sub(r"\D", "", str(value.isni)):
-            return mark_safe(f"Author of <em>{value.bio}</em>")
+            return mark_safe(_(f"Author of <em>{value.bio}</em>"))
 
     return ""
+
+
+@register.filter(name="possible_series_hint")
+def possible_series_hint(seriesbook):
+    """Returns the hint string for a possible matching series"""
+    title = seriesbook.book.title
+    path = seriesbook.series.local_path
+    author = (
+        seriesbook.book.authors.first().name
+        if seriesbook.book.authors.first()
+        else None
+    )
+
+    hint = f'Includes <a href="{path}" target="_blank" rel="nofollow noopener noreferrer">"{title}"</a>'
+    if author:
+        hint += f" by {author}"
+
+    return mark_safe(hint)
 
 
 @register.filter(name="get_isni", needs_autoescape=True)
@@ -149,6 +180,16 @@ def get_file_size(nbytes):
     if raw_size < 1024**3:
         return f"{raw_size / 1024**2:.2f} MB"
     return f"{raw_size / 1024**3:.2f} GB"
+
+
+@register.simple_tag(takes_context=False)
+def max_upload_size():
+    return DATA_UPLOAD_MAX_MEMORY_SIZE
+
+
+@register.simple_tag(takes_context=False)
+def max_upload_size_human():
+    return get_file_size(DATA_UPLOAD_MAX_MEMORY_SIZE)
 
 
 @register.filter(name="get_user_permission")

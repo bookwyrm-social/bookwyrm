@@ -80,9 +80,21 @@ class FeedViews(TestCase):
 
         result = view(request, "home")
 
-        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.status_code, 302)
+        self.assertEqual(result.url, "/home")
         self.local_user.refresh_from_db()
         self.assertEqual(self.local_user.feed_status_types, ["review"])
+
+    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
+    def test_feed_shows_filters_applied_badge(self, *_):
+        self.local_user.feed_status_types = ["review"]
+        view = views.Feed.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        result = view(request, "home")
+
+        self.assertContains(result, "Filters are applied")
 
     def test_status_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
@@ -222,3 +234,31 @@ class FeedViews(TestCase):
         suggestions = views.feed.get_suggested_books(self.local_user)
         self.assertEqual(suggestions[0]["name"], "Currently Reading")
         self.assertEqual(suggestions[0]["books"][0], self.book)
+
+    def test_get_suggested_book_filters_blocked(self, *_):
+        """gets books you're interested in minus books you definitely don't want to see"""
+
+        models.ShelfBook.objects.create(
+            book=self.book,
+            user=self.local_user,
+            shelf=self.local_user.shelf_set.get(identifier="reading"),
+        )
+
+        awful_book = models.Edition.objects.create(
+            parent_work=models.Work.objects.create(title="bad book"),
+            title="This book is very bad",
+            remote_id="https://example.com/book/99",
+        )
+
+        self.local_user.blocked_books.add(awful_book.parent_work)
+
+        models.ShelfBook.objects.create(
+            book=awful_book,
+            user=self.local_user,
+            shelf=self.local_user.shelf_set.get(identifier="reading"),
+        )
+
+        suggestions = views.feed.get_suggested_books(self.local_user)
+        self.assertEqual(suggestions[0]["name"], "Currently Reading")
+        self.assertEqual(suggestions[0]["books"][0], self.book)
+        self.assertTrue(awful_book not in suggestions[0]["books"])

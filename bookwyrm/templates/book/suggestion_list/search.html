@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+
+{% block title %}
+{% trans "Add suggestions" %}
+{% endblock %}
+
+{% block content %}
+{% url 'book-add-suggestion' book.parent_work.id|default:work_id as search_url %}
+{% include "book/suggestion_list/search_modal.html" with active=True %}
+{% endblock %}

@@ -1,0 +1,78 @@
+name: Container building for release
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/container.yml"
+      - "Dockerfile"
+      - "entrypoint.sh"
+      - "postgres-docker/*"
+  push:
+    branches: ["main"]
+    tags:
+      - v*
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Docker tag for build results"
+        type: string
+        default: manual
+        required: true
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        image: [bookwyrm, postgres-backup]
+        include:
+          - image: bookwyrm
+            context: .
+          - image: postgres-backup
+            context: postgres-docker
+    uses: docker/github-builder/.github/workflows/build.yml@v1
+    permissions:
+      contents: read # for checkout
+      packages: write # to upload build to GHCR
+      id-token: write # signing attestations with github oidc token
+    with:
+      output: image
+      push: ${{ github.event_name != 'pull_request' }}
+      context: ${{ matrix.context }}
+      platforms: linux/amd64,linux/arm64
+      cache: true
+      cache-mode: max
+      fail-fast: true
+      sbom: true
+      sign: false
+      cache-scope: ${{ matrix.image }}
+      meta-images: ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}
+      meta-tags: |
+        type=raw,value=${{ inputs.tag }},event=workflow_dispatch
+        type=semver,pattern=v{{version}}
+        type=ref,event=branch
+      meta-flavor: |
+        latest=${{ startsWith(github.ref, 'refs/tags/') }}
+      set-meta-labels: true
+      set-meta-annotations: true
+    secrets:
+      registry-auths: |
+        - registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+  cleanup:
+    needs: build
+    if: ${{ github.ref_name == 'main' }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image: [bookwyrm, postgres-backup]
+    permissions:
+      packages: write
+
+    steps:
+      - uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          package: ${{ matrix.image }}
+          delete-untagged: true
+          older-than: 1 hour

@@ -1,0 +1,25 @@
+name: Lint JavaScript
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    name: Lint with ESLint.
+    runs-on: ubuntu-24.04
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
+      - uses: actions/checkout@v4
+
+      - name: Install modules
+        run: npm install eslint@^8.9.0
+
+      # See .eslintignore for files that are not linted.
+      - name: Run ESLint
+        run: >
+          npx eslint bookwyrm/static \
+            --ext .js,.jsx,.ts,.tsx

@@ -4,12 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
-from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import models
-from .helpers import is_api_request
+from .helpers import is_api_request, redirect_to_referer
 
 
 @method_decorator(login_required, name="dispatch")
@@ -28,7 +27,7 @@ class Favorite(View):
 
         if is_api_request(request):
             return HttpResponse()
-        return redirect("/")
+        return redirect_to_referer(request)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -48,7 +47,7 @@ class Unfavorite(View):
         favorite.delete()
         if is_api_request(request):
             return HttpResponse()
-        return redirect("/")
+        return redirect_to_referer(request)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -67,7 +66,7 @@ class Boost(View):
             boosted_status=status, user=request.user
         ).exists():
             # you already boosted that.
-            return redirect("/")
+            return redirect_to_referer(request)
 
         models.Boost.objects.create(
             boosted_status=status,
@@ -76,7 +75,7 @@ class Boost(View):
         )
         if is_api_request(request):
             return HttpResponse()
-        return redirect("/")
+        return redirect_to_referer(request)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -94,4 +93,4 @@ class Unboost(View):
         boost.delete()
         if is_api_request(request):
             return HttpResponse()
-        return redirect("/")
+        return redirect_to_referer(request)

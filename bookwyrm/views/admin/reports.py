@@ -9,8 +9,9 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
+from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.models.report import USER_SUSPENSION, USER_UNSUSPENSION, USER_DELETION
-from bookwyrm.views.helpers import redirect_to_referer
+from bookwyrm.views.helpers import redirect_to_referer, is_api_request
 from bookwyrm.settings import PAGE_LENGTH
 
 
@@ -38,10 +39,10 @@ class ReportsAdmin(View):
 
         server = request.GET.get("server")
         if server:
-            filters["user__federated_server__server_name"] = server
+            filters["reported_user__federated_server__server_name"] = server
         username = request.GET.get("username")
         if username:
-            filters["user__username__icontains"] = username
+            filters["reported_user__username__icontains"] = username
         if resolved != "all":
             filters["resolved"] = resolved
 
@@ -73,8 +74,12 @@ class ReportAdmin(View):
 
     def get(self, request, report_id):
         """load a report"""
+        report = get_object_or_404(models.Report, id=report_id)
+        if is_api_request(request):
+            return ActivitypubResponse(report.to_activity(**request.GET))
+
         data = {
-            "report": get_object_or_404(models.Report, id=report_id),
+            "report": report,
             "group_form": forms.UserGroupForm(),
         }
         return TemplateResponse(request, "settings/reports/report.html", data)
