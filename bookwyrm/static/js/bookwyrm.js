@@ -513,7 +513,15 @@ let BookWyrm = new (class {
 
         function handleModalClose(modalElement) {
             modalElement.removeEventListener("keydown", handleFocusTrap);
-            history.back();
+            let redirect_path = modalElement
+                .querySelector("[data-modal-close]")
+                .getAttribute("data-modal-close");
+
+            if (redirect_path) {
+                window.location.replace(redirect_path);
+            } else {
+                history.back();
+            }
         }
     }
 
