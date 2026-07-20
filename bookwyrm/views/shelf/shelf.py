@@ -96,7 +96,7 @@ class Shelf(PrivateProfileMixin, View):
             )
         elif "author" in sort:
             books = books.annotate(
-                models.Book.objects.filter(id=OuterRef("id")).values("authors__name")[
+                author=models.Book.objects.filter(id=OuterRef("id")).values("authors__name")[
                     :1
                 ]
             )
