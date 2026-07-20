@@ -20,7 +20,7 @@ Start "<em>{{ book_title }}</em>"
     <label class="label" for="start_id_start_date_{{ uuid }}">
         {% trans "Started reading" %}
     </label>
-    <input type="date" name="start_date" class="input" id="start_id_start_date_{{ uuid }}" value="{% now "Y-m-d" %}">
+    <input type="date" name="start_date" class="input box-sized-input" id="start_id_start_date_{{ uuid }}" value="{% now "Y-m-d" %}">
 </div>
 {% endblock %}
 
