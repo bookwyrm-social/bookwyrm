@@ -260,6 +260,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def filters_applied(self):
         return set(self.feed_status_types) != set(get_feed_filter_choices())
 
+    def get_followers(self):
+        return self.followers.filter(is_active=True).order_by("-updated_date")
+
+    def get_following(self):
+        return self.following.filter(is_active=True).order_by("-updated_date")
+
     activity_serializer = activitypub.Person
 
     @classmethod
@@ -313,7 +319,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         """activitypub following list"""
         remote_id = f"{self.remote_id}/following"
         return self.to_ordered_collection(
-            self.following.order_by("-updated_date").all(),
+            self.get_following().all(),
             remote_id=remote_id,
             collection_only=True,
             id_only=True,
@@ -324,7 +330,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         """activitypub followers list"""
         remote_id = self.followers_url
         return self.to_ordered_collection(
-            self.followers.order_by("-updated_date").all(),
+            self.get_followers().all(),
             remote_id=remote_id,
             collection_only=True,
             id_only=True,
