@@ -1,6 +1,7 @@
 """shelf views"""
 
 from collections import namedtuple
+import re
 
 from django.db.models import OuterRef, Subquery, F, Max
 from django.contrib.auth.decorators import login_required
@@ -80,19 +81,30 @@ class Shelf(PrivateProfileMixin, View):
             "start_date"
         )
 
-        books = books.annotate(shelved_date=Max("shelfbook__shelved_date"))
-        books = books.annotate(
-            rating=Subquery(reviews.values("rating")[:1]),
-            start_date=Subquery(reading.values("start_date")[:1]),
-            finish_date=Subquery(reading.values("finish_date")[:1]),
-            author=Subquery(
-                models.Book.objects.filter(id=OuterRef("id")).values("authors__name")[
-                    :1
-                ]
-            ),
-        ).prefetch_related("authors")
+        # don't annotate on every possible sort field
+        sort = request.GET.get("sort") or "-shelved_date"
+        if re.match(r"^-?rating$", sort):
+            books = books.annotate(rating=Subquery(reviews.values("rating")[:1]))
+        elif re.match(r"^-?start_date$", sort):
+            books = books.annotate(
+                start_date=Subquery(reading.values("start_date")[:1])
+            )
+        elif re.match(r"^-?finish_date$", sort):
+            books = books.annotate(
+                finish_date=Subquery(reading.values("finish_date")[:1])
+            )
+        elif re.match(r"^-?author$", sort):
+            books = books.annotate(
+                author=models.Book.objects.filter(id=OuterRef("id")).values(
+                    "authors__name"
+                )[:1]
+            )
+        elif not re.match(r"^-?sort_title$", sort):
+            books = books.annotate(shelved_date=Max("shelfbook__shelved_date"))
 
-        books = sort_books(books, request.GET.get("sort"))
+        books = books.prefetch_related("authors")
+
+        books = sort_books(books, sort)
 
         if shelves_filter_query:
             books = search(shelves_filter_query, books=books)
@@ -110,7 +122,7 @@ class Shelf(PrivateProfileMixin, View):
             "books": page,
             "edit_form": forms.ShelfForm(instance=shelf if shelf_identifier else None),
             "create_form": forms.ShelfForm(),
-            "sort": request.GET.get("sort") or "-shelved_date",
+            "sort": sort,
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
