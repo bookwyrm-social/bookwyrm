@@ -47,13 +47,7 @@
     {% if user.moved_to %}
         {% include "snippets/moved_user_notice.html" with user=user %}
     {% else %}
-        {% if not is_self and request.user.is_authenticated %}
         {% include 'snippets/follow_button.html' with user=user %}
-        {% endif %}
-        {% if not is_self %}
-        {% include 'ostatus/remote_follow_button.html' with user=user %}
-        {% endif %}
-
         {% if is_self and user.active_follower_requests.all %}
         <div class="follow-requests">
             <h2>{% trans "Follow Requests" %}</h2>
