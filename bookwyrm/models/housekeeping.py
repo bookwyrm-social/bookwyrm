@@ -1,5 +1,6 @@
 """cleanup tasks"""
 
+import inspect
 import math
 from datetime import timedelta
 from itertools import chain
@@ -275,4 +276,7 @@ def merge_duplicate_data_task():
 def get_mergeable_models():
     """All models with the mergeable mixin"""
 
-    return [model for model in models if hasattr(model, "merge_candidates")]
+    mergable_models = inspect.getmembers(
+        models, lambda m: hasattr(m, "pending_merge_target")
+    )
+    return [v for n, v in mergable_models]

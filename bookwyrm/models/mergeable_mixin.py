@@ -5,8 +5,8 @@ from datetime import timedelta
 from typing import Any, Dict, Optional, Iterable
 from typing_extensions import Self
 
+from django.apps import apps
 from django.db import transaction
-from django.db.models import Count, ManyToManyField
 from django.db.models import BooleanField, Count, DateTimeField, ManyToManyField, Model
 from django.utils import timezone
 
@@ -45,7 +45,7 @@ class MergeableMixin(Model):
                     "pending_merge_date",
                 )
 
-            # also check if this is the canonical for other rditions
+            # also check if this is the canonical for other editions
             for target in self.merge_target.all():
                 if not self.get_shared_fields(target):
                     target.pending_merge_target = None
@@ -177,45 +177,42 @@ class MergeableMixin(Model):
                     getattr(related_obj, related_field).add(canonical)
                     getattr(related_obj, related_field).remove(self)
 
+        # TODO: decide what to do about authors and series
 
-        """
-        self could be a Work, Edition, Author, Series, SuggestionList
-        self could have a PARENT (editions have Work);
-        self could have related objects that have children:
+        edition_model = apps.get_model("bookwyrm.Edition")
+        work_model = apps.get_model("bookwyrm.Work")
+        suggests_model = apps.get_model("bookwyrm.SuggestionList")
 
-            ### These are M2M so we don't know which one to merge
-            ### Leave it if they're marked for merging already
-            ### Otherwise delete
+        if self.__class__ == edition_model:
+            parent = work_model.objects.get(editions__contains=self.id)
+            self.delete()
+            # if self.parent is now without any child editions, merge it too
+            # unless it is already marked as a merge candidate
+            if not parent.editions and not parent.pending_merge_target:
+                parent.merge_into(canonical.parent_work)
 
-            - editions have book_series() which have seriesbooks (foreignkey from seriesbook to series)
-                - for b in book_series() if not b.seriesbooks
-                - if series no longer has seriesbooks and not marked, delete
+        elif self.__class__ == work_model:
+            self.delete()
+            # if self has a suggestion list it needs to either be meged with the canonical
+            # suggestion list, or simply transferred if canonical has no suggestion list
+            if lists := suggests_model.objects.filter(
+                suggests_for__in=[self.id, canonical.id]
+            ):
+                if lists.count() > 1:
+                    work_model.objects.get(id=self.id).merge_into(
+                        work_model.objects.get(id=canonical.id)
+                    )
+                if lists.count() == 1 and lists.first().suggests_for == self:
+                    lists.first().suggests_for = canonical
+                    lists.first().save()
 
-            - editions and works have AUTHORS which have Books (M2M)
-                - models.Book_authors__contains(author.id)
-                - if author no longer has any books and not marked, delete
+        else:
+            self.delete()
 
-            ### We know these are the same - attempt a merge
-            - editions have parent WORKS
-                - self.parent_work.editions (check whether it has any editions after deleting)
-                - if not more editions after this edition is deleted, merge the work into canonical.parent_work
-
-            - works have suggests_for (a list of SuggestionLists)
-                - each SL in suggests_for has its own suggests_for value which should be the id of the work
-                - merge any suggestionlists that both point to canonical in suggests_for
-
-
-            # TODO
-            - need to merge duplicate SuggestionListItems - bit more complicated because we need to change how comments work, but should look like:
-
-            - suggestionlists have suggestions, suggestions have (endorsement, notes, raw_notes)
-            - leave model as-is but in the _view_ allow for multiple SuggestionListItems and display together in one card
-            - not changes needed for merging, it's fine actually
-
-
-        """
-
-        self.delete()
+        # TODO
+        # suggestionlists have suggestions, suggestions have (endorsement, notes, raw_notes)
+        # I suggest (sorry) we leave SuggestionList model as-is but in the _view_ allow for multiple
+        # SuggestionListItems and display together in one card
 
     def absorb_data_from(self, other: Self, dry_run=False) -> Dict[str, Any]:
         """fill empty fields with values from another entity"""
