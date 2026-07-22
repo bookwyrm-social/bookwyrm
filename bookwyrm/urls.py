@@ -249,6 +249,16 @@ urlpatterns = [
         name="settings-activate-user",
     ),
     re_path(
+        r"^settings/users/set-merge-permissions/(?P<user_id>\d+)/?$",
+        views.SetMergePermission.as_view(),
+        name="settings-user-manage-data-perms",
+    ),
+    re_path(
+        r"^settings/manage-data/merge/?$",
+        views.MergeData.as_view(),
+        name="settings-merge-data",
+    ),
+    re_path(
         r"^settings/federation-settings/?$",
         views.FederationSettings.as_view(),
         name="settings-federation-settings",
@@ -412,6 +422,36 @@ urlpatterns = [
         r"^report/link/(?P<link_id>\d+)?$",
         views.Report.as_view(),
         name="report-link",
+    ),
+    re_path(
+        r"^settings/data-quality/?$",
+        views.DataQuality.as_view(),
+        name="settings-data-quality",
+    ),
+    re_path(
+        r"^settings/manage-data/manual-merge/(?P<model_name>\w+)/(?P<canonical_id>\d+)/?$",
+        views.ManualMerge.as_view(),
+        name="settings-manual-merge",
+    ),
+    re_path(
+        r"^settings/manage-data/confirm-manual-merge/(?P<model_name>\w+)/(?P<canonical_id>\d+)/?$",
+        views.confirm_manual_merge,
+        name="settings-confirm-manual-merge",
+    ),
+    re_path(
+        r"^settings/data-quality/run-scan/?$",
+        views.run_deduplication_scan_task,
+        name="settings-dedupe-run-scan",
+    ),
+    re_path(
+        r"^settings/data-quality/schedule-scan/?$",
+        views.schedule_deduplication_scan_task,
+        name="settings-dedupe-schedule-scan",
+    ),
+    re_path(
+        r"^settings/data-quality/unschedule/(?P<task_id>\d+)/?$",
+        views.unschedule_deduplication_scan_task,
+        name="settings-dedupe-unschedule",
     ),
     re_path(
         r"^settings/imports/(?P<status>(complete|active))?/?$",
@@ -911,6 +951,11 @@ urlpatterns = [
         name="suggestion-list",
     ),
     re_path(
+        rf"{BOOK_PATH}/suggestions{regex.SLUG}/?$",
+        views.SuggestionList.as_view(),
+        name="suggestion-list",
+    ),
+    re_path(
         rf"{BOOK_PATH}/suggestions/add/?$",
         views.AddSuggestion.as_view(),
         name="book-add-suggestion",
@@ -947,6 +992,9 @@ urlpatterns = [
         name="edit-author",
     ),
     # series
+    re_path(
+        r"^series/(?P<series_id>\d+)(.json)?/?$", views.Series.as_view(), name="series"
+    ),
     re_path(
         rf"^series/(?P<series_id>\d+)(.json)?{regex.SLUG}/?$",
         views.Series.as_view(),
