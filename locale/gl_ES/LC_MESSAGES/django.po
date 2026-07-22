@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-20 16:26+0000\n"
-"PO-Revision-Date: 2026-07-20 17:04\n"
+"PO-Revision-Date: 2026-07-22 03:52\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -88,7 +88,7 @@ msgstr "Xa existe unha usuaria con este identificador"
 
 #: bookwyrm/forms/landing.py:65
 msgid "A user with this email already exists."
-msgstr "Xa existe unha usuaria con este email."
+msgstr "Xa existe unha usuaria con este correo."
 
 #: bookwyrm/forms/landing.py:69
 msgid "This email address cannot be registered."
@@ -521,7 +521,7 @@ msgstr "As outras cousas"
 #: bookwyrm/models/user.py:232
 #, python-brace-format
 msgid "avatar for {name}"
-msgstr ""
+msgstr "avatar de {name}"
 
 #: bookwyrm/settings.py:258
 msgid "Home Timeline"
@@ -1844,7 +1844,7 @@ msgstr "Ver en Libris"
 
 #: bookwyrm/templates/book/sections/reviews.html:8
 msgid "Add your thoughts"
-msgstr ""
+msgstr "Engade a túa opinión"
 
 #: bookwyrm/templates/book/sections/reviews.html:30
 msgid "Your reviews"
@@ -1904,7 +1904,7 @@ msgstr "%(user_link)s di:"
 #: bookwyrm/templates/book/suggestion_list/book_card.html:19
 #, python-format
 msgid "%(user_link)s recommends:"
-msgstr ""
+msgstr "%(user_link)s recomenda:"
 
 #: bookwyrm/templates/book/suggestion_list/endorsement_button.html:4
 msgid "Endorse this suggestion"
@@ -1916,7 +1916,7 @@ msgstr "Recomendacións"
 
 #: bookwyrm/templates/book/suggestion_list/list.html:6
 msgid "Readers also recommend:"
-msgstr ""
+msgstr "Outras persoas tamén recomendan:"
 
 #: bookwyrm/templates/book/suggestion_list/list.html:9
 msgid "View all suggestions"
@@ -1930,7 +1930,7 @@ msgstr "Tes unha recomendación para alguén a quen lle gustou este libro?"
 #: bookwyrm/templates/book/suggestion_list/list.html:26
 #: bookwyrm/templates/book/suggestion_list/list.html:45
 msgid "Add suggestion"
-msgstr ""
+msgstr "Engade unha suxestión"
 
 #: bookwyrm/templates/book/suggestion_list/list.html:61
 msgid "Load books"
@@ -1969,15 +1969,15 @@ msgstr "Editar estado"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
-msgstr "Confirmar email"
+msgstr "Confirmar correo"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:7
 msgid "Confirm your email address"
-msgstr "Confirma o enderezo do teu email"
+msgstr "Confirma o teu enderezo de correo"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:13
 msgid "A confirmation code has been sent to the email address you used to register your account."
-msgstr "Enviámosche un código de confirmación ao enderezo de email que usaches ao rexistrar a túa conta."
+msgstr "Enviámosche un código de confirmación ao enderezo que utilizaches para crear a túa conta."
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:15
 msgid "Sorry! We couldn't find that code."
@@ -2010,7 +2010,7 @@ msgstr "Reenviar ligazón de confirmación"
 #: bookwyrm/templates/preferences/edit_user.html:54
 #: bookwyrm/templates/snippets/register_form.html:27
 msgid "Email address:"
-msgstr "Enderezo de email:"
+msgstr "Enderezo de correo:"
 
 #: bookwyrm/templates/confirm_email/resend_modal.html:30
 msgid "Resend link"
@@ -2190,11 +2190,11 @@ msgstr "Ver estado"
 #: bookwyrm/templates/email/confirm/text_content.html:4
 #, python-format
 msgid "One last step before you join %(site_name)s! Please confirm your email address by clicking the link below:"
-msgstr "Un último chanzo antes de unirte a %(site_name)s! Confirma o teu enderezo de email premendo na ligazón inferior:"
+msgstr "Un último chanzo antes de unirte a %(site_name)s! Confirma o teu enderezo de correo premendo na ligazón inferior:"
 
 #: bookwyrm/templates/email/confirm/html_content.html:11
 msgid "Confirm Email"
-msgstr "Confirmar email"
+msgstr "Confirmar correo"
 
 #: bookwyrm/templates/email/confirm/html_content.html:15
 #, python-format
@@ -2203,7 +2203,7 @@ msgstr "Ou escribe o código \"<code>%(confirmation_code)s</code>\" na páxina d
 
 #: bookwyrm/templates/email/confirm/subject.html:2
 msgid "Please confirm your email"
-msgstr "Por favor confirma o teu email"
+msgstr "Por favor confirma o teu correo"
 
 #: bookwyrm/templates/email/confirm/text_content.html:10
 #, python-format
@@ -2222,13 +2222,13 @@ msgstr "BookWyrm hospedado en <a style=\"color: #3273dc;\" href=\"%(base_url)s\"
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
-msgstr "Preferencia do email"
+msgstr "Preferencia do correo"
 
 #: bookwyrm/templates/email/invite/html_content.html:6
 #: bookwyrm/templates/email/invite/subject.html:2
 #, python-format
 msgid "You're invited to join %(site_name)s!"
-msgstr "Foches convidada a %(site_name)s!"
+msgstr "Convidáronte a %(site_name)s!"
 
 #: bookwyrm/templates/email/invite/html_content.html:9
 msgid "Join Now"
@@ -2242,7 +2242,7 @@ msgstr "Coñece mais <a href=\"%(base_url)s%(about_path)s\">sobre %(site_name)s<
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
 msgid "You're invited to join %(site_name)s! Click the link below to create an account."
-msgstr "Foches convidada a unirte a %(site_name)s! Preme na ligazón para crear unha conta."
+msgstr "Convidáronte a unirte a %(site_name)s! Preme na ligazón para crear unha conta."
 
 #: bookwyrm/templates/email/invite/text_content.html:8
 #, python-format
@@ -2290,7 +2290,7 @@ msgstr "Restablecer contrasinal"
 #: bookwyrm/templates/email/password_reset/html_content.html:13
 #: bookwyrm/templates/email/password_reset/text_content.html:8
 msgid "If you didn't request to reset your password, you can ignore this email."
-msgstr "Se non solicitaches cambiar o contrasinal podes ignorar este email."
+msgstr "Se non solicitaches cambiar o contrasinal podes ignorar este correo."
 
 #: bookwyrm/templates/email/password_reset/subject.html:2
 #, python-format
@@ -2300,11 +2300,11 @@ msgstr "Restablece o contrasinal en %(site_name)s"
 #: bookwyrm/templates/email/test/html_content.html:6
 #: bookwyrm/templates/email/test/text_content.html:4
 msgid "This is a test email."
-msgstr "Este é un email de proba."
+msgstr "Este é un correo de proba."
 
 #: bookwyrm/templates/email/test/subject.html:2
 msgid "Test email"
-msgstr "Email de proba"
+msgstr "Probar o correo"
 
 #: bookwyrm/templates/embed-layout.html:21
 #: bookwyrm/templates/landing/force_password_reset.html:18
@@ -3311,15 +3311,15 @@ msgstr "Crear novos estantes se non existisen"
 
 #: bookwyrm/templates/import/import.html:110
 msgid "Shelve all imported books on:"
-msgstr ""
+msgstr "Coloca todos os libros importados en:"
 
 #: bookwyrm/templates/import/import.html:115
 msgid "Use shelf/status from the file"
-msgstr ""
+msgstr "Utilizar o estante/estado desde o ficheiro"
 
 #: bookwyrm/templates/import/import.html:123
 msgid "Choose a shelf to use instead of any shelf or reading status in the file."
-msgstr ""
+msgstr "Escolle o estante a utilizar no lugar do establecido no ficheiro."
 
 #: bookwyrm/templates/import/import.html:128
 msgid "Privacy setting for imported reviews and shelves:"
@@ -3844,7 +3844,7 @@ msgstr "Accede"
 
 #: bookwyrm/templates/landing/login.html:15
 msgid "Success! Email address confirmed."
-msgstr "Correcto! Enderezo de email confirmado."
+msgstr "Correcto! Validouse o enderezo de correo."
 
 #: bookwyrm/templates/landing/login.html:21
 #: bookwyrm/templates/landing/reactivate.html:17
@@ -3879,7 +3879,7 @@ msgstr "Imos enviar a <strong>%(email)s</strong> unha ligazón para restablecer 
 
 #: bookwyrm/templates/landing/password_reset_request.html:20
 msgid "A link to reset your password will be sent to your email address"
-msgstr "Enviaremos unha ligazón ao teu email para restablecer o contrasinal"
+msgstr "Imos enviar unha ligazón ao teu correo para restablecer o contrasinal"
 
 #: bookwyrm/templates/landing/password_reset_request.html:34
 msgid "Reset password"
@@ -4190,7 +4190,7 @@ msgstr "Limpar busca"
 #: bookwyrm/templates/lists/suggestion_search.html:24
 #, python-format
 msgid "No books found matching the query \"%(suggestion_query)s\""
-msgstr ""
+msgstr "Non se atoparon libros para a búsqueda «%(suggestion_query)s»"
 
 #: bookwyrm/templates/moved.html:27
 #, python-format
@@ -5228,7 +5228,7 @@ msgstr "Rematei de ler"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:9
 msgid "Started:"
-msgstr ""
+msgstr "Iniciado:"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:12
 msgid "Show all updates"
@@ -5240,11 +5240,11 @@ msgstr "Eliminar esta actualización da lectura"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:41
 msgid "Finished:"
-msgstr ""
+msgstr "Finalizado:"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:43
 msgid "Stopped:"
-msgstr ""
+msgstr "Abandonado:"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:57
 msgid "Edit read dates"
@@ -6829,7 +6829,7 @@ msgstr "Denuncia #%(report_id)s: Estado publicado por @%(username)s"
 #: bookwyrm/templates/settings/reports/report_header.html:11
 #, python-format
 msgid "Report #%(report_id)s"
-msgstr ""
+msgstr "Denuncia #%(report_id)s"
 
 #: bookwyrm/templates/settings/reports/report_header.html:19
 #, python-format
@@ -7658,8 +7658,8 @@ msgstr "O código fonte de BookWyrm é público. Podes colaborar ou informar de 
 #, python-format
 msgid "%(rating)s.5 stars"
 msgid_plural "%(rating)s.5 stars"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(rating)s.5 estrelas"
+msgstr[1] "%(rating)s. 5 estrelas"
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:32
 #: bookwyrm/templates/snippets/stars.html:20
