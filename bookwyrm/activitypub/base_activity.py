@@ -1,9 +1,13 @@
 """basics for an activitypub serializer"""
 
 from __future__ import annotations
+from contextlib import contextmanager
 from dataclasses import dataclass, fields, MISSING
+from hashlib import md5
 from json import JSONEncoder
 import logging
+import random
+import time
 from typing import Optional, Union, TypeVar, overload, Any
 
 import requests
@@ -15,6 +19,7 @@ from django.utils.http import http_date
 from bookwyrm import models
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.models import base_model
+from bookwyrm.redis_store import r
 from bookwyrm.signatures import make_signature
 from bookwyrm.settings import (
     DOMAIN,
@@ -39,6 +44,45 @@ class ActivityEncoder(JSONEncoder):
 
     def default(self, o):
         return o.__dict__
+
+
+@contextmanager
+def item_lock(object_id):
+    """Set a mutex lock on an incoming item to prevent race conditions causing duplicates"""
+
+    # hash the remote id so the key is a reasonable length
+    try:
+        id_hash = md5(object_id.encode("utf-8")).hexdigest()
+    except AttributeError:
+        raise ActivitySerializerError("Incoming object has no identifier")
+    lock_id = f"lock:{id_hash}"
+    # expire after 10 minutes in case something goes wrong
+    expire_seconds = time.monotonic() + 600
+    # try to get the lock until you have it or it has (nearly) expired
+    while time.monotonic() < expire_seconds - 5:
+        # 1: arbitrary value for the key
+        # nx: only set if the key doesn't already exist
+        # ex: expire after this many seconds
+        if lock := r.set(lock_id, "1", nx=True, ex=600):
+            break
+
+        # if we don't have the lock, try again in 5 to 10 seconds
+        sleep_time = random.randint(5, 10)
+        time.sleep(sleep_time)
+
+    if not lock:
+        raise ActivitySerializerError(
+            f"Lock expired on {object_id} before being acquired"
+        )
+
+    try:
+        yield lock
+    finally:
+        # after we have used it, clear the lock
+        # only release lock if you have it and it isn't expired
+        # otherwise we might clear a lock owned by another process
+        if time.monotonic() < expire_seconds and lock:
+            r.delete(lock_id)
 
 
 @dataclass
@@ -160,87 +204,94 @@ class ActivityObject:
             return None
         instance = instance or model()
 
-        # keep track of what we've changed
-        update_fields = []
-        # sets field on the model using the activity value
-        for field in instance.simple_fields:
-            try:
+        identifier = (
+            self.id
+            or instance.id
+            or getattr(self, "href", None)
+            or getattr(self, "url", None)
+        )
+        with item_lock(identifier):  # lock processing this item to prevent duplicates
+            # keep track of what we've changed
+            update_fields = []
+            # sets field on the model using the activity value
+            for field in instance.simple_fields:
+                try:
+                    changed = field.set_field_from_activity(
+                        instance,
+                        self,
+                        overwrite=overwrite,
+                        allow_external_connections=allow_external_connections,
+                    )
+                    if changed:
+                        update_fields.append(field.name)
+                except AttributeError as e:
+                    raise ActivitySerializerError(e)
+
+            # image fields have to be set after other fields because they can save
+            # too early and jank up users
+            for field in instance.image_fields:
                 changed = field.set_field_from_activity(
                     instance,
                     self,
+                    save=save,
                     overwrite=overwrite,
                     allow_external_connections=allow_external_connections,
                 )
                 if changed:
                     update_fields.append(field.name)
-            except AttributeError as e:
-                raise ActivitySerializerError(e)
 
-        # image fields have to be set after other fields because they can save
-        # too early and jank up users
-        for field in instance.image_fields:
-            changed = field.set_field_from_activity(
-                instance,
-                self,
-                save=save,
-                overwrite=overwrite,
-                allow_external_connections=allow_external_connections,
-            )
-            if changed:
-                update_fields.append(field.name)
+            if not save:
+                return instance
 
-        if not save:
-            return instance
-
-        with transaction.atomic():
-            # can't force an update on fields unless the object already exists in the db
-            if not instance.id:
-                update_fields = None
-            # we can't set many to many and reverse fields on an unsaved object
-            try:
+            with transaction.atomic():
+                # can't force an update on fields unless the object already exists in the db
+                if not instance.id:
+                    update_fields = None
+                # we can't set many to many and reverse fields on an unsaved object
                 try:
-                    instance.save(broadcast=False, update_fields=update_fields)
-                except TypeError:
-                    instance.save(update_fields=update_fields)
-            except IntegrityError as e:
-                raise ActivitySerializerError(e)
+                    try:
+                        instance.save(broadcast=False, update_fields=update_fields)
+                    except TypeError:
+                        instance.save(update_fields=update_fields)
+                except IntegrityError as e:
+                    raise ActivitySerializerError(e)
 
-            # add many to many fields, which have to be set post-save
-            for field in instance.many_to_many_fields:
-                # mention books/users/hashtags, for example
-                field.set_field_from_activity(
-                    instance,
-                    self,
-                    allow_external_connections=allow_external_connections,
-                )
+                # add many to many fields, which have to be set post-save
+                for field in instance.many_to_many_fields:
+                    # mention books/users/hashtags, for example
+                    field.set_field_from_activity(
+                        instance,
+                        self,
+                        allow_external_connections=allow_external_connections,
+                    )
 
-        # reversed relationships in the models
-        for (
-            model_field_name,
-            activity_field_name,
-        ) in instance.deserialize_reverse_fields:
-            # attachments on Status, for example
-            values = getattr(self, activity_field_name)
-            if values is None or values is MISSING:
-                continue
-
-            model_field = getattr(model, model_field_name)
-            # creating a Work, model_field is 'editions'
-            # creating a User, model field is 'key_pair'
-            related_model = model_field.field.model
-            related_field_name = model_field.field.name
-
-            for item in values:
-                if trigger and item == trigger.remote_id:
+            # reversed relationships in the models
+            for (
+                model_field_name,
+                activity_field_name,
+            ) in instance.deserialize_reverse_fields:
+                # attachments on Status, for example
+                values = getattr(self, activity_field_name)
+                if values is None or values is MISSING:
                     continue
-                set_related_field.delay(
-                    related_model.__name__,
-                    instance.__class__.__name__,
-                    related_field_name,
-                    instance.remote_id,
-                    item,
-                )
-        return instance
+
+                model_field = getattr(model, model_field_name)
+                # creating a Work, model_field is 'editions'
+                # creating a User, model field is 'key_pair'
+                related_model = model_field.field.model
+                related_field_name = model_field.field.name
+
+                for item in values:
+                    if trigger and item == trigger.remote_id:
+                        continue
+                    set_related_field.delay(
+                        related_model.__name__,
+                        instance.__class__.__name__,
+                        related_field_name,
+                        instance.remote_id,
+                        item,
+                    )
+            return instance
 
     def serialize(self, **kwargs):
         """convert to dictionary with context attr"""
