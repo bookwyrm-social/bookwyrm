@@ -1,5 +1,6 @@
 """tests the base functionality for activitypub dataclasses"""
 
+from hashlib import md5
 import json
 import pathlib
 from unittest.mock import patch
@@ -17,6 +18,7 @@ from bookwyrm.activitypub.base_activity import (
     set_related_field,
     get_representative,
     get_activitypub_data,
+    item_lock
 )
 from bookwyrm.activitypub import ActivitySerializerError
 from bookwyrm import models
@@ -352,3 +354,67 @@ class BaseActivity(TestCase):
         # should log nothing if we only want to log errors
         with self.assertNoLogs(logger=None, level="ERROR") as logger:
             resolved = resolve_remote_id("https://example.com/user/mouse")
+
+
+    @patch("bookwyrm.activitypub.base_activity.r.set")
+    @patch("bookwyrm.activitypub.base_activity.time.sleep")
+    def test_mutex_lock(self, mock_sleep, mock_set, *_):
+        """test the mutex lock is called"""
+
+        with item_lock("https://example.com") as locked:
+            self.assertTrue(locked)
+            self.assertTrue(mock_set.called)
+            self.assertEqual(mock_set.call_count, 1)
+            self.assertEqual(mock_set.call_args.args, ("lock:c984d06aafbecf6bc55569f964148ea3", "1"))
+            self.assertEqual(mock_set.call_args.kwargs, {"nx": True, "ex": 300})
+
+
+
+    @patch("bookwyrm.activitypub.base_activity.r.set")
+    @patch("bookwyrm.activitypub.base_activity.r.delete")
+    @patch("bookwyrm.activitypub.base_activity.time.sleep")
+    def test_mutex_lock_is_locked_and_released(self, mock_sleep, mock_delete, mock_set, *_):
+        """test mutex lock causes a pause and then releases when free"""
+
+        mock_set.side_effect = [None,"OK"]
+
+        with item_lock("testtest") as locked:
+            self.assertTrue(locked)
+
+        self.assertTrue(mock_set.called)
+        self.assertTrue(mock_sleep.called)
+        self.assertTrue(mock_sleep.call_count, 1)
+        self.assertEqual(mock_set.call_count, 2)
+        self.assertTrue(mock_delete.called)
+
+
+    @patch("bookwyrm.activitypub.base_activity.r.set")
+    @patch("bookwyrm.activitypub.base_activity.r.delete")
+    @patch("bookwyrm.activitypub.base_activity.time.sleep")
+    @patch("bookwyrm.activitypub.base_activity.time.monotonic")
+    def test_mutex_lock_expires(self, mock_time, mock_sleep, mock_delete, mock_set, *_):
+        """test mutex lock is released if it takes too long"""
+
+        mock_time.side_effect = [1000.0, 1000.0, 1000.0, 1000.0, 2000]
+        mock_set.return_value = None
+
+        with self.assertRaises(ActivitySerializerError) as raises:
+            with item_lock("blhblahl") as lock:
+                pass
+
+        self.assertTrue(mock_set.called)
+        self.assertTrue(mock_sleep.call_count, 3)
+        self.assertEqual(mock_set.call_count, 3)
+        self.assertFalse(mock_delete.called)
+
+        self.assertEqual(raises.exception.args, ("Lock expired on blhblahl before being acquired",))
+
+    @patch("bookwyrm.activitypub.base_activity.time.sleep")
+    def test_mutex_lock_null_id(self, *_):
+        """test the mutex lock raises error when id is null"""
+
+        with self.assertRaises(ActivitySerializerError) as raises:
+            with item_lock(None) as lock:
+                pass
+
+        self.assertEqual(raises.exception.args, ("Incoming object has no identifier",))

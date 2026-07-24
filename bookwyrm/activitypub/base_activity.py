@@ -25,6 +25,7 @@ from bookwyrm.settings import (
     DOMAIN,
     INSTANCE_ACTOR_USERNAME,
     USER_AGENT,
+    QUERY_TIMEOUT,
     SEARCH_TIMEOUT,
 )
 from bookwyrm.tasks import app, MISC
@@ -56,18 +57,18 @@ def item_lock(object_id):
     except AttributeError:
         raise ActivitySerializerError("Incoming object has no identifier")
     lock_id = f"lock:{id_hash}"
-    # expire after 10 minutes in case something goes wrong
-    expire_seconds = time.monotonic() + 600
+    # expire after enough time to make up to ~59 queries
+    expire_seconds = time.monotonic() + (QUERY_TIMEOUT * 60)
     # try to get the lock until you have it or it has (nearly) expired
     while time.monotonic() < expire_seconds - 5:
         # 1: arbitrary value for the key
         # nx: only set if the key doesn't already exist
         # ex: expire after this many seconds
-        if lock := r.set(lock_id, "1", nx=True, ex=600):
+        if lock := r.set(lock_id, "1", nx=True, ex=QUERY_TIMEOUT * 60):
             break
 
-        # if we don't have the lock, try again in 5 to 10 seconds
-        sleep_time = random.randint(5, 10)
+        # if we don't have the lock, try again in a few seconds
+        sleep_time = random.randint(1, QUERY_TIMEOUT)
         time.sleep(sleep_time)
 
     if not lock:
