@@ -15,9 +15,27 @@
     }
 
     /**
+     * Duplicate a whole block recursively
+     *
+     * @param {node} the node to duplicate
+     * @param {input_id} the node id
+     * @param {parent} the parent to attach to
+     */
+    function duplicateBlock({node, input_id, parent}) {
+
+        const duplicate = node.cloneNode()
+        parent.appendChild(duplicate);
+        if (node.hasChildNodes()) {
+            node.childNodes.forEach( (chld) => {
+                duplicateBlock({"node": chld, "parent": duplicate})
+            })
+        }
+    }
+
+    /**
      * Duplicate an input field
      *
-     * @param {event} the click even on the associated button
+     * @param {event} the click event on the associated button
      */
     function duplicateInput(event) {
         const trigger = event.currentTarget;
@@ -35,8 +53,21 @@
 
         label.setAttribute("for", input.id);
 
-        parent.appendChild(label);
-        parent.appendChild(input);
+        if (trigger.dataset.sibling) {
+            const siblingId = trigger.dataset.sibling;
+            const target = document.getElementById(siblingId);
+            const newParent = target.parentNode.cloneNode();
+            target.parentNode.parentNode.appendChild(newParent);
+            const controlDiv = document.createElement("div");
+            controlDiv.className = "control";
+            controlDiv.appendChild(label);
+            controlDiv.appendChild(input);
+            newParent.appendChild(controlDiv);
+            duplicateBlock({"node": target, "input_id": siblingId, "parent": newParent})
+        } else {
+            parent.appendChild(label);
+            parent.appendChild(input);
+        }
     }
 
     document

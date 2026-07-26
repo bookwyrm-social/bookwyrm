@@ -99,7 +99,7 @@ class Author(BookDataModel):
                 func=format_trigger(
                     """WITH updated_books AS (
                          SELECT book_id
-                         FROM bookwyrm_book_authors
+                         FROM bookwyrm_contributions
                          WHERE author_id = new.id
                     )
                     UPDATE bookwyrm_book

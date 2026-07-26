@@ -1,0 +1,38 @@
+{% load i18n %}
+{% load static %}
+
+<section class="block">
+    <h2 class="title is-4">
+        {% trans "Publication" %}
+    </h2>
+    <div class="box">
+        <div class="field">
+            <label class="label" for="id_publishers">
+                {% trans "Publisher:" %}
+            </label>
+            {{ form.publishers }}
+            <span class="help" id="desc_publishers_help">
+                {% trans "Separate multiple values with commas." %}
+            </span>
+
+            {% include 'snippets/form_errors.html' with errors_list=form.publishers.errors id="desc_publishers" %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="id_first_published_date">
+                {% trans "First published date:" %}
+            </label>
+            {{ form.first_published_date }}
+            {% include 'snippets/form_errors.html' with errors_list=form.first_published_date.errors id="desc_first_published_date" %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="id_published_date">
+                {% trans "Published date:" %}
+            </label>
+            {{ form.published_date }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.published_date.errors id="desc_published_date" %}
+        </div>
+    </div>
+</section>

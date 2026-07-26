@@ -1,0 +1,35 @@
+{% load i18n %}
+{% load static %}
+{% load book_display_tags %}
+
+{% if form.non_field_errors %}
+<div class="block">
+    <p class="notification is-danger">{{ form.non_field_errors }}</p>
+</div>
+{% endif %}
+
+{% csrf_token %}
+
+<input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
+{% if book.parent_work.id or form.parent_work %}
+<input type="hidden" name="parent_work" value="{% firstof book.parent_work.id form.parent_work %}">
+{% endif %}
+
+<div class="columns">
+    <div class="column is-half">
+        {% include 'book/edit/form/metadata.html' %}
+        {% include 'book/edit/form/series.html' %}
+        {% include 'book/edit/form/publication.html' %}
+        {% include 'book/edit/form/authors.html' %}
+    </div>
+
+    <div class="column is-half">
+        {% include 'book/edit/form/cover.html' %}
+        {% include 'book/edit/form/properties.html' %}
+        {% include 'book/edit/form/identifiers.html' %}
+    </div>
+</div>
+
+{% block scripts %}
+<script src="{% static "js/forms.js" %}"></script>
+{% endblock %}

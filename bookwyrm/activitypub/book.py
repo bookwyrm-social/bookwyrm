@@ -41,7 +41,9 @@ class Book(BookData):
     subjects: list[str] = field(default_factory=list)
     subjectPlaces: list[str] = field(default_factory=list)
 
-    authors: list[str] = field(default_factory=list)
+    authors: list[str] = field(default_factory=list) # legacy, ingest as contributions or temp name strings
+    contributions: list[str] = field(default_factory=list)
+
     firstPublishedDate: str = ""
     publishedDate: str = ""
 
@@ -92,3 +94,13 @@ class Author(BookData):
     wikipediaLink: str = ""
     type: str = "Author"
     website: str = ""
+    contributions: list[str] = field(default_factory=list)
+
+
+@dataclass(init=False)
+class Contribution(ActivityObject):
+    """connect a contributor to a book"""
+
+    author: str
+    book: str
+    contribution: str

@@ -3,6 +3,7 @@
 from django import template
 from django.core.exceptions import FieldError
 from bookwyrm import models
+from bookwyrm.models.book import ContributionType
 
 
 register = template.Library()
@@ -52,3 +53,9 @@ def blocked_book_filter(queryset, viewer):
             return queryset.exclude(edition__parent_work__in=blocked)
         except FieldError:
             return queryset
+
+@register.filter(name="contribution_label")
+def get_contribution_label(id):
+    """get the contribution type label from the value"""
+    if id not in [None, ""]:
+        return ContributionType(id).label

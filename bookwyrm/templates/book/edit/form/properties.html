@@ -1,0 +1,41 @@
+{% load i18n %}
+{% load static %}
+
+<section class="block">
+    <h2 class="title is-4">
+        {% trans "Physical Properties" %}
+    </h2>
+    <div class="box">
+        <div class="columns">
+            <div class="column is-one-third">
+                <div class="field">
+                    <label class="label" for="id_physical_format">
+                        {% trans "Format:" %}
+                    </label>
+                    {{ form.physical_format }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.physical_format.errors id="desc_physical_format" %}
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="label" for="id_physical_format_detail">
+                        {% trans "Format details:" %}
+                    </label>
+                    {{ form.physical_format_detail }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.physical_format_detail.errors id="desc_physical_format_detail" %}
+                </div>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label" for="id_pages">
+                {% trans "Pages:" %}
+            </label>
+            {{ form.pages }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.pages.errors id="desc_pages" %}
+        </div>
+    </div>
+</section>
