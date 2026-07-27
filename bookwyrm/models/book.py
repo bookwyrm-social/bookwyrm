@@ -946,24 +946,6 @@ def preview_image(instance, *args, **kwargs):
             lambda: generate_edition_preview_image_task.delay(instance.id)
         )
 
-# TODO: align these with ONIX
-# can we add codes?
-# or should we use some kind of mapping table for that?
-# maybe use a combo class with onix codes (https://ns.editeur.org/onix/en/17) like this: https://docs.djangoproject.com/en/6.0/ref/models/fields/#enumeration-types
-
-# use the onix code as the field identifier and then in the template
-# link to the onix description of the role using thath code plus the relevant language
-# if the current display language matches a language offered on onix page
-
-# do the same for drop-downs
-
-# we also want to add contribution types to:
-# - author page
-# - series page
-
-# and then we need to sort out conectors
-# we should do it like series: check for a match based on identifiers and if there isn't
-# a fuzzy match at all add a new one, if we're not sure bring in as a string with a manual check
 
 class ContributionType(models.TextChoices):
     """what type of contribution did this person make?"""

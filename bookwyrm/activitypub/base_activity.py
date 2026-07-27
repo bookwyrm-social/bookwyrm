@@ -252,7 +252,6 @@ class ActivityObject:
                         for e in v
                     ]
             except TypeError:
-                # TODO: I think this means it just ignores any additional fields it doesn't recognise?
                 pass
         data = {k: v for (k, v) in data.items() if v is not None and k not in omit}
         if "@context" not in omit:

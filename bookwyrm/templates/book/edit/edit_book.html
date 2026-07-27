@@ -104,8 +104,6 @@
                         <label class="label mt-2">
                             <input type="radio" name="author_match-{{ counter }}" value="{{ author.name }}" required> {% trans "This is a new author" %}
                         </label>
-                        <!-- TODO: set the contribution type from the original form -->
-                        <input type="hidden" name="contribution_type-{{ counter }}" value="{{ author.contribution_type }}">
                         {% endwith %}
                     </fieldset>
                     {% if not forloop.last %}

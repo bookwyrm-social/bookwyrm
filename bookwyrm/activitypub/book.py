@@ -103,4 +103,4 @@ class Contribution(ActivityObject):
 
     author: str
     book: str
-    contribution: str
+    contribution_type: str
