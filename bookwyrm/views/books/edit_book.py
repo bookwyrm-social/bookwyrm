@@ -16,7 +16,7 @@ from django.views.decorators.http import require_POST
 from django.views import View
 
 from bookwyrm import book_search, forms, models
-from bookwyrm.models.book import AuthorTypes
+from bookwyrm.models.book import ContributionType
 
 from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
 from bookwyrm.utils.images import remove_uploaded_image_exif, set_cover_from_url
@@ -48,8 +48,9 @@ class EditBook(View):
             book.description = book.parent_work.description
         data = {
             "book": book,
+            "contributions": book.contribution_set.all(),
             "seriesbooks": seriesbooks,
-            "author_types": AuthorTypes,
+            "contribution_types": ContributionType,
             "form": forms.EditionForm(instance=book),
         }
         return TemplateResponse(request, "book/edit/edit_book.html", data)
@@ -60,8 +61,8 @@ class EditBook(View):
 
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
 
-        data = {"book": book, "form": form}
-        ensure_transient_values_persist(request, data)
+        data = {"book": book, "contribution_types": ContributionType, "form": form}
+        ensure_transient_values_persist(request, data) # TODO: can we move this down or add_author up?
         if not form.is_valid():
             if "cover" in form.errors and form.has_error("cover", "invalid_image"):
                 del data["form"].files["cover"]
@@ -96,9 +97,13 @@ class EditBook(View):
         if data.get("add_author") or clean["series"]:
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
-        remove_authors = request.POST.getlist("remove_authors")
-        for author_id in remove_authors:
-            book.authors.remove(author_id)
+        for contribution in book.contribution_set.all():
+            if request.POST.get(f"remove_contribution_{contribution.id}"):
+                contribution.delete()
+            if request.POST.get(f"update_contribution_{contribution.id}"):
+                contribution_type = request.POST.get(f"update_contribution_type-{contribution.id}")
+                contribution.contribution_type = contribution_type
+                contribution.save(update_fields=["contribution_type"])
 
         for seriesbook_id in request.POST.getlist("remove_series"):
             # remove seriesbook and, if it was the only one in the series, delete series
@@ -132,19 +137,19 @@ class CreateBook(View):
 
     def get(self, request):
         """info about a book"""
-        data = {"form": forms.EditionForm()}
+        data = {"contribution_types": ContributionType, "form": forms.EditionForm()}
         return TemplateResponse(request, "book/edit/edit_book.html", data)
 
     def post(self, request):
         """create a new book"""
         # returns None if no match is found
         form = forms.EditionForm(request.POST, request.FILES)
-        data = {"form": form}
+        data = {"contribution_types": ContributionType, "form": form}
 
         # collect data provided by the work or import item
         parent_work_id = request.POST.get("parent_work")
         authors = None
-        if request.POST.get("authors"):
+        if request.POST.get("authors"): # TODO When would we have authors that aren't 'add_author' in a newly created book?
             author_ids = findall(r"\d+", request.POST["authors"])
             authors = models.Author.objects.filter(id__in=author_ids)
 
@@ -168,7 +173,8 @@ class CreateBook(View):
         data = add_or_remove_series(request, data)
 
         # check if this is an edition of an existing work
-        author_text = ", ".join(data.get("add_author", []))
+        author_names = [name for name, role in data.get("add_author")]
+        author_text = ", ".join(author_names)
         data["book_matches"] = book_search.search(
             f"{form.cleaned_data.get('title')} {author_text}",
             min_confidence=0.1,
@@ -186,6 +192,7 @@ class CreateBook(View):
             book.parent_work = parent_work
 
             if authors:
+                # TODO fix this
                 book.authors.add(*authors)
 
             url = request.POST.get("cover-url")
@@ -219,17 +226,35 @@ def ensure_transient_values_persist(request, data, **kwargs):
         data["book"]["subjects"] = kwargs["form"].cleaned_data["subjects"]
         if request.POST.getlist("add_author") != [""]:
             data["add_author"] = request.POST.getlist("add_author")
+            data["add_contribution_type"] = request.POST.getlist("add_contribution_type")
     elif kwargs and kwargs.get("add_author") is True:
         if request.POST.getlist("add_author") != [""]:
             data["add_author"] = request.POST.getlist("add_author")
+
+    data["contributions"] = []
+    data["remove_contributions"] = []
+    if type(data["book"]) is not dict: # only check contributions on edit, not create
+        for contribution in data["book"].contribution_set.all():
+            cont = {
+                "id": contribution.id,
+                "author": contribution.author,
+                "contribution_type": contribution.contribution_type
+            }
+            if cont_type := request.POST.get(f"update_contribution_type-{contribution.id}"):
+                cont["contribution_type"] = cont_type
+                cont["updated"] = True
+            data["contributions"].append(cont)
+
+            if remove_cont := request.POST.get(f"remove_contribution_{contribution.id}"):
+                data["remove_contributions"].append(contribution.id)
 
 
 def add_or_remove_authors(request, data):
     """helper for adding authors"""
     # this isn't preserved because it isn't part of the form obj
-    data["remove_authors"] = request.POST.getlist("remove_authors")
+
     author_names = [author for author in request.POST.getlist("add_author") if author]
-    author_types = [at for at in request.POST.getlist("author_type") if at]
+    author_types = [at for at in request.POST.getlist("add_contribution_type") if at]
     add_author = set(zip(author_names, author_types))
     if not add_author:
         data["add_author"] = []
@@ -242,7 +267,7 @@ def add_or_remove_authors(request, data):
     # creating a book or adding an author to a book needs another step
     data["confirm_mode"] = True
 
-    for author, author_type in add_author:
+    for author, contribution_type in add_author:
         # filter out empty author fields
         if not author:
             continue
@@ -277,7 +302,6 @@ def add_or_remove_authors(request, data):
                 "name": author.strip(),
                 "matches": matches,
                 "existing_isnis": exists,
-                "author_type": author_type,
             }
         )
     return data
@@ -329,7 +353,7 @@ def create_book_from_data(request):
         "subjects": request.POST.getlist("subjects"),
     }
 
-    data = {"book": book, "form": forms.EditionForm(request.POST)}
+    data = {"book": book, "contribution_types": ContributionType, "form": forms.EditionForm(request.POST)}
     return TemplateResponse(request, "book/edit/edit_book.html", data)
 
 
@@ -357,14 +381,16 @@ class ConfirmEditBook(View):
             # add known authors
             authors = None
             if request.POST.get("authors"):
+                # TODO fix this
                 author_ids = findall(r"\d+", request.POST["authors"])
                 authors = models.Author.objects.filter(id__in=author_ids)
                 book.authors.add(*authors)
 
             # get or create author as needed
+            contribution_types = request.POST.getlist(f"add_contribution_type")
             for i in range(int(request.POST.get("author-match-count", 0))):
                 match = request.POST.get(f"author_match-{i}")
-                author_type = request.POST.get(f"author_type-{i}")
+                contribution_type = contribution_types[i]
                 if not match:
                     return HttpResponseBadRequest()
                 try:
@@ -392,8 +418,8 @@ class ConfirmEditBook(View):
                     else:
                         # or it's just a name
                         author = models.Author.objects.create(name=match)
-                models.BookAuthor.objects.get_or_create(
-                    book=book, author=author, author_type=author_type
+                models.Contribution.objects.get_or_create(
+                    book=book, author=author, contribution_type=contribution_type
                 )
 
             # create work, if needed
@@ -406,8 +432,15 @@ class ConfirmEditBook(View):
                     work.authors.set(book.authors.all())
                 book.parent_work = work
 
-            for author_id in request.POST.getlist("remove_authors"):
-                book.authors.remove(author_id)
+            # update existing contributions (authors)
+            for contribution in book.contribution_set.all():
+                if request.POST.get(f"remove_contribution_{contribution.id}"):
+                    contribution.delete()
+
+                if request.POST.get(f"update_contribution_{contribution.id}"):
+                    contribution_type = request.POST.get(f"update_contribution_type-{contribution.id}")
+                    contribution.contribution_type = contribution_type
+                    contribution.save(update_fields=["contribution_type"])
 
             user = models.User.objects.get(localname=INSTANCE_ACTOR_USERNAME)
 

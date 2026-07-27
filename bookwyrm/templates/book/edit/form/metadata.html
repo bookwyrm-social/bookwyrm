@@ -1,0 +1,112 @@
+{% load i18n %}
+{% load static %}
+
+<section class="block">
+    <h2 class="title is-4">
+        {% trans "Metadata" %}
+    </h2>
+    <div class="box">
+        <div class="field">
+            <label class="label" for="id_title">
+                {% trans "Title:" %}
+            </label>
+            <input type="text" name="title" value="{{ form.title.value|default:'' }}" maxlength="255" class="input" required="" id="id_title" aria-describedby="desc_title">
+
+            {% include 'snippets/form_errors.html' with errors_list=form.title.errors id="desc_title" %}
+        </div>
+
+        {% if form.sort_title.value %}
+        <div class="field">
+            <label class="label" for="id_sort_title">
+                {% trans "Sort Title:" %}
+            </label>
+            <input type="text" name="sort_title" value="{{ form.sort_title.value|default:'' }}" maxlength="255" class="input" id="id_sort_title" aria-describedby="desc_sort_title">
+
+            {% include 'snippets/form_errors.html' with errors_list=form.sort_title.errors id="desc_sort_title" %}
+        </div>
+        {% endif%}
+
+        <div class="field">
+            <label class="label" for="id_subtitle">
+                {% trans "Subtitle:" %}
+            </label>
+            <input type="text" name="subtitle" value="{{ form.subtitle.value|default:'' }}" maxlength="255" class="input" id="id_subtitle" aria-describedby="desc_subtitle">
+
+            {% include 'snippets/form_errors.html' with errors_list=form.subtitle.errors id="desc_subtitle" %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="id_description">
+                {% trans "Description:" %}
+            </label>
+            {{ form.description }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.description.errors id="desc_description" %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="id_languages">
+                {% trans "Languages:" %}
+            </label>
+            {{ form.languages }}
+            <span class="help" id="desc_languages_help">
+                {% trans "Separate multiple values with commas." %}
+            </span>
+
+            {% include 'snippets/form_errors.html' with errors_list=form.languages.errors id="desc_languages" %}
+        </div>
+
+        <div class="field" id="subjects">
+            <label class="label" for="id_add_subjects">
+                {% trans "Subjects:" %}
+            </label>
+            {% for subject in book.subjects %}
+            <label class="label is-sr-only" for="id_add_subject{% if not forloop.first %}-{{forloop.counter}}{% endif %}">
+                {% trans "Add subject" %}
+            </label>
+            <div class="field has-addons" id="subject_field_wrapper_{{ forloop.counter }}">
+                <div class="control is-expanded">
+                    <input
+                        id="id_add_subject-{{ forloop.counter }}"
+                        type="text"
+                        name="subjects"
+                        value="{{ subject }}"
+                        class="input"
+                    >
+                </div>
+                <div class="control">
+                    <button
+                        class="button is-danger is-light"
+                        type="button"
+                        data-remove="subject_field_wrapper_{{ forloop.counter }}"
+                    >
+                        {% trans "Remove subject" as text %}
+                        <span class="icon icon-x" title="{{ text }}">
+                            <span class="is-sr-only">{{ text }}</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+            <input
+                class="input"
+                type="text"
+                name="subjects"
+                id="id_add_subject"
+                value="{{ subject }}"
+                {% if confirm_mode %}readonly{% endif %}
+            >
+
+            {% include 'snippets/form_errors.html' with errors_list=form.subjects.errors id="desc_subjects" %}
+        </div>
+
+        {% if not confirm_mode %}
+        <span class="help">
+            <button class="button is-small" type="button" data-duplicate="id_add_subject" id="another_subject_field">
+                <span class="icon icon-plus" aria-hidden="true"></span>
+                <span>{% trans "Add Another Subject" %}</span>
+            </button>
+        </span>
+        {% endif %}
+    </div>
+</section>

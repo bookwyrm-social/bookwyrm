@@ -280,7 +280,7 @@ class Book(BookDataModel):
         models.CharField(max_length=255), blank=True, null=True, default=list
     )
     authors = fields.ManyToManyField(
-        "Author", through="BookAuthor", through_fields=("book", "author")
+        "Author", through="Contribution", through_fields=("book", "author")
     )
     cover = fields.ImageField(
         upload_to="covers/", blank=True, null=True, alt_field="alt_text"
@@ -454,9 +454,9 @@ class Book(BookDataModel):
                     WITH author_names AS (
                         SELECT array_to_string(bookwyrm_author.name || bookwyrm_author.aliases, ' ') AS name_and_aliases
                             FROM bookwyrm_author
-                        LEFT JOIN bookwyrm_book_authors
-                            ON bookwyrm_author.id = bookwyrm_book_authors.author_id
-                        WHERE bookwyrm_book_authors.book_id = new.id
+                        LEFT JOIN bookwyrm_contributions
+                            ON bookwyrm_author.id = bookwyrm_contributions.author_id
+                        WHERE bookwyrm_contributions.book_id = new.id
                     )
                     SELECT
                         -- title, with priority A (parse in English, default to simple if empty)
@@ -947,34 +947,46 @@ def preview_image(instance, *args, **kwargs):
         )
 
 
-AuthorTypes = [
-    ("author", _("Author")),
-    ("editor", _("Editor")),
-    ("translator", _("Translator")),
-    ("contributor", _("Contributor")),
-    ("preface", _("Author of Preface")),
-    ("illustrator", _("Illustrator")),
-    ("letterer", _("Letterer")),
-    ("narrator", _("Narrator")),
-    ("other", _("Other")),
-]
+class ContributionType(models.TextChoices):
+    """what type of contribution did this person make?"""
+    # CHOICE = value, label
+    # values are ONIX codes. See https://ns.editeur.org/onix/en/17
+    AUTHOR = "A01", _("Author")
+    ARTIST = "A07", _("Artist")
+    PHOTOGRAPHER = "A08", _("Photographer")
+    ILLUSTRATOR = "A12", _("Illustrator")
+    DRAWER = "A35", _("Drawer")
+    COVER_ARTIST = "A36", _("Cover Artist")
+    INKER = "A46", _("Inker")
+    COLORIST = "A47", _("Colorist")
+    LETTERER = "A48", _("Letterer")
+    CARTOGRAPHER = "A39", _("Map Maker")
+    NARRATOR = "EO3", _("Narrator (Audiobook)") # fiction
+    READER = "EO7", _("Reader (Audiobook)") # non-fiction
+    EDITOR = "B01", _("Editor")
+    SERIES_EDITOR = "B09", _("Series Editor")
+    ABRIDGER = "B04", _("Abridger")
+    TRANSLATOR = "B06", _("Translator")
+    PREFACER = "A15", _("Preface Author")
+    COMMENTATOR = "A21", _("Commentaries Author")
+    FOREWORDER = "A23", _("Foreword Author")
+    OTHER = "A99", _("Other") # other primary contributor
 
 
-class BookAuthor(BookWyrmModel):
+class Contribution(BookWyrmModel):
     """The join table between authors and books"""
 
     book = fields.ForeignKey("Book", on_delete=models.CASCADE)
     author = fields.ForeignKey("Author", on_delete=models.CASCADE)
-    author_type = models.CharField(
-        max_length=255, choices=AuthorTypes, blank=True, null=True
+    contribution_type = models.CharField(
+        max_length=3, choices=ContributionType, default=ContributionType.AUTHOR
     )
-    author_type_detail = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         """Table characteristics"""
 
-        db_table = "bookwyrm_book_authors"
-        unique_together = ("book", "author", "author_type")
+        db_table = "bookwyrm_contributions"
+        unique_together = ("book", "author", "contribution_type")
 
 
 class Series(OrderedCollectionMixin, BookDataModel):

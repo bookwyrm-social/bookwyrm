@@ -1,0 +1,34 @@
+{% load i18n %}
+{% load static %}
+
+<section class="block">
+    <h2 class="title is-4">
+        {% trans "Cover" %}
+    </h2>
+    <div class="box">
+        <div class="columns">
+            {% if book.cover %}
+            <div class="column is-3 is-cover">
+                {% include 'snippets/book_cover.html' with book=book cover_class='is-h-xl-mobile is-w-auto-tablet' size_mobile='xlarge' size='large' %}
+            </div>
+            {% endif %}
+
+            <div class="column">
+                <div class="field">
+                    <label class="label" for="id_cover">
+                        {% trans "Upload cover:" %}
+                    </label>
+                    {{ form.cover }}
+                </div>
+                <div class="field">
+                    <label class="label" for="id_cover_url">
+                        {% trans "Load cover from URL:" %}
+                    </label>
+                    <input class="input" name="cover-url" id="id_cover_url" type="url" value="{{ cover_url|default:'' }}" aria-describedby="desc_cover">
+                </div>
+
+                {% include 'snippets/form_errors.html' with errors_list=form.cover.errors id="desc_cover" %}
+            </div>
+        </div>
+    </div>
+</section>

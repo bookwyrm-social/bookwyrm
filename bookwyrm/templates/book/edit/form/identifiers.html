@@ -1,0 +1,108 @@
+{% load i18n %}
+{% load static %}
+
+<section class="block">
+    <h2 class="title is-4">
+        {% trans "Book Identifiers" %}
+    </h2>
+    <div class="box">
+        <div class="field">
+            <label class="label" for="id_isbn_13">
+                {% trans "ISBN 13:" %}
+            </label>
+            {{ form.isbn_13 }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.isbn_13.errors id="desc_isbn_13" %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="id_isbn_10">
+                {% trans "ISBN 10:" %}
+            </label>
+            {{ form.isbn_10 }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.isbn_10.errors id="desc_isbn_10" %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="id_openlibrary_key">
+                {% trans "Openlibrary ID:" %}
+            </label>
+            {{ form.openlibrary_key }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.openlibrary_key.errors id="desc_openlibrary_key" %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="id_inventaire_id">
+                {% trans "Inventaire ID:" %}
+            </label>
+            {{ form.inventaire_id }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.inventaire_id.errors id="desc_inventaire_id" %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="id_goodreads_key">
+                {% trans "Goodreads key:" %}
+            </label>
+            {{ form.goodreads_key }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.goodreads_key.errors id="desc_goodreads_key" %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="id_oclc_number">
+                {% trans "OCLC Number:" %}
+            </label>
+            {{ form.oclc_number }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.oclc_number.errors id="desc_oclc_number" %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="id_asin">
+                {% trans "ASIN:" %}
+            </label>
+            {{ form.asin }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.ASIN.errors id="desc_ASIN" %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="id_aasin">
+                {% trans "Audible ASIN:" %}
+            </label>
+            {{ form.aasin }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.AASIN.errors id="desc_AASIN" %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="id_isfdb">
+                {% trans "ISFDB ID:" %}
+            </label>
+            {{ form.isfdb }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.isfdb.errors id="desc_isfdb" %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="id_finna_key">
+                {% trans "Finna ID:" %}
+            </label>
+            {{ form.finna_key }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.finna_key.errors id="desc_finna_key" %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="id_libris_key">
+                {% trans "Libris ID:" %}
+            </label>
+            {{ form.libris_key }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.libris_key.errors id="desc_libris_key" %}
+        </div>
+    </div>
+</section>

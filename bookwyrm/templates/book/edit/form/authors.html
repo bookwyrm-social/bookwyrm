@@ -1,0 +1,110 @@
+{% load i18n %}
+{% load static %}
+{% load book_display_tags %}
+
+<section class="block">
+    <h2 class="title is-4">
+        {% trans "Authors" %}
+    </h2>
+    <div class="box">
+        {% if book.authors.exists %}
+        {# preserve authors if the book is unsaved #}
+        <input type="hidden" name="authors" value="{% for author in book.authors.all %}{{ author.id }},{% endfor %}">
+        <div class="content">
+            <div class="field">
+                <h3 class="title is-5">
+                    {% trans "Edit Authors" %}
+                </h3>
+                <fieldset>
+                    {% for contribution in contributions %}
+                    {% with contribution.author as author %}
+                    <div class="box">
+                        <div class="columns">
+                            <div class="column">
+                                <h4 class="header is-size-6">{{author.name}}</h4>
+                            </div>
+                            <div class="column">
+                                <p class="help" id="desc_remove_author_{{author.id}}">
+                                    <a href="{{ author.local_path }}">{% blocktrans with name=author.name %}Author page for {{ name }}{% endblocktrans %}</a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="column">
+                                <div class="control">
+                                    <div class="select is-small" aria-label="{% trans 'Author type' %}">
+                                        <select name="update_contribution_type-{{contribution.id}}" id="update_contribution_type-{{contribution.id}}">
+                                            {% for type in contribution_types %}
+                                            <option value="{{ type }}" {% if type == contribution.contribution_type %}selected{% endif %}>{{ type.label }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="radios">
+                                    {% with contribution.id as id %}
+                                    <label class="radio" for="remove_contribution_{{id}}">
+                                        <input type="radio" name="remove_contribution_{{id}}" id="remove_contribution_{{id}}" value="{{id}}" {% if id in remove_contributions %}checked{% endif %}>
+                                        {% trans 'Remove' %}
+                                    </label>
+                                    <label class="radio" for="update_contribution_{{contribution.id}}">
+                                        <input type="radio" name="update_contribution_{{contribution.id}}" value="{{contribution.contribution_type}}" {% if contribution.updated %}checked{% endif %}>
+                                        {% trans 'Update' %}
+                                    </label>
+                                    {% endwith %}
+                                    <div class="help">{% trans 'Remove this author or update their contribution type' %}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endwith %}
+                    {% endfor %}
+                </fieldset>
+            </div>
+        </div>
+        {% endif %}
+        <div class="content mt-4">
+            <div class="field">
+                <label class="label" for="id_add_author">
+                    <h3 class="title is-5">
+                        {% trans "Add Authors" %}
+                    </h3>
+                </label>
+                {% for author in add_author %}
+                <label class="label is-sr-only" for="id_add_author{% if not forloop.first %}-{{forloop.counter}}{% endif %}">{% trans "Add Author" %}</label>
+                <input class="input" type="hidden" name="add_author" id="id_add_author{% if not forloop.first %}-{{forloop.counter}}{% endif %}" placeholder="{% trans 'Jane Doe' %}" value="{{ author.0 }}">
+                <input type="hidden" name="add_contribution_type" value="{{author.1}}">
+
+                <div class="block"><span class="mx-2">{{author.0}}</span><span class="tag is-info is-light">{{ author.1|contribution_label }}</span></div>
+
+                {% empty %}
+                <div class="field has-addons">
+                    <div class="control">
+                        <label class="label is-sr-only" for="id_add_author">{% trans "Add Author" %}</label>
+                        <input class="input" type="text" name="add_author" id="id_add_author" placeholder="{% trans 'Jane Doe' %}" value="{{ author }}" {% if confirm_mode %}readonly{% endif %}>
+                    </div>
+                    <div class="control" id="add_author_contribution">
+                        <div class="select" aria-label="{% trans 'Author type' %}">
+                            <select name="add_contribution_type" id="add_contribution_type">
+                                {% for type in contribution_types %}
+                                <option value="{{ type }}">{{type.label}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% if not confirm_mode %}
+        <span class="help">
+            <button class="button is-small" type="button" data-duplicate="id_add_author" data-sibling="add_author_contribution" id="another_author_field">
+                <span class="icon icon-plus" aria-hidden="true"></span>
+                <span>{% trans "Add Another Author" %}</span>
+            </button>
+        </span>
+        {% endif %}
+    </div>
+</section>
