@@ -482,7 +482,7 @@ class Work(OrderedCollectionPageMixin, Book):
         max_length=255, blank=True, null=True, deduplication_field=True
     )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """set some fields on the edition object"""
         super().save(*args, **kwargs)
 
