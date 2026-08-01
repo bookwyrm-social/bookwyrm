@@ -193,6 +193,12 @@ class OpenReadsImport(TestCase):
         self.assertEqual(review.published_date, make_date(2023, 11, 15))
         self.assertEqual(review.privacy, "unlisted")
 
+    def test_repeat_instantiation_does_not_duplicate_row_mappings(self, *_):
+        OpenReadsImporter()
+        OpenReadsImporter()
+        keys = [key for key, _ in OpenReadsImporter.row_mappings_guesses]
+        self.assertEqual(len(keys), len(set(keys)))
+
     def test_get_shelf_prefers_reading_dates(self, *_):
         """a recorded finish/start date wins over the shelf column"""
         self.assertEqual(
