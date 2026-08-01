@@ -18,7 +18,7 @@ def fix_series(apps, schema_editor):
         fixed_works = 0
         fixed_editions = 0
 
-        works = Work.objects.filter(series__contains="[")
+        works = Work.objects.filter(series__startswith="[")
         for work in works:
             if edition := work.default_edition:
                 try:
@@ -41,7 +41,7 @@ def fix_series(apps, schema_editor):
                 work.save(broadcast=False)
                 continue
 
-        editions = Edition.objects.filter(series__contains="[")
+        editions = Edition.objects.filter(series__startswith="[")
         for edition in editions:
             if not edition.parent_work:
                 # orphaned edition, just remove the series entry
