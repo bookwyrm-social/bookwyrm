@@ -88,12 +88,16 @@ class UpgradeSeries(TestCase):
         self.assertEqual(models.SeriesBook.objects.count(), 4)
 
     def test_ugrade_series_data_correct_series(self):
-        """Edition 4 retains "series" value and parent_work has no seriesbook"""
+        """Edition 4 retains "series" value and seriesbook not created"""
 
         upgrade_series_data()
 
+        self.assertEqual(self.edition_four.parent_work.seriesbooks.count(), 1)
         self.assertEqual(models.Edition.objects.filter(series__isnull=False).count(), 1)
-        self.assertEqual(self.edition_four.seriesbooks.count(), 0)
+        self.assertEqual(
+            models.Edition.objects.get(series__isnull=False), self.edition_four
+        )
+        self.assertEqual(self.edition_four.parent_work.seriesbooks.count(), 1)
 
     def test_ugrade_series_data_correct_series_numbers(self):
         """are series numbers applied correctly"""
@@ -155,3 +159,5 @@ class UpgradeSeries(TestCase):
         upgrade_series_data()
 
         # if we don't get any errors here, it works ;)
+
+    # TODO: make a new data migration (like a management method) to fix stringified work series objects

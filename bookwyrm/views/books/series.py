@@ -32,11 +32,11 @@ class Series(View):
 
         blocked = request.user.blocked_books.all() if request.user else []
         items = series.seriesbooks.exclude(book__in=blocked).prefetch_related(
-            "book__work", "book__work__editions__authors"
+            "book", "book__editions__authors"
         )
         series_books = sorted(items, key=lambda sb: sb.natural_sort_key)
         authors = models.Author.objects.filter(
-            id__in=items.values_list("book__work__editions__authors")
+            id__in=items.values_list("book__editions__authors")
         )
 
         paginated = Paginator(series_books, PAGE_LENGTH)
