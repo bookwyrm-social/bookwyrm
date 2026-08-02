@@ -1,5 +1,6 @@
 """cleanup tasks"""
 
+import inspect
 import math
 from datetime import timedelta
 from itertools import chain
@@ -274,11 +275,8 @@ def merge_duplicate_data_task():
 
 def get_mergeable_models():
     """All models with the mergeable mixin"""
-    # Is there a way to get these programmatically??? idk
-    return [
-        models.Work,
-        models.Edition,
-        models.Author,
-        models.Series,
-        models.SuggestionList,
-    ]
+
+    mergable_models = inspect.getmembers(
+        models, lambda m: hasattr(m, "pending_merge_target")
+    )
+    return [v for n, v in mergable_models]
