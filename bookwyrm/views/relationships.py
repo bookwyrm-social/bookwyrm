@@ -30,7 +30,7 @@ class Relationships(PrivateProfileMixin, View):
             raise PermissionDenied()
 
         annotation_queryset = (
-            user.followers if direction == "followers" else user.following
+            user.get_followers() if direction == "followers" else user.get_following()
         )
         follows = annotate_if_follows(request.user, annotation_queryset)
 

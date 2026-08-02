@@ -29,7 +29,7 @@ main = [
     "opentelemetry-instrumentation-django==0.45b0",
     "opentelemetry-instrumentation-psycopg==0.45b0",
     "opentelemetry-sdk==1.24.0",
-    "Pillow==12.2.0",
+    "Pillow==12.3.0",
     "pilkit>=3.0",                                    # dependency of django-imagekit, 2.0 is incompatible with Pillow>=10
     "psycopg[binary]==3.2.9",
     "pycryptodome==3.20.0",
@@ -51,6 +51,7 @@ main = [
 dev = [
     "celery-types==0.22.0",
     "django-stubs[compatible-mypy]==4.2.7",
+    "fakeredis==2.37.0",
     "mypy==1.7.1",
     "ruff==0.14.7",
     "pytest==9.0.3",
