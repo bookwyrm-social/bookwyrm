@@ -17,11 +17,10 @@
         "OGG",
         "PDF",
         "Plaintext",
-        "Print book"
+        "Print book",
     ];
 
-    const regexEscape = (string) => string.replace(/[$^*()-+.?[]{}|\\\/]/g, '\\$&');
-
+    const regexEscape = (string) => string.replace(/[$^*()-+.?[]{}|\\\/]/g, "\\$&");
 
     /**
      * Suggest a completion as a user types
@@ -42,7 +41,9 @@
 
         const cleanInput = regexEscape(input.value);
 
-        const suggestions = mimeTypes.filter(mimeType => RegExp("^" + cleanInput, "i").test(mimeType));
+        const suggestions = mimeTypes.filter((mimeType) =>
+            RegExp("^" + cleanInput, "i").test(mimeType)
+        );
 
         const boxId = input.getAttribute("list");
 
@@ -65,4 +66,3 @@
         input.addEventListener("input", autocomplete);
     });
 })();
-

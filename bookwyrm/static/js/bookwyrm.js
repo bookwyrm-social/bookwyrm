@@ -156,13 +156,16 @@ let BookWyrm = new (class {
 
         if (count != currentCount) {
             const wrapper = counter.closest("[data-poll-wrapper]");
-            if(count < 1) {
+
+            if (count < 1) {
                 this.classHide(wrapper);
             } else {
                 this.classShow(wrapper);
             }
+
             counter.innerText = count;
-            if(hasMentions) {
+
+            if (hasMentions) {
                 this.classList.add("is-danger");
             } else {
                 this.classList.remove("is-danger");
@@ -240,7 +243,7 @@ let BookWyrm = new (class {
         if (targetId && !trigger.classList.contains("pulldown-menu")) {
             const target = document.getElementById(targetId);
 
-            if(pressed) {
+            if (pressed) {
                 this.classShow(target);
                 this.classActivate(target);
             } else {
@@ -299,7 +302,7 @@ let BookWyrm = new (class {
         if (targetId) {
             const target = document.getElementById(targetId);
 
-            if(expanded) {
+            if (expanded) {
                 this.classActivate(target);
             } else {
                 this.classDeactivate(target);
@@ -315,7 +318,7 @@ let BookWyrm = new (class {
      * @return {undefined}
      */
     toggleContainer(container, pressed) {
-        if(pressed) {
+        if (pressed) {
             this.classHide(container);
         } else {
             this.classShow(container);
@@ -376,16 +379,15 @@ let BookWyrm = new (class {
         const relatedforms = document.querySelectorAll(`.${form.dataset.id}`);
 
         // Toggle class on all related forms.
-        relatedforms.forEach((relatedForm) =>
-            {
-                const isHidden = relatedForm.className.indexOf("is-hidden") == -1;
-                if(isHidden) {
-                    bookwyrm.classShow(relatedForm);
-                } else {
-                    bookwyrm.classHide(relatedForm);
-                }
+        relatedforms.forEach((relatedForm) => {
+            const isHidden = relatedForm.className.indexOf("is-hidden") == -1;
+
+            if (isHidden) {
+                bookwyrm.classShow(relatedForm);
+            } else {
+                bookwyrm.classHide(relatedForm);
             }
-        );
+        });
 
         this.ajaxPost(form).catch((error) => {
             // @todo Display a notification in the UI instead.
@@ -891,11 +893,11 @@ let BookWyrm = new (class {
         if (passwordInputElement.type === "password") {
             passwordInputElement.type = "text";
             iconElement.classList.remove("icon-eye-blocked");
-            iconElement.classList.add("icon-eye")
+            iconElement.classList.add("icon-eye");
         } else {
             passwordInputElement.type = "password";
             iconElement.classList.add("icon-eye-blocked");
-            iconElement.classList.remove("icon-eye")
+            iconElement.classList.remove("icon-eye");
         }
 
         this.toggleFocus(passwordElementId);

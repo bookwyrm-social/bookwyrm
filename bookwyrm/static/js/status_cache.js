@@ -215,9 +215,7 @@ let StatusCache = new (class {
         BookWyrm.classHide(mainButton);
 
         // Just hide the other two menu options, idk what to do with them
-        button
-            .querySelectorAll("[data-extra-options]")
-            .forEach((item) => BookWyrm.classHide(item));
+        button.querySelectorAll("[data-extra-options]").forEach((item) => BookWyrm.classHide(item));
 
         // Close menu
         const menu = button.querySelector("details[open]");

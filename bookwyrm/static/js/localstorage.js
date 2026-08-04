@@ -39,7 +39,7 @@ let LocalStorageTools = new (class {
         const key = node.dataset.hide;
         const value = window.localStorage.getItem(key);
 
-        if(value) {
+        if (value) {
             BookWyrm.classHide(node);
         } else {
             BookWyrm.classShow(node);
