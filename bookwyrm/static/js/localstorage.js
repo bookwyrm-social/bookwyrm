@@ -36,9 +36,13 @@ let LocalStorageTools = new (class {
      */
     setDisplay(node) {
         // Used in set reading goal
-        let key = node.dataset.hide;
-        let value = window.localStorage.getItem(key);
+        const key = node.dataset.hide;
+        const value = window.localStorage.getItem(key);
 
-        BookWyrm.addRemoveClass(node, "is-hidden", value);
+        if(value) {
+            BookWyrm.classHide(node);
+        } else {
+            BookWyrm.classShow(node);
+        }
     }
 })();
