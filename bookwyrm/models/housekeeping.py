@@ -7,6 +7,7 @@ from itertools import chain
 from django.db.models import (
     CharField,
     DateTimeField,
+    F,
     IntegerField,
     ManyToManyField,
     TextChoices,
@@ -71,9 +72,8 @@ class CleanUpExportsTask(ParentTask):
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
         """Handler called after the task returns"""
 
+        CleanUpUserExportFilesJob.objects.filter(id=kwargs["job_id"]).update(completed_tasks=F("completed_tasks") + 1)
         job = CleanUpUserExportFilesJob.objects.get(id=kwargs["job_id"])
-        job.completed_tasks += 1
-        job.save(update_fields=["completed_tasks"])
 
         if job.completed_tasks == job.tasks:
             job.complete_job()
