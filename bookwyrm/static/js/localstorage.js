@@ -18,8 +18,8 @@ let LocalStorageTools = new (class {
      */
     updateDisplay(event) {
         // Used in set reading goal
-        let key = event.target.dataset.id;
-        let value = event.target.dataset.value;
+        const key = event.target.dataset.id;
+        const value = event.target.dataset.value;
 
         window.localStorage.setItem(key, value);
 
