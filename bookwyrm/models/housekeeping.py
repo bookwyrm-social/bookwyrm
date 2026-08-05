@@ -72,7 +72,9 @@ class CleanUpExportsTask(ParentTask):
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
         """Handler called after the task returns"""
 
-        CleanUpUserExportFilesJob.objects.filter(id=kwargs["job_id"]).update(completed_tasks=F("completed_tasks") + 1)
+        CleanUpUserExportFilesJob.objects.filter(id=kwargs["job_id"]).update(
+            completed_tasks=F("completed_tasks") + 1
+        )
         job = CleanUpUserExportFilesJob.objects.get(id=kwargs["job_id"])
 
         if job.completed_tasks == job.tasks:
