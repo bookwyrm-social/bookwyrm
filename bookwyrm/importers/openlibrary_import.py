@@ -1,7 +1,5 @@
 """handle reading a csv from openlibrary"""
 
-from typing import Any
-
 from . import Importer
 
 
@@ -10,7 +8,7 @@ class OpenLibraryImporter(Importer):
 
     service = "OpenLibrary"
 
-    def __init__(self, *args: Any, **kwargs: Any):
-        self.row_mappings_guesses.append(("openlibrary_key", ["edition id"]))
-        self.row_mappings_guesses.append(("openlibrary_work_key", ["work id"]))
-        super().__init__(*args, **kwargs)
+    row_mappings_guesses = Importer.row_mappings_guesses + [
+        ("openlibrary_key", ["edition id"]),
+        ("openlibrary_work_key", ["work id"]),
+    ]
