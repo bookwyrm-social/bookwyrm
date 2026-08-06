@@ -416,7 +416,7 @@ let BookWyrm = new (class {
     }
 
     classShow(node) {
-        node.classList.remote("is-hidden");
+        node.classList.remove("is-hidden");
     }
 
     classActivate(node) {
