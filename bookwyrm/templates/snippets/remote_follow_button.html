@@ -1,0 +1,13 @@
+{% load i18n %}
+<div class="control">
+    <a
+    class="button is-small is-link {{ class }}"
+    href="{% url 'remote-follow-page' %}?user={{ user.username }}"
+    target="_blank"
+    rel="nofollow noopener noreferrer"
+    onclick="BookWyrm.displayPopUp(`{% url 'remote-follow-page' %}?user={{ user.username }}`, `remoteFollow`); return false;"
+    aria-describedby="remote_follow_warning"
+    >
+    <span>{% trans 'Follow from Fediverse' %}<span class="ml-2 icon icon-share"></span></span>
+    </a>
+</div>
