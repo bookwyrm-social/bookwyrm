@@ -231,22 +231,19 @@ class AbstractConnector(TestCase):
         series = models.Series.objects.create(
             user=self.local_user, name="Test Series 1"
         )
-        models.SeriesBook.objects.create(
-            user=self.local_user, book=self.book, series=series
-        )
-
         work = models.Work.objects.create(title="Test Book")
-        work.series = [{"name": "Test Series 1"}]
-        edition = models.Edition.objects.create(title="Test Book 2")
+        work.authors.add(author)
+        models.SeriesBook.objects.create(user=self.local_user, book=work, series=series)
+
+        work_2 = models.Work.objects.create(title="Testing again")
+        work_2.series = [{"name": "Test Series 1"}]
+        edition = models.Edition.objects.create(title="Testing again")
         edition.authors.add(author)
-        self.book.authors.add(author)
-        edition.save()
-        self.book.save()
 
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.SeriesBook.objects.count(), 1)
 
-        self.connector.get_or_create_seriesbook_from_data(work=work, edition=edition)
+        self.connector.get_or_create_seriesbook_from_data(work=work_2, edition=edition)
 
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.SeriesBook.objects.count(), 2)
@@ -257,18 +254,16 @@ class AbstractConnector(TestCase):
         series = models.Series.objects.create(
             user=self.local_user, name="Test Series 1"
         )
-        models.SeriesBook.objects.create(
-            user=self.local_user, book=self.book, series=series
-        )
-
-        work = models.Work.objects.create(title="Test Book 2")
-        work.series = [{"name": "Test Series 1"}]
+        work = models.Work.objects.create(title="Test Book 1")
+        models.SeriesBook.objects.create(user=self.local_user, book=work, series=series)
+        work_2 = models.Work.objects.create(title="Test Book 2")
+        work_2.series = [{"name": "Test Series 1"}]
         edition = models.Edition.objects.create(title="Test Book 2")
 
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.SeriesBook.objects.count(), 1)
 
-        self.connector.get_or_create_seriesbook_from_data(work=work, edition=edition)
+        self.connector.get_or_create_seriesbook_from_data(work=work_2, edition=edition)
 
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.SeriesBook.objects.count(), 1)
