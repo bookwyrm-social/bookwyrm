@@ -95,8 +95,14 @@ class Book(View):
             listitem__approved=True,
             listitem__edition__in=book.parent_work.editions.all(),
         )
+
+        edition_dupe = book.pending_merge_target
+        work_dupe = book.parent_work.pending_merge_target
+
         data = {
             "book": book,
+            "edition_dupe": edition_dupe,
+            "work_dupe": work_dupe,
             "work": book.parent_work,
             "statuses": paginated.get_page(request.GET.get("page")),
             "review_count": reviews.count(),
@@ -145,8 +151,8 @@ class Book(View):
                 "comment_count": book.comment_set.filter(**filters).count(),
                 "quotation_count": book.quotation_set.filter(**filters).count(),
             }
-            if hasattr(book.parent_work, "suggestion_list"):
-                data["suggestion_list"] = book.parent_work.suggestion_list
+            if book.parent_work.suggests_for.exists():
+                data["suggestion_list"] = book.parent_work.suggests_for.first()
                 data["item_count"] = data[
                     "suggestion_list"
                 ].suggestionlistitem_set.count()

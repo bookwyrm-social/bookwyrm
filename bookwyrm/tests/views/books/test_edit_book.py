@@ -124,6 +124,79 @@ class EditBookViews(TestCase):
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, "New Title")
 
+    def test_edit_book_reset_duplicate_target_clear(self):
+        """lets a user edit a book"""
+        another_book = models.Edition.objects.create(
+            title="Example Edition Dupe",
+            parent_work=self.work,
+        )
+        self.book.pending_merge_target = another_book
+        self.book.save(broadcast=False)
+
+        view = views.EditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm(instance=self.book)
+        form.data["title"] = "hello"
+        form.data["last_edited_by"] = self.local_user.id
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            view(request, self.book.id)
+
+        self.book.refresh_from_db()
+        self.assertEqual(self.book.title, "hello")
+        self.assertIsNone(self.book.pending_merge_target)
+
+    def test_edit_book_reset_duplicate_target_preserve(self):
+        """lets a user edit a book"""
+        another_book = models.Edition.objects.create(
+            title="Example Edition Dupe", parent_work=self.work, openlibrary_key="hello"
+        )
+        self.book.pending_merge_target = another_book
+        self.book.openlibrary_key = "hello"
+        self.book.save(broadcast=False)
+
+        view = views.EditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm(instance=self.book)
+        form.data["title"] = "hello"
+        form.data["last_edited_by"] = self.local_user.id
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            view(request, self.book.id)
+
+        self.book.refresh_from_db()
+        self.assertEqual(self.book.title, "hello")
+        self.assertIsNone(self.book.pending_merge_target)
+
+    def test_edit_book_reset_duplicate_canonical(self):
+        """lets a user edit a book"""
+        another_book = models.Edition.objects.create(
+            title="Example Edition Dupe",
+            parent_work=self.work,
+        )
+        self.book.pending_merge_target = another_book
+        self.book.save(broadcast=False)
+
+        view = views.EditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm(instance=another_book)
+        form.data["title"] = "hello"
+        form.data["last_edited_by"] = self.local_user.id
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            view(request, another_book.id)
+
+        another_book.refresh_from_db()
+        self.assertEqual(another_book.title, "hello")
+        self.book.refresh_from_db()
+        self.assertIsNone(self.book.pending_merge_target)
+
     def test_edit_book_post_invalid(self):
         """book form is invalid"""
         view = views.EditBook.as_view()
