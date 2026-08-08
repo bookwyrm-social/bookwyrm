@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-20 16:26+0000\n"
-"PO-Revision-Date: 2026-07-20 17:03\n"
+"PO-Revision-Date: 2026-08-08 12:37\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -39,16 +39,16 @@ msgstr "Onbeperkt"
 
 #: bookwyrm/forms/edit_user.py:15
 msgid "Readwise access token"
-msgstr "Readwise toegangstoken"
+msgstr "Readwise-toegangstoken"
 
 #: bookwyrm/forms/edit_user.py:24
 #: bookwyrm/templates/preferences/edit_user.html:173
 msgid "Remove saved Readwise access token"
-msgstr ""
+msgstr "Opgeslagen Readwise-toegangstoken verwijderen"
 
 #: bookwyrm/forms/edit_user.py:64
 msgid "A Readwise access token is saved. Leave this blank to keep it."
-msgstr "Een Readwise toegangstoken is opgeslagen. Laat dit leeg om het te behouden."
+msgstr "Een Readwise-toegangstoken is opgeslagen. Laat dit leeg om het te behouden."
 
 #: bookwyrm/forms/edit_user.py:136 bookwyrm/views/landing/password.py:116
 msgid "Incorrect password"
@@ -64,15 +64,15 @@ msgstr "Onjuist wachtwoord"
 
 #: bookwyrm/forms/forms.py:67
 msgid "Reading finish date cannot be before start date."
-msgstr "Einddatum kan niet vóór de begindatum zijn."
+msgstr "Einddatum kan niet vóór de begindatum liggen."
 
 #: bookwyrm/forms/forms.py:72
 msgid "Reading stopped date cannot be before start date."
-msgstr "Einddatum van lezen kan niet voor begindatum zijn."
+msgstr "Einddatum kan niet vóór de begindatum liggen."
 
 #: bookwyrm/forms/forms.py:80
 msgid "Reading stopped date cannot be in the future."
-msgstr "Einddatum van lezen kan niet in de toekomst zijn."
+msgstr "Einddatum kan niet in de toekomst liggen."
 
 #: bookwyrm/forms/forms.py:87
 msgid "Reading finished date cannot be in the future."
@@ -170,19 +170,19 @@ msgstr "In behandeling"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Self deletion"
-msgstr "Uit zichzelf verwijderen"
+msgstr "Zichzelf verwijderd"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Self deactivation"
-msgstr "Eigen deactivatie"
+msgstr "Zelf gedeactiveerd"
 
 #: bookwyrm/models/base_model.py:22
 msgid "Moderator suspension"
-msgstr "Schorsing moderator"
+msgstr "Geschorst door moderator"
 
 #: bookwyrm/models/base_model.py:23
 msgid "Moderator deletion"
-msgstr "Verwijdering moderator"
+msgstr "Verwijderd door moderator"
 
 #: bookwyrm/models/base_model.py:24
 msgid "Domain block"
@@ -219,11 +219,11 @@ msgstr "%(value)s lijkt niet op een ISBN"
 #: bookwyrm/models/book.py:574 bookwyrm/models/book.py:614
 #, python-format
 msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
-msgstr "%(value)s heeft niet de juiste ISBN controlesom, we verwachten %(check_version)s"
+msgstr "%(value)s heeft niet het juiste ISBN-controlecijfer, we verwachten %(check_version)s"
 
 #: bookwyrm/models/book.py:797
 msgid "Book is already in this series"
-msgstr ""
+msgstr "Boek is al onderdeel van deze serie"
 
 #: bookwyrm/models/bookwyrm_import_job.py:151 bookwyrm/models/report.py:121
 #: bookwyrm/templates/settings/reports/report.html:119
@@ -240,7 +240,7 @@ msgstr "Recensie"
 
 #: bookwyrm/models/bookwyrm_import_job.py:153
 msgid "Quotation"
-msgstr "Offerte"
+msgstr "Citaat"
 
 #: bookwyrm/models/bookwyrm_import_job.py:181
 #: bookwyrm/templates/snippets/follow_button.html:24
@@ -521,7 +521,7 @@ msgstr "Overig"
 #: bookwyrm/models/user.py:232
 #, python-brace-format
 msgid "avatar for {name}"
-msgstr ""
+msgstr "profielfoto van {name}"
 
 #: bookwyrm/settings.py:258
 msgid "Home Timeline"
@@ -1333,19 +1333,19 @@ msgstr "Dit is een nieuw werk"
 
 #: bookwyrm/templates/book/edit/edit_book.html:142
 msgid "Are you sure this is a new series? The following series have similar names and a matching author."
-msgstr ""
+msgstr "Weet je zeker dat dit een nieuwe serie is? De volgende series hebben vergelijkbare namen en dezelfde auteur."
 
 #: bookwyrm/templates/book/edit/edit_book.html:148
 msgid "Is this book part of one of these series?"
-msgstr ""
+msgstr "Is dit boek onderdeel van een van deze series?"
 
 #: bookwyrm/templates/book/edit/edit_book.html:160
 msgid "This is a new series"
-msgstr ""
+msgstr "Dit is een nieuwe serie"
 
 #: bookwyrm/templates/book/edit/edit_book.html:165
 msgid "Creating a new series"
-msgstr ""
+msgstr "Nieuwe serie aanmaken"
 
 #: bookwyrm/templates/book/edit/edit_book.html:175
 #: bookwyrm/templates/book/edit/edit_series.html:86
@@ -1444,7 +1444,7 @@ msgstr "Reeks"
 #: bookwyrm/templates/book/series.html:12
 #: bookwyrm/templates/book/series.html:13
 msgid "Edit Series"
-msgstr ""
+msgstr "Serie wijzigen"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:141
 msgid "To edit details of a series itself, click the series name"
