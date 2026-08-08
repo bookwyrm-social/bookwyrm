@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-06 15:05+0000\n"
-"PO-Revision-Date: 2026-07-06 20:04\n"
+"POT-Creation-Date: 2026-07-20 16:26+0000\n"
+"PO-Revision-Date: 2026-07-20 17:04\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -50,7 +50,7 @@ msgstr ""
 msgid "A Readwise access token is saved. Leave this blank to keep it."
 msgstr ""
 
-#: bookwyrm/forms/edit_user.py:136 bookwyrm/views/landing/password.py:117
+#: bookwyrm/forms/edit_user.py:136 bookwyrm/views/landing/password.py:116
 msgid "Incorrect password"
 msgstr "Невірний пароль"
 
@@ -225,7 +225,7 @@ msgstr ""
 msgid "Book is already in this series"
 msgstr ""
 
-#: bookwyrm/models/bookwyrm_import_job.py:151 bookwyrm/models/report.py:119
+#: bookwyrm/models/bookwyrm_import_job.py:151 bookwyrm/models/report.py:121
 #: bookwyrm/templates/settings/reports/report.html:119
 #: bookwyrm/templates/snippets/create_status.html:26
 msgid "Comment"
@@ -426,47 +426,47 @@ msgstr ""
 msgid "This is the list of suggestions for <a href='%(url)s'>%(title)s</a>"
 msgstr ""
 
-#: bookwyrm/models/report.py:120
+#: bookwyrm/models/report.py:122
 msgid "Resolved report"
 msgstr "Скаргу розглянуто"
 
-#: bookwyrm/models/report.py:121
+#: bookwyrm/models/report.py:123
 msgid "Re-opened report"
 msgstr "Скаргу відкрито знов"
 
-#: bookwyrm/models/report.py:122
+#: bookwyrm/models/report.py:124
 msgid "Messaged reporter"
 msgstr "Написано автору скарги"
 
-#: bookwyrm/models/report.py:123
+#: bookwyrm/models/report.py:125
 msgid "Messaged reported user"
 msgstr "Написано тому, на кого поскаржилися"
 
-#: bookwyrm/models/report.py:124
+#: bookwyrm/models/report.py:126
 msgid "Suspended user"
 msgstr "Користувача заблоковано"
 
-#: bookwyrm/models/report.py:125
+#: bookwyrm/models/report.py:127
 msgid "Un-suspended user"
 msgstr "Користувача разблоковано"
 
-#: bookwyrm/models/report.py:126
+#: bookwyrm/models/report.py:128
 msgid "Changed user permission level"
 msgstr "Рівень доступу користувача змінено"
 
-#: bookwyrm/models/report.py:127
+#: bookwyrm/models/report.py:129
 msgid "Deleted user account"
 msgstr "Акаунт користувача видалено"
 
-#: bookwyrm/models/report.py:128
+#: bookwyrm/models/report.py:130
 msgid "Blocked domain"
 msgstr "Домен заблоковано"
 
-#: bookwyrm/models/report.py:129
+#: bookwyrm/models/report.py:131
 msgid "Approved domain"
 msgstr "Домен підтверджено"
 
-#: bookwyrm/models/report.py:130
+#: bookwyrm/models/report.py:132
 msgid "Deleted item"
 msgstr "Запис видалено"
 
@@ -474,27 +474,27 @@ msgstr "Запис видалено"
 msgid "Unknown"
 msgstr ""
 
-#: bookwyrm/models/status.py:191
+#: bookwyrm/models/status.py:192
 #, python-format
 msgid "%(display_name)s's status"
 msgstr ""
 
-#: bookwyrm/models/status.py:395
+#: bookwyrm/models/status.py:396
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
 msgstr ""
 
-#: bookwyrm/models/status.py:446
+#: bookwyrm/models/status.py:447
 #, python-format
 msgid "%(display_name)s's quote from %(book_title)s"
 msgstr ""
 
-#: bookwyrm/models/status.py:486
+#: bookwyrm/models/status.py:487
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
 msgstr ""
 
-#: bookwyrm/models/status.py:518
+#: bookwyrm/models/status.py:519
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
@@ -503,7 +503,8 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: bookwyrm/models/user.py:40 bookwyrm/templates/book/book.html:359
+#: bookwyrm/models/user.py:40 bookwyrm/templates/book/sections/reviews.html:4
+#: bookwyrm/templates/book/sections/reviews.html:25
 msgid "Reviews"
 msgstr "Рецензії"
 
@@ -878,7 +879,7 @@ msgstr "Найшвидше прочитана книга цього року…"
 #: bookwyrm/templates/annual_summary/layout.html:157
 #: bookwyrm/templates/annual_summary/layout.html:178
 #: bookwyrm/templates/annual_summary/layout.html:247
-#: bookwyrm/templates/book/book.html:89 bookwyrm/templates/book/series.html:21
+#: bookwyrm/templates/book/series.html:21
 #: bookwyrm/templates/discover/large-book.html:22
 #: bookwyrm/templates/snippets/small-book.html:18
 msgid "by"
@@ -978,24 +979,24 @@ msgid "View ISNI record"
 msgstr "Переглянути запис ISNI"
 
 #: bookwyrm/templates/author/author.html:120
-#: bookwyrm/templates/book/book.html:199
+#: bookwyrm/templates/book/sections/metadata.html:52
 msgid "View on ISFDB"
 msgstr "Переглянути на ISFDB"
 
 #: bookwyrm/templates/author/author.html:125
 #: bookwyrm/templates/author/sync_modal.html:5
-#: bookwyrm/templates/book/book.html:166
+#: bookwyrm/templates/book/sections/metadata.html:17
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
 msgstr "Завантажити данні"
 
 #: bookwyrm/templates/author/author.html:129
-#: bookwyrm/templates/book/book.html:170
+#: bookwyrm/templates/book/sections/metadata.html:21
 msgid "View on OpenLibrary"
 msgstr "Переглянути на OpenLibrary"
 
 #: bookwyrm/templates/author/author.html:144
-#: bookwyrm/templates/book/book.html:184
+#: bookwyrm/templates/book/sections/metadata.html:36
 msgid "View on Inventaire"
 msgstr "Переглянути на Inventaire"
 
@@ -1105,10 +1106,10 @@ msgid "ISNI:"
 msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:128
-#: bookwyrm/templates/book/book.html:272
 #: bookwyrm/templates/book/edit/edit_book.html:186
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
+#: bookwyrm/templates/book/sections/description.html:46
 #: bookwyrm/templates/groups/form.html:32
 #: bookwyrm/templates/lists/bookmark_button.html:15
 #: bookwyrm/templates/lists/edit_item_form.html:16
@@ -1130,12 +1131,12 @@ msgstr "Зберегти"
 
 #: bookwyrm/templates/author/edit_author.html:129
 #: bookwyrm/templates/author/sync_modal.html:23
-#: bookwyrm/templates/book/book.html:273
 #: bookwyrm/templates/book/cover_add_modal.html:33
 #: bookwyrm/templates/book/edit/edit_book.html:188
 #: bookwyrm/templates/book/edit/edit_book.html:191
 #: bookwyrm/templates/book/file_links/add_link_modal.html:59
 #: bookwyrm/templates/book/file_links/verification_modal.html:26
+#: bookwyrm/templates/book/sections/description.html:47
 #: bookwyrm/templates/book/sync_modal.html:23
 #: bookwyrm/templates/groups/delete_group_modal.html:15
 #: bookwyrm/templates/lists/add_item_modal.html:41
@@ -1174,73 +1175,11 @@ msgstr "Процес завантаження даних з'єднається �
 msgid "Confirm"
 msgstr "Підтвердити"
 
-#: bookwyrm/templates/book/book.html:24
+#: bookwyrm/templates/book/book.html:25
 msgid "Unable to connect to remote source."
 msgstr "Не вдалося під'єднатися до віддаленого джерела."
 
-#: bookwyrm/templates/book/book.html:52
-#, python-format
-msgid "This book might be part of the <em>%(series)s</em> series."
-msgstr ""
-
-#: bookwyrm/templates/book/book.html:56
-msgid "Edit it to confirm."
-msgstr ""
-
-#: bookwyrm/templates/book/book.html:69
-#, python-format
-msgid "Book <span itemprop=\"position\">%(number)s</span> in <em><a href=\"%(path)s\">%(title)s</a></em>"
-msgstr ""
-
-#: bookwyrm/templates/book/book.html:75
-#, python-format
-msgid "Part of <em><a href=\"%(path)s\">%(title)s</a></em>"
-msgstr ""
-
-#: bookwyrm/templates/book/book.html:97 bookwyrm/templates/book/book.html:98
-msgid "Edit Book"
-msgstr "Редагувати Книгу"
-
-#: bookwyrm/templates/book/book.html:123 bookwyrm/templates/book/book.html:126
-msgid "Click to add cover"
-msgstr "Натисніть, щоб додати обкладинку"
-
-#: bookwyrm/templates/book/book.html:132
-msgid "Failed to load cover"
-msgstr "Не вдалося завантажити обкладинку"
-
-#: bookwyrm/templates/book/book.html:143
-msgid "Click to enlarge"
-msgstr "Натисніть для збільшення"
-
-#: bookwyrm/templates/book/book.html:206
-msgid "View on Finna"
-msgstr ""
-
-#: bookwyrm/templates/book/book.html:221
-msgid "View on Libris"
-msgstr ""
-
-#: bookwyrm/templates/book/book.html:245
-#, python-format
-msgid "(%(review_count)s review)"
-msgid_plural "(%(review_count)s reviews)"
-msgstr[0] "(%(review_count)s рецензія)"
-msgstr[1] "(%(review_count)s рецензії)"
-msgstr[2] "(%(review_count)s рецензій)"
-msgstr[3] "(%(review_count)s рецензій)"
-
-#: bookwyrm/templates/book/book.html:261
-msgid "Add Description"
-msgstr "Додати Опис"
-
-#: bookwyrm/templates/book/book.html:268
-#: bookwyrm/templates/book/edit/edit_book_form.html:55
-#: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
-msgid "Description:"
-msgstr "Опис:"
-
-#: bookwyrm/templates/book/book.html:284
+#: bookwyrm/templates/book/book.html:57
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
@@ -1249,129 +1188,65 @@ msgstr[1] "%(count)s видання"
 msgstr[2] "%(count)s видань"
 msgstr[3] "%(count)s видань"
 
-#: bookwyrm/templates/book/book.html:298
-msgid "You have shelved this edition in:"
-msgstr "Ви відклали це видання на полицю:"
-
-#: bookwyrm/templates/book/book.html:313
-#, python-format
-msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
-msgstr "<a href=\"%(book_path)s\">Інше видання</a> цієї книги знаходиться на вашій <a href=\"%(shelf_path)s\">%(shelf_name)s</a> полиці."
-
-#: bookwyrm/templates/book/book.html:324
-msgid "Your reading activity"
-msgstr "Ваша читацька активність"
-
-#: bookwyrm/templates/book/book.html:330
+#: bookwyrm/templates/book/book.html:80
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
 msgstr "Додати дати коли прочитано"
 
-#: bookwyrm/templates/book/book.html:338
-msgid "You don't have any reading activity for this book."
-msgstr "Ви не маєте жодної читацької активності для цієї книги."
-
-#: bookwyrm/templates/book/book.html:364
-msgid "Your reviews"
-msgstr "Ваші відгуки"
-
-#: bookwyrm/templates/book/book.html:370
-msgid "Your comments"
-msgstr "Ваші коментарі"
-
-#: bookwyrm/templates/book/book.html:376
-msgid "Your quotes"
-msgstr "Ваші цитати"
-
-#: bookwyrm/templates/book/book.html:412
-msgid "Subjects"
-msgstr "Теми"
-
-#: bookwyrm/templates/book/book.html:424
-msgid "Places"
-msgstr "Місця"
-
-#: bookwyrm/templates/book/book.html:435
-#: bookwyrm/templates/groups/group.html:19
-#: bookwyrm/templates/guided_tour/lists.html:14
-#: bookwyrm/templates/guided_tour/user_books.html:102
-#: bookwyrm/templates/guided_tour/user_profile.html:78
-#: bookwyrm/templates/layout.html:88 bookwyrm/templates/lists/curate.html:8
-#: bookwyrm/templates/lists/list.html:9 bookwyrm/templates/lists/lists.html:5
-#: bookwyrm/templates/lists/lists.html:12
-#: bookwyrm/templates/search/layout.html:27
-#: bookwyrm/templates/search/layout.html:55
-#: bookwyrm/templates/settings/celery.html:77
-#: bookwyrm/templates/user/layout.html:105 bookwyrm/templates/user/lists.html:6
-msgid "Lists"
-msgstr "Списки"
-
-#: bookwyrm/templates/book/book.html:447
-msgid "Add to list"
-msgstr "Додати до списку"
-
-#: bookwyrm/templates/book/book.html:454
-msgid "Create new list..."
-msgstr ""
-
-#: bookwyrm/templates/book/book.html:458
-#: bookwyrm/templates/book/cover_add_modal.html:32
-#: bookwyrm/templates/lists/add_item_modal.html:44
-#: bookwyrm/templates/lists/suggestion_search.html:52
-#: bookwyrm/templates/settings/email_blocklist/domain_form.html:24
-#: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:32
-msgid "Add"
-msgstr "Додати"
+#: bookwyrm/templates/book/book.html:91
+#, python-format
+msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
+msgstr "<a href=\"%(book_path)s\">Інше видання</a> цієї книги знаходиться на вашій <a href=\"%(shelf_path)s\">%(shelf_name)s</a> полиці."
 
 #: bookwyrm/templates/book/book_identifiers.html:8
 msgid "ISBN:"
 msgstr "ISBN:"
 
-#: bookwyrm/templates/book/book_identifiers.html:12
 #: bookwyrm/templates/book/book_identifiers.html:13
+#: bookwyrm/templates/book/book_identifiers.html:14
 msgid "Copy ISBN"
 msgstr "Скопіювати ISBN"
 
-#: bookwyrm/templates/book/book_identifiers.html:16
+#: bookwyrm/templates/book/book_identifiers.html:17
 msgid "Copied ISBN!"
 msgstr "ISBN скопійовано!"
 
-#: bookwyrm/templates/book/book_identifiers.html:23
+#: bookwyrm/templates/book/book_identifiers.html:25
 #: bookwyrm/templates/book/edit/edit_book_form.html:404
 #: bookwyrm/templates/rss/edition.html:6
 msgid "OCLC Number:"
 msgstr "Номер OCLC:"
 
-#: bookwyrm/templates/book/book_identifiers.html:30
+#: bookwyrm/templates/book/book_identifiers.html:32
 #: bookwyrm/templates/book/edit/edit_book_form.html:413
 #: bookwyrm/templates/rss/edition.html:7
 msgid "ASIN:"
 msgstr "ASIN:"
 
-#: bookwyrm/templates/book/book_identifiers.html:37
+#: bookwyrm/templates/book/book_identifiers.html:39
 #: bookwyrm/templates/book/edit/edit_book_form.html:422
 #: bookwyrm/templates/rss/edition.html:8
 msgid "Audible ASIN:"
 msgstr "Audible ASIN:"
 
-#: bookwyrm/templates/book/book_identifiers.html:44
+#: bookwyrm/templates/book/book_identifiers.html:46
 #: bookwyrm/templates/book/edit/edit_book_form.html:431
 #: bookwyrm/templates/book/edit/edit_series.html:60
 #: bookwyrm/templates/rss/edition.html:9
 msgid "ISFDB ID:"
 msgstr "ISFDB ID:"
 
-#: bookwyrm/templates/book/book_identifiers.html:51
+#: bookwyrm/templates/book/book_identifiers.html:53
 #: bookwyrm/templates/rss/edition.html:10
 msgid "Goodreads:"
 msgstr "Goodreads:"
 
-#: bookwyrm/templates/book/book_identifiers.html:58
+#: bookwyrm/templates/book/book_identifiers.html:60
 #: bookwyrm/templates/book/edit/edit_book_form.html:440
 msgid "Finna ID:"
 msgstr ""
 
-#: bookwyrm/templates/book/book_identifiers.html:65
+#: bookwyrm/templates/book/book_identifiers.html:67
 #: bookwyrm/templates/book/edit/edit_book_form.html:449
 msgid "Libris ID:"
 msgstr ""
@@ -1389,6 +1264,15 @@ msgstr "Завантажити обкладинку:"
 #: bookwyrm/templates/book/edit/edit_book_form.html:302
 msgid "Load cover from URL:"
 msgstr "Завантажити обкладинку з посилання:"
+
+#: bookwyrm/templates/book/cover_add_modal.html:32
+#: bookwyrm/templates/book/sections/lists.html:30
+#: bookwyrm/templates/lists/add_item_modal.html:44
+#: bookwyrm/templates/lists/suggestion_search.html:52
+#: bookwyrm/templates/settings/email_blocklist/domain_form.html:24
+#: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:32
+msgid "Add"
+msgstr "Додати"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
 msgid "Book cover preview"
@@ -1537,6 +1421,12 @@ msgstr "Назва Для Сортування:"
 #: bookwyrm/templates/book/edit/edit_book_form.html:46
 msgid "Subtitle:"
 msgstr "Підзаголовок:"
+
+#: bookwyrm/templates/book/edit/edit_book_form.html:55
+#: bookwyrm/templates/book/sections/description.html:42
+#: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
+msgid "Description:"
+msgstr "Опис:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:64
 msgid "Languages:"
@@ -1909,15 +1799,125 @@ msgstr "Видано %(date)s"
 msgid "rated it"
 msgstr "оцінив у"
 
+#: bookwyrm/templates/book/sections/cover.html:22
+#: bookwyrm/templates/book/sections/cover.html:25
+msgid "Click to add cover"
+msgstr "Натисніть, щоб додати обкладинку"
+
+#: bookwyrm/templates/book/sections/cover.html:31
+msgid "Failed to load cover"
+msgstr "Не вдалося завантажити обкладинку"
+
+#: bookwyrm/templates/book/sections/cover.html:42
+msgid "Click to enlarge"
+msgstr "Натисніть для збільшення"
+
+#: bookwyrm/templates/book/sections/description.html:19
+#, python-format
+msgid "(%(review_count)s review)"
+msgid_plural "(%(review_count)s reviews)"
+msgstr[0] "(%(review_count)s рецензія)"
+msgstr[1] "(%(review_count)s рецензії)"
+msgstr[2] "(%(review_count)s рецензій)"
+msgstr[3] "(%(review_count)s рецензій)"
+
+#: bookwyrm/templates/book/sections/description.html:35
+msgid "Add Description"
+msgstr "Додати Опис"
+
+#: bookwyrm/templates/book/sections/lists.html:6
+#: bookwyrm/templates/groups/group.html:19
+#: bookwyrm/templates/guided_tour/lists.html:14
+#: bookwyrm/templates/guided_tour/user_books.html:102
+#: bookwyrm/templates/guided_tour/user_profile.html:78
+#: bookwyrm/templates/layout.html:88 bookwyrm/templates/lists/curate.html:8
+#: bookwyrm/templates/lists/list.html:9 bookwyrm/templates/lists/lists.html:5
+#: bookwyrm/templates/lists/lists.html:12
+#: bookwyrm/templates/search/layout.html:27
+#: bookwyrm/templates/search/layout.html:55
+#: bookwyrm/templates/settings/celery.html:77
+#: bookwyrm/templates/user/layout.html:105 bookwyrm/templates/user/lists.html:6
+msgid "Lists"
+msgstr "Списки"
+
+#: bookwyrm/templates/book/sections/lists.html:19
+msgid "Add to list"
+msgstr "Додати до списку"
+
+#: bookwyrm/templates/book/sections/lists.html:26
+msgid "Create new list..."
+msgstr ""
+
+#: bookwyrm/templates/book/sections/metadata.html:60
+msgid "View on Finna"
+msgstr ""
+
+#: bookwyrm/templates/book/sections/metadata.html:76
+msgid "View on Libris"
+msgstr ""
+
+#: bookwyrm/templates/book/sections/reviews.html:8
+msgid "Add your thoughts"
+msgstr ""
+
+#: bookwyrm/templates/book/sections/reviews.html:30
+msgid "Your reviews"
+msgstr "Ваші відгуки"
+
+#: bookwyrm/templates/book/sections/reviews.html:36
+msgid "Your comments"
+msgstr "Ваші коментарі"
+
+#: bookwyrm/templates/book/sections/reviews.html:42
+msgid "Your quotes"
+msgstr "Ваші цитати"
+
+#: bookwyrm/templates/book/sections/subjects.html:6
+msgid "Subjects"
+msgstr "Теми"
+
+#: bookwyrm/templates/book/sections/subjects.html:19
+msgid "Places"
+msgstr "Місця"
+
+#: bookwyrm/templates/book/sections/title.html:31
+#, python-format
+msgid "This book might be part of the <em>%(series)s</em> series."
+msgstr ""
+
+#: bookwyrm/templates/book/sections/title.html:35
+msgid "Edit it to confirm."
+msgstr ""
+
+#: bookwyrm/templates/book/sections/title.html:48
+#, python-format
+msgid "Book <span itemprop=\"position\">%(number)s</span> in <em><a href=\"%(path)s\">%(title)s</a></em>"
+msgstr ""
+
+#: bookwyrm/templates/book/sections/title.html:54
+#, python-format
+msgid "Part of <em><a href=\"%(path)s\">%(title)s</a></em>"
+msgstr ""
+
+#: bookwyrm/templates/book/sections/title.html:70
+#: bookwyrm/templates/book/sections/title.html:71
+msgid "Edit Book"
+msgstr "Редагувати Книгу"
+
 #: bookwyrm/templates/book/series.html:72
 #, python-format
 msgid "Book %(series_number)s"
 msgstr "Книга %(series_number)s"
 
-#: bookwyrm/templates/book/suggestion_list/book_card.html:37
-#: bookwyrm/templates/lists/list_item.html:37
+#: bookwyrm/templates/book/suggestion_list/book_card.html:15
+#: bookwyrm/templates/lists/list_item_notes.html:12
 #, python-format
-msgid "Added by %(user_link)s"
+msgid "%(user_link)s says:"
+msgstr ""
+
+#: bookwyrm/templates/book/suggestion_list/book_card.html:19
+#, python-format
+msgid "%(user_link)s recommends:"
 msgstr ""
 
 #: bookwyrm/templates/book/suggestion_list/endorsement_button.html:4
@@ -1929,30 +1929,29 @@ msgid "Endorsements"
 msgstr ""
 
 #: bookwyrm/templates/book/suggestion_list/list.html:6
-#: bookwyrm/templates/user/layout.html:111
-#: bookwyrm/templates/user/suggestions.html:6
-msgid "Suggestions"
+msgid "Readers also recommend:"
 msgstr ""
 
 #: bookwyrm/templates/book/suggestion_list/list.html:9
 msgid "View all suggestions"
 msgstr ""
 
-#: bookwyrm/templates/book/suggestion_list/list.html:18
-#, python-format
-msgid "Readers who liked <em>%(title)s</em> recommend giving these books a try:"
-msgstr ""
-
-#: bookwyrm/templates/book/suggestion_list/list.html:27
-#: bookwyrm/templates/book/suggestion_list/list.html:51
+#: bookwyrm/templates/book/suggestion_list/list.html:20
+#: bookwyrm/templates/book/suggestion_list/list.html:60
 msgid "Have a recommendation for someone who liked this book?"
 msgstr ""
 
-#: bookwyrm/templates/book/suggestion_list/list.html:52
+#: bookwyrm/templates/book/suggestion_list/list.html:26
+#: bookwyrm/templates/book/suggestion_list/list.html:45
+msgid "Add suggestion"
+msgstr ""
+
+#: bookwyrm/templates/book/suggestion_list/list.html:61
 msgid "Load books"
 msgstr ""
 
-#: bookwyrm/templates/book/suggestion_list/search.html:8
+#: bookwyrm/templates/book/suggestion_list/search.html:5
+#: bookwyrm/templates/book/suggestion_list/search_modal.html:6
 msgid "Add suggestions"
 msgstr ""
 
@@ -1960,6 +1959,11 @@ msgstr ""
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this book which aren't present here. Existing metadata will not be overwritten."
 msgstr "Процес завантаження даних з'єднається з <strong>%(source_name)s</strong> та перевірить наявність метаданих про цю книгу, яких тут немає. Наявні метадані не буде перезаписано."
+
+#: bookwyrm/templates/components/details.html:8
+#: bookwyrm/templates/snippets/trimmed_text.html:18
+msgid "Show more"
+msgstr "Розгорнути"
 
 #: bookwyrm/templates/compose.html:7 bookwyrm/templates/compose.html:21
 msgid "Edit review"
@@ -4153,6 +4157,11 @@ msgstr "Скопіювати код вставки"
 msgid "%(list_name)s, a list by %(owner)s on %(site_name)s"
 msgstr "%(list_name)s, список %(owner)s на %(site_name)s"
 
+#: bookwyrm/templates/lists/list_item.html:37
+#, python-format
+msgid "Added by %(user_link)s"
+msgstr ""
+
 #: bookwyrm/templates/lists/list_item.html:57
 msgid "List position"
 msgstr "Позиція в списку"
@@ -4169,11 +4178,6 @@ msgstr "Встановити"
 #: bookwyrm/templates/snippets/remove_from_group_button.html:20
 msgid "Remove"
 msgstr "Видалити"
-
-#: bookwyrm/templates/lists/list_item_notes.html:12
-#, python-format
-msgid "%(user_link)s says:"
-msgstr ""
 
 #: bookwyrm/templates/lists/list_item_notes.html:26
 msgid "Edit notes"
@@ -4213,8 +4217,8 @@ msgstr "Очистити пошук"
 
 #: bookwyrm/templates/lists/suggestion_search.html:24
 #, python-format
-msgid "No books found matching the query \"%(query)s\""
-msgstr "По запиту \"%(query)s\" не знайдено жодної книги"
+msgid "No books found matching the query \"%(suggestion_query)s\""
+msgstr ""
 
 #: bookwyrm/templates/moved.html:27
 #, python-format
@@ -5263,34 +5267,30 @@ msgid "Finished reading"
 msgstr ""
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:9
-msgid "Progress Updates:"
+msgid "Started:"
 msgstr ""
 
-#: bookwyrm/templates/readthrough/readthrough_list.html:14
-msgid "finished"
-msgstr ""
-
-#: bookwyrm/templates/readthrough/readthrough_list.html:16
-msgid "stopped"
-msgstr ""
-
-#: bookwyrm/templates/readthrough/readthrough_list.html:27
+#: bookwyrm/templates/readthrough/readthrough_list.html:12
 msgid "Show all updates"
 msgstr ""
 
-#: bookwyrm/templates/readthrough/readthrough_list.html:43
+#: bookwyrm/templates/readthrough/readthrough_list.html:28
 msgid "Delete this progress update"
 msgstr ""
 
-#: bookwyrm/templates/readthrough/readthrough_list.html:55
-msgid "started"
+#: bookwyrm/templates/readthrough/readthrough_list.html:41
+msgid "Finished:"
 msgstr ""
 
-#: bookwyrm/templates/readthrough/readthrough_list.html:62
+#: bookwyrm/templates/readthrough/readthrough_list.html:43
+msgid "Stopped:"
+msgstr ""
+
+#: bookwyrm/templates/readthrough/readthrough_list.html:57
 msgid "Edit read dates"
 msgstr ""
 
-#: bookwyrm/templates/readthrough/readthrough_list.html:70
+#: bookwyrm/templates/readthrough/readthrough_list.html:65
 msgid "Delete these read dates"
 msgstr ""
 
@@ -5795,19 +5795,19 @@ msgstr ""
 msgid "Connector Settings"
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/connectors.html:11
+#: bookwyrm/templates/settings/connectors/connectors.html:10
 msgid "Connectors are sources of data about books and authors."
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/connectors.html:12
+#: bookwyrm/templates/settings/connectors/connectors.html:11
 msgid "The priority determines the order in which search results appear. The highest priority is <code>1</code>. The default priority is <code>2</code>."
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/connectors.html:14
+#: bookwyrm/templates/settings/connectors/connectors.html:13
 msgid "Connector settings only determine whether a connector will be used to deliver search results. To manage more interactions with other federated servers, including domain blocks, see"
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/connectors.html:14
+#: bookwyrm/templates/settings/connectors/connectors.html:13
 #: bookwyrm/templates/settings/federation/edit_instance.html:12
 #: bookwyrm/templates/settings/federation/instance.html:24
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:12
@@ -6873,22 +6873,27 @@ msgstr "<a href=\"%(user_link)s\">%(user)s</a> прокоментував(-ла)
 msgid "<a href=\"%(user_link)s\">%(user)s</a> took an action on this report:"
 msgstr "<a href=\"%(user_link)s\">%(user)s</a> вжив(-ла) заходів по цій скарзі:"
 
-#: bookwyrm/templates/settings/reports/report_header.html:6
+#: bookwyrm/templates/settings/reports/report_header.html:7
 #, python-format
 msgid "Report #%(report_id)s: Status posted by @%(username)s"
 msgstr "Скарга #%(report_id)s: Статус від @%(username)s"
 
-#: bookwyrm/templates/settings/reports/report_header.html:13
+#: bookwyrm/templates/settings/reports/report_header.html:11
+#, python-format
+msgid "Report #%(report_id)s"
+msgstr ""
+
+#: bookwyrm/templates/settings/reports/report_header.html:19
 #, python-format
 msgid "Report #%(report_id)s: Link added by @%(username)s"
 msgstr "Скарга #%(report_id)s: Посилання додане @%(username)s"
 
-#: bookwyrm/templates/settings/reports/report_header.html:17
+#: bookwyrm/templates/settings/reports/report_header.html:23
 #, python-format
 msgid "Report #%(report_id)s: Link domain"
 msgstr "Скарга #%(report_id)s: Домен посилання"
 
-#: bookwyrm/templates/settings/reports/report_header.html:24
+#: bookwyrm/templates/settings/reports/report_header.html:30
 #, python-format
 msgid "Report #%(report_id)s: User @%(username)s"
 msgstr "Скарга #%(report_id)s: Користувач @%(username)s"
@@ -7656,16 +7661,16 @@ msgstr "Прибрати лайк"
 msgid "Filters"
 msgstr "Фільтри"
 
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:10
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:17
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:12
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:18
 msgid "Filters are applied"
 msgstr "Застосовано фільтри"
 
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:20
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:21
 msgid "Clear filters"
 msgstr "Скинути фільтри"
 
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:43
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:44
 msgid "Apply filters"
 msgstr "Застосувати фільтри"
 
@@ -7705,21 +7710,16 @@ msgstr "Підтримати %(site_name)s на <a href=\"%(support_link)s\" tar
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
 msgstr "Код BookWyrm знаходиться у вільному доступі. Ви можете долучитися до розробки або повідомити про проблеми на <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
 
-#: bookwyrm/templates/snippets/form_rate_stars.html:20
-#: bookwyrm/templates/snippets/stars.html:38
-msgid "No rating"
-msgstr "Без оцінки"
-
-#: bookwyrm/templates/snippets/form_rate_stars.html:28
+#: bookwyrm/templates/snippets/form_rate_stars.html:15
 #, python-format
-msgid "%(half_rating)s star"
-msgid_plural "%(half_rating)s stars"
-msgstr[0] "%(half_rating)s зірка"
-msgstr[1] "%(half_rating)s зірок"
-msgstr[2] "%(half_rating)s зірок"
-msgstr[3] "%(half_rating)s зірок"
+msgid "%(rating)s.5 stars"
+msgid_plural "%(rating)s.5 stars"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
-#: bookwyrm/templates/snippets/form_rate_stars.html:64
+#: bookwyrm/templates/snippets/form_rate_stars.html:32
 #: bookwyrm/templates/snippets/stars.html:20
 #, python-format
 msgid "%(rating)s star"
@@ -7747,7 +7747,7 @@ msgstr[1] "оцінив(-ла) <em><a href=\"%(path)s\">%(title)s</a></em>: %(di
 msgstr[2] "оцінив(-ла) <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s зірок"
 msgstr[3] "оцінив(-ла) <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s зірок"
 
-#: bookwyrm/templates/snippets/generated_status/rating_pure_name.html:3
+#: bookwyrm/templates/snippets/generated_status/rating_pure_name.html:4
 #, python-format
 msgid "Rated \"%(book_title)s\" %(display_rating)s star %(review_title)s"
 msgid_plural "Rated \"%(book_title)s\" %(display_rating)s stars %(review_title)s"
@@ -7978,6 +7978,10 @@ msgstr "Відмітити прочитаним"
 msgid "Show rating"
 msgstr ""
 
+#: bookwyrm/templates/snippets/stars.html:38
+msgid "No rating"
+msgstr "Без оцінки"
+
 #: bookwyrm/templates/snippets/status/content_status.html:71
 msgid "Show status"
 msgstr "Переглянути статус"
@@ -8137,10 +8141,6 @@ msgstr "Відсортовано за зростанням"
 msgid "Sorted descending"
 msgstr "Відсортовано за спаданням"
 
-#: bookwyrm/templates/snippets/trimmed_text.html:18
-msgid "Show more"
-msgstr "Розгорнути"
-
 #: bookwyrm/templates/snippets/trimmed_text.html:36
 msgid "Show less"
 msgstr "Згорнути"
@@ -8224,6 +8224,11 @@ msgstr "Запити на підписку"
 #: bookwyrm/templates/user/reviews_comments.html:12
 msgid "Reviews and Comments"
 msgstr "Відгуки та Коментарі"
+
+#: bookwyrm/templates/user/layout.html:111
+#: bookwyrm/templates/user/suggestions.html:6
+msgid "Suggestions"
+msgstr ""
 
 #: bookwyrm/templates/user/lists.html:16
 #, python-format
