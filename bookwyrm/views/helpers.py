@@ -157,7 +157,9 @@ def get_edition(book_id: str) -> models.Edition:
     return book
 
 
-def handle_reading_status(user: models.User, shelf: models.Shelf, book: models.Edition, privacy: str):
+def handle_reading_status(
+    user: models.User, shelf: models.Shelf, book: models.Edition, privacy: str
+):
     """post about a user reading a book"""
     # tell the world about this cool thing that happened
     try:
@@ -198,7 +200,9 @@ def set_language(user: models.User, response: HttpResponse) -> HttpResponse:
     return response
 
 
-def filter_stream_by_status_type(activities: QuerySet[models.Status, Any], allowed_types:list[str]=None) -> QuerySet[models.Status, Any]:
+def filter_stream_by_status_type(
+    activities: QuerySet[models.Status, Any], allowed_types: list[str] = None
+) -> QuerySet[models.Status, Any]:
     """filter out activities based on types"""
     if not allowed_types:
         allowed_types = []

@@ -60,7 +60,9 @@ class CreateStatus(View):
         return TemplateResponse(request, "compose.html", data)
 
     @transaction.atomic
-    def post(self, request: HttpRequest, status_type: str, existing_status_id:str=None):
+    def post(
+        self, request: HttpRequest, status_type: str, existing_status_id: str = None
+    ):
         """create status of whatever type"""
         created = not existing_status_id
         existing_status = None
@@ -306,7 +308,9 @@ def find_or_create_hashtags(content: str):
     if not content:
         return {}
 
-    found_hashtags: dict[str, str] = {t.lower(): t for t in re.findall(regex.HASHTAG, content)}
+    found_hashtags: dict[str, str] = {
+        t.lower(): t for t in re.findall(regex.HASHTAG, content)
+    }
     if not found_hashtags:
         return {}
 

@@ -412,7 +412,9 @@ streams: dict[str, ActivityStream] = {
 
 
 @receiver(signals.post_save)
-def add_status_on_create(sender: type, instance: BookWyrmModel, created: bool, *args, **kwargs):
+def add_status_on_create(
+    sender: type, instance: BookWyrmModel, created: bool, *args, **kwargs
+):
     """add newly created statuses to activity feeds"""
     # we're only interested in new statuses
     if not issubclass(sender, models.Status):
@@ -471,7 +473,9 @@ def remove_boost_on_delete(sender: type, instance: models.Boost, *args, **kwargs
 
 
 @receiver(signals.post_save, sender=models.UserFollows)
-def add_statuses_on_follow(sender: type, instance: models.UserFollows, created, *args, **kwargs):
+def add_statuses_on_follow(
+    sender: type, instance: models.UserFollows, created, *args, **kwargs
+):
     """add a newly followed user's statuses to feeds"""
     if not created or not instance.user_subject.local:
         return
@@ -481,7 +485,9 @@ def add_statuses_on_follow(sender: type, instance: models.UserFollows, created, 
 
 
 @receiver(signals.post_delete, sender=models.UserFollows)
-def remove_statuses_on_unfollow(sender: type, instance: models.UserFollows, *args, **kwargs):
+def remove_statuses_on_unfollow(
+    sender: type, instance: models.UserFollows, *args, **kwargs
+):
     """remove statuses from a feed on unfollow"""
     if not instance.user_subject.local:
         return
@@ -491,7 +497,9 @@ def remove_statuses_on_unfollow(sender: type, instance: models.UserFollows, *arg
 
 
 @receiver(signals.post_save, sender=models.UserBlocks)
-def remove_statuses_on_block(sender: type, instance: models.UserBlocks, *args, **kwargs):
+def remove_statuses_on_block(
+    sender: type, instance: models.UserBlocks, *args, **kwargs
+):
     """remove statuses from all feeds on block"""
     # blocks apply ot all feeds
     if instance.user_subject.local:
@@ -536,7 +544,9 @@ def add_statuses_on_unblock(sender: type, instance: models.UserBlocks, *args, **
 
 
 @receiver(signals.post_save, sender=models.User)
-def populate_streams_on_account_create(sender: type, instance: models.User, created: bool, *args, **kwargs):
+def populate_streams_on_account_create(
+    sender: type, instance: models.User, created: bool, *args, **kwargs
+):
     """build a user's feeds when they join"""
     if not created or not instance.local:
         return
@@ -567,7 +577,9 @@ def add_statuses_on_shelve(sender: type, instance: models.ShelfBook, *args, **kw
 
 
 @receiver(signals.post_delete, sender=models.ShelfBook)
-def remove_statuses_on_unshelve(sender: type, instance: models.ShelfBook, *args, **kwargs):
+def remove_statuses_on_unshelve(
+    sender: type, instance: models.ShelfBook, *args, **kwargs
+):
     """update books stream when user unshelves a book"""
     if not instance.user.local:
         return
@@ -657,7 +669,9 @@ def add_status_task(status_id: int, increment_unread=False):
 
 
 @app.task(queue=STREAMS)
-def remove_user_statuses_task(viewer_id: int, user_id: int, stream_list: list[str]=None):
+def remove_user_statuses_task(
+    viewer_id: int, user_id: int, stream_list: list[str] = None
+):
     """remove all statuses by a user from a viewer's stream"""
     stream_list = [streams[s] for s in stream_list] if stream_list else streams.values()
     viewer = models.User.objects.get(id=viewer_id)
@@ -667,7 +681,7 @@ def remove_user_statuses_task(viewer_id: int, user_id: int, stream_list: list[st
 
 
 @app.task(queue=STREAMS)
-def add_user_statuses_task(viewer_id: int, user_id: int, stream_list: list[str]=None):
+def add_user_statuses_task(viewer_id: int, user_id: int, stream_list: list[str] = None):
     """add all statuses by a user to a viewer's stream"""
     stream_list = [streams[s] for s in stream_list] if stream_list else streams.values()
     viewer = models.User.objects.get(id=viewer_id)
@@ -696,7 +710,7 @@ def handle_boost_task(boost_id: int):
             stream.remove_object_from_stores(status, audience)
 
 
-def get_status_type(status: models.Status):
+def get_status_type(status: models.Status) -> str:
     """return status type even for boosted statuses"""
     status_type = status.status_type.lower()
 

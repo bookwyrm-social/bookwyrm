@@ -176,7 +176,9 @@ def get_annual_summary_year():
     return None
 
 
-def privacy_verification(request: HttpRequest, user: models.User, year: str, year_key: str) -> None:
+def privacy_verification(
+    request: HttpRequest, user: models.User, year: str, year_key: str
+) -> None:
     """raises a 404 error if the user should not access the page"""
     if user != request.user:
         request_key = None
@@ -209,7 +211,9 @@ def is_year_available(user: models.User, year: str) -> bool:
     return False
 
 
-def get_books_from_shelfbooks(books_ids: QuerySet[models.ReadThrough, Any], viewer: models.User):
+def get_books_from_shelfbooks(
+    books_ids: QuerySet[models.ReadThrough, Any], viewer: models.User
+):
     """return an ordered QuerySet of books from a list"""
 
     ordered = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(books_ids)])
