@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-20 16:26+0000\n"
-"PO-Revision-Date: 2026-08-08 13:41\n"
+"PO-Revision-Date: 2026-08-08 20:31\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -1471,11 +1471,11 @@ msgstr "Serienaam:"
 #: bookwyrm/templates/book/edit/edit_book_form.html:186
 #: bookwyrm/templates/book/edit/edit_series.html:75
 msgid "Series position:"
-msgstr ""
+msgstr "Nummer in serie:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:189
 msgid "This field was previously called \"Series number\""
-msgstr ""
+msgstr "Dit veld heette eerder 'serienummer'"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:202
 msgid "Publication"
@@ -1571,12 +1571,12 @@ msgstr "Openlibrary ID:"
 #: bookwyrm/templates/book/edit/edit_series.html:9
 #, python-format
 msgid "Edit \"%(title)s\""
-msgstr ""
+msgstr "Wijzig \"%(title)s\""
 
 #: bookwyrm/templates/book/edit/edit_series.html:20
 #, python-format
 msgid "Edit \"%(name)s\""
-msgstr ""
+msgstr "Wijzig \"%(name)s\""
 
 #: bookwyrm/templates/book/edit/edit_series.html:30
 #: bookwyrm/templates/settings/schedules.html:22
@@ -1586,20 +1586,20 @@ msgstr "Naam"
 #: bookwyrm/templates/book/edit/edit_series.html:36
 #: bookwyrm/templates/book/series.html:29
 msgid "Alternative names"
-msgstr ""
+msgstr "Alternatieve namen"
 
 #: bookwyrm/templates/book/edit/edit_series.html:39
 #: bookwyrm/templates/book/edit/edit_series.html:42
 msgid "Add Alternative name:"
-msgstr ""
+msgstr "Voeg een alternatieve naam toe:"
 
 #: bookwyrm/templates/book/edit/edit_series.html:48
 msgid "Add an Alternative name"
-msgstr ""
+msgstr "Voeg een alternatieve naam toe"
 
 #: bookwyrm/templates/book/edit/edit_series.html:57
 msgid "Wikidata ID:"
-msgstr ""
+msgstr "Wikidata-ID:"
 
 #: bookwyrm/templates/book/editions/editions.html:4
 #, python-format
@@ -1844,7 +1844,7 @@ msgstr "Bekijk op Libris"
 
 #: bookwyrm/templates/book/sections/reviews.html:8
 msgid "Add your thoughts"
-msgstr ""
+msgstr "Deel je mening"
 
 #: bookwyrm/templates/book/sections/reviews.html:30
 msgid "Your reviews"
@@ -1869,21 +1869,21 @@ msgstr "Plaatsen"
 #: bookwyrm/templates/book/sections/title.html:31
 #, python-format
 msgid "This book might be part of the <em>%(series)s</em> series."
-msgstr ""
+msgstr "Dit boek is mogelijk onderdeel van de serie <em>%(series)s</em>."
 
 #: bookwyrm/templates/book/sections/title.html:35
 msgid "Edit it to confirm."
-msgstr ""
+msgstr "Bewerk deze om dit te bevestigen."
 
 #: bookwyrm/templates/book/sections/title.html:48
 #, python-format
 msgid "Book <span itemprop=\"position\">%(number)s</span> in <em><a href=\"%(path)s\">%(title)s</a></em>"
-msgstr ""
+msgstr "Boek <span itemprop=\"position\">%(number)s</span> in <em><a href=\"%(path)s\">%(title)s</a></em>"
 
 #: bookwyrm/templates/book/sections/title.html:54
 #, python-format
 msgid "Part of <em><a href=\"%(path)s\">%(title)s</a></em>"
-msgstr ""
+msgstr "Deel uit <em><a href=\"%(path)s\">%(title)s</a></em>"
 
 #: bookwyrm/templates/book/sections/title.html:70
 #: bookwyrm/templates/book/sections/title.html:71
@@ -1904,7 +1904,7 @@ msgstr "%(user_link)s zegt:"
 #: bookwyrm/templates/book/suggestion_list/book_card.html:19
 #, python-format
 msgid "%(user_link)s recommends:"
-msgstr ""
+msgstr "%(user_link)s beveelt aan:"
 
 #: bookwyrm/templates/book/suggestion_list/endorsement_button.html:4
 msgid "Endorse this suggestion"
@@ -1916,7 +1916,7 @@ msgstr "Suggesties"
 
 #: bookwyrm/templates/book/suggestion_list/list.html:6
 msgid "Readers also recommend:"
-msgstr ""
+msgstr "Lezers raden ook aan:"
 
 #: bookwyrm/templates/book/suggestion_list/list.html:9
 msgid "View all suggestions"
@@ -1930,7 +1930,7 @@ msgstr "Hebt u een aanbeveling voor iemand die dit boek graag gelezen heeft?"
 #: bookwyrm/templates/book/suggestion_list/list.html:26
 #: bookwyrm/templates/book/suggestion_list/list.html:45
 msgid "Add suggestion"
-msgstr ""
+msgstr "Suggestie toevoegen"
 
 #: bookwyrm/templates/book/suggestion_list/list.html:61
 msgid "Load books"
@@ -2651,7 +2651,7 @@ msgstr "Groep bewerken"
 
 #: bookwyrm/templates/groups/members.html:6
 msgid "Group Members"
-msgstr ""
+msgstr "Groepsleden"
 
 #: bookwyrm/templates/groups/members.html:11
 msgid "Search to add a user"
@@ -3311,15 +3311,15 @@ msgstr "Maak nieuwe planken aan als deze niet bestaan"
 
 #: bookwyrm/templates/import/import.html:110
 msgid "Shelve all imported books on:"
-msgstr ""
+msgstr "Zet alle geïmporteerde boeken op plank:"
 
 #: bookwyrm/templates/import/import.html:115
 msgid "Use shelf/status from the file"
-msgstr ""
+msgstr "Gebruik plank/status uit het bestand"
 
 #: bookwyrm/templates/import/import.html:123
 msgid "Choose a shelf to use instead of any shelf or reading status in the file."
-msgstr ""
+msgstr "Kies een plank om te gebruiken in plaats van de plank of leesstatus uit het bestand."
 
 #: bookwyrm/templates/import/import.html:128
 msgid "Privacy setting for imported reviews and shelves:"
@@ -4190,7 +4190,7 @@ msgstr "Wis zoekopdracht"
 #: bookwyrm/templates/lists/suggestion_search.html:24
 #, python-format
 msgid "No books found matching the query \"%(suggestion_query)s\""
-msgstr ""
+msgstr "Geen boeken gevonden bij zoekopdracht \"%(suggestion_query)s\""
 
 #: bookwyrm/templates/moved.html:27
 #, python-format
@@ -5204,7 +5204,7 @@ msgstr "Je verwijdert deze leesvoortgang en de %(count)s bijbehorende voortgangs
 #: bookwyrm/templates/readthrough/readthrough.html:6
 #, python-format
 msgid "Update read dates for \"%(title)s\""
-msgstr ""
+msgstr "Wijzig leesdata voor \"%(title)s\""
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:10
 #: bookwyrm/templates/readthrough/readthrough_modal.html:38
@@ -5228,7 +5228,7 @@ msgstr "Uitgelezen"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:9
 msgid "Started:"
-msgstr ""
+msgstr "Begonnen:"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:12
 msgid "Show all updates"
@@ -5240,11 +5240,11 @@ msgstr "Verwijder deze voortgangsupdate"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:41
 msgid "Finished:"
-msgstr ""
+msgstr "Uitgelezen:"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:43
 msgid "Stopped:"
-msgstr ""
+msgstr "Gestopt:"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:57
 msgid "Edit read dates"
@@ -5730,11 +5730,11 @@ msgstr "Reden voor deactivatie:"
 
 #: bookwyrm/templates/settings/connectors/connector.html:43
 msgid "Latest successful request"
-msgstr ""
+msgstr "Laatste succesvolle request"
 
 #: bookwyrm/templates/settings/connectors/connector.html:50
 msgid "Latest error"
-msgstr ""
+msgstr "Laatste foutmelding"
 
 #: bookwyrm/templates/settings/connectors/connector.html:66
 #: bookwyrm/templates/settings/connectors/update.html:47
@@ -6141,7 +6141,7 @@ msgstr "Instellingen opslaan mislukt"
 
 #: bookwyrm/templates/settings/federation/settings.html:37
 msgid "Require signed GET requests"
-msgstr ""
+msgstr "Vereis ondertekende GET-requests"
 
 #: bookwyrm/templates/settings/federation/settings.html:38
 msgid "Recommended"
@@ -6149,15 +6149,15 @@ msgstr "Aanbevolen"
 
 #: bookwyrm/templates/settings/federation/settings.html:42
 msgid "Prevents anonymous requests from federated instances. Roughly equivalent to Mastodon's 'secure mode' or 'AUTHORIZED_FETCH'"
-msgstr ""
+msgstr "Blokkeer anonieme requests van gefedereerde instanties. Dit komt ongeveer overeen met de 'veilige modus' of 'AUTHORIZED_FETCH' van Mastodon"
 
 #: bookwyrm/templates/settings/federation/settings.html:48
 msgid "Prevent unauthenticated views"
-msgstr ""
+msgstr "Blokkeer ongeauthentiseerde weergaves"
 
 #: bookwyrm/templates/settings/federation/settings.html:51
 msgid "Prevents anonymous users from seeing most pages. To block JSON requests as well, enable 'Require signed GET requests'"
-msgstr ""
+msgstr "Dit blokkeert de meeste pagina's voor anonieme bezoekers. Om ook JSON-requests te blokkeren, dien je 'Vereis ondertekende GET-requests' in te schakelen"
 
 #: bookwyrm/templates/settings/federation/settings.html:57
 msgid "Disable federation"
@@ -6173,7 +6173,7 @@ msgstr "Stopt de interactie van jouw instantie met andere federatieve diensten. 
 
 #: bookwyrm/templates/settings/federation/settings.html:67
 msgid "Block incoming search"
-msgstr ""
+msgstr "Inkomende zoekopdrachten blokkeren"
 
 #: bookwyrm/templates/settings/federation/settings.html:68
 msgid "Not Recommended"
@@ -6181,7 +6181,7 @@ msgstr "Niet aanbevolen"
 
 #: bookwyrm/templates/settings/federation/settings.html:71
 msgid "Prevents other servers from searching your instance. It is strongly recommended you do NOT enable this setting."
-msgstr ""
+msgstr "Dit voorkomt dat andere servers op jouw instantie kunnen zoeken. Het wordt sterk afgeraden dit in te schakelen."
 
 #: bookwyrm/templates/settings/files.html:7
 #: bookwyrm/templates/settings/files.html:11
@@ -6829,7 +6829,7 @@ msgstr "Melding #%(report_id)s: Status geplaatst door @%(username)s"
 #: bookwyrm/templates/settings/reports/report_header.html:11
 #, python-format
 msgid "Report #%(report_id)s"
-msgstr ""
+msgstr "Rapport #%(report_id)s"
 
 #: bookwyrm/templates/settings/reports/report_header.html:19
 #, python-format
@@ -7658,8 +7658,8 @@ msgstr "De broncode van BookWyrm is vrij beschikbaar. Je kunt bijdragen of probl
 #, python-format
 msgid "%(rating)s.5 stars"
 msgid_plural "%(rating)s.5 stars"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(rating)s,5 sterren"
+msgstr[1] "%(rating)s,5 sterren"
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:32
 #: bookwyrm/templates/snippets/stars.html:20
@@ -7687,8 +7687,8 @@ msgstr[1] "beoordeelde <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_ra
 #, python-format
 msgid "Rated \"%(book_title)s\" %(display_rating)s star %(review_title)s"
 msgid_plural "Rated \"%(book_title)s\" %(display_rating)s stars %(review_title)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Beoordeelde \"%(book_title)s\" met %(display_rating)s sterren %(review_title)s"
+msgstr[1] "Beoordeelde \"%(book_title)s\" met %(display_rating)s sterren %(review_title)s"
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:4
 #, python-format
@@ -8015,7 +8015,7 @@ msgstr "recensie geschreven voor <a href=\"%(book_path)s\">%(book)s</a>"
 #: bookwyrm/templates/snippets/status/headers/review.html:33
 #, python-format
 msgid "rated <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "beoordeelde <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
 #, python-format
@@ -8324,11 +8324,11 @@ msgstr "een nieuwe gebruikersaccount"
 
 #: bookwyrm/views/books/edit_book.py:82 bookwyrm/views/books/edit_book.py:488
 msgid "There is another book in the series with the same value"
-msgstr ""
+msgstr "Er is al een ander boek in deze met hetzelfde nummer"
 
 #: bookwyrm/views/books/series.py:91
 msgid "Series position must be unique for each book"
-msgstr ""
+msgstr "Serienummer moet uniek zijn voor elk boek"
 
 #: bookwyrm/views/updates.py:46
 #, python-format
