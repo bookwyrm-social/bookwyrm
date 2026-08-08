@@ -1,4 +1,4 @@
-FROM dev-wyrm-web
+FROM ghcr.io/bookwyrm-social/bookwyrm:main
 WORKDIR /app/dev-tools
 
 ENV PATH="/app/dev-tools/node_modules/.bin:$PATH"
