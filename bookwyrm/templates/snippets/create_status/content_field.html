@@ -17,8 +17,12 @@ draft: an existing Status object that is providing default values for input fiel
         data-max-upload-human="{% max_upload_size_human %}"
         {% if not draft %}data-cache-draft="id_content_{{ type }}_{{ book.id }}{{ reply_parent.id }}"{% endif %}
         id="id_content_{{ type }}_{{ book.id }}{{ reply_parent.id }}{{ uuid }}"
+        aria-describedby="markdown_help_{{ type }}_{{ book.id }}{{ reply_parent.id }}{{ uuid }}"
         placeholder="{{ placeholder }}"
         aria-label="{% if reply_parent %}{% trans 'Reply' %}{% else %}{% trans 'Content' %}{% endif %}"
         {% if not optional and type != "quotation" and type != "review" %}required{% endif %}
         >{% if reply_parent %}{{ reply_parent|mentions:request.user }}{% endif %}{% if mention %}@{{ mention|username }} {% endif %}{{ prepared_content }}{% firstof draft.raw_content draft.content '' %}</textarea>
 </div>
+<p class="help" id="markdown_help_{{ type }}_{{ book.id }}{{ reply_parent.id }}{{ uuid }}">
+    <a href="https://docs.joinbookwyrm.com/posting-statuses.html#text" target="_blank" rel="nofollow noopener noreferrer">{% trans "Markdown formatting is supported." %}</a>
+</p>

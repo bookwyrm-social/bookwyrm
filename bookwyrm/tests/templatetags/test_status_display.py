@@ -1,6 +1,7 @@
 """style fixes and lookups for templates"""
 
 import datetime
+from unittest import TestCase as UnitTestCase
 from unittest.mock import patch
 
 from django.template.loader import render_to_string
@@ -10,6 +11,26 @@ from django.utils import timezone
 
 from bookwyrm import models
 from bookwyrm.templatetags import status_display
+
+
+class CreateStatusTemplateTests(UnitTestCase):
+    """tests for the status creation templates"""
+
+    def test_content_describes_markdown_support(self):
+        """status fields explain their supported formatting"""
+        result = render_to_string(
+            "snippets/create_status/content_field.html",
+            {"book": {"id": 42}, "type": "comment"},
+        )
+
+        help_id = "markdown_help_comment_42"
+        self.assertIn("Markdown formatting is supported.", result)
+        self.assertIn(
+            'href="https://docs.joinbookwyrm.com/posting-statuses.html#text"',
+            result,
+        )
+        self.assertIn(f'aria-describedby="{help_id}"', result)
+        self.assertIn(f'id="{help_id}"', result)
 
 
 @patch("bookwyrm.activitystreams.add_status_task.delay")
