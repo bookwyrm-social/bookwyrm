@@ -25,6 +25,7 @@
                 type="radio"
                 name="rating"
                 value="{{ forloop.counter0 }}.5"
+                aria-describedby="half_star_help_{{ type|default:'rating'|slugify }}_book{{ book.id }}"
                 {% if default_rating > 0 and default_rating > forloop.counter0 %}checked{% endif %}
             />
             <label for="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter }}">
@@ -42,6 +43,7 @@
                 type="radio"
                 name="rating"
                 value="{{ forloop.counter }}"
+                aria-describedby="half_star_help_{{ type|default:'rating'|slugify }}_book{{ book.id }}"
                 {% if default_rating >= forloop.counter %}checked{% endif %}
             />
         </div>
@@ -61,4 +63,7 @@
     </div>
     {% endfor %}
 </div>
+<p class="help" id="half_star_help_{{ type|default:'rating'|slugify }}_book{{ book.id }}">
+    {% trans "Select the left half of a star for a half-star rating." %}
+</p>
 {% endspaceless %}

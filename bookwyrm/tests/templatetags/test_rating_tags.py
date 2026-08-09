@@ -1,11 +1,29 @@
 """Gettings book ratings"""
 
+from unittest import TestCase as UnitTestCase
 from unittest.mock import patch
 
+from django.template.loader import render_to_string
 from django.test import TestCase
 
 from bookwyrm import models
 from bookwyrm.templatetags import rating_tags
+
+
+class RatingTemplateTests(UnitTestCase):
+    """tests for rating form templates"""
+
+    def test_rating_form_explains_half_stars(self):
+        """the rating control explains how to select half stars"""
+        result = render_to_string(
+            "snippets/form_rate_stars.html",
+            {"book": {"id": 42}, "type": "review"},
+        )
+
+        help_id = "half_star_help_review_book42"
+        self.assertIn("Select the left half of a star for a half-star rating.", result)
+        self.assertEqual(result.count(f'aria-describedby="{help_id}"'), 10)
+        self.assertIn(f'id="{help_id}"', result)
 
 
 @patch("bookwyrm.activitystreams.add_status_task.delay")
