@@ -380,7 +380,7 @@ let BookWyrm = new (class {
 
         // Toggle class on all related forms.
         relatedforms.forEach((relatedForm) => {
-            const isHidden = relatedForm.className.indexOf("is-hidden") == -1;
+            const isHidden = relatedForm.className.indexOf("is-hidden") != -1;
 
             if (isHidden) {
                 bookwyrm.classShow(relatedForm);
