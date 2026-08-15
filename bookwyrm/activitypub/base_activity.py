@@ -26,8 +26,35 @@ from bookwyrm.tasks import app, MISC
 
 logger = logging.getLogger(__name__)
 
-
 TBookWyrmModel = TypeVar("TBookWyrmModel", bound=base_model.BookWyrmModel)
+
+# custom properties that appear on various decendants of Note
+namespaced = [
+    "inReplyToBook",
+    "readingStatus",
+    "progress",
+    "progressMode",
+    "quote",
+    "position",
+    "positionMode",
+    "rating",
+]
+
+# custom types that don't inherit from Note
+other_custom_activity_objects = [
+    "CollectionItem",
+    "ListItem",
+    "ShelfItem",
+    "SuggestionListItem",
+    "BookList",
+    "SuggestionList",
+    "Shelf",
+    "Edition",
+    "Work",
+    "Author",
+    "Series",
+    "SeriesBook",
+]
 
 
 class ActivitySerializerError(ValueError):
@@ -59,8 +86,46 @@ def naive_parse(activity_objects, activity_json, serializer=None):
             activity_json["type"] = "PublicKey"
 
         activity_type = activity_json.get("type")
+
+        if isinstance(activity_type, list):
+            # see https://www.w3.org/TR/json-ld/#specifying-the-type
+            try:
+                # assume bw type is first as per
+                # https://www.w3.org/TR/activitystreams-core/#asobject
+                # and
+                # https://www.w3.org/wiki/Activity_Streams/Primer/Extensions
+                activity_type = [
+                    atype for atype in activity_type if atype in activity_objects
+                ][0]
+            except IndexError as err:
+                # we don't know what any of these types are
+                raise ActivitySerializerError(err)
+
         if activity_type in ["Question", "Article"]:
             return None
+
+        # forwards-compatible setting for strict namespacing
+        if models.SiteSettings.get().use_strict_ap_namespacing:
+            has_namespace = "https://w3id.org/BookWyrm/ns" in activity_json["@context"]
+            has_bw_namespace = {"bw": "https://w3id.org/BookWyrm/ns"} in activity_json[
+                "@context"
+            ]
+            # no context
+            if "@context" not in activity_json:
+                return None
+            # not ActivityPub
+            if "https://www.w3.org/ns/activitystreams" not in activity_json["@context"]:
+                return None
+            # is a non-Note BookWyrm type without BW namespace
+            if activity_type in other_custom_activity_objects and not has_namespace:
+                return None
+            # is decendent of Note without the bw namespace
+            if (
+                len(set(activity_json.keys()) & set(namespaced)) > 0
+                and not has_bw_namespace
+            ):
+                return None
+
         try:
             serializer = activity_objects[activity_type]
         except KeyError as err:
@@ -246,6 +311,7 @@ class ActivityObject:
         """convert to dictionary with context attr"""
         omit = kwargs.get("omit", ())
         data = self.__dict__.copy()
+        bw_data = {}
         # recursively serialize
         for k, v in data.items():
             try:
@@ -256,14 +322,51 @@ class ActivityObject:
                         e.serialize() if issubclass(type(e), ActivityObject) else e
                         for e in v
                     ]
+
+                if k in namespaced and v is not None and k not in omit:
+                    # hack for forwards-compatible namespacing for custom Note and Article properties
+                    # can't add directly because it will change the dict size whilst we're iterating it
+                    bw_data[f"bw:{k}"] = v
             except TypeError:
                 pass
         data = {k: v for (k, v) in data.items() if v is not None and k not in omit}
+        # add bw:blah fields for forwards-compatibility
+        for k, v in bw_data.items():
+            data[k] = v
+        # conditionally update the @context depending on the values in the object
         if "@context" not in omit:
             data["@context"] = [
                 "https://www.w3.org/ns/activitystreams",
-                {"Hashtag": "as:Hashtag"},
             ]
+
+            if any(cls.__name__ == "Person" for cls in type(self).__mro__):
+                data["@context"].append(
+                    {
+                        "bookwyrmUser": "https://w3id.org/BookWyrm/ns/#bookwyrmUser",
+                        "discoverable": "http://joinmastodon.org/ns#discoverable",
+                        "Hashtag": "as:Hashtag",
+                    }
+                )
+
+            # temporary fix before bw namespacing is in place
+            if any(cls.__name__ == "Quotation" for cls in type(self).__mro__):
+                data["@context"].append(
+                    {"quote": "https://w3id.org/BookWyrm/ns/#quote"}
+                )
+
+            # explicitly name-space custom properties in Note types
+            if any(cls.__name__ == "Note" for cls in type(self).__mro__):
+                data["@context"].append(
+                    {
+                        "bw": "https://w3id.org/BookWyrm/ns",
+                        "Hashtag": "as:Hashtag",
+                    }
+                )
+                return data
+
+            # add our namespace to anything else that uses BookWyrm-specific values
+            if type(self).__name__ in other_custom_activity_objects:
+                data["@context"].append("https://w3id.org/BookWyrm/ns")
         return data
 
 

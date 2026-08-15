@@ -352,3 +352,69 @@ class BaseActivity(TestCase):
         # should log nothing if we only want to log errors
         with self.assertNoLogs(logger=None, level="ERROR") as logger:
             resolved = resolve_remote_id("https://example.com/user/mouse")
+
+    def test_strict_type_checking(self, *_):
+        """test strict checking of BookWyrm types before parsing"""
+
+        models.SiteSettings.objects.create(use_strict_ap_namespacing=True)
+
+        # fails - no namespacing
+        is_bw_type = activitypub.parse(
+            {
+                "@context": [
+                    "https://www.w3.org/ns/activitystreams",
+                ],
+                "type": "Series",
+            }
+        )
+        self.assertEqual(is_bw_type, None)
+
+        # passes
+        with self.assertRaises(activitypub.base_activity.ActivitySerializerError):
+            activitypub.parse(
+                {
+                    "@context": [
+                        "https://www.w3.org/ns/activitystreams",
+                        "https://w3id.org/BookWyrm/ns",
+                    ],
+                    "type": "Series",
+                }
+            )
+
+        # passes
+        with self.assertRaises(activitypub.base_activity.ActivitySerializerError):
+            activitypub.parse(
+                {
+                    "@context": [
+                        "https://www.w3.org/ns/activitystreams",
+                        {"bw": "https://w3id.org/BookWyrm/ns"},
+                    ],
+                    "type": "Quotation",
+                    "quote": "to be or not to be",
+                }
+            )
+
+        # fails - namespaced incorrectly for Quotation
+        is_none = activitypub.parse(
+            {
+                "@context": [
+                    "https://www.w3.org/ns/activitystreams",
+                    "https://w3id.org/BookWyrm/ns",
+                ],
+                "type": "Quotation",
+                "quote": "to be or not to be",
+            }
+        )
+        self.assertEqual(is_none, None)
+
+        # fails - namespaced incorrectly for Edition
+        is_none = activitypub.parse(
+            {
+                "@context": [
+                    "https://www.w3.org/ns/activitystreams",
+                    {"bw": "https://w3id.org/BookWyrm/ns"},
+                ],
+                "type": "Edition",
+            }
+        )
+        self.assertEqual(is_none, None)
