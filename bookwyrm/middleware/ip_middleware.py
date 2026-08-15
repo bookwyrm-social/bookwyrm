@@ -12,7 +12,7 @@ class IPBlocklistMiddleware:
 
     def __call__(self, request):
         if "x-forwarded-for" in request.headers:
-            address = request.headers.get("x-forwarded-for")
+            address = request.headers.get("x-forwarded-for").split(',')[0]
         else:
             address = request.META.get("REMOTE_ADDR")
         if models.IPBlocklist.objects.filter(address=address).exists():
