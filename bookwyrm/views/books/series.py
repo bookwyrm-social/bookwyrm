@@ -32,7 +32,7 @@ class Series(View):
 
         blocked = request.user.blocked_books.all() if request.user else []
         items = series.seriesbooks.exclude(book__in=blocked).prefetch_related(
-            "book", "book__work__editions__authors"
+            "book__work", "book__work__editions__authors"
         )
         series_books = sorted(items, key=lambda sb: sb.natural_sort_key)
         authors = models.Author.objects.filter(
