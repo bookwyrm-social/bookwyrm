@@ -26,8 +26,35 @@ from bookwyrm.tasks import app, MISC
 
 logger = logging.getLogger(__name__)
 
-
 TBookWyrmModel = TypeVar("TBookWyrmModel", bound=base_model.BookWyrmModel)
+
+# custom properties that appear on various decendants of Note
+namespaced = [
+    "inReplyToBook",
+    "readingStatus",
+    "progress",
+    "progressMode",
+    "quote",
+    "position",
+    "positionMode",
+    "rating",
+]
+
+# custom types that don't inherit from Note
+other_custom_activity_objects = [
+    "CollectionItem",
+    "ListItem",
+    "ShelfItem",
+    "SuggestionListItem",
+    "BookList",
+    "SuggestionList",
+    "Shelf",
+    "Edition",
+    "Work",
+    "Author",
+    "Series",
+    "SeriesBook",
+]
 
 
 class ActivitySerializerError(ValueError):
@@ -59,8 +86,45 @@ def naive_parse(activity_objects, activity_json, serializer=None):
             activity_json["type"] = "PublicKey"
 
         activity_type = activity_json.get("type")
-        if activity_type in ["Question", "Article"]:
+        if isinstance(activity_type, str) and activity_type in ["Question", "Article"]:
             return None
+
+        # strict namespacing
+        if models.SiteSettings.get().use_strict_ap_namespacing:
+            has_namespace = "https://w3id.org/BookWyrm/ns" in activity_json["@context"]
+            has_bw_namespace = {"bw": "https://w3id.org/BookWyrm/ns"} in activity_json[
+                "@context"
+            ]
+            # no context
+            if "@context" not in activity_json:
+                raise ActivitySerializerError("No @context provided")
+            # not ActivityPub
+            if "https://www.w3.org/ns/activitystreams" not in activity_json["@context"]:
+                raise ActivitySerializerError("Not an activitystreams activity")
+            # is a non-Note BookWyrm type without BW namespace
+            if activity_type in other_custom_activity_objects and not has_namespace:
+                raise ActivitySerializerError("BookWyrm namespace error")
+            # is decendent of Note without the bw namespace
+            if (
+                len(set(activity_json.keys()) & set(namespaced)) > 0
+                and not has_bw_namespace
+            ):
+                raise ActivitySerializerError("BookWyrm namespace error")
+
+        # convert namespaced keys to ActivityObject keys
+        for k in namespaced:
+            if value := activity_json.get(f"bw:{k}"):
+                activity_json[k] = value
+                del activity_json[f"bw:{k}"]
+
+        # choose the activity type to use when parsing this object
+        if isinstance(activity_type, list):
+            for atype in activity_type:
+                if atype in activity_objects:
+                    # these should be in our preferred order
+                    activity_type = atype
+                    break
+        activity_json["type"] = activity_type
         try:
             serializer = activity_objects[activity_type]
         except KeyError as err:
@@ -142,7 +206,11 @@ class ActivityObject:
             self.to_model. e.g. if this is a Work being dereferenced from
             an incoming Edition
         """
-        model = model or get_model_from_type(self.type)
+        try:
+            model = model or get_model_from_type(self.type)
+        except ActivitySerializerError:
+            # type is a list on Note-like activities
+            model = model or get_model_from_type(self.type[0])
 
         # only reject statuses if we're potentially creating them
         if (
@@ -246,6 +314,7 @@ class ActivityObject:
         """convert to dictionary with context attr"""
         omit = kwargs.get("omit", ())
         data = self.__dict__.copy()
+        bw_data = {}
         # recursively serialize
         for k, v in data.items():
             try:
@@ -256,14 +325,45 @@ class ActivityObject:
                         e.serialize() if issubclass(type(e), ActivityObject) else e
                         for e in v
                     ]
+
+                if k in namespaced and v is not None and k not in omit:
+                    # namespacing for extended Note and Article properties
+                    bw_data[k] = v
             except TypeError:
                 pass
         data = {k: v for (k, v) in data.items() if v is not None and k not in omit}
+        # send extended properties as namespaced
+        for k, v in bw_data.items():
+            data[f"bw:{k}"] = v
+            del data[k]
+        # conditionally update the @context depending on the values in the object
         if "@context" not in omit:
             data["@context"] = [
                 "https://www.w3.org/ns/activitystreams",
-                {"Hashtag": "as:Hashtag"},
             ]
+
+            if any(cls.__name__ == "Person" for cls in type(self).__mro__):
+                data["@context"].append(
+                    {
+                        "bookwyrmUser": "https://w3id.org/BookWyrm/ns/#bookwyrmUser",
+                        "discoverable": "http://joinmastodon.org/ns#discoverable",
+                        "Hashtag": "as:Hashtag",
+                    }
+                )
+
+            # explicitly name-space custom properties in Note types
+            if any(cls.__name__ == "Note" for cls in type(self).__mro__):
+                data["@context"].append(
+                    {
+                        "bw": "https://w3id.org/BookWyrm/ns",
+                        "Hashtag": "as:Hashtag",
+                    }
+                )
+                return data
+
+            # add our namespace to anything else that uses BookWyrm-specific values
+            if type(self).__name__ in other_custom_activity_objects:
+                data["@context"].append("https://w3id.org/BookWyrm/ns")
         return data
 
 
@@ -312,7 +412,14 @@ def get_model_from_type(activity_type):
         for m in activity_models
         if hasattr(m, "activity_serializer")
         and hasattr(m.activity_serializer, "type")
-        and m.activity_serializer.type == activity_type
+        and (
+            m.activity_serializer.type == activity_type
+            or hasattr(m, "core_activity_type")
+            and (
+                m.core_activity_type == activity_type
+                or m.core_activity_type in activity_type
+            )
+        )
     ]
     if not model:
         raise ActivitySerializerError(
