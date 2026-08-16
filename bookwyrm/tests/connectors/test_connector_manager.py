@@ -1,13 +1,33 @@
 """interface between the app and various connectors"""
 
 from django.test import TestCase
+import fakeredis
+import pytest
 import responses
+from unittest import mock
 
 from bookwyrm import models
 from bookwyrm.connectors import connector_manager
 from bookwyrm.connectors.bookwyrm_connector import Connector as BookWyrmConnector
 
 
+@pytest.fixture(autouse=True)
+def fake_aredis(settings):
+    """use fake redis server to avoid problems testing anything use to_model()"""
+    with (
+        mock.patch(
+            "bookwyrm.connectors.abstract_connector.redis",
+            fakeredis.FakeAsyncRedis,
+        ) as _fakeredis,
+        mock.patch(
+            "bookwyrm.connectors.abstract_connector.REDIS_ACTIVITY_URL",
+            "redis://activity:6379/0",
+        ) as _fakeredis,
+    ):
+        yield _fakeredis
+
+
+@pytest.mark.usefixtures("fake_aredis")
 class ConnectorManager(TestCase):
     """interface between the app and various connectors"""
 
