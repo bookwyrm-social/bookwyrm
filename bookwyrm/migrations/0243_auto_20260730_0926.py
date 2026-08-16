@@ -20,7 +20,8 @@ def fix_series(apps, schema_editor):
 
         works = Work.objects.filter(series__startswith="[")
         for work in works:
-            if edition := work.default_edition:
+            if edition := work.editions.order_by("-edition_rank").first():
+                print("edition", edition)
                 try:
                     series = json.loads(work.series)
                     work.series = series
@@ -71,7 +72,7 @@ def fix_series(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0242_alter_seriesbook_book'),
+        ('bookwyrm', '0241_connector_latest_error_connector_most_recent_error_and_more'),
     ]
 
     operations = [

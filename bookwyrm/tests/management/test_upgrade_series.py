@@ -159,5 +159,3 @@ class UpgradeSeries(TestCase):
         upgrade_series_data()
 
         # if we don't get any errors here, it works ;)
-
-    # TODO: make a new data migration (like a management method) to fix stringified work series objects

@@ -402,6 +402,13 @@ class Book(BookDataModel):
 
         return re.sub(f"^{' |^'.join(articles)} ", "", str(self.title).lower())
 
+    def get_series(self):
+        """an ordered collection of series"""
+        series = set()
+        for sb in self.seriesbooks.order_by("-created_date").all():
+            series.add(sb.series)
+        return list(series)
+
     def __repr__(self):
         return "<{} key={!r} title={!r}>".format(
             self.__class__,
@@ -507,12 +514,6 @@ class Work(OrderedCollectionPageMixin, Book):
             **kwargs,
         )
 
-    def get_series(self):
-        """an ordered collection of series"""
-        series = set()
-        for sb in self.seriesbooks.order_by("-created_date").all():
-            series.add(sb.series)
-        return list(series)
 
     activity_serializer = activitypub.Work
     serialize_reverse_fields = [
@@ -667,8 +668,8 @@ class Edition(Book):
 
     activity_serializer = activitypub.Edition
     name_field = "title"
-    serialize_reverse_fields = [("file_links", "fileLinks", "-created_date")]
-    deserialize_reverse_fields = [("file_links", "fileLinks")]
+    serialize_reverse_fields = [("file_links", "fileLinks", "-created_date"), ("seriesbooks", "seriesBooks", "-created_date"),]
+    deserialize_reverse_fields = [("file_links", "fileLinks"), ("seriesbooks", "seriesBooks"),]
 
     class Meta:
         indexes = [
@@ -872,6 +873,14 @@ class Edition(Book):
         )
         return queryset
 
+    def get_series(self):
+        """an ordered collection of series"""
+
+        series = set(super().get_series())
+        for ser in self.parent_work.get_series():
+            series.add(ser)
+        return list(series)
+
 
 def isbn_10_to_13(isbn_10):
     """convert an isbn 10 into an isbn 13"""
@@ -984,7 +993,7 @@ class SeriesBook(CollectionItemMixin, BookWyrmModel):
         "Series", on_delete=models.CASCADE, related_name="seriesbooks"
     )
     book = fields.ForeignKey(
-        "Work", on_delete=models.CASCADE, related_name="seriesbooks"
+        "Book", on_delete=models.CASCADE, related_name="seriesbooks"
     )
     series_number = fields.CharField(max_length=255, blank=True, null=True)
 

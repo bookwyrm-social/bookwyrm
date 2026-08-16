@@ -37,6 +37,7 @@ class Book(BookData):
     languages: list[str] = field(default_factory=list)
     series: str = ""  # legacy, now deprecated
     seriesNumber: str = ""  # legacy, now deprecated
+    seriesBooks: list[str] = field(default_factory=list)
     subjects: list[str] = field(default_factory=list)
     subjectPlaces: list[str] = field(default_factory=list)
 
@@ -74,7 +75,6 @@ class Work(Book):
     lccn: str = ""
     editions: list[str] = field(default_factory=list)
     type: str = "Work"
-    seriesBooks: list[str] = field(default_factory=list)
 
 
 @dataclass(init=False)
