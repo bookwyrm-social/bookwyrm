@@ -439,6 +439,7 @@ class BaseActivity(TestCase):
             )
 
         self.assertEqual(error.exception.args, ("BookWyrm namespace error",))
+
     @patch("bookwyrm.activitypub.base_activity.r.set")
     @patch("bookwyrm.activitypub.base_activity.time.sleep")
     def test_mutex_lock(self, mock_sleep, mock_set, *_):
