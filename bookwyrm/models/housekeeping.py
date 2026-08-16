@@ -4,6 +4,7 @@ import math
 from datetime import datetime, timedelta, timezone
 from itertools import chain
 
+from django.db import transaction
 from django.db.models import (
     CharField,
     DateTimeField,
@@ -71,11 +72,15 @@ class CleanUpExportsTask(ParentTask):
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
         """Handler called after the task returns"""
 
-        job = CleanUpUserExportFilesJob.objects.get(id=kwargs["job_id"])
-        job.completed_tasks += 1
-        job.save(update_fields=["completed_tasks"])
+        with transaction.atomic():
+            job = CleanUpUserExportFilesJob.objects.select_for_update().get(
+                id=kwargs["job_id"]
+            )
+            job.completed_tasks += 1
+            job.save(update_fields=["completed_tasks"])
+            is_finished = job.completed_tasks == job.tasks
 
-        if job.completed_tasks == job.tasks:
+        if is_finished:
             job.complete_job()
 
 

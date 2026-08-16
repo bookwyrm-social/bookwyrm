@@ -12,6 +12,9 @@ on:
     branches: ["main"]
     tags:
       - v*
+  release:
+    types:
+      - released
   workflow_dispatch:
     inputs:
       tag:
@@ -52,7 +55,7 @@ jobs:
         type=semver,pattern=v{{version}}
         type=ref,event=branch
       meta-flavor: |
-        latest=${{ startsWith(github.ref, 'refs/tags/') }}
+        latest=${{ github.event_name == 'release' }}
       set-meta-labels: true
       set-meta-annotations: true
     secrets:

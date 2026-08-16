@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import dateutil.parser
 import dateutil.tz
 from dateutil.parser import ParserError
+from urllib.parse import urlsplit, urlunsplit
 
 import mistune
 
@@ -238,10 +239,12 @@ def maybe_redirect_local_path(request, model):
     return redirect(new_path, permanent=True)
 
 
-def redirect_to_referer(request, *args, **kwargs):
+def redirect_to_referer(request, *args, strip_params=False, **kwargs):
     """Redirect to the referrer, if it's in our domain, with get params"""
     # make sure the refer is part of this instance
     validated = validate_url_domain(request.headers.get("referer", ""))
+    if validated and strip_params:
+        validated = urlunsplit(urlsplit(validated)._replace(query="", fragment=""))
 
     if validated:
         return redirect(validated)

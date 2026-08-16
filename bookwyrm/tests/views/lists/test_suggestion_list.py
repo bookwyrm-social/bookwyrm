@@ -101,7 +101,7 @@ class BookViews(TestCase):
     def test_book_add_suggestion(self, *_):
         """Add a book to the recommendation list"""
         suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
-        view = views.book_add_suggestion
+        view = views.AddSuggestion.as_view()
 
         form = forms.SuggestionListItemForm()
         form.data["user"] = self.local_user.id

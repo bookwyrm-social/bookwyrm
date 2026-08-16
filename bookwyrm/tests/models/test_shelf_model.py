@@ -37,6 +37,27 @@ class Shelf(TestCase):
         expected_id = f"{settings.BASE_URL}/user/mouse/books/test-shelf"
         self.assertEqual(shelf.get_remote_id(), expected_id)
 
+    def test_local_path_for_local_user_shelf(self, *_):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            shelf = models.Shelf.objects.create(
+                name="Test Shelf", identifier="test-shelf", user=self.local_user
+            )
+        self.assertEqual(shelf.local_path, "/user/mouse/books/test-shelf")
+
+    def test_local_path_for_remote_user_shelf_stays_local(self, *_):
+        remote_user = models.User.objects.create_user(
+            "rat",
+            "rat@rat.rat",
+            "ratword",
+            local=False,
+            remote_id="https://example.com/user/rat",
+            bookwyrm_user=False,
+        )
+        shelf = models.Shelf.objects.create(
+            name="Test Shelf", identifier="test-shelf", user=remote_user
+        )
+        self.assertEqual(shelf.local_path, "/user/rat@example.com/books/test-shelf")
+
     def test_to_activity(self, *_):
         """jsonify it"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):

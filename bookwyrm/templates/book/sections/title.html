@@ -1,0 +1,75 @@
+{% load i18n %}
+
+<div class="column">
+    <h1 class="title" itemprop="name" dir="auto">
+        {{ book.title }}
+    </h1>
+
+    {% if book.subtitle %}
+    <p class="subtitle title is-5">
+        <meta
+            itemprop="alternativeHeadline"
+            content="{{ book.subtitle | escape }}"
+        >
+        <span class="has-text-weight-bold" dir="auto">
+            {{ book.subtitle }}
+        </span>
+    </p>
+    {% endif %}
+
+    {% if book.authors.exists %}
+    <div class="subtitle" dir="auto">
+        {% include 'snippets/authors.html' with book=book %}
+    </div>
+    {% endif %}
+
+    {% if book.series or book.parent_work.seriesbooks %}
+        {% if book.series %}
+            {% spaceless %}
+            <div columns>
+                <div class="notification is-info is-light column is-half">
+                    {% blocktrans trimmed with series=book.series %}
+                    This book might be part of the <em>{{series}}</em> series.
+                    {% endblocktrans %}
+                    {% if user_authenticated and can_edit_book %}
+                    {% trans "Edit it to confirm." %}
+                    {% endif %}
+                </div>
+            </div>
+            {% endspaceless %}
+        {% endif %}
+
+        {% if book.parent_work.seriesbooks %}
+        {% for sbook in book.parent_work.seriesbooks.all %}
+        <div>
+            {% spaceless %}
+            {% if sbook.series_number %}
+            <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
+                {% blocktrans trimmed with title=sbook.series.name path=sbook.series.local_path number=sbook.series_number %}
+                    Book <span itemprop="position">{{ number }}</span> in <em><a href="{{ path }}">{{ title }}</a></em>
+                {% endblocktrans %}
+            </span>
+            {% else %}
+            <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
+                {% blocktrans trimmed with title=sbook.series.name path=sbook.series.local_path %}
+                    Part of <em><a href="{{ path }}">{{ title }}</a></em>
+                {% endblocktrans %}
+            </span>
+            {% endif %}
+            {% endspaceless %}
+        </div>
+        {% endfor%}
+        {% endif %}
+
+    {% endif %}
+</div>
+
+{% if user_authenticated and can_edit_book %}
+<div class="column is-narrow">
+    <a href="{% url 'edit-book' book.id %}">
+        <span class="icon icon-pencil" title="{% trans "Edit Book" %}" aria-hidden="true"></span>
+        <span class="is-sr-only--mobile">{% trans "Edit Book" %}</span>
+    </a>
+</div>
+{% endif %}
+

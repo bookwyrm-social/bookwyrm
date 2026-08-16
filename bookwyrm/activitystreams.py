@@ -130,22 +130,26 @@ class ActivityStream(RedisStore):
         if exclude_self:
             audience = audience.exclude(id=status.user.id)
 
-        if hasattr(status, "book") and status.book and status.book.parent_work:
-            # exclude anyone who has blocked the book in a status
-            audience = audience.exclude(id__in=status.book.parent_work.blocked_by.all())
+        thread_books = models.Status.objects.filter(
+            # load all the statuses in this thread with an associated book
+            Q(id=status.id) | Q(thread_id=status.thread_id)
+        ).values_list(
+            "comment__book__parent_work",
+            "review__book__parent_work",
+            "quotation__book__parent_work",
+            "mention_books__parent_work",
+        )
+        # flatten the list of sets into a single set of only non-None values
+        thread_book_ids = set(j for i in thread_books for j in i if j)
+        if thread_book_ids:
+            # collect a list of all users that block any of these books
+            users_blocking = list(
+                models.User.objects.filter(
+                    blocked_books__in=thread_book_ids
+                ).values_list("id", flat=True)
+            )
 
-        if status.thread_id:
-            # ...including any books from any status in the same thread
-            thread_statuses = models.Status.objects.filter(thread_id=status.thread_id)
-            for t_status in thread_statuses:
-                if (
-                    hasattr(t_status, "book")
-                    and t_status.book
-                    and t_status.book.parent_work
-                ):
-                    audience = audience.exclude(
-                        id__in=t_status.book.parent_work.blocked_by.all()
-                    )
+            audience = audience.exclude(id__in=users_blocking)
 
         # only visible to the poster and mentioned users
         if status.privacy == "direct":
@@ -217,10 +221,17 @@ class ActivityStream(RedisStore):
 
         self.bulk_add_objects_to_store(book_statuses, self.stream_id(user.id))
 
-        threads = book_statuses.values_list("thread_id", flat=True)
-        thread_statuses = statuses.exclude(
-            id__in=book_statuses.values_list("id", flat=True)
-        ).filter(thread_id__in=threads)
+        # Evaluate the union once instead of embedding it as a subquery in the
+        # two lookups below: reusing the union queryset inside ``id__in`` /
+        # ``thread_id__in`` makes Postgres re-run the whole UNION each time,
+        # which is what makes the book-status tasks slow.
+        book_status_rows = list(book_statuses.values_list("id", "thread_id"))
+        book_status_ids, threads = (
+            zip(*book_status_rows) if book_status_rows else ((), ())
+        )
+        thread_statuses = statuses.exclude(id__in=book_status_ids).filter(
+            thread_id__in=threads
+        )
 
         self.bulk_add_objects_to_store(thread_statuses, self.stream_id(user.id))
 
@@ -242,10 +253,14 @@ class ActivityStream(RedisStore):
 
         self.bulk_remove_objects_from_store(book_statuses, self.stream_id(user.id))
 
-        threads = book_statuses.values_list("thread_id", flat=True)
-        thread_statuses = statuses.exclude(
-            id__in=book_statuses.values_list("id", flat=True)
-        ).filter(thread_id__in=threads)
+        # Evaluate the union once; see add_book_statuses for the rationale.
+        book_status_rows = list(book_statuses.values_list("id", "thread_id"))
+        book_status_ids, threads = (
+            zip(*book_status_rows) if book_status_rows else ((), ())
+        )
+        thread_statuses = statuses.exclude(id__in=book_status_ids).filter(
+            thread_id__in=threads
+        )
 
         self.bulk_remove_objects_from_store(thread_statuses, self.stream_id(user.id))
 
@@ -305,10 +320,14 @@ class HomeStream(ActivityStream):
 
         self.bulk_add_objects_to_store(book_statuses, self.stream_id(user.id))
 
-        threads = book_statuses.values_list("thread_id", flat=True)
-        thread_statuses = statuses.exclude(
-            id__in=book_statuses.values_list("id", flat=True)
-        ).filter(thread_id__in=threads)
+        # Evaluate the union once; see add_book_statuses for the rationale.
+        book_status_rows = list(book_statuses.values_list("id", "thread_id"))
+        book_status_ids, threads = (
+            zip(*book_status_rows) if book_status_rows else ((), ())
+        )
+        thread_statuses = statuses.exclude(id__in=book_status_ids).filter(
+            thread_id__in=threads
+        )
 
         self.bulk_add_objects_to_store(thread_statuses, self.stream_id(user.id))
 
