@@ -1,5 +1,6 @@
 """test file management"""
 
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from os import listdir
 import pathlib
@@ -9,7 +10,7 @@ from PIL import Image
 import responses
 
 from django.core.files.base import ContentFile
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 
 from bookwyrm.book_search import SearchResult
 from bookwyrm.models import (
@@ -25,6 +26,7 @@ from bookwyrm.models import (
     Work,
 )
 from bookwyrm.models.housekeeping import (
+    CleanUpExportsTask,
     FindMissingCoversJob,
     get_cover_from_identifiers,
     get_covers_with_incorrect_filepaths,
@@ -127,6 +129,45 @@ class TestCleanUpExportFiles(TestCase):
         for filename in listdir("exports"):
             if "zzz_testfile.tar" in filename:
                 pathlib.Path(f"exports/{filename}").unlink(missing_ok=True)
+
+
+class TestCleanUpExportsTask(TransactionTestCase):
+    """the task reports its completion back to the job"""
+
+    def setUp(self):
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            self.user = User.objects.create_user(
+                f"mouse@{DOMAIN}",
+                "mouse@mouse.mouse",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
+            SiteSettings.objects.create()
+
+        self.job = CleanUpUserExportFilesJob.objects.create(
+            user=self.user,
+            expiry_date=datetime.now(timezone.utc) - timedelta(hours=2),
+            tasks=10,
+        )
+
+    def test_concurrent_task_returns_complete_the_job_once(self):
+        def report_completion(_):
+            CleanUpExportsTask().after_return(
+                None, None, None, None, {"job_id": self.job.id}, None
+            )
+
+        with patch.object(CleanUpUserExportFilesJob, "complete_job") as complete_job:
+            with ThreadPoolExecutor(max_workers=10) as pool:
+                list(pool.map(report_completion, range(10)))
+
+        self.job.refresh_from_db()
+        self.assertEqual(self.job.completed_tasks, 10)
+        complete_job.assert_called_once()
 
 
 class Covers(TestCase):

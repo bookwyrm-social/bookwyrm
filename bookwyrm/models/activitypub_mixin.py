@@ -140,20 +140,7 @@ class ActivitypubMixin:
         if len(recipients) == 0:
             return
 
-        # if we're posting about ShelfBooks, set a delay to give the base activity
-        # time to add the book on remote servers first to avoid race conditions
-        countdown = (
-            10
-            if (
-                isinstance(activity, dict)
-                and not isinstance(activity["object"], str)
-                and not isinstance(activity["object"], list)
-                and activity["object"].get("type", None) in ["GeneratedNote", "Comment"]
-            )
-            else 0
-        )
         broadcast_task.apply_async(
-            countdown=countdown,
             args=(
                 sender.id,
                 json.dumps(activity, cls=activitypub.ActivityEncoder),
