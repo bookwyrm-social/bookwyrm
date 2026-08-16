@@ -100,7 +100,7 @@ class AbstractMinimalConnector(ABC):
         try:
             async with (
                 session.get(url, headers=headers, params=params) as response,
-                redis.from_url(REDIS_ACTIVITY_URL) as r,
+                redis.from_url(REDIS_ACTIVITY_URL) as r,  # type: ignore[no-untyped-call]
             ):
                 if not response.ok:
                     if await r.set(
@@ -137,7 +137,9 @@ class AbstractMinimalConnector(ABC):
                     ),
                 )
         except asyncio.TimeoutError:
-            async with redis.from_url(REDIS_ACTIVITY_URL) as r:
+            async with redis.from_url(  # type: ignore[no-untyped-call]
+                REDIS_ACTIVITY_URL
+            ) as r:
                 if await r.set(
                     error_ratelimit_key, "1", nx=True, ex=CONNECTOR_STATUS_RATE
                 ):
@@ -146,7 +148,9 @@ class AbstractMinimalConnector(ABC):
                     )
             logger.info("Connection timed out for url: %s", url)
         except aiohttp.ClientError as err:
-            async with redis.from_url(REDIS_ACTIVITY_URL) as r:
+            async with redis.from_url(  # type: ignore[no-untyped-call]
+                REDIS_ACTIVITY_URL
+            ) as r:
                 if await r.set(
                     error_ratelimit_key, "1", nx=True, ex=CONNECTOR_STATUS_RATE
                 ):
