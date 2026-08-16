@@ -358,19 +358,22 @@ class BaseActivity(TestCase):
 
         models.SiteSettings.objects.create(use_strict_ap_namespacing=True)
 
-        # fails - no namespacing
-        is_bw_type = activitypub.parse(
-            {
-                "@context": [
-                    "https://www.w3.org/ns/activitystreams",
-                ],
-                "type": "Series",
-            }
-        )
-        self.assertEqual(is_bw_type, None)
+        # fails, no namespacing
+        with self.assertRaises(activitypub.base_activity.ActivitySerializerError) as error:
+            activitypub.parse(
+                {
+                    "@context": [
+                        "https://www.w3.org/ns/activitystreams",
+                    ],
+                    "type": "Series",
+                }
+            )
+
+        self.assertEqual(error.exception.args, ("BookWyrm namespace error",))
+
 
         # passes
-        with self.assertRaises(activitypub.base_activity.ActivitySerializerError):
+        with self.assertRaises(activitypub.base_activity.ActivitySerializerError) as error:
             activitypub.parse(
                 {
                     "@context": [
@@ -381,8 +384,10 @@ class BaseActivity(TestCase):
                 }
             )
 
+        self.assertEqual(error.exception.args, ("Missing required field: id",))
+
         # passes
-        with self.assertRaises(activitypub.base_activity.ActivitySerializerError):
+        with self.assertRaises(activitypub.base_activity.ActivitySerializerError) as error:
             activitypub.parse(
                 {
                     "@context": [
@@ -394,27 +399,33 @@ class BaseActivity(TestCase):
                 }
             )
 
+        self.assertEqual(error.exception.args, ("Missing required field: id",))
+
         # fails - namespaced incorrectly for Quotation
-        is_none = activitypub.parse(
-            {
-                "@context": [
-                    "https://www.w3.org/ns/activitystreams",
-                    "https://w3id.org/BookWyrm/ns",
-                ],
-                "type": "Quotation",
-                "quote": "to be or not to be",
-            }
-        )
-        self.assertEqual(is_none, None)
+        with self.assertRaises(activitypub.base_activity.ActivitySerializerError) as error:
+            activitypub.parse(
+                {
+                    "@context": [
+                        "https://www.w3.org/ns/activitystreams",
+                        "https://w3id.org/BookWyrm/ns",
+                    ],
+                    "type": "Quotation",
+                    "quote": "to be or not to be",
+                }
+            )
+
+        self.assertEqual(error.exception.args, ("BookWyrm namespace error",))
 
         # fails - namespaced incorrectly for Edition
-        is_none = activitypub.parse(
-            {
-                "@context": [
-                    "https://www.w3.org/ns/activitystreams",
-                    {"bw": "https://w3id.org/BookWyrm/ns"},
-                ],
-                "type": "Edition",
-            }
-        )
-        self.assertEqual(is_none, None)
+        with self.assertRaises(activitypub.base_activity.ActivitySerializerError) as error:
+            is_none = activitypub.parse(
+                {
+                    "@context": [
+                        "https://www.w3.org/ns/activitystreams",
+                        {"bw": "https://w3id.org/BookWyrm/ns"},
+                    ],
+                    "type": "Edition",
+                }
+            )
+
+        self.assertEqual(error.exception.args, ("BookWyrm namespace error",))

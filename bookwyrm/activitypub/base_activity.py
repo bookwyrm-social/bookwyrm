@@ -86,25 +86,10 @@ def naive_parse(activity_objects, activity_json, serializer=None):
             activity_json["type"] = "PublicKey"
 
         activity_type = activity_json.get("type")
-
-        if isinstance(activity_type, list):
-            # see https://www.w3.org/TR/json-ld/#specifying-the-type
-            try:
-                # assume bw type is first as per
-                # https://www.w3.org/TR/activitystreams-core/#asobject
-                # and
-                # https://www.w3.org/wiki/Activity_Streams/Primer/Extensions
-                activity_type = [
-                    atype for atype in activity_type if atype in activity_objects
-                ][0]
-            except IndexError as err:
-                # we don't know what any of these types are
-                raise ActivitySerializerError(err)
-
-        if activity_type in ["Question", "Article"]:
+        if isinstance(activity_type, str) and activity_type in ["Question", "Article"]:
             return None
 
-        # forwards-compatible setting for strict namespacing
+        # strict namespacing
         if models.SiteSettings.get().use_strict_ap_namespacing:
             has_namespace = "https://w3id.org/BookWyrm/ns" in activity_json["@context"]
             has_bw_namespace = {"bw": "https://w3id.org/BookWyrm/ns"} in activity_json[
@@ -112,20 +97,34 @@ def naive_parse(activity_objects, activity_json, serializer=None):
             ]
             # no context
             if "@context" not in activity_json:
-                return None
+                raise ActivitySerializerError("No @context provided")
             # not ActivityPub
             if "https://www.w3.org/ns/activitystreams" not in activity_json["@context"]:
-                return None
+                raise ActivitySerializerError("Not an activitystreams activity")
             # is a non-Note BookWyrm type without BW namespace
             if activity_type in other_custom_activity_objects and not has_namespace:
-                return None
+                raise ActivitySerializerError("BookWyrm namespace error")
             # is decendent of Note without the bw namespace
             if (
                 len(set(activity_json.keys()) & set(namespaced)) > 0
                 and not has_bw_namespace
             ):
-                return None
+                raise ActivitySerializerError("BookWyrm namespace error")
 
+        # convert namespaced keys to ActivityObject keys
+        for k in namespaced:
+            if value := activity_json.get(f"bw:{k}"):
+                activity_json[k] = value
+                del activity_json[f"bw:{k}"]
+
+        # choose the activity type to use when parsing this object
+        if isinstance(activity_type, list):
+            for atype in activity_type:
+                if atype in activity_objects:
+                    # these should be in our preferred order
+                    activity_type = atype
+                    break
+        activity_json["type"] = activity_type
         try:
             serializer = activity_objects[activity_type]
         except KeyError as err:
@@ -207,7 +206,11 @@ class ActivityObject:
             self.to_model. e.g. if this is a Work being dereferenced from
             an incoming Edition
         """
-        model = model or get_model_from_type(self.type)
+        try:
+            model = model or get_model_from_type(self.type)
+        except ActivitySerializerError:
+            # type is a list on Note-like activities
+            model = model or get_model_from_type(self.type[0])
 
         # only reject statuses if we're potentially creating them
         if (
@@ -324,15 +327,14 @@ class ActivityObject:
                     ]
 
                 if k in namespaced and v is not None and k not in omit:
-                    # hack for forwards-compatible namespacing for custom Note and Article properties
-                    # can't add directly because it will change the dict size whilst we're iterating it
-                    bw_data[f"bw:{k}"] = v
+                    # namespacing for extended Note and Article properties
+                    bw_data[k] = v
             except TypeError:
                 pass
         data = {k: v for (k, v) in data.items() if v is not None and k not in omit}
-        # add bw:blah fields for forwards-compatibility
+        # forwards-compatible extended properties as namespaced
         for k, v in bw_data.items():
-            data[k] = v
+            data[f"bw:{k}"] = v
         # conditionally update the @context depending on the values in the object
         if "@context" not in omit:
             data["@context"] = [
