@@ -76,5 +76,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(fix_series),
+        migrations.RunPython(fix_series, reverse_code=migrations.RunPython.noop),
     ]
