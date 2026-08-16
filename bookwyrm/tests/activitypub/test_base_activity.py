@@ -359,7 +359,9 @@ class BaseActivity(TestCase):
         models.SiteSettings.objects.create(use_strict_ap_namespacing=True)
 
         # fails, no namespacing
-        with self.assertRaises(activitypub.base_activity.ActivitySerializerError) as error:
+        with self.assertRaises(
+            activitypub.base_activity.ActivitySerializerError
+        ) as error:
             activitypub.parse(
                 {
                     "@context": [
@@ -371,9 +373,10 @@ class BaseActivity(TestCase):
 
         self.assertEqual(error.exception.args, ("BookWyrm namespace error",))
 
-
         # passes
-        with self.assertRaises(activitypub.base_activity.ActivitySerializerError) as error:
+        with self.assertRaises(
+            activitypub.base_activity.ActivitySerializerError
+        ) as error:
             activitypub.parse(
                 {
                     "@context": [
@@ -387,7 +390,9 @@ class BaseActivity(TestCase):
         self.assertEqual(error.exception.args, ("Missing required field: id",))
 
         # passes
-        with self.assertRaises(activitypub.base_activity.ActivitySerializerError) as error:
+        with self.assertRaises(
+            activitypub.base_activity.ActivitySerializerError
+        ) as error:
             activitypub.parse(
                 {
                     "@context": [
@@ -402,7 +407,9 @@ class BaseActivity(TestCase):
         self.assertEqual(error.exception.args, ("Missing required field: id",))
 
         # fails - namespaced incorrectly for Quotation
-        with self.assertRaises(activitypub.base_activity.ActivitySerializerError) as error:
+        with self.assertRaises(
+            activitypub.base_activity.ActivitySerializerError
+        ) as error:
             activitypub.parse(
                 {
                     "@context": [
@@ -417,8 +424,10 @@ class BaseActivity(TestCase):
         self.assertEqual(error.exception.args, ("BookWyrm namespace error",))
 
         # fails - namespaced incorrectly for Edition
-        with self.assertRaises(activitypub.base_activity.ActivitySerializerError) as error:
-            is_none = activitypub.parse(
+        with self.assertRaises(
+            activitypub.base_activity.ActivitySerializerError
+        ) as error:
+            activitypub.parse(
                 {
                     "@context": [
                         "https://www.w3.org/ns/activitystreams",
