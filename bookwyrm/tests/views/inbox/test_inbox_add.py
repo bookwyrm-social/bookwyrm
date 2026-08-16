@@ -150,7 +150,7 @@ class InboxAdd(TestCase):
                 "id": "https://example.com/book/{self.another_book.id}/suggestions",
                 "type": "SuggestionList",
                 "totalItems": 1,
-                "book": self.another_book.parent_work.to_activity(),
+                "book": self.another_book.parent_work.remote_id,
                 "first": f"https://example.com/book/{self.another_book.id}/suggestions?page=1",
                 "last": f"https://example.com/book/{self.another_book.id}/suggestions?page=1",
                 "name": "Test List",
