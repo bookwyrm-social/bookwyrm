@@ -514,7 +514,6 @@ class Work(OrderedCollectionPageMixin, Book):
             **kwargs,
         )
 
-
     activity_serializer = activitypub.Work
     serialize_reverse_fields = [
         ("editions", "editions", "-edition_rank"),
@@ -668,8 +667,14 @@ class Edition(Book):
 
     activity_serializer = activitypub.Edition
     name_field = "title"
-    serialize_reverse_fields = [("file_links", "fileLinks", "-created_date"), ("seriesbooks", "seriesBooks", "-created_date"),]
-    deserialize_reverse_fields = [("file_links", "fileLinks"), ("seriesbooks", "seriesBooks"),]
+    serialize_reverse_fields = [
+        ("file_links", "fileLinks", "-created_date"),
+        ("seriesbooks", "seriesBooks", "-created_date"),
+    ]
+    deserialize_reverse_fields = [
+        ("file_links", "fileLinks"),
+        ("seriesbooks", "seriesBooks"),
+    ]
 
     class Meta:
         indexes = [
