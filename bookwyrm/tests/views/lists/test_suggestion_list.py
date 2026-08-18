@@ -91,9 +91,9 @@ class BookViews(TestCase):
         view(request, self.book.id)
 
         self.work.refresh_from_db()
-        self.assertTrue(hasattr(self.work, "suggestion_list"))
+        self.assertTrue(hasattr(self.work, "suggestionlist_set"))
 
-        suggestion_list = self.work.suggestion_list
+        suggestion_list = self.work.suggests_for.first()
         self.assertEqual(suggestion_list.suggests_for, self.work)
         self.assertEqual(suggestion_list.privacy, "public")
         self.assertEqual(suggestion_list.user, get_representative())
