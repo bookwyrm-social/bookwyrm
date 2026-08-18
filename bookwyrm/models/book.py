@@ -402,10 +402,10 @@ class Book(BookDataModel):
 
         return re.sub(f"^{' |^'.join(articles)} ", "", str(self.title).lower())
 
-    def book_series(self):
-        """get the series this book is in"""
+    def get_series(self):
+        """an ordered collection of series"""
         series = set()
-        for sb in self.seriesbooks.all():
+        for sb in self.seriesbooks.order_by("-created_date").all():
             series.add(sb.series)
         return list(series)
 
@@ -489,7 +489,7 @@ class Work(OrderedCollectionPageMixin, Book):
         max_length=255, blank=True, null=True, deduplication_field=True
     )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """set some fields on the edition object"""
         super().save(*args, **kwargs)
 
@@ -877,6 +877,14 @@ class Edition(Book):
             ),
         )
         return queryset
+
+    def get_series(self):
+        """an ordered collection of series"""
+
+        series = set(super().get_series())
+        for ser in self.parent_work.get_series():
+            series.add(ser)
+        return list(series)
 
 
 def isbn_10_to_13(isbn_10):

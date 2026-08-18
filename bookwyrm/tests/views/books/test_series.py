@@ -193,7 +193,7 @@ class SeriesViews(TestCase):
         result = view(request, self.series.id)
 
         books = result.context_data["series_books"]
-        print(books.object_list)
+
         self.assertEqual(len(books.object_list), 2)
 
         self.user.blocked_books.add(bad_work)

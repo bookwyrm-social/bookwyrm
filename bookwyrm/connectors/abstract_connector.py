@@ -188,9 +188,16 @@ class AbstractMinimalConnector(ABC):
                         edition.series = series.name
                         edition.series_number = work.series_number
                         edition.save()
-
+                        # clean up the work series to avoid stringifying objects
+                        work.series = None
+                        work.series_number = None
+                        work.save()
                     continue
 
+            # clean up
+            work.series = None
+            work.series_number = None
+            work.save()
             edition.series = None
             edition.series_number = None
             edition.save()
