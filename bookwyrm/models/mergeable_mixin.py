@@ -6,7 +6,6 @@ from typing import Any, Dict, Optional, Iterable
 from typing_extensions import Self
 
 from django.db import transaction
-from django.db.models import Count, ManyToManyField
 from django.db.models import BooleanField, Count, DateTimeField, ManyToManyField, Model
 from django.utils import timezone
 
