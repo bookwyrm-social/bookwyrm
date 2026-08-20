@@ -1,6 +1,27 @@
 (function () {
     "use strict";
 
+    const mimeTypes = [
+        "AAC",
+        "AZW",
+        "Daisy",
+        "EPUB",
+        "FB2",
+        "FB3",
+        "FLAC",
+        "HTML",
+        "M4A",
+        "M4B",
+        "MOBI",
+        "MP3",
+        "OGG",
+        "PDF",
+        "Plaintext",
+        "Print book",
+    ];
+
+    const regexEscape = (string) => string.replace(/[$^*()-+.?[]{}|\\\/]/g, "\\$&");
+
     /**
      * Suggest a completion as a user types
      *
@@ -18,15 +39,16 @@
     function autocomplete(event) {
         const input = event.target;
 
-        // Get suggestions
-        let trie = tries[input.getAttribute("data-autocomplete")];
+        const cleanInput = regexEscape(input.value);
 
-        let suggestions = getSuggestions(input.value, trie);
+        const suggestions = mimeTypes.filter((mimeType) =>
+            RegExp("^" + cleanInput, "i").test(mimeType)
+        );
 
         const boxId = input.getAttribute("list");
 
         // Create suggestion box, if needed
-        let suggestionsBox = document.getElementById(boxId);
+        const suggestionsBox = document.getElementById(boxId);
 
         // Clear existing suggestions
         suggestionsBox.innerHTML = "";
@@ -40,149 +62,7 @@
         });
     }
 
-    function getSuggestions(input, trie) {
-        // Follow the trie through the provided input
-        input = input.toLowerCase();
-
-        input.split("").forEach((letter) => {
-            if (!trie) {
-                return;
-            }
-
-            trie = trie[letter];
-        });
-
-        if (!trie) {
-            return [];
-        }
-
-        return searchTrie(trie);
-    }
-
-    function searchTrie(trie) {
-        const options = Object.values(trie);
-
-        if (typeof trie == "string") {
-            return [trie];
-        }
-
-        return options
-            .map((option) => {
-                const newTrie = option;
-
-                if (typeof newTrie == "string") {
-                    return [newTrie];
-                }
-
-                return searchTrie(newTrie);
-            })
-            .reduce((prev, next) => prev.concat(next));
-    }
-
     document.querySelectorAll("[data-autocomplete]").forEach((input) => {
         input.addEventListener("input", autocomplete);
     });
 })();
-
-const tries = {
-    mimetype: {
-        a: {
-            a: {
-                c: "AAC",
-            },
-            z: {
-                w: "AZW",
-            },
-        },
-        d: {
-            a: {
-                i: {
-                    s: {
-                        y: "Daisy",
-                    },
-                },
-            },
-        },
-        e: {
-            p: {
-                u: {
-                    b: "EPUB",
-                },
-            },
-        },
-        f: {
-            b: {
-                2: "FB2",
-                3: "FB3",
-            },
-            l: {
-                a: {
-                    c: "FLAC",
-                },
-            },
-        },
-        h: {
-            t: {
-                m: {
-                    l: "HTML",
-                },
-            },
-        },
-        m: {
-            4: {
-                a: "M4A",
-                b: "M4B",
-            },
-            o: {
-                b: {
-                    i: "MOBI",
-                },
-            },
-            p: {
-                3: "MP3",
-            },
-        },
-        o: {
-            g: {
-                g: "OGG",
-            },
-        },
-        p: {
-            d: {
-                f: "PDF",
-            },
-            l: {
-                a: {
-                    i: {
-                        n: {
-                            t: {
-                                e: {
-                                    x: {
-                                        t: "Plaintext",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-            r: {
-                i: {
-                    n: {
-                        t: {
-                            " ": {
-                                b: {
-                                    o: {
-                                        o: {
-                                            k: "Print book",
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-    },
-};
