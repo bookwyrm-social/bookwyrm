@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.decorators.vary import vary_on_headers
+from django_celery_beat.models import PeriodicTask
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
@@ -18,10 +19,13 @@ from bookwyrm.views.helpers import (
     get_mergeable_object_or_404,
     maybe_redirect_local_path,
 )
+from bookwyrm.views.mixins import MergeableViewMixin
 
 
-class Author(View):
+class Author(MergeableViewMixin, View):
     """this person wrote a book"""
+
+    merge_model = models.Author
 
     @vary_on_headers("Accept")
     def get(self, request, author_id, slug=None):
@@ -55,9 +59,11 @@ class Author(View):
         paginated = Paginator(books, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
 
+        merge_scheduled = PeriodicTask.objects.filter(name="dedupe-merge-task").exists()
         data = {
             "author": author,
             "author_dupe": author.pending_merge_target,
+            "merge_scheduled": merge_scheduled,
             "series": series,
             "books": page,
             "page_range": paginated.get_elided_page_range(

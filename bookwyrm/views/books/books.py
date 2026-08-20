@@ -9,6 +9,7 @@ from django.template.response import TemplateResponse
 from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.decorators.vary import vary_on_headers
+from django_celery_beat.models import PeriodicTask
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
@@ -21,11 +22,14 @@ from bookwyrm.views.helpers import (
     maybe_redirect_local_path,
     get_mergeable_object_or_404,
 )
+from bookwyrm.views.mixins import MergeableViewMixin
 from bookwyrm.views.list.list import get_list_suggestions
 
 
-class Book(View):
+class Book(MergeableViewMixin, View):
     """a book! this is the stuff"""
+
+    merge_model = models.Edition
 
     @vary_on_headers("Accept")
     def get(self, request, book_id, **kwargs):
@@ -96,13 +100,13 @@ class Book(View):
             listitem__edition__in=book.parent_work.editions.all(),
         )
 
-        edition_dupe = book.pending_merge_target
-        work_dupe = book.parent_work.pending_merge_target
+        merge_scheduled = PeriodicTask.objects.filter(name="dedupe-merge-task").exists()
 
         data = {
             "book": book,
-            "edition_dupe": edition_dupe,
-            "work_dupe": work_dupe,
+            "edition_dupe": book.pending_merge_target,
+            "work_dupe": book.parent_work.pending_merge_target,
+            "merge_scheduled": merge_scheduled,
             "work": book.parent_work,
             "statuses": paginated.get_page(request.GET.get("page")),
             "review_count": reviews.count(),
