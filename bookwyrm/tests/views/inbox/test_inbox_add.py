@@ -147,7 +147,7 @@ class InboxAdd(TestCase):
             responses.GET,
             "https://example.com/book/suggestion/list",
             json={
-                "id": "https://example.com/book/{self.another_book.id}/suggestions",
+                "id": f"https://example.com/book/{self.another_book.id}/suggestions",
                 "type": "SuggestionList",
                 "totalItems": 1,
                 "book": self.another_book.parent_work.to_activity(),
