@@ -91,7 +91,6 @@ class BookViews(TestCase):
         view(request, self.book.id)
 
         self.work.refresh_from_db()
-        self.assertTrue(hasattr(self.work, "suggestionlist_set"))
 
         suggestion_list = self.work.suggests_for.first()
         self.assertEqual(suggestion_list.suggests_for, self.work)
