@@ -146,6 +146,33 @@ class ShelfViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
+    def test_shelf_page_rss_link_ignores_query_string(self):
+        """the RSS alternate link must use the path only: with the query
+        string included, /rss lands after ?sort=..., crawlers fetch it as a
+        sort value ending in /rss and the feed link grows /rss forever
+        (#4105)"""
+        view = views.Shelf.as_view()
+        shelf = self.local_user.shelf_set.first()
+        request = self.factory.get(
+            f"/user/{self.local_user.localname}/books/{shelf.identifier}",
+            {"sort": "sort_title"},
+        )
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
+        self.assertIsInstance(result, TemplateResponse)
+        html = result.render().content.decode()
+        self.assertIn(
+            f'href="/user/{self.local_user.localname}/books/{shelf.identifier}/rss"',
+            html,
+        )
+        self.assertNotIn("?sort=", html.split('rel="alternate"')[1].split("/>")[0])
+
     def test_shelf_page_sorted_rating(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Shelf.as_view()
