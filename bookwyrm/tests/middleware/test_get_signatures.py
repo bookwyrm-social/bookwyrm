@@ -262,3 +262,33 @@ class TestBookWyrmGetSignatures(TestCase):
         )
         # ok!
         self.assertEqual(response.status_code, 200)
+
+    @override_settings(
+        MIDDLEWARE=[
+            "django.contrib.sessions.middleware.SessionMiddleware",
+            "django.contrib.auth.middleware.AuthenticationMiddleware",
+            "bookwyrm.middleware.RequireSignedGet",
+            "bookwyrm.middleware.RequireLoginNearlyEverywhere",
+        ]
+    )
+    @responses.activate
+    def test_require_signed_get_search_should_work(self):
+        """allow api requests but only if signed"""
+
+        self.site.require_signed_get = True
+        self.site.require_login_nearly_everywhere = False
+        self.site.save(
+            update_fields=["require_signed_get", "require_login_nearly_everywhere"]
+        )
+
+        # no signed headers, search works
+        response = self.client.get(
+            "/search?q=moomin",
+            headers={
+                "Host": DOMAIN,
+                "Accept": (
+                    'application/json, application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8'
+                ),
+            },
+        )
+        self.assertEqual(response.status_code, 200)

@@ -36,6 +36,8 @@ class RequireSignedGet:
                     r"^/\.well-known/nodeinfo/?$",
                     r"^/\.well-known/host-meta/?$",
                     r"^/nodeinfo/2\.0/?$",
+                    r"^/search.json/?$",
+                    r"^/search/?$",
                 ]
 
                 # ignore well-known and nodeinfo paths
