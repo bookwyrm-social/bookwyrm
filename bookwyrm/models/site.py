@@ -115,6 +115,9 @@ class SiteSettings(SiteModel):
 
     field_tracker = FieldTracker(fields=["name", "instance_tagline", "logo"])
 
+    # feature flags
+    use_strict_ap_namespacing = models.BooleanField(default=False)
+
     @classmethod
     def get(cls) -> SiteSettings:
         """gets the site settings db entry or defaults"""
