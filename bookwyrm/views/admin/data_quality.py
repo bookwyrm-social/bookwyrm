@@ -138,6 +138,7 @@ def data_quality_data():
             pending_merge_target__isnull=False
         ).first(),
         "task_form": forms.IntervalScheduleForm(),
+        "merge_form": forms.IntervalScheduleForm(auto_id="merge_%s"),
     }
 
 

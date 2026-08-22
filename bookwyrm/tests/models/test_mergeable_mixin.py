@@ -141,3 +141,133 @@ class MergeableMixin(TestCase):
         self.assertFalse(models.MergedEdition.objects.exists())
         dupe.refresh_from_db()
         self.assertIsNone(dupe.description)
+
+    def test_related_authors_merged(self):
+        """are related authors merged?"""
+
+        book = models.Edition.objects.create(
+            title="Example Edition",
+            isbn_13="9780810160118",
+            parent_work=models.Work.objects.create(title="Example Work"),
+        )
+        dupe = models.Edition.objects.create(
+            title="Duplicate Edition",
+            isbn_13="9780810160118",
+            parent_work=models.Work.objects.create(title="Duplicate Work"),
+        )
+
+        book.authors.add(models.Author.objects.create(name="Amy Author"))
+        dupe.authors.add(models.Author.objects.create(name="Bob Bookwriter"))
+
+        self.assertEqual(book.authors.count(), 1)
+        self.assertFalse(models.MergedEdition.objects.exists())
+
+        dupe.merge_into(book)
+        book.refresh_from_db()
+        self.assertEqual(book.authors.count(), 2)
+        self.assertTrue(book.authors.last().name, "Bob Bookwriter")
+
+    def test_related_parent_work_deleted(self):
+        """are parent works deleted once orphaned?"""
+
+        work = models.Work.objects.create(title="Duplicate Work")
+
+        book = models.Edition.objects.create(
+            title="Example Edition",
+            isbn_13="9780810160118",
+            parent_work=models.Work.objects.create(title="Example Work"),
+        )
+        dupe = models.Edition.objects.create(
+            title="Duplicate Edition",
+            isbn_13="9780810160118",
+            parent_work=work,
+        )
+
+        self.assertEqual(models.Edition.objects.count(), 2)
+        self.assertEqual(models.Work.objects.count(), 2)
+
+        dupe.merge_into(book)
+
+        self.assertEqual(models.Edition.objects.count(), 1)
+        self.assertEqual(models.Work.objects.count(), 1)
+
+    def test_related_suggestions_merged(self):
+        """are related suggestion items merged?"""
+
+        user = models.User.objects.create_user(
+            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+        )
+
+        work = models.Work.objects.create(title="Example Work")
+        dupe_work = models.Work.objects.create(title="Example Work 2")
+
+        models.SuggestionListItem.objects.create(
+            work=dupe_work,
+            book_list=models.SuggestionList.objects.create(suggests_for=work),
+            user=user,
+            notes="what a great book",
+        )
+
+        self.assertEqual(models.Work.objects.count(), 2)
+        self.assertEqual(models.SuggestionList.objects.count(), 1)
+        self.assertEqual(models.SuggestionListItem.objects.count(), 1)
+
+        dupe_work.merge_into(work)
+
+        self.assertEqual(models.Work.objects.count(), 1)
+        self.assertEqual(models.SuggestionList.objects.count(), 1)
+        self.assertEqual(models.SuggestionListItem.objects.count(), 1)
+        self.assertEqual(models.SuggestionListItem.objects.first().work, work)
+
+    def test_multiple_related_merged(self):
+        """are related suggestion items merged?"""
+
+        user = models.User.objects.create_user(
+            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+        )
+
+        work = models.Work.objects.create(title="Example Work")
+        dupe_work = models.Work.objects.create(title="Example Work 2")
+
+        book = models.Edition.objects.create(
+            title="Example Edition",
+            isbn_13="9780810160118",
+            parent_work=work,
+        )
+        dupe = models.Edition.objects.create(
+            title="Duplicate Edition", isbn_13="9780810160118", parent_work=dupe_work
+        )
+
+        models.SuggestionListItem.objects.create(
+            work=dupe_work,
+            book_list=models.SuggestionList.objects.create(suggests_for=work),
+            user=user,
+            notes="what a great book",
+        )
+
+        models.SuggestionListItem.objects.create(
+            work=work,
+            book_list=models.SuggestionList.objects.create(suggests_for=dupe_work),
+            user=user,
+            notes="what a lovely work",
+        )
+
+        self.assertEqual(models.Edition.objects.count(), 2)
+        self.assertEqual(models.Work.objects.count(), 2)
+        self.assertEqual(models.SuggestionList.objects.count(), 2)
+        self.assertEqual(models.SuggestionListItem.objects.count(), 2)
+        self.assertEqual(
+            models.SuggestionList.objects.filter(suggests_for=work).count(), 1
+        )
+        self.assertEqual(models.SuggestionListItem.objects.filter(work=work).count(), 1)
+
+        dupe.merge_into(book)
+
+        self.assertEqual(models.Edition.objects.count(), 1)
+        self.assertEqual(models.Work.objects.count(), 1)
+        self.assertEqual(models.SuggestionList.objects.count(), 2)
+        self.assertEqual(models.SuggestionListItem.objects.count(), 2)
+        self.assertEqual(
+            models.SuggestionList.objects.filter(suggests_for=work).count(), 2
+        )
+        self.assertEqual(models.SuggestionListItem.objects.filter(work=work).count(), 2)

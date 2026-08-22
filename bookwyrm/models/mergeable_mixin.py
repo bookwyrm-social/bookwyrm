@@ -5,7 +5,8 @@ from datetime import timedelta
 from typing import Any, Dict, Optional, Iterable
 from typing_extensions import Self
 
-from django.db import transaction
+from django.apps import apps
+from django.db import transaction, IntegrityError
 from django.db.models import BooleanField, Count, DateTimeField, ManyToManyField, Model
 from django.utils import timezone
 
@@ -44,7 +45,7 @@ class MergeableMixin(Model):
                     "pending_merge_date",
                 )
 
-            # also check if this is the canonical for other rditions
+            # also check if this is the canonical for other editions
             for target in self.merge_target.all():
                 if not self.get_shared_fields(target):
                     target.pending_merge_target = None
@@ -170,11 +171,63 @@ class MergeableMixin(Model):
             related_objs = related_model.objects.filter(**{related_field: self})
             for related_obj in related_objs:
                 try:
-                    setattr(related_obj, related_field, canonical)
-                    related_obj.save()
+                    with transaction.atomic():
+                        setattr(related_obj, related_field, canonical)
+                        related_obj.save()
                 except TypeError:
                     getattr(related_obj, related_field).add(canonical)
                     getattr(related_obj, related_field).remove(self)
+                except IntegrityError:
+                    # e.g. a seriesbook when one already exists for that series
+                    continue
+
+        edition_model = apps.get_model("bookwyrm.Edition")
+        work_model = apps.get_model("bookwyrm.Work")
+        suggests_model = apps.get_model("bookwyrm.SuggestionList")
+
+        if self.__class__ == edition_model:
+            # NOTE: Once we are using Contributions
+            # this will need to be amended
+            additional_authors = [
+                author
+                for author in self.authors.all()
+                if author not in canonical.authors.all()
+            ]
+            for author in additional_authors:
+                canonical.authors.add(author)
+            parent = self.parent_work
+
+            self.delete()
+
+            # if self.parent is now without any child editions, merge it too
+            # unless it is already marked as a merge candidate
+            if parent:
+                parent.refresh_from_db()
+                if not parent.editions.count() and not parent.pending_merge_target:
+                    parent.merge_into(canonical.parent_work)
+
+            return absorbed_fields
+
+        elif self.__class__ == work_model:
+            # NOTE: Once we are using Contributions
+            # this will need to be amended
+            additional_authors = [
+                author
+                for author in self.authors.all()
+                if author not in canonical.authors.all()
+            ]
+            for author in additional_authors:
+                canonical.authors.add(author)
+
+            # switch over any suggestion lists
+            # deal with duplicate suggestions in the View
+            if lists := suggests_model.objects.filter(
+                suggests_for__in=[self.id, canonical.id]
+            ):
+                for list in lists:
+                    if list.suggests_for == self:
+                        list.suggests_for = canonical
+                        list.save()
 
         self.delete()
         return absorbed_fields
