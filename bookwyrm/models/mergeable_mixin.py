@@ -181,55 +181,13 @@ class MergeableMixin(Model):
                     # e.g. a seriesbook when one already exists for that series
                     continue
 
-        edition_model = apps.get_model("bookwyrm.Edition")
-        work_model = apps.get_model("bookwyrm.Work")
-        suggests_model = apps.get_model("bookwyrm.SuggestionList")
-
-        if self.__class__ == edition_model:
-            # NOTE: Once we are using Contributions
-            # this will need to be amended
-            additional_authors = [
-                author
-                for author in self.authors.all()
-                if author not in canonical.authors.all()
-            ]
-            for author in additional_authors:
-                canonical.authors.add(author)
-            parent = self.parent_work
-
-            self.delete()
-
-            # if self.parent is now without any child editions, merge it too
-            # unless it is already marked as a merge candidate
-            if parent:
-                parent.refresh_from_db()
-                if not parent.editions.count() and not parent.pending_merge_target:
-                    parent.merge_into(canonical.parent_work)
-
-            return absorbed_fields
-
-        elif self.__class__ == work_model:
-            # NOTE: Once we are using Contributions
-            # this will need to be amended
-            additional_authors = [
-                author
-                for author in self.authors.all()
-                if author not in canonical.authors.all()
-            ]
-            for author in additional_authors:
-                canonical.authors.add(author)
-
-            # switch over any suggestion lists
-            # deal with duplicate suggestions in the View
-            if lists := suggests_model.objects.filter(
-                suggests_for__in=[self.id, canonical.id]
-            ):
-                for list in lists:
-                    if list.suggests_for == self:
-                        list.suggests_for = canonical
-                        list.save()
-
+        # Well here we are merging some m2m fields after all
+        self.merge_related_authors(canonical)
+        parent = self.parent_work if hasattr(self, "parent_work") else None
         self.delete()
+        self.merge_parent(
+            canonical, parent
+        )  # merge parent _after_ deleting editions to avoid recursive loops
         return absorbed_fields
 
     def absorb_data_from(self, other: Self, dry_run=False) -> Dict[str, Any]:
@@ -263,3 +221,15 @@ class MergeableMixin(Model):
                         setattr(self, data_field.name, other_value)
                     absorbed_fields[data_field.name] = other_value
         return absorbed_fields
+
+    def merge_related_authors(self, canonical: Self) -> None:
+        """add authors from the candidate onto the canonical"""
+        if isinstance(self, apps.get_model("bookwyrm.Edition")) or isinstance(
+            self, apps.get_model("bookwyrm.Work")
+        ):
+            canonical.authors.add(*self.authors.all())
+
+    def merge_parent(self, canonical: Self, parent: Model) -> None:
+        """don't leave childless works lying around"""
+        if parent and not parent.pending_merge_target:
+            parent.merge_into(canonical.parent_work)
