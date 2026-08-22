@@ -2,6 +2,7 @@
 
 from django.http import Http404
 from bookwyrm import models
+from bookwyrm.utils.ip_utils import client_ip_address
 
 
 class IPBlocklistMiddleware:
@@ -11,10 +12,7 @@ class IPBlocklistMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if "x-forwarded-for" in request.headers:
-            address = request.headers.get("x-forwarded-for").split(",")[0]
-        else:
-            address = request.META.get("REMOTE_ADDR")
+        address = client_ip_address(request)
         if models.IPBlocklist.objects.filter(address=address).exists():
             raise Http404()
         return self.get_response(request)

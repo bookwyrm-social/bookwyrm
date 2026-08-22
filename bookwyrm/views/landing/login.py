@@ -13,6 +13,7 @@ from django.views.decorators.debug import sensitive_variables, sensitive_post_pa
 
 from bookwyrm import forms, models
 from bookwyrm.views.helpers import set_language
+from bookwyrm.utils.ip_utils import client_ip_address
 
 
 class Login(View):
@@ -62,11 +63,7 @@ class Login(View):
             user.update_active_date()
 
             # record session
-            forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
-            if forwarded_for:
-                ip_address = forwarded_for.split(",")[0]
-            else:
-                ip_address = request.META.get("REMOTE_ADDR", "")
+            ip_address = client_ip_address(request)
             agent_string = request.META.get("HTTP_USER_AGENT", "")
             models.create_user_session(
                 user_id=user.id,
