@@ -1,4 +1,8 @@
 @charset "UTF-8";
+/*
+Color palette license:
+MIT License - Copyright (c) 2021 Catppuccin
+*/
 /* Colors
  ******************************************************************************/
 /* states */
@@ -107,7 +111,6 @@
 .navbar-link:not(.is-arrowless)::after, .select:not(.is-multiple):not(.is-loading)::after {
   border: 3px solid transparent;
   border-radius: 2px;
-    border-radius-border-radius: 32px;
   border-right: 0;
   border-top: 0;
   content: " ";
@@ -8328,6 +8331,11 @@ details[open] summary .details-close {
   top: 0.75rem;
   right: 0.75rem; }
 
+/** CSS for Embedded layout
+ ******************************************************************************/
+.logo-image-height {
+  height: 2rem; }
+
 /** File input styles
  ******************************************************************************/
 input[type="file"]::file-selector-button {
@@ -8335,7 +8343,6 @@ input[type="file"]::file-selector-button {
   -webkit-appearance: none;
   background-color: #1e1e2e;
   border-radius: 4px;
-  border-radius: 32px;
   border: 1px solid #2b3031;
   box-shadow: none;
   color: #ededed;
@@ -9178,8 +9185,7 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: #eba0ac;
-  border-radius: 0.5em;
-  border-radius: 32px; }
+  border-radius: 0.5em; }
 
 ::-webkit-scrollbar-track {
   background: #1e1e2e; }
@@ -9275,7 +9281,8 @@ button.button-paragraph {
 /* Notifications page
  ******************************************************************************/
 .notification a.icon {
-  text-decoration: none !important; }
+  text-decoration: none !important;
+  border-radius: 32px !important; }
 
 /*
     Shepherd styles for guided tour.
@@ -9390,5 +9397,4 @@ button.button-paragraph {
 .tour-element-highlight {
   border: 5px solid #74c7ec;
   border-radius: 5px;
-  border-radius: 32px;
   box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.2); }
