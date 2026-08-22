@@ -14,6 +14,7 @@ from bookwyrm.activitypub import get_representative
 from bookwyrm import forms, models
 from bookwyrm import settings
 from bookwyrm.utils import regex
+from bookwyrm.utils.ip_utils import client_ip_address
 
 
 class InstanceConfig(View):
@@ -99,11 +100,7 @@ class CreateAdmin(View):
         login(request, user)
 
         # record session
-        forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
-        if forwarded_for:
-            ip_address = forwarded_for.split(",")[0]
-        else:
-            ip_address = request.META.get("REMOTE_ADDR", "")
+        ip_address = client_ip_address(request)
         agent_string = request.META.get("HTTP_USER_AGENT", "")
         models.create_user_session(
             user_id=user.id,
