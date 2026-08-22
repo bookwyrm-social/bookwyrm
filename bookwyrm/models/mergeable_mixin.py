@@ -203,8 +203,8 @@ class MergeableMixin(Model):
             # unless it is already marked as a merge candidate
             if parent:
                 parent.refresh_from_db()
-            if not parent.editions.count() and not parent.pending_merge_target:
-                parent.merge_into(canonical.parent_work)
+                if not parent.editions.count() and not parent.pending_merge_target:
+                    parent.merge_into(canonical.parent_work)
 
             return absorbed_fields
 
