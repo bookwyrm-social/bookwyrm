@@ -186,7 +186,8 @@ class MergeableMixin(Model):
         suggests_model = apps.get_model("bookwyrm.SuggestionList")
 
         if self.__class__ == edition_model:
-            # NOTE: Once we are using Contributions this will not be necessary
+            # NOTE: Once we are using Contributions
+            # this will need to be amended
             additional_authors = [
                 author
                 for author in self.authors.all()
@@ -197,14 +198,19 @@ class MergeableMixin(Model):
             parent = self.parent_work
 
             self.delete()
+
             # if self.parent is now without any child editions, merge it too
             # unless it is already marked as a merge candidate
-            parent.refresh_from_db()
+            if parent:
+                parent.refresh_from_db()
             if not parent.editions.count() and not parent.pending_merge_target:
                 parent.merge_into(canonical.parent_work)
 
+            return absorbed_fields
+
         elif self.__class__ == work_model:
-            # NOTE: Once we are using Contributions this will not be necessary
+            # NOTE: Once we are using Contributions
+            # this will need to be amended
             additional_authors = [
                 author
                 for author in self.authors.all()
@@ -213,27 +219,18 @@ class MergeableMixin(Model):
             for author in additional_authors:
                 canonical.authors.add(author)
 
-            self.delete()
-            # if self has a suggestion list it needs to either be merged with the canonical
-            # suggestion list, or simply transferred if canonical has no suggestion list
+            # switch over any suggestion lists
+            # deal with duplicate suggestions in the View
             if lists := suggests_model.objects.filter(
                 suggests_for__in=[self.id, canonical.id]
             ):
-                if lists.count() > 1:
-                    work_model.objects.get(id=self.id).merge_into(
-                        work_model.objects.get(id=canonical.id)
-                    )
-                if lists.count() == 1 and lists.first().suggests_for == self:
-                    lists.first().suggests_for = canonical
-                    lists.first().save()
+                for list in lists:
+                    if list.suggests_for == self:
+                        list.suggests_for = canonical
+                        list.save()
 
-        else:
-            self.delete()
-
-        # TODO
-        # suggestionlists have suggestions, suggestions have (endorsement, notes, raw_notes)
-        # I suggest (sorry) we leave SuggestionList model as-is but in the _view_ allow for multiple
-        # SuggestionListItems and display together in one card
+        self.delete()
+        return absorbed_fields
 
     def absorb_data_from(self, other: Self, dry_run=False) -> Dict[str, Any]:
         """fill empty fields with values from another entity"""
