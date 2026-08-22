@@ -52,3 +52,22 @@ class Quotation(TestCase):
 
         self.assertEqual(quotation.book, self.book)
         self.assertEqual(quotation.user, self.user)
+
+    def test_bookwyrm_quotation_namespacing(self):
+        """does the Note type use bw namespaces?"""
+
+        comment = models.Quotation.objects.create(
+            user=self.user,
+            book=self.book,
+            content="this is a comment",
+            quote="shall I compare thee to a summer's day?",
+        )
+
+        activity = comment.to_activity()
+        # forwards compatible
+        self.assertTrue("bw:inReplyToBook" in activity)
+        self.assertTrue("bw:quote" in activity)
+        # backwards compatible
+        self.assertTrue(
+            {"quote": "https://w3id.org/BookWyrm/ns/#quote"} in activity["@context"]
+        )
