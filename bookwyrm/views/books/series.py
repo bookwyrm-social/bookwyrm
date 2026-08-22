@@ -44,6 +44,7 @@ class Series(View):
 
         data = {
             "series": series,
+            "series_dupe": series.pending_merge_target,
             "series_books": page,
             "series_authors": {"authors": authors},
         }

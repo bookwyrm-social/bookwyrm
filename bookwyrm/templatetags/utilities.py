@@ -27,6 +27,20 @@ def join(*args):
     return "_".join(str(a) for a in args)
 
 
+@register.filter(name="getattr_filter")
+def getattr_filter(object, arg):
+    """get attribute value from an object"""
+
+    if object.__class__._meta.get_field(arg).get_internal_type() == "ArrayField":
+        return getattr(object, arg, [])
+    if object.__class__._meta.get_field(arg).get_internal_type() == "DateTimeField":
+        if getattr(object, arg) is not None:
+            return getattr(object, arg, "").strftime("%Y-%m-%d")
+        return ""
+
+    return getattr(object, arg, "") or ""
+
+
 @register.filter(name="username")
 def get_user_identifier(user):
     """use localname for local users, username for remote"""
@@ -193,13 +207,25 @@ def max_upload_size_human():
 
 
 @register.filter(name="get_user_permission")
-def get_user_permission(user):
-    """given a user, return their permission level"""
+def get_user_permission_group(user):
+    """given a user, return their permission group"""
 
     return user.groups.first() or "User"
+
+
+@register.filter(name="has_perm")
+def check_user_has_permission(user, perm_name):
+    """does the given user have a specific permission?"""
+    return user.has_perm(f"bookwyrm.{perm_name}")
 
 
 @register.filter(name="is_instance_admin")
 def is_instance_admin(localname):
     """Returns a boolean indicating whether the user is the instance admin account"""
     return localname == INSTANCE_ACTOR_USERNAME
+
+
+@register.filter(name="dedupe_fields")
+def get_dupe_match_field(original, dupe):
+    """Identify which field is matching for a dedupe"""
+    return [f.verbose_name for f in original.get_shared_fields(dupe)]

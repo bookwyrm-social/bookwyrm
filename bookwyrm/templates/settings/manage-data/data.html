@@ -1,0 +1,168 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% load humanize %}
+{% load utilities %}
+
+{% block title %}
+{% trans "Data Quality" %}
+{% endblock %}
+
+{% block header %}
+{% trans "Data Quality" %}
+{% endblock %}
+
+{% block panel %}
+
+<section class="block content">
+    <h2>{% trans "Duplicates detected" %}</h2>
+    <aside class="help">{% trans "Duplicates will be detected when a duplicate data scan has run" %}</aside>
+    <div class="columns has-text-centered is-multiline">
+        <div class="column is-one-fifth">
+            <div class="notification mb-0">
+                <p class="header">{% trans "Works" %}</p>
+                <p class="title is-5">{{ work_count|intcomma }}</p>
+            </div>
+            {% if work_count %}
+            <aside class="help pt-0 has-text-left">
+                <a target="_blank" href="{{ work_example.local_path }}">{% trans "View first" %}</a>
+            </aside>
+            {% endif %}
+        </div>
+        <div class="column is-one-fifth">
+            <div class="notification mb-0">
+                <p class="header">{% trans "Editions" %}</p>
+                <p class="title is-5">{{ edition_count|intcomma }}</p>
+            </div>
+            {% if edition_count %}
+            <aside class="help pt-0 has-text-left">
+                <a target="_blank" href="{{ edition_example.local_path }}">{% trans "View first" %}</a>
+            </aside>
+            {% endif %}
+        </div>
+        <div class="column is-one-fifth">
+            <div class="notification mb-0">
+                <p class="header">{% trans "Authors" %}</p>
+                <p class="title is-5">{{ author_count|intcomma }}</p>
+            </div>
+            {% if author_count %}
+            <aside class="help pt-0 has-text-left">
+                <a target="_blank" href="{{ author_example.local_path }}">{% trans "View first" %}</a>
+            </aside>
+            {% endif %}
+        </div>
+        <div class="column is-one-fifth">
+            <div class="notification mb-0">
+                <p class="header">{% trans "Series" %}</p>
+                <p class="title is-5">{{ series_count|intcomma }}</p>
+            </div>
+            {% if series_count %}
+            <aside class="help pt-0 has-text-left">
+                <a target="_blank" href="{{ series_example.local_path }}">{% trans "View first" %}</a>
+            </aside>
+            {% endif %}
+        </div>
+        <div class="column is-one-fifth">
+            <div class="notification mb-0">
+                <p class="header">{% trans "Suggestion list" %}</p>
+                <p class="title is-5">{{ suggestion_list_count|intcomma }}</p>
+            </div>
+            {% if suggestion_list_count %}
+            <aside class="help pt-0 has-text-left">
+                <a target="_blank" href="{{ suggestion_list_example.local_path }}">{% trans "View first" %}</a>
+            </aside>
+            {% endif %}
+        </div>
+    </div>
+    <form name="run_scan" method="POST" action="{% url 'settings-dedupe-run-scan' %}">
+        {% csrf_token %}
+        <button type="submit" class="button">
+            {% trans "Run scan task" %}
+        </button>
+    </form>
+</section>
+
+<div class="block">
+    <h2 class="title is-4">{% trans "Schedule duplicate data scan" %}</h2>
+    <div class="box">
+        <div class="content notification">
+            <p>
+                {% trans "This job scans for duplicate editions, works, authors, and series." %}
+                <br>
+                <strong>{% trans "No changes will be made to the data." %}</strong>
+            </p>
+        </div>
+        <div class="block">
+            {% if scan_task %}
+            <dl class="block">
+                <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                    {% trans "Schedule:" %}
+                </dt>
+                <dd>
+                    {{ scan_task.schedule }}
+                </dd>
+
+                <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                    {% trans "Last run:" %}
+                </dt>
+                <dd>
+                    {{ scan_task.last_run_at|naturaltime }}
+                </dd>
+
+                <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                    {% trans "Total run count:" %}
+                </dt>
+                <dd>
+                    {{ scan_task.total_run_count }}
+                </dd>
+
+                <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                    {% trans "Enabled:" %}
+                </dt>
+                <dd>
+                    <span class="tag {% if scan_task.enabled %}is-success{% else %}is-danger{% endif %}">
+                        {{ scan_task.enabled|yesno }}
+                    </span>
+                </dd>
+            </dl>
+
+            <div class="is-flex is-justify-content-space-between block">
+                <form name="unschedule-dedupe" method="POST" action="{% url 'settings-dedupe-unschedule' scan_task.id %}">
+                    {% csrf_token %}
+                    <button class="button is-danger">{% trans "Delete schedule" %}</button>
+                </form>
+            </div>
+            {% else %}
+            <form name="schedule-dedupe" method="POST" action="{% url 'settings-dedupe-schedule-scan' %}">
+                {% csrf_token %}
+                <div class="field">
+                    <label class="label" for="id_every">
+                        {{ task_form.every.label }}
+                    </label>
+                    <div class="columns">
+                        <div class="column is-one-fifth">
+                            {{ task_form.every }}
+                        </div>
+                    </div>
+                    <p class="help" id="desc_every">
+                        {{ task_form.every.help_text }}
+                    </p>
+                </div>
+                <div class="field">
+                    <label class="label" for="id_period">
+                    {{ task_form.period.label }}
+                    </label>
+                    <div class="select">
+                        {{ task_form.period }}
+                    </div>
+                    <p class="help" id="desc_period">
+                        {{ task_form.period.help_text }}
+                    </p>
+                </div>
+                <button class="button is-primary">{% trans "Schedule scan" %}</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

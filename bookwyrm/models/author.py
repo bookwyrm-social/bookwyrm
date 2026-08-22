@@ -5,6 +5,7 @@ from typing import Any
 
 from django.db import models
 from django.contrib.postgres.indexes import GinIndex
+from django.utils.translation import gettext_lazy as _
 import pgtrigger
 
 from bookwyrm import activitypub
@@ -19,6 +20,9 @@ class Author(BookDataModel):
     """basic biographic info"""
 
     merged_model = MergedAuthor
+    pending_merge_target = models.ForeignKey(
+        "Author", related_name="merge_target", on_delete=models.PROTECT, null=True
+    )
 
     wikipedia_link = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
@@ -111,5 +115,8 @@ class Author(BookDataModel):
                 ),
             ),
         ]
+
+        verbose_name = _("Author")
+        verbose_name_plural = _("Authors")
 
     activity_serializer = activitypub.Author

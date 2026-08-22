@@ -35,6 +35,7 @@ from .admin.files_maintenance import (
 )
 from .admin.email_blocklist import EmailBlocklist
 from .admin.email_config import EmailConfig
+from .admin.data_quality import DataQuality, run_deduplication_scan_task, schedule_deduplication_scan_task, unschedule_deduplication_scan_task, MergeData, ManualMerge, confirm_manual_merge
 from .admin.imports import (
     ImportList,
     disable_imports,
@@ -60,7 +61,7 @@ from .admin.reports import (
 from .admin.site import Site, Registration, RegistrationLimited
 from .admin.themes import Themes, delete_theme, test_theme
 from .admin.user_admin import UserAdmin, UserAdminList, ActivateUserAdmin
-from .admin.user_admin import ForcePasswordResetAdmin
+from .admin.user_admin import ForcePasswordResetAdmin, SetMergePermission
 
 # user preferences
 from .preferences.change_password import ChangePassword
