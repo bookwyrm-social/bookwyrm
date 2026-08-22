@@ -21,6 +21,7 @@ from django.views.decorators.http import require_POST
 from bookwyrm import forms, models
 from bookwyrm.settings import DOMAIN, TWO_FACTOR_LOGIN_MAX_SECONDS
 from bookwyrm.views.helpers import set_language
+from bookwyrm.utils.ip_utils import client_ip_address
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
@@ -183,11 +184,7 @@ class LoginWith2FA(View):
         user.update_active_date()
 
         # record session
-        forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
-        if forwarded_for:
-            ip_address = forwarded_for.split(",")[0]
-        else:
-            ip_address = request.META.get("REMOTE_ADDR", "")
+        ip_address = client_ip_address(request)
         agent_string = request.META.get("HTTP_USER_AGENT", "")
         models.create_user_session(
             user_id=user.id,
