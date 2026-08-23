@@ -185,7 +185,7 @@ class FederationSettings(CustomForm):
             "require_signed_get",
             "require_login_nearly_everywhere",
             "block_incoming_search",
-            "use_strict_ap_namespacing",
+            "use_strict_activitypub_namespacing",
         ]
 
         widgets = {
@@ -201,9 +201,9 @@ class FederationSettings(CustomForm):
             "block_incoming_search": forms.CheckboxInput(
                 attrs={"aria-describedby": "desc_block_incoming_search"}
             ),
-            "use_strict_ap_namespacing": forms.CheckboxInput(
+            "use_strict_activitypub_namespacing": forms.CheckboxInput(
                 attrs={
-                    "aria-describedby": "use_strict_ap_namespacing",
+                    "aria-describedby": "use_strict_activitypub_namespacing",
                     "disabled": True,
                 }
             ),

@@ -135,7 +135,7 @@ def naive_parse(activity_objects, activity_json, serializer=None):
             return None
 
         # strict namespacing
-        if models.SiteSettings.get().use_strict_ap_namespacing:
+        if models.SiteSettings.get().use_strict_activitypub_namespacing:
             has_namespace = "https://w3id.org/BookWyrm/ns" in activity_json["@context"]
             has_bw_namespace = {"bw": "https://w3id.org/BookWyrm/ns"} in activity_json[
                 "@context"

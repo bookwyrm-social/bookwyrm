@@ -116,7 +116,7 @@ class SiteSettings(SiteModel):
     field_tracker = FieldTracker(fields=["name", "instance_tagline", "logo"])
 
     # feature flags
-    use_strict_ap_namespacing = models.BooleanField(default=False)
+    use_strict_activitypub_namespacing = models.BooleanField(default=False)
 
     @classmethod
     def get(cls) -> SiteSettings:

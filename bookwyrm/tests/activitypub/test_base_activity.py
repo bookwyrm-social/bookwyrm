@@ -357,7 +357,7 @@ class BaseActivity(TestCase):
     def test_strict_type_checking(self, *_):
         """test strict checking of BookWyrm types before parsing"""
 
-        models.SiteSettings.objects.create(use_strict_ap_namespacing=True)
+        models.SiteSettings.objects.create(use_strict_activitypub_namespacing=True)
 
         # fails, no namespacing
         with self.assertRaises(
