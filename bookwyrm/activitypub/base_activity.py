@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 TBookWyrmModel = TypeVar("TBookWyrmModel", bound=base_model.BookWyrmModel)
 
 # custom properties that appear on various decendants of Note
-namespaced = [
+NAMESPACED_PROPERTIES = [
     "inReplyToBook",
     "readingStatus",
     "progress",
@@ -47,7 +47,7 @@ namespaced = [
 ]
 
 # custom types that don't inherit from Note
-other_custom_activity_objects = [
+OTHER_CUSTOM_ACTIVITY_OBJECTS = [
     "CollectionItem",
     "ListItem",
     "ShelfItem",
@@ -131,7 +131,7 @@ def naive_parse(activity_objects, activity_json, serializer=None):
             activity_json["type"] = "PublicKey"
 
         activity_type = activity_json.get("type")
-        if isinstance(activity_type, str) and activity_type in ["Question", "Article"]:
+        if activity_type in ["Question", "Article"]:
             return None
 
         # strict namespacing
@@ -147,17 +147,14 @@ def naive_parse(activity_objects, activity_json, serializer=None):
             if "https://www.w3.org/ns/activitystreams" not in activity_json["@context"]:
                 raise ActivitySerializerError("Not an activitystreams activity")
             # is a non-Note BookWyrm type without BW namespace
-            if activity_type in other_custom_activity_objects and not has_namespace:
+            if activity_type in OTHER_CUSTOM_ACTIVITY_OBJECTS and not has_namespace:
                 raise ActivitySerializerError("BookWyrm namespace error")
             # is decendent of Note without the bw namespace
-            if (
-                len(set(activity_json.keys()) & set(namespaced)) > 0
-                and not has_bw_namespace
-            ):
+            if (activity_json.keys() & NAMESPACED_PROPERTIES) and not has_bw_namespace:
                 raise ActivitySerializerError("BookWyrm namespace error")
 
         # convert namespaced keys to ActivityObject keys
-        for k in namespaced:
+        for k in NAMESPACED_PROPERTIES:
             if value := activity_json.get(f"bw:{k}"):
                 activity_json[k] = value
                 del activity_json[f"bw:{k}"]
@@ -251,11 +248,11 @@ class ActivityObject:
             self.to_model. e.g. if this is a Work being dereferenced from
             an incoming Edition
         """
-        try:
-            model = model or get_model_from_type(self.type)
-        except ActivitySerializerError:
-            # type is a list on Note-like activities
-            model = model or get_model_from_type(self.type[0])
+        model = model or (
+            get_model_from_type(self.type[0])
+            if isinstance(self.type, list)
+            else get_model_from_type(self.type)
+        )
 
         # only reject statuses if we're potentially creating them
         if (
@@ -378,7 +375,7 @@ class ActivityObject:
                         for e in v
                     ]
 
-                if k in namespaced and v is not None and k not in omit:
+                if k in NAMESPACED_PROPERTIES and v is not None and k not in omit:
                     # namespacing for extended Note and Article properties
                     bw_data[k] = v
             except TypeError:
@@ -419,7 +416,7 @@ class ActivityObject:
                 return data
 
             # add our namespace to anything else that uses BookWyrm-specific values
-            if type(self).__name__ in other_custom_activity_objects:
+            if type(self).__name__ in OTHER_CUSTOM_ACTIVITY_OBJECTS:
                 data["@context"].append("https://w3id.org/BookWyrm/ns")
         return data
 
