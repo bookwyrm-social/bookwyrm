@@ -13,41 +13,29 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.tests.validate_html import validate_html
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
-@patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
-@patch("bookwyrm.activitystreams.populate_stream_task.delay")
-@patch("bookwyrm.lists_stream.populate_lists_task.delay")
-@patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
-@patch("bookwyrm.activitystreams.remove_book_statuses_task.delay")
 class ShelfViews(TestCase):
     """tag views"""
 
     @classmethod
     def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with (
-            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
-            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
-            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
-        ):
-            cls.local_user = models.User.objects.create_user(
-                "mouse@local.com",
-                "mouse@mouse.com",
-                "mouseword",
-                local=True,
-                localname="mouse",
-                remote_id="https://example.com/users/mouse",
-            )
+        cls.local_user = models.User.objects.create_user(
+            "mouse@local.com",
+            "mouse@mouse.com",
+            "mouseword",
+            local=True,
+            localname="mouse",
+            remote_id="https://example.com/users/mouse",
+        )
         cls.work = models.Work.objects.create(title="Test Work")
         cls.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=cls.work,
         )
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            cls.shelf = models.Shelf.objects.create(
-                name="Test Shelf", identifier="test-shelf", user=cls.local_user
-            )
+        cls.shelf = models.Shelf.objects.create(
+            name="Test Shelf", identifier="test-shelf", user=cls.local_user
+        )
 
     def setUp(self):
         """individual test setup"""
@@ -55,7 +43,7 @@ class ShelfViews(TestCase):
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
 
-    def test_shelf_page_all_books(self, *_):
+    def test_shelf_page_all_books(self):
         """there are so many views, this just makes sure it LOADS"""
         models.ShelfBook.objects.create(
             book=self.book,
@@ -72,7 +60,7 @@ class ShelfViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_shelf_page_all_books_empty(self, *_):
+    def test_shelf_page_all_books_empty(self):
         """No books shelved"""
         view = views.Shelf.as_view()
         request = self.factory.get("")
@@ -84,7 +72,7 @@ class ShelfViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_shelf_page_all_books_avoid_duplicates(self, *_):
+    def test_shelf_page_all_books_avoid_duplicates(self):
         """Make sure books aren't showing up twice on the all shelves view"""
         models.ShelfBook.objects.create(
             book=self.book,
@@ -107,7 +95,7 @@ class ShelfViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_shelf_page_all_books_json(self, *_):
+    def test_shelf_page_all_books_json(self):
         """there is no json view here"""
         view = views.Shelf.as_view()
         request = self.factory.get("")
@@ -119,7 +107,7 @@ class ShelfViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_shelf_page_all_books_anonymous(self, *_):
+    def test_shelf_page_all_books_anonymous(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Shelf.as_view()
         request = self.factory.get("")
@@ -131,7 +119,7 @@ class ShelfViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_shelf_private(self, *_):
+    def test_shelf_private(self):
         models.User.objects.filter(id=self.local_user.id).update(
             is_profile_private=True
         )
@@ -141,7 +129,75 @@ class ShelfViews(TestCase):
         result = view(request, username=self.local_user.localname)
         self.assertTrue(result.context_data["is_profile_locked"])
 
-    def test_shelf_page_sorted(self, *_):
+    def test_shelf_page_sorted_shelved(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Shelf.as_view()
+        shelf = self.local_user.shelf_set.first()
+        request = self.factory.get("", {"sort": "shelved_date"})
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_shelf_page_sorted_rating(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Shelf.as_view()
+        shelf = self.local_user.shelf_set.first()
+        request = self.factory.get("", {"sort": "rating"})
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_shelf_page_sorted_start_date(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Shelf.as_view()
+        shelf = self.local_user.shelf_set.first()
+        request = self.factory.get("", {"sort": "start_date"})
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_shelf_page_sorted_finish_date(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Shelf.as_view()
+        shelf = self.local_user.shelf_set.first()
+        request = self.factory.get("", {"sort": "finish_date"})
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_shelf_page_sorted_author(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.first()
@@ -158,7 +214,41 @@ class ShelfViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_shelf_implicit_sort(self, *_):
+    def test_shelf_page_sorted_title(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Shelf.as_view()
+        shelf = self.local_user.shelf_set.first()
+        request = self.factory.get("", {"sort": "sort_title"})
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_shelf_page_sorted_garbled(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Shelf.as_view()
+        shelf = self.local_user.shelf_set.first()
+        request = self.factory.get("", {"sort": "sort_titledfdfgfdg"})
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(
+                request,
+                username=self.local_user.username,
+                shelf_identifier=shelf.identifier,
+            )
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_shelf_implicit_sort(self):
         """ensure the shelf view always has a sort in its response"""
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.first()
@@ -177,7 +267,7 @@ class ShelfViews(TestCase):
         self.assertNotEqual("", result.context_data["sort"])
         self.assertEqual(result.status_code, 200)
 
-    def test_shelf_page(self, *_):
+    def test_shelf_page(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.first()
@@ -216,7 +306,7 @@ class ShelfViews(TestCase):
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
-    def test_edit_shelf_privacy(self, *_):
+    def test_edit_shelf_privacy(self):
         """set name or privacy on shelf"""
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.get(identifier="to-read")
@@ -240,7 +330,7 @@ class ShelfViews(TestCase):
 
         self.assertEqual(shelf.privacy, "unlisted")
 
-    def test_edit_shelf_name(self, *_):
+    def test_edit_shelf_name(self):
         """change the name of an editable shelf"""
         view = views.Shelf.as_view()
         shelf = models.Shelf.objects.create(name="Test Shelf", user=self.local_user)
@@ -261,7 +351,7 @@ class ShelfViews(TestCase):
         self.assertEqual(shelf.name, "cool name")
         self.assertEqual(shelf.identifier, f"testshelf-{shelf.id}")
 
-    def test_edit_shelf_by_non_owner_blocked(self, *_):
+    def test_edit_shelf_by_non_owner_blocked(self):
         view = views.Shelf.as_view()
         shelf = models.Shelf.objects.create(name="Test Shelf", user=self.local_user)
         with (
@@ -293,7 +383,7 @@ class ShelfViews(TestCase):
         self.assertEqual(shelf.name, "Test Shelf")
         self.assertEqual(shelf.user, self.local_user)
 
-    def test_edit_shelf_name_not_editable(self, *_):
+    def test_edit_shelf_name_not_editable(self):
         """can't change the name of an non-editable shelf"""
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.get(identifier="to-read")
@@ -312,7 +402,7 @@ class ShelfViews(TestCase):
 
         self.assertEqual(shelf.name, "To Read")
 
-    def test_filter_shelf_found(self, *_):
+    def test_filter_shelf_found(self):
         """display books that match a filter keyword"""
         models.ShelfBook.objects.create(
             book=self.book,
@@ -339,7 +429,7 @@ class ShelfViews(TestCase):
             shelf_book.book.title,
         )
 
-    def test_filter_shelf_none(self, *_):
+    def test_filter_shelf_none(self):
         """display a message when no books match a filter keyword"""
         models.ShelfBook.objects.create(
             book=self.book,
@@ -357,7 +447,7 @@ class ShelfViews(TestCase):
         self.assertEqual(result.status_code, 200)
         self.assertEqual(len(result.context_data["books"].object_list), 0)
 
-    def test_shelf_excludes_blocked(self, *_):
+    def test_shelf_excludes_blocked(self):
         """are blocked books actually blocked?"""
         shelf = models.Shelf.objects.get(user=self.local_user, identifier="read")
         work = models.Work.objects.create(title="Awful Book")

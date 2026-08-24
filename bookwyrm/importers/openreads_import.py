@@ -1,6 +1,6 @@
 """handle reading a csv from openreads"""
 
-from typing import Any, Optional
+from typing import Optional
 from datetime import datetime
 from bookwyrm.models import Shelf
 
@@ -19,13 +19,13 @@ class OpenReadsImporter(Importer):
 
     service = "OpenReads"
 
-    def __init__(self, *args: Any, **kwargs: Any):
-        self.row_mappings_guesses.append(("openlibrary_key", ["olid"]))
-        self.row_mappings_guesses.append(("pages", ["pages"]))
-        self.row_mappings_guesses.append(("description", ["description"]))
-        self.row_mappings_guesses.append(("physical_format", ["book_format"]))
-        self.row_mappings_guesses.append(("published_date", ["publication_year"]))
-        super().__init__(*args, **kwargs)
+    row_mappings_guesses = Importer.row_mappings_guesses + [
+        ("openlibrary_key", ["olid"]),
+        ("pages", ["pages"]),
+        ("description", ["description"]),
+        ("physical_format", ["book_format"]),
+        ("published_date", ["publication_year"]),
+    ]
 
     def normalize_row(
         self, entry: dict[str, str], mappings: dict[str, Optional[str]]

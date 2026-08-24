@@ -46,7 +46,7 @@ class TestSeriesModel(TestCase):
 
         self.assertEqual(models.SeriesBook.objects.count(), 1)
         self.assertEqual(self.work.seriesbooks.first(), seriesbook)
-        self.assertEqual(self.work.book_series()[0], self.series)
+        self.assertEqual(self.work.get_series()[0], self.series)
         self.assertEqual(self.series.seriesbooks.first(), seriesbook)
 
     def test_natural_sort_key(self):
@@ -77,19 +77,16 @@ class TestSeriesModel(TestCase):
 
     def test_series_uniqueness(self):
         """There CAN be two books that are #1 in a series because of poor data quality"""
-        duplicate_edition = models.Edition.objects.create(
-            title="Test Book",
-            parent_work=models.Work.objects.create(title="Another work"),
-        )
+        duplicate_work = models.Work.objects.create(title="Test Work")
         models.SeriesBook.objects.create(
             user=self.instance_user,
-            book=self.edition,
+            book=self.work,
             series_number=1,
             series=self.series,
         )
         models.SeriesBook.objects.create(
             user=self.instance_user,
-            book=duplicate_edition,
+            book=duplicate_work,
             series_number=1,
             series=self.series,
         )

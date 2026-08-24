@@ -12,10 +12,6 @@ let StatusCache = new (class {
         document
             .querySelectorAll(".submit-status")
             .forEach((button) => button.addEventListener("submit", this.submitStatus.bind(this)));
-
-        document
-            .querySelectorAll(".form-rate-stars label.icon")
-            .forEach((button) => button.addEventListener("click", this.toggleStar.bind(this)));
     }
 
     /**
@@ -26,8 +22,8 @@ let StatusCache = new (class {
      */
     updateDraft(event) {
         // Used in set reading goal
-        let key = event.target.dataset.cacheDraft;
-        let value = event.target.value;
+        const key = event.target.dataset.cacheDraft;
+        const value = event.target.value;
 
         if (!value) {
             window.localStorage.removeItem(key);
@@ -46,8 +42,8 @@ let StatusCache = new (class {
      */
     populateDraft(node) {
         // Used in set reading goal
-        let key = node.dataset.cacheDraft;
-        let value = window.localStorage.getItem(key);
+        const key = node.dataset.cacheDraft;
+        const value = window.localStorage.getItem(key);
 
         if (!value) {
             return;
@@ -79,14 +75,14 @@ let StatusCache = new (class {
 
         event.preventDefault();
 
-        BookWyrm.addRemoveClass(form, "is-processing", true);
+        form.classList.add("is-processing");
         trigger.setAttribute("disabled", null);
 
         BookWyrm.ajaxPost(form)
             .finally(() => {
                 // Change icon to remove ongoing activity on the current UI.
                 // Enable back the element used to submit the form.
-                BookWyrm.addRemoveClass(form, "is-processing", false);
+                form.classList.remove("is-processing");
                 trigger.removeAttribute("disabled");
             })
             .then((response) => {
@@ -107,14 +103,14 @@ let StatusCache = new (class {
      * @param  {String} the id of the message dom element
      * @return {undefined}
      */
-    announceMessage(message_id) {
-        const element = document.getElementById(message_id);
+    announceMessage(messageId) {
+        const element = document.getElementById(messageId);
         let copy = element.cloneNode(true);
 
         copy.id = null;
         element.insertAdjacentElement("beforebegin", copy);
 
-        BookWyrm.addRemoveClass(copy, "is-hidden", false);
+        BookWyrm.classShow(copy);
         setTimeout(
             function () {
                 copy.remove();
@@ -140,7 +136,7 @@ let StatusCache = new (class {
         );
 
         // Close modals
-        let modal = form.closest(".modal.is-active");
+        const modal = form.closest(".modal.is-active");
 
         if (modal) {
             modal.getElementsByClassName("modal-close")[0].click();
@@ -158,7 +154,7 @@ let StatusCache = new (class {
         }
 
         // Close reply panel
-        let reply = form.closest(".reply-panel");
+        const reply = form.closest(".reply-panel");
 
         if (reply) {
             document.querySelector("[data-controls=" + reply.id + "]").click();
@@ -176,25 +172,25 @@ let StatusCache = new (class {
      */
     cycleShelveButtons(button, identifier) {
         // Pressed button
-        let shelf = button.querySelector("[data-shelf-identifier='" + identifier + "']");
-        let next_identifier = shelf.dataset.shelfNext;
+        const shelf = button.querySelector("[data-shelf-identifier='" + identifier + "']");
+        let nextIdentifier = shelf.dataset.shelfNext;
 
         // Set all buttons to hidden
         button
             .querySelectorAll("[data-shelf-identifier]")
-            .forEach((item) => BookWyrm.addRemoveClass(item, "is-hidden", true));
+            .forEach((item) => BookWyrm.classHide(item));
 
         // Button that should be visible now
-        let next = button.querySelector("[data-shelf-identifier=" + next_identifier + "]");
+        const next = button.querySelector("[data-shelf-identifier=" + nextIdentifier + "]");
 
         // Show the desired button
-        BookWyrm.addRemoveClass(next, "is-hidden", false);
+        BookWyrm.classShow(next);
 
         // ------ update the dropdown buttons
         // Remove existing hidden class
         button
             .querySelectorAll("[data-shelf-dropdown-identifier]")
-            .forEach((item) => BookWyrm.addRemoveClass(item, "is-hidden", false));
+            .forEach((item) => BookWyrm.classShow(item));
 
         // Remove existing disabled states
 
@@ -202,51 +198,30 @@ let StatusCache = new (class {
             .querySelectorAll("[data-shelf-dropdown-identifier] button")
             .forEach((item) => (item.disabled = false));
 
-        next_identifier = next_identifier == "complete" ? "read" : next_identifier;
-        next_identifier =
-            next_identifier == "stopped-reading-complete" ? "stopped-reading" : next_identifier;
+        nextIdentifier = nextIdentifier == "complete" ? "read" : nextIdentifier;
+        nextIdentifier =
+            nextIdentifier == "stopped-reading-complete" ? "stopped-reading" : nextIdentifier;
 
         // Disable the current state
         button.querySelector(
             "[data-shelf-dropdown-identifier=" + identifier + "] button"
         ).disabled = true;
 
-        let main_button = button.querySelector(
-            "[data-shelf-dropdown-identifier=" + next_identifier + "]"
+        const mainButton = button.querySelector(
+            "[data-shelf-dropdown-identifier=" + nextIdentifier + "]"
         );
 
         // Hide the option that's shown as the main button
-        BookWyrm.addRemoveClass(main_button, "is-hidden", true);
+        BookWyrm.classHide(mainButton);
 
         // Just hide the other two menu options, idk what to do with them
-        button
-            .querySelectorAll("[data-extra-options]")
-            .forEach((item) => BookWyrm.addRemoveClass(item, "is-hidden", true));
+        button.querySelectorAll("[data-extra-options]").forEach((item) => BookWyrm.classHide(item));
 
         // Close menu
-        let menu = button.querySelector("details[open]");
+        const menu = button.querySelector("details[open]");
 
         if (menu) {
             menu.removeAttribute("open");
-        }
-    }
-
-    /**
-     * Reveal half-stars
-     *
-     * @param  {Event} event
-     * @return {undefined}
-     */
-    toggleStar(event) {
-        const label = event.currentTarget;
-        let wholeStar = document.getElementById(label.getAttribute("for"));
-
-        if (wholeStar.checked) {
-            event.preventDefault();
-            let halfStar = document.getElementById(label.dataset.forHalf);
-
-            wholeStar.checked = null;
-            halfStar.checked = "checked";
         }
     }
 })();
