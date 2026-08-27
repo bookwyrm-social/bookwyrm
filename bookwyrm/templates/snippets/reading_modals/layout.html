@@ -8,11 +8,12 @@
 
 {% with 0|uuid as local_uuid %}
 <div class="is-flex is-justify-content-space-between">
-    <label for="post_status_{{ local_uuid }}_{{ uuid }}" data-controls="reading_content_{{ local_uuid }}_{{ uuid }}" data-controls-checkbox="post_status_{{ local_uuid }}_{{ uuid }}" data-disables="reading_content_fieldset_{{ local_uuid }}_{{ uuid }}" aria-pressed="true" data-allow-default="true">
-        <input type="checkbox" name="post-status" class="checkbox" id="post_status_{{ local_uuid }}_{{ uuid }}" checked>
+    {% with post_status_default=request.user.default_post_status %}
+    <label for="post_status_{{ local_uuid }}_{{ uuid }}" data-controls="reading_content_{{ local_uuid }}_{{ uuid }}" data-controls-checkbox="post_status_{{ local_uuid }}_{{ uuid }}" data-disables="reading_content_fieldset_{{ local_uuid }}_{{ uuid }}" aria-pressed="{{ post_status_default|yesno:'true,false' }}" data-allow-default="true">
+        <input type="checkbox" name="post-status" class="checkbox" id="post_status_{{ local_uuid }}_{{ uuid }}" {% if post_status_default %}checked{% endif %}>
         {% trans "Post to feed" %}
     </label>
-    <div class="is-hidden" id="hide_reading_content_{{ local_uuid }}_{{ uuid }}">
+    <div class="{% if post_status_default %}is-hidden{% endif %}" id="hide_reading_content_{{ local_uuid }}_{{ uuid }}">
         <button class="button is-link" type="submit">
             <span class="icon icon-spinner" aria-hidden="true"></span>
             <span>{% trans "Save" %}</span>
@@ -20,12 +21,13 @@
     </div>
 </div>
 
-<div id="reading_content_{{ local_uuid }}_{{ uuid }}">
+<div id="reading_content_{{ local_uuid }}_{{ uuid }}" {% if not post_status_default %}class="is-hidden"{% endif %}>
     <hr aria-hidden="true">
-    <fieldset id="reading_content_fieldset_{{ local_uuid }}_{{ uuid }}">
+    <fieldset id="reading_content_fieldset_{{ local_uuid }}_{{ uuid }}" {% if not post_status_default %}disabled{% endif %}>
         {% block form %}{% endblock %}
     </fieldset>
 </div>
+{% endwith %}
 {% endwith %}
 
 {% endblock %}

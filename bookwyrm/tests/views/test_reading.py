@@ -72,6 +72,26 @@ class ReadingViews(TestCase):
         result = view(request, "stop", self.book.id)
         validate_html(result.render())
 
+    def test_reading_status_get_post_status_default(self, *_):
+        """the post-to-feed checkbox follows the user's preference"""
+        view = views.ReadingStatus.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        # default: checkbox rendered checked
+        result = view(request, "start", self.book.id)
+        html = result.render().content.decode()
+        self.assertIn('name="post-status" class="checkbox"', html)
+        self.assertIn("checked", html)
+
+        # preference off: checkbox rendered unchecked
+        self.local_user.default_post_status = False
+        self.local_user.save(broadcast=False, update_fields=["default_post_status"])
+        result = view(request, "start", self.book.id)
+        html = result.render().content.decode()
+        validate_html(result.render())
+        self.assertNotIn("checked>", html)
+
     def test_start_reading(self, *_):
         """begin a book"""
         shelf = self.local_user.shelf_set.get(identifier=models.Shelf.READING)
