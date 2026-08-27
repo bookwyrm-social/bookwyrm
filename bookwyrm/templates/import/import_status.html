@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load humanize %}
 {% load static %}
+{% load utilities %}
 
 {% block title %}{% trans "Import Status" %}{% endblock %}
 
@@ -71,6 +72,14 @@
         {% csrf_token %}
         <button class="button is-danger" type="submit">{% trans "Stop import" %}</button>
     </form>
+    {% else %}
+    <div class="block">
+        <button class="button is-danger is-light" type="button" data-modal-open="delete_import_{{ job.id }}">
+            {% trans "Delete import" %}
+        </button>
+    </div>
+    {% join "delete_import" job.id as delete_import_modal_id %}
+    {% include 'import/delete_import_modal.html' with id=delete_import_modal_id job=job %}
     {% endif %}
 
     {% if manual_review_count and not legacy %}

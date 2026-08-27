@@ -86,6 +86,17 @@ def stop_import(request, job_id):
     return redirect("import-status", job_id)
 
 
+@login_required
+@require_POST
+def delete_import(request, job_id):
+    """remove an import job and its items from the import history"""
+    job = get_object_or_404(models.ImportJob, id=job_id, user=request.user)
+    if not job.complete:
+        raise PermissionDenied()
+    job.delete()
+    return redirect("import")
+
+
 @method_decorator(login_required, name="dispatch")
 class UserImportStatus(View):
     """status of an existing import"""

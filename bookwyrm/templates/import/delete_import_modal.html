@@ -1,0 +1,26 @@
+{% extends 'components/modal.html' %}
+{% load i18n %}
+
+{% block modal-title %}{% trans "Delete this import?" %}{% endblock %}
+
+{% block modal-body %}
+{% trans "This import will be removed from your import history. The books, reviews, and reading activity created by this import will not be deleted. This action cannot be un-done" %}
+{% endblock %}
+
+{% block modal-footer %}
+<form
+    name="delete-import-{{ job.id }}"
+    action="{% url 'import-delete' job.id %}"
+    method="POST"
+    class="is-flex-grow-1"
+>
+    {% csrf_token %}
+
+    <div class="buttons is-right">
+        <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+        <button class="button is-danger" type="submit">
+            {% trans "Delete" %}
+        </button>
+    </div>
+</form>
+{% endblock %}

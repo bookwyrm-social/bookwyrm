@@ -546,6 +546,11 @@ urlpatterns = [
         name="import-stop",
     ),
     re_path(
+        r"^import/(?P<job_id>\d+)/delete/?$",
+        views.delete_import,
+        name="import-delete",
+    ),
+    re_path(
         r"^user-import/(?P<job_id>\d+)/stop/?$",
         views.stop_user_import,
         name="user-import-stop",

@@ -4,7 +4,9 @@ import datetime
 import pathlib
 from unittest.mock import patch
 
+from django.core.exceptions import PermissionDenied
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -113,6 +115,89 @@ class ImportViews(TestCase):
         with patch("bookwyrm.models.import_job.import_item_task.delay") as mock:
             views.retry_item(request, job.id, item.id)
         self.assertEqual(mock.call_count, 1)
+
+    def test_import_status_complete(self):
+        """the status page of a completed import offers deletion"""
+        view = views.ImportStatus.as_view()
+        import_job = models.ImportJob.objects.create(
+            user=self.local_user,
+            status="complete",
+            complete=True,
+            mappings={},
+        )
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        result = view(request, import_job.id)
+
+        self.assertIsInstance(result, TemplateResponse)
+        html = result.render().content.decode()
+        validate_html(result.render())
+        self.assertIn("Delete import", html)
+
+    def test_delete_import(self):
+        """remove a completed import from the import history"""
+        job = models.ImportJob.objects.create(
+            user=self.local_user,
+            status="complete",
+            complete=True,
+            mappings={},
+        )
+        models.ImportItem.objects.create(
+            index=0,
+            job=job,
+            data={},
+            normalized_data={},
+        )
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        result = views.delete_import(request, job.id)
+
+        self.assertEqual(result.status_code, 302)
+        self.assertFalse(models.ImportJob.objects.filter(id=job.id).exists())
+        self.assertFalse(models.ImportItem.objects.filter(job__id=job.id).exists())
+
+    def test_delete_import_in_progress(self):
+        """incomplete imports can't be deleted, they have to be stopped first"""
+        job = models.ImportJob.objects.create(
+            user=self.local_user,
+            status="active",
+            mappings={},
+        )
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        with self.assertRaises(PermissionDenied):
+            views.delete_import(request, job.id)
+        self.assertTrue(models.ImportJob.objects.filter(id=job.id).exists())
+
+    def test_delete_import_wrong_user(self):
+        """you can only delete your own imports"""
+        with (
+            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
+            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
+            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
+        ):
+            other_user = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.rat",
+                "password",
+                local=True,
+                localname="rat",
+            )
+        job = models.ImportJob.objects.create(
+            user=self.local_user,
+            status="complete",
+            complete=True,
+            mappings={},
+        )
+        request = self.factory.post("")
+        request.user = other_user
+
+        with self.assertRaises(Http404):
+            views.delete_import(request, job.id)
+        self.assertTrue(models.ImportJob.objects.filter(id=job.id).exists())
 
     def test_get_average_import_time_no_imports(self):
         """Give people a sense of the timing"""

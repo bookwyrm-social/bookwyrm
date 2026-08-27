@@ -118,6 +118,7 @@ from .imports.import_data import Import, UserImport, user_import_available
 from .imports.import_status import (
     ImportStatus,
     UserImportStatus,
+    delete_import,
     retry_item,
     stop_import,
     stop_user_import,
