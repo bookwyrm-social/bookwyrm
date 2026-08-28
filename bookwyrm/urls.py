@@ -27,6 +27,7 @@ STATUS_TYPES_STRING = "|".join(status_types)
 STATUS_PATH = rf"{USER_PATH}/({STATUS_TYPES_STRING})/(?P<status_id>\d+)"
 
 BOOK_PATH = r"^book/(?P<book_id>\d+)"
+MERGEABLE_BOOK_PATH = r"^book/(?P<mergeable_object_id>\d+)"
 
 STREAMS = "|".join(s["key"] for s in settings.STREAMS)
 
@@ -894,10 +895,12 @@ urlpatterns = [
     re_path(r"^boost/(?P<status_id>\d+)/?$", views.Boost.as_view()),
     re_path(r"^unboost/(?P<status_id>\d+)/?$", views.Unboost.as_view()),
     # books
-    re_path(rf"{BOOK_PATH}(.json)?/?$", views.Book.as_view(), name="book"),
-    re_path(rf"{BOOK_PATH}{regex.SLUG}/?$", views.Book.as_view(), name="book"),
+    re_path(rf"{MERGEABLE_BOOK_PATH}(.json)?/?$", views.Book.as_view(), name="book"),
     re_path(
-        rf"{BOOK_PATH}/(?P<user_statuses>review|comment|quote)/?$",
+        rf"{MERGEABLE_BOOK_PATH}{regex.SLUG}/?$", views.Book.as_view(), name="book"
+    ),
+    re_path(
+        rf"{MERGEABLE_BOOK_PATH}/(?P<user_statuses>review|comment|quote)/?$",
         views.Book.as_view(),
         name="book-user-statuses",
     ),
@@ -916,7 +919,7 @@ urlpatterns = [
         views.ConfirmEditBook.as_view(),
         name="create-book-confirm",
     ),
-    re_path(rf"{BOOK_PATH}/editions(.json)?/?$", views.Editions.as_view()),
+    re_path(rf"{MERGEABLE_BOOK_PATH}/editions(.json)?/?$", views.Editions.as_view()),
     re_path(
         r"^upload-cover/(?P<book_id>\d+)/?$", views.upload_cover, name="upload-cover"
     ),
@@ -984,10 +987,12 @@ urlpatterns = [
     re_path(r"^isbn/(?P<isbn>[\dxX]+)(.json)?/?$", views.Isbn.as_view()),
     # author
     re_path(
-        r"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view(), name="author"
+        r"^author/(?P<mergeable_object_id>\d+)(.json)?/?$",
+        views.Author.as_view(),
+        name="author",
     ),
     re_path(
-        rf"^author/(?P<author_id>\d+){regex.SLUG}/?$",
+        rf"^author/(?P<mergeable_object_id>\d+){regex.SLUG}/?$",
         views.Author.as_view(),
         name="author",
     ),
@@ -998,18 +1003,20 @@ urlpatterns = [
     ),
     # series
     re_path(
-        r"^series/(?P<series_id>\d+)(.json)?/?$", views.Series.as_view(), name="series"
-    ),
-    re_path(
-        rf"^series/(?P<series_id>\d+)(.json)?{regex.SLUG}/?$",
+        r"^series/(?P<mergeable_object_id>\d+)(.json)?/?$",
         views.Series.as_view(),
         name="series",
     ),
     re_path(
-        r"^series/(?P<series_id>\d+)(.json)/?$", views.Series.as_view()
+        rf"^series/(?P<mergeable_object_id>\d+)(.json)?{regex.SLUG}/?$",
+        views.Series.as_view(),
+        name="series",
+    ),
+    re_path(
+        r"^series/(?P<mergeable_object_id>\d+)(.json)/?$", views.Series.as_view()
     ),  # activitypub
     re_path(
-        r"^series/(?P<series_id>\d+)/edit/?$",
+        r"^series/(?P<mergeable_object_id>\d+)/edit/?$",
         views.EditSeries.as_view(),
         name="edit-series",
     ),

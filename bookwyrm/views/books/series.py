@@ -27,9 +27,9 @@ class Series(MergeableViewMixin, View):
     merge_model = models.Series
 
     @vary_on_headers("Accept")
-    def get(self, request, series_id, slug=None):
+    def get(self, request, mergeable_object_id, slug=None):
         """landing page for a series"""
-        series = get_mergeable_object_or_404(models.Series, id=series_id)
+        series = get_mergeable_object_or_404(models.Series, id=mergeable_object_id)
 
         if is_api_request(request):
             return ActivitypubResponse(series.to_activity(**request.GET))
