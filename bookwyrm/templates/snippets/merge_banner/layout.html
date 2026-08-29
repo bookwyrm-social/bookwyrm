@@ -12,7 +12,10 @@
             {% endblock %}
 
             {% if original.prevent_automatic_merge %}
-            {% trans "Automatic merging has been blocked for this item." %}
+                {% trans "Automatic merging has been blocked for this item." %}
+                {% if perms.bookwyrm.manage_data %}
+                    {% blocktrans trimmed with username=original.prevent_automatic_merge_user.localname user_path=original.prevent_automatic_merge_user.remote_id %}(Blocked by <a href="{{user_path}}">@{{ username }}</a>){% endblocktrans %}
+                {% endif %}
             {% elif original.pending_merge_date and merge_scheduled %}
                 {% blocktrans trimmed with date=original.pending_merge_date|naturalday %}
                 After {{ date }}, these will be automatically merged.

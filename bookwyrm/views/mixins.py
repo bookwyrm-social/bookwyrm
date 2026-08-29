@@ -42,5 +42,9 @@ class MergeableViewMixin:
             self.merge_model, id=mergeable_object_id, pending_merge_target__isnull=False
         )
         obj.prevent_automatic_merge = True
-        obj.save(broadcast=False, update_fields=["prevent_automatic_merge"])
+        obj.prevent_automatic_merge_user = request.user
+        obj.save(
+            broadcast=False,
+            update_fields=["prevent_automatic_merge", "prevent_automatic_merge_user"],
+        )
         return redirect_to_referer(request)
