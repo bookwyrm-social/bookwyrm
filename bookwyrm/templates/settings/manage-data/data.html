@@ -135,7 +135,7 @@
             <form name="schedule-dedupe" method="POST" action="{% url 'settings-dedupe-schedule-scan' %}">
                 {% csrf_token %}
                 <div class="field">
-                    <label class="label" for="scan_every">
+                    <label class="label" for="id_scan-every">
                         {{ scan_form.every.label }}
                     </label>
                     <div class="columns">
@@ -143,18 +143,18 @@
                             {{ scan_form.every }}
                         </div>
                     </div>
-                    <p class="help" id="desc_every">
+                    <p class="help" id="id_scan-every_helptext">
                         {{ scan_form.every.help_text }}
                     </p>
                 </div>
                 <div class="field">
-                    <label class="label" for="id_period">
+                    <label class="label" for="id_scan-period">
                     {{ scan_form.period.label }}
                     </label>
                     <div class="select">
                         {{ scan_form.period }}
                     </div>
-                    <p class="help" id="desc_period">
+                    <p class="help" id="id_scan-period_helptext">
                         {{ scan_form.period.help_text }}
                     </p>
                 </div>
@@ -220,7 +220,7 @@
             <form name="schedule-merge" method="POST" action="{% url 'settings-dedupe-schedule-merge' %}">
                 {% csrf_token %}
                 <div class="field">
-                    <label class="label" for="merge_every">
+                    <label class="label" for="id_merge-every">
                         {{ merge_form.every.label }}
                     </label>
                     <div class="columns">
@@ -228,18 +228,18 @@
                             {{ merge_form.every }}
                         </div>
                     </div>
-                    <p class="help" id="desc_every">
+                    <p class="help" id="id_merge-every_helptext">
                         {{ merge_form.every.help_text }}
                     </p>
                 </div>
                 <div class="field">
-                    <label class="label" for="id_period">
+                    <label class="label" for="id_merge-period">
                     {{ merge_form.period.label }}
                     </label>
                     <div class="select">
                         {{ merge_form.period }}
                     </div>
-                    <p class="help" id="desc_period">
+                    <p class="help" id="id_merge-period_helptext">
                         {{ merge_form.period.help_text }}
                     </p>
                 </div>
