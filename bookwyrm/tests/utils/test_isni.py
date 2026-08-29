@@ -177,4 +177,6 @@ class Isni(TestCase):
         self.assertEqual(author.isfdb, "xx99")
         self.assertEqual(author.openlibrary_key, "beepboop")
         self.assertEqual(author.isni, "1234")
-        self.assertEqual(author.aliases.sort(), ["Bobby Bo", "Sammy", "Smitters"].sort())
+        self.assertEqual(
+            author.aliases.sort(), ["Bobby Bo", "Sammy", "Smitters"].sort()
+        )
