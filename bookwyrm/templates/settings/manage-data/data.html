@@ -135,27 +135,27 @@
             <form name="schedule-dedupe" method="POST" action="{% url 'settings-dedupe-schedule-scan' %}">
                 {% csrf_token %}
                 <div class="field">
-                    <label class="label" for="id_every">
-                        {{ task_form.every.label }}
+                    <label class="label" for="scan_every">
+                        {{ scan_form.every.label }}
                     </label>
                     <div class="columns">
                         <div class="column is-one-fifth">
-                            {{ task_form.every }}
+                            {{ scan_form.every }}
                         </div>
                     </div>
                     <p class="help" id="desc_every">
-                        {{ task_form.every.help_text }}
+                        {{ scan_form.every.help_text }}
                     </p>
                 </div>
                 <div class="field">
                     <label class="label" for="id_period">
-                    {{ task_form.period.label }}
+                    {{ scan_form.period.label }}
                     </label>
                     <div class="select">
-                        {{ task_form.period }}
+                        {{ scan_form.period }}
                     </div>
                     <p class="help" id="desc_period">
-                        {{ task_form.period.help_text }}
+                        {{ scan_form.period.help_text }}
                     </p>
                 </div>
                 <button class="button is-primary">{% trans "Schedule scan" %}</button>
@@ -220,27 +220,27 @@
             <form name="schedule-merge" method="POST" action="{% url 'settings-dedupe-schedule-merge' %}">
                 {% csrf_token %}
                 <div class="field">
-                    <label class="label" for="id_every">
-                        {{ task_form.every.label }}
+                    <label class="label" for="merge_every">
+                        {{ merge_form.every.label }}
                     </label>
                     <div class="columns">
                         <div class="column is-one-fifth">
-                            {{ task_form.every }}
+                            {{ merge_form.every }}
                         </div>
                     </div>
                     <p class="help" id="desc_every">
-                        {{ task_form.every.help_text }}
+                        {{ merge_form.every.help_text }}
                     </p>
                 </div>
                 <div class="field">
                     <label class="label" for="id_period">
-                    {{ task_form.period.label }}
+                    {{ merge_form.period.label }}
                     </label>
                     <div class="select">
-                        {{ task_form.period }}
+                        {{ merge_form.period }}
                     </div>
                     <p class="help" id="desc_period">
-                        {{ task_form.period.help_text }}
+                        {{ merge_form.period.help_text }}
                     </p>
                 </div>
                 <button class="button is-primary">{% trans "Schedule scan" %}</button>
