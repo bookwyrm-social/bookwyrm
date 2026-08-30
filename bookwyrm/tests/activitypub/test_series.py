@@ -144,16 +144,17 @@ class TestSeries(TestCase):
         self.assertFalse(models.Series.objects.filter(name="Example Series 2").exists())
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.Book.objects.count(), 1)
+        self.assertEqual(models.SeriesBook.objects.count(), 1)
 
         book_data = activitypub.Work(**self.book_data)
-        book = book_data.to_model()
         with patch(
             "bookwyrm.activitypub.base_activity.set_related_field.delay",
             new=lambda *args: set_related_field(*args),
         ):
-            book_data.to_model()  # run it again to set the related field
+            book_data.to_model()
 
-        self.assertEqual(book.title, "Example Book 2")
+        self.assertTrue(models.Work.objects.filter(title="Example Book 2").exists())
         self.assertTrue(models.Series.objects.filter(name="Example Series 2").exists())
         self.assertEqual(models.Series.objects.count(), 2)
         self.assertEqual(models.Book.objects.count(), 2)
+        self.assertEqual(models.SeriesBook.objects.count(), 2)
