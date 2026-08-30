@@ -91,9 +91,8 @@ class BookViews(TestCase):
         view(request, self.book.id)
 
         self.work.refresh_from_db()
-        self.assertTrue(hasattr(self.work, "suggestion_list"))
 
-        suggestion_list = self.work.suggestion_list
+        suggestion_list = self.work.suggests_for.first()
         self.assertEqual(suggestion_list.suggests_for, self.work)
         self.assertEqual(suggestion_list.privacy, "public")
         self.assertEqual(suggestion_list.user, get_representative())
@@ -101,7 +100,7 @@ class BookViews(TestCase):
     def test_book_add_suggestion(self, *_):
         """Add a book to the recommendation list"""
         suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
-        view = views.book_add_suggestion
+        view = views.AddSuggestion.as_view()
 
         form = forms.SuggestionListItemForm()
         form.data["user"] = self.local_user.id

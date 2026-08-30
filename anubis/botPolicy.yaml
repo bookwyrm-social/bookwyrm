@@ -17,6 +17,11 @@ bots:
   - name: Allow access to user reviews/quotes/comments rss
     action: ALLOW
     path_regex: "^/user/.*/rss-(quotes|reviews|comments)/?$"
+  # Anubis and Safari don't always see eachother eye-to-eye, most likely happy eyeballs thing
+  # https://github.com/TecharoHQ/anubis/issues/289
+  - name: Allow POST method for book creation etc
+    action: ALLOW
+    expression: method == "POST"
   # Anubis subauth doesn't seem to handle CHALLENGE nicely, so tune weight
   - name: All email confirmations are suspicious by default
     action: WEIGH

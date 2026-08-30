@@ -27,9 +27,9 @@ class Editions(MergeableViewMixin, View):
     merge_model = models.Work
 
     @vary_on_headers("Accept")
-    def get(self, request, book_id):
+    def get(self, request, mergeable_object_id):
         """list of editions of a book"""
-        work = get_mergeable_object_or_404(models.Work, id=book_id)
+        work = get_mergeable_object_or_404(models.Work, id=mergeable_object_id)
 
         if is_api_request(request):
             return ActivitypubResponse(work.to_edition_list(**request.GET))

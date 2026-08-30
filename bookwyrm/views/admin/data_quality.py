@@ -137,8 +137,8 @@ def data_quality_data():
         "suggestion_list_example": models.SuggestionList.objects.filter(
             pending_merge_target__isnull=False
         ).first(),
-        "task_form": forms.IntervalScheduleForm(),
-        "merge_form": forms.IntervalScheduleForm(auto_id="merge_%s"),
+        "scan_form": forms.IntervalScheduleForm(prefix="scan"),
+        "merge_form": forms.IntervalScheduleForm(prefix="merge"),
     }
 
 

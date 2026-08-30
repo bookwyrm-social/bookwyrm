@@ -18,7 +18,7 @@ from Crypto.Hash import SHA256
 from django.apps import apps
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import ForeignKey, Q
 from django.utils.http import http_date
 
 from bookwyrm import activitypub
@@ -108,6 +108,15 @@ class ActivitypubMixin:
             value = data.get(field.get_activitypub_field())
             if not value:
                 continue
+
+            # if the deduplication field is a foreign key, we have to look at
+            # the remote id, not the id, in the database
+            if isinstance(field, ForeignKey):
+                value_remote_id = value if isinstance(value, str) else value.get("id")
+                if not value:
+                    continue
+                filters.append({f"{field.name}__remote_id": value_remote_id})
+                continue
             filters.append({field.name: value})
 
         if hasattr(cls, "origin_id") and "id" in data:
@@ -140,20 +149,7 @@ class ActivitypubMixin:
         if len(recipients) == 0:
             return
 
-        # if we're posting about ShelfBooks, set a delay to give the base activity
-        # time to add the book on remote servers first to avoid race conditions
-        countdown = (
-            10
-            if (
-                isinstance(activity, dict)
-                and not isinstance(activity["object"], str)
-                and not isinstance(activity["object"], list)
-                and activity["object"].get("type", None) in ["GeneratedNote", "Comment"]
-            )
-            else 0
-        )
         broadcast_task.apply_async(
-            countdown=countdown,
             args=(
                 sender.id,
                 json.dumps(activity, cls=activitypub.ActivityEncoder),

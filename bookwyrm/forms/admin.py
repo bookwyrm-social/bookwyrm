@@ -214,11 +214,6 @@ class IntervalScheduleForm(StyledForm):
         model = IntervalSchedule
         fields = ["every", "period"]
 
-        widgets = {
-            "every": forms.NumberInput(attrs={"aria-describedby": "desc_every"}),
-            "period": forms.Select(attrs={"aria-describedby": "desc_period"}),
-        }
-
     def save(self, request, *args, **kwargs):
         """This is an outside model so the perms check works differently"""
         if not request.user.has_perm("bookwyrm.moderate_user"):

@@ -28,9 +28,9 @@ class Author(MergeableViewMixin, View):
     merge_model = models.Author
 
     @vary_on_headers("Accept")
-    def get(self, request, author_id, slug=None):
+    def get(self, request, mergeable_object_id, slug=None):
         """landing page for an author"""
-        author = get_mergeable_object_or_404(models.Author, id=author_id)
+        author = get_mergeable_object_or_404(models.Author, id=mergeable_object_id)
 
         if is_api_request(request):
             return ActivitypubResponse(author.to_activity())

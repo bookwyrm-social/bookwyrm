@@ -32,8 +32,9 @@ class Book(MergeableViewMixin, View):
     merge_model = models.Edition
 
     @vary_on_headers("Accept")
-    def get(self, request, book_id, **kwargs):
+    def get(self, request, mergeable_object_id, **kwargs):
         """info about a book"""
+        book_id = mergeable_object_id
         if is_api_request(request):
             book = get_object_or_404(
                 models.Book.objects.select_subclasses(), id=book_id
@@ -120,7 +121,8 @@ class Book(MergeableViewMixin, View):
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
             "lists": lists,
             "update_error": kwargs.get("update_error", False),
-            "query": request.GET.get("suggestion_query", ""),
+            "suggestion_query": request.GET.get("suggestion_query", ""),
+            "show_suggestions": request.GET.get("show_suggestions", False),
         }
 
         if request.user.is_authenticated:
