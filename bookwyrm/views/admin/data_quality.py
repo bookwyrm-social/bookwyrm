@@ -48,7 +48,7 @@ def run_deduplication_scan_task(request):
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
 def schedule_deduplication_scan_task(request):
     """scheduler"""
-    form = forms.IntervalScheduleForm(request.POST)
+    form = forms.IntervalScheduleForm(request.POST, prefix="scan")
     if not form.is_valid():
         data = data_quality_data()
         data["scan_form"] = form
