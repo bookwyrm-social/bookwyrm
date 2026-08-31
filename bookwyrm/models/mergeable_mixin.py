@@ -5,7 +5,8 @@ from datetime import timedelta
 from typing import Any, Dict, Optional, Iterable
 from typing_extensions import Self
 
-from django.db import transaction
+from django.apps import apps
+from django.db import transaction, IntegrityError
 from django.db import models
 from django.utils import timezone
 
@@ -50,7 +51,7 @@ class MergeableMixin(models.Model):
                     "pending_merge_date",
                 )
 
-            # also check if this is the canonical for other rditions
+            # also check if this is the canonical for other editions
             for target in self.merge_target.all():
                 if not self.get_shared_fields(target):
                     target.pending_merge_target = None
@@ -176,13 +177,23 @@ class MergeableMixin(models.Model):
             related_objs = related_model.objects.filter(**{related_field: self})
             for related_obj in related_objs:
                 try:
-                    setattr(related_obj, related_field, canonical)
-                    related_obj.save()
+                    with transaction.atomic():
+                        setattr(related_obj, related_field, canonical)
+                        related_obj.save()
                 except TypeError:
                     getattr(related_obj, related_field).add(canonical)
                     getattr(related_obj, related_field).remove(self)
+                except IntegrityError:
+                    # e.g. a seriesbook when one already exists for that series
+                    continue
 
+        # Well here we are merging some m2m fields after all
+        self.merge_related_authors(canonical)
+        parent = self.parent_work if hasattr(self, "parent_work") else None
         self.delete()
+        self.merge_parent(
+            canonical, parent
+        )  # merge parent _after_ deleting editions to avoid recursive loops
         return absorbed_fields
 
     def absorb_data_from(self, other: Self, dry_run=False) -> Dict[str, Any]:
@@ -216,3 +227,15 @@ class MergeableMixin(models.Model):
                         setattr(self, data_field.name, other_value)
                     absorbed_fields[data_field.name] = other_value
         return absorbed_fields
+
+    def merge_related_authors(self, canonical: Self) -> None:
+        """add authors from the candidate onto the canonical"""
+        if isinstance(self, apps.get_model("bookwyrm.Edition")) or isinstance(
+            self, apps.get_model("bookwyrm.Work")
+        ):
+            canonical.authors.add(*self.authors.all())
+
+    def merge_parent(self, canonical: Self, parent: Model) -> None:
+        """don't leave childless works lying around"""
+        if parent and not parent.pending_merge_target:
+            parent.merge_into(canonical.parent_work)
