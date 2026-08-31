@@ -2,7 +2,7 @@
 {% load utilities %}
 {% load humanize %}
 
-{% if dupe %}
+{% if dupe and request.user.is_authenticated %}
 <aside class="notification has-background-danger-light">
     <details class="content">
         <summary>
