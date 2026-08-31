@@ -5,9 +5,15 @@
 
 {% block content %}
 
-{% blocktrans trimmed with dupe_url=dupe.local_path dupe_title=dupe|book_title %}
-This edition's work been identified as a duplicate of <strong><a href="{{ dupe_url }}">{{ dupe_title }}</a></strong>.
-{% endblocktrans %}
+{% if dupe.default_edition %}
+    {% blocktrans trimmed with dupe_url=dupe.local_path dupe_title=dupe|book_title %}
+    This edition's work been identified as a duplicate of <strong><a href="{{ dupe_url }}">{{ dupe_title }}</a></strong>.
+    {% endblocktrans %}
+{% else %}
+    {% blocktrans trimmed with dupe_url=dupe.local_path dupe_title=dupe|book_title %}
+    This edition's work been identified as a duplicate of <strong>{{ dupe_title }}</strong> (orphaned work).
+    {% endblocktrans %}
+{% endif %}
 <span class="details-close mt-4 mr-4 icon icon-x is-small" aria-hidden></span>
 
 {% endblock %}
