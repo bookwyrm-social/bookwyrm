@@ -184,7 +184,7 @@ class MergeableMixin(Model):
         # Well here we are merging some m2m fields after all
         self.merge_related_authors(canonical)
         parent = self.parent_work if hasattr(self, "parent_work") else None
-        self.delete(broadcast=False) # don't send a Delete, we're merging
+        self.delete()
         self.merge_parent(
             canonical, parent
         )  # merge parent _after_ deleting editions to avoid recursive loops
