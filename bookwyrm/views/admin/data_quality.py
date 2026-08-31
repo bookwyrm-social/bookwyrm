@@ -68,11 +68,11 @@ def schedule_deduplication_scan_task(request):
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
 def schedule_deduplication_task(request):
     """scheduler"""
-    form = forms.IntervalScheduleForm(request.POST)
+    form = forms.IntervalScheduleForm(request.POST, prefix="merge")
     if not form.is_valid():
         data = data_quality_data()
         data["merge_form"] = form
-        return TemplateResponse(request, "settings/data.html", data)
+        return TemplateResponse(request, "settings/manage-data/data.html", data)
 
     with transaction.atomic():
         schedule, _ = IntervalSchedule.objects.get_or_create(**form.cleaned_data)
