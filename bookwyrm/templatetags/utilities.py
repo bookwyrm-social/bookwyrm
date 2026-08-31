@@ -1,7 +1,6 @@
 """template filters for really common utilities"""
 
 import os
-import re
 from uuid import uuid4
 from urllib.parse import urlparse
 from django import template
@@ -100,19 +99,6 @@ def get_book_cover_thumbnail(book, size="medium", ext="jpg"):
         return static("images/no_cover.jpg")
 
 
-@register.filter(name="get_isni_bio")
-def get_isni_bio(existing, author):
-    """Returns the isni bio string if an existing author has an isni listed"""
-    auth_isni = re.sub(r"\D", "", str(author.isni))
-    if len(existing) == 0:
-        return ""
-    for value in existing:
-        if hasattr(value, "bio") and auth_isni == re.sub(r"\D", "", str(value.isni)):
-            return mark_safe(_(f"Author of <em>{value.bio}</em>"))
-
-    return ""
-
-
 @register.filter(name="possible_series_hint")
 def possible_series_hint(seriesbook):
     """Returns the hint string for a possible matching series"""
@@ -129,21 +115,6 @@ def possible_series_hint(seriesbook):
         hint += f" by {author}"
 
     return mark_safe(hint)
-
-
-@register.filter(name="get_isni", needs_autoescape=True)
-def get_isni(existing, author, autoescape=True):
-    """Returns the isni ID if an existing author has an ISNI listing"""
-    auth_isni = re.sub(r"\D", "", str(author.isni))
-    if len(existing) == 0:
-        return ""
-    for value in existing:
-        if hasattr(value, "isni") and auth_isni == re.sub(r"\D", "", str(value.isni)):
-            isni = value.isni
-            return mark_safe(
-                f'<input type="text" name="isni-for-{author.id}" value="{isni}" hidden>'
-            )
-    return ""
 
 
 @register.simple_tag(takes_context=False)

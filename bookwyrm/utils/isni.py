@@ -37,7 +37,7 @@ def request_isni_data(
 
     try:
         result = requests.get(
-            "http://isni.oclc.org/sru/",
+            "https://isni.oclc.org/sru/",
             params=query_params,
             timeout=settings.QUERY_TIMEOUT,
         )
@@ -224,7 +224,7 @@ def get_author_from_isni(isni: str) -> Optional[activitypub.Author]:
     return author
 
 
-def build_author_from_isni(match_value: str) -> dict[str, activitypub.Author]:
+def build_author_from_isni(match_value: str) -> activitypub.Author | None:
     """Build basic author class object from ISNI URL"""
 
     # if it is an isni value get the data
@@ -232,26 +232,21 @@ def build_author_from_isni(match_value: str) -> dict[str, activitypub.Author]:
         isni = match_value.replace("https://isni.org/isni/", "")
         author = get_author_from_isni(isni)
         if author is not None:
-            return {"author": author}
-    # otherwise it's a name string
-    return {}
+            return author
+    return None
 
 
-def augment_author_metadata(author: models.Author, isni: str) -> None:
+def augment_author_aliases(author: models.Author, isni: str) -> None:
     """Update any missing author fields from ISNI data"""
 
     isni_author = get_author_from_isni(isni)
     if isni_author is None:
         return
 
-    isni_author.to_model(model=models.Author, instance=author, overwrite=False)
-
     # ISNI will usually have more aliases, so we want to add them.
     # We need to dedupe because ISNI records often have lots of dupe aliases
-    aliases = set(isni_author.aliases)  # add new aliases, dedupe using a set
-    for alias in author.aliases:
-        aliases.add(alias)  # add existing aliases
-    alias_list = list(aliases)  # aliases is a list
-    alias_list.sort()  # sort, mostly for tests
-    author.aliases = alias_list
+    isni_author.aliases.sort()
+    aliases = set(filter(lambda x: x not in author.aliases, isni_author.aliases))
+    alias_list = list(aliases)
+    author.aliases.extend(alias_list)
     author.save()
