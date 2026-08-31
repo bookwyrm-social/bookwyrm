@@ -1,14 +1,23 @@
 {% extends "snippets/merge_banner/layout.html" %}
 {% load i18n %}
 {% load utilities %}
+{% load humanize %}
 
 {% block content %}
 
 {% blocktrans trimmed with dupe_url=dupe.local_path dupe_title=dupe|book_title %}
-This work been identified as a duplicate of <strong><a href="{{ dupe_url }}">{{ dupe_title }}</a></strong>.
+This edition's work been identified as a duplicate of <strong><a href="{{ dupe_url }}">{{ dupe_title }}</a></strong>.
 {% endblocktrans %}
 <span class="details-close mt-4 mr-4 icon icon-x is-small" aria-hidden></span>
 
+{% endblock %}
+
+{% block candidates_text %}
+    {% blocktrans trimmed count counter=candidates.count with display_count=candidates.count|intcomma %}
+        A duplicate of this edition's work has been identified.
+        {% plural %}
+        {{ display_count }} duplicates of this edition's work have been detected.
+    {% endblocktrans %}
 {% endblock %}
 
 
