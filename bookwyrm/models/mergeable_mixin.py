@@ -235,7 +235,7 @@ class MergeableMixin(models.Model):
         ):
             canonical.authors.add(*self.authors.all())
 
-    def merge_parent(self, canonical: Self, parent: Model) -> None:
+    def merge_parent(self, canonical: Self, parent: models.Model) -> None:
         """don't leave childless works lying around"""
         if parent and not parent.pending_merge_target:
             parent.merge_into(canonical.parent_work)
