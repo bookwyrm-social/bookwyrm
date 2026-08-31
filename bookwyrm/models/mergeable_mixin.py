@@ -2,12 +2,13 @@
 
 from datetime import timedelta
 
-from typing import Any, Dict, Optional, Iterable
+from typing import Any, Dict, Optional, Iterable, List
 from typing_extensions import Self
 
 from django.apps import apps
 from django.db import transaction, IntegrityError
 from django.db import models
+from django.db.models.query import QuerySet
 from django.utils import timezone
 
 from bookwyrm.utils.db import add_update_fields
@@ -68,7 +69,7 @@ class MergeableMixin(models.Model):
 
         super().save(*args, update_fields=update_fields, **kwargs)
 
-    def get_shared_fields(self, candidate):
+    def get_shared_fields(self, candidate: Self) -> List[models.Field]:
         """list the fields that two items have in common"""
         if type(self) is not type(candidate) or (
             self.pending_merge_target != candidate
@@ -85,7 +86,7 @@ class MergeableMixin(models.Model):
         return shared_fields
 
     @classmethod
-    def deduplication_fields(cls):
+    def deduplication_fields(cls) -> List[models.Field]:
         """list all the deduplication fields for a model"""
         model_fields = cls._meta.get_fields()
         return [
@@ -95,7 +96,7 @@ class MergeableMixin(models.Model):
         ]
 
     @classmethod
-    def find_duplicate_fields(cls):
+    def find_duplicate_fields(cls) -> Dict[str, Any]:
         """scan the model for all dedupe fields with multiple objs with the same value"""
         dedupe_fields = cls.deduplication_fields()
         duplicates = {}
@@ -116,7 +117,7 @@ class MergeableMixin(models.Model):
         return duplicates
 
     @classmethod
-    def mark_merge_candidates(cls):
+    def mark_merge_candidates(cls) -> None:
         """update duplicate entries with pending merge reference"""
         dedupe_fields = cls.find_duplicate_fields()
         week_from_today = timezone.now() + timedelta(days=7)
@@ -132,7 +133,7 @@ class MergeableMixin(models.Model):
                 )
 
     @property
-    def merge_candidates(self):
+    def merge_candidates(self) -> QuerySet[Any]:
         """aggregate duplicates of this item"""
         model = self.__class__
         return model.objects.filter(pending_merge_target=self.id)

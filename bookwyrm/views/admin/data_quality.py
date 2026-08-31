@@ -52,7 +52,7 @@ def schedule_deduplication_scan_task(request):
     if not form.is_valid():
         data = data_quality_data()
         data["scan_form"] = form
-        return TemplateResponse(request, "settings/data.html", data)
+        return TemplateResponse(request, "settings/manage-data/data.html", data)
 
     with transaction.atomic():
         schedule, _ = IntervalSchedule.objects.get_or_create(**form.cleaned_data)

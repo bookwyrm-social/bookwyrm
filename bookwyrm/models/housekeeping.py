@@ -4,6 +4,7 @@ import inspect
 import math
 from datetime import timedelta
 from itertools import chain
+from typing import List
 
 from django.db import transaction
 from django.db.models import (
@@ -12,6 +13,7 @@ from django.db.models import (
     IntegerField,
     ManyToManyField,
     TextChoices,
+    Model,
 )
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -258,14 +260,14 @@ def run_missing_covers_job(**kwargs):
 
 
 @app.task(queue=MISC)
-def mark_duplicate_data_task():
+def mark_duplicate_data_task() -> None:
     """Find likely duplicates and store their canonical candidate"""
     for model in get_mergeable_models():
         model.mark_merge_candidates()
 
 
 @app.task(queue=MISC)
-def merge_duplicate_data_task():
+def merge_duplicate_data_task() -> None:
     """Combine duplicates"""
     for model in get_mergeable_models():
         objs = model.objects.filter(
@@ -278,7 +280,7 @@ def merge_duplicate_data_task():
             obj.merge_into(obj.pending_merge_target)
 
 
-def get_mergeable_models():
+def get_mergeable_models() -> List[Model]:
     """All models with the mergeable mixin"""
 
     mergable_models = inspect.getmembers(

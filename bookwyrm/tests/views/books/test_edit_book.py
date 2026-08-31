@@ -125,7 +125,7 @@ class EditBookViews(TestCase):
         self.assertEqual(self.book.title, "New Title")
 
     def test_edit_book_reset_duplicate_target_clear(self):
-        """lets a user edit a book"""
+        """Remove merge target when book is edited and no identifiers are shared"""
         another_book = models.Edition.objects.create(
             title="Example Edition Dupe",
             parent_work=self.work,
@@ -149,7 +149,7 @@ class EditBookViews(TestCase):
         self.assertIsNone(self.book.pending_merge_target)
 
     def test_edit_book_reset_duplicate_target_preserve(self):
-        """lets a user edit a book"""
+        """Remove merge target when book is edited and identifiers no longer match"""
         another_book = models.Edition.objects.create(
             title="Example Edition Dupe", parent_work=self.work, openlibrary_key="hello"
         )
@@ -173,7 +173,7 @@ class EditBookViews(TestCase):
         self.assertIsNone(self.book.pending_merge_target)
 
     def test_edit_book_reset_duplicate_canonical(self):
-        """lets a user edit a book"""
+        """Remove merge target in the other direction"""
         another_book = models.Edition.objects.create(
             title="Example Edition Dupe",
             parent_work=self.work,

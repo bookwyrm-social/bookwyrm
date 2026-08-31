@@ -19,6 +19,67 @@ class MergeableMixin(TestCase):
         self.assertTrue("isbn_10" in edition_fields)
         self.assertFalse("title" in edition_fields)
 
+        work_fields = [f.name for f in models.Work.deduplication_fields()]
+        self.assertTrue("oclc_number" in work_fields)
+        self.assertFalse("Isbn_10" in work_fields)
+
+        author_fields = [f.name for f in models.Author.deduplication_fields()]
+        self.assertTrue("isni" in author_fields)
+        self.assertFalse("name" in author_fields)
+
+        series_fields = [f.name for f in models.Series.deduplication_fields()]
+        self.assertTrue("wikidata_id" in series_fields)
+        self.assertFalse("name" in series_fields)
+
+    def test_get_shared_fields(self):
+        """Two editions with the same isbn"""
+        ed_1 = models.Edition.objects.create(
+            title="Unrelated Edition",
+            isbn_13="9780810160118",
+            isbn_10="X098765432",
+            parent_work=models.Work.objects.create(title="Unrelated Work"),
+        )
+        ed_2 = models.Edition.objects.create(
+            title="Example Edition",
+            isbn_13="9780810160118",
+            isbn_10="123456789X",
+            parent_work=models.Work.objects.create(title="Example Work"),
+            pending_merge_target=ed_1,
+        )
+        result = ed_1.get_shared_fields(ed_2)
+        self.assertEqual(len(result), 1)
+        self.assertIsInstance(result[0], models.fields.CharField)
+        self.assertEqual(result[0].name, "isbn_13")
+
+    def test_get_shared_fields_without_target(self):
+        """Two editions with the same isbn"""
+        ed_1 = models.Edition.objects.create(
+            title="Unrelated Edition",
+            isbn_13="9780810160118",
+            isbn_10="X098765432",
+            parent_work=models.Work.objects.create(title="Unrelated Work"),
+        )
+        ed_2 = models.Edition.objects.create(
+            title="Example Edition",
+            isbn_13="9780810160118",
+            isbn_10="123456789X",
+            parent_work=models.Work.objects.create(title="Example Work"),
+        )
+        with self.assertRaises(ValueError):
+            ed_1.get_shared_fields(ed_2)
+
+    def test_get_shared_fields_wrong_types(self):
+        """Can't compare different types of model"""
+        with self.assertRaises(ValueError):
+            edition = models.Edition.objects.create(
+                title="Unrelated Edition",
+                isbn_13="9780810160118",
+                isbn_10="X098765432",
+                parent_work=models.Work.objects.create(title="Unrelated Work"),
+            )
+            work = models.Author.objects.create(name="Hello")
+            work.get_shared_fields(edition)
+
     def test_find_duplication_fields(self):
         """scan for any dupes in the model"""
         models.Edition.objects.create(
