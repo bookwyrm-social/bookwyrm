@@ -7,18 +7,24 @@ from typing_extensions import Self
 
 from django.apps import apps
 from django.db import transaction, IntegrityError
-from django.db.models import BooleanField, Count, DateTimeField, ManyToManyField, Model
+from django.db import models
 from django.utils import timezone
 
 from bookwyrm.utils.db import add_update_fields
 from . import fields
 
 
-class MergeableMixin(Model):
+class MergeableMixin(models.Model):
     """A bookwyrm data object that can be deduplicated"""
 
-    pending_merge_date = DateTimeField(null=True)
-    prevent_automatic_merge = BooleanField(default=False)
+    pending_merge_date = models.DateTimeField(null=True)
+    prevent_automatic_merge = models.BooleanField(default=False)
+    prevent_automatic_merge_user = models.ForeignKey(
+        "User",
+        on_delete=models.PROTECT,
+        null=True,
+        related_name="%(class)s_prevented_merges",
+    )
 
     class Meta:
         """can't initialize this model, that wouldn't make sense"""
@@ -97,7 +103,7 @@ class MergeableMixin(Model):
             results = (
                 cls.objects.filter(pending_merge_target__isnull=True)
                 .values(field.name)
-                .annotate(Count(field.name))
+                .annotate(models.Count(field.name))
                 .filter(**{f"{field.name}__count__gt": 1})
                 .exclude(
                     **{field.name: None if isinstance(field, fields.ForeignKey) else ""}
@@ -164,7 +170,7 @@ class MergeableMixin(Model):
             # table.
 
             related_field_obj = related_model._meta.get_field(related_field)
-            if isinstance(related_field_obj, ManyToManyField):
+            if isinstance(related_field_obj, models.ManyToManyField):
                 through = related_field_obj.remote_field.through
                 if not through._meta.auto_created:
                     continue

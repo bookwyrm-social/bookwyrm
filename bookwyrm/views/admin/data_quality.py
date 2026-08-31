@@ -315,6 +315,7 @@ class ManualMerge(View):
             "array_fields": array_fields,
             "datetime_fields": datetime_fields,
             "canonical": canonical,
+            "blocked_candidates": candidates.filter(prevent_automatic_merge=True),
             "objects": all_objects.reverse(),
             "model_name": model_name,
             "plural_model": plural_model,

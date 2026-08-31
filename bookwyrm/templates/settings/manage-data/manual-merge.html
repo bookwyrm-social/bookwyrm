@@ -20,6 +20,17 @@ Merge {{plural_model}}
 {% block panel %}
 {% with tab_id=request.GET.tab_id canonical_id=canonical.id %}
 <div class="block">
+    {% for candidate in blocked_candidates %}
+    <div class="notification is-danger is-light">
+        <span class="icon icon-warning" aria-hidden="true"></span>
+        <span>
+            {% blocktrans trimmed with username=candidate.prevent_automatic_merge_user.localname user_path=candidate.prevent_automatic_merge_user.remote_id item_path=candidate.remote_id item_id=candidate.id %}
+            <a href="{{ user_path }}">@{{ username }}</a> blocked auto-merging for item with id <a href="{{ item_path }}">{{ item_id }}</a>. This duplicate may have been flagged in error.
+            {% endblocktrans %}
+        </span>
+    </div>
+    {% endfor %}
+
     {% if not simple_fields and not array_fields %}
     <form class="form" method="post" action="{% url 'settings-confirm-manual-merge' model_name canonical_id %}?source={{source}}">
         {% csrf_token %}
