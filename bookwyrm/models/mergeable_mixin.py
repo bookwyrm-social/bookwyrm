@@ -1,19 +1,31 @@
 """models that can be deduplicated and merged"""
 
-from typing import Any, Dict, Optional, Iterable
+from datetime import timedelta
+
+from typing import Any, Dict, Optional, Iterable, List
 from typing_extensions import Self
 
-from django.db.models import BooleanField, Count, DateTimeField, ManyToManyField, Model
+from django.apps import apps
+from django.db import transaction, IntegrityError
+from django.db import models
+from django.db.models.query import QuerySet
+from django.utils import timezone
 
 from bookwyrm.utils.db import add_update_fields
 from . import fields
 
 
-class MergeableMixin(Model):
+class MergeableMixin(models.Model):
     """A bookwyrm data object that can be deduplicated"""
 
-    pending_merge_date = DateTimeField(null=True)
-    prevent_automatic_merge = BooleanField(default=False)
+    pending_merge_date = models.DateTimeField(null=True)
+    prevent_automatic_merge = models.BooleanField(default=False)
+    prevent_automatic_merge_user = models.ForeignKey(
+        "User",
+        on_delete=models.PROTECT,
+        null=True,
+        related_name="%(class)s_prevented_merges",
+    )
 
     class Meta:
         """can't initialize this model, that wouldn't make sense"""
@@ -40,7 +52,7 @@ class MergeableMixin(Model):
                     "pending_merge_date",
                 )
 
-            # also check if this is the canonical for other rditions
+            # also check if this is the canonical for other editions
             for target in self.merge_target.all():
                 if not self.get_shared_fields(target):
                     target.pending_merge_target = None
@@ -57,7 +69,7 @@ class MergeableMixin(Model):
 
         super().save(*args, update_fields=update_fields, **kwargs)
 
-    def get_shared_fields(self, candidate):
+    def get_shared_fields(self, candidate: Self) -> List[models.Field]:
         """list the fields that two items have in common"""
         if type(self) is not type(candidate) or (
             self.pending_merge_target != candidate
@@ -74,7 +86,7 @@ class MergeableMixin(Model):
         return shared_fields
 
     @classmethod
-    def deduplication_fields(cls):
+    def deduplication_fields(cls) -> List[models.Field]:
         """list all the deduplication fields for a model"""
         model_fields = cls._meta.get_fields()
         return [
@@ -84,14 +96,15 @@ class MergeableMixin(Model):
         ]
 
     @classmethod
-    def find_duplicate_fields(cls):
+    def find_duplicate_fields(cls) -> Dict[str, Any]:
         """scan the model for all dedupe fields with multiple objs with the same value"""
         dedupe_fields = cls.deduplication_fields()
         duplicates = {}
         for field in dedupe_fields:
             results = (
-                cls.objects.values(field.name)
-                .annotate(Count(field.name))
+                cls.objects.filter(pending_merge_target__isnull=True)
+                .values(field.name)
+                .annotate(models.Count(field.name))
                 .filter(**{f"{field.name}__count__gt": 1})
                 .exclude(
                     **{field.name: None if isinstance(field, fields.ForeignKey) else ""}
@@ -104,9 +117,10 @@ class MergeableMixin(Model):
         return duplicates
 
     @classmethod
-    def mark_merge_candidates(cls):
+    def mark_merge_candidates(cls) -> None:
         """update duplicate entries with pending merge reference"""
         dedupe_fields = cls.find_duplicate_fields()
+        week_from_today = timezone.now() + timedelta(days=7)
         for field_name, values in dedupe_fields.items():
             for value in values:
                 objs = cls.objects.filter(**{field_name: value}).order_by("id")
@@ -114,14 +128,17 @@ class MergeableMixin(Model):
                     continue
                 canonical = objs.first()
                 candidates = objs.exclude(id=canonical.id)
-                candidates.update(pending_merge_target=canonical)
+                candidates.update(
+                    pending_merge_target=canonical, pending_merge_date=week_from_today
+                )
 
     @property
-    def merge_candidates(self):
+    def merge_candidates(self) -> QuerySet[Any]:
         """aggregate duplicates of this item"""
         model = self.__class__
         return model.objects.filter(pending_merge_target=self.id)
 
+    @transaction.atomic
     def merge_into(
         self, canonical: Self, dry_run=False, manual=False
     ) -> Dict[str, Any]:
@@ -138,7 +155,9 @@ class MergeableMixin(Model):
 
         canonical.save()
 
-        self.merged_model.objects.create(deleted_id=self.id, merged_into=canonical)
+        # generally we create a merged model, but not for suggestion lists
+        if hasattr(self, "merged_model"):
+            self.merged_model.objects.create(deleted_id=self.id, merged_into=canonical)
 
         # move related models to canonical
         related_models = [
@@ -152,20 +171,30 @@ class MergeableMixin(Model):
             # table.
 
             related_field_obj = related_model._meta.get_field(related_field)
-            if isinstance(related_field_obj, ManyToManyField):
+            if isinstance(related_field_obj, models.ManyToManyField):
                 through = related_field_obj.remote_field.through
                 if not through._meta.auto_created:
                     continue
             related_objs = related_model.objects.filter(**{related_field: self})
             for related_obj in related_objs:
                 try:
-                    setattr(related_obj, related_field, canonical)
-                    related_obj.save()
+                    with transaction.atomic():
+                        setattr(related_obj, related_field, canonical)
+                        related_obj.save()
                 except TypeError:
                     getattr(related_obj, related_field).add(canonical)
                     getattr(related_obj, related_field).remove(self)
+                except IntegrityError:
+                    # e.g. a seriesbook when one already exists for that series
+                    continue
 
+        # Well here we are merging some m2m fields after all
+        self.merge_related_authors(canonical)
+        parent = self.parent_work if hasattr(self, "parent_work") else None
         self.delete()
+        self.merge_parent(
+            canonical, parent
+        )  # merge parent _after_ deleting editions to avoid recursive loops
         return absorbed_fields
 
     def absorb_data_from(self, other: Self, dry_run=False) -> Dict[str, Any]:
@@ -199,3 +228,19 @@ class MergeableMixin(Model):
                         setattr(self, data_field.name, other_value)
                     absorbed_fields[data_field.name] = other_value
         return absorbed_fields
+
+    def merge_related_authors(self, canonical: Self) -> None:
+        """add authors from the candidate onto the canonical"""
+        if isinstance(self, apps.get_model("bookwyrm.Edition")) or isinstance(
+            self, apps.get_model("bookwyrm.Work")
+        ):
+            canonical.authors.add(*self.authors.all())
+
+    def merge_parent(self, canonical: Self, parent: models.Model) -> None:
+        """don't leave childless works lying around"""
+        if (
+            parent
+            and not parent.pending_merge_target
+            and parent != canonical.parent_work
+        ):
+            parent.merge_into(canonical.parent_work)

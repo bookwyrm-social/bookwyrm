@@ -48,11 +48,11 @@ def run_deduplication_scan_task(request):
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
 def schedule_deduplication_scan_task(request):
     """scheduler"""
-    form = forms.IntervalScheduleForm(request.POST)
+    form = forms.IntervalScheduleForm(request.POST, prefix="scan")
     if not form.is_valid():
         data = data_quality_data()
         data["scan_form"] = form
-        return TemplateResponse(request, "settings/data.html", data)
+        return TemplateResponse(request, "settings/manage-data/data.html", data)
 
     with transaction.atomic():
         schedule, _ = IntervalSchedule.objects.get_or_create(**form.cleaned_data)
@@ -60,6 +60,26 @@ def schedule_deduplication_scan_task(request):
             interval=schedule,
             name="dedupe-scan-task",
             task="bookwyrm.models.housekeeping.mark_duplicate_data_task",
+        )
+    return redirect("settings-data-quality")
+
+
+@require_POST
+@permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
+def schedule_deduplication_task(request):
+    """scheduler"""
+    form = forms.IntervalScheduleForm(request.POST, prefix="merge")
+    if not form.is_valid():
+        data = data_quality_data()
+        data["merge_form"] = form
+        return TemplateResponse(request, "settings/manage-data/data.html", data)
+
+    with transaction.atomic():
+        schedule, _ = IntervalSchedule.objects.get_or_create(**form.cleaned_data)
+        PeriodicTask.objects.get_or_create(
+            interval=schedule,
+            name="dedupe-merge-task",
+            task="bookwyrm.models.housekeeping.merge_duplicate_data_task",
         )
     return redirect("settings-data-quality")
 
@@ -79,8 +99,14 @@ def data_quality_data():
     except PeriodicTask.DoesNotExist:
         scan_task = None
 
+    try:
+        merge_task = PeriodicTask.objects.get(name="dedupe-merge-task")
+    except PeriodicTask.DoesNotExist:
+        merge_task = None
+
     return {
         "scan_task": scan_task,
+        "merge_task": merge_task,
         "work_count": models.Work.objects.filter(
             pending_merge_target__isnull=False
         ).count(),
@@ -111,7 +137,8 @@ def data_quality_data():
         "suggestion_list_example": models.SuggestionList.objects.filter(
             pending_merge_target__isnull=False
         ).first(),
-        "task_form": forms.IntervalScheduleForm(),
+        "scan_form": forms.IntervalScheduleForm(prefix="scan"),
+        "merge_form": forms.IntervalScheduleForm(prefix="merge"),
     }
 
 
@@ -288,6 +315,7 @@ class ManualMerge(View):
             "array_fields": array_fields,
             "datetime_fields": datetime_fields,
             "canonical": canonical,
+            "blocked_candidates": candidates.filter(prevent_automatic_merge=True),
             "objects": all_objects.reverse(),
             "model_name": model_name,
             "plural_model": plural_model,

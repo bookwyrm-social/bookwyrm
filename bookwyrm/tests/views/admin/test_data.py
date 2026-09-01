@@ -1,18 +1,20 @@
 """test for app action functionality"""
 
+from unittest.mock import patch
+
 from django.contrib.auth.models import Group, Permission
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
-from bookwyrm import models, views
+from bookwyrm import forms, models, views
 from bookwyrm.views.admin.data_quality import get_diff_string
 from bookwyrm.management.commands import initdb
 from bookwyrm.tests.validate_html import validate_html
 
 
-class AutomodViews(TestCase):
+class DataQualityViews(TestCase):
     """every response to a get request, html or json"""
 
     @classmethod
@@ -61,6 +63,101 @@ class AutomodViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
+
+    def test_run_deduplication_scan_task(self):
+        """start a task"""
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        with patch(
+            "bookwyrm.models.housekeeping.mark_duplicate_data_task.delay"
+        ) as mock:
+            result = views.run_deduplication_scan_task(request)
+        self.assertEqual(mock.call_count, 1)
+        self.assertEqual(result.status_code, 302)
+
+    def test_schedule_deduplication_scan_task(self):
+        """start a task"""
+        form = forms.IntervalScheduleForm()
+        form.data["scan-every"] = 1
+        form.data["scan-period"] = "days"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        result = views.schedule_deduplication_scan_task(request)
+        self.assertEqual(result.status_code, 302)
+        interval = IntervalSchedule.objects.get()
+        task = PeriodicTask.objects.get()
+        self.assertEqual(interval.period, "days")
+        self.assertEqual(interval.every, 1)
+        self.assertEqual(task.name, "dedupe-scan-task")
+        self.assertEqual(task.interval, interval)
+        self.assertEqual(
+            task.task, "bookwyrm.models.housekeeping.mark_duplicate_data_task"
+        )
+
+    def test_schedule_deduplication_scan_task_invalid(self):
+        """start a task"""
+        form = forms.IntervalScheduleForm()
+        form.data["scan-every"] = 0
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        result = views.schedule_deduplication_scan_task(request)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(IntervalSchedule.objects.count(), 0)
+        self.assertEqual(PeriodicTask.objects.count(), 0)
+
+    def test_schedule_deduplication_task(self):
+        """start a task"""
+        form = forms.IntervalScheduleForm()
+        form.data["merge-every"] = 1
+        form.data["merge-period"] = "days"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        result = views.schedule_deduplication_task(request)
+        self.assertEqual(result.status_code, 302)
+        interval = IntervalSchedule.objects.get()
+        task = PeriodicTask.objects.get()
+        self.assertEqual(interval.period, "days")
+        self.assertEqual(interval.every, 1)
+        self.assertEqual(task.name, "dedupe-merge-task")
+        self.assertEqual(task.interval, interval)
+        self.assertEqual(
+            task.task, "bookwyrm.models.housekeeping.merge_duplicate_data_task"
+        )
+
+    def test_schedule_deduplication_task_invalid(self):
+        """start a task"""
+        form = forms.IntervalScheduleForm()
+        form.data["merge-every"] = 0
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        result = views.schedule_deduplication_task(request)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(IntervalSchedule.objects.count(), 0)
+        self.assertEqual(PeriodicTask.objects.count(), 0)
+
+    def test_unschedule_deduplication_task(self):
+        """start a task"""
+        form = forms.IntervalScheduleForm()
+        form.data["merge-every"] = 1
+        form.data["merge-period"] = "days"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        views.schedule_deduplication_task(request)
+        task = PeriodicTask.objects.get()
+
+        request = self.factory.post("")
+        request.user = self.local_user
+        result = views.unschedule_deduplication_scan_task(request, task.id)
+        self.assertEqual(result.status_code, 302)
+        self.assertEqual(PeriodicTask.objects.count(), 0)
 
 
 class ManualMergeViews(TestCase):
@@ -153,8 +250,45 @@ class ManualMergeViews(TestCase):
         request = self.factory.get("/settings/manage-data/merge?merge_type=edition")
         request.user = self.local_user
         result = view(request)
+        validate_html(result.render())
 
         self.assertEqual(result.context_data["editions"][0].finna_key, "F1234")
+
+    def test_merge_data_get_works(self):
+        """does the edition data load?"""
+
+        models.Work.mark_merge_candidates()
+        view = views.MergeData.as_view()
+        request = self.factory.get("/settings/manage-data/merge?merge_type=work")
+        request.user = self.local_user
+        result = view(request)
+        validate_html(result.render())
+
+        self.assertEqual(result.context_data["works"][0].openlibrary_key, "OL1234")
+
+    def test_merge_data_get_authors(self):
+        """does the edition data load?"""
+
+        models.Author.mark_merge_candidates()
+        view = views.MergeData.as_view()
+        request = self.factory.get("/settings/manage-data/merge?merge_type=author")
+        request.user = self.local_user
+        result = view(request)
+        validate_html(result.render())
+
+        self.assertEqual(result.context_data["authors"][0].isni, "0000000081603022")
+
+    def test_merge_data_get_series(self):
+        """does the edition data load?"""
+
+        models.Series.mark_merge_candidates()
+        view = views.MergeData.as_view()
+        request = self.factory.get("/settings/manage-data/merge?merge_type=series")
+        request.user = self.local_user
+        result = view(request)
+        validate_html(result.render())
+
+        self.assertEqual(result.context_data["series"][0].wikidata, "Q5505227")
 
     def test_manual_merge_get(self):
         """does the manual merge page load?"""
