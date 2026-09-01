@@ -20,7 +20,7 @@ class MergeableMixin(TestCase):
         self.assertFalse("title" in edition_fields)
 
         work_fields = [f.name for f in models.Work.deduplication_fields()]
-        self.assertTrue("oclc_number" in work_fields)
+        self.assertTrue("lccn" in work_fields)
         self.assertFalse("Isbn_10" in work_fields)
 
         author_fields = [f.name for f in models.Author.deduplication_fields()]
