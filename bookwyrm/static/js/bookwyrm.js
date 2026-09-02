@@ -145,7 +145,7 @@ let BookWyrm = new (class {
      * @return {undefined}
      */
     updateCountElement(counter, data) {
-        let count = data.count;
+        const count = data.count;
 
         if (count === undefined) {
             return;
@@ -155,9 +155,21 @@ let BookWyrm = new (class {
         const hasMentions = data.has_mentions;
 
         if (count != currentCount) {
-            this.addRemoveClass(counter.closest("[data-poll-wrapper]"), "is-hidden", count < 1);
+            const wrapper = counter.closest("[data-poll-wrapper]");
+
+            if (count < 1) {
+                this.classHide(wrapper);
+            } else {
+                this.classShow(wrapper);
+            }
+
             counter.innerText = count;
-            this.addRemoveClass(counter.closest("[data-poll-wrapper]"), "is-danger", hasMentions);
+
+            if (hasMentions) {
+                this.classList.add("is-danger");
+            } else {
+                this.classList.remove("is-danger");
+            }
         }
     }
 
@@ -168,11 +180,11 @@ let BookWyrm = new (class {
      * @return {undefined}
      */
     revealForm(event) {
-        let trigger = event.currentTarget;
-        let hidden = trigger.closest(".hidden-form").querySelectorAll(".is-hidden")[0];
+        const trigger = event.currentTarget;
+        const hidden = trigger.closest(".hidden-form").querySelectorAll(".is-hidden")[0];
 
         if (hidden) {
-            this.addRemoveClass(hidden, "is-hidden", !hidden);
+            this.classShow(hidden);
         }
     }
 
@@ -183,11 +195,11 @@ let BookWyrm = new (class {
      * @return {undefined}
      */
     hideForm(event) {
-        let trigger = event.currentTarget;
-        let targetId = trigger.dataset.hides;
-        let visible = document.getElementById(targetId);
+        const trigger = event.currentTarget;
+        const targetId = trigger.dataset.hides;
+        const visible = document.getElementById(targetId);
 
-        this.addRemoveClass(visible, "is-hidden", true);
+        this.classHide(visible);
     }
 
     /**
@@ -197,9 +209,9 @@ let BookWyrm = new (class {
      * @return {undefined}
      */
     hideSelf(event) {
-        let trigger = event.currentTarget;
+        const trigger = event.currentTarget;
 
-        this.addRemoveClass(trigger, "is-hidden", true);
+        this.classHide(trigger);
     }
 
     /**
@@ -209,13 +221,13 @@ let BookWyrm = new (class {
      * @return {undefined}
      */
     toggleAction(event) {
-        let trigger = event.currentTarget;
+        const trigger = event.currentTarget;
 
         if (!trigger.dataset.allowDefault || event.currentTarget == event.target) {
             event.preventDefault();
         }
-        let pressed = trigger.getAttribute("aria-pressed") === "false";
-        let targetId = trigger.dataset.controls;
+        const pressed = trigger.getAttribute("aria-pressed") === "false";
+        const targetId = trigger.dataset.controls;
 
         // Toggle pressed status on all triggers controlling the same target.
         document
@@ -229,10 +241,15 @@ let BookWyrm = new (class {
 
         // @todo Find a better way to handle the exception.
         if (targetId && !trigger.classList.contains("pulldown-menu")) {
-            let target = document.getElementById(targetId);
+            const target = document.getElementById(targetId);
 
-            this.addRemoveClass(target, "is-hidden", !pressed);
-            this.addRemoveClass(target, "is-active", pressed);
+            if (pressed) {
+                this.classShow(target);
+                this.classActivate(target);
+            } else {
+                this.classHide(target);
+                this.classDeactivate(target);
+            }
         }
 
         // Show/hide pulldown-menus.
@@ -241,28 +258,28 @@ let BookWyrm = new (class {
         }
 
         // Show/hide container.
-        let container = document.getElementById("hide_" + targetId);
+        const container = document.getElementById("hide_" + targetId);
 
         if (container) {
             this.toggleContainer(container, pressed);
         }
 
         // Check checkbox, if appropriate.
-        let checkbox = trigger.dataset.controlsCheckbox;
+        const checkbox = trigger.dataset.controlsCheckbox;
 
         if (checkbox) {
             this.toggleCheckbox(checkbox, pressed);
         }
 
         // Toggle form disabled, if appropriate
-        let disable = trigger.dataset.disables;
+        const disable = trigger.dataset.disables;
 
         if (disable) {
             this.toggleDisabled(disable, !pressed);
         }
 
         // Set focus, if appropriate.
-        let focus = trigger.dataset.focusTarget;
+        const focus = trigger.dataset.focusTarget;
 
         if (focus) {
             this.toggleFocus(focus);
@@ -278,14 +295,18 @@ let BookWyrm = new (class {
      * @return {undefined}
      */
     toggleMenu(trigger, targetId) {
-        let expanded = trigger.getAttribute("aria-expanded") == "false";
+        const expanded = trigger.getAttribute("aria-expanded") == "false";
 
         trigger.setAttribute("aria-expanded", expanded);
 
         if (targetId) {
-            let target = document.getElementById(targetId);
+            const target = document.getElementById(targetId);
 
-            this.addRemoveClass(target, "is-active", expanded);
+            if (expanded) {
+                this.classActivate(target);
+            } else {
+                this.classDeactivate(target);
+            }
         }
     }
 
@@ -297,7 +318,11 @@ let BookWyrm = new (class {
      * @return {undefined}
      */
     toggleContainer(container, pressed) {
-        this.addRemoveClass(container, "is-hidden", pressed);
+        if (pressed) {
+            this.classHide(container);
+        } else {
+            this.classShow(container);
+        }
     }
 
     /**
@@ -330,7 +355,7 @@ let BookWyrm = new (class {
      * @return {undefined}
      */
     toggleFocus(nodeId) {
-        let node = document.getElementById(nodeId);
+        const node = document.getElementById(nodeId);
 
         node.focus();
 
@@ -354,13 +379,15 @@ let BookWyrm = new (class {
         const relatedforms = document.querySelectorAll(`.${form.dataset.id}`);
 
         // Toggle class on all related forms.
-        relatedforms.forEach((relatedForm) =>
-            bookwyrm.addRemoveClass(
-                relatedForm,
-                "is-hidden",
-                relatedForm.className.indexOf("is-hidden") == -1
-            )
-        );
+        relatedforms.forEach((relatedForm) => {
+            const isHidden = relatedForm.className.indexOf("is-hidden") != -1;
+
+            if (isHidden) {
+                bookwyrm.classShow(relatedForm);
+            } else {
+                bookwyrm.classHide(relatedForm);
+            }
+        });
 
         this.ajaxPost(form).catch((error) => {
             // @todo Display a notification in the UI instead.
@@ -384,24 +411,23 @@ let BookWyrm = new (class {
         });
     }
 
-    /**
-     * Add or remove a class based on a boolean condition.
-     *
-     * @param  {object}  node      - DOM node to change class on
-     * @param  {string}  classname - Name of the class
-     * @param  {boolean} add       - Add?
-     * @return {undefined}
-     */
-    addRemoveClass(node, classname, add) {
-        if (add) {
-            node.classList.add(classname);
-        } else {
-            node.classList.remove(classname);
-        }
+    classHide(node) {
+        node.classList.add("is-hidden");
+    }
+
+    classShow(node) {
+        node.classList.remove("is-hidden");
+    }
+
+    classActivate(node) {
+        node.classList.add("is-active");
+    }
+
+    classDeactivate(node) {
+        node.classList.remove("is-active");
     }
 
     disableIfTooLarge(eventOrElement) {
-        const { addRemoveClass } = this;
         const element = eventOrElement.currentTarget || eventOrElement;
         const limit = element.dataset.maxUpload;
 
@@ -412,10 +438,10 @@ let BookWyrm = new (class {
 
         if (isTooBig) {
             submits.forEach((submitter) => (submitter.disabled = true));
-            warns.forEach((sib) => addRemoveClass(sib, "is-hidden", false));
+            warns.forEach((sib) => this.classShow(sib));
         } else {
             submits.forEach((submitter) => (submitter.disabled = false));
-            warns.forEach((sib) => addRemoveClass(sib, "is-hidden", true));
+            warns.forEach((sib) => this.classHide(sib));
         }
     }
 
@@ -866,12 +892,12 @@ let BookWyrm = new (class {
 
         if (passwordInputElement.type === "password") {
             passwordInputElement.type = "text";
-            this.addRemoveClass(iconElement, "icon-eye-blocked");
-            this.addRemoveClass(iconElement, "icon-eye", true);
+            iconElement.classList.remove("icon-eye-blocked");
+            iconElement.classList.add("icon-eye");
         } else {
             passwordInputElement.type = "password";
-            this.addRemoveClass(iconElement, "icon-eye");
-            this.addRemoveClass(iconElement, "icon-eye-blocked", true);
+            iconElement.classList.add("icon-eye-blocked");
+            iconElement.classList.remove("icon-eye");
         }
 
         this.toggleFocus(passwordElementId);

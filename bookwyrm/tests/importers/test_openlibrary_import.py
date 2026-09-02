@@ -77,6 +77,12 @@ class OpenLibraryImport(TestCase):
         self.assertEqual(import_items[2].normalized_data["shelf"], "to-read")
         self.assertEqual(import_items[3].normalized_data["shelf"], "read")
 
+    def test_repeat_instantiation_does_not_duplicate_row_mappings(self, *_):
+        OpenLibraryImporter()
+        OpenLibraryImporter()
+        keys = [key for key, _ in OpenLibraryImporter.row_mappings_guesses]
+        self.assertEqual(len(keys), len(set(keys)))
+
     def test_handle_imported_book(self, *_):
         """openlibrary import added a book, this adds related connections"""
         shelf = self.local_user.shelf_set.filter(

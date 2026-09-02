@@ -8,7 +8,8 @@ from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseBadRequest, Http404
+from django.forms import ModelForm
+from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils import timezone
@@ -16,6 +17,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 
+from bookwyrm.models.status import Status
 import mistune
 from bookwyrm import forms, models
 from bookwyrm.models.report import DELETE_ITEM
@@ -32,7 +34,7 @@ logger = logging.getLogger(__name__)
 class EditStatus(View):
     """the view for *posting*"""
 
-    def get(self, request, status_id):
+    def get(self, request: HttpRequest, status_id: str):
         """load the edit panel"""
         status = get_object_or_404(
             models.Status.objects.select_subclasses(), id=status_id
@@ -51,14 +53,16 @@ class EditStatus(View):
 class CreateStatus(View):
     """the view for *posting*"""
 
-    def get(self, request, status_type):
+    def get(self, request: HttpRequest, status_type: str):
         """compose view (...not used?)"""
         book = get_mergeable_object_or_404(models.Edition, id=request.GET.get("book"))
         data = {"book": book}
         return TemplateResponse(request, "compose.html", data)
 
     @transaction.atomic
-    def post(self, request, status_type, existing_status_id=None):
+    def post(
+        self, request: HttpRequest, status_type: str, existing_status_id: str = None
+    ):
         """create status of whatever type"""
         created = not existing_status_id
         existing_status = None
@@ -71,7 +75,7 @@ class CreateStatus(View):
         status_type = status_type[0].upper() + status_type[1:]
 
         try:
-            form = getattr(forms, f"{status_type}Form")(
+            form: ModelForm = getattr(forms, f"{status_type}Form")(
                 request.POST, instance=existing_status
             )
         except AttributeError as err:
@@ -84,7 +88,7 @@ class CreateStatus(View):
                 return HttpResponseBadRequest()
             return redirect_to_referer(request)
 
-        status = form.save(request, commit=False)
+        status: Status = form.save(request, commit=False)
         # save the plain, unformatted version of the status for future editing
         status.raw_content = status.content
         if hasattr(status, "quote"):
@@ -145,7 +149,7 @@ class CreateStatus(View):
         return redirect_to_referer(request)
 
 
-def find_images(content, user):
+def find_images(content: str, user: models.User) -> dict[str, models.UserUpload]:
     """Detect special image tags for responsive images"""
     if not content:
         return {}
@@ -156,13 +160,13 @@ def find_images(content, user):
     return images
 
 
-def format_images(content, images):
+def format_images(content: str, images: dict[str, models.UserUpload]) -> str:
     for str, upload in images.items():
         content = content.replace(str, responsive_image_tag(upload))
     return content
 
 
-def responsive_image_tag(upload):
+def responsive_image_tag(upload: models.UserUpload) -> str:
     srcs = [
         [version.file.url, version.max_dimension] for version in upload.versions.all()
     ]
@@ -170,7 +174,7 @@ def responsive_image_tag(upload):
     return f'<img srcset="{srcset}" sizes="(width <= 600px) 100vw, 60vw" src="{srcs[-1][0]}" />'
 
 
-def format_mentions(content, mentions):
+def format_mentions(content: str, mentions: dict[str, models.User]) -> str:
     """Detect @mentions and make them links"""
     for mention_text, mention_user in mentions.items():
         # turn the mention into a link
@@ -182,7 +186,7 @@ def format_mentions(content, mentions):
     return content
 
 
-def format_hashtags(content, hashtags):
+def format_hashtags(content: str, hashtags: dict[str, models.Hashtag]) -> str:
     """Detect #hashtags and make them links"""
     for mention_text, mention_hashtag in hashtags.items():
         # turn the mention into a link
@@ -199,7 +203,7 @@ def format_hashtags(content, hashtags):
 class DeleteStatus(View):
     """tombstone that bad boy"""
 
-    def post(self, request, status_id, report_id=None):
+    def post(self, request: HttpRequest, status_id: str, report_id=None):
         """delete and tombstone a status"""
         status = get_object_or_404(models.Status, id=status_id)
 
@@ -217,7 +221,7 @@ class DeleteStatus(View):
 
 @login_required
 @require_POST
-def update_progress(request, book_id):
+def update_progress(request: HttpRequest, book_id: str):
     """Either it's just a progress update, or it's a comment with a progress update"""
     if request.POST.get("post-status"):
         return CreateStatus.as_view()(request, "comment")
@@ -226,7 +230,7 @@ def update_progress(request, book_id):
 
 @login_required
 @require_POST
-def edit_readthrough(request):
+def edit_readthrough(request: HttpRequest):
     """can't use the form because the dates are too finnicky"""
     # TODO: remove this, it duplicates the code in the ReadThrough view
     readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
@@ -262,7 +266,7 @@ def edit_readthrough(request):
     return redirect_to_referer(request)
 
 
-def find_mentions(user, content):
+def find_mentions(user: models.User, content: str) -> dict[str, models.User]:
     """detect @mentions in raw status content"""
     if not content:
         return {}
@@ -293,7 +297,7 @@ def find_mentions(user, content):
     return username_dict
 
 
-def find_or_create_hashtags(content):
+def find_or_create_hashtags(content: str):
     """detect #hashtags in raw status content
 
     it stores hashtags case-sensitive, but ensures that an existing
@@ -304,11 +308,13 @@ def find_or_create_hashtags(content):
     if not content:
         return {}
 
-    found_hashtags = {t.lower(): t for t in re.findall(regex.HASHTAG, content)}
-    if len(found_hashtags) == 0:
+    found_hashtags: dict[str, str] = {
+        t.lower(): t for t in re.findall(regex.HASHTAG, content)
+    }
+    if not found_hashtags:
         return {}
 
-    known_hashtags = {
+    known_hashtags: dict[str, models.Hashtag] = {
         t.name.lower(): t
         for t in models.Hashtag.objects.filter(
             Q(name__in=found_hashtags.keys())
@@ -325,7 +331,7 @@ def find_or_create_hashtags(content):
     return {found_hashtags[k]: v for k, v in known_hashtags.items()}
 
 
-def format_links(content):
+def format_links(content: str) -> str:
     """detect and format links"""
     validator = URLValidator(["http", "https"])
     schema_re = re.compile(r"\bhttps?://")
@@ -350,7 +356,7 @@ def format_links(content):
     return "".join(split_content)
 
 
-def _unwrap(text):
+def _unwrap(text: str) -> tuple[str, str, str]:
     """split surrounding brackets and trailing punctuation from a string of text"""
     punct = re.compile(r'([.,;:!?"’”»]+)$')
     prefix = suffix = ""
@@ -374,7 +380,7 @@ def _unwrap(text):
     return prefix, text, suffix
 
 
-def to_markdown(content):
+def to_markdown(content: str) -> str:
     """catch links and convert to markdown"""
     content = format_links(content)
     content = mistune.html(content).rstrip()

@@ -11,7 +11,10 @@ class IPBlocklistMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        address = request.META.get("REMOTE_ADDR")
+        if "x-forwarded-for" in request.headers:
+            address = request.headers.get("x-forwarded-for").split(",")[0]
+        else:
+            address = request.META.get("REMOTE_ADDR")
         if models.IPBlocklist.objects.filter(address=address).exists():
             raise Http404()
         return self.get_response(request)

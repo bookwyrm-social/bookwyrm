@@ -10,6 +10,7 @@ import re
 import asyncio
 from PIL import Image, UnidentifiedImageError
 import requests
+import redis.asyncio as redis
 from requests.exceptions import RequestException
 import aiohttp
 
@@ -20,7 +21,7 @@ from django.db import transaction
 from django.db.models import Subquery
 
 from bookwyrm import activitypub, models, settings
-from bookwyrm.settings import USER_AGENT, INSTANCE_ACTOR_USERNAME
+from bookwyrm.settings import USER_AGENT, INSTANCE_ACTOR_USERNAME, REDIS_ACTIVITY_URL
 from bookwyrm.tasks import app, CONNECTORS
 from .connector_manager import load_more_data, ConnectorException, raise_not_valid_url
 from .format_mappings import format_mappings
@@ -28,7 +29,10 @@ from ..book_search import SearchResult
 
 logger = logging.getLogger(__name__)
 
+
 JsonDict = dict[str, Any]
+
+CONNECTOR_STATUS_RATE = 60  # once per 60s error or ok
 
 
 class ConnectorResults(TypedDict):
@@ -91,27 +95,41 @@ class AbstractMinimalConnector(ABC):
             "User-Agent": USER_AGENT,
         }
         params = {"min_confidence": str(min_confidence)}
+        error_ratelimit_key = f"connector:error:{self.connector.pk}"
+        success_ratelimit_key = f"connector:success:{self.connector.pk}"
         try:
-            async with session.get(url, headers=headers, params=params) as response:
+            async with (
+                session.get(url, headers=headers, params=params) as response,
+                redis.from_url(REDIS_ACTIVITY_URL) as r,  # type: ignore[no-untyped-call]
+            ):
                 if not response.ok:
-                    update_connector_status.delay(
-                        self.connector.pk,
-                        f"Unable to connect to {url}: {response.reason}",
-                    )
+                    if await r.set(
+                        error_ratelimit_key, "1", nx=True, ex=CONNECTOR_STATUS_RATE
+                    ):
+                        update_connector_status.delay(
+                            self.connector.pk,
+                            f"Unable to connect to {url}: {response.reason}",
+                        )
                     logger.info("Unable to connect to %s: %s", url, response.reason)
                     return None
 
                 try:
                     raw_data = await response.json()
                 except aiohttp.client_exceptions.ContentTypeError as err:
-                    update_connector_status.delay(
-                        self.connector.pk, f"ContentType Error: {str(err)}"
-                    )
+                    if await r.set(
+                        error_ratelimit_key, "1", nx=True, ex=CONNECTOR_STATUS_RATE
+                    ):
+                        update_connector_status.delay(
+                            self.connector.pk, f"ContentType Error: {str(err)}"
+                        )
                     logger.exception(err)
 
                     return None
 
-                update_connector_status.delay(self.connector.id)
+                if await r.set(
+                    success_ratelimit_key, "1", nx=True, ex=CONNECTOR_STATUS_RATE
+                ):
+                    update_connector_status.delay(self.connector.id)
                 return ConnectorResults(
                     connector=self,
                     results=self.process_search_response(
@@ -119,14 +137,26 @@ class AbstractMinimalConnector(ABC):
                     ),
                 )
         except asyncio.TimeoutError:
-            update_connector_status.delay(
-                self.connector.pk, f"Timed out for url: {url}"
-            )
+            async with redis.from_url(  # type: ignore[no-untyped-call]
+                REDIS_ACTIVITY_URL
+            ) as r:
+                if await r.set(
+                    error_ratelimit_key, "1", nx=True, ex=CONNECTOR_STATUS_RATE
+                ):
+                    update_connector_status.delay(
+                        self.connector.pk, f"Timed out for url: {url}"
+                    )
             logger.info("Connection timed out for url: %s", url)
         except aiohttp.ClientError as err:
-            update_connector_status.delay(
-                self.connector.pk, f"Client Error: {str(err)}"
-            )
+            async with redis.from_url(  # type: ignore[no-untyped-call]
+                REDIS_ACTIVITY_URL
+            ) as r:
+                if await r.set(
+                    error_ratelimit_key, "1", nx=True, ex=CONNECTOR_STATUS_RATE
+                ):
+                    update_connector_status.delay(
+                        self.connector.pk, f"Client Error: {str(err)}"
+                    )
             logger.info(err)
         return None
 
@@ -188,9 +218,16 @@ class AbstractMinimalConnector(ABC):
                         edition.series = series.name
                         edition.series_number = work.series_number
                         edition.save()
-
+                        # clean up the work series to avoid stringifying objects
+                        work.series = None
+                        work.series_number = None
+                        work.save()
                     continue
 
+            # clean up
+            work.series = None
+            work.series_number = None
+            work.save()
             edition.series = None
             edition.series_number = None
             edition.save()
