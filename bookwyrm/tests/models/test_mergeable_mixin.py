@@ -28,7 +28,7 @@ class MergeableMixin(TestCase):
         self.assertFalse("name" in author_fields)
 
         series_fields = [f.name for f in models.Series.deduplication_fields()]
-        self.assertTrue("wikidata_id" in series_fields)
+        self.assertTrue("wikidata" in series_fields)
         self.assertFalse("name" in series_fields)
 
     def test_get_shared_fields(self):
