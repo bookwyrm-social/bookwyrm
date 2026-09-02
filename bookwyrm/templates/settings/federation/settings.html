@@ -70,8 +70,16 @@
             <span class="help" id="desc_block_incoming_search">
                 {% trans "Prevents other servers from searching your instance. It is strongly recommended you do NOT enable this setting." %}
             </span>
-
-
+        </div>
+        <div class="field">
+            <label class="label" for="id_use_strict_ap_namespacing">
+                {{ form.use_strict_activitypub_namespacing }}
+                <span>{% trans "Use strict namespacing" %}</span>
+                <span class="tag is-danger">{% trans 'Unavailable' %}</span>
+            </label>
+            <span class="help" id="desc_use_strict_ap_namespacing">
+                {% trans "Only accept BookWyrm activities with correct BookWyrm namespacing. This setting is not yet available." %}
+            </span>
         </div>
     </section>
     <footer class="block">

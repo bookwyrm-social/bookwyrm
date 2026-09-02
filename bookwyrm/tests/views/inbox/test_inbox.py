@@ -174,3 +174,30 @@ class Inbox(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 403)
+
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    @patch("bookwyrm.views.inbox.activity_task.apply_async")
+    @patch("bookwyrm.views.inbox.has_valid_signature", return_value=True)
+    def test_accepts_type_array(self, *_):
+        """accept type as an array"""
+
+        activity = self.create_json
+        activity["object"] = {
+            "id": "https://example.com/user/mouse/comment/99",
+            "type": ["Comment", "Note"],
+            "published": "2026-08-12T01:23:29.865519+00:00",
+            "attributedTo": "https://example.com/user/mouse",
+            "content": "<p>I am really enjoying this book</p>",
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            "replies": {},
+            "summary": "spoilers",
+            "attachment": {},
+            "inReplyToBook": "https://example.com/book/2343050",
+            "@context": "https://www.w3.org/ns/activitystreams",
+        }
+
+        result = self.client.post(
+            "/inbox", json.dumps(activity), content_type="application/json"
+        )
+        self.assertEqual(result.status_code, 200)

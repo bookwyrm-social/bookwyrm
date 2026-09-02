@@ -354,6 +354,92 @@ class BaseActivity(TestCase):
         with self.assertNoLogs(logger=None, level="ERROR") as logger:
             resolved = resolve_remote_id("https://example.com/user/mouse")
 
+    def test_strict_type_checking(self, *_):
+        """test strict checking of BookWyrm types before parsing"""
+
+        models.SiteSettings.objects.create(use_strict_activitypub_namespacing=True)
+
+        # fails, no namespacing
+        with self.assertRaises(
+            activitypub.base_activity.ActivitySerializerError
+        ) as error:
+            activitypub.parse(
+                {
+                    "@context": [
+                        "https://www.w3.org/ns/activitystreams",
+                    ],
+                    "type": "Series",
+                }
+            )
+
+        self.assertEqual(error.exception.args, ("BookWyrm namespace error",))
+
+        # passes
+        with self.assertRaises(
+            activitypub.base_activity.ActivitySerializerError
+        ) as error:
+            activitypub.parse(
+                {
+                    "@context": [
+                        "https://www.w3.org/ns/activitystreams",
+                        "https://w3id.org/BookWyrm/ns",
+                    ],
+                    "type": "Series",
+                }
+            )
+
+        self.assertEqual(error.exception.args, ("Missing required field: id",))
+
+        # passes
+        with self.assertRaises(
+            activitypub.base_activity.ActivitySerializerError
+        ) as error:
+            activitypub.parse(
+                {
+                    "@context": [
+                        "https://www.w3.org/ns/activitystreams",
+                        {"bw": "https://w3id.org/BookWyrm/ns"},
+                    ],
+                    "type": "Quotation",
+                    "quote": "to be or not to be",
+                }
+            )
+
+        self.assertEqual(error.exception.args, ("Missing required field: id",))
+
+        # fails - namespaced incorrectly for Quotation
+        with self.assertRaises(
+            activitypub.base_activity.ActivitySerializerError
+        ) as error:
+            activitypub.parse(
+                {
+                    "@context": [
+                        "https://www.w3.org/ns/activitystreams",
+                        "https://w3id.org/BookWyrm/ns",
+                    ],
+                    "type": "Quotation",
+                    "quote": "to be or not to be",
+                }
+            )
+
+        self.assertEqual(error.exception.args, ("BookWyrm namespace error",))
+
+        # fails - namespaced incorrectly for Edition
+        with self.assertRaises(
+            activitypub.base_activity.ActivitySerializerError
+        ) as error:
+            activitypub.parse(
+                {
+                    "@context": [
+                        "https://www.w3.org/ns/activitystreams",
+                        {"bw": "https://w3id.org/BookWyrm/ns"},
+                    ],
+                    "type": "Edition",
+                }
+            )
+
+        self.assertEqual(error.exception.args, ("BookWyrm namespace error",))
+
     @patch("bookwyrm.activitypub.base_activity.r.set")
     @patch("bookwyrm.activitypub.base_activity.time.sleep")
     def test_mutex_lock(self, mock_sleep, mock_set, *_):
