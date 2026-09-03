@@ -143,16 +143,58 @@ class TestSeries(TestCase):
         self.assertFalse(models.Series.objects.filter(name="Example Series 2").exists())
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.Book.objects.count(), 1)
+        self.assertEqual(models.SeriesBook.objects.count(), 1)
 
         book_data = activitypub.Work(**self.book_data)
-        book = book_data.to_model()
         with patch(
             "bookwyrm.activitypub.base_activity.set_related_field.delay",
             new=lambda *args: set_related_field(*args),
         ):
-            book_data.to_model()  # run it again to set the related field
+            book_data.to_model()
 
-        self.assertEqual(book.title, "Example Book 2")
+        self.assertTrue(models.Work.objects.filter(title="Example Book 2").exists())
         self.assertTrue(models.Series.objects.filter(name="Example Series 2").exists())
         self.assertEqual(models.Series.objects.count(), 2)
         self.assertEqual(models.Book.objects.count(), 2)
+        self.assertEqual(models.SeriesBook.objects.count(), 2)
+
+    @responses.activate
+    def test_deserialize_seriesbook(self):
+        """check that seriesbooks deserialize series"""
+
+        responses.add(
+            responses.GET,
+            "https://example.com/book/2",
+            json=self.book_data,
+            status=200,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://example.com/series/2",
+            json=self.series_data,
+            status=200,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://example.com/user/instance",
+            json=self.user.to_activity(),
+            status=200,
+        )
+
+        self.assertFalse(models.Series.objects.filter(name="Example Series 2").exists())
+        self.assertEqual(models.Series.objects.count(), 1)
+        self.assertEqual(models.SeriesBook.objects.count(), 1)
+
+        activitypub.SeriesBook(**self.seriesbook_data).to_model()
+
+        self.assertTrue(models.Series.objects.filter(name="Example Series 2").exists())
+        self.assertEqual(models.Series.objects.count(), 2)
+        self.assertEqual(models.SeriesBook.objects.count(), 2)
+        self.assertEqual(
+            models.Series.objects.filter(name="Example Series 2")
+            .first()
+            .seriesbooks.first(),
+            models.SeriesBook.objects.filter(series_number="99").first(),
+        )
