@@ -53,7 +53,7 @@ def upgrade_series_data():
                 # leave it for a user to work out manually
                 continue
         else:
-            series = Series.objects.create(user=user, name=book.series)
+            series = Series.objects.create(name=book.series)
 
         # Use get_or_create so we don't duplicate.
         SeriesBook.objects.get_or_create(

@@ -247,8 +247,7 @@ class Book(TestCase):
         user = get_representative()
         series = models.Series.objects.create(
             name="Series Test Name",
-            alternative_names=["Alternative series name"],
-            user=user,
+            alternative_names=["Alternative series name"]
         )
         models.SeriesBook.objects.create(user=user, book=self.work, series=series)
 
