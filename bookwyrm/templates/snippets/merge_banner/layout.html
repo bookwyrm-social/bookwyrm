@@ -1,0 +1,99 @@
+{% load i18n %}
+{% load utilities %}
+{% load humanize %}
+
+{% if dupe and request.user.is_authenticated %}
+<aside class="notification has-background-danger-light">
+    <details class="content">
+        <summary>
+            <p>
+            <span class="icon icon-warning" aria-hidden="true"></span>
+            {% block content %}
+            {% endblock %}
+
+            {% if original.prevent_automatic_merge %}
+                {% trans "Automatic merging has been blocked for this item." %}
+                {% if perms.bookwyrm.manage_data %}
+                    {% blocktrans trimmed with username=original.prevent_automatic_merge_user.localname user_path=original.prevent_automatic_merge_user.remote_id %}(Blocked by <a href="{{user_path}}">@{{ username }}</a>){% endblocktrans %}
+                {% endif %}
+            {% elif original.pending_merge_date and merge_scheduled %}
+                {% blocktrans trimmed with date=original.pending_merge_date|naturalday %}
+                After {{ date }}, these will be automatically merged.
+                {% endblocktrans %}
+            {% endif %}
+            </p>
+        </summary>
+        <div class="block">
+            <p>{% trans "These identifiers are the same for both:" %}</p>
+            <ol>
+                {% for field in original|dedupe_fields:dupe %}
+                <li>{{ field }}</li>
+                {% endfor %}
+            </ol>
+        </div>
+        {% if not original.prevent_automatic_merge %}
+        <div class="block">
+            <strong>{% trans "Is this mistaken?" %}</strong>
+            <form class="control" name="stop-merge" method="POST" action="{% block merge_path %}{% endblock %}">
+                {% csrf_token %}
+                <button class="button is-small" type="submit">{% trans "Block automatic merge" %}</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if perms.bookwyrm.manage_data %}
+        <div class="has-text-right control">
+            <a class="button is-small is-link is-outlined" href="{% url 'settings-manual-merge' object_type dupe.id %}">{% trans 'Merge now' %}</a>
+        </div>
+        {% endif %}
+    </details>
+</aside>
+{% endif %}
+
+{% with original.merge_candidates as candidates %}
+{% if candidates.exists %}
+<aside class="notification has-background-warning-light">
+    <details class="content">
+        <summary>
+            <p>
+            <span class="icon icon-warning" aria-hidden="true"></span>
+            {% block candidates_text %}
+            {% blocktrans trimmed count counter=candidates.count with display_count=candidates.count|intcomma %}
+                A duplicate of this item has been identified.
+                {% plural %}
+                {{ display_count }} duplicates of this item have been detected.
+            {% endblocktrans %}
+            {% endblock %}
+
+            {% if merge_scheduled %}
+                {% blocktrans trimmed with date=original.pending_merge_date|naturalday %}
+                These will be automatically merged unless the duplicate entry has been manually blocked.
+                {% endblocktrans %}
+            {% endif %}
+
+            <span class="details-close mt-4 mr-4 icon icon-x is-small" aria-hidden></span>
+            </p>
+        </summary>
+        <div class="pt-3">
+            <ol>
+                {% for candidate in candidates|slice:":20" %}
+                <li>
+                    <a href="{{ candidate.local_path }}">{{ candidate.remote_id }}</a>
+                </li>
+                {% endfor %}
+            </ol>
+            {% if candidates.count > 20 %}
+            {% blocktrans trimmed with count=candidates.count|add:"-20" %}
+            And {{ count }} other(s).
+            {% endblocktrans %}
+            {% endif %}
+        </div>
+        {% if perms.bookwyrm.manage_data %}
+        <div class="has-text-right control">
+            <a class="button is-small is-link is-outlined" href="{% url 'settings-manual-merge' object_type original.id %}">{% trans 'Merge now' %}</a>
+        </div>
+        {% endif %}
+    </details>
+</aside>
+{% endif %}
+{% endwith %}

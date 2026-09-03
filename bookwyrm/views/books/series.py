@@ -8,6 +8,7 @@ from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.vary import vary_on_headers
+from django_celery_beat.models import PeriodicTask
 
 from bookwyrm.forms import SeriesForm
 from bookwyrm import models
@@ -17,15 +18,18 @@ from bookwyrm.views.helpers import (
     is_api_request,
     get_mergeable_object_or_404,
 )
+from bookwyrm.views.mixins import MergeableViewMixin
 
 
-class Series(View):
+class Series(MergeableViewMixin, View):
     """a series of books"""
 
+    merge_model = models.Series
+
     @vary_on_headers("Accept")
-    def get(self, request, series_id, slug=None):
+    def get(self, request, mergeable_object_id, slug=None):
         """landing page for a series"""
-        series = get_mergeable_object_or_404(models.Series, id=series_id)
+        series = get_mergeable_object_or_404(models.Series, id=mergeable_object_id)
 
         if is_api_request(request):
             return ActivitypubResponse(series.to_activity(**request.GET))
@@ -42,8 +46,11 @@ class Series(View):
         paginated = Paginator(series_books, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
 
+        merge_scheduled = PeriodicTask.objects.filter(name="dedupe-merge-task").exists()
         data = {
             "series": series,
+            "series_dupe": series.pending_merge_target,
+            "merge_scheduled": merge_scheduled,
             "series_books": page,
             "series_authors": {"authors": authors},
         }
