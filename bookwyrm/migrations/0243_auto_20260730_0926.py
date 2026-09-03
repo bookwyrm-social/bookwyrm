@@ -39,7 +39,7 @@ def fix_series(apps, schema_editor):
                 # childless work, just remove the series entry
                 work.series = None
                 work.series_number = None
-                work.save(broadcast=False)
+                work.save()
                 continue
 
         editions = Edition.objects.filter(series__startswith="[")
@@ -48,7 +48,7 @@ def fix_series(apps, schema_editor):
                 # orphaned edition, just remove the series entry
                 edition.series = None
                 edition.series_number = None
-                edition.save(broadcast=False)
+                edition.save()
                 continue
             try:
                 series = json.loads(edition.series)
