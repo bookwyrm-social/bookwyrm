@@ -198,3 +198,46 @@ class TestSeries(TestCase):
             .seriesbooks.first(),
             models.SeriesBook.objects.filter(series_number="99").first(),
         )
+
+    def test_serialize_series_without_user(self):
+        """do new actorless series deserialize?"""
+
+        series_data = {
+            "id": "https://example.com/series/2",
+            "type": "Series",
+            "totalItems": 1,
+            "first": "https://example.com/series/2?page=1",
+            "last": "https://example.com/series/2?page=1",
+            "name": "Example Series 2",
+            "alternativeNames": ["Exemple de série 2", "Esimerkkisarja 2"],
+            "@context": [
+                "https://www.w3.org/ns/activitystreams",
+                {"Hashtag": "as:Hashtag"},
+            ],
+        }
+
+        responses.add(
+            responses.GET,
+            "https://example.com/book/2",
+            json=self.book_data,
+            status=200,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://example.com/user/instance",
+            json=self.user.to_activity(),
+            status=200,
+        )
+
+        self.assertFalse(models.Series.objects.filter(name="Example Series 2").exists())
+        self.assertEqual(models.Series.objects.count(), 1)
+
+        with patch(
+            "bookwyrm.activitypub.base_activity.set_related_field.delay",
+            new=lambda *args: set_related_field(*args),
+        ):
+            activitypub.Series(**series_data).to_model()
+
+        self.assertTrue(models.Series.objects.filter(name="Example Series 2").exists())
+        self.assertEqual(models.Series.objects.count(), 2)
