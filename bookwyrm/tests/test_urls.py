@@ -97,6 +97,7 @@ class Urls(TestCase):
 
         # json headers return Activity JSON
         response = self.client.get(
-            f"/seriesbook/{self.seriesbook.id}", headers={"Accept": "application/ld+json"}
+            f"/seriesbook/{self.seriesbook.id}",
+            headers={"Accept": "application/ld+json"},
         )
         self.assertEqual(type(response), ActivitypubResponse)
