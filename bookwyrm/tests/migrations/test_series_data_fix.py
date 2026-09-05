@@ -97,7 +97,7 @@ class TestFixSeriesObjects(TestCase):
         # set up
         author = models.Author.objects.create(name="Arthur Author")
         new_work = models.Work.objects.create(title="new work")
-        series = models.Series.objects.create(user=self.user, name="test series")
+        series = models.Series.objects.create(name="test series")
         models.SeriesBook.objects.create(user=self.user, book=new_work, series=series)
         new_work.authors.add(author)
         self.work.authors.add(author)
@@ -114,7 +114,7 @@ class TestFixSeriesObjects(TestCase):
 
         # set up
         author = models.Author.objects.create(name="Arthur Author")
-        series = models.Series.objects.create(user=self.user, name="test series")
+        series = models.Series.objects.create(name="test series")
         models.SeriesBook.objects.create(user=self.user, book=self.work, series=series)
         self.work.authors.add(author)
 

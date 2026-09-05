@@ -246,9 +246,7 @@ class Book(TestCase):
         """Can't duplicate series"""
         user = get_representative()
         series = models.Series.objects.create(
-            name="Series Test Name",
-            alternative_names=["Alternative series name"],
-            user=user,
+            name="Series Test Name", alternative_names=["Alternative series name"]
         )
         models.SeriesBook.objects.create(user=user, book=self.work, series=series)
 
