@@ -12,4 +12,4 @@ def permission_denied(request, exception):
     if request.method == "POST" or is_api_request(request):
         return HttpResponse(status=403)
 
-    return TemplateResponse(request, "403.html")
+    return TemplateResponse(request, "403.html", status=403)
