@@ -70,6 +70,11 @@ class Federation(View):
         return TemplateResponse(request, "settings/federation/instance_list.html", data)
 
 
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.control_federation", raise_exception=True),
+    name="dispatch",
+)
 class AddFederatedServer(View):
     """manually add a server"""
 

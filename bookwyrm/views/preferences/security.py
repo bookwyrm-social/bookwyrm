@@ -51,7 +51,10 @@ def logout_session(request, session_key: str = None):
 
     if session_key:
         # logout the user session
-        session = models.UserSession.objects.get(session_key=session_key)
+        session = models.UserSession.objects.get(
+            session_key=session_key, user=request.user
+        )
+
         session.logout()
         # log out the cached session if it still exists
         cache_session = SessionStore()
