@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseBadRequest
 from django.template.response import TemplateResponse
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.debug import sensitive_post_parameters
@@ -51,8 +51,8 @@ def logout_session(request, session_key: str = None):
 
     if session_key:
         # logout the user session
-        session = models.UserSession.objects.get(
-            session_key=session_key, user=request.user
+        session = get_object_or_404(
+            models.UserSession, session_key=session_key, user=request.user
         )
 
         session.logout()
