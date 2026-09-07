@@ -18,7 +18,12 @@ class Favorite(View):
     def post(self, request, status_id):
         """create a like"""
         cache.delete(f"fav-{request.user.id}-{status_id}")
-        status = models.Status.objects.get(id=status_id)
+        try:
+            status = models.Status.objects.get(id=status_id)
+        except:
+            return HttpResponseNotFound()
+        status.raise_visible_to_user(request.user)
+
         try:
             models.Favorite.objects.create(status=status, user=request.user)
         except IntegrityError:
@@ -37,7 +42,12 @@ class Unfavorite(View):
     def post(self, request, status_id):
         """unlike a status"""
         cache.delete(f"fav-{request.user.id}-{status_id}")
-        status = models.Status.objects.get(id=status_id)
+        try:
+            status = models.Status.objects.get(id=status_id)
+        except:
+            return HttpResponseNotFound()
+        status.raise_visible_to_user(request.user)
+
         try:
             favorite = models.Favorite.objects.get(status=status, user=request.user)
         except models.Favorite.DoesNotExist:
@@ -57,7 +67,11 @@ class Boost(View):
     def post(self, request, status_id):
         """boost a status"""
         cache.delete(f"boost-{request.user.id}-{status_id}")
-        status = models.Status.objects.get(id=status_id)
+        try:
+            status = models.Status.objects.get(id=status_id)
+        except:
+            return HttpResponseNotFound()
+        status.raise_visible_to_user(request.user)
         # is it boostable?
         if not status.boostable:
             return HttpResponseBadRequest()
@@ -85,7 +99,11 @@ class Unboost(View):
     def post(self, request, status_id):
         """boost a status"""
         cache.delete(f"boost-{request.user.id}-{status_id}")
-        status = models.Status.objects.get(id=status_id)
+        try:
+            status = models.Status.objects.get(id=status_id)
+        except:
+            return HttpResponseNotFound()
+        status.raise_visible_to_user(request.user)
         boost = models.Boost.objects.filter(
             boosted_status=status, user=request.user
         ).first()
