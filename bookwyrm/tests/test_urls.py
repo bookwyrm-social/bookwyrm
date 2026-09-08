@@ -27,7 +27,7 @@ class Urls(TestCase):
             book=self.book, series=self.series, user=self.local_user
         )
 
-        self.author = models.Author.objects.create(name="Amy Author")
+        self.author = models.Author.objects.create(name="Amy Author", id=999)
 
     def test_series_urls(self):
         """test series urls"""
@@ -155,7 +155,7 @@ class Urls(TestCase):
 
         # json headers return Activity JSON
         response = self.client.get(
-            f"/series/{self.author.id}", headers={"Accept": "application/ld+json"}
+            f"/author/{self.author.id}", headers={"Accept": "application/ld+json"}
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(type(response), ActivitypubResponse)
