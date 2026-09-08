@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-20 16:26+0000\n"
-"PO-Revision-Date: 2026-07-20 17:03\n"
+"PO-Revision-Date: 2026-08-27 13:13\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Hebrew\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3;\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n==2 ? 1 : 2);\n"
 "X-Crowdin-Project: bookwyrm\n"
 "X-Crowdin-Project-ID: 479239\n"
 "X-Crowdin-Language: he\n"
@@ -501,7 +501,6 @@ msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
 msgstr[0] "%(display_name)s דירג.ה את %(book_title)s: %(display_rating).1f כוכב"
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/models/user.py:40 bookwyrm/templates/book/sections/reviews.html:4
 #: bookwyrm/templates/book/sections/reviews.html:25
@@ -851,8 +850,7 @@ msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total 
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
 msgstr[0] "ב-%(year)s %(display_name)s קרא ספר %(books_total)s אחד<br />ובו %(pages_total)s עמודים!"
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "ב-%(year)s %(display_name)s קרא %(books_total)s book<br />ספרים ובהם %(pages_total)s עמודים!"
+msgstr[2] "ב-%(year)s %(display_name)s קרא %(books_total)s book<br />ספרים ובהם %(pages_total)s עמודים!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
@@ -869,8 +867,7 @@ msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] "(לא נמצא מידע אודות עמודים עבור %(no_page_number)s ספרים)"
-msgstr[3] ""
+msgstr[2] ""
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -901,8 +898,7 @@ msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> a
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgstr[0] "%(display_name)s הציב-ה יעד לקרוא ספר %(goal)s ב-%(year)s,<br /> והשיג-ה %(goal_percent)s%% מתוך יעד הזה"
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(display_name)s הציב-ה יעד לקרוא %(goal)s ספרים ב-%(year)s,<br /> והשיג-ה %(goal_percent)s%% מתוך יעד הזה"
+msgstr[2] "%(display_name)s הציב-ה יעד לקרוא %(goal)s ספרים ב-%(year)s,<br /> והשיג-ה %(goal_percent)s%% מתוך יעד הזה"
 
 #: bookwyrm/templates/annual_summary/layout.html:211
 msgid "Way to go!"
@@ -914,8 +910,7 @@ msgid "%(display_name)s left %(ratings_total)s rating, <br />their average ratin
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(display_name)s כתב.ה %(ratings_total)s ביקורות, <br />הדירוג הממוצע שלו.ה הוא %(rating_average)s"
+msgstr[2] "%(display_name)s כתב.ה %(ratings_total)s ביקורות, <br />הדירוג הממוצע שלו.ה הוא %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:240
 msgid "Their best rated review"
@@ -1186,7 +1181,6 @@ msgid_plural "%(count)s editions"
 msgstr[0] "מהדורה %(count)s"
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/book/book.html:80
 #: bookwyrm/templates/guided_tour/book.html:56
@@ -1818,8 +1812,7 @@ msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
 msgstr[0] "(%(review_count)s ביקורות)"
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "(%(review_count)s ביקורות)"
+msgstr[2] "(%(review_count)s ביקורות)"
 
 #: bookwyrm/templates/book/sections/description.html:35
 msgid "Add Description"
@@ -2103,8 +2096,7 @@ msgid "follower you follow"
 msgid_plural "followers you follow"
 msgstr[0] "עוקבים שנעקבים על ידיך"
 msgstr[1] "עוקבים שאת/ה עוקב/ת אחריהם"
-msgstr[2] "עוקבים שאת/ה עוקב/ת אחריהם"
-msgstr[3] ""
+msgstr[2] ""
 
 #: bookwyrm/templates/directory/user_card.html:47
 msgid "book on your shelves"
@@ -2112,7 +2104,6 @@ msgid_plural "books on your shelves"
 msgstr[0] "ספר על המדפים שלך"
 msgstr[1] ""
 msgstr[2] "ספרים על המדפים שלך"
-msgstr[3] "ספרים על המדפים שלך"
 
 #: bookwyrm/templates/directory/user_card.html:55
 msgid "posts"
@@ -2698,8 +2689,7 @@ msgid "%(mutuals)s follower you follow"
 msgid_plural "%(mutuals)s followers you follow"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(mutuals)s עוקבים שנעקבים על ידיך"
+msgstr[2] "%(mutuals)s עוקבים שנעקבים על ידיך"
 
 #: bookwyrm/templates/groups/suggested_users.html:27
 #: bookwyrm/templates/snippets/suggested_users.html:23
@@ -2708,8 +2698,7 @@ msgid "%(shared_books)s book on your shelves"
 msgid_plural "%(shared_books)s books on your shelves"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(shared_books)s ספרים על המדפים שלך"
+msgstr[2] "%(shared_books)s ספרים על המדפים שלך"
 
 #: bookwyrm/templates/groups/suggested_users.html:43
 #, python-format
@@ -3265,7 +3254,6 @@ msgid_plural "Currently, you are allowed to import %(display_size)s books every 
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/import/import.html:27
 #, python-format
@@ -3442,8 +3430,7 @@ msgid "%(display_counter)s item needs manual approval."
 msgid_plural "%(display_counter)s items need manual approval."
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(display_counter)s פריטים דורשים אישור ידני."
+msgstr[2] "%(display_counter)s פריטים דורשים אישור ידני."
 
 #: bookwyrm/templates/import/import_status.html:83
 #: bookwyrm/templates/import/manual_review.html:8
@@ -3458,7 +3445,6 @@ msgid_plural "%(display_counter)s items failed to import."
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/import/import_status.html:95
 #: bookwyrm/templates/import/user_import_status.html:135
@@ -4284,7 +4270,6 @@ msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/notifications/items/add.html:88
 #, python-format
@@ -4293,7 +4278,6 @@ msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested a
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/notifications/items/boost.html:21
 #, python-format
@@ -4452,7 +4436,6 @@ msgid_plural "%(display_count)s new <a href=\"%(path)s\">invite requests</a> awa
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
@@ -4481,7 +4464,6 @@ msgid_plural "%(display_count)s new <a href=\"%(path)s\">link domains</a> need r
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
@@ -4550,7 +4532,6 @@ msgid_plural "%(display_count)s new <a href=\"%(path)s\">reports</a> need modera
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/notifications/items/status_preview.html:4
 #: bookwyrm/templates/snippets/status/content_status.html:64
@@ -5018,7 +4999,6 @@ msgid_plural "Export files will be deleted after %(expiry_hours)s hours."
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/preferences/export-user.html:110
 #: bookwyrm/templates/preferences/security.html:126
@@ -5351,8 +5331,7 @@ msgid "%(formatted_review_count)s review"
 msgid_plural "%(formatted_review_count)s reviews"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] "%(formatted_review_count)s ביקורות"
-msgstr[3] ""
+msgstr[2] ""
 
 #: bookwyrm/templates/search/book.html:44
 #, python-format
@@ -5410,7 +5389,6 @@ msgid_plural "%(result_count)s results found"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/settings/announcements/announcement.html:5
 #: bookwyrm/templates/settings/announcements/announcement.html:8
@@ -5898,7 +5876,6 @@ msgid_plural "%(display_count)s domains need review"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/settings/dashboard/warnings/email_config.html:8
 #, python-format
@@ -5916,7 +5893,6 @@ msgid_plural "%(display_count)s invite requests"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/settings/dashboard/warnings/missing_conduct.html:8
 msgid "Your instance is missing a code of conduct."
@@ -5933,7 +5909,6 @@ msgid_plural "%(display_count)s open reports"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/settings/dashboard/warnings/update_version.html:8
 #, python-format
@@ -5971,7 +5946,6 @@ msgid_plural "%(display_count)s users"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:59
 msgid "No email domains currently blocked"
@@ -7457,8 +7431,7 @@ msgid "%(formatted_count)s book"
 msgid_plural "%(formatted_count)s books"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] "%(formatted_count)s ספרים"
-msgstr[3] ""
+msgstr[2] ""
 
 #: bookwyrm/templates/shelf/shelf.html:110
 #, python-format
@@ -7536,7 +7509,6 @@ msgid_plural "and %(remainder_count_display)s others"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/snippets/book_cover.html:63
 msgid "No cover"
@@ -7717,7 +7689,6 @@ msgid_plural "%(rating)s.5 stars"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:32
 #: bookwyrm/templates/snippets/stars.html:20
@@ -7726,8 +7697,7 @@ msgid "%(rating)s star"
 msgid_plural "%(rating)s stars"
 msgstr[0] "כוכב %(rating)s"
 msgstr[1] ""
-msgstr[2] "%(rating)s כוכבים"
-msgstr[3] ""
+msgstr[2] ""
 
 #: bookwyrm/templates/snippets/generated_status/goal.html:2
 #, python-format
@@ -7736,7 +7706,6 @@ msgid_plural "set a goal to read %(counter)s books in %(year)s"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/snippets/generated_status/rating.html:3
 #, python-format
@@ -7745,7 +7714,6 @@ msgid_plural "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_ratin
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/snippets/generated_status/rating_pure_name.html:4
 #, python-format
@@ -7754,7 +7722,6 @@ msgid_plural "Rated \"%(book_title)s\" %(display_rating)s stars %(review_title)s
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:4
 #, python-format
@@ -7763,7 +7730,6 @@ msgid_plural "Review of \"%(book_title)s\" (%(display_rating)s stars): %(review_
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:12
 #, python-format
@@ -8340,7 +8306,6 @@ msgid_plural "%(display_count)s followers"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/user/user_preview.html:31
 #, python-format
@@ -8354,7 +8319,6 @@ msgid_plural "%(mutuals_display)s followers you follow"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/user/user_preview.html:49
 msgid "No followers you follow"
@@ -8380,8 +8344,7 @@ msgid "%(num)d book - by %(user)s"
 msgid_plural "%(num)d books - by %(user)s"
 msgstr[0] "ספר %(num)d - מאת %(user)s"
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(num)d ספרים - מאת %(user)s"
+msgstr[2] "%(num)d ספרים - מאת %(user)s"
 
 #: bookwyrm/templatetags/utilities.py:43
 msgid "deactivated user"
@@ -8410,6 +8373,5 @@ msgid "Load %(count)d unread status"
 msgid_plural "Load %(count)d unread statuses"
 msgstr[0] "טען סטטוס %(count)d שלא נקרא"
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "טען %(count)d סטטוסים שלא נקראו"
+msgstr[2] "טען %(count)d סטטוסים שלא נקראו"
 
