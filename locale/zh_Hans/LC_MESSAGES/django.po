@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-20 16:26+0000\n"
-"PO-Revision-Date: 2026-07-20 17:04\n"
+"POT-Creation-Date: 2026-09-03 18:33+0000\n"
+"PO-Revision-Date: 2026-09-07 16:37\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh\n"
@@ -243,7 +243,7 @@ msgid "Quotation"
 msgstr ""
 
 #: bookwyrm/models/bookwyrm_import_job.py:181
-#: bookwyrm/templates/snippets/follow_button.html:24
+#: bookwyrm/templates/snippets/follow_button.html:29
 msgid "Follow"
 msgstr "关注"
 
@@ -347,11 +347,11 @@ msgstr "关注者"
 msgid "Private"
 msgstr "私密"
 
-#: bookwyrm/models/housekeeping.py:117
+#: bookwyrm/models/housekeeping.py:122
 msgid "Missing"
 msgstr ""
 
-#: bookwyrm/models/housekeeping.py:118
+#: bookwyrm/models/housekeeping.py:123
 msgid "Wrong Path"
 msgstr ""
 
@@ -539,7 +539,7 @@ msgstr "书目时间线"
 #: bookwyrm/templates/import/user_import_status.html:73
 #: bookwyrm/templates/search/layout.html:22
 #: bookwyrm/templates/search/layout.html:44
-#: bookwyrm/templates/user/layout.html:117
+#: bookwyrm/templates/user/layout.html:111
 msgid "Books"
 msgstr "书目"
 
@@ -1091,7 +1091,7 @@ msgid "ISNI:"
 msgstr "ISNI："
 
 #: bookwyrm/templates/author/edit_author.html:128
-#: bookwyrm/templates/book/edit/edit_book.html:186
+#: bookwyrm/templates/book/edit/edit_book.html:191
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
 #: bookwyrm/templates/book/sections/description.html:46
@@ -1117,8 +1117,8 @@ msgstr "保存"
 #: bookwyrm/templates/author/edit_author.html:129
 #: bookwyrm/templates/author/sync_modal.html:23
 #: bookwyrm/templates/book/cover_add_modal.html:33
-#: bookwyrm/templates/book/edit/edit_book.html:188
-#: bookwyrm/templates/book/edit/edit_book.html:191
+#: bookwyrm/templates/book/edit/edit_book.html:193
+#: bookwyrm/templates/book/edit/edit_book.html:196
 #: bookwyrm/templates/book/file_links/add_link_modal.html:59
 #: bookwyrm/templates/book/file_links/verification_modal.html:26
 #: bookwyrm/templates/book/sections/description.html:47
@@ -1146,7 +1146,7 @@ msgid "Loading data will connect to <strong>%(source_name)s</strong> and check f
 msgstr "加载数据会连接到 <strong>%(source_name)s</strong> 并检查这里还没有记录的与作者相关的元数据。现存的元数据不会被覆盖。"
 
 #: bookwyrm/templates/author/sync_modal.html:24
-#: bookwyrm/templates/book/edit/edit_book.html:173
+#: bookwyrm/templates/book/edit/edit_book.html:178
 #: bookwyrm/templates/book/edit/edit_series.html:84
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
@@ -1294,54 +1294,59 @@ msgstr "确认书目信息"
 msgid "Is \"%(name)s\" one of these authors?"
 msgstr "“%(name)s” 是这些作者之一吗？"
 
-#: bookwyrm/templates/book/edit/edit_book.html:89
+#: bookwyrm/templates/book/edit/edit_book.html:80
+msgid "Any external authors will be imported from ISNI"
+msgstr ""
+
+#: bookwyrm/templates/book/edit/edit_book.html:87
+msgid "Existing author"
+msgstr ""
+
+#: bookwyrm/templates/book/edit/edit_book.html:87
+msgid "External author"
+msgstr ""
+
+#: bookwyrm/templates/book/edit/edit_book.html:94
+#: bookwyrm/templates/book/edit/edit_book.html:99
 #, python-format
 msgid "Author of <em>%(book_title)s</em>"
-msgstr "<em>%(book_title)s</em> 的作者"
+msgid_plural "Author of <em>%(book_title)s</em></a> and more"
+msgstr[0] ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:93
-#, python-format
-msgid "Author of <em>%(alt_title)s</em>"
-msgstr "<em>%(alt_title)s</em> 的作者"
+#: bookwyrm/templates/book/edit/edit_book.html:110
+msgid "Create new author"
+msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:95
-msgid "Find more information at isni.org"
-msgstr "在 isni.org 查找更多信息"
-
-#: bookwyrm/templates/book/edit/edit_book.html:105
-msgid "This is a new author"
-msgstr "这是一位新的作者"
-
-#: bookwyrm/templates/book/edit/edit_book.html:115
+#: bookwyrm/templates/book/edit/edit_book.html:120
 #, python-format
 msgid "Creating a new author: %(name)s"
 msgstr "正在创建新的作者: %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book.html:123
+#: bookwyrm/templates/book/edit/edit_book.html:128
 msgid "Is this an edition of an existing work?"
 msgstr "这是已存在的作品的一个版本吗？"
 
-#: bookwyrm/templates/book/edit/edit_book.html:131
+#: bookwyrm/templates/book/edit/edit_book.html:136
 msgid "This is a new work"
 msgstr "这是一个新的作品。"
 
-#: bookwyrm/templates/book/edit/edit_book.html:142
+#: bookwyrm/templates/book/edit/edit_book.html:147
 msgid "Are you sure this is a new series? The following series have similar names and a matching author."
 msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:148
+#: bookwyrm/templates/book/edit/edit_book.html:153
 msgid "Is this book part of one of these series?"
 msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:160
+#: bookwyrm/templates/book/edit/edit_book.html:165
 msgid "This is a new series"
 msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:165
+#: bookwyrm/templates/book/edit/edit_book.html:170
 msgid "Creating a new series"
 msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:175
+#: bookwyrm/templates/book/edit/edit_book.html:180
 #: bookwyrm/templates/book/edit/edit_series.html:86
 #: bookwyrm/templates/feed/status.html:17
 #: bookwyrm/templates/guided_tour/book.html:44
@@ -1815,7 +1820,7 @@ msgstr "添加描述"
 #: bookwyrm/templates/search/layout.html:27
 #: bookwyrm/templates/search/layout.html:55
 #: bookwyrm/templates/settings/celery.html:77
-#: bookwyrm/templates/user/layout.html:105 bookwyrm/templates/user/lists.html:6
+#: bookwyrm/templates/user/layout.html:99 bookwyrm/templates/user/lists.html:6
 msgid "Lists"
 msgstr "列表"
 
@@ -3124,7 +3129,7 @@ msgstr "您可以与其他用户创建或加入一个群组。 群组可以共�
 #: bookwyrm/templates/guided_tour/user_groups.html:11
 #: bookwyrm/templates/guided_tour/user_profile.html:55
 #: bookwyrm/templates/preferences/export-user.html:37
-#: bookwyrm/templates/user/groups.html:6 bookwyrm/templates/user/layout.html:98
+#: bookwyrm/templates/user/groups.html:6 bookwyrm/templates/user/layout.html:92
 msgid "Groups"
 msgstr "群组"
 
@@ -3178,7 +3183,7 @@ msgid "This tab shows everything you have read towards your annual reading goal,
 msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_profile.html:32
-#: bookwyrm/templates/user/goal.html:7 bookwyrm/templates/user/layout.html:91
+#: bookwyrm/templates/user/goal.html:7 bookwyrm/templates/user/layout.html:85
 msgid "Reading Goal"
 msgstr "阅读目标"
 
@@ -4613,14 +4618,6 @@ msgstr "用来关注的用户代号："
 msgid "Follow!"
 msgstr "关注!"
 
-#: bookwyrm/templates/ostatus/remote_follow_button.html:15
-msgid "Follow on Fediverse"
-msgstr "在联邦宇宙中关注"
-
-#: bookwyrm/templates/ostatus/remote_follow_button.html:19
-msgid "This link opens in a pop-up window"
-msgstr "此链接会在弹出窗口中打开"
-
 #: bookwyrm/templates/ostatus/subscribe.html:8
 #, python-format
 msgid "Log in to %(sitename)s"
@@ -5998,7 +5995,7 @@ msgid "Details"
 msgstr "详细"
 
 #: bookwyrm/templates/settings/federation/instance.html:53
-#: bookwyrm/templates/user/layout.html:79
+#: bookwyrm/templates/user/layout.html:73
 msgid "Activity"
 msgstr "活动"
 
@@ -7365,7 +7362,7 @@ msgid "Edit Shelf"
 msgstr "编辑书架"
 
 #: bookwyrm/templates/shelf/shelf.html:46
-#: bookwyrm/templatetags/shelf_tags.py:14 bookwyrm/views/shelf/shelf.py:61
+#: bookwyrm/templatetags/shelf_tags.py:14 bookwyrm/views/shelf/shelf.py:62
 msgid "All books"
 msgstr "所有书目"
 
@@ -7590,21 +7587,21 @@ msgstr "清除过滤器"
 msgid "Apply filters"
 msgstr "应用过滤器"
 
-#: bookwyrm/templates/snippets/follow_button.html:22
+#: bookwyrm/templates/snippets/follow_button.html:27
 #, python-format
 msgid "Follow @%(username)s"
 msgstr "关注 @%(username)s"
 
-#: bookwyrm/templates/snippets/follow_button.html:33
+#: bookwyrm/templates/snippets/follow_button.html:38
 msgid "Undo follow request"
 msgstr "撤回关注请求"
 
-#: bookwyrm/templates/snippets/follow_button.html:38
+#: bookwyrm/templates/snippets/follow_button.html:43
 #, python-format
 msgid "Unfollow @%(username)s"
 msgstr "取消关注 @%(username)s"
 
-#: bookwyrm/templates/snippets/follow_button.html:40
+#: bookwyrm/templates/snippets/follow_button.html:45
 msgid "Unfollow"
 msgstr "取消关注"
 
@@ -7799,6 +7796,10 @@ msgstr "好好起名！您的用户名在之后无法更改。"
 #: bookwyrm/templates/snippets/register_form.html:66
 msgid "Sign Up"
 msgstr "注册"
+
+#: bookwyrm/templates/snippets/remote_follow_button.html:11
+msgid "Follow from Fediverse"
+msgstr ""
 
 #: bookwyrm/templates/snippets/report_modal.html:8
 #, python-format
@@ -8113,17 +8114,17 @@ msgstr "您的群组"
 msgid "Groups: %(username)s"
 msgstr "群组： %(username)s"
 
-#: bookwyrm/templates/user/layout.html:59
+#: bookwyrm/templates/user/layout.html:53
 msgid "Follow Requests"
 msgstr "关注请求"
 
-#: bookwyrm/templates/user/layout.html:84
+#: bookwyrm/templates/user/layout.html:78
 #: bookwyrm/templates/user/reviews_comments.html:6
 #: bookwyrm/templates/user/reviews_comments.html:12
 msgid "Reviews and Comments"
 msgstr "书评和评论"
 
-#: bookwyrm/templates/user/layout.html:111
+#: bookwyrm/templates/user/layout.html:105
 #: bookwyrm/templates/user/suggestions.html:6
 msgid "Suggestions"
 msgstr ""
@@ -8272,20 +8273,20 @@ msgid "%(num)d book - by %(user)s"
 msgid_plural "%(num)d books - by %(user)s"
 msgstr[0] "%(num)d 本书 - 来自 %(user)s"
 
-#: bookwyrm/templatetags/utilities.py:43
+#: bookwyrm/templatetags/utilities.py:42
 msgid "deactivated user"
 msgstr ""
 
-#: bookwyrm/templatetags/utilities.py:63
+#: bookwyrm/templatetags/utilities.py:62
 #, python-format
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s：%(subtitle)s"
 
-#: bookwyrm/templatetags/utilities.py:164
+#: bookwyrm/templatetags/utilities.py:135
 msgid "a new user account"
 msgstr ""
 
-#: bookwyrm/views/books/edit_book.py:82 bookwyrm/views/books/edit_book.py:488
+#: bookwyrm/views/books/edit_book.py:82 bookwyrm/views/books/edit_book.py:477
 msgid "There is another book in the series with the same value"
 msgstr ""
 
