@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-20 16:26+0000\n"
-"PO-Revision-Date: 2026-07-20 17:03\n"
+"POT-Creation-Date: 2026-09-03 18:33+0000\n"
+"PO-Revision-Date: 2026-09-07 16:36\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -243,7 +243,7 @@ msgid "Quotation"
 msgstr "Cita"
 
 #: bookwyrm/models/bookwyrm_import_job.py:181
-#: bookwyrm/templates/snippets/follow_button.html:24
+#: bookwyrm/templates/snippets/follow_button.html:29
 msgid "Follow"
 msgstr "Segueix"
 
@@ -347,11 +347,11 @@ msgstr "Seguidors"
 msgid "Private"
 msgstr "Privat"
 
-#: bookwyrm/models/housekeeping.py:117
+#: bookwyrm/models/housekeeping.py:122
 msgid "Missing"
 msgstr "Absent"
 
-#: bookwyrm/models/housekeeping.py:118
+#: bookwyrm/models/housekeeping.py:123
 msgid "Wrong Path"
 msgstr "Camí incorrecte"
 
@@ -540,7 +540,7 @@ msgstr "Cronologia dels llibres"
 #: bookwyrm/templates/import/user_import_status.html:73
 #: bookwyrm/templates/search/layout.html:22
 #: bookwyrm/templates/search/layout.html:44
-#: bookwyrm/templates/user/layout.html:117
+#: bookwyrm/templates/user/layout.html:111
 msgid "Books"
 msgstr "Llibres"
 
@@ -1096,7 +1096,7 @@ msgid "ISNI:"
 msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:128
-#: bookwyrm/templates/book/edit/edit_book.html:186
+#: bookwyrm/templates/book/edit/edit_book.html:191
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
 #: bookwyrm/templates/book/sections/description.html:46
@@ -1122,8 +1122,8 @@ msgstr "Desa"
 #: bookwyrm/templates/author/edit_author.html:129
 #: bookwyrm/templates/author/sync_modal.html:23
 #: bookwyrm/templates/book/cover_add_modal.html:33
-#: bookwyrm/templates/book/edit/edit_book.html:188
-#: bookwyrm/templates/book/edit/edit_book.html:191
+#: bookwyrm/templates/book/edit/edit_book.html:193
+#: bookwyrm/templates/book/edit/edit_book.html:196
 #: bookwyrm/templates/book/file_links/add_link_modal.html:59
 #: bookwyrm/templates/book/file_links/verification_modal.html:26
 #: bookwyrm/templates/book/sections/description.html:47
@@ -1151,7 +1151,7 @@ msgid "Loading data will connect to <strong>%(source_name)s</strong> and check f
 msgstr "La càrrega de les dades es connectarà a <strong>%(source_name)s</strong> i comprovarà si hi ha metadades sobre aquest autor que no estan aquí. Les metadades existents no seran sobreescrites."
 
 #: bookwyrm/templates/author/sync_modal.html:24
-#: bookwyrm/templates/book/edit/edit_book.html:173
+#: bookwyrm/templates/book/edit/edit_book.html:178
 #: bookwyrm/templates/book/edit/edit_series.html:84
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
@@ -1300,54 +1300,60 @@ msgstr "Confirmeu la informació del llibre"
 msgid "Is \"%(name)s\" one of these authors?"
 msgstr "És \"%(name)s\" un/a d'aquest autors/es?"
 
-#: bookwyrm/templates/book/edit/edit_book.html:89
+#: bookwyrm/templates/book/edit/edit_book.html:80
+msgid "Any external authors will be imported from ISNI"
+msgstr ""
+
+#: bookwyrm/templates/book/edit/edit_book.html:87
+msgid "Existing author"
+msgstr ""
+
+#: bookwyrm/templates/book/edit/edit_book.html:87
+msgid "External author"
+msgstr ""
+
+#: bookwyrm/templates/book/edit/edit_book.html:94
+#: bookwyrm/templates/book/edit/edit_book.html:99
 #, python-format
 msgid "Author of <em>%(book_title)s</em>"
-msgstr "Autor de <em>%(book_title)s</em>"
+msgid_plural "Author of <em>%(book_title)s</em></a> and more"
+msgstr[0] ""
+msgstr[1] ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:93
-#, python-format
-msgid "Author of <em>%(alt_title)s</em>"
-msgstr "Autor de <em>%(alt_title)s</em>"
+#: bookwyrm/templates/book/edit/edit_book.html:110
+msgid "Create new author"
+msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:95
-msgid "Find more information at isni.org"
-msgstr "Més informació a isni.org"
-
-#: bookwyrm/templates/book/edit/edit_book.html:105
-msgid "This is a new author"
-msgstr "Es tracta d'un nou autor"
-
-#: bookwyrm/templates/book/edit/edit_book.html:115
+#: bookwyrm/templates/book/edit/edit_book.html:120
 #, python-format
 msgid "Creating a new author: %(name)s"
 msgstr "Creando un autor nuevo: %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book.html:123
+#: bookwyrm/templates/book/edit/edit_book.html:128
 msgid "Is this an edition of an existing work?"
 msgstr "Es tracta d'una edició d'una obra ja existent?"
 
-#: bookwyrm/templates/book/edit/edit_book.html:131
+#: bookwyrm/templates/book/edit/edit_book.html:136
 msgid "This is a new work"
 msgstr "Es tracta d'una publicació nova"
 
-#: bookwyrm/templates/book/edit/edit_book.html:142
+#: bookwyrm/templates/book/edit/edit_book.html:147
 msgid "Are you sure this is a new series? The following series have similar names and a matching author."
 msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:148
+#: bookwyrm/templates/book/edit/edit_book.html:153
 msgid "Is this book part of one of these series?"
 msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:160
+#: bookwyrm/templates/book/edit/edit_book.html:165
 msgid "This is a new series"
 msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:165
+#: bookwyrm/templates/book/edit/edit_book.html:170
 msgid "Creating a new series"
 msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:175
+#: bookwyrm/templates/book/edit/edit_book.html:180
 #: bookwyrm/templates/book/edit/edit_series.html:86
 #: bookwyrm/templates/feed/status.html:17
 #: bookwyrm/templates/guided_tour/book.html:44
@@ -1822,7 +1828,7 @@ msgstr "Afegiu una descripció"
 #: bookwyrm/templates/search/layout.html:27
 #: bookwyrm/templates/search/layout.html:55
 #: bookwyrm/templates/settings/celery.html:77
-#: bookwyrm/templates/user/layout.html:105 bookwyrm/templates/user/lists.html:6
+#: bookwyrm/templates/user/layout.html:99 bookwyrm/templates/user/lists.html:6
 msgid "Lists"
 msgstr "Llistes"
 
@@ -3135,7 +3141,7 @@ msgstr "Podeu crear o unir-vos a un grup amb altres usuàries. Els grups poden c
 #: bookwyrm/templates/guided_tour/user_groups.html:11
 #: bookwyrm/templates/guided_tour/user_profile.html:55
 #: bookwyrm/templates/preferences/export-user.html:37
-#: bookwyrm/templates/user/groups.html:6 bookwyrm/templates/user/layout.html:98
+#: bookwyrm/templates/user/groups.html:6 bookwyrm/templates/user/layout.html:92
 msgid "Groups"
 msgstr "Grups"
 
@@ -3189,7 +3195,7 @@ msgid "This tab shows everything you have read towards your annual reading goal,
 msgstr "Aquesta pestanya mostra tot el que heu llegit de cara al vostre objectiu de lectura anual, o us permet establir-ne un si no en teniu."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:32
-#: bookwyrm/templates/user/goal.html:7 bookwyrm/templates/user/layout.html:91
+#: bookwyrm/templates/user/goal.html:7 bookwyrm/templates/user/layout.html:85
 msgid "Reading Goal"
 msgstr "Objectiu de lectura"
 
@@ -4632,14 +4638,6 @@ msgstr "Nom d'usuari des del qual seguir:"
 msgid "Follow!"
 msgstr "Segueix!"
 
-#: bookwyrm/templates/ostatus/remote_follow_button.html:15
-msgid "Follow on Fediverse"
-msgstr "Segueix al Fedivers"
-
-#: bookwyrm/templates/ostatus/remote_follow_button.html:19
-msgid "This link opens in a pop-up window"
-msgstr "Aquest enllaç s'obre en una finestra emergent"
-
 #: bookwyrm/templates/ostatus/subscribe.html:8
 #, python-format
 msgid "Log in to %(sitename)s"
@@ -6024,7 +6022,7 @@ msgid "Details"
 msgstr "Detalls"
 
 #: bookwyrm/templates/settings/federation/instance.html:53
-#: bookwyrm/templates/user/layout.html:79
+#: bookwyrm/templates/user/layout.html:73
 msgid "Activity"
 msgstr "Activitat"
 
@@ -7391,7 +7389,7 @@ msgid "Edit Shelf"
 msgstr "Edita el prestatge"
 
 #: bookwyrm/templates/shelf/shelf.html:46
-#: bookwyrm/templatetags/shelf_tags.py:14 bookwyrm/views/shelf/shelf.py:61
+#: bookwyrm/templatetags/shelf_tags.py:14 bookwyrm/views/shelf/shelf.py:62
 msgid "All books"
 msgstr "Tots els llibres"
 
@@ -7618,21 +7616,21 @@ msgstr "Neteja els filtres"
 msgid "Apply filters"
 msgstr "Aplica filtres"
 
-#: bookwyrm/templates/snippets/follow_button.html:22
+#: bookwyrm/templates/snippets/follow_button.html:27
 #, python-format
 msgid "Follow @%(username)s"
 msgstr "Segueix @%(username)s"
 
-#: bookwyrm/templates/snippets/follow_button.html:33
+#: bookwyrm/templates/snippets/follow_button.html:38
 msgid "Undo follow request"
 msgstr "Desfés la sol·licitud de seguiment"
 
-#: bookwyrm/templates/snippets/follow_button.html:38
+#: bookwyrm/templates/snippets/follow_button.html:43
 #, python-format
 msgid "Unfollow @%(username)s"
 msgstr "Deixa de seguir @%(username)s"
 
-#: bookwyrm/templates/snippets/follow_button.html:40
+#: bookwyrm/templates/snippets/follow_button.html:45
 msgid "Unfollow"
 msgstr "Deixa de seguir"
 
@@ -7833,6 +7831,10 @@ msgstr "Trieu sàviament! El nom d'usuari no es pot canviar."
 #: bookwyrm/templates/snippets/register_form.html:66
 msgid "Sign Up"
 msgstr "Registreu-vos"
+
+#: bookwyrm/templates/snippets/remote_follow_button.html:11
+msgid "Follow from Fediverse"
+msgstr ""
 
 #: bookwyrm/templates/snippets/report_modal.html:8
 #, python-format
@@ -8147,17 +8149,17 @@ msgstr "Els teus grups"
 msgid "Groups: %(username)s"
 msgstr "Grups: %(username)s"
 
-#: bookwyrm/templates/user/layout.html:59
+#: bookwyrm/templates/user/layout.html:53
 msgid "Follow Requests"
 msgstr "Peticions de seguiment"
 
-#: bookwyrm/templates/user/layout.html:84
+#: bookwyrm/templates/user/layout.html:78
 #: bookwyrm/templates/user/reviews_comments.html:6
 #: bookwyrm/templates/user/reviews_comments.html:12
 msgid "Reviews and Comments"
 msgstr "Ressenyes i comentaris"
 
-#: bookwyrm/templates/user/layout.html:111
+#: bookwyrm/templates/user/layout.html:105
 #: bookwyrm/templates/user/suggestions.html:6
 msgid "Suggestions"
 msgstr ""
@@ -8309,20 +8311,20 @@ msgid_plural "%(num)d books - by %(user)s"
 msgstr[0] "%(num)d llibre - per %(user)s"
 msgstr[1] "%(num)d llibres - per %(user)s"
 
-#: bookwyrm/templatetags/utilities.py:43
+#: bookwyrm/templatetags/utilities.py:42
 msgid "deactivated user"
 msgstr ""
 
-#: bookwyrm/templatetags/utilities.py:63
+#: bookwyrm/templatetags/utilities.py:62
 #, python-format
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s: %(subtitle)s"
 
-#: bookwyrm/templatetags/utilities.py:164
+#: bookwyrm/templatetags/utilities.py:135
 msgid "a new user account"
 msgstr "compte d'usuari nou"
 
-#: bookwyrm/views/books/edit_book.py:82 bookwyrm/views/books/edit_book.py:488
+#: bookwyrm/views/books/edit_book.py:82 bookwyrm/views/books/edit_book.py:477
 msgid "There is another book in the series with the same value"
 msgstr ""
 
