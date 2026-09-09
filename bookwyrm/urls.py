@@ -377,7 +377,7 @@ urlpatterns = [
         r"^settings/reports/?$", views.ReportsAdmin.as_view(), name="settings-reports"
     ),
     re_path(
-        r"^settings/reports/(?P<report_id>\d+)(.json)?/?$",
+        r"^settings/reports/(?P<report_id>\d+)(\.json)?/?$",
         views.ReportAdmin.as_view(),
         name="settings-report",
     ),
@@ -606,7 +606,7 @@ urlpatterns = [
         name="user-comments-rss",
     ),
     re_path(
-        rf"{USER_PATH}/(?P<direction>(followers|following))(.json)?/?$",
+        rf"{USER_PATH}/(?P<direction>(followers|following))(\.json)?/?$",
         views.Relationships.as_view(),
         name="user-relationships",
     ),
@@ -619,7 +619,7 @@ urlpatterns = [
     # groups
     re_path(rf"{USER_PATH}/groups/?$", views.UserGroups.as_view(), name="user-groups"),
     re_path(
-        r"^group/(?P<group_id>\d+)(.json)?/?$", views.Group.as_view(), name="group"
+        r"^group/(?P<group_id>\d+)(\.json)?/?$", views.Group.as_view(), name="group"
     ),
     re_path(
         rf"^group/(?P<group_id>\d+){regex.SLUG}/?$", views.Group.as_view(), name="group"
@@ -694,7 +694,7 @@ urlpatterns = [
     # User books
     re_path(rf"{USER_PATH}/books/?$", views.Shelf.as_view(), name="user-shelves"),
     re_path(
-        rf"^{USER_PATH}/(shelf|books)/(?P<shelf_identifier>[\w-]+)(.json)?/?$",
+        rf"^{USER_PATH}/(shelf|books)/(?P<shelf_identifier>[\w-]+)(\.json)?/?$",
         views.Shelf.as_view(),
         name="shelf",
     ),
@@ -704,7 +704,7 @@ urlpatterns = [
         name="shelf-rss",
     ),
     re_path(
-        rf"^{LOCAL_USER_PATH}/(books|shelf)/(?P<shelf_identifier>[\w-]+)(.json)?/?$",
+        rf"^{LOCAL_USER_PATH}/(books|shelf)/(?P<shelf_identifier>[\w-]+)(\.json)?/?$",
         views.Shelf.as_view(),
         name="shelf",
     ),
@@ -810,11 +810,11 @@ urlpatterns = [
     re_path(r"^block-book/(?P<book_id>\d+)/?$", views.BlockedBooks.as_view()),
     re_path(r"^unblock-book/(?P<book_id>\d+)/?$", views.unblock_book),
     # statuses
-    re_path(rf"{STATUS_PATH}(.json)?/?$", views.Status.as_view(), name="status"),
+    re_path(rf"{STATUS_PATH}(\.json)?/?$", views.Status.as_view(), name="status"),
     re_path(rf"{STATUS_PATH}{regex.SLUG}/?$", views.Status.as_view(), name="status"),
     re_path(rf"{STATUS_PATH}/activity/?$", views.Status.as_view(), name="status"),
     re_path(
-        rf"{STATUS_PATH}/replies(.json)?/?$", views.Replies.as_view(), name="replies"
+        rf"{STATUS_PATH}/replies(\.json)?/?$", views.Replies.as_view(), name="replies"
     ),
     re_path(
         r"^edit/(?P<status_id>\d+)/?$", views.EditStatus.as_view(), name="edit-status"
@@ -849,7 +849,7 @@ urlpatterns = [
     re_path(r"^boost/(?P<status_id>\d+)/?$", views.Boost.as_view()),
     re_path(r"^unboost/(?P<status_id>\d+)/?$", views.Unboost.as_view()),
     # books
-    re_path(rf"{BOOK_PATH}(.json)?/?$", views.Book.as_view(), name="book"),
+    re_path(rf"{BOOK_PATH}(\.json)?/?$", views.Book.as_view(), name="book"),
     re_path(rf"{BOOK_PATH}{regex.SLUG}/?$", views.Book.as_view(), name="book"),
     re_path(
         rf"{BOOK_PATH}/(?P<user_statuses>review|comment|quote)/?$",
@@ -871,7 +871,7 @@ urlpatterns = [
         views.ConfirmEditBook.as_view(),
         name="create-book-confirm",
     ),
-    re_path(rf"{BOOK_PATH}/editions(.json)?/?$", views.Editions.as_view()),
+    re_path(rf"{BOOK_PATH}/editions(\.json)?/?$", views.Editions.as_view()),
     re_path(
         r"^upload-cover/(?P<book_id>\d+)/?$", views.upload_cover, name="upload-cover"
     ),
@@ -906,7 +906,7 @@ urlpatterns = [
         name="book-update-remote",
     ),
     re_path(
-        rf"{BOOK_PATH}/suggestions(.json)?/?$",
+        rf"{BOOK_PATH}/suggestions(\.json)?/?$",
         views.SuggestionList.as_view(),
         name="suggestion-list",
     ),
@@ -931,10 +931,10 @@ urlpatterns = [
         name="author-update-remote",
     ),
     # isbn
-    re_path(r"^isbn/(?P<isbn>[\dxX]+)(.json)?/?$", views.Isbn.as_view()),
+    re_path(r"^isbn/(?P<isbn>[\dxX]+)(\.json)?/?$", views.Isbn.as_view()),
     # author
     re_path(
-        r"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view(), name="author"
+        r"^author/(?P<author_id>\d+)(\.json)?/?$", views.Author.as_view(), name="author"
     ),
     re_path(
         rf"^author/(?P<author_id>\d+){regex.SLUG}/?$",
@@ -948,20 +948,17 @@ urlpatterns = [
     ),
     # series
     re_path(
-        rf"^series/(?P<series_id>\d+)(.json)?{regex.SLUG}/?$",
+        rf"^series/(?P<series_id>\d+)({regex.SLUG}|\.json)?/?$",
         views.Series.as_view(),
         name="series",
     ),
-    re_path(
-        r"^series/(?P<series_id>\d+)(.json)/?$", views.Series.as_view()
-    ),  # activitypub
     re_path(
         r"^series/(?P<series_id>\d+)/edit/?$",
         views.EditSeries.as_view(),
         name="edit-series",
     ),
     re_path(
-        r"^seriesbook/(?P<seriesbook_id>\d+)(.json)?/?$",
+        r"^seriesbook/(?P<seriesbook_id>\d+)(\.json)?/?$",
         views.SeriesBook.as_view(),
         name="seriesbook",
     ),
