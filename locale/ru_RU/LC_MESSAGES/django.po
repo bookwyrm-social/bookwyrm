@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-03 18:33+0000\n"
-"PO-Revision-Date: 2026-09-07 16:37\n"
+"POT-Creation-Date: 2026-09-09 21:56+0000\n"
+"PO-Revision-Date: 2026-09-09 23:01\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -7720,7 +7720,6 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:32
-#: bookwyrm/templates/snippets/stars.html:20
 #, python-format
 msgid "%(rating)s star"
 msgid_plural "%(rating)s stars"
@@ -7981,6 +7980,15 @@ msgstr ""
 #: bookwyrm/templates/snippets/stars.html:13
 msgid "Show rating"
 msgstr "Показать оценку"
+
+#: bookwyrm/templates/snippets/stars.html:20
+#, python-format
+msgid "%(display_rating)s star"
+msgid_plural "%(display_rating)s stars"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: bookwyrm/templates/snippets/stars.html:38
 msgid "No rating"
@@ -8404,7 +8412,7 @@ msgstr ""
 msgid "There is another book in the series with the same value"
 msgstr ""
 
-#: bookwyrm/views/books/series.py:91
+#: bookwyrm/views/books/series.py:97
 msgid "Series position must be unique for each book"
 msgstr ""
 
