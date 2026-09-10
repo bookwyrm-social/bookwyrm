@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0245_merge_20260820_0222'),
+        ('bookwyrm', '0244_alter_suggestionlist_options_and_more'),
     ]
 
     operations = [
