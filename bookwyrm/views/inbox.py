@@ -53,11 +53,22 @@ class Inbox(View):
             # banned or deleted users are not allowed to send us Activities
             return HttpResponseForbidden()
 
-        if (
-            "object" not in activity_json
-            or "type" not in activity_json
-            or activity_json["type"] not in activitypub.activity_objects
-        ):
+        if "object" not in activity_json or "type" not in activity_json:
+            raise Http404()
+
+        activity_type = activity_json.get("type")
+        if isinstance(activity_type, list):
+            try:
+                activity_type = [
+                    atype
+                    for atype in activity_type
+                    if atype in activitypub.activity_objects
+                ][0]
+            except IndexError:
+                # we don't know what any of these types are
+                raise Http404()
+
+        if activity_type not in activitypub.activity_objects:
             raise Http404()
 
         # verify the signature

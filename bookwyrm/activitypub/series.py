@@ -23,5 +23,5 @@ class SeriesBook(CollectionItem):
     actor: str
     book: str
     series: str
-    seriesNumber: int = None
+    seriesNumber: str = None
     type: str = "SeriesBook"

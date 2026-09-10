@@ -238,7 +238,6 @@ class ObjectMixin(ActivitypubMixin):
                 return
 
             try:
-                # TODO: here is where we might use an ActivityPub extension instead
                 # do we have a "pure" activitypub version of this for mastodon?
                 if software != "bookwyrm" and hasattr(self, "pure_content"):
                     pure_activity = self.to_create_activity(user, pure=True)

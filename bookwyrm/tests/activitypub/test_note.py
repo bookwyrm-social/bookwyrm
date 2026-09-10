@@ -65,3 +65,13 @@ class Note(TestCase):
             + f'<a href="{hashtag.remote_id}" data-mention="hashtag">'
             + "#bookclub</a></p>",
         )
+
+    def test_bookwyrm_namespacing(self):
+        """does the Note type use bw namespaces?"""
+
+        comment = models.Comment.objects.create(
+            user=self.user, book=self.book, content="this is a comment"
+        )
+
+        activity = comment.to_activity()
+        self.assertTrue("bw:inReplyToBook" in activity)
