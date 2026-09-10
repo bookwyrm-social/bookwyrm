@@ -175,7 +175,7 @@ def export_user(user: User) -> dict[str, Any]:
     return data
 
 
-def export_settings(user: User) -> dict[str, bool|str]:
+def export_settings(user: User) -> dict[str, bool | str]:
     """Additional settings - can't be serialized as AP"""
     vals = [
         "show_goal",
@@ -220,7 +220,7 @@ def export_books(user: User) -> list[dict[str, Any]]:
     return [export_book(user, edition) for edition in editions]
 
 
-def export_book(user: User, edition: Edition) -> dict[str,Any]:
+def export_book(user: User, edition: Edition) -> dict[str, Any]:
     """add book to export JSON"""
     data = {}
     data["work"] = edition.parent_work.to_activity()

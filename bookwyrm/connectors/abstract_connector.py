@@ -487,7 +487,7 @@ def get_data(
 
 def get_image(
     url: str, timeout: int = 10
-) -> tuple[ContentFile[bytes], str] | tuple[None, None]:
+) -> tuple[ContentFile, str] | tuple[None, None]:
     """wrapper for requesting an image"""
     raise_not_valid_url(url)
     try:

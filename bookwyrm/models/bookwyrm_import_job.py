@@ -55,17 +55,17 @@ class BookwyrmImportJob(ParentJob):
         start_import_task.delay(job_id=self.id)
 
     @property
-    def book_tasks(self) -> QuerySet['UserImportBook']:
+    def book_tasks(self) -> QuerySet["UserImportBook"]:
         """How many import book tasks are there?"""
         return UserImportBook.objects.filter(parent_job=self).all()
 
     @property
-    def status_tasks(self) -> QuerySet['UserImportPost']:
+    def status_tasks(self) -> QuerySet["UserImportPost"]:
         """How many import status tasks are there?"""
         return UserImportPost.objects.filter(parent_job=self).all()
 
     @property
-    def relationship_tasks(self) -> QuerySet['UserImportRelationship']:
+    def relationship_tasks(self) -> QuerySet["UserImportRelationship"]:
         """How many import relationship tasks are there?"""
         return UserImportRelationship.objects.filter(parent_job=self).all()
 
@@ -128,7 +128,7 @@ class UserImportBook(ChildJob):
     book = ForeignKey(models.Book, on_delete=SET_NULL, null=True, blank=True)
     book_data = JSONField(null=False)
 
-    def start_job(self, origin_is_ok: bool=False) -> None:
+    def start_job(self, origin_is_ok: bool = False) -> None:
         """Start the job"""
         import_book_task.delay(
             child_id=self.id, origin_is_ok=origin_is_ok, job_type="UserImportBook"
@@ -500,7 +500,9 @@ def upsert_status_task(**kwargs) -> None:
         task.set_status("failed")
 
 
-def upsert_readthroughs(user: models.User, book_id: int, data: list[dict[str, Any]]) -> None:
+def upsert_readthroughs(
+    user: models.User, book_id: int, data: list[dict[str, Any]]
+) -> None:
     """Take a JSON string of readthroughs and
     find or create the instances in the database"""
 
@@ -564,7 +566,9 @@ def upsert_lists(
             )
 
 
-def upsert_shelves(user: models.User, book: models.Book, shelves: list[dict[str, Any]]) -> None:
+def upsert_shelves(
+    user: models.User, book: models.Book, shelves: list[dict[str, Any]]
+) -> None:
     """Take shelf JSON objects and create
     DB entries if they don't already exist"""
 
@@ -587,7 +591,9 @@ def upsert_shelves(user: models.User, book: models.Book, shelves: list[dict[str,
 ##############
 
 
-def update_user_profile(user: models.User, tar: BookwyrmTarFile, data: dict[str, Any]) -> None:
+def update_user_profile(
+    user: models.User, tar: BookwyrmTarFile, data: dict[str, Any]
+) -> None:
     """update the user's profile from import data"""
     name = data.get("name", None)
     username = data.get("preferredUsername")

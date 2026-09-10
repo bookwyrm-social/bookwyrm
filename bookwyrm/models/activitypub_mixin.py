@@ -36,7 +36,9 @@ logger = logging.getLogger(__name__)
 PropertyField = namedtuple("PropertyField", ("set_activity_from_field"))
 
 
-def set_activity_from_property_field(activity: dict[str, Any], obj: BookWyrmModel, field: tuple[str, ...]) -> None:
+def set_activity_from_property_field(
+    activity: dict[str, Any], obj: BookWyrmModel, field: tuple[str, ...]
+) -> None:
     """assign a model property value to the activity json"""
     activity[field[1]] = getattr(obj, field[0])
 
@@ -516,9 +518,12 @@ def generate_activity(obj: ActivitypubMixin) -> dict[str, Any]:
         activity["id"] = obj.get_remote_id()
     return activity
 
+
 # related_fields should be typed as Intersection[ActivitypubMixin, BookWyrmModel]
 #   it requires the ActivitypubMixin's reverse_unfurl & field_to_activity, and BookWyrmModel's order_by
-def unfurl_related_field(related_field: ActivitypubMixin | BookWyrmModel, sort_field: str=None):
+def unfurl_related_field(
+    related_field: ActivitypubMixin | BookWyrmModel, sort_field: str = None
+):
     """load reverse lookups (like public key owner or Status attachment"""
     if sort_field and hasattr(related_field, "all"):
         return [

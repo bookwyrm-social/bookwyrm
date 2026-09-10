@@ -22,7 +22,9 @@ class Favorite(ActivityMixin, BookWyrmModel):
     activity_serializer = activitypub.Like
 
     @classmethod
-    def ignore_activity(cls, activity: ActivityObject, allow_external_connections: bool=True) -> bool:
+    def ignore_activity(
+        cls, activity: ActivityObject, allow_external_connections: bool = True
+    ) -> bool:
         """don't bother with incoming favs of unknown statuses"""
         return not Status.objects.filter(remote_id=activity.object).exists()
 

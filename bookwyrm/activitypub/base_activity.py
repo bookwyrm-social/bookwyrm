@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 
 TBookWyrmModel = TypeVar("TBookWyrmModel", bound=base_model.BookWyrmModel)
-TActivityObject = TypeVar("ActivityObject", bound='ActivityObject')
+TActivityObject = TypeVar("ActivityObject", bound="ActivityObject")
 
 
 class ActivitySerializerError(ValueError):
@@ -100,7 +100,9 @@ class Signature:
 
 
 def naive_parse(
-    activity_objects: dict, activity_json: dict, serializer: type[TActivityObject] | None = None
+    activity_objects: dict,
+    activity_json: dict,
+    serializer: type[TActivityObject] | None = None,
 ) -> TActivityObject:
     """this navigates circular import issues by looking up models' serializers"""
     if not serializer:
