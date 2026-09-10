@@ -1,0 +1,32 @@
+{% load i18n %}
+{% load utilities %}
+{% load static %}
+
+<div>
+    <h2 class="is-size-3 p-4">{% trans 'Authors with merge candidates' %}</h2>
+    {% if authors %}
+    <table class="table is-fullwidth">
+        <thead>
+            <tr class="has-text-centered">
+                <td>{% trans 'Name' %}</td>
+                <td>{% trans 'Merge Candidates' %}</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for author in authors %}
+            <tr class="has-text-centered">
+                <td><a href="{{author.remote_id}}">{{author.name}}</a></td>
+                <td>{{author.merge_candidates.count}}</td>
+                <td><a class="button is-small is-link" href="{% url 'settings-manual-merge' 'author' author.id%}?source=admin">{% trans 'Merge' %}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include 'snippets/pagination.html' with page=authors path=request.path %}
+    {% else %}
+    <div class="p-4">
+        <p>{% trans 'There are no authors to merge.' %}</p>
+    </div>
+    {% endif %}
+</div>

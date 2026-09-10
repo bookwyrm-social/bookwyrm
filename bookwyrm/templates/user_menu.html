@@ -64,6 +64,13 @@
             </li>
             {% endif %}
 
+            {% if perms.bookwyrm.manage_data and not perms.bookwyrm.moderate_user %}
+            <li role="menuitem">
+                <a href="{% url 'settings-merge-data' %}" class="navbar-item">
+                    {% trans 'Admin' %}
+                </a>
+            </li>
+            {% endif %}
             <li class="navbar-divider" role="presentation" aria-hidden="true">&nbsp;</li>
 
             <li role="menuitem">
