@@ -4,14 +4,15 @@ from itertools import chain
 from functools import reduce
 import re
 import operator
-from typing import Any, Dict, Optional, Iterable
+from typing import Any, Optional, Iterable
 from typing_extensions import Self
+
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex, BloomIndex, Index
 from django.core.cache import cache
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import models, transaction
-from django.db.models import Prefetch, ManyToManyField, Q
+from django.db.models import Prefetch, ManyToManyField, Q, QuerySet
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
@@ -39,6 +40,9 @@ from .activitypub_mixin import (
 )
 from .base_model import BookWyrmModel
 from . import fields
+from .readthrough import ReadThrough
+from .user import User
+from .. import models as bookwyrm_models
 
 
 class BookDataModel(ObjectMixin, BookWyrmModel):
@@ -90,32 +94,32 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     )
 
     @property
-    def openlibrary_link(self):
+    def openlibrary_link(self) -> str:
         """generate the url from the openlibrary id"""
         return f"https://openlibrary.org/books/{self.openlibrary_key}"
 
     @property
-    def inventaire_link(self):
+    def inventaire_link(self) -> str:
         """generate the url from the inventaire id"""
         return f"https://inventaire.io/entity/{self.inventaire_id}"
 
     @property
-    def isfdb_link(self):
+    def isfdb_link(self) -> str:
         """generate the url from the isfdb id"""
         return f"https://www.isfdb.org/cgi-bin/title.cgi?{self.isfdb}"
 
     @property
-    def finna_link(self):
+    def finna_link(self) -> str:
         """generate the url from the finna key"""
         return f"http://finna.fi/Record/{self.finna_key}"
 
     @property
-    def wikidata_link(self):
+    def wikidata_link(self) -> str:
         """generate the url from the isfdb id"""
         return f"https://www.wikidata.org/wiki/{self.wikidata}"
 
     @property
-    def libris_link(self):
+    def libris_link(self) -> str:
         """generate the url from the libris key"""
         return f"https://libris.kb.se/bib/{self.libris_key}"
 
@@ -138,11 +142,11 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
 
         super().save(*args, update_fields=update_fields, **kwargs)
 
-    def broadcast(self, activity, sender, software="bookwyrm", **kwargs):
+    def broadcast(self, activity, sender, software: str = "bookwyrm", **kwargs) -> None:
         """only send book data updates to other bookwyrm instances"""
         super().broadcast(activity, sender, software=software, **kwargs)
 
-    def merge_into(self, canonical: Self, dry_run=False) -> Dict[str, Any]:
+    def merge_into(self, canonical: Self, dry_run: bool = False) -> dict[str, Any]:
         """merge this entity into another entity"""
         if canonical.id == self.id:
             raise ValueError(f"Cannot merge {self} into itself")
@@ -158,7 +162,8 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
 
         # move related models to canonical
         related_models = [
-            (r.remote_field.name, r.related_model) for r in self._meta.related_objects
+            (related_object.remote_field.name, related_object.related_model)
+            for related_object in self._meta.related_objects
         ]
         for related_field, related_model in related_models:
             # Skip the ManyToMany fields that aren’t auto-created. These
@@ -184,7 +189,7 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         self.delete()
         return absorbed_fields
 
-    def absorb_data_from(self, other: Self, dry_run=False) -> Dict[str, Any]:
+    def absorb_data_from(self, other: Self, dry_run: bool = False) -> dict[str, Any]:
         """fill empty fields with values from another entity"""
         absorbed_fields = {}
         for data_field in self._meta.get_fields():
@@ -327,17 +332,17 @@ class Book(BookDataModel):
         )
 
     @property
-    def author_text(self):
+    def author_text(self) -> str:
         """format a list of authors"""
         return ", ".join(a.name for a in self.authors.all())
 
     @property
-    def latest_readthrough(self):
+    def latest_readthrough(self) -> ReadThrough:
         """most recent readthrough activity"""
         return self.readthrough_set.order_by("-updated_date").first()
 
     @property
-    def edition_info(self):
+    def edition_info(self) -> str:
         """properties of this edition, as a string"""
         items = [
             self.physical_format if hasattr(self, "physical_format") else None,
@@ -354,7 +359,7 @@ class Book(BookDataModel):
         return ", ".join(i for i in items if i)
 
     @property
-    def alt_text(self):
+    def alt_text(self) -> str:
         """image alt test"""
         author = f"{name}: " if (name := self.author_text) else ""
         edition = f" ({info})" if (info := self.edition_info) else ""
@@ -367,11 +372,11 @@ class Book(BookDataModel):
 
         super().save(*args, **kwargs)
 
-    def get_remote_id(self):
+    def get_remote_id(self) -> str:
         """editions and works both use "book" instead of model_name"""
         return f"{BASE_URL}/book/{self.id}"
 
-    def guess_sort_title(self, user=None):
+    def guess_sort_title(self, user: User = None) -> str:
         """Get a best-guess sort title for the current book"""
 
         if self.languages not in ([], None):
@@ -402,14 +407,14 @@ class Book(BookDataModel):
 
         return re.sub(f"^{' |^'.join(articles)} ", "", str(self.title).lower())
 
-    def get_series(self):
+    def get_series(self) -> list["Series"]:
         """an ordered collection of series"""
         series = set()
         for sb in self.seriesbooks.order_by("-created_date").all():
             series.add(sb.series)
         return list(series)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<{} key={!r} title={!r}>".format(
             self.__class__,
             self.openlibrary_key,
@@ -498,15 +503,21 @@ class Work(OrderedCollectionPageMixin, Book):
             edition.save()
 
     @property
-    def default_edition(self):
+    def default_edition(self) -> "Edition":
         """in case the default edition is not set"""
         return self.editions.order_by("-edition_rank").first()
 
-    def author_edition(self, author):
+    def author_edition(self, author: "bookwyrm_models.author.Author") -> "Edition":
         """in case the default edition doesn't have the required author"""
         return self.editions.filter(authors=author).order_by("-edition_rank").first()
 
-    def to_edition_list(self, **kwargs):
+    def to_edition_list(
+        self, **kwargs
+    ) -> (
+        activitypub.Work
+        | activitypub.OrderedCollectionPage
+        | activitypub.OrderedCollection
+    ):
         """an ordered collection of editions"""
         return self.to_ordered_collection(
             self.editions.order_by("-edition_rank").all(),
@@ -528,7 +539,7 @@ class Work(OrderedCollectionPageMixin, Book):
 
 
 # https://schema.org/BookFormatType
-FormatChoices = [
+FORMAT_CHOICES = [
     ("AudiobookFormat", _("Audiobook")),
     ("EBook", _("eBook")),
     ("GraphicNovel", _("Graphic novel")),
@@ -644,7 +655,7 @@ class Edition(Book):
     )
     pages = fields.IntegerField(blank=True, null=True)
     physical_format = fields.CharField(
-        max_length=255, choices=FormatChoices, null=True, blank=True
+        max_length=255, choices=FORMAT_CHOICES, null=True, blank=True
     )
     physical_format_detail = fields.CharField(max_length=255, blank=True, null=True)
     publishers = fields.ArrayField(
@@ -689,7 +700,7 @@ class Edition(Book):
         ]
 
     @classmethod
-    def find_existing(cls, data):
+    def find_existing(cls, data: dict) -> "Edition":
         """compare data to fields that can be used for deduplication.
         This always includes remote_id, but can also be unique identifiers
         like an isbn for an edition"""
@@ -760,11 +771,11 @@ class Edition(Book):
         return match.first()
 
     @property
-    def hyphenated_isbn13(self):
+    def hyphenated_isbn13(self) -> str:
         """generate the hyphenated version of the ISBN-13"""
         return hyphenator.hyphenate(self.isbn_13)
 
-    def get_rank(self):
+    def get_rank(self) -> int:
         """calculate how complete the data is on this edition"""
         rank = 0
         # big ups for having a cover
@@ -787,7 +798,7 @@ class Edition(Book):
         # max rank is 9
         return rank
 
-    def clean(self):
+    def clean(self) -> None:
         """Don't try to add a series the book is already part of"""
         if self.pk and self.series:
             if self.parent_work.seriesbooks.filter(
@@ -840,7 +851,7 @@ class Edition(Book):
             )
 
     @transaction.atomic
-    def repair(self):
+    def repair(self) -> None:
         """If an edition is in a bad state (missing a work), let's fix that"""
         # made sure it actually NEEDS reapir
         if self.parent_work:
@@ -853,7 +864,7 @@ class Edition(Book):
         self.save(update_fields=["parent_work"], broadcast=False)
 
     @classmethod
-    def viewer_aware_objects(cls, viewer):
+    def viewer_aware_objects(cls, viewer: User) -> QuerySet["Edition"]:
         """filter blocked books and annotate a book query with metadata related to the user"""
         queryset = cls.objects
 
@@ -878,7 +889,7 @@ class Edition(Book):
         )
         return queryset
 
-    def get_series(self):
+    def get_series(self) -> list["Series"]:
         """an ordered collection of series"""
 
         series = set(super().get_series())
@@ -887,7 +898,7 @@ class Edition(Book):
         return list(series)
 
 
-def isbn_10_to_13(isbn_10):
+def isbn_10_to_13(isbn_10: str) -> str:
     """convert an isbn 10 into an isbn 13"""
     isbn_10 = re.sub(r"[^0-9X]", "", isbn_10)
     # drop the last character of the isbn 10 number (the original checkdigit)
@@ -909,7 +920,7 @@ def isbn_10_to_13(isbn_10):
     return converted + str(checkdigit)
 
 
-def isbn_13_to_10(isbn_13):
+def isbn_13_to_10(isbn_13: str) -> str:
     """convert isbn 13 to 10, if possible"""
     if isbn_13[:3] not in ["978"]:
         return None
@@ -933,13 +944,13 @@ def isbn_13_to_10(isbn_13):
     return converted + str(checkdigit)
 
 
-def normalize_isbn(isbn):
+def normalize_isbn(isbn: str) -> str:
     """Remove unexpected characters from ISBN 10 or 13"""
     return re.sub(r"[^0-9X]", "", isbn)
 
 
 @receiver(models.signals.post_save, sender=Edition)
-def preview_image(instance, *args, **kwargs):
+def preview_image(instance: Edition, *args, **kwargs):
     """create preview image on book create"""
     if not ENABLE_PREVIEW_IMAGES:
         return
@@ -966,24 +977,24 @@ class Series(OrderedCollectionMixin, BookDataModel):
 
     activity_serializer = activitypub.Series
 
-    def get_remote_id(self):
+    def get_remote_id(self) -> str:
         """series need a remote id"""
         return f"{BASE_URL}/series/{self.id}"
 
     @property
-    def collection_queryset(self):
+    def collection_queryset(self) -> QuerySet[Book]:
         """list of books for this series, overrides OrderedCollectionMixin"""
         seriesbooks = self.seriesbooks.all().values("book__pk")
         works = Work.objects.filter(id__in=seriesbooks)
         books = Edition.objects.filter(parent_work__in=works).order_by("-updated_date")
         return books
 
-    def raise_not_editable(self, viewer):
+    def raise_not_editable(self, viewer: User) -> None:
         if not viewer.has_perm("bookwyrm.edit_book"):
             raise PermissionDenied()
 
     @property
-    def isfdb_link(self):
+    def isfdb_link(self) -> str:
         """generate the url from the isfdb id"""
         return f"https://www.isfdb.org/cgi-bin/pe.cgi?{self.isfdb}"
 
@@ -1009,7 +1020,7 @@ class SeriesBook(CollectionItemMixin, BookWyrmModel):
         ordering = ["series_number"]
         unique_together = [("book", "series")]
 
-    def get_remote_id(self):
+    def get_remote_id(self) -> str:
         """need a remote id to provide the URI for series"""
         return f"{BASE_URL}/seriesbook/{self.id}"
 

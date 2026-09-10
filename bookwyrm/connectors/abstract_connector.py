@@ -100,10 +100,10 @@ class AbstractMinimalConnector(ABC):
         try:
             async with (
                 session.get(url, headers=headers, params=params) as response,
-                redis.from_url(REDIS_ACTIVITY_URL) as r,  # type: ignore[no-untyped-call]
+                redis.from_url(REDIS_ACTIVITY_URL) as redis_instance,  # type: ignore[no-untyped-call]
             ):
                 if not response.ok:
-                    if await r.set(
+                    if await redis_instance.set(
                         error_ratelimit_key, "1", nx=True, ex=CONNECTOR_STATUS_RATE
                     ):
                         update_connector_status.delay(
@@ -116,7 +116,7 @@ class AbstractMinimalConnector(ABC):
                 try:
                     raw_data = await response.json()
                 except aiohttp.client_exceptions.ContentTypeError as err:
-                    if await r.set(
+                    if await redis_instance.set(
                         error_ratelimit_key, "1", nx=True, ex=CONNECTOR_STATUS_RATE
                     ):
                         update_connector_status.delay(
@@ -126,7 +126,7 @@ class AbstractMinimalConnector(ABC):
 
                     return None
 
-                if await r.set(
+                if await redis_instance.set(
                     success_ratelimit_key, "1", nx=True, ex=CONNECTOR_STATUS_RATE
                 ):
                     update_connector_status.delay(self.connector.id)
@@ -139,8 +139,8 @@ class AbstractMinimalConnector(ABC):
         except asyncio.TimeoutError:
             async with redis.from_url(  # type: ignore[no-untyped-call]
                 REDIS_ACTIVITY_URL
-            ) as r:
-                if await r.set(
+            ) as redis_instance:
+                if await redis_instance.set(
                     error_ratelimit_key, "1", nx=True, ex=CONNECTOR_STATUS_RATE
                 ):
                     update_connector_status.delay(
@@ -150,8 +150,8 @@ class AbstractMinimalConnector(ABC):
         except aiohttp.ClientError as err:
             async with redis.from_url(  # type: ignore[no-untyped-call]
                 REDIS_ACTIVITY_URL
-            ) as r:
-                if await r.set(
+            ) as redis_instance:
+                if await redis_instance.set(
                     error_ratelimit_key, "1", nx=True, ex=CONNECTOR_STATUS_RATE
                 ):
                     update_connector_status.delay(
@@ -485,9 +485,7 @@ def get_data(
     return data
 
 
-def get_image(
-    url: str, timeout: int = 10
-) -> Union[tuple[ContentFile[bytes], str], tuple[None, None]]:
+def get_image(url: str, timeout: int = 10) -> tuple[Any, str] | tuple[None, None]:
     """wrapper for requesting an image"""
     raise_not_valid_url(url)
     try:

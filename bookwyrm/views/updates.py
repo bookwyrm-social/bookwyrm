@@ -1,14 +1,14 @@
 """endpoints for getting updates about activity"""
 
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, JsonResponse
+from django.http import Http404, JsonResponse, HttpRequest
 from django.utils.translation import ngettext
 
 from bookwyrm import activitystreams
 
 
 @login_required
-def get_notification_count(request):
+def get_notification_count(request: HttpRequest):
     """any notifications waiting?"""
     return JsonResponse(
         {
@@ -19,15 +19,17 @@ def get_notification_count(request):
 
 
 @login_required
-def get_unread_status_string(request, stream="home"):
+def get_unread_status_string(request: HttpRequest, stream: str = "home"):
     """any unread statuses for this feed?"""
-    stream = activitystreams.streams.get(stream)
-    if not stream:
+    activity_stream = activitystreams.streams.get(stream)
+    if not activity_stream:
         raise Http404
 
-    counts_by_type = stream.get_unread_count_by_status_type(request.user).items()
+    counts_by_type = activity_stream.get_unread_count_by_status_type(
+        request.user
+    ).items()
     if counts_by_type == {}:
-        count = stream.get_unread_count(request.user)
+        count = activity_stream.get_unread_count(request.user)
     else:
         # only consider the types that are visible in the feed
         allowed_status_types = request.user.feed_status_types

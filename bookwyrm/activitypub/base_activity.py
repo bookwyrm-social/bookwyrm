@@ -8,7 +8,7 @@ from json import JSONEncoder
 import logging
 import random
 import time
-from typing import Optional, Union, TypeVar, overload, Any
+from typing import Generator, Optional, TypeVar, overload, Any
 
 import requests
 
@@ -16,10 +16,12 @@ from django.apps import apps
 from django.db import IntegrityError, transaction
 from django.utils.http import http_date
 
+from redis.commands.core import ResponseT
+
 from bookwyrm import models
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.models import base_model
-from bookwyrm.redis_store import r
+from bookwyrm.redis_store import redis_instance
 from bookwyrm.signatures import make_signature
 from bookwyrm.settings import (
     DOMAIN,
@@ -34,6 +36,7 @@ logger = logging.getLogger(__name__)
 
 
 TBookWyrmModel = TypeVar("TBookWyrmModel", bound=base_model.BookWyrmModel)
+TActivityObject = TypeVar("ActivityObject", bound="ActivityObject")
 
 
 class ActivitySerializerError(ValueError):
@@ -48,7 +51,7 @@ class ActivityEncoder(JSONEncoder):
 
 
 @contextmanager
-def item_lock(object_id):
+def item_lock(object_id: str) -> Generator[ResponseT, None, None]:
     """Set a mutex lock on an incoming item to prevent race conditions causing duplicates"""
 
     # hash the remote id so the key is a reasonable length
@@ -64,7 +67,7 @@ def item_lock(object_id):
         # 1: arbitrary value for the key
         # nx: only set if the key doesn't already exist
         # ex: expire after this many seconds
-        if lock := r.set(lock_id, "1", nx=True, ex=QUERY_TIMEOUT * 60):
+        if lock := redis_instance.set(lock_id, "1", nx=True, ex=QUERY_TIMEOUT * 60):
             break
 
         # if we don't have the lock, try again in a few seconds
@@ -83,7 +86,7 @@ def item_lock(object_id):
         # only release lock if you have it and it isn't expired
         # otherwise we might clear a lock owned by another process
         if time.monotonic() < expire_seconds and lock:
-            r.delete(lock_id)
+            redis_instance.delete(lock_id)
 
 
 @dataclass
@@ -96,7 +99,11 @@ class Signature:
     type: str = "RsaSignature2017"
 
 
-def naive_parse(activity_objects, activity_json, serializer=None):
+def naive_parse(
+    activity_objects: dict,
+    activity_json: dict,
+    serializer: type[TActivityObject] | None = None,
+) -> TActivityObject:
     """this navigates circular import issues by looking up models' serializers"""
     if not serializer:
         if activity_json.get("publicKeyPem"):
@@ -125,7 +132,7 @@ class ActivityObject:
     def __init__(
         self,
         activity_objects: Optional[
-            dict[str, Union[str, list[str], ActivityObject, base_model.BookWyrmModel]]
+            dict[str, str | list[str] | ActivityObject | base_model.BookWyrmModel]
         ] = None,
         **kwargs: Any,
     ):
@@ -198,7 +205,7 @@ class ActivityObject:
             return None
 
         # check for an existing instance
-        instance = instance or model.find_existing(self.serialize())
+        instance: TBookWyrmModel = instance or model.find_existing(self.serialize())
 
         if not instance and not allow_create:
             # so that we don't create when we want to delete or update
@@ -294,7 +301,7 @@ class ActivityObject:
                     )
             return instance
 
-    def serialize(self, **kwargs):
+    def serialize(self, **kwargs) -> dict[str, Any]:
         """convert to dictionary with context attr"""
         omit = kwargs.get("omit", ())
         data = self.__dict__.copy()
@@ -322,8 +329,12 @@ class ActivityObject:
 @app.task(queue=MISC)
 @transaction.atomic
 def set_related_field(
-    model_name, origin_model_name, related_field_name, related_remote_id, data
-):
+    model_name: str,
+    origin_model_name: str,
+    related_field_name: str,
+    related_remote_id: str,
+    data,
+) -> None:
     """load reverse related fields (editions, attachments) without blocking"""
     model = apps.get_model(f"bookwyrm.{model_name}", require_ready=True)
     origin_model = apps.get_model(f"bookwyrm.{origin_model_name}", require_ready=True)
@@ -356,7 +367,7 @@ def set_related_field(
         item.save()
 
 
-def get_model_from_type(activity_type):
+def get_model_from_type(activity_type: str) -> type[TBookWyrmModel]:
     """given the activity, what type of model"""
     activity_models = apps.get_models()
     model = [
@@ -397,7 +408,7 @@ def resolve_remote_id(
 
 def resolve_remote_id(
     remote_id: str,
-    model: Optional[Union[str, type[base_model.BookWyrmModel]]] = None,
+    model: Optional[str | type[base_model.BookWyrmModel]] = None,
     refresh: bool = False,
     save: bool = True,
     get_activity: bool = False,
@@ -462,7 +473,7 @@ def resolve_remote_id(
     return item.to_model(model=model, instance=result, save=save)
 
 
-def get_representative():
+def get_representative() -> models.User:
     """Get or create an actor representing the instance
     to sign outgoing HTTP GET requests"""
     return models.User.objects.get_or_create(
@@ -475,7 +486,7 @@ def get_representative():
     )[0]
 
 
-def get_activitypub_data(url):
+def get_activitypub_data(url: str | bytes) -> Any:
     """wrapper for request.get"""
     now = http_date()
     sender = get_representative()
@@ -483,7 +494,7 @@ def get_activitypub_data(url):
         # this shouldn't happen. it would be bad if it happened.
         raise ValueError("No private key found for sender")
     try:
-        resp = requests.get(
+        response = requests.get(
             url,
             headers={
                 "Accept": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
@@ -495,10 +506,10 @@ def get_activitypub_data(url):
         )
     except requests.RequestException:
         raise ConnectorException()
-    if not resp.ok:
-        resp.raise_for_status()
+    if not response.ok:
+        response.raise_for_status()
     try:
-        data = resp.json()
+        data = response.json()
     except ValueError:
         raise ConnectorException()
 

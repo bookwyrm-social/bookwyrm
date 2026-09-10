@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 class EditStatus(View):
     """the view for *posting*"""
 
-    def get(self, request: HttpRequest, status_id: str):
+    def get(self, request: HttpRequest, status_id: int):
         """load the edit panel"""
         status = get_object_or_404(
             models.Status.objects.select_subclasses(), user=request.user, id=status_id
@@ -54,7 +54,7 @@ class EditStatus(View):
 class CreateStatus(View):
     """the view for *posting*"""
 
-    def get(self, request: HttpRequest, status_type: str):
+    def get(self, request: HttpRequest, status_type: int):
         """compose view (...not used?)"""
         book = get_mergeable_object_or_404(models.Edition, id=request.GET.get("book"))
         data = {"book": book}
@@ -62,7 +62,7 @@ class CreateStatus(View):
 
     @transaction.atomic
     def post(
-        self, request: HttpRequest, status_type: str, existing_status_id: str = None
+        self, request: HttpRequest, status_type: str, existing_status_id: int = None
     ):
         """create status of whatever type"""
         created = not existing_status_id
@@ -206,7 +206,7 @@ def format_hashtags(content: str, hashtags: dict[str, models.Hashtag]) -> str:
 class DeleteStatus(View):
     """tombstone that bad boy"""
 
-    def post(self, request: HttpRequest, status_id: str, report_id=None):
+    def post(self, request: HttpRequest, status_id: int, report_id=None):
         """delete and tombstone a status"""
         status = get_object_or_404(models.Status, id=status_id)
 
@@ -224,7 +224,7 @@ class DeleteStatus(View):
 
 @login_required
 @require_POST
-def update_progress(request: HttpRequest, book_id: str):
+def update_progress(request: HttpRequest, book_id: int):
     """Either it's just a progress update, or it's a comment with a progress update"""
     if request.POST.get("post-status"):
         return CreateStatus.as_view()(request, "comment")

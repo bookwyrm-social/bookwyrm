@@ -4,7 +4,7 @@ import datetime
 from importlib import import_module
 import re
 import zoneinfo
-from typing import Optional, Iterable
+from typing import Any, Optional, Iterable
 from urllib.parse import urlparse
 from uuid import uuid4
 
@@ -30,7 +30,7 @@ from bookwyrm.tasks import app, MISC
 from bookwyrm.utils import regex
 from bookwyrm.utils.db import add_update_fields
 from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
-from .base_model import BookWyrmModel, DeactivationReason, new_access_code
+from .base_model import BookWyrmModel, DEACTIVATION_REASONS, new_access_code
 from .federated_server import FederatedServer
 from . import fields
 
@@ -187,7 +187,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         max_length=255,
     )
     deactivation_reason = models.CharField(
-        max_length=255, choices=DeactivationReason, null=True, blank=True
+        max_length=255, choices=DEACTIVATION_REASONS, null=True, blank=True
     )
     deactivation_date = models.DateTimeField(null=True, blank=True)
     allow_reactivation = models.BooleanField(default=False)
@@ -337,7 +337,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             **kwargs,
         ).serialize()
 
-    def to_activity(self, **kwargs):
+    def to_activity(self, **kwargs) -> dict[str, Any]:
         """override default AP serializer to add context object
         idk if this is the best way to go about this"""
         if not self.is_active:
