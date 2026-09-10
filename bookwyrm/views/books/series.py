@@ -17,6 +17,7 @@ from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import (
     is_api_request,
     get_mergeable_object_or_404,
+    maybe_redirect_local_path,
 )
 from bookwyrm.views.mixins import MergeableViewMixin
 
@@ -34,7 +35,12 @@ class Series(MergeableViewMixin, View):
         if is_api_request(request):
             return ActivitypubResponse(series.to_activity(**request.GET))
 
-        blocked = request.user.blocked_books.all() if request.user else []
+        if redirect_local_path := maybe_redirect_local_path(request, series):
+            return redirect_local_path
+
+        blocked = (
+            request.user.blocked_books.all() if not request.user.is_anonymous else []
+        )
         items = series.seriesbooks.exclude(book__in=blocked).prefetch_related(
             "book__work", "book__work__editions__authors"
         )

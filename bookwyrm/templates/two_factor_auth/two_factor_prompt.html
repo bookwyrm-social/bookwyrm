@@ -34,7 +34,7 @@
                     <p class="block">{% trans "You can secure your account by setting up two factor authentication in your user preferences. This will require a one-time code from your phone in addition to your password each time you log in." %}</p>
                     <div class="block has-text-centered">
                         <a class="button" href="/">{% trans "No thanks" %}</a>
-                        <a class="button is-primary" href="/preferences/2fa">{% trans "Set up 2FA" %}</a>
+                        <a class="button is-primary" href="{% url 'prefs-security' %}">{% trans "Set up 2FA" %}</a>
                     </div>
                 </div>
             </div>

@@ -2,10 +2,12 @@
 
 from datetime import date
 from uuid import uuid4
+from typing import Any
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Sum, Min, Case, When
-from django.http import Http404
+from django.db.models.query import QuerySet
+from django.http import Http404, HttpRequest
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views import View
@@ -24,12 +26,12 @@ LAST_DAY = 15
 class AnnualSummary(View):
     """display a summary of the year for the current user"""
 
-    def get(self, request, username, year):
+    def get(self, request: HttpRequest, username: str, year: str):
         """get response"""
 
         user = get_user_from_username(request.user, username)
 
-        year_key = None
+        year_key: str = None
         if user.summary_keys and year in user.summary_keys:
             year_key = user.summary_keys[year]
 
@@ -41,7 +43,7 @@ class AnnualSummary(View):
         )
 
         # get data
-        read_book_ids_in_year = (
+        read_book_ids_in_year: QuerySet[models.ReadThrough, Any] = (
             user.readthrough_set.filter(
                 finish_date__year__gte=year,
                 finish_date__year__lt=int(year) + 1,
@@ -113,7 +115,7 @@ class AnnualSummary(View):
 
 
 @login_required
-def personal_annual_summary(request, year):
+def personal_annual_summary(request: HttpRequest, year: str):
     """redirect simple URL to URL with username"""
 
     return redirect("annual-summary", request.user.localname, year)
@@ -121,7 +123,7 @@ def personal_annual_summary(request, year):
 
 @login_required
 @require_POST
-def summary_add_key(request):
+def summary_add_key(request: HttpRequest):
     """Create a shareable token for this annual review year"""
 
     year = request.POST["year"]
@@ -145,7 +147,7 @@ def summary_add_key(request):
 
 @login_required
 @require_POST
-def summary_revoke_key(request):
+def summary_revoke_key(request: HttpRequest):
     """No longer sharing the annual review"""
 
     year = request.POST["year"]
@@ -174,7 +176,9 @@ def get_annual_summary_year():
     return None
 
 
-def privacy_verification(request, user, year, year_key):
+def privacy_verification(
+    request: HttpRequest, user: models.User, year: str, year_key: str
+) -> None:
     """raises a 404 error if the user should not access the page"""
     if user != request.user:
         request_key = None
@@ -188,7 +192,7 @@ def privacy_verification(request, user, year, year_key):
         raise Http404(f"The summary for {year} is unavailable")
 
 
-def is_year_available(user, year):
+def is_year_available(user: models.User, year: str) -> bool:
     """return boolean"""
 
     earliest_year = user.readthrough_set.filter(finish_date__isnull=False).aggregate(
@@ -207,7 +211,9 @@ def is_year_available(user, year):
     return False
 
 
-def get_books_from_shelfbooks(books_ids, viewer):
+def get_books_from_shelfbooks(
+    books_ids: QuerySet[models.ReadThrough, Any], viewer: models.User
+):
     """return an ordered QuerySet of books from a list"""
 
     ordered = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(books_ids)])
@@ -219,7 +225,7 @@ def get_books_from_shelfbooks(books_ids, viewer):
     return books
 
 
-def get_goal_status(user, year):
+def get_goal_status(user: models.User, year: str):
     """return a dict with the year's goal status"""
 
     try:

@@ -2,22 +2,25 @@
 
 import re
 from datetime import datetime, timedelta
+from typing import Any
 import dateutil.parser
 import dateutil.tz
 from dateutil.parser import ParserError
 from urllib.parse import urlsplit, urlunsplit
 
+
 import mistune
 
 from requests import HTTPError
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.conf import settings as django_settings
 from django.shortcuts import redirect, _get_queryset
-from django.http import Http404
+from django.http import Http404, HttpRequest, HttpResponse
 from django.utils import translation
 
 from bookwyrm import activitypub, models, settings
 from bookwyrm.connectors import ConnectorException, get_data
+from bookwyrm.models.base_model import BookWyrmModel
 from bookwyrm.status import create_generated_note
 from bookwyrm.utils import regex, sanitizer
 from bookwyrm.utils.validate import validate_url_domain
@@ -29,7 +32,7 @@ class WebFingerError(Exception):
     pass
 
 
-def get_user_from_username(viewer, username):
+def get_user_from_username(viewer: models.User, username: str) -> models.User:
     """helper function to resolve a localname or a username to a user"""
     if viewer.is_authenticated and viewer.localname == username:
         # that's yourself, fool
@@ -48,7 +51,7 @@ def get_user_from_username(viewer, username):
         raise Http404()
 
 
-def is_api_request(request):
+def is_api_request(request: HttpRequest):
     """check whether a request is asking for html or data"""
     is_api = "json" in request.headers.get("Accept", "") or re.match(
         r"\S{1,100}\.json/?$", request.path
@@ -60,7 +63,7 @@ def is_api_request(request):
     return is_api
 
 
-def is_bookwyrm_request(request):
+def is_bookwyrm_request(request: HttpRequest):
     """check if the request is coming from another bookwyrm instance"""
     user_agent = request.headers.get("User-Agent")
     if user_agent is None or re.search(regex.BOOKWYRM_USER_AGENT, user_agent) is None:
@@ -68,7 +71,7 @@ def is_bookwyrm_request(request):
     return True
 
 
-def handle_remote_webfinger(query, unknown_only=False, refresh=False):
+def handle_remote_webfinger(query: str, unknown_only=False, refresh=False):
     """webfingerin' other servers"""
     # SHOULD we do a remote webfinger? Is it allowed?
     models.SiteSettings.raise_federation_disabled()
@@ -114,7 +117,7 @@ def handle_remote_webfinger(query, unknown_only=False, refresh=False):
     return user
 
 
-def subscribe_remote_webfinger(query):
+def subscribe_remote_webfinger(query: str):
     """get subscribe template from other servers"""
     # SHOULD we do a remote webfinger? Is it allowed?
     models.SiteSettings.raise_federation_disabled()
@@ -146,7 +149,7 @@ def subscribe_remote_webfinger(query):
     return template
 
 
-def get_edition(book_id):
+def get_edition(book_id: str) -> models.Edition:
     """look up a book in the db and return an edition"""
     book = models.Book.objects.select_subclasses().get(id=book_id)
     if isinstance(book, models.Work):
@@ -154,7 +157,9 @@ def get_edition(book_id):
     return book
 
 
-def handle_reading_status(user, shelf, book, privacy):
+def handle_reading_status(
+    user: models.User, shelf: models.Shelf, book: models.Edition, privacy: str
+):
     """post about a user reading a book"""
     # tell the world about this cool thing that happened
     try:
@@ -183,7 +188,7 @@ def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:
         return None
 
 
-def set_language(user, response):
+def set_language(user: models.User, response: HttpResponse) -> HttpResponse:
     """Updates a user's language"""
     if user.preferred_language:
         translation.activate(user.preferred_language)
@@ -195,7 +200,9 @@ def set_language(user, response):
     return response
 
 
-def filter_stream_by_status_type(activities, allowed_types=None):
+def filter_stream_by_status_type(
+    activities: QuerySet[models.Status, Any], allowed_types: list[str] = None
+) -> QuerySet[models.Status, Any]:
     """filter out activities based on types"""
     if not allowed_types:
         allowed_types = []
@@ -221,7 +228,7 @@ def filter_stream_by_status_type(activities, allowed_types=None):
     return activities
 
 
-def maybe_redirect_local_path(request, model):
+def maybe_redirect_local_path(request: HttpRequest, model: BookWyrmModel):
     """
     if the request had an invalid path, return a permanent redirect response to the
     correct one, including a slug if any.
@@ -239,7 +246,7 @@ def maybe_redirect_local_path(request, model):
     return redirect(new_path, permanent=True)
 
 
-def redirect_to_referer(request, *args, strip_params=False, **kwargs):
+def redirect_to_referer(request: HttpRequest, *args, strip_params=False, **kwargs):
     """Redirect to the referrer, if it's in our domain, with get params"""
     # make sure the refer is part of this instance
     validated = validate_url_domain(request.headers.get("referer", ""))
@@ -268,7 +275,7 @@ def get_mergeable_object_or_404(klass, id):
         raise Http404(f"No {queryset.model} with ID {id} exists")
 
 
-def convert_to_markdown(content):
+def convert_to_markdown(content: str) -> str:
     """convert given content to markdown"""
     content = mistune.html(content).rstrip()
     # sanitize resulting html

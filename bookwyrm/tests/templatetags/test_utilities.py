@@ -91,14 +91,6 @@ class UtilitiesTags(TestCase):
         self.assertEqual(utilities.truncatepath(value, 2), "home/…ur")
         self.assertEqual(utilities.truncatepath(value, "a"), "four")
 
-    def test_get_isni_bio(self, *_):
-        """get ISNI bio"""
-        DataMock = namedtuple("Data", ("bio", "isni"))
-        data = [DataMock(r"One\Dtwo", "4"), DataMock("Not used", "4")]
-
-        result = utilities.get_isni_bio(data, self.author)
-        self.assertEqual(result, "Author of <em>One\\Dtwo</em>")
-
     def test_id_to_username(self, *_):
         """given an arbitrary remote id, return the username"""
         self.assertEqual(

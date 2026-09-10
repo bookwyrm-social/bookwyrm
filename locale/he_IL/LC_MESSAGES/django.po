@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-06 15:05+0000\n"
-"PO-Revision-Date: 2026-07-06 20:03\n"
+"POT-Creation-Date: 2026-09-03 18:33+0000\n"
+"PO-Revision-Date: 2026-09-07 16:36\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Hebrew\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3;\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n==2 ? 1 : 2);\n"
 "X-Crowdin-Project: bookwyrm\n"
 "X-Crowdin-Project-ID: 479239\n"
 "X-Crowdin-Language: he\n"
@@ -50,7 +50,7 @@ msgstr ""
 msgid "A Readwise access token is saved. Leave this blank to keep it."
 msgstr ""
 
-#: bookwyrm/forms/edit_user.py:136 bookwyrm/views/landing/password.py:117
+#: bookwyrm/forms/edit_user.py:136 bookwyrm/views/landing/password.py:116
 msgid "Incorrect password"
 msgstr "סיסמה שגויה"
 
@@ -225,7 +225,7 @@ msgstr ""
 msgid "Book is already in this series"
 msgstr ""
 
-#: bookwyrm/models/bookwyrm_import_job.py:151 bookwyrm/models/report.py:119
+#: bookwyrm/models/bookwyrm_import_job.py:151 bookwyrm/models/report.py:121
 #: bookwyrm/templates/settings/reports/report.html:119
 #: bookwyrm/templates/snippets/create_status.html:26
 msgid "Comment"
@@ -243,7 +243,7 @@ msgid "Quotation"
 msgstr "ציטוט"
 
 #: bookwyrm/models/bookwyrm_import_job.py:181
-#: bookwyrm/templates/snippets/follow_button.html:24
+#: bookwyrm/templates/snippets/follow_button.html:29
 msgid "Follow"
 msgstr "עקוב"
 
@@ -347,11 +347,11 @@ msgstr "עוקבות"
 msgid "Private"
 msgstr "פרטי"
 
-#: bookwyrm/models/housekeeping.py:117
+#: bookwyrm/models/housekeeping.py:122
 msgid "Missing"
 msgstr "חסר"
 
-#: bookwyrm/models/housekeeping.py:118
+#: bookwyrm/models/housekeeping.py:123
 msgid "Wrong Path"
 msgstr "נתיב שגוי"
 
@@ -426,47 +426,47 @@ msgstr ""
 msgid "This is the list of suggestions for <a href='%(url)s'>%(title)s</a>"
 msgstr ""
 
-#: bookwyrm/models/report.py:120
+#: bookwyrm/models/report.py:122
 msgid "Resolved report"
 msgstr "סימן.ה את הדיווח כפתור"
 
-#: bookwyrm/models/report.py:121
+#: bookwyrm/models/report.py:123
 msgid "Re-opened report"
 msgstr "פתח.ה מחדש את הדיווח"
 
-#: bookwyrm/models/report.py:122
+#: bookwyrm/models/report.py:124
 msgid "Messaged reporter"
 msgstr "שלח.ה הודעה למדווח.ת"
 
-#: bookwyrm/models/report.py:123
+#: bookwyrm/models/report.py:125
 msgid "Messaged reported user"
 msgstr "נשלחה הודעה למשתמש המדווח"
 
-#: bookwyrm/models/report.py:124
+#: bookwyrm/models/report.py:126
 msgid "Suspended user"
 msgstr "משתמש מושעה"
 
-#: bookwyrm/models/report.py:125
+#: bookwyrm/models/report.py:127
 msgid "Un-suspended user"
 msgstr "משתמש שהשעייתו בוטלה"
 
-#: bookwyrm/models/report.py:126
+#: bookwyrm/models/report.py:128
 msgid "Changed user permission level"
 msgstr "שונתה רמת הרשאת משתמש"
 
-#: bookwyrm/models/report.py:127
+#: bookwyrm/models/report.py:129
 msgid "Deleted user account"
 msgstr "חשבון משתמש נמחק"
 
-#: bookwyrm/models/report.py:128
+#: bookwyrm/models/report.py:130
 msgid "Blocked domain"
 msgstr "דומיין חסום"
 
-#: bookwyrm/models/report.py:129
+#: bookwyrm/models/report.py:131
 msgid "Approved domain"
 msgstr "דומיין מאושר"
 
-#: bookwyrm/models/report.py:130
+#: bookwyrm/models/report.py:132
 msgid "Deleted item"
 msgstr "פריט שנמחק"
 
@@ -474,36 +474,36 @@ msgstr "פריט שנמחק"
 msgid "Unknown"
 msgstr "לא ידוע"
 
-#: bookwyrm/models/status.py:191
+#: bookwyrm/models/status.py:192
 #, python-format
 msgid "%(display_name)s's status"
 msgstr "הסטטוס של %(display_name)s"
 
-#: bookwyrm/models/status.py:395
+#: bookwyrm/models/status.py:396
 #, python-format
 msgid "%(display_name)s's comment on %(book_title)s"
 msgstr "התגובה של %(display_name)s על %(book_title)s"
 
-#: bookwyrm/models/status.py:446
+#: bookwyrm/models/status.py:447
 #, python-format
 msgid "%(display_name)s's quote from %(book_title)s"
 msgstr "הציטוט של %(display_name)s מתוך %(book_title)s"
 
-#: bookwyrm/models/status.py:486
+#: bookwyrm/models/status.py:487
 #, python-format
 msgid "%(display_name)s's review of %(book_title)s"
 msgstr "הביקורת של %(display_name)s על %(book_title)s"
 
-#: bookwyrm/models/status.py:518
+#: bookwyrm/models/status.py:519
 #, python-format
 msgid "%(display_name)s rated %(book_title)s: %(display_rating).1f star"
 msgid_plural "%(display_name)s rated %(book_title)s: %(display_rating).1f stars"
 msgstr[0] "%(display_name)s דירג.ה את %(book_title)s: %(display_rating).1f כוכב"
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
-#: bookwyrm/models/user.py:40 bookwyrm/templates/book/book.html:359
+#: bookwyrm/models/user.py:40 bookwyrm/templates/book/sections/reviews.html:4
+#: bookwyrm/templates/book/sections/reviews.html:25
 msgid "Reviews"
 msgstr "ביקורות"
 
@@ -541,7 +541,7 @@ msgstr "ציר זמן הספרים"
 #: bookwyrm/templates/import/user_import_status.html:73
 #: bookwyrm/templates/search/layout.html:22
 #: bookwyrm/templates/search/layout.html:44
-#: bookwyrm/templates/user/layout.html:117
+#: bookwyrm/templates/user/layout.html:111
 msgid "Books"
 msgstr "ספרים"
 
@@ -850,8 +850,7 @@ msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total 
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
 msgstr[0] "ב-%(year)s %(display_name)s קרא ספר %(books_total)s אחד<br />ובו %(pages_total)s עמודים!"
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "ב-%(year)s %(display_name)s קרא %(books_total)s book<br />ספרים ובהם %(pages_total)s עמודים!"
+msgstr[2] "ב-%(year)s %(display_name)s קרא %(books_total)s book<br />ספרים ובהם %(pages_total)s עמודים!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
@@ -868,8 +867,7 @@ msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] "(לא נמצא מידע אודות עמודים עבור %(no_page_number)s ספרים)"
-msgstr[3] ""
+msgstr[2] ""
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -878,7 +876,7 @@ msgstr "הקריאה הקצרה ביותר שלהם בשנה הזו…"
 #: bookwyrm/templates/annual_summary/layout.html:157
 #: bookwyrm/templates/annual_summary/layout.html:178
 #: bookwyrm/templates/annual_summary/layout.html:247
-#: bookwyrm/templates/book/book.html:89 bookwyrm/templates/book/series.html:21
+#: bookwyrm/templates/book/series.html:21
 #: bookwyrm/templates/discover/large-book.html:22
 #: bookwyrm/templates/snippets/small-book.html:18
 msgid "by"
@@ -900,8 +898,7 @@ msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> a
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgstr[0] "%(display_name)s הציב-ה יעד לקרוא ספר %(goal)s ב-%(year)s,<br /> והשיג-ה %(goal_percent)s%% מתוך יעד הזה"
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(display_name)s הציב-ה יעד לקרוא %(goal)s ספרים ב-%(year)s,<br /> והשיג-ה %(goal_percent)s%% מתוך יעד הזה"
+msgstr[2] "%(display_name)s הציב-ה יעד לקרוא %(goal)s ספרים ב-%(year)s,<br /> והשיג-ה %(goal_percent)s%% מתוך יעד הזה"
 
 #: bookwyrm/templates/annual_summary/layout.html:211
 msgid "Way to go!"
@@ -913,8 +910,7 @@ msgid "%(display_name)s left %(ratings_total)s rating, <br />their average ratin
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(display_name)s כתב.ה %(ratings_total)s ביקורות, <br />הדירוג הממוצע שלו.ה הוא %(rating_average)s"
+msgstr[2] "%(display_name)s כתב.ה %(ratings_total)s ביקורות, <br />הדירוג הממוצע שלו.ה הוא %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:240
 msgid "Their best rated review"
@@ -978,24 +974,24 @@ msgid "View ISNI record"
 msgstr "צפייה ברשומת ISNI"
 
 #: bookwyrm/templates/author/author.html:120
-#: bookwyrm/templates/book/book.html:199
+#: bookwyrm/templates/book/sections/metadata.html:52
 msgid "View on ISFDB"
 msgstr "לצפייה ב-ISFDB"
 
 #: bookwyrm/templates/author/author.html:125
 #: bookwyrm/templates/author/sync_modal.html:5
-#: bookwyrm/templates/book/book.html:166
+#: bookwyrm/templates/book/sections/metadata.html:17
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
 msgstr "טען.י מידע"
 
 #: bookwyrm/templates/author/author.html:129
-#: bookwyrm/templates/book/book.html:170
+#: bookwyrm/templates/book/sections/metadata.html:21
 msgid "View on OpenLibrary"
 msgstr "צפייה ב-OpenLibrary"
 
 #: bookwyrm/templates/author/author.html:144
-#: bookwyrm/templates/book/book.html:184
+#: bookwyrm/templates/book/sections/metadata.html:36
 msgid "View on Inventaire"
 msgstr "צפייה ב-Inventaire"
 
@@ -1105,10 +1101,10 @@ msgid "ISNI:"
 msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:128
-#: bookwyrm/templates/book/book.html:272
-#: bookwyrm/templates/book/edit/edit_book.html:186
+#: bookwyrm/templates/book/edit/edit_book.html:191
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
+#: bookwyrm/templates/book/sections/description.html:46
 #: bookwyrm/templates/groups/form.html:32
 #: bookwyrm/templates/lists/bookmark_button.html:15
 #: bookwyrm/templates/lists/edit_item_form.html:16
@@ -1130,12 +1126,12 @@ msgstr "שמירה"
 
 #: bookwyrm/templates/author/edit_author.html:129
 #: bookwyrm/templates/author/sync_modal.html:23
-#: bookwyrm/templates/book/book.html:273
 #: bookwyrm/templates/book/cover_add_modal.html:33
-#: bookwyrm/templates/book/edit/edit_book.html:188
-#: bookwyrm/templates/book/edit/edit_book.html:191
+#: bookwyrm/templates/book/edit/edit_book.html:193
+#: bookwyrm/templates/book/edit/edit_book.html:196
 #: bookwyrm/templates/book/file_links/add_link_modal.html:59
 #: bookwyrm/templates/book/file_links/verification_modal.html:26
+#: bookwyrm/templates/book/sections/description.html:47
 #: bookwyrm/templates/book/sync_modal.html:23
 #: bookwyrm/templates/groups/delete_group_modal.html:15
 #: bookwyrm/templates/lists/add_item_modal.html:41
@@ -1160,7 +1156,7 @@ msgid "Loading data will connect to <strong>%(source_name)s</strong> and check f
 msgstr "טעינת מידע תוביל לחיבור ל-<strong>%(source_name)s</strong> ותאתר כל פריט מטא-דאטה שאינו מופיע כאן. מטא-דאטה קיים לא ישוכתב."
 
 #: bookwyrm/templates/author/sync_modal.html:24
-#: bookwyrm/templates/book/edit/edit_book.html:173
+#: bookwyrm/templates/book/edit/edit_book.html:178
 #: bookwyrm/templates/book/edit/edit_series.html:84
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
@@ -1174,204 +1170,77 @@ msgstr "טעינת מידע תוביל לחיבור ל-<strong>%(source_name)s</
 msgid "Confirm"
 msgstr "אישור"
 
-#: bookwyrm/templates/book/book.html:24
+#: bookwyrm/templates/book/book.html:25
 msgid "Unable to connect to remote source."
 msgstr "לא ניתן להתחבר למקור מרוחק."
 
-#: bookwyrm/templates/book/book.html:52
-#, python-format
-msgid "This book might be part of the <em>%(series)s</em> series."
-msgstr ""
-
-#: bookwyrm/templates/book/book.html:56
-msgid "Edit it to confirm."
-msgstr ""
-
-#: bookwyrm/templates/book/book.html:69
-#, python-format
-msgid "Book <span itemprop=\"position\">%(number)s</span> in <em><a href=\"%(path)s\">%(title)s</a></em>"
-msgstr ""
-
-#: bookwyrm/templates/book/book.html:75
-#, python-format
-msgid "Part of <em><a href=\"%(path)s\">%(title)s</a></em>"
-msgstr ""
-
-#: bookwyrm/templates/book/book.html:97 bookwyrm/templates/book/book.html:98
-msgid "Edit Book"
-msgstr "ערוך ספר"
-
-#: bookwyrm/templates/book/book.html:123 bookwyrm/templates/book/book.html:126
-msgid "Click to add cover"
-msgstr "לחץ.י להוספת כריכה"
-
-#: bookwyrm/templates/book/book.html:132
-msgid "Failed to load cover"
-msgstr "טעינת כריכה נכשלה"
-
-#: bookwyrm/templates/book/book.html:143
-msgid "Click to enlarge"
-msgstr "לחץ.י להגדלה"
-
-#: bookwyrm/templates/book/book.html:206
-msgid "View on Finna"
-msgstr ""
-
-#: bookwyrm/templates/book/book.html:221
-msgid "View on Libris"
-msgstr ""
-
-#: bookwyrm/templates/book/book.html:245
-#, python-format
-msgid "(%(review_count)s review)"
-msgid_plural "(%(review_count)s reviews)"
-msgstr[0] "(%(review_count)s ביקורות)"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "(%(review_count)s ביקורות)"
-
-#: bookwyrm/templates/book/book.html:261
-msgid "Add Description"
-msgstr "הוספת תיאור"
-
-#: bookwyrm/templates/book/book.html:268
-#: bookwyrm/templates/book/edit/edit_book_form.html:55
-#: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
-msgid "Description:"
-msgstr "תיאור:"
-
-#: bookwyrm/templates/book/book.html:284
+#: bookwyrm/templates/book/book.html:57
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
 msgstr[0] "מהדורה %(count)s"
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
-#: bookwyrm/templates/book/book.html:298
-msgid "You have shelved this edition in:"
-msgstr "הנחת את המהדורה על מדף:"
-
-#: bookwyrm/templates/book/book.html:313
-#, python-format
-msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
-msgstr "קיימת <a href=\"%(book_path)s\">מהדורה אחרת</a> של הספר במדף <a href=\"%(shelf_path)s\">%(shelf_name)s</a> שלך."
-
-#: bookwyrm/templates/book/book.html:324
-msgid "Your reading activity"
-msgstr "פעילות הקריאה שלך"
-
-#: bookwyrm/templates/book/book.html:330
+#: bookwyrm/templates/book/book.html:80
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
 msgstr "הוספת תאריכי קריאה"
 
-#: bookwyrm/templates/book/book.html:338
-msgid "You don't have any reading activity for this book."
-msgstr "אין פעילות קריאה עבור ספר זה."
-
-#: bookwyrm/templates/book/book.html:364
-msgid "Your reviews"
-msgstr "הביקורות שלך"
-
-#: bookwyrm/templates/book/book.html:370
-msgid "Your comments"
-msgstr "התגובות שלך"
-
-#: bookwyrm/templates/book/book.html:376
-msgid "Your quotes"
-msgstr "הציטוטים שלך"
-
-#: bookwyrm/templates/book/book.html:412
-msgid "Subjects"
-msgstr "נושאים"
-
-#: bookwyrm/templates/book/book.html:424
-msgid "Places"
-msgstr "מקומות"
-
-#: bookwyrm/templates/book/book.html:435
-#: bookwyrm/templates/groups/group.html:19
-#: bookwyrm/templates/guided_tour/lists.html:14
-#: bookwyrm/templates/guided_tour/user_books.html:102
-#: bookwyrm/templates/guided_tour/user_profile.html:78
-#: bookwyrm/templates/layout.html:88 bookwyrm/templates/lists/curate.html:8
-#: bookwyrm/templates/lists/list.html:9 bookwyrm/templates/lists/lists.html:5
-#: bookwyrm/templates/lists/lists.html:12
-#: bookwyrm/templates/search/layout.html:27
-#: bookwyrm/templates/search/layout.html:55
-#: bookwyrm/templates/settings/celery.html:77
-#: bookwyrm/templates/user/layout.html:105 bookwyrm/templates/user/lists.html:6
-msgid "Lists"
-msgstr "רשימות"
-
-#: bookwyrm/templates/book/book.html:447
-msgid "Add to list"
-msgstr "הוספה לרשימה"
-
-#: bookwyrm/templates/book/book.html:454
-msgid "Create new list..."
-msgstr ""
-
-#: bookwyrm/templates/book/book.html:458
-#: bookwyrm/templates/book/cover_add_modal.html:32
-#: bookwyrm/templates/lists/add_item_modal.html:44
-#: bookwyrm/templates/lists/suggestion_search.html:52
-#: bookwyrm/templates/settings/email_blocklist/domain_form.html:24
-#: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:32
-msgid "Add"
-msgstr "הוספה"
+#: bookwyrm/templates/book/book.html:91
+#, python-format
+msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
+msgstr "קיימת <a href=\"%(book_path)s\">מהדורה אחרת</a> של הספר במדף <a href=\"%(shelf_path)s\">%(shelf_name)s</a> שלך."
 
 #: bookwyrm/templates/book/book_identifiers.html:8
 msgid "ISBN:"
 msgstr "מסת\"ב ISBN:"
 
-#: bookwyrm/templates/book/book_identifiers.html:12
 #: bookwyrm/templates/book/book_identifiers.html:13
+#: bookwyrm/templates/book/book_identifiers.html:14
 msgid "Copy ISBN"
 msgstr "העתק ISBN"
 
-#: bookwyrm/templates/book/book_identifiers.html:16
+#: bookwyrm/templates/book/book_identifiers.html:17
 msgid "Copied ISBN!"
 msgstr "ISBN הועתק!"
 
-#: bookwyrm/templates/book/book_identifiers.html:23
+#: bookwyrm/templates/book/book_identifiers.html:25
 #: bookwyrm/templates/book/edit/edit_book_form.html:404
 #: bookwyrm/templates/rss/edition.html:6
 msgid "OCLC Number:"
 msgstr "מספר OCLC:"
 
-#: bookwyrm/templates/book/book_identifiers.html:30
+#: bookwyrm/templates/book/book_identifiers.html:32
 #: bookwyrm/templates/book/edit/edit_book_form.html:413
 #: bookwyrm/templates/rss/edition.html:7
 msgid "ASIN:"
 msgstr "ASIN:"
 
-#: bookwyrm/templates/book/book_identifiers.html:37
+#: bookwyrm/templates/book/book_identifiers.html:39
 #: bookwyrm/templates/book/edit/edit_book_form.html:422
 #: bookwyrm/templates/rss/edition.html:8
 msgid "Audible ASIN:"
 msgstr "Audible ASIN:"
 
-#: bookwyrm/templates/book/book_identifiers.html:44
+#: bookwyrm/templates/book/book_identifiers.html:46
 #: bookwyrm/templates/book/edit/edit_book_form.html:431
 #: bookwyrm/templates/book/edit/edit_series.html:60
 #: bookwyrm/templates/rss/edition.html:9
 msgid "ISFDB ID:"
 msgstr "ISFDB ID:"
 
-#: bookwyrm/templates/book/book_identifiers.html:51
+#: bookwyrm/templates/book/book_identifiers.html:53
 #: bookwyrm/templates/rss/edition.html:10
 msgid "Goodreads:"
 msgstr "Goodreads:"
 
-#: bookwyrm/templates/book/book_identifiers.html:58
+#: bookwyrm/templates/book/book_identifiers.html:60
 #: bookwyrm/templates/book/edit/edit_book_form.html:440
 msgid "Finna ID:"
 msgstr ""
 
-#: bookwyrm/templates/book/book_identifiers.html:65
+#: bookwyrm/templates/book/book_identifiers.html:67
 #: bookwyrm/templates/book/edit/edit_book_form.html:449
 msgid "Libris ID:"
 msgstr ""
@@ -1389,6 +1258,15 @@ msgstr "העלאת כריכה:"
 #: bookwyrm/templates/book/edit/edit_book_form.html:302
 msgid "Load cover from URL:"
 msgstr "טעינת כריכה מכתובת:"
+
+#: bookwyrm/templates/book/cover_add_modal.html:32
+#: bookwyrm/templates/book/sections/lists.html:30
+#: bookwyrm/templates/lists/add_item_modal.html:44
+#: bookwyrm/templates/lists/suggestion_search.html:52
+#: bookwyrm/templates/settings/email_blocklist/domain_form.html:24
+#: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:32
+msgid "Add"
+msgstr "הוספה"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
 msgid "Book cover preview"
@@ -1428,54 +1306,61 @@ msgstr "אישור מידע אודות הספר"
 msgid "Is \"%(name)s\" one of these authors?"
 msgstr "האם %(name)s הוא אחד מהמחברים הבאים?"
 
-#: bookwyrm/templates/book/edit/edit_book.html:89
+#: bookwyrm/templates/book/edit/edit_book.html:80
+msgid "Any external authors will be imported from ISNI"
+msgstr ""
+
+#: bookwyrm/templates/book/edit/edit_book.html:87
+msgid "Existing author"
+msgstr ""
+
+#: bookwyrm/templates/book/edit/edit_book.html:87
+msgid "External author"
+msgstr ""
+
+#: bookwyrm/templates/book/edit/edit_book.html:94
+#: bookwyrm/templates/book/edit/edit_book.html:99
 #, python-format
 msgid "Author of <em>%(book_title)s</em>"
-msgstr "מחבר/ת <em>%(book_title)s</em>"
+msgid_plural "Author of <em>%(book_title)s</em></a> and more"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:93
-#, python-format
-msgid "Author of <em>%(alt_title)s</em>"
-msgstr "מחבר/ת <em>%(alt_title)s</em>"
+#: bookwyrm/templates/book/edit/edit_book.html:110
+msgid "Create new author"
+msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:95
-msgid "Find more information at isni.org"
-msgstr "מצאו מידע נוסף ב-isni"
-
-#: bookwyrm/templates/book/edit/edit_book.html:105
-msgid "This is a new author"
-msgstr "זהו מחבר/ת חדש/ה"
-
-#: bookwyrm/templates/book/edit/edit_book.html:115
+#: bookwyrm/templates/book/edit/edit_book.html:120
 #, python-format
 msgid "Creating a new author: %(name)s"
 msgstr "יוצר מחבר/ת חדש/ה: %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book.html:123
+#: bookwyrm/templates/book/edit/edit_book.html:128
 msgid "Is this an edition of an existing work?"
 msgstr "האם זוהי מהדורה של ספר קיים?"
 
-#: bookwyrm/templates/book/edit/edit_book.html:131
+#: bookwyrm/templates/book/edit/edit_book.html:136
 msgid "This is a new work"
 msgstr "זו עבודה חדשה"
 
-#: bookwyrm/templates/book/edit/edit_book.html:142
+#: bookwyrm/templates/book/edit/edit_book.html:147
 msgid "Are you sure this is a new series? The following series have similar names and a matching author."
 msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:148
+#: bookwyrm/templates/book/edit/edit_book.html:153
 msgid "Is this book part of one of these series?"
 msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:160
+#: bookwyrm/templates/book/edit/edit_book.html:165
 msgid "This is a new series"
 msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:165
+#: bookwyrm/templates/book/edit/edit_book.html:170
 msgid "Creating a new series"
 msgstr "יצירת סדרה חדשה"
 
-#: bookwyrm/templates/book/edit/edit_book.html:175
+#: bookwyrm/templates/book/edit/edit_book.html:180
 #: bookwyrm/templates/book/edit/edit_series.html:86
 #: bookwyrm/templates/feed/status.html:17
 #: bookwyrm/templates/guided_tour/book.html:44
@@ -1537,6 +1422,12 @@ msgstr "מיין כותרת:"
 #: bookwyrm/templates/book/edit/edit_book_form.html:46
 msgid "Subtitle:"
 msgstr "כותרת משנה:"
+
+#: bookwyrm/templates/book/edit/edit_book_form.html:55
+#: bookwyrm/templates/book/sections/description.html:42
+#: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
+msgid "Description:"
+msgstr "תיאור:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:64
 msgid "Languages:"
@@ -1909,15 +1800,124 @@ msgstr "פורסם בתאריך: %(date)s"
 msgid "rated it"
 msgstr "דירג/ה"
 
+#: bookwyrm/templates/book/sections/cover.html:22
+#: bookwyrm/templates/book/sections/cover.html:25
+msgid "Click to add cover"
+msgstr "לחץ.י להוספת כריכה"
+
+#: bookwyrm/templates/book/sections/cover.html:31
+msgid "Failed to load cover"
+msgstr "טעינת כריכה נכשלה"
+
+#: bookwyrm/templates/book/sections/cover.html:42
+msgid "Click to enlarge"
+msgstr "לחץ.י להגדלה"
+
+#: bookwyrm/templates/book/sections/description.html:19
+#, python-format
+msgid "(%(review_count)s review)"
+msgid_plural "(%(review_count)s reviews)"
+msgstr[0] "(%(review_count)s ביקורות)"
+msgstr[1] ""
+msgstr[2] "(%(review_count)s ביקורות)"
+
+#: bookwyrm/templates/book/sections/description.html:35
+msgid "Add Description"
+msgstr "הוספת תיאור"
+
+#: bookwyrm/templates/book/sections/lists.html:6
+#: bookwyrm/templates/groups/group.html:19
+#: bookwyrm/templates/guided_tour/lists.html:14
+#: bookwyrm/templates/guided_tour/user_books.html:102
+#: bookwyrm/templates/guided_tour/user_profile.html:78
+#: bookwyrm/templates/layout.html:88 bookwyrm/templates/lists/curate.html:8
+#: bookwyrm/templates/lists/list.html:9 bookwyrm/templates/lists/lists.html:5
+#: bookwyrm/templates/lists/lists.html:12
+#: bookwyrm/templates/search/layout.html:27
+#: bookwyrm/templates/search/layout.html:55
+#: bookwyrm/templates/settings/celery.html:77
+#: bookwyrm/templates/user/layout.html:99 bookwyrm/templates/user/lists.html:6
+msgid "Lists"
+msgstr "רשימות"
+
+#: bookwyrm/templates/book/sections/lists.html:19
+msgid "Add to list"
+msgstr "הוספה לרשימה"
+
+#: bookwyrm/templates/book/sections/lists.html:26
+msgid "Create new list..."
+msgstr ""
+
+#: bookwyrm/templates/book/sections/metadata.html:60
+msgid "View on Finna"
+msgstr ""
+
+#: bookwyrm/templates/book/sections/metadata.html:76
+msgid "View on Libris"
+msgstr ""
+
+#: bookwyrm/templates/book/sections/reviews.html:8
+msgid "Add your thoughts"
+msgstr ""
+
+#: bookwyrm/templates/book/sections/reviews.html:30
+msgid "Your reviews"
+msgstr "הביקורות שלך"
+
+#: bookwyrm/templates/book/sections/reviews.html:36
+msgid "Your comments"
+msgstr "התגובות שלך"
+
+#: bookwyrm/templates/book/sections/reviews.html:42
+msgid "Your quotes"
+msgstr "הציטוטים שלך"
+
+#: bookwyrm/templates/book/sections/subjects.html:6
+msgid "Subjects"
+msgstr "נושאים"
+
+#: bookwyrm/templates/book/sections/subjects.html:19
+msgid "Places"
+msgstr "מקומות"
+
+#: bookwyrm/templates/book/sections/title.html:31
+#, python-format
+msgid "This book might be part of the <em>%(series)s</em> series."
+msgstr ""
+
+#: bookwyrm/templates/book/sections/title.html:35
+msgid "Edit it to confirm."
+msgstr ""
+
+#: bookwyrm/templates/book/sections/title.html:48
+#, python-format
+msgid "Book <span itemprop=\"position\">%(number)s</span> in <em><a href=\"%(path)s\">%(title)s</a></em>"
+msgstr ""
+
+#: bookwyrm/templates/book/sections/title.html:54
+#, python-format
+msgid "Part of <em><a href=\"%(path)s\">%(title)s</a></em>"
+msgstr ""
+
+#: bookwyrm/templates/book/sections/title.html:70
+#: bookwyrm/templates/book/sections/title.html:71
+msgid "Edit Book"
+msgstr "ערוך ספר"
+
 #: bookwyrm/templates/book/series.html:72
 #, python-format
 msgid "Book %(series_number)s"
 msgstr ""
 
-#: bookwyrm/templates/book/suggestion_list/book_card.html:37
-#: bookwyrm/templates/lists/list_item.html:37
+#: bookwyrm/templates/book/suggestion_list/book_card.html:15
+#: bookwyrm/templates/lists/list_item_notes.html:12
 #, python-format
-msgid "Added by %(user_link)s"
+msgid "%(user_link)s says:"
+msgstr ""
+
+#: bookwyrm/templates/book/suggestion_list/book_card.html:19
+#, python-format
+msgid "%(user_link)s recommends:"
 msgstr ""
 
 #: bookwyrm/templates/book/suggestion_list/endorsement_button.html:4
@@ -1929,30 +1929,29 @@ msgid "Endorsements"
 msgstr ""
 
 #: bookwyrm/templates/book/suggestion_list/list.html:6
-#: bookwyrm/templates/user/layout.html:111
-#: bookwyrm/templates/user/suggestions.html:6
-msgid "Suggestions"
+msgid "Readers also recommend:"
 msgstr ""
 
 #: bookwyrm/templates/book/suggestion_list/list.html:9
 msgid "View all suggestions"
 msgstr ""
 
-#: bookwyrm/templates/book/suggestion_list/list.html:18
-#, python-format
-msgid "Readers who liked <em>%(title)s</em> recommend giving these books a try:"
-msgstr ""
-
-#: bookwyrm/templates/book/suggestion_list/list.html:27
-#: bookwyrm/templates/book/suggestion_list/list.html:51
+#: bookwyrm/templates/book/suggestion_list/list.html:20
+#: bookwyrm/templates/book/suggestion_list/list.html:60
 msgid "Have a recommendation for someone who liked this book?"
 msgstr ""
 
-#: bookwyrm/templates/book/suggestion_list/list.html:52
+#: bookwyrm/templates/book/suggestion_list/list.html:26
+#: bookwyrm/templates/book/suggestion_list/list.html:45
+msgid "Add suggestion"
+msgstr ""
+
+#: bookwyrm/templates/book/suggestion_list/list.html:61
 msgid "Load books"
 msgstr ""
 
-#: bookwyrm/templates/book/suggestion_list/search.html:8
+#: bookwyrm/templates/book/suggestion_list/search.html:5
+#: bookwyrm/templates/book/suggestion_list/search_modal.html:6
 msgid "Add suggestions"
 msgstr ""
 
@@ -1960,6 +1959,11 @@ msgstr ""
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this book which aren't present here. Existing metadata will not be overwritten."
 msgstr "טעינת מידע תוביל לחיבור ל-<strong>%(source_name)s</strong> ותאתר כל פריט מטא-דאטה שאינו מופיע כאן. מטא-דאטה קיים לא ישוכתב."
+
+#: bookwyrm/templates/components/details.html:8
+#: bookwyrm/templates/snippets/trimmed_text.html:18
+msgid "Show more"
+msgstr "הצג עוד"
 
 #: bookwyrm/templates/compose.html:7 bookwyrm/templates/compose.html:21
 msgid "Edit review"
@@ -2099,8 +2103,7 @@ msgid "follower you follow"
 msgid_plural "followers you follow"
 msgstr[0] "עוקבים שנעקבים על ידיך"
 msgstr[1] "עוקבים שאת/ה עוקב/ת אחריהם"
-msgstr[2] "עוקבים שאת/ה עוקב/ת אחריהם"
-msgstr[3] ""
+msgstr[2] ""
 
 #: bookwyrm/templates/directory/user_card.html:47
 msgid "book on your shelves"
@@ -2108,7 +2111,6 @@ msgid_plural "books on your shelves"
 msgstr[0] "ספר על המדפים שלך"
 msgstr[1] ""
 msgstr[2] "ספרים על המדפים שלך"
-msgstr[3] "ספרים על המדפים שלך"
 
 #: bookwyrm/templates/directory/user_card.html:55
 msgid "posts"
@@ -2694,8 +2696,7 @@ msgid "%(mutuals)s follower you follow"
 msgid_plural "%(mutuals)s followers you follow"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(mutuals)s עוקבים שנעקבים על ידיך"
+msgstr[2] "%(mutuals)s עוקבים שנעקבים על ידיך"
 
 #: bookwyrm/templates/groups/suggested_users.html:27
 #: bookwyrm/templates/snippets/suggested_users.html:23
@@ -2704,8 +2705,7 @@ msgid "%(shared_books)s book on your shelves"
 msgid_plural "%(shared_books)s books on your shelves"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(shared_books)s ספרים על המדפים שלך"
+msgstr[2] "%(shared_books)s ספרים על המדפים שלך"
 
 #: bookwyrm/templates/groups/suggested_users.html:43
 #, python-format
@@ -3153,7 +3153,7 @@ msgstr "ניתן ליצור קבוצה או להצטרף לאחת עם משתמ�
 #: bookwyrm/templates/guided_tour/user_groups.html:11
 #: bookwyrm/templates/guided_tour/user_profile.html:55
 #: bookwyrm/templates/preferences/export-user.html:37
-#: bookwyrm/templates/user/groups.html:6 bookwyrm/templates/user/layout.html:98
+#: bookwyrm/templates/user/groups.html:6 bookwyrm/templates/user/layout.html:92
 msgid "Groups"
 msgstr "קבוצות"
 
@@ -3207,7 +3207,7 @@ msgid "This tab shows everything you have read towards your annual reading goal,
 msgstr "הטאב הזה מציג את כל מה שקראת לקראת היעד השנתי או מאפשר לחלופין ליצור יעד כזה. לא חובה לקבוע יעד אם זה לא הקטע שלך!"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:32
-#: bookwyrm/templates/user/goal.html:7 bookwyrm/templates/user/layout.html:91
+#: bookwyrm/templates/user/goal.html:7 bookwyrm/templates/user/layout.html:85
 msgid "Reading Goal"
 msgstr "יעד קריאה"
 
@@ -3261,7 +3261,6 @@ msgid_plural "Currently, you are allowed to import %(display_size)s books every 
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/import/import.html:27
 #, python-format
@@ -3438,8 +3437,7 @@ msgid "%(display_counter)s item needs manual approval."
 msgid_plural "%(display_counter)s items need manual approval."
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(display_counter)s פריטים דורשים אישור ידני."
+msgstr[2] "%(display_counter)s פריטים דורשים אישור ידני."
 
 #: bookwyrm/templates/import/import_status.html:83
 #: bookwyrm/templates/import/manual_review.html:8
@@ -3454,7 +3452,6 @@ msgid_plural "%(display_counter)s items failed to import."
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/import/import_status.html:95
 #: bookwyrm/templates/import/user_import_status.html:135
@@ -4153,6 +4150,11 @@ msgstr "העתק קוד הטמעה"
 msgid "%(list_name)s, a list by %(owner)s on %(site_name)s"
 msgstr "%(list_name)s, רשימה מאת %(owner)s ב-%(site_name)s"
 
+#: bookwyrm/templates/lists/list_item.html:37
+#, python-format
+msgid "Added by %(user_link)s"
+msgstr ""
+
 #: bookwyrm/templates/lists/list_item.html:57
 msgid "List position"
 msgstr "מיקום ברשימה"
@@ -4169,11 +4171,6 @@ msgstr "קבע"
 #: bookwyrm/templates/snippets/remove_from_group_button.html:20
 msgid "Remove"
 msgstr "הסר"
-
-#: bookwyrm/templates/lists/list_item_notes.html:12
-#, python-format
-msgid "%(user_link)s says:"
-msgstr ""
 
 #: bookwyrm/templates/lists/list_item_notes.html:26
 msgid "Edit notes"
@@ -4213,8 +4210,8 @@ msgstr "ניקוי חיפוש"
 
 #: bookwyrm/templates/lists/suggestion_search.html:24
 #, python-format
-msgid "No books found matching the query \"%(query)s\""
-msgstr "לא נמצאו ספרים המתאימים לשאילתת החיפוש \"%(query)s\""
+msgid "No books found matching the query \"%(suggestion_query)s\""
+msgstr ""
 
 #: bookwyrm/templates/moved.html:27
 #, python-format
@@ -4280,7 +4277,6 @@ msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/notifications/items/add.html:88
 #, python-format
@@ -4289,7 +4285,6 @@ msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested a
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/notifications/items/boost.html:21
 #, python-format
@@ -4448,7 +4443,6 @@ msgid_plural "%(display_count)s new <a href=\"%(path)s\">invite requests</a> awa
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
@@ -4477,7 +4471,6 @@ msgid_plural "%(display_count)s new <a href=\"%(path)s\">link domains</a> need r
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
@@ -4546,7 +4539,6 @@ msgid_plural "%(display_count)s new <a href=\"%(path)s\">reports</a> need modera
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/notifications/items/status_preview.html:4
 #: bookwyrm/templates/snippets/status/content_status.html:64
@@ -4665,14 +4657,6 @@ msgstr ""
 #: bookwyrm/templates/ostatus/remote_follow.html:44
 msgid "Follow!"
 msgstr "עקבו!"
-
-#: bookwyrm/templates/ostatus/remote_follow_button.html:15
-msgid "Follow on Fediverse"
-msgstr "עקבו בפדיברס"
-
-#: bookwyrm/templates/ostatus/remote_follow_button.html:19
-msgid "This link opens in a pop-up window"
-msgstr "קישור זה נפתח בחלון קופץ"
 
 #: bookwyrm/templates/ostatus/subscribe.html:8
 #, python-format
@@ -5014,7 +4998,6 @@ msgid_plural "Export files will be deleted after %(expiry_hours)s hours."
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/preferences/export-user.html:110
 #: bookwyrm/templates/preferences/security.html:126
@@ -5263,34 +5246,30 @@ msgid "Finished reading"
 msgstr ""
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:9
-msgid "Progress Updates:"
+msgid "Started:"
 msgstr ""
 
-#: bookwyrm/templates/readthrough/readthrough_list.html:14
-msgid "finished"
-msgstr "הסתיים"
-
-#: bookwyrm/templates/readthrough/readthrough_list.html:16
-msgid "stopped"
-msgstr "עצר"
-
-#: bookwyrm/templates/readthrough/readthrough_list.html:27
+#: bookwyrm/templates/readthrough/readthrough_list.html:12
 msgid "Show all updates"
 msgstr "הצגת כל העדכונים"
 
-#: bookwyrm/templates/readthrough/readthrough_list.html:43
+#: bookwyrm/templates/readthrough/readthrough_list.html:28
 msgid "Delete this progress update"
 msgstr ""
 
-#: bookwyrm/templates/readthrough/readthrough_list.html:55
-msgid "started"
+#: bookwyrm/templates/readthrough/readthrough_list.html:41
+msgid "Finished:"
 msgstr ""
 
-#: bookwyrm/templates/readthrough/readthrough_list.html:62
+#: bookwyrm/templates/readthrough/readthrough_list.html:43
+msgid "Stopped:"
+msgstr ""
+
+#: bookwyrm/templates/readthrough/readthrough_list.html:57
 msgid "Edit read dates"
 msgstr ""
 
-#: bookwyrm/templates/readthrough/readthrough_list.html:70
+#: bookwyrm/templates/readthrough/readthrough_list.html:65
 msgid "Delete these read dates"
 msgstr ""
 
@@ -5351,8 +5330,7 @@ msgid "%(formatted_review_count)s review"
 msgid_plural "%(formatted_review_count)s reviews"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] "%(formatted_review_count)s ביקורות"
-msgstr[3] ""
+msgstr[2] ""
 
 #: bookwyrm/templates/search/book.html:44
 #, python-format
@@ -5410,7 +5388,6 @@ msgid_plural "%(result_count)s results found"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/settings/announcements/announcement.html:5
 #: bookwyrm/templates/settings/announcements/announcement.html:8
@@ -5795,19 +5772,19 @@ msgstr ""
 msgid "Connector Settings"
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/connectors.html:11
+#: bookwyrm/templates/settings/connectors/connectors.html:10
 msgid "Connectors are sources of data about books and authors."
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/connectors.html:12
+#: bookwyrm/templates/settings/connectors/connectors.html:11
 msgid "The priority determines the order in which search results appear. The highest priority is <code>1</code>. The default priority is <code>2</code>."
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/connectors.html:14
+#: bookwyrm/templates/settings/connectors/connectors.html:13
 msgid "Connector settings only determine whether a connector will be used to deliver search results. To manage more interactions with other federated servers, including domain blocks, see"
 msgstr ""
 
-#: bookwyrm/templates/settings/connectors/connectors.html:14
+#: bookwyrm/templates/settings/connectors/connectors.html:13
 #: bookwyrm/templates/settings/federation/edit_instance.html:12
 #: bookwyrm/templates/settings/federation/instance.html:24
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:12
@@ -5898,7 +5875,6 @@ msgid_plural "%(display_count)s domains need review"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/settings/dashboard/warnings/email_config.html:8
 #, python-format
@@ -5916,7 +5892,6 @@ msgid_plural "%(display_count)s invite requests"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/settings/dashboard/warnings/missing_conduct.html:8
 msgid "Your instance is missing a code of conduct."
@@ -5933,7 +5908,6 @@ msgid_plural "%(display_count)s open reports"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/settings/dashboard/warnings/update_version.html:8
 #, python-format
@@ -5971,7 +5945,6 @@ msgid_plural "%(display_count)s users"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:59
 msgid "No email domains currently blocked"
@@ -6076,7 +6049,7 @@ msgid "Details"
 msgstr "פרטים"
 
 #: bookwyrm/templates/settings/federation/instance.html:53
-#: bookwyrm/templates/user/layout.html:79
+#: bookwyrm/templates/user/layout.html:73
 msgid "Activity"
 msgstr "פעילות"
 
@@ -6873,22 +6846,27 @@ msgstr "<a href=\"%(user_link)s\">%(user)s</a> הגיב.ה על דיווח זה:
 msgid "<a href=\"%(user_link)s\">%(user)s</a> took an action on this report:"
 msgstr ""
 
-#: bookwyrm/templates/settings/reports/report_header.html:6
+#: bookwyrm/templates/settings/reports/report_header.html:7
 #, python-format
 msgid "Report #%(report_id)s: Status posted by @%(username)s"
 msgstr ""
 
-#: bookwyrm/templates/settings/reports/report_header.html:13
+#: bookwyrm/templates/settings/reports/report_header.html:11
+#, python-format
+msgid "Report #%(report_id)s"
+msgstr ""
+
+#: bookwyrm/templates/settings/reports/report_header.html:19
 #, python-format
 msgid "Report #%(report_id)s: Link added by @%(username)s"
 msgstr ""
 
-#: bookwyrm/templates/settings/reports/report_header.html:17
+#: bookwyrm/templates/settings/reports/report_header.html:23
 #, python-format
 msgid "Report #%(report_id)s: Link domain"
 msgstr ""
 
-#: bookwyrm/templates/settings/reports/report_header.html:24
+#: bookwyrm/templates/settings/reports/report_header.html:30
 #, python-format
 msgid "Report #%(report_id)s: User @%(username)s"
 msgstr ""
@@ -7438,7 +7416,7 @@ msgid "Edit Shelf"
 msgstr "ערוך מדף"
 
 #: bookwyrm/templates/shelf/shelf.html:46
-#: bookwyrm/templatetags/shelf_tags.py:14 bookwyrm/views/shelf/shelf.py:61
+#: bookwyrm/templatetags/shelf_tags.py:14 bookwyrm/views/shelf/shelf.py:62
 msgid "All books"
 msgstr "כלל הספרים"
 
@@ -7452,8 +7430,7 @@ msgid "%(formatted_count)s book"
 msgid_plural "%(formatted_count)s books"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] "%(formatted_count)s ספרים"
-msgstr[3] ""
+msgstr[2] ""
 
 #: bookwyrm/templates/shelf/shelf.html:110
 #, python-format
@@ -7531,7 +7508,6 @@ msgid_plural "and %(remainder_count_display)s others"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/snippets/book_cover.html:63
 msgid "No cover"
@@ -7656,34 +7632,34 @@ msgstr ""
 msgid "Filters"
 msgstr "מסננים"
 
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:10
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:17
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:12
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:18
 msgid "Filters are applied"
 msgstr "מסננים הוחלו"
 
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:20
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:21
 msgid "Clear filters"
 msgstr "הסר מסננים"
 
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:43
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:44
 msgid "Apply filters"
 msgstr "סנן"
 
-#: bookwyrm/templates/snippets/follow_button.html:22
+#: bookwyrm/templates/snippets/follow_button.html:27
 #, python-format
 msgid "Follow @%(username)s"
 msgstr "עקוב אחרי @%(username)s"
 
-#: bookwyrm/templates/snippets/follow_button.html:33
+#: bookwyrm/templates/snippets/follow_button.html:38
 msgid "Undo follow request"
 msgstr "בטל בקשת מעקב"
 
-#: bookwyrm/templates/snippets/follow_button.html:38
+#: bookwyrm/templates/snippets/follow_button.html:43
 #, python-format
 msgid "Unfollow @%(username)s"
 msgstr "הפסק מעקב אחרי @%(username)s"
 
-#: bookwyrm/templates/snippets/follow_button.html:40
+#: bookwyrm/templates/snippets/follow_button.html:45
 msgid "Unfollow"
 msgstr "הפסק מעקב"
 
@@ -7705,29 +7681,22 @@ msgstr "תמכו ב-%(site_name)s ב-<a href=\"%(support_link)s\" target=\"_blan
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
 msgstr "קוד המקור של BookWyrm זמין באופן חופשי. ניתן לתרום לו או לדווח על בעיות ב-<a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
 
-#: bookwyrm/templates/snippets/form_rate_stars.html:20
-#: bookwyrm/templates/snippets/stars.html:38
-msgid "No rating"
-msgstr "אין דירוג"
-
-#: bookwyrm/templates/snippets/form_rate_stars.html:28
+#: bookwyrm/templates/snippets/form_rate_stars.html:15
 #, python-format
-msgid "%(half_rating)s star"
-msgid_plural "%(half_rating)s stars"
-msgstr[0] "כוכב %(half_rating)s"
+msgid "%(rating)s.5 stars"
+msgid_plural "%(rating)s.5 stars"
+msgstr[0] ""
 msgstr[1] ""
-msgstr[2] "%(half_rating)s כוכבים"
-msgstr[3] ""
+msgstr[2] ""
 
-#: bookwyrm/templates/snippets/form_rate_stars.html:64
+#: bookwyrm/templates/snippets/form_rate_stars.html:32
 #: bookwyrm/templates/snippets/stars.html:20
 #, python-format
 msgid "%(rating)s star"
 msgid_plural "%(rating)s stars"
 msgstr[0] "כוכב %(rating)s"
 msgstr[1] ""
-msgstr[2] "%(rating)s כוכבים"
-msgstr[3] ""
+msgstr[2] ""
 
 #: bookwyrm/templates/snippets/generated_status/goal.html:2
 #, python-format
@@ -7736,7 +7705,6 @@ msgid_plural "set a goal to read %(counter)s books in %(year)s"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/snippets/generated_status/rating.html:3
 #, python-format
@@ -7745,16 +7713,14 @@ msgid_plural "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_ratin
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
-#: bookwyrm/templates/snippets/generated_status/rating_pure_name.html:3
+#: bookwyrm/templates/snippets/generated_status/rating_pure_name.html:4
 #, python-format
 msgid "Rated \"%(book_title)s\" %(display_rating)s star %(review_title)s"
 msgid_plural "Rated \"%(book_title)s\" %(display_rating)s stars %(review_title)s"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:4
 #, python-format
@@ -7763,7 +7729,6 @@ msgid_plural "Review of \"%(book_title)s\" (%(display_rating)s stars): %(review_
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:12
 #, python-format
@@ -7902,6 +7867,10 @@ msgstr "בחרו בתבונה! שם המשתמש.ת שלכם לא ניתן לש�
 msgid "Sign Up"
 msgstr "הירשם"
 
+#: bookwyrm/templates/snippets/remote_follow_button.html:11
+msgid "Follow from Fediverse"
+msgstr ""
+
 #: bookwyrm/templates/snippets/report_modal.html:8
 #, python-format
 msgid "Report @%(username)s's status"
@@ -7977,6 +7946,10 @@ msgstr ""
 #: bookwyrm/templates/snippets/stars.html:13
 msgid "Show rating"
 msgstr ""
+
+#: bookwyrm/templates/snippets/stars.html:38
+msgid "No rating"
+msgstr "אין דירוג"
 
 #: bookwyrm/templates/snippets/status/content_status.html:71
 msgid "Show status"
@@ -8137,10 +8110,6 @@ msgstr ""
 msgid "Sorted descending"
 msgstr ""
 
-#: bookwyrm/templates/snippets/trimmed_text.html:18
-msgid "Show more"
-msgstr "הצג עוד"
-
 #: bookwyrm/templates/snippets/trimmed_text.html:36
 msgid "Show less"
 msgstr "הצג פחות"
@@ -8215,15 +8184,20 @@ msgstr ""
 msgid "Groups: %(username)s"
 msgstr "קבוצות: %(username)s"
 
-#: bookwyrm/templates/user/layout.html:59
+#: bookwyrm/templates/user/layout.html:53
 msgid "Follow Requests"
 msgstr "בקשות מעקב"
 
-#: bookwyrm/templates/user/layout.html:84
+#: bookwyrm/templates/user/layout.html:78
 #: bookwyrm/templates/user/reviews_comments.html:6
 #: bookwyrm/templates/user/reviews_comments.html:12
 msgid "Reviews and Comments"
 msgstr "ביקורות ותגובות"
+
+#: bookwyrm/templates/user/layout.html:105
+#: bookwyrm/templates/user/suggestions.html:6
+msgid "Suggestions"
+msgstr ""
 
 #: bookwyrm/templates/user/lists.html:16
 #, python-format
@@ -8335,7 +8309,6 @@ msgid_plural "%(display_count)s followers"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/user/user_preview.html:31
 #, python-format
@@ -8349,7 +8322,6 @@ msgid_plural "%(mutuals_display)s followers you follow"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
 
 #: bookwyrm/templates/user/user_preview.html:49
 msgid "No followers you follow"
@@ -8375,23 +8347,22 @@ msgid "%(num)d book - by %(user)s"
 msgid_plural "%(num)d books - by %(user)s"
 msgstr[0] "ספר %(num)d - מאת %(user)s"
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%(num)d ספרים - מאת %(user)s"
+msgstr[2] "%(num)d ספרים - מאת %(user)s"
 
-#: bookwyrm/templatetags/utilities.py:43
+#: bookwyrm/templatetags/utilities.py:42
 msgid "deactivated user"
 msgstr ""
 
-#: bookwyrm/templatetags/utilities.py:63
+#: bookwyrm/templatetags/utilities.py:62
 #, python-format
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s: %(subtitle)s"
 
-#: bookwyrm/templatetags/utilities.py:164
+#: bookwyrm/templatetags/utilities.py:135
 msgid "a new user account"
 msgstr ""
 
-#: bookwyrm/views/books/edit_book.py:82 bookwyrm/views/books/edit_book.py:488
+#: bookwyrm/views/books/edit_book.py:82 bookwyrm/views/books/edit_book.py:477
 msgid "There is another book in the series with the same value"
 msgstr ""
 
@@ -8405,6 +8376,5 @@ msgid "Load %(count)d unread status"
 msgid_plural "Load %(count)d unread statuses"
 msgstr[0] "טען סטטוס %(count)d שלא נקרא"
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "טען %(count)d סטטוסים שלא נקראו"
+msgstr[2] "טען %(count)d סטטוסים שלא נקראו"
 

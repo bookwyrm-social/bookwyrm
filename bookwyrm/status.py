@@ -6,7 +6,9 @@ from bookwyrm import models
 from bookwyrm.utils import sanitizer
 
 
-def create_generated_note(user, content, mention_books=None, privacy="public"):
+def create_generated_note(
+    user: models.User, content: str, mention_books: bool = None, privacy: str = "public"
+) -> models.GeneratedNote:
     """a note created by the app about user activity"""
     # sanitize input html
     content = sanitizer.clean(content)
