@@ -485,9 +485,7 @@ def get_data(
     return data
 
 
-def get_image(
-    url: str, timeout: int = 10
-) -> tuple[Any, str] | tuple[None, None]:
+def get_image(url: str, timeout: int = 10) -> tuple[Any, str] | tuple[None, None]:
     """wrapper for requesting an image"""
     raise_not_valid_url(url)
     try:
