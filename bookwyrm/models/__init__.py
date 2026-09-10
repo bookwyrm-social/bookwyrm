@@ -4,6 +4,7 @@ import inspect
 import sys
 
 from .book import Book, Work, Edition, BookDataModel, Series, SeriesBook
+from .book import MergedEdition, MergedWork, MergedAuthor, MergedSeries
 from .author import Author
 from .link import Link, FileLink, LinkDomain
 from .connector import Connector

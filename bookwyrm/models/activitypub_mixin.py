@@ -18,7 +18,7 @@ from Crypto.Hash import SHA256
 from django.apps import apps
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import ForeignKey, Q
 from django.utils.http import http_date
 
 from bookwyrm import activitypub
@@ -107,6 +107,15 @@ class ActivitypubMixin:
 
             value = data.get(field.get_activitypub_field())
             if not value:
+                continue
+
+            # if the deduplication field is a foreign key, we have to look at
+            # the remote id, not the id, in the database
+            if isinstance(field, ForeignKey):
+                value_remote_id = value if isinstance(value, str) else value.get("id")
+                if not value:
+                    continue
+                filters.append({f"{field.name}__remote_id": value_remote_id})
                 continue
             filters.append({field.name: value})
 
