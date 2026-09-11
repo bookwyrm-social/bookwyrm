@@ -120,19 +120,25 @@ def data_quality_data():
         .count(),
         "edition_example": models.Edition.objects.filter(
             pending_merge_target__isnull=False
-        ).first(),
+        )
+        .order_by("id")
+        .first(),
         "author_count": models.Author.objects.filter(pending_merge_target__isnull=False)
         .distinct()
         .count(),
         "author_example": models.Author.objects.filter(
             pending_merge_target__isnull=False
-        ).first(),
+        )
+        .order_by("id")
+        .first(),
         "series_count": models.Series.objects.filter(pending_merge_target__isnull=False)
         .distinct()
         .count(),
         "series_example": models.Series.objects.filter(
             pending_merge_target__isnull=False
-        ).first(),
+        )
+        .order_by("id")
+        .first(),
         "suggestion_list_count": models.SuggestionList.objects.filter(
             pending_merge_target__isnull=False
         )
@@ -140,7 +146,9 @@ def data_quality_data():
         .count(),
         "suggestion_list_example": models.SuggestionList.objects.filter(
             pending_merge_target__isnull=False
-        ).first(),
+        )
+        .order_by("id")
+        .first(),
         "scan_form": forms.IntervalScheduleForm(prefix="scan"),
         "merge_form": forms.IntervalScheduleForm(prefix="merge"),
     }
