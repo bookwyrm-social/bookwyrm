@@ -67,10 +67,10 @@ class Series(MergeableViewMixin, View):
 class EditSeries(View):
     """Edit information about series and seriesbooks"""
 
-    def get(self, request, series_id=None):
+    def get(self, request, mergeable_object_id=None):
         """edit page for series"""
 
-        series = models.Series.objects.get(id=series_id)
+        series = models.Series.objects.get(id=mergeable_object_id)
         data = {"series": series, "form": SeriesForm(instance=series)}
 
         return TemplateResponse(request, "book/edit/edit_series.html", data)

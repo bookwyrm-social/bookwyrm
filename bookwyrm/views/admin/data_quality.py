@@ -107,33 +107,37 @@ def data_quality_data():
     return {
         "scan_task": scan_task,
         "merge_task": merge_task,
-        "work_count": models.Work.objects.filter(
-            pending_merge_target__isnull=False
-        ).count(),
-        "work_example": models.Work.objects.filter(
-            pending_merge_target__isnull=False
-        ).first(),
+        "work_count": models.Work.objects.filter(pending_merge_target__isnull=False)
+        .distinct()
+        .count(),
+        "work_example": models.Work.objects.filter(pending_merge_target__isnull=False)
+        .order_by("id")
+        .first(),
         "edition_count": models.Edition.objects.filter(
             pending_merge_target__isnull=False
-        ).count(),
+        )
+        .distinct()
+        .count(),
         "edition_example": models.Edition.objects.filter(
             pending_merge_target__isnull=False
         ).first(),
-        "author_count": models.Author.objects.filter(
-            pending_merge_target__isnull=False
-        ).count(),
+        "author_count": models.Author.objects.filter(pending_merge_target__isnull=False)
+        .distinct()
+        .count(),
         "author_example": models.Author.objects.filter(
             pending_merge_target__isnull=False
         ).first(),
-        "series_count": models.Series.objects.filter(
-            pending_merge_target__isnull=False
-        ).count(),
+        "series_count": models.Series.objects.filter(pending_merge_target__isnull=False)
+        .distinct()
+        .count(),
         "series_example": models.Series.objects.filter(
             pending_merge_target__isnull=False
         ).first(),
         "suggestion_list_count": models.SuggestionList.objects.filter(
             pending_merge_target__isnull=False
-        ).count(),
+        )
+        .distinct()
+        .count(),
         "suggestion_list_example": models.SuggestionList.objects.filter(
             pending_merge_target__isnull=False
         ).first(),
@@ -320,6 +324,7 @@ class ManualMerge(View):
             "model_name": model_name,
             "plural_model": plural_model,
             "source": request.GET.get("source"),
+            "merge_type": request.GET.get("merge_type"),
         }
         return TemplateResponse(request, "settings/manage-data/manual-merge.html", data)
 
@@ -373,6 +378,7 @@ class ManualMerge(View):
             "model_name": model_name,
             "canonical_id": canonical.id,
             "source": request.GET.get("source"),
+            "merge_type": request.GET.get("merge_type"),
         }
         return TemplateResponse(
             request, "settings/manage-data/confirm-merge.html", data
@@ -402,5 +408,10 @@ def confirm_manual_merge(request, model_name, canonical_id):
         candidate.merge_into(canonical, manual=True)
 
     if request.GET.get("source") == "admin":
-        return redirect(reverse("settings-merge-data"))
+        return redirect(
+            reverse(
+                "settings-merge-data",
+                query={"merge_type": request.GET.get("merge_type")},
+            )
+        )
     return redirect(canonical.remote_id)

@@ -26,6 +26,7 @@ def validate_html(html):
     excluded = [
         "&book",
         "&type",
+        "&merge_type",
         "&resolved",
         "id and name attribute",
         "illegal characters found in URI",
