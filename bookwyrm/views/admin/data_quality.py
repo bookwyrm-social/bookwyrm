@@ -107,45 +107,37 @@ def data_quality_data():
     return {
         "scan_task": scan_task,
         "merge_task": merge_task,
-        "work_count": models.Work.objects.filter(pending_merge_target__isnull=False)
+        "work_count": models.Work.objects.filter(merge_target__isnull=False)
         .distinct()
         .count(),
-        "work_example": models.Work.objects.filter(pending_merge_target__isnull=False)
+        "work_example": models.Work.objects.filter(merge_target__isnull=False)
         .order_by("id")
         .first(),
-        "edition_count": models.Edition.objects.filter(
-            pending_merge_target__isnull=False
-        )
+        "edition_count": models.Edition.objects.filter(merge_target__isnull=False)
         .distinct()
         .count(),
-        "edition_example": models.Edition.objects.filter(
-            pending_merge_target__isnull=False
-        )
+        "edition_example": models.Edition.objects.filter(merge_target__isnull=False)
         .order_by("id")
         .first(),
-        "author_count": models.Author.objects.filter(pending_merge_target__isnull=False)
+        "author_count": models.Author.objects.filter(merge_target__isnull=False)
         .distinct()
         .count(),
-        "author_example": models.Author.objects.filter(
-            pending_merge_target__isnull=False
-        )
+        "author_example": models.Author.objects.filter(merge_target__isnull=False)
         .order_by("id")
         .first(),
-        "series_count": models.Series.objects.filter(pending_merge_target__isnull=False)
+        "series_count": models.Series.objects.filter(merge_target__isnull=False)
         .distinct()
         .count(),
-        "series_example": models.Series.objects.filter(
-            pending_merge_target__isnull=False
-        )
+        "series_example": models.Series.objects.filter(merge_target__isnull=False)
         .order_by("id")
         .first(),
         "suggestion_list_count": models.SuggestionList.objects.filter(
-            pending_merge_target__isnull=False
+            merge_target__isnull=False
         )
         .distinct()
         .count(),
         "suggestion_list_example": models.SuggestionList.objects.filter(
-            pending_merge_target__isnull=False
+            merge_target__isnull=False
         )
         .order_by("id")
         .first(),

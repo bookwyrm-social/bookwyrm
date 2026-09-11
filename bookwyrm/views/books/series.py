@@ -70,15 +70,15 @@ class EditSeries(View):
     def get(self, request, mergeable_object_id=None):
         """edit page for series"""
 
-        series = models.Series.objects.get(id=mergeable_object_id)
+        series = get_mergeable_object_or_404(models.Series, id=mergeable_object_id)
         data = {"series": series, "form": SeriesForm(instance=series)}
 
         return TemplateResponse(request, "book/edit/edit_series.html", data)
 
-    def post(self, request, series_id):
+    def post(self, request, mergeable_object_id):
         """submit the series edit form"""
 
-        series = get_mergeable_object_or_404(models.Series, id=series_id)
+        series = get_mergeable_object_or_404(models.Series, id=mergeable_object_id)
         form = SeriesForm(request.POST, instance=series)
         data = {"series": series, "form": form}
 
