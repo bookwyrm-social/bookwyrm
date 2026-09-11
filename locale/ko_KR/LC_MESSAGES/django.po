@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-09 21:56+0000\n"
-"PO-Revision-Date: 2026-09-09 23:01\n"
+"POT-Creation-Date: 2026-09-10 20:16+0000\n"
+"PO-Revision-Date: 2026-09-11 21:34\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -161,6 +161,26 @@ msgstr "위험"
 msgid "Automatically generated report"
 msgstr "자동 생성된 보고서"
 
+#: bookwyrm/models/author.py:119
+#: bookwyrm/templates/import/import_status.html:121
+#: bookwyrm/templates/shelf/shelf.html:157
+#: bookwyrm/templates/shelf/shelf.html:181
+msgid "Author"
+msgstr "저자"
+
+#: bookwyrm/models/author.py:120
+#: bookwyrm/templates/book/edit/edit_book_form.html:238
+#: bookwyrm/templates/import/user_import_status.html:155
+#: bookwyrm/templates/preferences/books.html:17
+#: bookwyrm/templates/search/layout.html:23
+#: bookwyrm/templates/search/layout.html:47
+#: bookwyrm/templates/settings/manage-data/data.html:44
+#: bookwyrm/templates/settings/manage-data/merge.html:41
+#: bookwyrm/templates/settings/manage-data/merge_editions.html:12
+#: bookwyrm/templates/settings/manage-data/merge_works.html:12
+msgid "Authors"
+msgstr "저자"
+
 #: bookwyrm/models/base_model.py:19 bookwyrm/models/import_job.py:50
 #: bookwyrm/models/job.py:18 bookwyrm/models/link.py:77
 #: bookwyrm/templates/import/import_status.html:214
@@ -188,41 +208,122 @@ msgstr "중재자가 삭제"
 msgid "Domain block"
 msgstr "도메인 차단"
 
-#: bookwyrm/models/book.py:532
+#: bookwyrm/models/book.py:53
+msgid "OpenLibrary key"
+msgstr ""
+
+#: bookwyrm/models/book.py:60
+msgid "Finna key"
+msgstr ""
+
+#: bookwyrm/models/book.py:67
+msgid "Libris key"
+msgstr ""
+
+#: bookwyrm/models/book.py:74
+msgid "Inventaire ID"
+msgstr ""
+
+#: bookwyrm/models/book.py:81
+msgid "LibraryThing key"
+msgstr ""
+
+#: bookwyrm/models/book.py:88
+msgid "GoodReads key"
+msgstr ""
+
+#: bookwyrm/models/book.py:95
+msgid "BNF ID"
+msgstr ""
+
+#: bookwyrm/models/book.py:102
+msgid "VIAF"
+msgstr ""
+
+#: bookwyrm/models/book.py:109
+msgid "Wikidata ID"
+msgstr ""
+
+#: bookwyrm/models/book.py:116
+msgid "ASIN"
+msgstr ""
+
+#: bookwyrm/models/book.py:123
+msgid "AASIN"
+msgstr ""
+
+#: bookwyrm/models/book.py:130
+msgid "ISFDB ID"
+msgstr ""
+
+#: bookwyrm/models/book.py:478
+msgid "LCCN"
+msgstr ""
+
+#: bookwyrm/models/book.py:521
 msgid "Audiobook"
 msgstr "오디오북"
 
-#: bookwyrm/models/book.py:533
+#: bookwyrm/models/book.py:522
 msgid "eBook"
 msgstr "전자책"
 
-#: bookwyrm/models/book.py:534
+#: bookwyrm/models/book.py:523
 msgid "Graphic novel"
 msgstr "만화"
 
-#: bookwyrm/models/book.py:535
+#: bookwyrm/models/book.py:524
 msgid "Hardcover"
 msgstr "양장제본"
 
-#: bookwyrm/models/book.py:536
+#: bookwyrm/models/book.py:525
 msgid "Paperback"
 msgstr "무선제본"
 
-#: bookwyrm/models/book.py:545 bookwyrm/models/book.py:552
-#: bookwyrm/models/book.py:558 bookwyrm/models/book.py:563
-#: bookwyrm/models/book.py:568 bookwyrm/models/book.py:586
-#: bookwyrm/models/book.py:592 bookwyrm/models/book.py:597
+#: bookwyrm/models/book.py:534 bookwyrm/models/book.py:541
+#: bookwyrm/models/book.py:547 bookwyrm/models/book.py:552
+#: bookwyrm/models/book.py:557 bookwyrm/models/book.py:575
+#: bookwyrm/models/book.py:581 bookwyrm/models/book.py:586
 #, python-format
 msgid "%(value)s doesn't look like an ISBN"
 msgstr ""
 
-#: bookwyrm/models/book.py:574 bookwyrm/models/book.py:614
+#: bookwyrm/models/book.py:563 bookwyrm/models/book.py:603
 #, python-format
 msgid "%(value)s doesn't have correct ISBN checksum, we expected %(check_version)s"
 msgstr ""
 
-#: bookwyrm/models/book.py:797
+#: bookwyrm/models/book.py:628
+msgid "ISBN 10"
+msgstr ""
+
+#: bookwyrm/models/book.py:636
+msgid "ISBN 13"
+msgstr ""
+
+#: bookwyrm/models/book.py:643
+msgid "OCLC number"
+msgstr ""
+
+#: bookwyrm/models/book.py:691
+msgid "Edition"
+msgstr ""
+
+#: bookwyrm/models/book.py:692
+#: bookwyrm/templates/settings/manage-data/data.html:33
+#: bookwyrm/templates/settings/manage-data/merge.html:22
+msgid "Editions"
+msgstr ""
+
+#: bookwyrm/models/book.py:800
 msgid "Book is already in this series"
+msgstr ""
+
+#: bookwyrm/models/book.py:1000 bookwyrm/models/book.py:1001
+#: bookwyrm/templates/book/edit/edit_book_form.html:130
+#: bookwyrm/templates/settings/manage-data/data.html:55
+#: bookwyrm/templates/settings/manage-data/merge.html:50
+msgid "Series"
 msgstr ""
 
 #: bookwyrm/models/bookwyrm_import_job.py:151 bookwyrm/models/report.py:121
@@ -347,11 +448,11 @@ msgstr "팔로워"
 msgid "Private"
 msgstr "비공개"
 
-#: bookwyrm/models/housekeeping.py:122
+#: bookwyrm/models/housekeeping.py:126
 msgid "Missing"
 msgstr ""
 
-#: bookwyrm/models/housekeeping.py:123
+#: bookwyrm/models/housekeeping.py:127
 msgid "Wrong Path"
 msgstr ""
 
@@ -416,12 +517,12 @@ msgstr "대여할 수 있음"
 msgid "Approved"
 msgstr "승인"
 
-#: bookwyrm/models/list.py:106
+#: bookwyrm/models/list.py:124
 #, python-format
 msgid "Suggestions for %(title)s"
 msgstr ""
 
-#: bookwyrm/models/list.py:112
+#: bookwyrm/models/list.py:130
 #, python-format
 msgid "This is the list of suggestions for <a href='%(url)s'>%(title)s</a>"
 msgstr ""
@@ -729,6 +830,7 @@ msgid "Moderator"
 msgstr "중재자"
 
 #: bookwyrm/templates/about/about.html:126 bookwyrm/templates/user_menu.html:62
+#: bookwyrm/templates/user_menu.html:70
 msgid "Admin"
 msgstr "관리"
 
@@ -870,7 +972,7 @@ msgstr ""
 #: bookwyrm/templates/annual_summary/layout.html:157
 #: bookwyrm/templates/annual_summary/layout.html:178
 #: bookwyrm/templates/annual_summary/layout.html:247
-#: bookwyrm/templates/book/series.html:21
+#: bookwyrm/templates/book/series.html:22
 #: bookwyrm/templates/discover/large-book.html:22
 #: bookwyrm/templates/snippets/small-book.html:18
 msgid "by"
@@ -916,84 +1018,84 @@ msgstr ""
 msgid "All the books %(display_name)s read in %(year)s"
 msgstr "%(display_name)s 님이 %(year)s년 한 해 동안 읽은 책"
 
-#: bookwyrm/templates/author/author.html:20
 #: bookwyrm/templates/author/author.html:21
+#: bookwyrm/templates/author/author.html:22
 msgid "Edit Author"
 msgstr "저자 수정"
 
-#: bookwyrm/templates/author/author.html:37
+#: bookwyrm/templates/author/author.html:38
 msgid "Author details"
 msgstr "저자 상세"
 
-#: bookwyrm/templates/author/author.html:41
+#: bookwyrm/templates/author/author.html:42
 #: bookwyrm/templates/author/edit_author.html:42
 msgid "Aliases:"
 msgstr "별칭:"
 
-#: bookwyrm/templates/author/author.html:51
+#: bookwyrm/templates/author/author.html:52
 msgid "Born:"
 msgstr "출생:"
 
-#: bookwyrm/templates/author/author.html:60
+#: bookwyrm/templates/author/author.html:61
 msgid "Died:"
 msgstr "사망:"
 
-#: bookwyrm/templates/author/author.html:68
+#: bookwyrm/templates/author/author.html:69
 msgid "Series:"
 msgstr "총서"
 
-#: bookwyrm/templates/author/author.html:83
-#: bookwyrm/templates/book/series.html:41
+#: bookwyrm/templates/author/author.html:84
+#: bookwyrm/templates/book/series.html:42
 msgid "External links"
 msgstr "외부 링크"
 
-#: bookwyrm/templates/author/author.html:88
+#: bookwyrm/templates/author/author.html:89
 msgid "Wikipedia"
 msgstr "위키백과"
 
-#: bookwyrm/templates/author/author.html:96
+#: bookwyrm/templates/author/author.html:97
 msgid "View on Wikidata"
 msgstr ""
 
-#: bookwyrm/templates/author/author.html:104
+#: bookwyrm/templates/author/author.html:105
 msgid "Website"
 msgstr "웹사이트"
 
-#: bookwyrm/templates/author/author.html:112
+#: bookwyrm/templates/author/author.html:113
 msgid "View ISNI record"
 msgstr "ISNI 레코드 보기"
 
-#: bookwyrm/templates/author/author.html:120
+#: bookwyrm/templates/author/author.html:121
 #: bookwyrm/templates/book/sections/metadata.html:52
 msgid "View on ISFDB"
 msgstr "ISFDB에서 보기"
 
-#: bookwyrm/templates/author/author.html:125
+#: bookwyrm/templates/author/author.html:126
 #: bookwyrm/templates/author/sync_modal.html:5
 #: bookwyrm/templates/book/sections/metadata.html:17
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
 msgstr "데이터 불러오기"
 
-#: bookwyrm/templates/author/author.html:129
+#: bookwyrm/templates/author/author.html:130
 #: bookwyrm/templates/book/sections/metadata.html:21
 msgid "View on OpenLibrary"
 msgstr "OpenLibrary 자료 보기"
 
-#: bookwyrm/templates/author/author.html:144
+#: bookwyrm/templates/author/author.html:145
 #: bookwyrm/templates/book/sections/metadata.html:36
 msgid "View on Inventaire"
 msgstr "Inventaire 자료 보기"
 
-#: bookwyrm/templates/author/author.html:160
+#: bookwyrm/templates/author/author.html:161
 msgid "View on LibraryThing"
 msgstr "LibraryThing 자료 보기"
 
-#: bookwyrm/templates/author/author.html:168
+#: bookwyrm/templates/author/author.html:169
 msgid "View on Goodreads"
 msgstr "Goodreads 자료 보기"
 
-#: bookwyrm/templates/author/author.html:183
+#: bookwyrm/templates/author/author.html:184
 #, python-format
 msgid "Books by %(name)s"
 msgstr ""
@@ -1155,6 +1257,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/security.html:80
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:19
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:19
+#: bookwyrm/templates/settings/manage-data/confirm-merge.html:50
 #: bookwyrm/templates/settings/users/force_password_reset.html:55
 #: bookwyrm/templates/snippets/remove_from_group_button.html:17
 msgid "Confirm"
@@ -1164,18 +1267,18 @@ msgstr "확정"
 msgid "Unable to connect to remote source."
 msgstr ""
 
-#: bookwyrm/templates/book/book.html:57
+#: bookwyrm/templates/book/book.html:59
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
 msgstr[0] "%(count)s개의 판"
 
-#: bookwyrm/templates/book/book.html:80
+#: bookwyrm/templates/book/book.html:82
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
 msgstr "읽은 날짜 추가"
 
-#: bookwyrm/templates/book/book.html:91
+#: bookwyrm/templates/book/book.html:93
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
 msgstr ""
@@ -1392,6 +1495,7 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_profile.html:89
 #: bookwyrm/templates/guided_tour/user_profile.html:112
 #: bookwyrm/templates/guided_tour/user_profile.html:135
+#: bookwyrm/templates/settings/manage-data/confirm-merge.html:48
 #: bookwyrm/templates/user/user.html:107 bookwyrm/templates/user_menu.html:18
 msgid "Back"
 msgstr "뒤로"
@@ -1434,10 +1538,6 @@ msgstr "화제 제거"
 #: bookwyrm/templates/book/edit/edit_book_form.html:121
 msgid "Add Another Subject"
 msgstr "그 밖의 화제 추가"
-
-#: bookwyrm/templates/book/edit/edit_book_form.html:130
-msgid "Series"
-msgstr ""
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:138
 #: bookwyrm/templates/book/series.html:12
@@ -1491,14 +1591,6 @@ msgstr "최초 발행일:"
 #: bookwyrm/templates/book/edit/edit_book_form.html:227
 msgid "Published date:"
 msgstr "발행일:"
-
-#: bookwyrm/templates/book/edit/edit_book_form.html:238
-#: bookwyrm/templates/import/user_import_status.html:155
-#: bookwyrm/templates/preferences/books.html:17
-#: bookwyrm/templates/search/layout.html:23
-#: bookwyrm/templates/search/layout.html:47
-msgid "Authors"
-msgstr "저자"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:249
 #, python-format
@@ -1578,12 +1670,14 @@ msgid "Edit \"%(name)s\""
 msgstr ""
 
 #: bookwyrm/templates/book/edit/edit_series.html:30
+#: bookwyrm/templates/settings/manage-data/merge_authors.html:11
+#: bookwyrm/templates/settings/manage-data/merge_series.html:11
 #: bookwyrm/templates/settings/schedules.html:22
 msgid "Name"
 msgstr ""
 
 #: bookwyrm/templates/book/edit/edit_series.html:36
-#: bookwyrm/templates/book/series.html:29
+#: bookwyrm/templates/book/series.html:30
 msgid "Alternative names"
 msgstr "다른 제목"
 
@@ -1888,7 +1982,7 @@ msgstr ""
 msgid "Edit Book"
 msgstr "책 수정"
 
-#: bookwyrm/templates/book/series.html:72
+#: bookwyrm/templates/book/series.html:73
 #, python-format
 msgid "Book %(series_number)s"
 msgstr "%(series_number)s번째 도서"
@@ -2760,6 +2854,7 @@ msgstr "투어 끝내기"
 #: bookwyrm/templates/guided_tour/user_profile.html:72
 #: bookwyrm/templates/guided_tour/user_profile.html:95
 #: bookwyrm/templates/guided_tour/user_profile.html:118
+#: bookwyrm/templates/settings/manage-data/manual-merge.html:132
 #: bookwyrm/templates/snippets/pagination.html:30
 msgid "Next"
 msgstr "다음"
@@ -3379,7 +3474,7 @@ msgstr "기록 재시도"
 #: bookwyrm/templates/settings/celery.html:45
 #: bookwyrm/templates/settings/imports/imports.html:6
 #: bookwyrm/templates/settings/imports/imports.html:9
-#: bookwyrm/templates/settings/layout.html:97
+#: bookwyrm/templates/settings/layout.html:114
 msgid "Imports"
 msgstr "가져오기"
 
@@ -3435,6 +3530,8 @@ msgstr "열"
 #: bookwyrm/templates/import/import_status.html:110
 #: bookwyrm/templates/import/user_import_status.html:149
 #: bookwyrm/templates/preferences/books.html:16
+#: bookwyrm/templates/settings/manage-data/merge_editions.html:11
+#: bookwyrm/templates/settings/manage-data/merge_works.html:11
 #: bookwyrm/templates/shelf/shelf.html:156
 #: bookwyrm/templates/shelf/shelf.html:178
 msgid "Title"
@@ -3448,12 +3545,6 @@ msgstr "ISBN"
 #: bookwyrm/templates/import/import_status.html:117
 msgid "Openlibrary key"
 msgstr "OpenLibray 키"
-
-#: bookwyrm/templates/import/import_status.html:121
-#: bookwyrm/templates/shelf/shelf.html:157
-#: bookwyrm/templates/shelf/shelf.html:181
-msgid "Author"
-msgstr "저자"
 
 #: bookwyrm/templates/import/import_status.html:124
 msgid "Shelf"
@@ -4196,7 +4287,7 @@ msgstr ""
 msgid "Undo move"
 msgstr ""
 
-#: bookwyrm/templates/moved.html:46 bookwyrm/templates/user_menu.html:77
+#: bookwyrm/templates/moved.html:46 bookwyrm/templates/user_menu.html:84
 msgid "Log out"
 msgstr "로그아웃"
 
@@ -5325,7 +5416,7 @@ msgstr "유형 검색"
 #: bookwyrm/templates/search/layout.html:51
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:27
 #: bookwyrm/templates/settings/federation/instance_list.html:52
-#: bookwyrm/templates/settings/layout.html:36
+#: bookwyrm/templates/settings/layout.html:38
 #: bookwyrm/templates/settings/users/user.html:13
 #: bookwyrm/templates/settings/users/user_admin.html:5
 #: bookwyrm/templates/settings/users/user_admin.html:12
@@ -5358,7 +5449,7 @@ msgstr "편집"
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:130
+#: bookwyrm/templates/settings/layout.html:147
 msgid "Announcements"
 msgstr "공지사항"
 
@@ -5474,30 +5565,40 @@ msgstr ""
 #: bookwyrm/templates/settings/automod/rules.html:26
 #: bookwyrm/templates/settings/files.html:28
 #: bookwyrm/templates/settings/files.html:221
+#: bookwyrm/templates/settings/manage-data/data.html:98
+#: bookwyrm/templates/settings/manage-data/data.html:183
 msgid "Schedule:"
 msgstr "예정:"
 
 #: bookwyrm/templates/settings/automod/rules.html:33
 #: bookwyrm/templates/settings/files.html:35
 #: bookwyrm/templates/settings/files.html:228
+#: bookwyrm/templates/settings/manage-data/data.html:105
+#: bookwyrm/templates/settings/manage-data/data.html:190
 msgid "Last run:"
 msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:40
 #: bookwyrm/templates/settings/files.html:42
 #: bookwyrm/templates/settings/files.html:235
+#: bookwyrm/templates/settings/manage-data/data.html:112
+#: bookwyrm/templates/settings/manage-data/data.html:197
 msgid "Total run count:"
 msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:47
 #: bookwyrm/templates/settings/files.html:49
 #: bookwyrm/templates/settings/files.html:242
+#: bookwyrm/templates/settings/manage-data/data.html:119
+#: bookwyrm/templates/settings/manage-data/data.html:204
 msgid "Enabled:"
 msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:59
 #: bookwyrm/templates/settings/files.html:61
 #: bookwyrm/templates/settings/files.html:254
+#: bookwyrm/templates/settings/manage-data/data.html:131
+#: bookwyrm/templates/settings/manage-data/data.html:216
 msgid "Delete schedule"
 msgstr ""
 
@@ -5518,6 +5619,8 @@ msgstr ""
 #: bookwyrm/templates/settings/automod/rules.html:92
 #: bookwyrm/templates/settings/files.html:96
 #: bookwyrm/templates/settings/files.html:290
+#: bookwyrm/templates/settings/manage-data/data.html:161
+#: bookwyrm/templates/settings/manage-data/data.html:246
 msgid "Schedule scan"
 msgstr "예약된 검사"
 
@@ -5562,7 +5665,7 @@ msgstr "규칙 제거"
 
 #: bookwyrm/templates/settings/celery.html:6
 #: bookwyrm/templates/settings/celery.html:8
-#: bookwyrm/templates/settings/layout.html:101
+#: bookwyrm/templates/settings/layout.html:118
 msgid "Celery Status"
 msgstr "Celery 상태"
 
@@ -5591,7 +5694,7 @@ msgid "Import triggered"
 msgstr "가져오기 트리거함"
 
 #: bookwyrm/templates/settings/celery.html:57
-#: bookwyrm/templates/settings/layout.html:117
+#: bookwyrm/templates/settings/layout.html:134
 msgid "Connectors"
 msgstr "커넥터"
 
@@ -5744,7 +5847,7 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:12
 #: bookwyrm/templates/settings/federation/instance_list.html:3
 #: bookwyrm/templates/settings/federation/instance_list.html:5
-#: bookwyrm/templates/settings/layout.html:62
+#: bookwyrm/templates/settings/layout.html:79
 msgid "Federated Instances"
 msgstr "연합한 인스턴스"
 
@@ -5759,7 +5862,7 @@ msgstr "업데이트"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
-#: bookwyrm/templates/settings/layout.html:28
+#: bookwyrm/templates/settings/layout.html:29
 msgid "Dashboard"
 msgstr "대시보드"
 
@@ -5775,6 +5878,8 @@ msgstr "이번 달 활동 수"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:33
 #: bookwyrm/templates/settings/dashboard/works_chart.html:11
+#: bookwyrm/templates/settings/manage-data/data.html:22
+#: bookwyrm/templates/settings/manage-data/merge.html:31
 msgid "Works"
 msgstr "작품 수"
 
@@ -5873,7 +5978,7 @@ msgstr "도메인:"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:7
-#: bookwyrm/templates/settings/layout.html:80
+#: bookwyrm/templates/settings/layout.html:97
 msgid "Email Blocklist"
 msgstr "이메일 차단록"
 
@@ -5898,7 +6003,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/email_config.html:6
 #: bookwyrm/templates/settings/email_config.html:8
-#: bookwyrm/templates/settings/layout.html:113
+#: bookwyrm/templates/settings/layout.html:130
 msgid "Email Configuration"
 msgstr "이메일 구성"
 
@@ -6088,7 +6193,7 @@ msgid "No instances found"
 msgstr "인스턴스를 찾을 수 없음"
 
 #: bookwyrm/templates/settings/federation/settings.html:3
-#: bookwyrm/templates/settings/layout.html:58
+#: bookwyrm/templates/settings/layout.html:75
 msgid "Federation Settings"
 msgstr ""
 
@@ -6384,7 +6489,7 @@ msgstr ""
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:15
 #: bookwyrm/templates/settings/invites/manage_invites.html:3
 #: bookwyrm/templates/settings/invites/manage_invites.html:15
-#: bookwyrm/templates/settings/layout.html:42
+#: bookwyrm/templates/settings/layout.html:44
 #: bookwyrm/templates/user_menu.html:55
 msgid "Invites"
 msgstr "초대"
@@ -6508,7 +6613,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:7
-#: bookwyrm/templates/settings/layout.html:84
+#: bookwyrm/templates/settings/layout.html:101
 msgid "IP Address Blocklist"
 msgstr "IP 주소 차단목록"
 
@@ -6528,68 +6633,84 @@ msgstr "차단한 IP 주소 없음"
 msgid "Administration"
 msgstr "관리"
 
-#: bookwyrm/templates/settings/layout.html:31
+#: bookwyrm/templates/settings/layout.html:33
 msgid "Manage Users"
 msgstr "이용자 관리"
 
-#: bookwyrm/templates/settings/layout.html:47
+#: bookwyrm/templates/settings/layout.html:49
 #: bookwyrm/templates/settings/users/force_password_reset.html:7
 #: bookwyrm/templates/settings/users/force_password_reset.html:11
 msgid "Force Password Reset"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:53
+#: bookwyrm/templates/settings/layout.html:55
+msgid "Manage Data"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:60
+#: bookwyrm/templates/settings/manage-data/data.html:7
+#: bookwyrm/templates/settings/manage-data/data.html:11
+msgid "Data Quality"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:65
+#: bookwyrm/templates/settings/manage-data/merge.html:6
+#: bookwyrm/templates/settings/manage-data/merge.html:8
+msgid "Merge Data"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:70
 msgid "Federation"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:68
+#: bookwyrm/templates/settings/layout.html:85
 msgid "Moderation"
 msgstr "중재"
 
-#: bookwyrm/templates/settings/layout.html:72
+#: bookwyrm/templates/settings/layout.html:89
 #: bookwyrm/templates/settings/reports/reports.html:8
 #: bookwyrm/templates/settings/reports/reports.html:17
 msgid "Reports"
 msgstr "제보"
 
-#: bookwyrm/templates/settings/layout.html:76
+#: bookwyrm/templates/settings/layout.html:93
 msgid "Auto-Moderation Rules"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:88
+#: bookwyrm/templates/settings/layout.html:105
 #: bookwyrm/templates/settings/link_domains/link_domains.html:5
 #: bookwyrm/templates/settings/link_domains/link_domains.html:7
 msgid "Link Domains"
 msgstr "링크 도메인"
 
-#: bookwyrm/templates/settings/layout.html:93
+#: bookwyrm/templates/settings/layout.html:110
 msgid "System"
 msgstr "시스템"
 
-#: bookwyrm/templates/settings/layout.html:105
+#: bookwyrm/templates/settings/layout.html:122
 msgid "Redis status"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:109
+#: bookwyrm/templates/settings/layout.html:126
 msgid "Scheduled Tasks"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:121
+#: bookwyrm/templates/settings/layout.html:138
 msgid "Files Maintenance"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:126
+#: bookwyrm/templates/settings/layout.html:143
 msgid "Instance Settings"
 msgstr "인스턴스 설정"
 
-#: bookwyrm/templates/settings/layout.html:134
+#: bookwyrm/templates/settings/layout.html:151
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr "사이트 설정"
 
-#: bookwyrm/templates/settings/layout.html:140
-#: bookwyrm/templates/settings/layout.html:143
+#: bookwyrm/templates/settings/layout.html:157
+#: bookwyrm/templates/settings/layout.html:160
 #: bookwyrm/templates/settings/registration.html:4
 #: bookwyrm/templates/settings/registration.html:6
 #: bookwyrm/templates/settings/registration_limited.html:4
@@ -6597,7 +6718,7 @@ msgstr "사이트 설정"
 msgid "Registration"
 msgstr "등록"
 
-#: bookwyrm/templates/settings/layout.html:149
+#: bookwyrm/templates/settings/layout.html:166
 #: bookwyrm/templates/settings/site.html:107
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
@@ -6635,6 +6756,170 @@ msgstr "현재 차단한 도메인 없음"
 
 #: bookwyrm/templates/settings/link_domains/link_table.html:43
 msgid "No links available for this domain."
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/confirm-merge.html:6
+#: bookwyrm/templates/settings/manage-data/confirm-merge.html:10
+msgid "Confirm merge"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/confirm-merge.html:17
+#, python-format
+msgid "The merged %(model_name)s will have the following values."
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/confirm-merge.html:20
+msgid "Only fields where values differ are shown – other fields will automatically merge."
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/confirm-merge.html:23
+#, python-format
+msgid "Related fields such as series attached to books or editions attached to authors will automatically be merged into this %(model_name)s."
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/confirm-merge.html:32
+#: bookwyrm/templates/settings/manage-data/manual-merge.html:57
+msgid "Field"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/confirm-merge.html:33
+msgid "Merged value"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/data.html:17
+msgid "Duplicates detected"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/data.html:18
+msgid "Duplicates will be detected when a duplicate data scan has run"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/data.html:27
+#: bookwyrm/templates/settings/manage-data/data.html:38
+#: bookwyrm/templates/settings/manage-data/data.html:49
+#: bookwyrm/templates/settings/manage-data/data.html:60
+#: bookwyrm/templates/settings/manage-data/data.html:71
+msgid "View first"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/data.html:66
+msgid "Suggestion list"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/data.html:79
+msgid "Run scan task"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/data.html:85
+msgid "Schedule duplicate data scan"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/data.html:89
+msgid "This job scans for duplicate editions, works, authors, and series."
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/data.html:91
+msgid "No changes will be made to the data."
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/data.html:170
+msgid "Schedule data merge"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/data.html:174
+msgid "This job combines editions, works, authors, and series that are flagged as duplicates."
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/data.html:176
+msgid "This job will make irreversible changes to your data."
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/manual-merge.html:9
+#: bookwyrm/templates/settings/manage-data/manual-merge.html:15
+#, python-format
+msgid "\n"
+"Merge %(plural_model)s\n"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/manual-merge.html:27
+#, python-format
+msgid "<a href=\"%(user_path)s\">@%(username)s</a> blocked auto-merging for item with id <a href=\"%(item_path)s\">%(item_id)s</a>. This duplicate may have been flagged in error."
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/manual-merge.html:39
+#, python-format
+msgid "All mergable fields in %(model_name)s %(canonical_id)s and its duplicate %(plural_model)s are identical."
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/manual-merge.html:43
+#: bookwyrm/templates/settings/manage-data/merge_authors.html:21
+#: bookwyrm/templates/settings/manage-data/merge_editions.html:23
+#: bookwyrm/templates/settings/manage-data/merge_series.html:21
+#: bookwyrm/templates/settings/manage-data/merge_works.html:30
+msgid "Merge"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/manual-merge.html:49
+msgid "Choose which values to use in the merged object. Only values that differ are shown – other values will automatically merge."
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/manual-merge.html:58
+msgid "Canonical values"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/manual-merge.html:59
+msgid "Duplicate values"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/manual-merge.html:77
+msgid "no value"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/merge.html:56
+msgid "Click \"Merge\" on an item to manually select fields to merge."
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/merge_authors.html:6
+msgid "Authors with merge candidates"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/merge_authors.html:12
+#: bookwyrm/templates/settings/manage-data/merge_editions.html:13
+#: bookwyrm/templates/settings/manage-data/merge_series.html:12
+#: bookwyrm/templates/settings/manage-data/merge_works.html:13
+msgid "Merge Candidates"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/merge_authors.html:29
+msgid "There are no authors to merge."
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/merge_editions.html:6
+msgid "Editions with merge candidates"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/merge_editions.html:31
+msgid "There are no editions to merge."
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/merge_series.html:6
+msgid "Series with merge candidates"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/merge_series.html:29
+msgid "There are no series to merge."
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/merge_works.html:6
+msgid "Works with merge candidates"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/merge_works.html:24
+msgid "(Orphaned work)"
+msgstr ""
+
+#: bookwyrm/templates/settings/manage-data/merge_works.html:39
+msgid "There are no works to merge."
 msgstr ""
 
 #: bookwyrm/templates/settings/redis.html:5
@@ -7244,6 +7529,22 @@ msgstr ""
 msgid "Access level:"
 msgstr "접근 레벨:"
 
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:96
+msgid "Allow to manage data"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:98
+msgid "Allow this user to manually merge authors, editions, works, and series. This could result in data loss or corrupted records."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:100
+msgid "Remove Permission"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:100
+msgid "Add Permission"
+msgstr ""
+
 #: bookwyrm/templates/setup/admin.html:5
 msgid "Set up BookWyrm"
 msgstr ""
@@ -7709,6 +8010,83 @@ msgstr ""
 #, python-format
 msgid "%(username)s has read <a href=\"%(path)s\">%(read_count)s of %(goal_count)s books</a>."
 msgstr ""
+
+#: bookwyrm/templates/snippets/merge_banner/author.html:7
+#, python-format
+msgid "This author been identified as a duplicate of <strong><a href=\"%(dupe_url)s\">%(dupe_title)s</a></strong>."
+msgstr ""
+
+#: bookwyrm/templates/snippets/merge_banner/edition.html:7
+#, python-format
+msgid "This edition been identified as a duplicate of <strong><a href=\"%(dupe_url)s\">%(dupe_title)s</a></strong>."
+msgstr ""
+
+#: bookwyrm/templates/snippets/merge_banner/layout.html:15
+msgid "Automatic merging has been blocked for this item."
+msgstr ""
+
+#: bookwyrm/templates/snippets/merge_banner/layout.html:17
+#, python-format
+msgid "(Blocked by <a href=\"%(user_path)s\">@%(username)s</a>)"
+msgstr ""
+
+#: bookwyrm/templates/snippets/merge_banner/layout.html:20
+#, python-format
+msgid "After %(date)s, these will be automatically merged."
+msgstr ""
+
+#: bookwyrm/templates/snippets/merge_banner/layout.html:27
+msgid "These identifiers are the same for both:"
+msgstr ""
+
+#: bookwyrm/templates/snippets/merge_banner/layout.html:36
+msgid "Is this mistaken?"
+msgstr ""
+
+#: bookwyrm/templates/snippets/merge_banner/layout.html:39
+msgid "Block automatic merge"
+msgstr ""
+
+#: bookwyrm/templates/snippets/merge_banner/layout.html:46
+#: bookwyrm/templates/snippets/merge_banner/layout.html:93
+msgid "Merge now"
+msgstr ""
+
+#: bookwyrm/templates/snippets/merge_banner/layout.html:61
+#, python-format
+msgid "A duplicate of this item has been identified."
+msgid_plural "%(display_count)s duplicates of this item have been detected."
+msgstr[0] ""
+
+#: bookwyrm/templates/snippets/merge_banner/layout.html:69
+msgid "These will be automatically merged unless the duplicate entry has been manually blocked."
+msgstr ""
+
+#: bookwyrm/templates/snippets/merge_banner/layout.html:86
+#, python-format
+msgid "And %(count)s other(s)."
+msgstr ""
+
+#: bookwyrm/templates/snippets/merge_banner/series.html:7
+#, python-format
+msgid "This series been identified as a duplicate of <strong><a href=\"%(dupe_url)s\">%(dupe_title)s</a></strong>."
+msgstr ""
+
+#: bookwyrm/templates/snippets/merge_banner/work.html:9
+#, python-format
+msgid "This edition's work been identified as a duplicate of <strong><a href=\"%(dupe_url)s\">%(dupe_title)s</a></strong>."
+msgstr ""
+
+#: bookwyrm/templates/snippets/merge_banner/work.html:13
+#, python-format
+msgid "This edition's work been identified as a duplicate of <strong>%(dupe_title)s</strong> (orphaned work)."
+msgstr ""
+
+#: bookwyrm/templates/snippets/merge_banner/work.html:22
+#, python-format
+msgid "A duplicate of this edition's work has been identified."
+msgid_plural "%(display_count)s duplicates of this edition's work have been detected."
+msgstr[0] ""
 
 #: bookwyrm/templates/snippets/move_user_buttons.html:10
 msgid "Follow at new account"
@@ -8278,24 +8656,24 @@ msgid "%(num)d book - by %(user)s"
 msgid_plural "%(num)d books - by %(user)s"
 msgstr[0] ""
 
-#: bookwyrm/templatetags/utilities.py:42
+#: bookwyrm/templatetags/utilities.py:56
 msgid "deactivated user"
 msgstr ""
 
-#: bookwyrm/templatetags/utilities.py:62
+#: bookwyrm/templatetags/utilities.py:76
 #, python-format
 msgid "%(title)s: %(subtitle)s"
 msgstr ""
 
-#: bookwyrm/templatetags/utilities.py:135
+#: bookwyrm/templatetags/utilities.py:149
 msgid "a new user account"
 msgstr ""
 
-#: bookwyrm/views/books/edit_book.py:82 bookwyrm/views/books/edit_book.py:477
+#: bookwyrm/views/books/edit_book.py:82 bookwyrm/views/books/edit_book.py:478
 msgid "There is another book in the series with the same value"
 msgstr ""
 
-#: bookwyrm/views/books/series.py:97
+#: bookwyrm/views/books/series.py:104
 msgid "Series position must be unique for each book"
 msgstr "시리즈 순서는 각 권마다 고유해야함"
 
