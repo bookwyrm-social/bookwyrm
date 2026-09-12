@@ -59,7 +59,7 @@ Merge {{plural_model}}
                 <td colspan="2">{% trans 'Duplicate values' %}</td>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="is-break-word">
             {% for field in simple_fields %}
             <tr>
                 {% with canonical|getattr_filter:field.name as canonical_value %}
