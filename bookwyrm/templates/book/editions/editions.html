@@ -6,12 +6,23 @@
 
 {% block content %}
 
-<div class="block">
-    <h1 class="title">{{ work|book_title }}</h1>
+<div class="block columns">
+    <div class="column">
+        <h1 class="title">{{ work|book_title }}</h1>
 
-    {% if work.authors.exists %}
-    <div class="subtitle" dir="auto">
-        {% include 'snippets/authors.html' with book=work %}
+        {% if work.authors.exists %}
+        <div class="subtitle" dir="auto">
+            {% include 'snippets/authors.html' with book=work %}
+        </div>
+        {% endif %}
+    </div>
+
+    {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+    <div class="column is-narrow">
+        <a href="{% url 'edit-book' work.id %}">
+            <span class="icon icon-pencil" title="{% trans "Edit Work" %}" aria-hidden="true"></span>
+            <span class="is-sr-only-mobile">{% trans "Edit Work" %}</span>
+        </a>
     </div>
     {% endif %}
 </div>

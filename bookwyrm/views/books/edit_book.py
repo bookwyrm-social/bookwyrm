@@ -26,7 +26,7 @@ from bookwyrm.utils.isni import (
     build_author_from_isni,
     augment_author_aliases,
 )
-from bookwyrm.views.helpers import get_edition, get_mergeable_object_or_404
+from bookwyrm.views.helpers import get_mergeable_object_or_404
 
 
 @method_decorator(login_required, name="dispatch")
@@ -38,15 +38,19 @@ class EditBook(View):
 
     def get(self, request, book_id):
         """info about a book"""
-        book = get_edition(book_id)
-        seriesbooks = book.parent_work.seriesbooks.all()
+        book = models.Book.objects.select_subclasses().get(id=book_id)
+        if isinstance(book, models.Work):
+            seriesbooks = book.seriesbooks.all()
+        else:
+            seriesbooks = book.parent_work.seriesbooks.all()
         # This doesn't update the sort title, just pre-populates it in the form
         if book.sort_title in ["", None]:
             book.sort_title = book.guess_sort_title(user=request.user)
-        if not book.description:
+        if not book.description and hasattr(book, "parent_work"):
             book.description = book.parent_work.description
         data = {
             "book": book,
+            "model": "work" if isinstance(book, models.Work) else "edition",
             "seriesbooks": seriesbooks,
             "form": forms.EditionForm(instance=book),
         }

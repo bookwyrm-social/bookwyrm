@@ -193,46 +193,7 @@
                 </div>
         </section>
 
-
-
-
-
-        <section class="block">
-            <h2 class="title is-4">
-                {% trans "Publication" %}
-            </h2>
-            <div class="box">
-                <div class="field">
-                    <label class="label" for="id_publishers">
-                        {% trans "Publisher:" %}
-                    </label>
-                    {{ form.publishers }}
-                    <span class="help" id="desc_publishers_help">
-                        {% trans "Separate multiple values with commas." %}
-                    </span>
-
-                    {% include 'snippets/form_errors.html' with errors_list=form.publishers.errors id="desc_publishers" %}
-                </div>
-
-                <div class="field">
-                    <label class="label" for="id_first_published_date">
-                        {% trans "First published date:" %}
-                    </label>
-                    {{ form.first_published_date }}
-                    {% include 'snippets/form_errors.html' with errors_list=form.first_published_date.errors id="desc_first_published_date" %}
-                </div>
-
-                <div class="field">
-                    <label class="label" for="id_published_date">
-                        {% trans "Published date:" %}
-                    </label>
-                    {{ form.published_date }}
-
-                    {% include 'snippets/form_errors.html' with errors_list=form.published_date.errors id="desc_published_date" %}
-                </div>
-            </div>
-        </section>
-
+        {% block publication %}{% endblock %}
         <section class="block">
             <h2 class="title is-4">
                 {% trans "Authors" %}
@@ -310,68 +271,14 @@
             </div>
         </section>
 
-        <section class="block">
-            <h2 class="title is-4">
-                {% trans "Physical Properties" %}
-            </h2>
-            <div class="box">
-                <div class="columns">
-                    <div class="column is-one-third">
-                        <div class="field">
-                            <label class="label" for="id_physical_format">
-                                {% trans "Format:" %}
-                            </label>
-                            {{ form.physical_format }}
-
-                            {% include 'snippets/form_errors.html' with errors_list=form.physical_format.errors id="desc_physical_format" %}
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="field">
-                            <label class="label" for="id_physical_format_detail">
-                                {% trans "Format details:" %}
-                            </label>
-                            {{ form.physical_format_detail }}
-
-                            {% include 'snippets/form_errors.html' with errors_list=form.physical_format_detail.errors id="desc_physical_format_detail" %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label class="label" for="id_pages">
-                        {% trans "Pages:" %}
-                    </label>
-                    {{ form.pages }}
-
-                    {% include 'snippets/form_errors.html' with errors_list=form.pages.errors id="desc_pages" %}
-                </div>
-            </div>
-        </section>
+        {% block physical_properties %}{% endblock %}
 
         <section class="block">
             <h2 class="title is-4">
                 {% trans "Book Identifiers" %}
             </h2>
             <div class="box">
-                <div class="field">
-                    <label class="label" for="id_isbn_13">
-                        {% trans "ISBN 13:" %}
-                    </label>
-                    {{ form.isbn_13 }}
-
-                    {% include 'snippets/form_errors.html' with errors_list=form.isbn_13.errors id="desc_isbn_13" %}
-                </div>
-
-                <div class="field">
-                    <label class="label" for="id_isbn_10">
-                        {% trans "ISBN 10:" %}
-                    </label>
-                    {{ form.isbn_10 }}
-
-                    {% include 'snippets/form_errors.html' with errors_list=form.isbn_10.errors id="desc_isbn_10" %}
-                </div>
-
+                {% block identifiers %}{% endblock %}
                 <div class="field">
                     <label class="label" for="id_openlibrary_key">
                         {% trans "Openlibrary ID:" %}
@@ -397,15 +304,6 @@
                     {{ form.goodreads_key }}
 
                     {% include 'snippets/form_errors.html' with errors_list=form.goodreads_key.errors id="desc_goodreads_key" %}
-                </div>
-
-                <div class="field">
-                    <label class="label" for="id_oclc_number">
-                        {% trans "OCLC Number:" %}
-                    </label>
-                    {{ form.oclc_number }}
-
-                    {% include 'snippets/form_errors.html' with errors_list=form.oclc_number.errors id="desc_oclc_number" %}
                 </div>
 
                 <div class="field">

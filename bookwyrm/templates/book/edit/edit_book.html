@@ -184,7 +184,11 @@
         <hr class="block">
     {% endif %}
 
-    {% include "book/edit/edit_book_form.html" %}
+    {% if model == "edition" %}
+    {% include "book/edit/edit_edition_form.html" %}
+    {% elif model == "work" %}
+    {% include "book/edit/edit_work_form.html" %}
+    {% endif %}
 
     {% if not confirm_mode %}
     <div class="block">
