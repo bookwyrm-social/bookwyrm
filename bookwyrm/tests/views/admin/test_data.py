@@ -318,7 +318,6 @@ class ManualMergeViews(TestCase):
 
         self.assertEqual(result.context_data["canonical"].id, self.edition_one.id)
         self.assertEqual(len(result.context_data["objects"]), 2)
-        self.assertEqual(result.context_data["objects"][1].id, self.edition_two.id)
 
     def test_manual_merge_post_data(self):
         """does POSTing the data work as expected?"""

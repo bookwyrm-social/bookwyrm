@@ -174,6 +174,37 @@ class MergeableMixin(TestCase):
         self.assertEqual(merged.merged_into, dupe)
         self.assertEqual(dupe.description, "don't lose me in the merge")
 
+    def test_merge_into_with_shelf_clash(self):
+        """merge editions that have been shelved by the same user"""
+        user = models.User.objects.create_user(
+            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+        )
+        shelf = models.Shelf.objects.create(name="to read", user=user, editable=False)
+        book = models.Edition.objects.create(
+            title="Example Edition",
+            isbn_13="9780810160118",
+            description="don't lose me in the merge",
+            parent_work=models.Work.objects.create(title="Example Work"),
+        )
+        models.ShelfBook.objects.create(book=book, user=user, shelf=shelf)
+        dupe = models.Edition.objects.create(
+            title="Duplicate Edition",
+            isbn_13="9780810160118",
+            parent_work=models.Work.objects.create(title="Example Work"),
+        )
+        models.ShelfBook.objects.create(book=dupe, user=user, shelf=shelf)
+        self.assertFalse(models.MergedEdition.objects.exists())
+
+        absorbed = book.merge_into(dupe)
+
+        self.assertEqual(absorbed["description"], "don't lose me in the merge")
+        self.assertFalse(models.Edition.objects.filter(id=book.id).exists())
+        merged = models.MergedEdition.objects.get()
+        dupe.refresh_from_db()
+        self.assertEqual(merged.deleted_id, book.id)
+        self.assertEqual(merged.merged_into, dupe)
+        self.assertEqual(dupe.description, "don't lose me in the merge")
+
     def test_merge_into_dry_run(self):
         """merge duplicates"""
         models.Edition.objects.create(

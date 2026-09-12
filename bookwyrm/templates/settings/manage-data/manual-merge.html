@@ -32,7 +32,7 @@ Merge {{plural_model}}
     {% endfor %}
 
     {% if not simple_fields and not array_fields %}
-    <form class="form" method="post" action="{% url 'settings-confirm-manual-merge' model_name canonical_id %}?source={{source}}">
+    <form class="form" method="post" action="{% url 'settings-confirm-manual-merge' model_name canonical_id %}?source={{source}}&merge_type={{merge_type}}">
         {% csrf_token %}
         <div class="has-text-centered m-4">
             <p>
@@ -59,7 +59,7 @@ Merge {{plural_model}}
                 <td colspan="2">{% trans 'Duplicate values' %}</td>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="is-break-word">
             {% for field in simple_fields %}
             <tr>
                 {% with canonical|getattr_filter:field.name as canonical_value %}
@@ -133,7 +133,6 @@ Merge {{plural_model}}
                 </td>
             </tr>
         </tbody>
-    </div>
     </form>
     </table>
     {% endif %}

@@ -78,7 +78,9 @@
             <ol>
                 {% for candidate in candidates|slice:":20" %}
                 <li>
+                    {% block candidate_link %}
                     <a href="{{ candidate.local_path }}">{{ candidate.remote_id }}</a>
+                    {% endblock %}
                 </li>
                 {% endfor %}
             </ol>

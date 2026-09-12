@@ -16,9 +16,9 @@
         <tbody>
             {% for serie in series %}
             <tr class="has-text-centered">
-                <td><a href="{{serie.remote_id}}">{{serie.name}}</a></td>
+                <td><a href="{{serie.remote_id}}">{% firstof serie.name "Unnamed" %}</a></td>
                 <td>{{serie.merge_candidates.count}}</td>
-                <td><a class="button is-small is-link" href="{% url 'settings-manual-merge' 'series' serie.id %}?source=admin">{% trans 'Merge' %}</a></td>
+                <td><a class="button is-small is-link" href="{% url 'settings-manual-merge' 'series' serie.id %}?source=admin&merge_type=series">{% trans 'Merge' %}</a></td>
             </tr>
             {% endfor %}
         </tbody>

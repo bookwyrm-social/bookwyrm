@@ -31,7 +31,7 @@
                 >{% trans 'Works' %}{% if works_count %}<span class="tag is-info is-light ml-2">{{works_count}}</span>{% endif %}
                 </a>
             </li>
-            <li>
+            <li class="{% if merge_type == 'author' or not merge_type %}is-active{% endif %}">
                 <a
                     role="tab"
                     href="{{ request.path }}?merge_type=author"
@@ -40,7 +40,7 @@
                     aria-controls="authors"
                 >{% trans 'Authors' %}{% if authors_count %}<span class="tag is-info is-light ml-2">{{authors_count}}</span>{% endif %}</a>
             </li>
-            <li>
+            <li class="{% if merge_type == 'series' or not merge_type %}is-active{% endif %}">
                 <a
                     role="tab"
                     href="{{ request.path }}?merge_type=series"
