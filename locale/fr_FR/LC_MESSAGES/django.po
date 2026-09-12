@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-10 20:16+0000\n"
-"PO-Revision-Date: 2026-09-11 21:34\n"
+"PO-Revision-Date: 2026-09-12 08:01\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -210,55 +210,55 @@ msgstr "Blocage de domaine"
 
 #: bookwyrm/models/book.py:53
 msgid "OpenLibrary key"
-msgstr ""
+msgstr "Identifiant OpenLibrary"
 
 #: bookwyrm/models/book.py:60
 msgid "Finna key"
-msgstr ""
+msgstr "Identifiant Finna"
 
 #: bookwyrm/models/book.py:67
 msgid "Libris key"
-msgstr ""
+msgstr "Identifiant Libris"
 
 #: bookwyrm/models/book.py:74
 msgid "Inventaire ID"
-msgstr ""
+msgstr "ID Inventaire"
 
 #: bookwyrm/models/book.py:81
 msgid "LibraryThing key"
-msgstr ""
+msgstr "ID LibraryThing"
 
 #: bookwyrm/models/book.py:88
 msgid "GoodReads key"
-msgstr ""
+msgstr "ID GoodReads"
 
 #: bookwyrm/models/book.py:95
 msgid "BNF ID"
-msgstr ""
+msgstr "Identifiant BNF"
 
 #: bookwyrm/models/book.py:102
 msgid "VIAF"
-msgstr ""
+msgstr "VIAF"
 
 #: bookwyrm/models/book.py:109
 msgid "Wikidata ID"
-msgstr ""
+msgstr "ID Wikidata"
 
 #: bookwyrm/models/book.py:116
 msgid "ASIN"
-msgstr ""
+msgstr "ASIN"
 
 #: bookwyrm/models/book.py:123
 msgid "AASIN"
-msgstr ""
+msgstr "AASIN"
 
 #: bookwyrm/models/book.py:130
 msgid "ISFDB ID"
-msgstr ""
+msgstr "ID ISFDB"
 
 #: bookwyrm/models/book.py:478
 msgid "LCCN"
-msgstr ""
+msgstr "LCCN"
 
 #: bookwyrm/models/book.py:521
 msgid "Audiobook"
@@ -295,25 +295,25 @@ msgstr "%(value)s n'a pas la somme de contrôle ISBN correcte, nous nous attendi
 
 #: bookwyrm/models/book.py:628
 msgid "ISBN 10"
-msgstr ""
+msgstr "ISBN 10"
 
 #: bookwyrm/models/book.py:636
 msgid "ISBN 13"
-msgstr ""
+msgstr "ISBN 13"
 
 #: bookwyrm/models/book.py:643
 msgid "OCLC number"
-msgstr ""
+msgstr "Numéro OCLC"
 
 #: bookwyrm/models/book.py:691
 msgid "Edition"
-msgstr ""
+msgstr "Édition"
 
 #: bookwyrm/models/book.py:692
 #: bookwyrm/templates/settings/manage-data/data.html:33
 #: bookwyrm/templates/settings/manage-data/merge.html:22
 msgid "Editions"
-msgstr ""
+msgstr "Éditions"
 
 #: bookwyrm/models/book.py:800
 msgid "Book is already in this series"
@@ -6672,19 +6672,19 @@ msgstr "Forcer la réinitialisation du mot de passe"
 
 #: bookwyrm/templates/settings/layout.html:55
 msgid "Manage Data"
-msgstr ""
+msgstr "Gestion des données"
 
 #: bookwyrm/templates/settings/layout.html:60
 #: bookwyrm/templates/settings/manage-data/data.html:7
 #: bookwyrm/templates/settings/manage-data/data.html:11
 msgid "Data Quality"
-msgstr ""
+msgstr "Qualité des données"
 
 #: bookwyrm/templates/settings/layout.html:65
 #: bookwyrm/templates/settings/manage-data/merge.html:6
 #: bookwyrm/templates/settings/manage-data/merge.html:8
 msgid "Merge Data"
-msgstr ""
+msgstr "Fusionner les données"
 
 #: bookwyrm/templates/settings/layout.html:70
 msgid "Federation"
@@ -6788,38 +6788,38 @@ msgstr "Aucun lien n’est disponible pour ce domaine."
 #: bookwyrm/templates/settings/manage-data/confirm-merge.html:6
 #: bookwyrm/templates/settings/manage-data/confirm-merge.html:10
 msgid "Confirm merge"
-msgstr ""
+msgstr "Confirmer la fusion"
 
 #: bookwyrm/templates/settings/manage-data/confirm-merge.html:17
 #, python-format
 msgid "The merged %(model_name)s will have the following values."
-msgstr ""
+msgstr "Les %(model_name)s fusionnés auront les valeurs suivantes."
 
 #: bookwyrm/templates/settings/manage-data/confirm-merge.html:20
 msgid "Only fields where values differ are shown – other fields will automatically merge."
-msgstr ""
+msgstr "Seuls les champs dont les valeurs diffèrent sont affichés ; les autres champs seront automatiquement fusionnés."
 
 #: bookwyrm/templates/settings/manage-data/confirm-merge.html:23
 #, python-format
 msgid "Related fields such as series attached to books or editions attached to authors will automatically be merged into this %(model_name)s."
-msgstr ""
+msgstr "Les champs associés, tels que les collections liées à des livres ou les éditions liées à des auteurs, seront automatiquement fusionnés dans ce %(model_name)s."
 
 #: bookwyrm/templates/settings/manage-data/confirm-merge.html:32
 #: bookwyrm/templates/settings/manage-data/manual-merge.html:57
 msgid "Field"
-msgstr ""
+msgstr "Champ"
 
 #: bookwyrm/templates/settings/manage-data/confirm-merge.html:33
 msgid "Merged value"
-msgstr ""
+msgstr "Valeur fusionnée"
 
 #: bookwyrm/templates/settings/manage-data/data.html:17
 msgid "Duplicates detected"
-msgstr ""
+msgstr "Doublons détectés"
 
 #: bookwyrm/templates/settings/manage-data/data.html:18
 msgid "Duplicates will be detected when a duplicate data scan has run"
-msgstr ""
+msgstr "Les doublons seront détectés une fois que l'analyse des données aura été effectuée"
 
 #: bookwyrm/templates/settings/manage-data/data.html:27
 #: bookwyrm/templates/settings/manage-data/data.html:38
@@ -6827,31 +6827,31 @@ msgstr ""
 #: bookwyrm/templates/settings/manage-data/data.html:60
 #: bookwyrm/templates/settings/manage-data/data.html:71
 msgid "View first"
-msgstr ""
+msgstr "Afficher le premier"
 
 #: bookwyrm/templates/settings/manage-data/data.html:66
 msgid "Suggestion list"
-msgstr ""
+msgstr "Liste de suggestions"
 
 #: bookwyrm/templates/settings/manage-data/data.html:79
 msgid "Run scan task"
-msgstr ""
+msgstr "Lancer la tâche d'analyse"
 
 #: bookwyrm/templates/settings/manage-data/data.html:85
 msgid "Schedule duplicate data scan"
-msgstr ""
+msgstr "Planifier une analyse des données"
 
 #: bookwyrm/templates/settings/manage-data/data.html:89
 msgid "This job scans for duplicate editions, works, authors, and series."
-msgstr ""
+msgstr "Cette tâche recherche les doublons parmi les éditions, les ouvrages, les auteurs et les séries."
 
 #: bookwyrm/templates/settings/manage-data/data.html:91
 msgid "No changes will be made to the data."
-msgstr ""
+msgstr "Aucune modification ne sera apportée aux données."
 
 #: bookwyrm/templates/settings/manage-data/data.html:170
 msgid "Schedule data merge"
-msgstr ""
+msgstr "Planifier la fusion des données"
 
 #: bookwyrm/templates/settings/manage-data/data.html:174
 msgid "This job combines editions, works, authors, and series that are flagged as duplicates."
