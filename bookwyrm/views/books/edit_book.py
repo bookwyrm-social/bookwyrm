@@ -39,28 +39,32 @@ class EditBook(View):
     def get(self, request, book_id):
         """info about a book"""
         book = models.Book.objects.select_subclasses().get(id=book_id)
-        if isinstance(book, models.Work):
-            seriesbooks = book.seriesbooks.all()
-        else:
-            seriesbooks = book.parent_work.seriesbooks.all()
+        is_work = isinstance(book, models.Work)
+        seriesbooks = (
+            book.seriesbooks.all() if is_work else book.parent_work.seriesbooks.all()
+        )
         # This doesn't update the sort title, just pre-populates it in the form
         if book.sort_title in ["", None]:
             book.sort_title = book.guess_sort_title(user=request.user)
         if not book.description and hasattr(book, "parent_work"):
             book.description = book.parent_work.description
+        form = forms.WorkForm if is_work else forms.EditionForm
         data = {
             "book": book,
-            "model": "work" if isinstance(book, models.Work) else "edition",
+            "model": "work" if is_work else "edition",
             "seriesbooks": seriesbooks,
-            "form": forms.EditionForm(instance=book),
+            "form": form(instance=book),
         }
         return TemplateResponse(request, "book/edit/edit_book.html", data)
 
     def post(self, request, book_id):
         """edit a book cool"""
-        book = get_mergeable_object_or_404(models.Edition, id=book_id)
 
-        form = forms.EditionForm(request.POST, request.FILES, instance=book)
+        book = models.Book.objects.select_subclasses().get(id=book_id)
+        is_work = isinstance(book, models.Work)
+
+        form = forms.WorkForm if is_work else forms.EditionForm
+        form = form(request.POST, request.FILES, instance=book)
 
         data = {"book": book, "form": form}
         ensure_transient_values_persist(request, data)
@@ -74,7 +78,10 @@ class EditBook(View):
         data = add_or_remove_series(request, data)
 
         series_errors = []
-        for sb in book.parent_work.seriesbooks.all():
+        seriesbooks = (
+            book.seriesbooks.all() if is_work else book.parent_work.seriesbooks.all()
+        )
+        for sb in seriesbooks:
             if value := request.POST.get(f"series_number-{sb.id}"):
                 try:
                     sb.series_number = value
@@ -123,6 +130,8 @@ class EditBook(View):
 
         book.save()
 
+        if is_work:
+            return redirect(f"/book/{book.id}/editions")
         return redirect(f"/book/{book.id}")
 
 
