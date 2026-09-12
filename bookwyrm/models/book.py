@@ -468,7 +468,6 @@ class Work(OrderedCollectionPageMixin, Book):
     pending_merge_target = models.ForeignKey(
         "Work", related_name="merge_target", on_delete=models.PROTECT, null=True
     )
-    read_count = models.IntegerField(default=0)
 
     # library of congress catalog control number
     lccn = fields.CharField(

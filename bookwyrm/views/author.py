@@ -46,7 +46,7 @@ class Author(MergeableViewMixin, View):
         books = (
             models.Work.objects.filter(editions__authors=author)
             .exclude(id__in=blocked_books)
-            .order_by("-read_count", "created_date")
+            .order_by("created_date")
             .distinct()
         )
 
