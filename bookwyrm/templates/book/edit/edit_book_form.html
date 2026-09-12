@@ -25,9 +25,9 @@
                     <label class="label" for="id_title">
                         {% trans "Title:" %}
                     </label>
-                    <input type="text" name="title" value="{{ form.title.value|default:'' }}" maxlength="255" class="input" required="" id="id_title" aria-describedby="desc_title">
+                    <input type="text" name="title" value="{{ form.title.value|default:'' }}" maxlength="255" class="input" required="" id="id_title" aria-describedby="id_title_error">
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.title.errors id="desc_title" %}
+                    {% include 'snippets/form_errors.html' with errors_list=form.title.errors id="id_title_error" %}
                 </div>
 
                 {% if form.sort_title.value %}
@@ -35,9 +35,9 @@
                     <label class="label" for="id_sort_title">
                         {% trans "Sort Title:" %}
                     </label>
-                    <input type="text" name="sort_title" value="{{ form.sort_title.value|default:'' }}" maxlength="255" class="input" id="id_sort_title" aria-describedby="desc_sort_title">
+                    <input type="text" name="sort_title" value="{{ form.sort_title.value|default:'' }}" maxlength="255" class="input" id="id_sort_title" aria-describedby="id_sort_title_error">
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.sort_title.errors id="desc_sort_title" %}
+                    {% include 'snippets/form_errors.html' with errors_list=form.sort_title.errors id="id_sort_title_error" %}
                 </div>
                 {% endif%}
 
@@ -45,9 +45,9 @@
                     <label class="label" for="id_subtitle">
                         {% trans "Subtitle:" %}
                     </label>
-                    <input type="text" name="subtitle" value="{{ form.subtitle.value|default:'' }}" maxlength="255" class="input" id="id_subtitle" aria-describedby="desc_subtitle">
+                    <input type="text" name="subtitle" value="{{ form.subtitle.value|default:'' }}" maxlength="255" class="input" id="id_subtitle" aria-describedby="id_subtitle_error">
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.subtitle.errors id="desc_subtitle" %}
+                    {% include 'snippets/form_errors.html' with errors_list=form.subtitle.errors id="id_subtitle_error" %}
                 </div>
 
                 <div class="field">
@@ -56,7 +56,7 @@
                     </label>
                     {{ form.description }}
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.description.errors id="desc_description" %}
+                    {% include 'snippets/form_errors.html' with errors_list=form.description.errors id="id_description_error" %}
                 </div>
 
                 <div class="field">
@@ -64,11 +64,11 @@
                         {% trans "Languages:" %}
                     </label>
                     {{ form.languages }}
-                    <span class="help" id="desc_languages_help">
+                    <span class="help" id="id_languages_help_error">
                         {% trans "Separate multiple values with commas." %}
                     </span>
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.languages.errors id="desc_languages" %}
+                    {% include 'snippets/form_errors.html' with errors_list=form.languages.errors id="id_languages_error" %}
                 </div>
 
                 <div class="field" id="subjects">
@@ -112,7 +112,7 @@
                         {% if confirm_mode %}readonly{% endif %}
                     >
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.subjects.errors id="desc_subjects" %}
+                    {% include 'snippets/form_errors.html' with errors_list=form.subjects.errors id="id_subjects_error" %}
                 </div>
 
                 <span class="help">
@@ -137,7 +137,7 @@
                         <h3 class="title is-5">
                             {% trans "Edit Series" %}
                         </h3>
-                        <span class="help my-2" id="desc_series_help">
+                        <span class="help my-2" id="id_series_help_error">
                             {% trans 'To edit details of a series itself, click the series name' %}
                         </span>
                         {% for sb in seriesbooks %}
@@ -154,12 +154,12 @@
                             name="series_number-{{sb.id}}"
                             id="id_series_number-{{sb.id}}"
                             value="{{sb.series_number|default:'' }}"
-                            aria-describedby="desc_series_number"
+                            aria-describedby="id_series_number_error"
                             {% if confirm_mode %}readonly{% endif %}
                             >
                             </div>
                             <span>
-                                <input class="checkbox" type="checkbox" name="remove_series" id="id_remove_series_{{sb.id}}" value="{{ sb.id }}" {% if sb.id|stringformat:"i" in remove_series %}checked{% endif %} aria-describedby="desc_remove_series_{{sb.id}}">
+                                <input class="checkbox" type="checkbox" name="remove_series" id="id_remove_series_{{sb.id}}" value="{{ sb.id }}" {% if sb.id|stringformat:"i" in remove_series %}checked{% endif %} aria-describedby="id_remove_series__error{{sb.id}}">
                                 <label class="label is-inline ml-2" for="id_remove_series_{{sb.id}}">
                                     {% blocktrans with series_name=sb.series.name trimmed %}
                                     Remove this book from <em>{{series_name}}</em>
@@ -177,62 +177,23 @@
                     <label class="label" for="id_series">
                         {% trans "Series name:" %}
                     </label>
-                    <input type="text" class="input" name="series" id="id_series" value="{{ form.series.value|default:'' }}" aria-describedby="desc_series" {% if confirm_mode %}readonly{% endif %}>
-                    {% include 'snippets/form_errors.html' with errors_list=form.series.errors id="desc_series" %}
+                    <input type="text" class="input" name="series" id="id_series" value="{{ form.series.value|default:'' }}" aria-describedby="id_series_error" {% if confirm_mode %}readonly{% endif %}>
+                    {% include 'snippets/form_errors.html' with errors_list=form.series.errors id="id_series_error" %}
                     </div>
                 </div>
                 <div class="field">
                     <label class="label" for="id_series_number">
                         {% trans "Series position:" %}
                     </label>
-                    <span class="help my-2" id="desc_series_number_help">
+                    <span class="help my-2" id="id_series_number_help_error">
                         {% trans 'This field was previously called "Series number"' %}
                     </span>
                     {{ form.series_number }}
-                    {% include 'snippets/form_errors.html' with errors_list=form.series_number.errors id="desc_series_number" %}
+                    {% include 'snippets/form_errors.html' with errors_list=form.series_number.errors id="id_series_number_error" %}
                 </div>
         </section>
 
-
-
-
-
-        <section class="block">
-            <h2 class="title is-4">
-                {% trans "Publication" %}
-            </h2>
-            <div class="box">
-                <div class="field">
-                    <label class="label" for="id_publishers">
-                        {% trans "Publisher:" %}
-                    </label>
-                    {{ form.publishers }}
-                    <span class="help" id="desc_publishers_help">
-                        {% trans "Separate multiple values with commas." %}
-                    </span>
-
-                    {% include 'snippets/form_errors.html' with errors_list=form.publishers.errors id="desc_publishers" %}
-                </div>
-
-                <div class="field">
-                    <label class="label" for="id_first_published_date">
-                        {% trans "First published date:" %}
-                    </label>
-                    {{ form.first_published_date }}
-                    {% include 'snippets/form_errors.html' with errors_list=form.first_published_date.errors id="desc_first_published_date" %}
-                </div>
-
-                <div class="field">
-                    <label class="label" for="id_published_date">
-                        {% trans "Published date:" %}
-                    </label>
-                    {{ form.published_date }}
-
-                    {% include 'snippets/form_errors.html' with errors_list=form.published_date.errors id="desc_published_date" %}
-                </div>
-            </div>
-        </section>
-
+        {% block publication %}{% endblock %}
         <section class="block">
             <h2 class="title is-4">
                 {% trans "Authors" %}
@@ -245,10 +206,10 @@
                     {% for author in book.authors.all %}
                     <div class="is-flex is-justify-content-space-between">
                         <label class="label mb-2">
-                            <input type="checkbox" name="remove_authors" value="{{ author.id }}" {% if author.id|stringformat:"i" in remove_authors %}checked{% endif %} aria-describedby="desc_remove_author_{{author.id}}">
+                            <input type="checkbox" name="remove_authors" value="{{ author.id }}" {% if author.id|stringformat:"i" in remove_authors %}checked{% endif %} aria-describedby="id_remove_author__error{{author.id}}">
                             {% blocktrans with name=author.name %}Remove {{ name }}{% endblocktrans %}
                         </label>
-                        <p class="help" id="desc_remove_author_{{author.id}}">
+                        <p class="help" id="id_remove_author__error{{author.id}}">
                             <a href="{{ author.local_path }}">{% blocktrans with name=author.name %}Author page for {{ name }}{% endblocktrans %}</a>
                         </p>
                     </div>
@@ -301,84 +262,30 @@
                             <label class="label" for="id_cover_url">
                                 {% trans "Load cover from URL:" %}
                             </label>
-                            <input class="input" name="cover-url" id="id_cover_url" type="url" value="{{ cover_url|default:'' }}" aria-describedby="desc_cover">
+                            <input class="input" name="cover-url" id="id_cover_url" type="url" value="{{ cover_url|default:'' }}" aria-describedby="id_cover_error">
                         </div>
 
-                        {% include 'snippets/form_errors.html' with errors_list=form.cover.errors id="desc_cover" %}
+                        {% include 'snippets/form_errors.html' with errors_list=form.cover.errors id="id_cover_error" %}
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="block">
-            <h2 class="title is-4">
-                {% trans "Physical Properties" %}
-            </h2>
-            <div class="box">
-                <div class="columns">
-                    <div class="column is-one-third">
-                        <div class="field">
-                            <label class="label" for="id_physical_format">
-                                {% trans "Format:" %}
-                            </label>
-                            {{ form.physical_format }}
-
-                            {% include 'snippets/form_errors.html' with errors_list=form.physical_format.errors id="desc_physical_format" %}
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="field">
-                            <label class="label" for="id_physical_format_detail">
-                                {% trans "Format details:" %}
-                            </label>
-                            {{ form.physical_format_detail }}
-
-                            {% include 'snippets/form_errors.html' with errors_list=form.physical_format_detail.errors id="desc_physical_format_detail" %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label class="label" for="id_pages">
-                        {% trans "Pages:" %}
-                    </label>
-                    {{ form.pages }}
-
-                    {% include 'snippets/form_errors.html' with errors_list=form.pages.errors id="desc_pages" %}
-                </div>
-            </div>
-        </section>
+        {% block physical_properties %}{% endblock %}
 
         <section class="block">
             <h2 class="title is-4">
                 {% trans "Book Identifiers" %}
             </h2>
             <div class="box">
-                <div class="field">
-                    <label class="label" for="id_isbn_13">
-                        {% trans "ISBN 13:" %}
-                    </label>
-                    {{ form.isbn_13 }}
-
-                    {% include 'snippets/form_errors.html' with errors_list=form.isbn_13.errors id="desc_isbn_13" %}
-                </div>
-
-                <div class="field">
-                    <label class="label" for="id_isbn_10">
-                        {% trans "ISBN 10:" %}
-                    </label>
-                    {{ form.isbn_10 }}
-
-                    {% include 'snippets/form_errors.html' with errors_list=form.isbn_10.errors id="desc_isbn_10" %}
-                </div>
-
+                {% block identifiers %}{% endblock %}
                 <div class="field">
                     <label class="label" for="id_openlibrary_key">
                         {% trans "Openlibrary ID:" %}
                     </label>
                     {{ form.openlibrary_key }}
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.openlibrary_key.errors id="desc_openlibrary_key" %}
+                    {% include 'snippets/form_errors.html' with errors_list=form.openlibrary_key.errors id="id_openlibrary_key_error" %}
                 </div>
 
                 <div class="field">
@@ -387,7 +294,7 @@
                     </label>
                     {{ form.inventaire_id }}
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.inventaire_id.errors id="desc_inventaire_id" %}
+                    {% include 'snippets/form_errors.html' with errors_list=form.inventaire_id.errors id="id_inventaire_id_error" %}
                 </div>
 
                 <div class="field">
@@ -396,16 +303,7 @@
                     </label>
                     {{ form.goodreads_key }}
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.goodreads_key.errors id="desc_goodreads_key" %}
-                </div>
-
-                <div class="field">
-                    <label class="label" for="id_oclc_number">
-                        {% trans "OCLC Number:" %}
-                    </label>
-                    {{ form.oclc_number }}
-
-                    {% include 'snippets/form_errors.html' with errors_list=form.oclc_number.errors id="desc_oclc_number" %}
+                    {% include 'snippets/form_errors.html' with errors_list=form.goodreads_key.errors id="id_goodreads_key_error" %}
                 </div>
 
                 <div class="field">
@@ -414,7 +312,7 @@
                     </label>
                     {{ form.asin }}
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.ASIN.errors id="desc_ASIN" %}
+                    {% include 'snippets/form_errors.html' with errors_list=form.ASIN.errors id="id__errorASIN" %}
                 </div>
 
                 <div class="field">
@@ -423,7 +321,7 @@
                     </label>
                     {{ form.aasin }}
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.AASIN.errors id="desc_AASIN" %}
+                    {% include 'snippets/form_errors.html' with errors_list=form.AASIN.errors id="id__errorAASIN" %}
                 </div>
 
                 <div class="field">
@@ -432,7 +330,7 @@
                     </label>
                     {{ form.isfdb }}
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.isfdb.errors id="desc_isfdb" %}
+                    {% include 'snippets/form_errors.html' with errors_list=form.isfdb.errors id="id_isfdb_error" %}
                 </div>
 
                 <div class="field">
@@ -441,7 +339,7 @@
                     </label>
                     {{ form.finna_key }}
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.finna_key.errors id="desc_finna_key" %}
+                    {% include 'snippets/form_errors.html' with errors_list=form.finna_key.errors id="id_finna_key_error" %}
                 </div>
 
                 <div class="field">
@@ -450,7 +348,7 @@
                     </label>
                     {{ form.libris_key }}
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.libris_key.errors id="desc_libris_key" %}
+                    {% include 'snippets/form_errors.html' with errors_list=form.libris_key.errors id="id_libris_key_error" %}
                 </div>
             </div>
         </section>

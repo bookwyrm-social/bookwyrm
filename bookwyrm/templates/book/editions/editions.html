@@ -1,16 +1,140 @@
 {% extends 'layout.html' %}
 {% load i18n %}{% load utilities %}
+{% load book_display_tags %}
 
 {% block title %}{% blocktrans with book_title=work|book_title %}Editions of {{ book_title }}{% endblocktrans %}{% endblock %}
 
 {% block content %}
-<div class="block">
-    <h1 class="title">{% blocktrans with work_path=work.local_path work_title=work|book_title %}Editions of <a href="{{ work_path }}"><i>{{ work_title }}</i></a>{% endblocktrans %}</h1>
+
+<div class="block columns">
+    <div class="column">
+        <h1 class="title">{{ work|book_title }}</h1>
+
+        {% if work.authors.exists %}
+        <div class="subtitle" dir="auto">
+            {% include 'snippets/authors.html' with book=work %}
+        </div>
+        {% endif %}
+    </div>
+
+    {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+    <div class="column is-narrow">
+        <a href="{% url 'edit-book' work.id %}">
+            <span class="icon icon-pencil" title="{% trans "Edit Work" %}" aria-hidden="true"></span>
+            <span class="is-sr-only-mobile">{% trans "Edit Work" %}</span>
+        </a>
+    </div>
+    {% endif %}
 </div>
 
-{% include 'book/editions/edition_filters.html' %}
+<div class="block">
+    <div class="columns">
+        {% if work.description %}
+        <div class="column is-flex-grow-2">
+            <h3 class="title is-6 mb-3">{% trans "Description" %}</h3>
+            <div class="notification">
+                {% with full=work|book_description itemprop='abstract' %}
+                    {% include 'snippets/trimmed_text.html' with trim_length=50 %}
+                {% endwith %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if work.openlibrary_key or work.inventaire_key or work.finna_key or work.libris_key or work.wikidata %}
+        <div class="column">
+            <h3 class="title is-6 mb-3">{% trans "External links" %}</h3>
+
+            {% if work.openlibrary_key %}
+            <a href="{{ work.openlibrary_link }}" target="_blank" rel="nofollow noopener noreferrer">OpenLibrary</a>
+            {% endif %}
+
+            {% if work.inventaire_key %}
+            <a href="{{ work.inventaire_link }}" target="_blank" rel="nofollow noopener noreferrer">Inventaire</a>
+            {% endif %}
+
+            {% if work.finna_key %}
+            <a href="{{ work.finna_link }}" target="_blank" rel="nofollow noopener noreferrer">Finna</a>
+            {% endif %}
+
+            {% if work.libris_key %}
+            <a href="{{ work.libris_link }}" target="_blank" rel="nofollow noopener noreferrer">Libris</a>
+            {% endif %}
+
+            {% if work.wikidata %}
+            <a href="{{ work.wikidata_link }}" target="_blank" rel="nofollow noopener noreferrer">Wikidata</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if work.lccn or work.librarything_key or work.asin or work.aasin or work.isfdb or work.goodreads_key or work.bnf_id or work.viaf %}
+        <div class="column">
+            <h3 class="title is-6 mb-3">{% trans "Identifiers" %}</h3>
+            <dl>
+            {% if work.lccn %}
+                <div class="is-flex is-flex-wrap-wrap">
+                    <dt class="mr-1">{% trans "LCCN" %}</dt>
+                    <dd>{{ work.lccn }}</dd>
+                </div>
+            {% endif %}
+
+            {% if work.librarything_key %}
+                <div class="is-flex is-flex-wrap-wrap">
+                    <dt class="mr-1">{% trans "LibraryThing key:" %}</dt>
+                    <dd>{{ work.librarything_key }}</dd>
+                </div>
+            {% endif %}
+
+            {% if work.asin %}
+                <div class="is-flex is-flex-wrap-wrap">
+                    <dt class="mr-1">{% trans "ASIN:" %}</dt>
+                    <dd>{{ work.asin }}</dd>
+                </div>
+            {% endif %}
+
+            {% if work.aasin %}
+                <div class="is-flex is-flex-wrap-wrap">
+                    <dt class="mr-1">{% trans "Audible ASIN:" %}</dt>
+                    <dd>{{ work.aasin }}</dd>
+                </div>
+            {% endif %}
+
+            {% if work.isfdb %}
+                <div class="is-flex is-flex-wrap-wrap">
+                    <dt class="mr-1">{% trans "ISFDB ID:" %}</dt>
+                    <dd>{{ work.isfdb }}</dd>
+                </div>
+            {% endif %}
+
+            {% if work.goodreads_key %}
+                <div class="is-flex is-flex-wrap-wrap">
+                    <dt class="mr-1">{% trans "Goodreads:" %}</dt>
+                    <dd>{{ work.goodreads_key }}</dd>
+                </div>
+            {% endif %}
+
+            {% if work.bnf_id %}
+                <div class="is-flex is-flex-wrap-wrap">
+                    <dt class="mr-1">{% trans "BNF ID:" %}</dt>
+                    <dd>{{ work.bnf_id }}</dd>
+                </div>
+            {% endif %}
+
+            {% if work.viaf %}
+                <div class="is-flex is-flex-wrap-wrap">
+                    <dt class="mr-1">{% trans "VIAF:" %}</dt>
+                    <dd>{{ work.viaf }}</dd>
+                </div>
+            {% endif %}
+            </dl>
+        </div>
+        {% endif %}
+    </div>
+</div>
 
 <div class="block">
+    <h2 class="title is-4">{% blocktrans with work_path=work.local_path work_title=work|book_title %}Editions of <a href="{{ work_path }}"><i>{{ work_title }}</i></a>{% endblocktrans %}</h2>
+    {% include 'book/editions/edition_filters.html' %}
+
     {% for book in editions %}
     <div class="columns is-gapless mb-6">
         <div class="column is-cover">

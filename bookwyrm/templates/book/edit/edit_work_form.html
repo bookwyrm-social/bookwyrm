@@ -1,0 +1,12 @@
+{% extends "book/edit/edit_book_form.html" %}
+{% load i18n %}
+
+{% block identifiers %}
+<div class="field">
+<label class="label" for="id_lccn">
+    {% trans "LCCN:" %}
+</label>
+{{ form.lccn }}
+{% include 'snippets/form_errors.html' with errors_list=form.lccn.errors id="id_lccn_error" %}
+</div>
+{% endblock %}
