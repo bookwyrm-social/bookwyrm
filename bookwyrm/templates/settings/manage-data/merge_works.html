@@ -27,7 +27,7 @@
                 <td>{% for author in work.default_edition.authors.all %}{{author.name}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
                 <td>{{work.merge_candidates.count}}</td>
                 <td>
-                    <a class="button is-small is-link" href="{% url 'settings-manual-merge' 'work' work.id %}?source=admin">{% trans 'Merge' %}</a>
+                    <a class="button is-small is-link" href="{% url 'settings-manual-merge' 'work' work.id %}?source=admin&merge_type=work">{% trans 'Merge' %}</a>
                 </td>
             </tr>
             {% endfor %}
