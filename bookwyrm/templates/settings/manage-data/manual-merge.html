@@ -32,7 +32,7 @@ Merge {{plural_model}}
     {% endfor %}
 
     {% if not simple_fields and not array_fields %}
-    <form class="form" method="post" action="{% url 'settings-confirm-manual-merge' model_name canonical_id %}?source={{source}}">
+    <form class="form" method="post" action="{% url 'settings-confirm-manual-merge' model_name canonical_id %}?source={{source}}&merge_type={{merge_type}}">
         {% csrf_token %}
         <div class="has-text-centered m-4">
             <p>
