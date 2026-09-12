@@ -27,14 +27,8 @@
             </h2>
 
             {% with book=book %}
-                <div class="columns is-multiline is-gapless ml-3-tablet">
-                    <div class="column is-half">
-                        {% include 'book/publisher_info.html' %}
-                    </div>
-
-                    <div class="column ml-3-tablet">
-                        {% include 'book/book_identifiers.html' %}
-                    </div>
+                <div>
+                    {% include "book/sections/metadata.html" %}
                 </div>
             {% endwith %}
         </div>
