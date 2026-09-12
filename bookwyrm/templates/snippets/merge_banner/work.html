@@ -26,5 +26,13 @@
     {% endblocktrans %}
 {% endblock %}
 
+{% block candidate_link %}
+    {% if candidate.default_edition %}
+        <a href="{{ candidate.local_path }}">{{ candidate.remote_id }}</a>
+    {% else %}
+        <strong>{{ candidate|book_title }}</strong> (orphaned work)
+    {% endif %}
+{% endblock %}
+
 
 {% block merge_path %}{{ original.local_path }}/editions{% endblock %}
