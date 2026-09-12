@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-10 20:16+0000\n"
-"PO-Revision-Date: 2026-09-12 17:43\n"
+"PO-Revision-Date: 2026-09-12 18:12\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -6859,24 +6859,25 @@ msgstr "Cette tâche regroupe les éditions, les œuvres, les auteurs et les col
 
 #: bookwyrm/templates/settings/manage-data/data.html:176
 msgid "This job will make irreversible changes to your data."
-msgstr ""
+msgstr "Cette tâche entraînera des modifications irréversibles de vos données."
 
 #: bookwyrm/templates/settings/manage-data/manual-merge.html:9
 #: bookwyrm/templates/settings/manage-data/manual-merge.html:15
 #, python-format
 msgid "\n"
 "Merge %(plural_model)s\n"
-msgstr ""
+msgstr "\n"
+"Fusionner %(plural_model)s\n"
 
 #: bookwyrm/templates/settings/manage-data/manual-merge.html:27
 #, python-format
 msgid "<a href=\"%(user_path)s\">@%(username)s</a> blocked auto-merging for item with id <a href=\"%(item_path)s\">%(item_id)s</a>. This duplicate may have been flagged in error."
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">@%(username)s</a> a bloqué la fusion automatique de l'élément dont l'identifiant est <a href=\"%(item_path)s\">%(item_id)s</a>. Ce doublon a peut-être été signalé par erreur."
 
 #: bookwyrm/templates/settings/manage-data/manual-merge.html:39
 #, python-format
 msgid "All mergable fields in %(model_name)s %(canonical_id)s and its duplicate %(plural_model)s are identical."
-msgstr ""
+msgstr "Tous les champs fusionnables de %(model_name)s %(canonical_id)s et de son doublon %(plural_model)s sont identiques."
 
 #: bookwyrm/templates/settings/manage-data/manual-merge.html:43
 #: bookwyrm/templates/settings/manage-data/merge_authors.html:21
@@ -6884,70 +6885,70 @@ msgstr ""
 #: bookwyrm/templates/settings/manage-data/merge_series.html:21
 #: bookwyrm/templates/settings/manage-data/merge_works.html:30
 msgid "Merge"
-msgstr ""
+msgstr "Fusionner"
 
 #: bookwyrm/templates/settings/manage-data/manual-merge.html:49
 msgid "Choose which values to use in the merged object. Only values that differ are shown – other values will automatically merge."
-msgstr ""
+msgstr "Sélectionnez les valeurs à utiliser dans l'objet fusionné. Seules les valeurs différentes s'affichent ; les autres seront automatiquement fusionnées."
 
 #: bookwyrm/templates/settings/manage-data/manual-merge.html:58
 msgid "Canonical values"
-msgstr ""
+msgstr "Valeurs canoniques"
 
 #: bookwyrm/templates/settings/manage-data/manual-merge.html:59
 msgid "Duplicate values"
-msgstr ""
+msgstr "Valeurs en double"
 
 #: bookwyrm/templates/settings/manage-data/manual-merge.html:77
 msgid "no value"
-msgstr ""
+msgstr "aucune valeur"
 
 #: bookwyrm/templates/settings/manage-data/merge.html:56
 msgid "Click \"Merge\" on an item to manually select fields to merge."
-msgstr ""
+msgstr "Cliquez sur « Fusionner » à côté d'un élément pour sélectionner manuellement les champs à fusionner."
 
 #: bookwyrm/templates/settings/manage-data/merge_authors.html:6
 msgid "Authors with merge candidates"
-msgstr ""
+msgstr "Auteurs ayant des propositions de fusion"
 
 #: bookwyrm/templates/settings/manage-data/merge_authors.html:12
 #: bookwyrm/templates/settings/manage-data/merge_editions.html:13
 #: bookwyrm/templates/settings/manage-data/merge_series.html:12
 #: bookwyrm/templates/settings/manage-data/merge_works.html:13
 msgid "Merge Candidates"
-msgstr ""
+msgstr "Fusionner les candidats"
 
 #: bookwyrm/templates/settings/manage-data/merge_authors.html:29
 msgid "There are no authors to merge."
-msgstr ""
+msgstr "Il n'y a aucun auteur à fusionner."
 
 #: bookwyrm/templates/settings/manage-data/merge_editions.html:6
 msgid "Editions with merge candidates"
-msgstr ""
+msgstr "Éditions avec des propositions de fusion"
 
 #: bookwyrm/templates/settings/manage-data/merge_editions.html:31
 msgid "There are no editions to merge."
-msgstr ""
+msgstr "Il n'y a aucune édition à fusionner."
 
 #: bookwyrm/templates/settings/manage-data/merge_series.html:6
 msgid "Series with merge candidates"
-msgstr ""
+msgstr "Séries avec des propositions de fusion"
 
 #: bookwyrm/templates/settings/manage-data/merge_series.html:29
 msgid "There are no series to merge."
-msgstr ""
+msgstr "Il n'y a aucune série à fusionner."
 
 #: bookwyrm/templates/settings/manage-data/merge_works.html:6
 msgid "Works with merge candidates"
-msgstr ""
+msgstr "Œuvres avec des candidats à la fusion"
 
 #: bookwyrm/templates/settings/manage-data/merge_works.html:24
 msgid "(Orphaned work)"
-msgstr ""
+msgstr "(Œuvre orpheline)"
 
 #: bookwyrm/templates/settings/manage-data/merge_works.html:39
 msgid "There are no works to merge."
-msgstr ""
+msgstr "Il n'y a aucune œuvre à fusionner."
 
 #: bookwyrm/templates/settings/redis.html:5
 #: bookwyrm/templates/settings/redis.html:7
@@ -7558,19 +7559,19 @@ msgstr "Niveau d’accès :"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:96
 msgid "Allow to manage data"
-msgstr ""
+msgstr "Autoriser la gestion des données"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:98
 msgid "Allow this user to manually merge authors, editions, works, and series. This could result in data loss or corrupted records."
-msgstr ""
+msgstr "Autorisez cet utilisateur à fusionner manuellement des auteurs, des éditions, des œuvres et des collections. Cela pourrait entraîner une perte de données ou la corruption d'enregistrements."
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:100
 msgid "Remove Permission"
-msgstr ""
+msgstr "Supprimer l'autorisation"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:100
 msgid "Add Permission"
-msgstr ""
+msgstr "Ajouter une autorisation"
 
 #: bookwyrm/templates/setup/admin.html:5
 msgid "Set up BookWyrm"
@@ -8049,81 +8050,81 @@ msgstr "%(username)s a lu <a href=\"%(path)s\">%(read_count)s sur %(goal_count)s
 #: bookwyrm/templates/snippets/merge_banner/author.html:7
 #, python-format
 msgid "This author been identified as a duplicate of <strong><a href=\"%(dupe_url)s\">%(dupe_title)s</a></strong>."
-msgstr ""
+msgstr "Cet auteur a été identifié comme un doublon de <strong><a href=\"%(dupe_url)s\">%(dupe_title)s</a></strong>."
 
 #: bookwyrm/templates/snippets/merge_banner/edition.html:7
 #, python-format
 msgid "This edition been identified as a duplicate of <strong><a href=\"%(dupe_url)s\">%(dupe_title)s</a></strong>."
-msgstr ""
+msgstr "Cette édition a été identifiée comme un doublon de <strong><a href=\"%(dupe_url)s\">%(dupe_title)s</a></strong>."
 
 #: bookwyrm/templates/snippets/merge_banner/layout.html:15
 msgid "Automatic merging has been blocked for this item."
-msgstr ""
+msgstr "La fusion automatique a été désactivée pour cet élément."
 
 #: bookwyrm/templates/snippets/merge_banner/layout.html:17
 #, python-format
 msgid "(Blocked by <a href=\"%(user_path)s\">@%(username)s</a>)"
-msgstr ""
+msgstr "(Bloqué par <a href=\"%(user_path)s\">@%(username)s</a>)"
 
 #: bookwyrm/templates/snippets/merge_banner/layout.html:20
 #, python-format
 msgid "After %(date)s, these will be automatically merged."
-msgstr ""
+msgstr "Au bout de %(date)s, ceux-ci seront automatiquement fusionnés."
 
 #: bookwyrm/templates/snippets/merge_banner/layout.html:27
 msgid "These identifiers are the same for both:"
-msgstr ""
+msgstr "Ces identifiants sont identiques dans les deux cas :"
 
 #: bookwyrm/templates/snippets/merge_banner/layout.html:36
 msgid "Is this mistaken?"
-msgstr ""
+msgstr "Est-ce une erreur ?"
 
 #: bookwyrm/templates/snippets/merge_banner/layout.html:39
 msgid "Block automatic merge"
-msgstr ""
+msgstr "Bloquer la fusion automatique"
 
 #: bookwyrm/templates/snippets/merge_banner/layout.html:46
 #: bookwyrm/templates/snippets/merge_banner/layout.html:93
 msgid "Merge now"
-msgstr ""
+msgstr "Fusionner maintenant"
 
 #: bookwyrm/templates/snippets/merge_banner/layout.html:61
 #, python-format
 msgid "A duplicate of this item has been identified."
 msgid_plural "%(display_count)s duplicates of this item have been detected."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Un doublon de cet objet a été détecté."
+msgstr[1] "%(display_count)s doublons de cet éléments ont été détectés."
 
 #: bookwyrm/templates/snippets/merge_banner/layout.html:69
 msgid "These will be automatically merged unless the duplicate entry has been manually blocked."
-msgstr ""
+msgstr "Ces entrées seront automatiquement fusionnées, sauf si l'entrée en double a été bloquée manuellement."
 
 #: bookwyrm/templates/snippets/merge_banner/layout.html:86
 #, python-format
 msgid "And %(count)s other(s)."
-msgstr ""
+msgstr "Et %(count)s autres."
 
 #: bookwyrm/templates/snippets/merge_banner/series.html:7
 #, python-format
 msgid "This series been identified as a duplicate of <strong><a href=\"%(dupe_url)s\">%(dupe_title)s</a></strong>."
-msgstr ""
+msgstr "Cette série a été identifiée comme un doublon de <strong><a href=\"%(dupe_url)s\">%(dupe_title)s</a></strong>."
 
 #: bookwyrm/templates/snippets/merge_banner/work.html:9
 #, python-format
 msgid "This edition's work been identified as a duplicate of <strong><a href=\"%(dupe_url)s\">%(dupe_title)s</a></strong>."
-msgstr ""
+msgstr "L'œuvre de cette édition a été identifiée comme un doublon de <strong><a href=\"%(dupe_url)s\">%(dupe_title)s</a></strong>."
 
 #: bookwyrm/templates/snippets/merge_banner/work.html:13
 #, python-format
 msgid "This edition's work been identified as a duplicate of <strong>%(dupe_title)s</strong> (orphaned work)."
-msgstr ""
+msgstr "L'œuvre de cette édition a été identifiée comme un doublon de <strong>%(dupe_title)s</strong> (œuvre orpheline)."
 
 #: bookwyrm/templates/snippets/merge_banner/work.html:22
 #, python-format
 msgid "A duplicate of this edition's work has been identified."
 msgid_plural "%(display_count)s duplicates of this edition's work have been detected."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Un exemplaire identique à celui de cette édition a été repéré."
+msgstr[1] "%(display_count)s exemplaires en double de cette édition ont été détectés."
 
 #: bookwyrm/templates/snippets/move_user_buttons.html:10
 msgid "Follow at new account"
