@@ -1,6 +1,7 @@
 {% extends "snippets/merge_banner/layout.html" %}
 {% load i18n %}
 {% load utilities %}
+{% load book_display_tags %}
 
 {% block content %}
 
@@ -9,4 +10,11 @@ This edition been identified as a duplicate of <strong><a href="{{ dupe_url }}">
 {% endblocktrans %}
 <span class="details-close mt-4 mr-4 icon icon-x is-small" aria-hidden></span>
 
+{% endblock %}
+
+{% block candidate_link %}
+<a href="{{ candidate.local_path }}">
+    {{ candidate|book_title }}
+    (#{{ candidate.id }})
+</a>
 {% endblock %}
