@@ -332,11 +332,7 @@ def create_book_from_data(request):
         "subjects": request.POST.getlist("subjects"),
     }
 
-    data = {
-        "book": book,
-        "model": "edition",
-        "form": forms.EditionForm(request.POST)
-    }
+    data = {"book": book, "model": "edition", "form": forms.EditionForm(request.POST)}
     return TemplateResponse(request, "book/edit/edit_book.html", data)
 
 
@@ -486,7 +482,11 @@ class ConfirmEditBook(View):
                     seriesbook.delete()
 
             series_errors = []
-            series_books = book.seriesbooks.all() if is_work else book.parent_work.seriesbooks.all()
+            series_books = (
+                book.seriesbooks.all()
+                if is_work
+                else book.parent_work.seriesbooks.all()
+            )
             for sb in series_books:
                 if value := request.POST.get(f"series_number-{sb.id}"):
                     try:
