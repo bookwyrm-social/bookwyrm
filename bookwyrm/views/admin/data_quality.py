@@ -177,8 +177,8 @@ class MergeData(View):
                 items = (
                     models.Work.objects.filter(merge_target__isnull=False)
                     .annotate(targets=Count("merge_target"))
+                    .order_by("id")
                     .order_by("-targets")
-                    .order_by("title")
                 )
                 paginated = Paginator(items, PAGE_LENGTH)
                 data["works"] = paginated.get_page(request.GET.get("page"))
@@ -186,8 +186,8 @@ class MergeData(View):
                 items = (
                     models.Author.objects.filter(merge_target__isnull=False)
                     .annotate(targets=Count("merge_target"))
+                    .order_by("id")
                     .order_by("-targets")
-                    .order_by("name")
                 )
                 paginated = Paginator(items, PAGE_LENGTH)
                 data["authors"] = paginated.get_page(request.GET.get("page"))
@@ -195,8 +195,8 @@ class MergeData(View):
                 items = (
                     models.Series.objects.filter(merge_target__isnull=False)
                     .annotate(targets=Count("merge_target"))
-                    .order_by("-targets")
                     .order_by("name")
+                    .order_by("-targets")
                 )
                 paginated = Paginator(items, PAGE_LENGTH)
                 data["series"] = paginated.get_page(request.GET.get("page"))
@@ -204,8 +204,8 @@ class MergeData(View):
                 items = (
                     models.Edition.objects.filter(merge_target__isnull=False)
                     .annotate(targets=Count("merge_target"))
+                    .order_by("id")
                     .order_by("-targets")
-                    .order_by("title")
                 )
                 paginated = Paginator(items, PAGE_LENGTH)
                 data["editions"] = paginated.get_page(request.GET.get("page"))
