@@ -114,13 +114,21 @@ services:
       db:
         condition: service_healthy
       redis_activity:
-        condition: service_started
+        condition: service_healthy
     networks:
       - main
   redis_activity:
     image: redis:7.2.1
     command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD} --appendonly yes --port ${REDIS_ACTIVITY_PORT}
     logging: *default-logging
+    environment:
+      REDISCLI_AUTH: ${REDIS_ACTIVITY_PASSWORD}
+    healthcheck:
+      test: redis-cli ping|grep PONG
+      interval: 3s
+      timeout: 1s
+      start_period: 1s
+      retries: 60
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_activity_data:/data
@@ -132,6 +140,14 @@ services:
     image: redis:7.2.1
     command: redis-server --requirepass ${REDIS_BROKER_PASSWORD} --appendonly yes --port ${REDIS_BROKER_PORT}
     logging: *default-logging
+    environment:
+      REDISCLI_AUTH: ${REDIS_BROKER_PASSWORD}
+    healthcheck:
+      test: redis-cli ping|grep PONG
+      interval: 3s
+      timeout: 1s
+      start_period: 1s
+      retries: 60
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_broker_data:/data
@@ -161,7 +177,7 @@ services:
       db:
         condition: service_healthy
       redis_broker:
-        condition: service_started
+        condition: service_healthy
     restart: unless-stopped
   celery_beat:
     env_file: .env
@@ -201,7 +217,7 @@ services:
       db:
         condition: service_healthy
       redis_broker:
-        condition: service_started
+        condition: service_healthy
       web:
         condition: service_healthy
     restart: unless-stopped
