@@ -15,6 +15,30 @@
             {% include 'snippets/authors.html' with book=work %}
         </div>
         {% endif %}
+
+        <div>
+            {% if work.seriesbooks %}
+            {% for sbook in work.seriesbooks.all %}
+            <div>
+                {% spaceless %}
+                {% if sbook.series_number %}
+                <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
+                    {% blocktrans trimmed with title=sbook.series.name path=sbook.series.local_path number=sbook.series_number %}
+                        Book <span itemprop="position">{{ number }}</span> in <em><a href="{{ path }}">{{ title }}</a></em>
+                    {% endblocktrans %}
+                </span>
+                {% else %}
+                <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
+                    {% blocktrans trimmed with title=sbook.series.name path=sbook.series.local_path %}
+                        Part of <em><a href="{{ path }}">{{ title }}</a></em>
+                    {% endblocktrans %}
+                </span>
+                {% endif %}
+                {% endspaceless %}
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
     </div>
 
     {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}

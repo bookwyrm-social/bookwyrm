@@ -66,7 +66,7 @@ class EditBook(View):
         form = forms.WorkForm if is_work else forms.EditionForm
         form = form(request.POST, request.FILES, instance=book)
 
-        data = {"book": book, "form": form}
+        data = {"book": book, "form": form, "model": "work" if is_work else "edition"}
         ensure_transient_values_persist(request, data)
         if not form.is_valid():
             if "cover" in form.errors and form.has_error("cover", "invalid_image"):
@@ -333,8 +333,8 @@ def create_book_from_data(request):
     }
 
     data = {
-        "book": book, 
-        "model": "edition", 
+        "book": book,
+        "model": "edition",
         "form": forms.EditionForm(request.POST)
     }
     return TemplateResponse(request, "book/edit/edit_book.html", data)
@@ -350,10 +350,12 @@ class ConfirmEditBook(View):
     def post(self, request, book_id=None):
         """edit a book cool"""
         # returns None if no match is found
-        book = models.Edition.objects.filter(id=book_id).first()
-        form = forms.EditionForm(request.POST, request.FILES, instance=book)
+        book = models.Book.objects.select_subclasses().get(id=book_id)
+        is_work = isinstance(book, models.Work)
+        form = forms.WorkForm if is_work else forms.EditionForm
+        form = form(request.POST, request.FILES, instance=book)
 
-        data = {"book": book, "form": form}
+        data = {"book": book, "form": form, "model": "work" if is_work else "edition"}
         if not form.is_valid():
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
@@ -396,7 +398,7 @@ class ConfirmEditBook(View):
                 book.authors.add(author)
 
             # create work, if needed
-            if not book.parent_work:
+            if not is_work and not book.parent_work:
                 work_match = request.POST.get("parent_work")
                 if work_match and work_match != "0":
                     work = get_mergeable_object_or_404(models.Work, id=work_match)
@@ -415,7 +417,7 @@ class ConfirmEditBook(View):
                     series = models.Series.objects.get(id=int(series_match))
                     models.SeriesBook.objects.get_or_create(
                         series=series,
-                        book=book.parent_work,
+                        book=book if is_work else book.parent_work,
                         defaults={
                             "series_number": book.series_number,
                             "user": user,
@@ -458,7 +460,7 @@ class ConfirmEditBook(View):
                     models.SeriesBook.objects.create(
                         user=user,
                         series=series,
-                        book=book.parent_work,
+                        book=book if is_work else book.parent_work,
                         series_number=book.series_number,
                     )
 
@@ -470,7 +472,7 @@ class ConfirmEditBook(View):
                 models.SeriesBook.objects.create(
                     user=user,
                     series=series,
-                    book=book.parent_work,
+                    book=book if is_work else book.parent_work,
                     series_number=book.series_number,
                 )
 
@@ -484,7 +486,8 @@ class ConfirmEditBook(View):
                     seriesbook.delete()
 
             series_errors = []
-            for sb in book.parent_work.seriesbooks.all():
+            series_books = book.seriesbooks.all() if is_work else book.parent_work.seriesbooks.all()
+            for sb in series_books:
                 if value := request.POST.get(f"series_number-{sb.id}"):
                     try:
                         sb.series_number = value
@@ -518,4 +521,6 @@ class ConfirmEditBook(View):
             # we don't tell the world when creating a book
             book.save(broadcast=False)
 
+        if is_work:
+            return redirect(f"/book/{book.id}/editions")
         return redirect(f"/book/{book.id}")

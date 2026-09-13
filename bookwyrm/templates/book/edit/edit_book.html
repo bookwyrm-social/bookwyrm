@@ -65,6 +65,7 @@
     method="post"
     enctype="multipart/form-data"
 >
+    {% csrf_token %}
     {% if confirm_mode %}
         <div class="box">
             <h2 class="title is-4">{% trans "Confirm Book Info" %}</h2>
