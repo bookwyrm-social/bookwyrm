@@ -332,7 +332,11 @@ def create_book_from_data(request):
         "subjects": request.POST.getlist("subjects"),
     }
 
-    data = {"book": book, "form": forms.EditionForm(request.POST)}
+    data = {
+        "book": book, 
+        "model": "edition", 
+        "form": forms.EditionForm(request.POST)
+    }
     return TemplateResponse(request, "book/edit/edit_book.html", data)
 
 
