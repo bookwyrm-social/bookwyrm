@@ -545,12 +545,22 @@ def broadcast_task(sender_id: int, activity: str, recipients: list[str]):
 
 async def async_broadcast(recipients: list[str], sender, data: str):
     """Send all the broadcasts simultaneously"""
+    signing_key = None
+    if recipients:
+        if not sender.key_pair.private_key:
+            raise ValueError("No private key found for sender")
+        signing_key = RSA.import_key(sender.key_pair.private_key)
+
     timeout = aiohttp.ClientTimeout(total=10)
     async with aiohttp.ClientSession(timeout=timeout) as session:
         tasks = []
         for recipient in recipients:
             tasks.append(
-                asyncio.ensure_future(sign_and_send(session, sender, data, recipient))
+                asyncio.ensure_future(
+                    sign_and_send(
+                        session, sender, data, recipient, signing_key=signing_key
+                    )
+                )
             )
 
         results = await asyncio.gather(*tasks)
@@ -558,7 +568,12 @@ async def async_broadcast(recipients: list[str], sender, data: str):
 
 
 async def sign_and_send(
-    session: aiohttp.ClientSession, sender, data: str, destination: str, **kwargs
+    session: aiohttp.ClientSession,
+    sender,
+    data: str,
+    destination: str,
+    signing_key=None,
+    **kwargs,
 ):
     """Sign the messages and send them in an asynchronous bundle"""
     now = http_date()
@@ -574,6 +589,7 @@ async def sign_and_send(
         destination,
         now,
         digest=digest,
+        signing_key=signing_key,
         use_legacy_key=kwargs.get("use_legacy_key"),
     )
 
@@ -595,7 +611,12 @@ async def sign_and_send(
                     logger.info("Trying again with legacy keyId header value")
                     asyncio.ensure_future(
                         sign_and_send(
-                            session, sender, data, destination, use_legacy_key=True
+                            session,
+                            sender,
+                            data,
+                            destination,
+                            signing_key=signing_key,
+                            use_legacy_key=True,
                         )
                     )
 

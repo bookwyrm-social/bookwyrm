@@ -28,7 +28,7 @@
 
 {% block candidate_link %}
     {% if candidate.default_edition %}
-        <a href="{{ candidate.local_path }}">{{ candidate.remote_id }}</a>
+    <a href="{{ candidate.local_path }}">{{ candidate|book_title }} (#{{ candidate.id }})</a>
     {% else %}
         <strong>{{ candidate|book_title }}</strong> (orphaned work)
     {% endif %}
