@@ -1,5 +1,23 @@
 {% extends "book/edit/edit_book_form.html" %}
+{% load humanize %}
 {% load i18n %}
+
+{% block context %}
+{% blocktrans trimmed %}
+This is a <strong>work</strong>, it should represent the piece of writing published in various editions.
+{% endblocktrans %}
+{% endblock %}
+
+{% block title-field-help %}
+<p class="help">
+    {% trans "Openlibrary keys for works should end in \"W\"" %}
+</p>
+{% endblock %}
+
+
+{% block language-field-help %}
+<p class="help">{% trans "The language(s) the work was originally written in" %}</p>
+{% endblock %}
 
 {% block identifiers %}
 <div class="field">
@@ -7,6 +25,11 @@
     {% trans "LCCN:" %}
 </label>
 {{ form.lccn }}
+<p class="help">
+<a href="https://id.loc.gov/authorities/names.html" target="_blank" rel="nofollow noopener noreferrer">
+    {% trans "Library of Congress Control Number" %}
+</a>
+</p>
 {% include 'snippets/form_errors.html' with errors_list=form.lccn.errors id="id_lccn_error" %}
 </div>
 {% endblock %}

@@ -20,8 +20,8 @@
     {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
     <div class="column is-narrow">
         <a href="{% url 'edit-book' work.id %}">
-            <span class="icon icon-pencil" title="{% trans "Edit Work" %}" aria-hidden="true"></span>
-            <span class="is-sr-only-mobile">{% trans "Edit Work" %}</span>
+            <span class="icon icon-pencil" title="{% trans "Edit work" %}" aria-hidden="true"></span>
+            <span class="is-sr-only-mobile">{% trans "Edit work" %}</span>
         </a>
     </div>
     {% endif %}

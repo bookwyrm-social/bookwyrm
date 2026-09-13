@@ -1,6 +1,10 @@
 {% load i18n %}
 {% load static %}
 
+<p class="notification">
+{% block context %}{% endblock %}
+</p>
+
 {% if form.non_field_errors %}
 <div class="block">
     <p class="notification is-danger">{{ form.non_field_errors }}</p>
@@ -36,6 +40,7 @@
                         {% trans "Sort Title:" %}
                     </label>
                     <input type="text" name="sort_title" value="{{ form.sort_title.value|default:'' }}" maxlength="255" class="input" id="id_sort_title" aria-describedby="id_sort_title_error">
+                    <p class="help">{% trans "Sort titles remove words like \"The\" from the beginning of the title for alphabetization" %}</p>
 
                     {% include 'snippets/form_errors.html' with errors_list=form.sort_title.errors id="id_sort_title_error" %}
                 </div>
@@ -64,6 +69,7 @@
                         {% trans "Languages:" %}
                     </label>
                     {{ form.languages }}
+                    {% block language-field-help %}{% endblock %}
                     <span class="help" id="id_languages_help_error">
                         {% trans "Separate multiple values with commas." %}
                     </span>
@@ -281,9 +287,10 @@
                 {% block identifiers %}{% endblock %}
                 <div class="field">
                     <label class="label" for="id_openlibrary_key">
-                        {% trans "Openlibrary ID:" %}
+                        {% trans "Openlibrary key:" %}
                     </label>
                     {{ form.openlibrary_key }}
+                    {% block title-field-help %}{% endblock %}
 
                     {% include 'snippets/form_errors.html' with errors_list=form.openlibrary_key.errors id="id_openlibrary_key_error" %}
                 </div>
@@ -304,24 +311,6 @@
                     {{ form.goodreads_key }}
 
                     {% include 'snippets/form_errors.html' with errors_list=form.goodreads_key.errors id="id_goodreads_key_error" %}
-                </div>
-
-                <div class="field">
-                    <label class="label" for="id_asin">
-                        {% trans "ASIN:" %}
-                    </label>
-                    {{ form.asin }}
-
-                    {% include 'snippets/form_errors.html' with errors_list=form.ASIN.errors id="id__errorASIN" %}
-                </div>
-
-                <div class="field">
-                    <label class="label" for="id_aasin">
-                        {% trans "Audible ASIN:" %}
-                    </label>
-                    {{ form.aasin }}
-
-                    {% include 'snippets/form_errors.html' with errors_list=form.AASIN.errors id="id__errorAASIN" %}
                 </div>
 
                 <div class="field">

@@ -7,7 +7,7 @@
     {% if book.title %}
         {% blocktrans with book_title=book.title %}Edit "{{ book_title }}"{% endblocktrans %}
     {% else %}
-        {% trans "Add Book" %}
+        {% trans "Add Edition" %}
     {% endif %}
 {% endblock %}
 
@@ -17,7 +17,7 @@
         {% if book.title %}
         {% blocktrans with book_title=book.title %}Edit "{{ book_title }}"{% endblocktrans %}
         {% else %}
-        {% trans "Add Book" %}
+        {% trans "Add Edition" %}
         {% endif %}
     </h1>
     {% if book.created_date %}
