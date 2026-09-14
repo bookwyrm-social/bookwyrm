@@ -1,6 +1,7 @@
 """testing models"""
 
 import pathlib
+import socket
 
 from unittest.mock import patch
 from django.contrib.auth.models import Group
@@ -14,6 +15,16 @@ from bookwyrm.settings import DOMAIN, BASE_URL
 
 
 class User(TestCase):
+    def setUp(self):
+        getaddrinfo = patch(
+            "bookwyrm.utils.remote_requests.socket.getaddrinfo",
+            return_value=[
+                (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", 443))
+            ],
+        )
+        getaddrinfo.start()
+        self.addCleanup(getaddrinfo.stop)
+
     @classmethod
     def setUpTestData(cls):
         cls.user = models.User.objects.create_user(

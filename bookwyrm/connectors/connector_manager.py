@@ -3,7 +3,6 @@
 from __future__ import annotations
 import asyncio
 import importlib
-import ipaddress
 import logging
 from asyncio import Future
 from typing import Iterator, Any, Optional, Union, overload, Literal
@@ -20,6 +19,7 @@ from bookwyrm.book_search import SearchResult
 from bookwyrm.connectors import abstract_connector
 from bookwyrm.settings import SEARCH_TIMEOUT
 from bookwyrm.tasks import app, CONNECTORS
+from bookwyrm.utils.remote_requests import RemoteRequestError, validate_remote_url
 
 logger = logging.getLogger(__name__)
 
@@ -191,20 +191,11 @@ def create_connector(
 
 
 def raise_not_valid_url(url: str) -> None:
-    """do some basic reality checks on the url"""
-    parsed = urlparse(url)
-    if parsed.scheme not in ["http", "https"]:
-        raise ConnectorException("Invalid scheme: ", url)
-
-    if not parsed.hostname:
-        raise ConnectorException("Hostname missing: ", url)
-
+    """Reject unsafe URLs before BookWyrm makes a remote request."""
     try:
-        ipaddress.ip_address(parsed.hostname)
-        raise ConnectorException("Provided url is an IP address: ", url)
-    except ValueError:
-        # it's not an IP address, which is good
-        pass
+        validate_remote_url(url)
+    except RemoteRequestError as err:
+        raise ConnectorException(err) from err
 
     if models.FederatedServer.is_blocked(url):
         raise ConnectorException(f"Attempting to load data from blocked url: {url}")

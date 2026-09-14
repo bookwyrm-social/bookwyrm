@@ -2,6 +2,8 @@
 
 import json
 import pathlib
+import socket
+from unittest.mock import patch
 
 from django.test import TestCase
 import responses
@@ -44,6 +46,15 @@ class Finna(TestCase):
 
     def setUp(self):
         """connector instance"""
+        getaddrinfo = patch(
+            "bookwyrm.utils.remote_requests.socket.getaddrinfo",
+            return_value=[
+                (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", 443))
+            ],
+        )
+        getaddrinfo.start()
+        self.addCleanup(getaddrinfo.stop)
+
         self.connector = Connector("api.finna.fi")
 
     def test_parse_search_data(self):

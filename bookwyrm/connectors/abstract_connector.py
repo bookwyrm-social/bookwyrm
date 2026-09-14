@@ -9,7 +9,6 @@ import logging
 import re
 import asyncio
 from PIL import Image, UnidentifiedImageError
-import requests
 import redis.asyncio as redis
 from requests.exceptions import RequestException
 import aiohttp
@@ -26,6 +25,7 @@ from bookwyrm.tasks import app, CONNECTORS
 from .connector_manager import load_more_data, ConnectorException, raise_not_valid_url
 from .format_mappings import format_mappings
 from ..book_search import SearchResult
+from ..utils.remote_requests import RemoteRequestError, get_remote_response
 
 logger = logging.getLogger(__name__)
 
@@ -99,9 +99,18 @@ class AbstractMinimalConnector(ABC):
         success_ratelimit_key = f"connector:success:{self.connector.pk}"
         try:
             async with (
-                session.get(url, headers=headers, params=params) as response,
+                session.get(
+                    url,
+                    headers=headers,
+                    params=params,
+                    allow_redirects=False,
+                ) as response,
                 redis.from_url(REDIS_ACTIVITY_URL) as r,  # type: ignore[no-untyped-call]
             ):
+                if 300 <= response.status < 400:
+                    logger.info("Redirect denied for connector request: %s", url)
+                    return None
+
                 if not response.ok:
                     if await r.set(
                         error_ratelimit_key, "1", nx=True, ex=CONNECTOR_STATUS_RATE
@@ -448,11 +457,8 @@ def get_data(
     if is_activitypub:
         models.SiteSettings.raise_federation_disabled()
 
-    # check if the url is blocked
-    raise_not_valid_url(url)
-
     try:
-        resp = requests.get(
+        resp = get_remote_response(
             url,
             params=params,
             headers={
@@ -462,8 +468,9 @@ def get_data(
                 "User-Agent": settings.USER_AGENT,
             },
             timeout=timeout,
+            validate_url=raise_not_valid_url,
         )
-    except RequestException as err:
+    except (RequestException, RemoteRequestError) as err:
         logger.info(err)
         raise ConnectorException(err)
 
@@ -489,16 +496,16 @@ def get_image(
     url: str, timeout: int = 10
 ) -> Union[tuple[ContentFile[bytes], str], tuple[None, None]]:
     """wrapper for requesting an image"""
-    raise_not_valid_url(url)
     try:
-        resp = requests.get(
+        resp = get_remote_response(
             url,
             headers={
                 "User-Agent": settings.USER_AGENT,
             },
             timeout=timeout,
+            validate_url=raise_not_valid_url,
         )
-    except RequestException as err:
+    except (RequestException, RemoteRequestError) as err:
         logger.info(err)
         return None, None
 

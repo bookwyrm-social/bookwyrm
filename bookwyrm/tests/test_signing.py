@@ -4,6 +4,7 @@ import time
 from collections import namedtuple
 from urllib.parse import urlsplit
 import pathlib
+import socket
 from unittest.mock import patch
 
 import json
@@ -60,6 +61,15 @@ class Signature(TestCase):
 
     def setUp(self):
         """test data"""
+        getaddrinfo = patch(
+            "bookwyrm.utils.remote_requests.socket.getaddrinfo",
+            return_value=[
+                (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", 443))
+            ],
+        )
+        getaddrinfo.start()
+        self.addCleanup(getaddrinfo.stop)
+
         self.site = models.SiteSettings.get()
         private_key, public_key = create_key_pair()
         self.fake_remote = Sender(
