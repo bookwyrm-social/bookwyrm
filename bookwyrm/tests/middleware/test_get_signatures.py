@@ -3,6 +3,8 @@
 from collections import namedtuple
 import json
 import pathlib
+import socket
+from unittest.mock import patch
 import responses
 
 from django.contrib.auth.models import AnonymousUser
@@ -17,6 +19,16 @@ from bookwyrm.signatures import make_signature, create_key_pair
 
 class TestBookWyrmGetSignatures(TestCase):
     """aka authorized fetch"""
+
+    def setUp(self):
+        getaddrinfo = patch(
+            "bookwyrm.utils.remote_requests.socket.getaddrinfo",
+            return_value=[
+                (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", 443))
+            ],
+        )
+        getaddrinfo.start()
+        self.addCleanup(getaddrinfo.stop)
 
     @classmethod
     def setUpTestData(cls):
