@@ -39,7 +39,7 @@ proxy_set_header Host $host;
 proxy_redirect off;
 absolute_redirect off;
 
-location ~ ^/(login[^-/]|password-reset|resend-link|2fa-check) {
+location ~ ^/(?:login|password-reset|resend-link|2fa-check)(?:/|$) {
     limit_req zone=loginlimit burst=1 nodelay;
     limit_req_status 429;
     proxy_pass http://web;
