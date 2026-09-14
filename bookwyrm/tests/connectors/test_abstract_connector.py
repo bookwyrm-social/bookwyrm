@@ -1,6 +1,7 @@
 """testing book data connectors"""
 
 from unittest.mock import patch
+import socket
 from django.test import TestCase
 import responses
 
@@ -44,6 +45,15 @@ class AbstractConnector(TestCase):
 
     def setUp(self):
         """test data"""
+        getaddrinfo = patch(
+            "bookwyrm.utils.remote_requests.socket.getaddrinfo",
+            return_value=[
+                (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", 443))
+            ],
+        )
+        getaddrinfo.start()
+        self.addCleanup(getaddrinfo.stop)
+
         work_data = {
             "id": "abc1",
             "title": "Test work",
