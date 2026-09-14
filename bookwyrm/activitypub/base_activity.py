@@ -17,7 +17,7 @@ from django.db import IntegrityError, transaction
 from django.utils.http import http_date
 
 from bookwyrm import models
-from bookwyrm.connectors import ConnectorException, get_data
+from bookwyrm.connectors import ConnectorException, get_data, raise_not_valid_url
 from bookwyrm.models import base_model
 from bookwyrm.redis_store import r
 from bookwyrm.signatures import make_signature
@@ -29,6 +29,7 @@ from bookwyrm.settings import (
     SEARCH_TIMEOUT,
 )
 from bookwyrm.tasks import app, MISC
+from bookwyrm.utils.remote_requests import RemoteRequestError, get_remote_response
 
 logger = logging.getLogger(__name__)
 
@@ -477,23 +478,28 @@ def get_representative():
 
 def get_activitypub_data(url):
     """wrapper for request.get"""
-    now = http_date()
     sender = get_representative()
     if not sender.key_pair.private_key:
         # this shouldn't happen. it would be bad if it happened.
         raise ValueError("No private key found for sender")
+
+    def request_headers(destination):
+        now = http_date()
+        return {
+            "Accept": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+            "Date": now,
+            "Signature": make_signature("get", sender, destination, now),
+            "User-Agent": USER_AGENT,
+        }
+
     try:
-        resp = requests.get(
+        resp = get_remote_response(
             url,
-            headers={
-                "Accept": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-                "Date": now,
-                "Signature": make_signature("get", sender, url, now),
-                "User-Agent": USER_AGENT,
-            },
+            headers=request_headers,
             timeout=SEARCH_TIMEOUT,
+            validate_url=raise_not_valid_url,
         )
-    except requests.RequestException:
+    except (requests.RequestException, RemoteRequestError):
         raise ConnectorException()
     if not resp.ok:
         resp.raise_for_status()
