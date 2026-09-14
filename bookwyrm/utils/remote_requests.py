@@ -3,10 +3,11 @@
 from collections.abc import Callable, Mapping
 import ipaddress
 import socket
-from time import monotonic
-from typing import Literal, Optional
+from threading import RLock
+from typing import Literal, Optional, cast
 from urllib.parse import urljoin, urlsplit
 
+from cachetools import TTLCache
 import requests
 
 from bookwyrm.utils.ip_utils import check_ip_routable
@@ -16,7 +17,14 @@ MAX_REMOTE_REDIRECTS = 3
 REMOTE_URL_CACHE_TTL = 30
 REMOTE_URL_CACHE_MAX_SIZE = 1000
 
-_remote_url_cache: dict[tuple[str, int], tuple[float, set[str]]] = {}
+_remote_url_cache = cast(
+    TTLCache[str, set[str], float],
+    TTLCache(
+        maxsize=REMOTE_URL_CACHE_MAX_SIZE,
+        ttl=REMOTE_URL_CACHE_TTL,
+    ),
+)
+_remote_url_cache_lock = RLock()
 
 
 class RemoteRequestError(ValueError):
@@ -25,14 +33,11 @@ class RemoteRequestError(ValueError):
 
 def get_remote_addresses(hostname: str, port: int) -> set[str]:
     """Resolve a hostname to public addresses, reusing recent lookups."""
-    cache_key = (hostname, port)
-    now = monotonic()
-    cached = _remote_url_cache.get(cache_key)
-    if cached:
-        expires, addresses = cached
-        if now < expires:
-            return addresses
-        del _remote_url_cache[cache_key]
+    cache_key = f"remote-addresses:{hostname}:{port}"
+    with _remote_url_cache_lock:
+        cached_addresses = _remote_url_cache.get(cache_key)
+    if cached_addresses is not None:
+        return cached_addresses
 
     try:
         addresses = {
@@ -49,9 +54,8 @@ def get_remote_addresses(hostname: str, port: int) -> set[str]:
     if not addresses or any(not check_ip_routable(address) for address in addresses):
         raise RemoteRequestError("Remote hostname resolves to a non-public address")
 
-    if len(_remote_url_cache) >= REMOTE_URL_CACHE_MAX_SIZE:
-        _remote_url_cache.clear()
-    _remote_url_cache[cache_key] = (now + REMOTE_URL_CACHE_TTL, addresses)
+    with _remote_url_cache_lock:
+        _remote_url_cache[cache_key] = addresses
     return addresses
 
 
