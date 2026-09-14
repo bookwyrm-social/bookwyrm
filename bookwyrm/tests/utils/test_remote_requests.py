@@ -57,8 +57,6 @@ def test_get_remote_response_rejects_private_redirect():
         side_effect=resolve_host,
     ):
         with pytest.raises(RemoteRequestError):
-            get_remote_response(
-                "https://public.example/actor", headers={}, timeout=5
-            )
+            get_remote_response("https://public.example/actor", headers={}, timeout=5)
 
     assert len(responses.calls) == 1
