@@ -7,6 +7,7 @@ import pytest
 import responses
 
 from bookwyrm.utils.remote_requests import (
+    REMOTE_URL_CACHE_TTL,
     RemoteRequestError,
     get_remote_response,
     validate_remote_url,
@@ -25,6 +26,36 @@ def test_validate_remote_url_allows_public_address():
         return_value=dns_result("93.184.216.34"),
     ):
         validate_remote_url("https://example.com/actor")
+
+
+def test_validate_remote_url_caches_recent_lookup():
+    """Recent DNS lookups are reused for the same host and port."""
+    with patch(
+        "bookwyrm.utils.remote_requests.socket.getaddrinfo",
+        return_value=dns_result("93.184.216.34"),
+    ) as getaddrinfo:
+        validate_remote_url("https://cached.example/actor")
+        validate_remote_url("https://cached.example/another-actor")
+
+    getaddrinfo.assert_called_once()
+
+
+def test_validate_remote_url_refreshes_expired_lookup():
+    """DNS is resolved again when the cache entry expires."""
+    with (
+        patch(
+            "bookwyrm.utils.remote_requests.socket.getaddrinfo",
+            return_value=dns_result("93.184.216.34"),
+        ) as getaddrinfo,
+        patch(
+            "bookwyrm.utils.remote_requests.monotonic",
+            side_effect=[0, REMOTE_URL_CACHE_TTL + 1],
+        ),
+    ):
+        validate_remote_url("https://expired.example/actor")
+        validate_remote_url("https://expired.example/another-actor")
+
+    assert getaddrinfo.call_count == 2
 
 
 @pytest.mark.parametrize("address", ["127.0.0.1", "169.254.169.254", "::1"])

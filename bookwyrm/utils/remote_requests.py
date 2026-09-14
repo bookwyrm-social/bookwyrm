@@ -3,6 +3,7 @@
 from collections.abc import Callable, Mapping
 import ipaddress
 import socket
+from time import monotonic
 from typing import Literal, Optional
 from urllib.parse import urljoin, urlsplit
 
@@ -12,10 +13,46 @@ from bookwyrm.utils.ip_utils import check_ip_routable
 
 
 MAX_REMOTE_REDIRECTS = 3
+REMOTE_URL_CACHE_TTL = 30
+REMOTE_URL_CACHE_MAX_SIZE = 1000
+
+_remote_url_cache: dict[tuple[str, int], tuple[float, set[str]]] = {}
 
 
 class RemoteRequestError(ValueError):
     """The requested remote URL is unsafe or cannot be resolved."""
+
+
+def get_remote_addresses(hostname: str, port: int) -> set[str]:
+    """Resolve a hostname to public addresses, reusing recent lookups."""
+    cache_key = (hostname, port)
+    now = monotonic()
+    cached = _remote_url_cache.get(cache_key)
+    if cached:
+        expires, addresses = cached
+        if now < expires:
+            return addresses
+        del _remote_url_cache[cache_key]
+
+    try:
+        addresses = {
+            result[4][0]
+            for result in socket.getaddrinfo(
+                hostname,
+                port,
+                type=socket.SOCK_STREAM,
+            )
+        }
+    except socket.gaierror as err:
+        raise RemoteRequestError("Could not resolve remote hostname") from err
+
+    if not addresses or any(not check_ip_routable(address) for address in addresses):
+        raise RemoteRequestError("Remote hostname resolves to a non-public address")
+
+    if len(_remote_url_cache) >= REMOTE_URL_CACHE_MAX_SIZE:
+        _remote_url_cache.clear()
+    _remote_url_cache[cache_key] = (now + REMOTE_URL_CACHE_TTL, addresses)
+    return addresses
 
 
 def validate_remote_url(url: str) -> None:
@@ -41,20 +78,7 @@ def validate_remote_url(url: str) -> None:
     else:
         raise RemoteRequestError("Remote URL must use a hostname")
 
-    try:
-        addresses = {
-            result[4][0]
-            for result in socket.getaddrinfo(
-                hostname,
-                port or (443 if parsed.scheme == "https" else 80),
-                type=socket.SOCK_STREAM,
-            )
-        }
-    except socket.gaierror as err:
-        raise RemoteRequestError("Could not resolve remote hostname") from err
-
-    if not addresses or any(not check_ip_routable(address) for address in addresses):
-        raise RemoteRequestError("Remote hostname resolves to a non-public address")
+    get_remote_addresses(hostname, port or (443 if parsed.scheme == "https" else 80))
 
 
 def get_remote_response(
