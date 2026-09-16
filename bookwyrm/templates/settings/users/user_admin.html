@@ -7,7 +7,7 @@
 {% block header %}
 {% if server %}
 {% blocktrans with instance_name=server.server_name %}Users: <small>{{ instance_name }}</small>{% endblocktrans %}
-<a href="{% request.path %}" class="help has-text-weight-normal">Clear filters</a>
+<a href="{{ request.path }}" class="help has-text-weight-normal">{% trans "Clear filters" %}</a>
 {% else %}
 {% trans "Users" %}
 {% endif %}
@@ -63,7 +63,7 @@
             </th>
             {% endif %}
         </tr>
-        {% endif %}
+        {% endwith %}
         {% for user in users %}
         <tr>
             <td class="pr-0">
