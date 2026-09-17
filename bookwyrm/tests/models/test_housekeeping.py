@@ -34,36 +34,100 @@ from bookwyrm.models.housekeeping import (
 )
 from bookwyrm.settings import DOMAIN
 from bookwyrm.models.housekeeping import delete_user_export_file_task
+from bookwyrm.models.housekeeping import (
+    mark_duplicate_data_task,
+    merge_duplicate_data_task,
+)
+
+
+class TestDeduplication(TestCase):
+    """tasks that perform bulk deduplication and related work"""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            f"mouse@{DOMAIN}",
+            "mouse@mouse.mouse",
+            "mouseword",
+            local=True,
+            localname="mouse",
+            name="hi",
+            summary="a summary",
+            bookwyrm_user=False,
+        )
+        SiteSettings.objects.create()
+
+    def test_mark_duplicate_data_task(self):
+        """are we marking duplicates as to-be-deleted"""
+        Edition.objects.create(title="one", isbn_10="123456789X")
+        Edition.objects.create(title="two", isbn_10="123456789X")
+        self.assertEqual(Edition.objects.count(), 2)
+        self.assertEqual(
+            Edition.objects.filter(pending_merge_target__isnull=False).count(), 0
+        )
+
+        mark_duplicate_data_task()
+        self.assertEqual(Edition.objects.count(), 2)
+        self.assertEqual(
+            Edition.objects.filter(pending_merge_target__isnull=False).count(), 1
+        )
+
+    def test_merge_duplicate_data_task(self):
+        """are we marking duplicates as to-be-deleted"""
+        past_date = datetime.now(timezone.utc) - timedelta(hours=2)
+        future_date = datetime.now(timezone.utc) + timedelta(days=2)
+
+        canonical = Edition.objects.create(title="one", isbn_10="123456789X")
+        mergeable = Edition.objects.create(
+            title="two",
+            isbn_10="123456789X",
+            pending_merge_target=canonical,
+            pending_merge_date=past_date,
+        )
+        not_yet = Edition.objects.create(
+            title="three",
+            isbn_10="123456789X",
+            pending_merge_target=canonical,
+            pending_merge_date=future_date,
+        )
+        blocked = Edition.objects.create(
+            title="four",
+            isbn_10="123456789X",
+            pending_merge_target=canonical,
+            pending_merge_date=past_date,
+            prevent_automatic_merge=True,
+        )
+
+        merge_duplicate_data_task()
+        self.assertEqual(Edition.objects.count(), 3)
+        self.assertTrue(Edition.objects.filter(id=canonical.id).exists())
+        self.assertFalse(Edition.objects.filter(id=mergeable.id).exists())
+        self.assertTrue(Edition.objects.filter(id=not_yet.id).exists())
+        self.assertTrue(Edition.objects.filter(id=blocked.id).exists())
 
 
 class TestCleanUpExportFiles(TestCase):
     """export and import files should be deleted periodically"""
 
     def setUp(self):
-        with (
-            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
-            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
-            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
-        ):
-            self.user = User.objects.create_user(
-                f"mouse@{DOMAIN}",
-                "mouse@mouse.mouse",
-                "mouseword",
-                local=True,
-                localname="mouse",
-                name="hi",
-                summary="a summary",
-                bookwyrm_user=False,
-            )
+        self.user = User.objects.create_user(
+            f"mouse@{DOMAIN}",
+            "mouse@mouse.mouse",
+            "mouseword",
+            local=True,
+            localname="mouse",
+            name="hi",
+            summary="a summary",
+            bookwyrm_user=False,
+        )
 
-            expiry_date = datetime.now(timezone.utc) - timedelta(hours=2)
-            self.job = CleanUpUserExportFilesJob.objects.create(
-                user=self.user, expiry_date=expiry_date
-            )
+        expiry_date = datetime.now(timezone.utc) - timedelta(hours=2)
+        self.job = CleanUpUserExportFilesJob.objects.create(
+            user=self.user, expiry_date=expiry_date
+        )
 
-            SiteSettings.objects.create()
+        SiteSettings.objects.create()
 
-    def test_export_file_deleted(self, *_):
+    def test_export_file_deleted(self):
         """did the file actually get deleted?"""
 
         export_updated_date = datetime.now(timezone.utc) - timedelta(hours=3)
@@ -79,7 +143,7 @@ class TestCleanUpExportFiles(TestCase):
         export.refresh_from_db()
         self.assertFalse(export.export_data.name)
 
-    def test_import_file_deleted(self, *_):
+    def test_import_file_deleted(self):
         """did the file actually get deleted?"""
 
         updated_date = datetime.now(timezone.utc) - timedelta(hours=3)
@@ -96,7 +160,7 @@ class TestCleanUpExportFiles(TestCase):
         import_job.refresh_from_db()
         self.assertFalse(import_job.archive_file.name)
 
-    def test_renamed_file_deleted(self, *_):
+    def test_renamed_file_deleted(self):
         """files with duplicate names get renamed like filename.tar7x9e.gz"""
 
         export_updated_date = datetime.now(timezone.utc) - timedelta(hours=3)
@@ -113,7 +177,7 @@ class TestCleanUpExportFiles(TestCase):
         export.refresh_from_db()
         self.assertFalse(export.export_data.name)
 
-    def test_start_export_deletions(self, *_):
+    def test_start_export_deletions(self):
         """does start_export_deletions actually start a job?"""
 
         self.assertEqual(CleanUpUserExportFilesJob.objects.count(), 1)

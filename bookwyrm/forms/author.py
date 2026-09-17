@@ -1,7 +1,5 @@
 """using django model forms"""
 
-from django import forms
-
 from bookwyrm import models
 from .custom_form import CustomForm
 from .widgets import SelectDateWidget
@@ -26,28 +24,10 @@ class AuthorForm(CustomForm):
             "goodreads_key",
             "isfdb",
             "isni",
+            "bnf_id",
+            "viaf",
         ]
         widgets = {
-            "name": forms.TextInput(attrs={"aria-describedby": "desc_name"}),
-            "aliases": forms.TextInput(attrs={"aria-describedby": "desc_aliases"}),
-            "bio": forms.Textarea(attrs={"aria-describedby": "desc_bio"}),
-            "wikipedia_link": forms.TextInput(
-                attrs={"aria-describedby": "desc_wikipedia_link"}
-            ),
-            "wikidata": forms.TextInput(attrs={"aria-describedby": "desc_wikidata"}),
-            "website": forms.TextInput(attrs={"aria-describedby": "desc_website"}),
-            "born": SelectDateWidget(attrs={"aria-describedby": "desc_born"}),
-            "died": SelectDateWidget(attrs={"aria-describedby": "desc_died"}),
-            "openlibrary_key": forms.TextInput(
-                attrs={"aria-describedby": "desc_openlibrary_key"}
-            ),
-            "inventaire_id": forms.TextInput(
-                attrs={"aria-describedby": "desc_inventaire_id"}
-            ),
-            "librarything_key": forms.TextInput(
-                attrs={"aria-describedby": "desc_librarything_key"}
-            ),
-            "goodreads_key": forms.TextInput(
-                attrs={"aria-describedby": "desc_goodreads_key"}
-            ),
+            "born": SelectDateWidget(),
+            "died": SelectDateWidget(),
         }

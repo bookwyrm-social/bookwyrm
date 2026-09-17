@@ -1,5 +1,6 @@
 """manage user"""
 
+from django.contrib.auth.models import Permission
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Group
 from django.core.paginator import Paginator
@@ -162,3 +163,22 @@ class ForcePasswordResetAdmin(View):
         return TemplateResponse(
             request, "settings/users/force_password_reset.html", data
         )
+
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.moderate_user", raise_exception=True),
+    name="dispatch",
+)
+class SetMergePermission(View):
+    """allow or disallow merge permissions for a user"""
+
+    def post(self, request, user_id):
+        """set or unset merge permission"""
+        user = get_object_or_404(models.User, id=user_id)
+        perm = Permission.objects.get(codename="manage_data")
+        if user.has_perm("bookwyrm.manage_data"):
+            user.user_permissions.remove(perm)
+        else:
+            user.user_permissions.add(perm)
+        return redirect("settings-user", user.id)

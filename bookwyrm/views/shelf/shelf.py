@@ -83,24 +83,19 @@ class Shelf(PrivateProfileMixin, View):
 
         # don't annotate on every possible sort field
         sort = request.GET.get("sort") or "-shelved_date"
-        if re.match(r"^-?rating$", sort):
-            books = books.annotate(rating=Subquery(reviews.values("rating")[:1]))
-        elif re.match(r"^-?start_date$", sort):
-            books = books.annotate(
-                start_date=Subquery(reading.values("start_date")[:1])
-            )
-        elif re.match(r"^-?finish_date$", sort):
-            books = books.annotate(
-                finish_date=Subquery(reading.values("finish_date")[:1])
-            )
-        elif re.match(r"^-?author$", sort):
+
+        books = books.annotate(
+            rating=Subquery(reviews.values("rating")[:1]),
+            start_date=Subquery(reading.values("start_date")[:1]),
+            finish_date=Subquery(reading.values("finish_date")[:1]),
+            shelved_date=Max("shelfbook__shelved_date"),
+        )
+        if re.match(r"^-?author$", sort):
             books = books.annotate(
                 author=models.Book.objects.filter(id=OuterRef("id")).values(
                     "authors__name"
                 )[:1]
             )
-        elif not re.match(r"^-?sort_title$", sort):
-            books = books.annotate(shelved_date=Max("shelfbook__shelved_date"))
 
         books = books.prefetch_related("authors")
 

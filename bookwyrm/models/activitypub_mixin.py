@@ -18,7 +18,7 @@ from Crypto.Hash import SHA256
 from django.apps import apps
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.db.models import Q, QuerySet
+from django.db.models import ForeignKey, Q, QuerySet
 from django.utils.http import http_date
 
 from bookwyrm import activitypub
@@ -111,6 +111,15 @@ class ActivitypubMixin:
 
             value = data.get(field.get_activitypub_field())
             if not value:
+                continue
+
+            # if the deduplication field is a foreign key, we have to look at
+            # the remote id, not the id, in the database
+            if isinstance(field, ForeignKey):
+                value_remote_id = value if isinstance(value, str) else value.get("id")
+                if not value:
+                    continue
+                filters.append({f"{field.name}__remote_id": value_remote_id})
                 continue
             filters.append({field.name: value})
 
@@ -555,12 +564,22 @@ async def async_broadcast(
     recipients: list[str], sender, data: str
 ) -> Awaitable[aiohttp.ClientResponse]:
     """Send all the broadcasts simultaneously"""
+    signing_key = None
+    if recipients:
+        if not sender.key_pair.private_key:
+            raise ValueError("No private key found for sender")
+        signing_key = RSA.import_key(sender.key_pair.private_key)
+
     timeout = aiohttp.ClientTimeout(total=10)
     async with aiohttp.ClientSession(timeout=timeout) as session:
         tasks = []
         for recipient in recipients:
             tasks.append(
-                asyncio.ensure_future(sign_and_send(session, sender, data, recipient))
+                asyncio.ensure_future(
+                    sign_and_send(
+                        session, sender, data, recipient, signing_key=signing_key
+                    )
+                )
             )
 
         results = await asyncio.gather(*tasks)
@@ -568,7 +587,12 @@ async def async_broadcast(
 
 
 async def sign_and_send(
-    session: aiohttp.ClientSession, sender, data: str, destination: str, **kwargs
+    session: aiohttp.ClientSession,
+    sender,
+    data: str,
+    destination: str,
+    signing_key=None,
+    **kwargs,
 ) -> Awaitable[aiohttp.ClientResponse]:
     """Sign the messages and send them in an asynchronous bundle"""
     now = http_date()
@@ -584,6 +608,7 @@ async def sign_and_send(
         destination,
         now,
         digest=digest,
+        signing_key=signing_key,
         use_legacy_key=kwargs.get("use_legacy_key"),
     )
 
@@ -605,7 +630,12 @@ async def sign_and_send(
                     logger.info("Trying again with legacy keyId header value")
                     asyncio.ensure_future(
                         sign_and_send(
-                            session, sender, data, destination, use_legacy_key=True
+                            session,
+                            sender,
+                            data,
+                            destination,
+                            signing_key=signing_key,
+                            use_legacy_key=True,
                         )
                     )
 
