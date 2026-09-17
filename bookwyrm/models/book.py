@@ -5,14 +5,13 @@ from functools import reduce
 import re
 import operator
 from typing import Any, Optional, Iterable
-from typing_extensions import Self
 
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex, BloomIndex, Index
 from django.core.cache import cache
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.db import models, transaction
-from django.db.models import Prefetch, ManyToManyField, Q, QuerySet
+from django.db.models import Prefetch, Q, QuerySet
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
