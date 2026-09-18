@@ -75,3 +75,24 @@ class ShelfTags(TestCase):
             shelf=shelf, book=self.book, user=self.local_user
         )
         self.assertEqual(shelf_tags.active_shelf(context, self.book).shelf, shelf)
+
+    def test_active_shelf_is_specific_to_edition(self, *_):
+        """a shelf entry for one edition does not apply to another"""
+        work = models.Work.objects.create(title="Test work")
+        shelved_edition = models.Edition.objects.create(
+            title="Shelved edition", parent_work=work
+        )
+        unshelved_edition = models.Edition.objects.create(
+            title="Unshelved edition", parent_work=work
+        )
+        shelf = self.local_user.shelf_set.first()
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        models.ShelfBook.objects.create(
+            shelf=shelf, book=shelved_edition, user=self.local_user
+        )
+
+        active_shelf = shelf_tags.active_shelf({"request": request}, unshelved_edition)
+        self.assertIsInstance(active_shelf, dict)
+        self.assertEqual(active_shelf["book"], unshelved_edition)

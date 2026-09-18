@@ -68,7 +68,7 @@ def active_shelf(context, book):
         lambda u, b: (
             models.ShelfBook.objects.filter(
                 shelf__user=u,
-                book__parent_work__editions=b,
+                book=b,
             ).first()
             or False
         ),
