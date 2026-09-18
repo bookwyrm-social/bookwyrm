@@ -93,15 +93,17 @@ def switch_edition(request):
     new_edition = get_mergeable_object_or_404(models.Edition, id=edition_id)
     shelfbooks = models.ShelfBook.objects.filter(
         book__parent_work=new_edition.parent_work, shelf__user=request.user
-    )
+    ).exclude(book=new_edition)
     for shelfbook in shelfbooks.all():
         with transaction.atomic():
-            models.ShelfBook.objects.create(
-                created_date=shelfbook.created_date,
-                user=shelfbook.user,
-                shelf=shelfbook.shelf,
+            models.ShelfBook.objects.get_or_create(
                 book=new_edition,
-                shelved_date=shelfbook.shelved_date,
+                shelf=shelfbook.shelf,
+                defaults={
+                    "created_date": shelfbook.created_date,
+                    "user": shelfbook.user,
+                    "shelved_date": shelfbook.shelved_date,
+                },
             )
             shelfbook.delete()
 
