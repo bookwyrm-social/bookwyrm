@@ -163,7 +163,10 @@ def refetch_or_fix_individual_series(options: dict, series: Series) -> str | Non
             if hasattr(field, "deduplication_field") and field.name in data:
                 setattr(series, field.name, data[field.name])
                 update_fields.append(field.name)
-        series.save(update_fields=update_fields)
+        if series.id not in ["", None]:
+            series.save(update_fields=update_fields)
+        else:
+            series.save()
         return series
 
     elif options["all"]:
