@@ -158,10 +158,12 @@ def refetch_or_fix_individual_series(options: dict, series: Series) -> str | Non
         series.alternative_names = list(
             set(series.alternative_names + data["alternative_names"])
         )
+        update_fields = ["name", "alternative_names"]
         for field in Series._meta.get_fields():
             if hasattr(field, "deduplication_field") and field.name in data:
                 setattr(series, field.name, data[field.name])
-        series.save()
+                update_fields.append(field.name)
+        series.save(update_fields=update_fields)
         return series
 
     elif options["all"]:
@@ -171,7 +173,7 @@ def refetch_or_fix_individual_series(options: dict, series: Series) -> str | Non
             return f"ERROR fixing nameless series id: {series.id} error: No names or inventaire id"
 
         series.name = series.alternative_names[0]
-        series.save()
+        series.save(update_fields=["name"])
         return series
 
 
