@@ -229,7 +229,6 @@ class Connector(AbstractConnector):
             try:
                 data = self.get_book_data(self.get_remote_id(uri))
             except ConnectorException:
-                print("ConnectorException")
                 continue
             results.append(get_language_code(data.get("labels", {})))
         return results
