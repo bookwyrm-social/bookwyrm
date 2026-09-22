@@ -30,7 +30,7 @@ from bookwyrm.tasks import app, MISC
 from bookwyrm.utils import regex
 from bookwyrm.utils.db import add_update_fields
 from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
-from .base_model import BookWyrmModel, DeactivationReason, new_access_code
+from .base_model import BookWyrmModel, DEACTIVATION_REASONS, new_access_code
 from .federated_server import FederatedServer
 from . import fields
 
@@ -187,7 +187,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         max_length=255,
     )
     deactivation_reason = models.CharField(
-        max_length=255, choices=DeactivationReason, null=True, blank=True
+        max_length=255, choices=DEACTIVATION_REASONS, null=True, blank=True
     )
     deactivation_date = models.DateTimeField(null=True, blank=True)
     allow_reactivation = models.BooleanField(default=False)

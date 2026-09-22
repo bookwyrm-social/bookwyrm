@@ -6,7 +6,7 @@ from django.utils import timezone
 
 from bookwyrm.models.status import Review
 from .base_model import BookWyrmModel
-from . import fields
+from . import fields, ReadThrough
 
 
 def get_current_year():
@@ -29,12 +29,12 @@ class AnnualGoal(BookWyrmModel):
 
         unique_together = ("user", "year")
 
-    def get_remote_id(self):
+    def get_remote_id(self) -> str:
         """put the year in the path"""
         return f"{self.user.remote_id}/goal/{self.year}"
 
     @property
-    def books(self):
+    def books(self) -> models.QuerySet[ReadThrough]:
         """the books you've read this year"""
         return (
             self.user.readthrough_set.filter(
@@ -46,17 +46,17 @@ class AnnualGoal(BookWyrmModel):
         )
 
     @property
-    def ratings(self):
+    def ratings(self) -> dict[int, float]:
         """ratings for books read this year"""
         book_ids = [r.book.id for r in self.books]
         reviews = Review.objects.filter(
             user=self.user,
             book__in=book_ids,
         )
-        return {r.book_id: r.rating for r in reviews}
+        return {review.book_id: review.rating for review in reviews}
 
     @property
-    def progress(self):
+    def progress(self) -> dict[str, int]:
         """how many books you've read this year"""
         count = self.user.readthrough_set.filter(
             finish_date__year__gte=self.year,
