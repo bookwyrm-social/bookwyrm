@@ -10,3 +10,13 @@ This author been identified as a duplicate of <strong><a href="{{ dupe_url }}">{
 <span class="details-close mt-4 mr-4 icon icon-x is-small" aria-hidden></span>
 
 {% endblock %}
+
+{% block candidate_link %}
+<a href="{{ candidate.local_path }}">
+    {{ candidate.name }}
+    {% if candidate.born or candidate.died %}
+    <span>({{ candidate.born|date:"Y" }}-{{ candidate.died|date:"Y" }})</span>
+    {% endif %}
+    (#{{ candidate.id }})
+</a>
+{% endblock %}

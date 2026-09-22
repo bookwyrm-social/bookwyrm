@@ -23,7 +23,7 @@ def create_key_pair():
     return private_key, public_key
 
 
-def make_signature(method, sender, destination, date, **kwargs):
+def make_signature(method, sender, destination, date, signing_key=None, **kwargs):
     """uses a private key to sign an outgoing message"""
     inbox_parts = urlparse(destination)
     signature_headers = [
@@ -38,7 +38,9 @@ def make_signature(method, sender, destination, date, **kwargs):
         headers = "(request-target) host date digest"
 
     message_to_sign = "\n".join(signature_headers)
-    signer = pkcs1_15.new(RSA.import_key(sender.key_pair.private_key))
+    if signing_key is None:
+        signing_key = RSA.import_key(sender.key_pair.private_key)
+    signer = pkcs1_15.new(signing_key)
     signed_message = signer.sign(SHA256.new(message_to_sign.encode("utf8")))
     # For legacy reasons we need to use an incorrect keyId for older Bookwyrm versions
     key_id = (
