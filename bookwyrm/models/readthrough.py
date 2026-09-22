@@ -37,7 +37,7 @@ class ReadThrough(BookWyrmModel):
 
     def save(self, *args, update_fields: Optional[Iterable[str]] = None, **kwargs):
         """update user active time"""
-        if not self.id:
+        if not self.id and self.book.parent_work:
             # if we're creating a new readthrough
             self.book.parent_work.read_count += 1
             self.book.parent_work.save(update_fields=["read_count"], broadcast=False)
