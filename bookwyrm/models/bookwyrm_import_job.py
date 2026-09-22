@@ -3,6 +3,7 @@
 import json
 import logging
 import math
+from typing import Any
 from urllib.parse import urlparse
 
 from botocore.exceptions import EndpointConnectionError
@@ -14,11 +15,12 @@ from django.db.models import (
     ForeignKey,
     FileField,
     JSONField,
+    QuerySet,
     TextChoices,
     PROTECT,
     SET_NULL,
 )
-from django.core.files.storage import storages
+from django.core.files.storage import storages, Storage
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
@@ -33,7 +35,7 @@ from bookwyrm.utils.tar import BookwyrmTarFile
 logger = logging.getLogger(__name__)
 
 
-def select_exports_storage():
+def select_exports_storage() -> Storage:
     """callable to allow for dependency on runtime configuration"""
     return storages["exports"]
 
@@ -48,32 +50,32 @@ class BookwyrmImportJob(ParentJob):
     )
     retry = BooleanField(default=False)
 
-    def start_job(self):
+    def start_job(self) -> None:
         """Start the job"""
         start_import_task.delay(job_id=self.id)
 
     @property
-    def book_tasks(self):
+    def book_tasks(self) -> QuerySet["UserImportBook"]:
         """How many import book tasks are there?"""
         return UserImportBook.objects.filter(parent_job=self).all()
 
     @property
-    def status_tasks(self):
+    def status_tasks(self) -> QuerySet["UserImportPost"]:
         """How many import status tasks are there?"""
         return UserImportPost.objects.filter(parent_job=self).all()
 
     @property
-    def relationship_tasks(self):
+    def relationship_tasks(self) -> QuerySet["UserImportRelationship"]:
         """How many import relationship tasks are there?"""
         return UserImportRelationship.objects.filter(parent_job=self).all()
 
     @property
-    def item_count(self):
+    def item_count(self) -> int:
         """How many total tasks are there?"""
         return self.book_tasks.count() + self.status_tasks.count()
 
     @property
-    def pending_item_count(self):
+    def pending_item_count(self) -> int:
         """How many tasks are incomplete?"""
         status = BookwyrmImportJob.Status
         book_tasks = self.book_tasks.filter(
@@ -91,14 +93,14 @@ class BookwyrmImportJob(ParentJob):
         return book_tasks + status_tasks + relationship_tasks
 
     @property
-    def percent_complete(self):
+    def percent_complete(self) -> int:
         """How far along?"""
         item_count = self.item_count
         if not item_count:
             return 0
         return math.floor((item_count - self.pending_item_count) / item_count * 100)
 
-    def complete_job(self):
+    def complete_job(self) -> None:
         """Report that the job has completed and stop pending children."""
 
         super().complete_job()
@@ -106,7 +108,7 @@ class BookwyrmImportJob(ParentJob):
         # delete the import file
         self.archive_file.delete(save=True)
 
-    def notify_child_job_complete(self):
+    def notify_child_job_complete(self) -> None:
         """let the job know when the items get work done"""
 
         if self.complete:
@@ -126,13 +128,13 @@ class UserImportBook(ChildJob):
     book = ForeignKey(models.Book, on_delete=SET_NULL, null=True, blank=True)
     book_data = JSONField(null=False)
 
-    def start_job(self, origin_is_ok=False):
+    def start_job(self, origin_is_ok: bool = False) -> None:
         """Start the job"""
         import_book_task.delay(
             child_id=self.id, origin_is_ok=origin_is_ok, job_type="UserImportBook"
         )
 
-    def complete_job(self):
+    def complete_job(self) -> None:
         """Report to BookwyrmImportJob that the job has completed.
         Do not use super() here because the parent class will
         complete the job over the top of us and then you will be sad."""
@@ -160,11 +162,11 @@ class UserImportPost(ChildJob):
         max_length=10, choices=StatusType.choices, default=StatusType.COMMENT, null=True
     )
 
-    def start_job(self):
+    def start_job(self) -> None:
         """Start the job"""
         upsert_status_task.delay(child_id=self.id, job_type="UserImportPost")
 
-    def complete_job(self):
+    def complete_job(self) -> None:
         """Report to BookwyrmImportJob that the job has completed."""
 
         Job.complete_job(self)  # don't notify ParentJob
@@ -186,13 +188,13 @@ class UserImportRelationship(ChildJob):
     )
     remote_id = models.fields.RemoteIdField(null=True, unique=False)
 
-    def start_job(self):
+    def start_job(self) -> None:
         """Start the job"""
         import_user_relationship_task.delay(
             child_id=self.id, job_type="UserImportRelationship"
         )
 
-    def complete_job(self):
+    def complete_job(self) -> None:
         """Report to BookwyrmImportJob that the job has completed."""
 
         Job.complete_job(self)  # don't notify ParentJob
@@ -203,7 +205,7 @@ class UserImportRelationship(ChildJob):
 class ImportUserTask(ParentTask):
     """A task for a user import job"""
 
-    def before_start(self, task_id, args, kwargs):
+    def before_start(self, task_id: str, args, kwargs) -> None:
         """Handler called before the task starts."""
         job = BookwyrmImportJob.objects.get(id=kwargs["job_id"])
         job.task_id = task_id
@@ -214,7 +216,7 @@ class UserImportSubTask(SubTask):
     """Makes sure we refer to the correct child job and call
     subclass methods instead of methods on ChildJob & ParentJob"""
 
-    def before_start(self, task_id, args, kwargs):
+    def before_start(self, task_id: str, args, kwargs) -> None:
         """Handler called before the task starts."""
 
         model = apps.get_model(f"bookwyrm.{kwargs['job_type']}", require_ready=True)
@@ -223,7 +225,7 @@ class UserImportSubTask(SubTask):
         child_job.save(update_fields=["task_id"])
         child_job.set_status(ChildJob.Status.ACTIVE)
 
-    def on_success(self, retval, task_id, args, kwargs):
+    def on_success(self, retval, task_id: str, args, kwargs) -> None:
         """Run by the worker if the task executes successfully"""
 
         # we want to complete our own UserImportBook job, not ChildJob
@@ -233,7 +235,7 @@ class UserImportSubTask(SubTask):
 
 
 @app.task(queue=IMPORTS, base=ImportUserTask)
-def start_import_task(**kwargs):
+def start_import_task(**kwargs) -> None:
     """trigger the child import tasks for each user data
     We always import the books even if not assigning
     them to shelves, lists etc"""
@@ -311,7 +313,7 @@ def start_import_task(**kwargs):
         job.set_status("failed")
 
 
-def create_book_from_json(book_data):
+def create_book_from_json(book_data: dict[str, Any]) -> models.Edition:
     """create a book from the JSON in the import file
     as a last resort if we can't find the book
     in this instance or in the source instance"""
@@ -347,7 +349,7 @@ def create_book_from_json(book_data):
 
 
 @app.task(queue=IMPORTS, base=UserImportSubTask)
-def import_book_task(**kwargs):
+def import_book_task(**kwargs) -> None:
     """Take work and edition data,
     find or create the edition and work in the database"""
 
@@ -432,13 +434,13 @@ def import_book_task(**kwargs):
 
 
 @app.task(queue=IMPORTS, base=UserImportSubTask)
-def upsert_status_task(**kwargs):
+def upsert_status_task(**kwargs) -> None:
     """Find or create book statuses"""
 
     task = UserImportPost.objects.get(id=kwargs["child_id"])
-    job = task.parent_job
-    user = job.user
-    status = task.json
+    job: ParentJob = task.parent_job
+    user: models.User = job.user
+    status: dict[str, Any] = task.json
     status_class = (
         models.Review
         if task.status_type == "review"
@@ -452,7 +454,7 @@ def upsert_status_task(**kwargs):
 
     try:
         # only add statuses if this is the same user
-        if is_alias(user, status.get("attributedTo", False)):
+        if is_alias(user, status.get("attributedTo")):
             status["attributedTo"] = user.remote_id
             status["to"] = update_followers_address(user, status["to"])
             status["cc"] = update_followers_address(user, status["cc"])
@@ -460,7 +462,7 @@ def upsert_status_task(**kwargs):
                 "replies"
             ] = {}  # this parses incorrectly but we can't set it without knowing the new id
             status["inReplyToBook"] = task.book.remote_id
-            parsed = activitypub.parse(status)
+            parsed: activitypub.Comment = activitypub.parse(status)
             if not status_already_exists(
                 user, parsed
             ):  # don't duplicate posts on multiple import
@@ -498,7 +500,9 @@ def upsert_status_task(**kwargs):
         task.set_status("failed")
 
 
-def upsert_readthroughs(user, book_id, data):
+def upsert_readthroughs(
+    user: models.User, book_id: int, data: list[dict[str, Any]]
+) -> None:
     """Take a JSON string of readthroughs and
     find or create the instances in the database"""
 
@@ -522,10 +526,10 @@ def upsert_readthroughs(user, book_id, data):
 
 
 def upsert_lists(
-    user,
-    book_id,
-    lists,
-):
+    user: models.User,
+    book_id: int,
+    lists: list[dict[str, Any]],
+) -> None:
     """Take a list of objects each containing
     a list and list item as AP objects
 
@@ -562,7 +566,9 @@ def upsert_lists(
             )
 
 
-def upsert_shelves(user, book, shelves):
+def upsert_shelves(
+    user: models.User, book: models.Book, shelves: list[dict[str, Any]]
+) -> None:
     """Take shelf JSON objects and create
     DB entries if they don't already exist"""
 
@@ -585,7 +591,9 @@ def upsert_shelves(user, book, shelves):
 ##############
 
 
-def update_user_profile(user, tar, data):
+def update_user_profile(
+    user: models.User, tar: BookwyrmTarFile, data: dict[str, Any]
+) -> None:
     """update the user's profile from import data"""
     name = data.get("name", None)
     username = data.get("preferredUsername")
@@ -597,35 +605,35 @@ def update_user_profile(user, tar, data):
         tar.write_image_to_file(avatar_filename, user.avatar)
 
 
-def update_user_settings(user, data):
+def update_user_settings(user: models.User, data: dict[str, Any]) -> None:
     """update the user's settings from import data"""
 
     update_fields = ["manually_approves_followers", "hide_follows", "discoverable"]
 
-    ap_fields = [
+    activitypub_fields = [
         ("manuallyApprovesFollowers", "manually_approves_followers"),
         ("hideFollows", "hide_follows"),
         ("discoverable", "discoverable"),
     ]
 
-    for ap_field, bw_field in ap_fields:
-        setattr(user, bw_field, data[ap_field])
+    for activitypub_field, bookwyrm_field in activitypub_fields:
+        setattr(user, bookwyrm_field, data[activitypub_field])
 
-    bw_fields = [
+    bookwyrm_fields = [
         "show_goal",
         "show_suggested_users",
         "default_post_privacy",
         "preferred_timezone",
     ]
 
-    for field in bw_fields:
+    for field in bookwyrm_fields:
         update_fields.append(field)
         setattr(user, field, data["settings"][field])
 
     user.save(update_fields=update_fields)
 
 
-def update_goals(user, data):
+def update_goals(user: models.User, data: list[dict[str, Any]]) -> None:
     """update the user's goals from import data"""
 
     for goal in data:
@@ -642,17 +650,17 @@ def update_goals(user, data):
             models.AnnualGoal.objects.create(**goal)
 
 
-def upsert_saved_lists(user, values):
+def upsert_saved_lists(user: models.User, remote_ids: list[str]) -> None:
     """Take a list of remote ids and add as saved lists"""
 
-    for remote_id in values:
+    for remote_id in remote_ids:
         book_list = activitypub.resolve_remote_id(remote_id, models.List)
         if book_list:
             user.saved_lists.add(book_list)
 
 
 @app.task(queue=IMPORTS, base=UserImportSubTask)
-def import_user_relationship_task(**kwargs):
+def import_user_relationship_task(**kwargs) -> None:
     """import a user follow or block from an import file"""
 
     task = UserImportRelationship.objects.get(id=kwargs["child_id"])
@@ -735,18 +743,18 @@ def import_user_relationship_task(**kwargs):
 ###########
 
 
-def update_followers_address(user, field):
+def update_followers_address(user: models.User, audiences: list[str]) -> list[str]:
     """statuses to or cc followers need to have the followers
     address updated to the new local user"""
 
-    for i, audience in enumerate(field):
+    for i, audience in enumerate(audiences):
         if audience.rsplit("/")[-1] == "followers":
-            field[i] = user.followers_url
+            audiences[i] = user.followers_url
 
-    return field
+    return audiences
 
 
-def is_alias(user, remote_id):
+def is_alias(user: models.User, remote_id: str) -> bool:
     """check that the user is listed as moved_to
     or also_known_as in the remote user's profile"""
 
@@ -767,7 +775,7 @@ def is_alias(user, remote_id):
     return False
 
 
-def status_already_exists(user, status):
+def status_already_exists(user: models.User, status: activitypub.Comment) -> bool:
     """check whether this status has already been published
     by this user. We can't rely on to_model() because it
     only matches on remote_id, which we have to change

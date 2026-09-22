@@ -2,15 +2,16 @@
 
 import logging
 import os
+from typing import Any
 
 from boto3.session import Session as BotoSession
 from s3_tar import S3Tar
 
 from django.db import transaction
-from django.db.models import FileField, JSONField
+from django.db.models import FileField, JSONField, QuerySet
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
-from django.core.files.storage import storages
+from django.core.files.storage import Storage, storages
 
 from bookwyrm import settings
 
@@ -33,7 +34,7 @@ class BookwyrmAwsSession(BotoSession):
         return super().client("s3", *args, **kwargs)
 
 
-def select_exports_storage():
+def select_exports_storage() -> Storage:
     """callable to allow for dependency on runtime configuration"""
     return storages["exports"]
 
@@ -44,7 +45,7 @@ class BookwyrmExportJob(ParentJob):
     export_data = FileField(null=True, storage=select_exports_storage)
     export_json = JSONField(null=True, encoder=DjangoJSONEncoder)
 
-    def start_job(self):
+    def start_job(self) -> None:
         """schedule the first task"""
 
         self.set_status("active")
@@ -52,7 +53,7 @@ class BookwyrmExportJob(ParentJob):
 
 
 @app.task(queue=IMPORTS, base=ParentTask)
-def create_export_json_task(**kwargs):
+def create_export_json_task(**kwargs) -> None:
     """create the JSON data for the export"""
 
     job = BookwyrmExportJob.objects.get(id=kwargs["job_id"])
@@ -89,7 +90,7 @@ def archive_file_location(file, directory="") -> str:
 
 
 @app.task(queue=IMPORTS, base=ParentTask)
-def create_archive_task(**kwargs):
+def create_archive_task(**kwargs) -> None:
     """create the archive containing the JSON file and additional files"""
 
     job = BookwyrmExportJob.objects.get(id=kwargs["job_id"])
@@ -164,7 +165,7 @@ def create_archive_task(**kwargs):
         job.set_status("failed")
 
 
-def export_user(user: User):
+def export_user(user: User) -> dict[str, Any]:
     """export user data"""
     data = user.to_activity()
     if user.avatar:
@@ -174,7 +175,7 @@ def export_user(user: User):
     return data
 
 
-def export_settings(user: User):
+def export_settings(user: User) -> dict[str, bool | str]:
     """Additional settings - can't be serialized as AP"""
     vals = [
         "show_goal",
@@ -185,26 +186,26 @@ def export_settings(user: User):
     return {k: getattr(user, k) for k in vals}
 
 
-def export_saved_lists(user: User):
+def export_saved_lists(user: User) -> list[str]:
     """add user saved lists to export JSON"""
     return [saved_list.remote_id for saved_list in user.saved_lists.all()]
 
 
-def export_follows(user: User):
+def export_follows(user: User) -> list[str]:
     """add user follows to export JSON"""
     follows = UserFollows.objects.filter(user_subject=user).distinct()
     following = User.objects.filter(userfollows_user_object__in=follows).distinct()
     return [f.remote_id for f in following]
 
 
-def export_blocks(user: User):
+def export_blocks(user: User) -> list[str]:
     """add user blocks to export JSON"""
     blocks = UserBlocks.objects.filter(user_subject=user).distinct()
     blocking = User.objects.filter(userblocks_user_object__in=blocks).distinct()
     return [b.remote_id for b in blocking]
 
 
-def export_goals(user: User):
+def export_goals(user: User) -> list[dict[str, int | str]]:
     """add user reading goals to export JSON"""
     reading_goals = AnnualGoal.objects.filter(user=user).distinct()
     return [
@@ -213,13 +214,13 @@ def export_goals(user: User):
     ]
 
 
-def export_books(user: User):
+def export_books(user: User) -> list[dict[str, Any]]:
     """add books to export JSON"""
     editions = get_books_for_user(user)
     return [export_book(user, edition) for edition in editions]
 
 
-def export_book(user: User, edition: Edition):
+def export_book(user: User, edition: Edition) -> dict[str, Any]:
     """add book to export JSON"""
     data = {}
     data["work"] = edition.parent_work.to_activity()
@@ -289,7 +290,7 @@ def export_book(user: User, edition: Edition):
     return data
 
 
-def get_books_for_user(user):
+def get_books_for_user(user: User) -> QuerySet[Edition]:
     """
     Get all the books and editions related to a user.
     We use selecting book_id instead of Q objects because it creates
