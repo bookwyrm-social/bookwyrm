@@ -3,6 +3,7 @@
 import json
 from unittest.mock import patch
 import pathlib
+import socket
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -51,6 +52,15 @@ class ViewsHelpers(TestCase):
 
     def setUp(self):
         """individual test setup"""
+        getaddrinfo = patch(
+            "bookwyrm.utils.remote_requests.socket.getaddrinfo",
+            return_value=[
+                (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", 443))
+            ],
+        )
+        getaddrinfo.start()
+        self.addCleanup(getaddrinfo.stop)
+
         self.factory = RequestFactory()
         datafile = pathlib.Path(__file__).parent.joinpath(
             "../../data/ap_user_move.json"

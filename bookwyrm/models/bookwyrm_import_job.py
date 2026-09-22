@@ -28,6 +28,7 @@ from bookwyrm import activitypub, models, settings
 from bookwyrm.connectors import connector_manager
 from bookwyrm.tasks import app, IMPORTS
 from bookwyrm.models.job import Job, ParentJob, ChildJob, ParentTask, SubTask
+from bookwyrm.utils.remote_requests import RemoteRequestError, get_remote_response
 from bookwyrm.utils.tar import BookwyrmTarFile
 
 logger = logging.getLogger(__name__)
@@ -281,20 +282,23 @@ def start_import_task(**kwargs):
                 url = f"{url_parts.scheme}://{url_parts.netloc}"
                 # Check https://example.com to see if the instance is still online
                 # If not, we don't bother trying to pull book data from it.
-                resp = requests.head(
+                resp = get_remote_response(
                     url,
                     headers={
                         "User-Agent": settings.USER_AGENT,
                     },
                     timeout=settings.QUERY_TIMEOUT,
+                    method="head",
+                    validate_url=connector_manager.raise_not_valid_url,
                 )
 
                 origin_is_ok = resp.ok
 
             except (
                 EndpointConnectionError,
-                requests.exceptions.ConnectionError,
-                ConnectionRefusedError,
+                connector_manager.ConnectorException,
+                RemoteRequestError,
+                requests.exceptions.RequestException,
             ):
                 origin_is_ok = False
 

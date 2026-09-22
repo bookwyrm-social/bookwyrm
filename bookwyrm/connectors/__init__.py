@@ -5,6 +5,7 @@ from .connector_manager import (
     create_finna_connector,
     create_libris_connector,
     first_search_result,
+    raise_not_valid_url,
     search,
 )
 from .settings import CONNECTORS

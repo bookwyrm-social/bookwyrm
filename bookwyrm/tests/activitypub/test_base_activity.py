@@ -2,6 +2,7 @@
 
 import json
 import pathlib
+import socket
 from unittest.mock import patch
 
 from dataclasses import dataclass
@@ -46,6 +47,15 @@ class BaseActivity(TestCase):
         cls.user.save(broadcast=False, update_fields=["remote_id"])
 
     def setUp(self):
+        getaddrinfo = patch(
+            "bookwyrm.utils.remote_requests.socket.getaddrinfo",
+            return_value=[
+                (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", 443))
+            ],
+        )
+        getaddrinfo.start()
+        self.addCleanup(getaddrinfo.stop)
+
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
         self.userdata = json.loads(datafile.read_bytes())
         # don't try to load the user icon
@@ -73,6 +83,13 @@ class BaseActivity(TestCase):
         """test that an instance representative actor is created if it does not exist"""
         representative = get_representative()
         self.assertIsInstance(representative, models.User)
+
+    def test_get_activitypub_data_rejects_private_actor_url(self, *_):
+        """unsafe actor URLs are rejected before making a request"""
+        with patch("bookwyrm.utils.remote_requests.requests.get") as request:
+            with self.assertRaises(HTTPError):
+                get_activitypub_data("http://127.0.0.1/actor")
+        request.assert_not_called()
 
     def test_init(self, *_):
         """simple successfully init"""
