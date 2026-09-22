@@ -15,7 +15,7 @@ from bookwyrm.settings import BASE_URL
 from .fields import RemoteIdField
 
 
-DeactivationReason = [
+DEACTIVATION_REASONS = [
     ("pending", _("Pending")),
     ("self_deletion", _("Self deletion")),
     ("self_deactivation", _("Self deactivation")),
