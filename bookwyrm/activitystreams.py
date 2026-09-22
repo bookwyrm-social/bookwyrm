@@ -9,7 +9,7 @@ from opentelemetry import trace
 
 from bookwyrm import models
 from bookwyrm.models.base_model import BookWyrmModel
-from bookwyrm.redis_store import RedisStore, r
+from bookwyrm.redis_store import RedisStore, redis_instance
 from bookwyrm.tasks import app, STREAMS, IMPORT_TRIGGERED
 from bookwyrm.telemetry import open_telemetry
 
@@ -73,8 +73,8 @@ class ActivityStream(RedisStore):
     def get_activity_stream(self, user: models.User):
         """load the statuses to be displayed"""
         # clear unreads for this feed
-        r.set(self.unread_id(user.id), 0)
-        r.delete(self.unread_by_status_type_id(user.id))
+        redis_instance.set(self.unread_id(user.id), 0)
+        redis_instance.delete(self.unread_by_status_type_id(user.id))
 
         statuses = self.get_store(self.stream_id(user.id))
         return (
@@ -93,11 +93,11 @@ class ActivityStream(RedisStore):
 
     def get_unread_count(self, user: models.User):
         """get the unread status count for this user's feed"""
-        return int(r.get(self.unread_id(user.id)) or 0)
+        return int(redis_instance.get(self.unread_id(user.id)) or 0)
 
     def get_unread_count_by_status_type(self, user: models.User):
         """get the unread status count for this user's feed's status types"""
-        status_types = r.hgetall(self.unread_by_status_type_id(user.id))
+        status_types = redis_instance.hgetall(self.unread_by_status_type_id(user.id))
         return {
             str(key.decode("utf-8")): int(value) or 0
             for key, value in status_types.items()

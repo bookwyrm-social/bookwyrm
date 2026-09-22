@@ -19,7 +19,7 @@ from django.utils.http import http_date
 from bookwyrm import models
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.models import base_model
-from bookwyrm.redis_store import r
+from bookwyrm.redis_store import redis_instance
 from bookwyrm.signatures import make_signature
 from bookwyrm.settings import (
     DOMAIN,
@@ -64,7 +64,7 @@ def item_lock(object_id):
         # 1: arbitrary value for the key
         # nx: only set if the key doesn't already exist
         # ex: expire after this many seconds
-        if lock := r.set(lock_id, "1", nx=True, ex=QUERY_TIMEOUT * 60):
+        if lock := redis_instance.set(lock_id, "1", nx=True, ex=QUERY_TIMEOUT * 60):
             break
 
         # if we don't have the lock, try again in a few seconds
@@ -83,7 +83,7 @@ def item_lock(object_id):
         # only release lock if you have it and it isn't expired
         # otherwise we might clear a lock owned by another process
         if time.monotonic() < expire_seconds and lock:
-            r.delete(lock_id)
+            redis_instance.delete(lock_id)
 
 
 @dataclass
