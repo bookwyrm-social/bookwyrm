@@ -288,7 +288,8 @@ class MergeableMixin(TestCase):
 
         work = models.Work.objects.create(title="Work", openlibrary_key="hello")
         dupe_work = models.Work.objects.create(
-            title="Duplicate Work", openlibrary_key="hello", pending_merge_target=work)
+            title="Duplicate Work", openlibrary_key="hello", pending_merge_target=work
+        )
         self.assertEqual(dupe_work.pending_merge_target, work)
 
         book = models.Edition.objects.create(

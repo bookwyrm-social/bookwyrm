@@ -244,3 +244,8 @@ class MergeableMixin(models.Model):
             and parent != canonical.parent_work
         ):
             parent.merge_into(canonical.parent_work)
+            # make sure we don't create a situation where the work is trying to merge into itself
+            canonical.parent_work.pending_merge_target = None
+            canonical.parent_work.save(
+                update_fields=["pending_merge_target"], broadcast=False
+            )
