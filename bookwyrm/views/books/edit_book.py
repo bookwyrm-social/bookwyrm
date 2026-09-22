@@ -144,14 +144,13 @@ class CreateBook(View):
 
     def get(self, request):
         """info about a book"""
-        data = {"form": forms.EditionForm()}
+        data = {"form": forms.EditionForm(), "model": "edition"}
         return TemplateResponse(request, "book/edit/edit_book.html", data)
 
     def post(self, request):
         """create a new book"""
-        # returns None if no match is found
         form = forms.EditionForm(request.POST, request.FILES)
-        data = {"form": form}
+        data = {"form": form, "model": "edition"}
 
         # collect data provided by the work or import item
         parent_work_id = request.POST.get("parent_work")
@@ -346,8 +345,11 @@ class ConfirmEditBook(View):
     def post(self, request, book_id=None):
         """edit a book cool"""
         # returns None if no match is found
-        book = models.Book.objects.select_subclasses().get(id=book_id)
-        is_work = isinstance(book, models.Work)
+        book = (
+            models.Book.objects.select_subclasses().get(id=book_id) if book_id else None
+        )
+        # if the book id is not set, we're creating a new edition
+        is_work = isinstance(book, models.Work) if book else False
         form = forms.WorkForm if is_work else forms.EditionForm
         form = form(request.POST, request.FILES, instance=book)
 
