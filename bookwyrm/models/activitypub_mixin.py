@@ -7,7 +7,7 @@ from functools import reduce
 import json
 import operator
 import logging
-from typing import Any, Awaitable, Optional
+from typing import Any, Awaitable, Optional, TypeVar
 from uuid import uuid4
 from typing_extensions import Self
 
@@ -34,6 +34,8 @@ logger = logging.getLogger(__name__)
 # circular import errors so I gave up. I'm sure it could be done though!
 
 PropertyField = namedtuple("PropertyField", ("set_activity_from_field"))
+
+TActivitypubMixin = TypeVar('TActivitypubMixin', bound='ActivitypubMixin')
 
 
 def set_activity_from_property_field(
@@ -350,8 +352,8 @@ class OrderedCollectionPageMixin(ObjectMixin):
         self,
         queryset: QuerySet,
         remote_id: str = None,
-        page=False,
-        collection_only=False,
+        page: bool=False,
+        collection_only: bool=False,
         **kwargs,
     ) -> activitypub.base_activity.ActivityObject:
         """an ordered collection of whatevers"""
@@ -403,7 +405,7 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
             self.collection_queryset, **kwargs
         ).serialize()
 
-    def delete(self, *args, broadcast=True, **kwargs) -> None:
+    def delete(self, *args, broadcast: bool=True, **kwargs) -> None:
         """Delete the object"""
         activity = self.to_delete_activity(self.user)
         super().delete(*args, **kwargs)
