@@ -335,7 +335,7 @@ class ManualMergeViews(TestCase):
 
         # does it load the right template
         self.assertEqual(
-            result.template_name, "settings/manage-data/confirm-merge.html"
+            result.template_name, "settings/manage_data/confirm-merge.html"
         )
 
     def test_confirm_manual_merge(self):

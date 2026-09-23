@@ -41,7 +41,7 @@ class Duplicates(View):
 def run_deduplication_scan_task(request):
     """run now"""
     models.housekeeping.mark_duplicate_data_task.delay()
-    return redirect("settings-data-quality")
+    return redirect("settings-duplicates")
 
 
 @require_POST
@@ -61,7 +61,7 @@ def schedule_deduplication_scan_task(request):
             name="dedupe-scan-task",
             task="bookwyrm.models.housekeeping.mark_duplicate_data_task",
         )
-    return redirect("settings-data-quality")
+    return redirect("settings-duplicates")
 
 
 @require_POST
@@ -81,7 +81,7 @@ def schedule_deduplication_task(request):
             name="dedupe-merge-task",
             task="bookwyrm.models.housekeeping.merge_duplicate_data_task",
         )
-    return redirect("settings-data-quality")
+    return redirect("settings-duplicates")
 
 
 @require_POST
@@ -89,7 +89,7 @@ def schedule_deduplication_task(request):
 def unschedule_deduplication_scan_task(request, task_id):
     """unscheduler"""
     get_object_or_404(PeriodicTask, id=task_id).delete()
-    return redirect("settings-data-quality")
+    return redirect("settings-duplicates")
 
 
 def data_quality_data():

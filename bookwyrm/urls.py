@@ -425,17 +425,17 @@ urlpatterns = [
         name="report-link",
     ),
     re_path(
-        r"^settings/data-quality/?$",
+        r"^settings/data-quality/duplicates?$",
         views.Duplicates.as_view(),
-        name="settings-data-quality",
+        name="settings-duplicates",
     ),
     re_path(
-        r"^settings/manage-data/manual-merge/(?P<model_name>\w+)/(?P<canonical_id>\d+)/?$",
+        r"^settings/data-quality/manual-merge/(?P<model_name>\w+)/(?P<canonical_id>\d+)/?$",
         views.ManualMerge.as_view(),
         name="settings-manual-merge",
     ),
     re_path(
-        r"^settings/manage-data/confirm-manual-merge/(?P<model_name>\w+)/(?P<canonical_id>\d+)/?$",
+        r"^settings/data-quality/confirm-manual-merge/(?P<model_name>\w+)/(?P<canonical_id>\d+)/?$",
         views.confirm_manual_merge,
         name="settings-confirm-manual-merge",
     ),
@@ -458,6 +458,16 @@ urlpatterns = [
         r"^settings/data-quality/unschedule/(?P<task_id>\d+)/?$",
         views.unschedule_deduplication_scan_task,
         name="settings-dedupe-unschedule",
+    ),
+    re_path(
+        r"^settings/data-quality/problems/?$",
+        views.DataProblems.as_view(),
+        name="settings-problems",
+    ),
+    re_path(
+        r"^settings/data-quality/problems/block-merge/?$",
+        views.block_problem_merges,
+        name="settings-problems-block-merge",
     ),
     re_path(
         r"^settings/imports/(?P<status>(complete|active))?/?$",

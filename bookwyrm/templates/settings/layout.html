@@ -56,13 +56,17 @@
         <ul class="menu-list">
             {% if perms.bookwyrm.edit_instance_settings %}
             <li>
-                {% url 'settings-data-quality' as url %}
+                {% url 'settings-duplicates' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Duplicate Data" %}</a>
             </li>
             {% endif %}
             <li>
                 {% url 'settings-merge-data' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Merge Data" %}</a>
+            </li>
+            <li>
+                {% url 'settings-problems' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Data Problems" %}</a>
             </li>
         </ul>
         {% endif %}
