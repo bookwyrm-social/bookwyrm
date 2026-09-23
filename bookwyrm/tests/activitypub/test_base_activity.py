@@ -354,7 +354,7 @@ class BaseActivity(TestCase):
         with self.assertNoLogs(logger=None, level="ERROR") as logger:
             resolved = resolve_remote_id("https://example.com/user/mouse")
 
-    @patch("bookwyrm.activitypub.base_activity.r.set")
+    @patch("bookwyrm.activitypub.base_activity.redis_instance.set")
     @patch("bookwyrm.activitypub.base_activity.time.sleep")
     def test_mutex_lock(self, mock_sleep, mock_set, *_):
         """test the mutex lock is called"""
@@ -368,8 +368,8 @@ class BaseActivity(TestCase):
             )
             self.assertEqual(mock_set.call_args.kwargs, {"nx": True, "ex": 300})
 
-    @patch("bookwyrm.activitypub.base_activity.r.set")
-    @patch("bookwyrm.activitypub.base_activity.r.delete")
+    @patch("bookwyrm.activitypub.base_activity.redis_instance.set")
+    @patch("bookwyrm.activitypub.base_activity.redis_instance.delete")
     @patch("bookwyrm.activitypub.base_activity.time.sleep")
     def test_mutex_lock_is_locked_and_released(
         self, mock_sleep, mock_delete, mock_set, *_
@@ -387,8 +387,8 @@ class BaseActivity(TestCase):
         self.assertEqual(mock_set.call_count, 2)
         self.assertTrue(mock_delete.called)
 
-    @patch("bookwyrm.activitypub.base_activity.r.set")
-    @patch("bookwyrm.activitypub.base_activity.r.delete")
+    @patch("bookwyrm.activitypub.base_activity.redis_instance.set")
+    @patch("bookwyrm.activitypub.base_activity.redis_instance.delete")
     @patch("bookwyrm.activitypub.base_activity.time.sleep")
     @patch("bookwyrm.activitypub.base_activity.time.monotonic")
     def test_mutex_lock_expires(self, mock_time, mock_sleep, mock_delete, mock_set, *_):

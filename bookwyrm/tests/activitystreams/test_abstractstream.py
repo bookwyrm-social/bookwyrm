@@ -108,8 +108,8 @@ class Activitystreams(TestCase):
             book=self.book,
         )
         with (
-            patch("bookwyrm.activitystreams.r.set"),
-            patch("bookwyrm.activitystreams.r.delete"),
+            patch("bookwyrm.activitystreams.redis_instance.set"),
+            patch("bookwyrm.activitystreams.redis_instance.delete"),
             patch("bookwyrm.activitystreams.ActivityStream.get_store") as redis_mock,
         ):
             redis_mock.return_value = [status.id, status2.id]

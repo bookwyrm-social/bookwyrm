@@ -8,7 +8,7 @@ from django.db.models import signals, Count, Q, Case, When, IntegerField
 from opentelemetry import trace
 
 from bookwyrm import models
-from bookwyrm.redis_store import RedisStore, r
+from bookwyrm.redis_store import RedisStore, redis_instance
 from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
 from bookwyrm.tasks import app, SUGGESTED_USERS
 from bookwyrm.telemetry import open_telemetry
@@ -66,7 +66,7 @@ class SuggestedUsers(RedisStore):
     def rerank_obj(self, obj, update_only=True):
         """update all the instances of this user with new ranks"""
         trace.get_current_span().set_attribute("update_only", update_only)
-        pipeline = r.pipeline()
+        pipeline = redis_instance.pipeline()
         for store_user in self.get_users_for_object(obj):
             with tracer.start_as_current_span("SuggestedUsers.rerank_obj/user") as _:
                 annotated_user = get_annotated_users(
