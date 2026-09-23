@@ -517,7 +517,7 @@ class Work(OrderedCollectionPageMixin, Book):
 
 
 # https://schema.org/BookFormatType
-FormatChoices = [
+FORMAT_CHOICES = [
     ("AudiobookFormat", _("Audiobook")),
     ("EBook", _("eBook")),
     ("GraphicNovel", _("Graphic novel")),
@@ -644,7 +644,7 @@ class Edition(Book):
     )
     pages = fields.IntegerField(blank=True, null=True)
     physical_format = fields.CharField(
-        max_length=255, choices=FormatChoices, null=True, blank=True
+        max_length=255, choices=FORMAT_CHOICES, null=True, blank=True
     )
     physical_format_detail = fields.CharField(max_length=255, blank=True, null=True)
     publishers = fields.ArrayField(
