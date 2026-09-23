@@ -337,7 +337,7 @@ class AbstractConnector(TestCase):
         """make sure we save errors correctly"""
         self.assertIsNone(self.connector.connector.most_recent_error)
 
-        message = "abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz"
+        message = " ".join(["abcdefghijklmnopqrstuvwxyz"] * 12)
         update_connector_status(self.connector.connector.id, message)
 
         self.connector.connector.refresh_from_db()
