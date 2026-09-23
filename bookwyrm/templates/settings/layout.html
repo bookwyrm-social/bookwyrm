@@ -57,7 +57,7 @@
             {% if perms.bookwyrm.edit_instance_settings %}
             <li>
                 {% url 'settings-data-quality' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Data Quality" %}</a>
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Duplicate Data" %}</a>
             </li>
             {% endif %}
             <li>

@@ -9,7 +9,7 @@ from django.test.client import RequestFactory
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 from bookwyrm import forms, models, views
-from bookwyrm.views.admin.data_quality import get_diff_string
+from bookwyrm.views.admin.manage_data.duplicates import get_diff_string
 from bookwyrm.management.commands import initdb
 from bookwyrm.tests.validate_html import validate_html
 

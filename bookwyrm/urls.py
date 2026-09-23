@@ -426,7 +426,7 @@ urlpatterns = [
     ),
     re_path(
         r"^settings/data-quality/?$",
-        views.DataQuality.as_view(),
+        views.Duplicates.as_view(),
         name="settings-data-quality",
     ),
     re_path(
