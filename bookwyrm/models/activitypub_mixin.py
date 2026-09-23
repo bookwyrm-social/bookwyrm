@@ -508,7 +508,7 @@ class ActivityMixin(ActivitypubMixin):
 
 
 def generate_activity(obj: ActivitypubMixin) -> dict[str, Any]:
-    """go through the fields on an object"""  # and do what?
+    """create a dict from an ActivityPub model object"""
     activity = {}
     for field in obj.activity_fields:
         field.set_activity_from_field(activity, obj)
