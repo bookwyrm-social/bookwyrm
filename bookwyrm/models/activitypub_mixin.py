@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 PropertyField = namedtuple("PropertyField", ("set_activity_from_field"))
 
-TActivitypubMixin = TypeVar('TActivitypubMixin', bound='ActivitypubMixin')
+TActivitypubMixin = TypeVar("TActivitypubMixin", bound="ActivitypubMixin")
 
 
 def set_activity_from_property_field(
@@ -352,8 +352,8 @@ class OrderedCollectionPageMixin(ObjectMixin):
         self,
         queryset: QuerySet,
         remote_id: str = None,
-        page: bool=False,
-        collection_only: bool=False,
+        page: bool = False,
+        collection_only: bool = False,
         **kwargs,
     ) -> activitypub.base_activity.ActivityObject:
         """an ordered collection of whatevers"""
@@ -405,7 +405,7 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
             self.collection_queryset, **kwargs
         ).serialize()
 
-    def delete(self, *args, broadcast: bool=True, **kwargs) -> None:
+    def delete(self, *args, broadcast: bool = True, **kwargs) -> None:
         """Delete the object"""
         activity = self.to_delete_activity(self.user)
         super().delete(*args, **kwargs)
