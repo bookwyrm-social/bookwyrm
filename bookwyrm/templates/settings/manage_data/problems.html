@@ -27,7 +27,7 @@
         <ul>
             {% for edition in isbn_length|slice:10 %}
             <li>
-                <a href="{{ edition.local_path }}" target="_blank">{{ edition.title }}</a>
+                <a href="{{ edition.local_path }}" target="_blank" rel="nofollow noopener noreferrer">{{ edition.title }}</a>
             </li>
             {% endfor %}
         </ul>
