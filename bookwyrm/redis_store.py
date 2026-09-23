@@ -69,10 +69,6 @@ class RedisStore(ABC):
         """load the values in a store"""
         return r.zrevrange(store, 0, -1, **kwargs)
 
-    def get_store_with_scores(self, store: str) -> list[tuple[int, int]]:
-        """load the values in a store including scores"""
-        return r.zrevrange(store, 0, -1, withscores=True)
-
     def populate_store(self, store: str) -> None:
         """go from zero to a store"""
         pipeline = r.pipeline()

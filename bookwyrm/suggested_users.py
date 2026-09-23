@@ -27,13 +27,13 @@ class SuggestedUsers(RedisStore):
         """get computed rank"""
         return obj.mutuals  # + (1.0 - (1.0 / (obj.shared_books + 1)))
 
-    def store_id(self, user: models.User | int) -> str:
+    def store_id(self, user):
         """the key used to store this user's recs"""
         if isinstance(user, int):
             return f"{user}-suggestions"
         return f"{user.id}-suggestions"
 
-    def get_counts_from_rank(self, rank: int) -> dict[str, int]:
+    def get_counts_from_rank(self, rank):
         """calculate mutuals count and shared books count from rank"""
         return {
             "mutuals": math.floor(rank),
@@ -83,19 +83,19 @@ class SuggestedUsers(RedisStore):
                 )
         pipeline.execute()
 
-    def rerank_user_suggestions(self, user_id: int) -> None:
+    def rerank_user_suggestions(self, user):
         """update the ranks of the follows suggested to a user"""
-        self.populate_store(self.store_id(user_id))
+        self.populate_store(self.store_id(user))
 
-    def remove_suggestion(self, user_id, suggested_user_id) -> None:
+    def remove_suggestion(self, user, suggested_user):
         """take a user out of someone's suggestions"""
-        self.bulk_remove_objects_from_store([suggested_user_id], self.store_id(user_id))
+        self.bulk_remove_objects_from_store([suggested_user], self.store_id(user))
 
     def get_suggestions(self, user, local=False):
         """get suggestions"""
         local = local or models.SiteSettings.get().disable_federation
 
-        values = self.get_store_with_scores(self.store_id(user))
+        values = self.get_store(self.store_id(user), withscores=True)
         annotations = [
             When(pk=int(pk), then=self.get_counts_from_rank(score)["mutuals"])
             for (pk, score) in values
@@ -209,13 +209,7 @@ def update_suggestions_on_unfollow(sender, instance, **kwargs):
 
 
 @receiver(signals.post_save, sender=models.User)
-def update_user(
-    sender: type[models.User],
-    instance: models.User,
-    created: bool,
-    update_fields: list[str] = None,
-    **kwargs,
-):
+def update_user(sender, instance, created, update_fields=None, **kwargs):
     """an updated user, neat"""
     # a new user is found, create suggestions for them
     if created and instance.local:
@@ -239,7 +233,7 @@ def update_user(
         remove_user_task.delay(instance.id)
 
 
-def update_new_user_command(instance_id: int):
+def update_new_user_command(instance_id):
     """wait for transaction to complete"""
     rerank_suggestions_task.delay(instance_id)
 
@@ -264,13 +258,13 @@ def domain_level_update(sender, instance, created, update_fields=None, **kwargs)
 
 
 @app.task(queue=SUGGESTED_USERS)
-def rerank_suggestions_task(user_id: int) -> None:
+def rerank_suggestions_task(user_id):
     """do the hard work in celery"""
     suggested_users.rerank_user_suggestions(user_id)
 
 
 @app.task(queue=SUGGESTED_USERS)
-def rerank_user_task(user_id: int, update_only=False) -> None:
+def rerank_user_task(user_id, update_only=False):
     """do the hard work in celery"""
     user = models.User.objects.get(id=user_id)
     if user:
@@ -278,7 +272,7 @@ def rerank_user_task(user_id: int, update_only=False) -> None:
 
 
 @app.task(queue=SUGGESTED_USERS)
-def remove_user_task(user_id: int) -> None:
+def remove_user_task(user_id):
     """do the hard work in celery"""
     user = models.User.objects.get(id=user_id)
     suggested_users.remove_object_from_stores(
@@ -287,14 +281,14 @@ def remove_user_task(user_id: int) -> None:
 
 
 @app.task(queue=SUGGESTED_USERS)
-def remove_suggestion_task(user_id: int, suggested_user_id: int) -> None:
+def remove_suggestion_task(user_id, suggested_user_id):
     """remove a specific user from a specific user's suggestions"""
     suggested_user = models.User.objects.get(id=suggested_user_id)
     suggested_users.remove_suggestion(user_id, suggested_user)
 
 
 @app.task(queue=SUGGESTED_USERS)
-def bulk_remove_instance_task(instance_id) -> None:
+def bulk_remove_instance_task(instance_id):
     """remove a bunch of users from recs"""
     for user in models.User.objects.filter(federated_server__id=instance_id):
         suggested_users.remove_object_from_stores(
@@ -303,7 +297,7 @@ def bulk_remove_instance_task(instance_id) -> None:
 
 
 @app.task(queue=SUGGESTED_USERS)
-def bulk_add_instance_task(instance_id: int) -> None:
+def bulk_add_instance_task(instance_id):
     """remove a bunch of users from recs"""
     for user in models.User.objects.filter(federated_server__id=instance_id):
         suggested_users.rerank_obj(user, update_only=False)

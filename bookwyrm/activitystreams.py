@@ -3,7 +3,7 @@
 from datetime import timedelta
 from django.dispatch import receiver
 from django.db import transaction
-from django.db.models import QuerySet, signals, Q
+from django.db.models import signals, Q
 from django.utils import timezone
 from opentelemetry import trace
 
@@ -20,16 +20,16 @@ tracer = open_telemetry.tracer()
 class ActivityStream(RedisStore):
     """a category of activity stream (like home, local, books)"""
 
-    def stream_id(self, user_id: int) -> str:
+    def stream_id(self, user_id: str):
         """the redis key for this user's instance of this stream"""
         return f"{user_id}-{self.key}"
 
-    def unread_id(self, user_id: int) -> str:
+    def unread_id(self, user_id: str):
         """the redis key for this user's unread count for this stream"""
         stream_id = self.stream_id(user_id)
         return f"{stream_id}-unread"
 
-    def unread_by_status_type_id(self, user_id: int) -> str:
+    def unread_by_status_type_id(self, user_id: str):
         """the redis key for this user's unread count for this stream"""
         stream_id = self.stream_id(user_id)
         return f"{stream_id}-unread-by-type"
@@ -103,14 +103,12 @@ class ActivityStream(RedisStore):
             for key, value in status_types.items()
         }
 
-    def populate_streams(self, user: models.User) -> None:
+    def populate_streams(self, user: models.User):
         """go from zero to a timeline"""
         self.populate_store(self.stream_id(user.id))
 
     @tracer.start_as_current_span("ActivityStream._get_audience")
-    def _get_audience(
-        self, status: models.Status, exclude_self=False
-    ) -> QuerySet[models.User]:
+    def _get_audience(self, status: models.Status, exclude_self=False):
         """given a status, what users should see it, excluding the author"""
         trace.get_current_span().set_attribute("status_type", status.status_type)
         trace.get_current_span().set_attribute("status_privacy", status.privacy)
@@ -194,18 +192,18 @@ class ActivityStream(RedisStore):
         """convert a list of user ids into redis store ids"""
         return [self.stream_id(user_id) for user_id in user_ids]
 
-    def get_statuses_for_user(self, user: models.User) -> QuerySet[models.Status]:
+    def get_statuses_for_user(self, user: models.User):
         """given a user, what statuses should they see on this stream"""
         return models.Status.privacy_filter(
             user,
             privacy_levels=["public", "unlisted", "followers"],
         )
 
-    def get_objects_for_store(self, store: str) -> QuerySet[models.Status]:
+    def get_objects_for_store(self, store: str):
         user = models.User.objects.get(id=store.split("-")[0])
         return self.get_statuses_for_user(user)
 
-    def add_book_statuses(self, user: models.User, book: models.Book) -> None:
+    def add_book_statuses(self, user: models.User, book: models.Book):
         """add statuses about a book to a user's feed"""
         work = book.parent_work
 
@@ -238,7 +236,7 @@ class ActivityStream(RedisStore):
 
         self.bulk_add_objects_to_store(thread_statuses, self.stream_id(user.id))
 
-    def remove_book_statuses(self, user: models.User, book: models.Book) -> None:
+    def remove_book_statuses(self, user: models.User, book: models.Book):
         """remove statuses about a book from a user's feed"""
         work = book.parent_work
         statuses = models.Status.privacy_filter(
@@ -416,7 +414,7 @@ streams: dict[str, ActivityStream] = {
 @receiver(signals.post_save)
 def add_status_on_create(
     sender: type, instance: BookWyrmModel, created: bool, *args, **kwargs
-) -> None:
+):
     """add newly created statuses to activity feeds"""
     # we're only interested in new statuses
     if not issubclass(sender, models.Status):
@@ -437,9 +435,7 @@ def add_status_on_create(
     )
 
 
-def add_status_on_create_command(
-    sender: type, instance: BookWyrmModel, created: bool
-) -> None:
+def add_status_on_create_command(sender: type, instance: BookWyrmModel, created: bool):
     """runs this code only after the database commit completes"""
     # boosts trigger 'saves" twice, so don't bother duplicating the task
     if sender == models.Boost and not created:
@@ -468,9 +464,7 @@ def add_status_on_create_command(
 
 
 @receiver(signals.post_delete, sender=models.Boost)
-def remove_boost_on_delete(
-    sender: type, instance: models.Boost, *args, **kwargs
-) -> None:
+def remove_boost_on_delete(sender: type, instance: models.Boost, *args, **kwargs):
     """boosts are deleted"""
     # remove the boost
     remove_status_task.delay(instance.id)
@@ -481,7 +475,7 @@ def remove_boost_on_delete(
 @receiver(signals.post_save, sender=models.UserFollows)
 def add_statuses_on_follow(
     sender: type, instance: models.UserFollows, created, *args, **kwargs
-) -> None:
+):
     """add a newly followed user's statuses to feeds"""
     if not created or not instance.user_subject.local:
         return
@@ -493,7 +487,7 @@ def add_statuses_on_follow(
 @receiver(signals.post_delete, sender=models.UserFollows)
 def remove_statuses_on_unfollow(
     sender: type, instance: models.UserFollows, *args, **kwargs
-) -> None:
+):
     """remove statuses from a feed on unfollow"""
     if not instance.user_subject.local:
         return
@@ -505,7 +499,7 @@ def remove_statuses_on_unfollow(
 @receiver(signals.post_save, sender=models.UserBlocks)
 def remove_statuses_on_block(
     sender: type, instance: models.UserBlocks, *args, **kwargs
-) -> None:
+):
     """remove statuses from all feeds on block"""
     # blocks apply ot all feeds
     if instance.user_subject.local:
@@ -521,9 +515,7 @@ def remove_statuses_on_block(
 
 
 @receiver(signals.post_delete, sender=models.UserBlocks)
-def add_statuses_on_unblock(
-    sender: type, instance: models.UserBlocks, *args, **kwargs
-) -> None:
+def add_statuses_on_unblock(sender: type, instance: models.UserBlocks, *args, **kwargs):
     """add statuses back to all feeds on unblock"""
     # make sure there isn't a block in the other direction
     if models.UserBlocks.objects.filter(
@@ -554,7 +546,7 @@ def add_statuses_on_unblock(
 @receiver(signals.post_save, sender=models.User)
 def populate_streams_on_account_create(
     sender: type, instance: models.User, created: bool, *args, **kwargs
-) -> None:
+):
     """build a user's feeds when they join"""
     if not created or not instance.local:
         return
@@ -563,16 +555,14 @@ def populate_streams_on_account_create(
     )
 
 
-def populate_streams_on_account_create_command(instance_id: int) -> None:
+def populate_streams_on_account_create_command(instance_id: int):
     """wait for the transaction to complete"""
     for stream in streams:
         populate_stream_task.delay(stream, instance_id)
 
 
 @receiver(signals.pre_save, sender=models.ShelfBook)
-def add_statuses_on_shelve(
-    sender: type, instance: models.ShelfBook, *args, **kwargs
-) -> None:
+def add_statuses_on_shelve(sender: type, instance: models.ShelfBook, *args, **kwargs):
     """update books stream when user shelves a book"""
     if not instance.user.local:
         return
@@ -589,7 +579,7 @@ def add_statuses_on_shelve(
 @receiver(signals.post_delete, sender=models.ShelfBook)
 def remove_statuses_on_unshelve(
     sender: type, instance: models.ShelfBook, *args, **kwargs
-) -> None:
+):
     """update books stream when user unshelves a book"""
     if not instance.user.local:
         return
@@ -608,7 +598,7 @@ def remove_statuses_on_unshelve(
 
 
 @app.task(queue=STREAMS)
-def add_book_statuses_task(user_id: int, book_id: int) -> None:
+def add_book_statuses_task(user_id: int, book_id: int):
     """add statuses related to a book on shelve"""
     user = models.User.objects.get(id=user_id)
     book = models.Edition.objects.get(id=book_id)
@@ -616,7 +606,7 @@ def add_book_statuses_task(user_id: int, book_id: int) -> None:
 
 
 @app.task(queue=STREAMS)
-def remove_book_statuses_task(user_id: int, book_id: int) -> None:
+def remove_book_statuses_task(user_id: int, book_id: int):
     """remove statuses about a book from a user's feeds"""
     user = models.User.objects.get(id=user_id)
     book = models.Edition.objects.get(id=book_id)
@@ -624,7 +614,7 @@ def remove_book_statuses_task(user_id: int, book_id: int) -> None:
 
 
 @app.task(queue=STREAMS)
-def add_blocked_book_statuses_task(user_id: int, book_id: int) -> None:
+def add_blocked_book_statuses_task(user_id: int, book_id: int):
     """add statuses related to a formerly blocked book"""
     user = models.User.objects.get(id=user_id)
     book = models.Edition.objects.get(id=book_id)
@@ -634,7 +624,7 @@ def add_blocked_book_statuses_task(user_id: int, book_id: int) -> None:
 
 
 @app.task(queue=STREAMS)
-def remove_blocked_book_statuses_task(user_id: int, book_id: int) -> None:
+def remove_blocked_book_statuses_task(user_id: int, book_id: int):
     """remove statuses about a book from a user's feeds"""
     user = models.User.objects.get(id=user_id)
     book = models.Edition.objects.get(id=book_id)
@@ -644,7 +634,7 @@ def remove_blocked_book_statuses_task(user_id: int, book_id: int) -> None:
 
 
 @app.task(queue=STREAMS)
-def populate_stream_task(stream: ActivityStream, user_id: int) -> None:
+def populate_stream_task(stream: ActivityStream, user_id: int):
     """background task for populating an empty activitystream"""
     user = models.User.objects.get(id=user_id)
     stream = streams[stream]
@@ -652,7 +642,7 @@ def populate_stream_task(stream: ActivityStream, user_id: int) -> None:
 
 
 @app.task(queue=STREAMS)
-def remove_status_task(status_ids: int | list[int]) -> None:
+def remove_status_task(status_ids: int | list[int]):
     """remove a status from any stream it might be in"""
     # this can take an id or a list of ids
     if not isinstance(status_ids, list):
@@ -667,7 +657,7 @@ def remove_status_task(status_ids: int | list[int]) -> None:
 
 
 @app.task(queue=STREAMS)
-def add_status_task(status_id: int, increment_unread=False) -> None:
+def add_status_task(status_id: int, increment_unread=False):
     """add a status to any stream it should be in"""
     status = models.Status.objects.select_subclasses().get(id=status_id)
     # we don't want to tick the unread count for csv import statuses, idk how better
@@ -681,7 +671,7 @@ def add_status_task(status_id: int, increment_unread=False) -> None:
 @app.task(queue=STREAMS)
 def remove_user_statuses_task(
     viewer_id: int, user_id: int, stream_list: list[str] = None
-) -> None:
+):
     """remove all statuses by a user from a viewer's stream"""
     stream_list = [streams[s] for s in stream_list] if stream_list else streams.values()
     viewer = models.User.objects.get(id=viewer_id)
@@ -691,9 +681,7 @@ def remove_user_statuses_task(
 
 
 @app.task(queue=STREAMS)
-def add_user_statuses_task(
-    viewer_id: int, user_id: int, stream_list: list[str] = None
-) -> None:
+def add_user_statuses_task(viewer_id: int, user_id: int, stream_list: list[str] = None):
     """add all statuses by a user to a viewer's stream"""
     stream_list = [streams[s] for s in stream_list] if stream_list else streams.values()
     viewer = models.User.objects.get(id=viewer_id)
@@ -703,7 +691,7 @@ def add_user_statuses_task(
 
 
 @app.task(queue=STREAMS)
-def handle_boost_task(boost_id: int) -> None:
+def handle_boost_task(boost_id: int):
     """remove the original post and other, earlier boosts"""
     instance = models.Status.objects.get(id=boost_id)
     boosted = instance.boost.boosted_status
