@@ -1,4 +1,5 @@
 """test for app action functionality"""
+
 import re
 from unittest.mock import patch
 import dateutil
@@ -277,14 +278,18 @@ class StatusViews(TestCase):
         self.assertRegex(status.content, "<p>pic <img.*></p>")
 
         # rendered srcset is a strict subset of rendered src
-        matches = re.findall(rf'srcset="(.*?) {fake_file_dimension}w".*src="(\1)"', status.content)
+        matches = re.findall(
+            rf'srcset="(.*?) {fake_file_dimension}w".*src="(\1)"', status.content
+        )
         rendered_srcset, rendered_src = matches[0]
         self.assertIsNotNone(rendered_srcset)
         self.assertIsNotNone(rendered_src)
 
         # rendered src ends in the filename max_dimension with an extension that matches the original
-        self.assertRegex(rendered_src, f'{fake_file_dimension}(?:_[A-Za-z0-9]*)?\{fake_file_extension}$')
-
+        self.assertRegex(
+            rendered_src,
+            rf"{fake_file_dimension}(?:_[A-Za-z0-9]*)?\{fake_file_extension}$",
+        )
 
     def test_create_status_reply(self, *_):
         """create a status in reply to an existing status"""
@@ -513,8 +518,8 @@ class StatusViews(TestCase):
         """find and format images into tags"""
         fake_file = SimpleUploadedFile("foo.jpg", b"a")
         user = self.local_user
-        lower_resolution_dimension="240"
-        high_resolution_dimension="600"
+        lower_resolution_dimension = "240"
+        high_resolution_dimension = "600"
         upload = models.UserUpload.objects.create(
             original_name="foo.jpg", original_file=fake_file, user=self.local_user
         )
@@ -530,10 +535,15 @@ class StatusViews(TestCase):
         )
         img_path = upload.original_file.name
         text = f"!image({img_path})"
-        rendered_image_tag = views.status.format_images(text, views.status.find_images(text, self.local_user))
-        lower_resolution_regex = rf'/.*?user_{user.id}/{upload.id}/{lower_resolution_dimension}(?:_[a-zA-Z0-9]*)?(.jpg)'
-        high_resolution_regex = rf'.*?user_{user.id}/{upload.id}/{high_resolution_dimension}(?:_[a-zA-Z0-9]*)?(.jpg)'
-        self.assertRegex(rendered_image_tag, rf'<img srcset="{lower_resolution_regex} {lower_resolution_dimension}w, {high_resolution_regex} {high_resolution_dimension}w" sizes="\(width <= {high_resolution_dimension}px\) 100vw, 60vw" src="{high_resolution_regex}" />')
+        rendered_image_tag = views.status.format_images(
+            text, views.status.find_images(text, self.local_user)
+        )
+        lower_resolution_regex = rf"/.*?user_{user.id}/{upload.id}/{lower_resolution_dimension}(?:_[a-zA-Z0-9]*)?(.jpg)"
+        high_resolution_regex = rf".*?user_{user.id}/{upload.id}/{high_resolution_dimension}(?:_[a-zA-Z0-9]*)?(.jpg)"
+        self.assertRegex(
+            rendered_image_tag,
+            rf'<img srcset="{lower_resolution_regex} {lower_resolution_dimension}w, {high_resolution_regex} {high_resolution_dimension}w" sizes="\(width <= {high_resolution_dimension}px\) 100vw, 60vw" src="{high_resolution_regex}" />',
+        )
 
     def test_format_links_simple_url(self, *_):
         """find and format urls into a tags"""
