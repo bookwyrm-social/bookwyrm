@@ -13,7 +13,6 @@ from bookwyrm.tasks import app, MISC
 from .base_model import BookWyrmModel
 from .notification import NotificationType
 from .user import User
-from .report import Report
 
 
 class AdminModel(BookWyrmModel):
@@ -24,7 +23,7 @@ class AdminModel(BookWyrmModel):
 
         abstract = True
 
-    def raise_not_editable(self, viewer: User):
+    def raise_not_editable(self, viewer):
         if viewer.has_perm("bookwyrm.moderate_user"):
             return
         raise PermissionDenied()
@@ -69,7 +68,7 @@ class AutoMod(AdminModel):
 
 
 @app.task(queue=MISC)
-def automod_task() -> None:
+def automod_task():
     """Create reports"""
     if not AutoMod.objects.exists():
         return
@@ -88,7 +87,7 @@ def automod_task() -> None:
             notification.related_reports.set(reports)
 
 
-def automod_users(reporter: User) -> list[Report]:
+def automod_users(reporter):
     """check users for moderation flags"""
     user_rules = AutoMod.objects.filter(flag_users=True).values_list(
         "string_match", flat=True
@@ -120,7 +119,7 @@ def automod_users(reporter: User) -> list[Report]:
     )
 
 
-def automod_statuses(reporter: User) -> list[Report]:
+def automod_statuses(reporter):
     """check statues for moderation flags"""
     status_rules = AutoMod.objects.filter(flag_statuses=True).values_list(
         "string_match", flat=True

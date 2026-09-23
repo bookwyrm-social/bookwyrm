@@ -8,7 +8,7 @@ from django.db.models.query import QuerySet
 
 from bookwyrm import settings
 
-redis_instance = redis.from_url(settings.REDIS_ACTIVITY_URL)
+r = redis.from_url(settings.REDIS_ACTIVITY_URL)
 
 
 class RedisStore(ABC):
@@ -24,7 +24,7 @@ class RedisStore(ABC):
         """add an object to a given set of stores"""
         value = self.get_value(obj)
         # we want to do this as a bulk operation, hence "pipeline"
-        pipeline = redis_instance.pipeline()
+        pipeline = r.pipeline()
         for store in stores:
             # add the status to the feed
             pipeline.zadd(store, value)
@@ -43,14 +43,14 @@ class RedisStore(ABC):
             obj_id = obj
         else:
             obj_id = obj.id
-        pipeline = redis_instance.pipeline()
+        pipeline = r.pipeline()
         for store in stores:
             pipeline.zrem(store, -1, obj_id)
         pipeline.execute()
 
     def bulk_add_objects_to_store(self, objs: QuerySet[Any], store: str) -> None:
         """add a list of objects to a given store"""
-        pipeline = redis_instance.pipeline()
+        pipeline = r.pipeline()
         max_length_objs = objs[: self.max_length]
         for obj in max_length_objs:
             pipeline.zadd(store, self.get_value(obj))
@@ -60,22 +60,22 @@ class RedisStore(ABC):
 
     def bulk_remove_objects_from_store(self, objs: QuerySet[Any], store: str) -> None:
         """remove a list of objects from a given store"""
-        pipeline = redis_instance.pipeline()
+        pipeline = r.pipeline()
         for obj in objs[: self.max_length]:
             pipeline.zrem(store, -1, obj.id)
         pipeline.execute()
 
     def get_store(self, store: str, **kwargs) -> list[int]:
         """load the values in a store"""
-        return redis_instance.zrevrange(store, 0, -1, **kwargs)
+        return r.zrevrange(store, 0, -1, **kwargs)
 
     def get_store_with_scores(self, store: str) -> list[tuple[int, int]]:
         """load the values in a store including scores"""
-        return redis_instance.zrevrange(store, 0, -1, withscores=True)
+        return r.zrevrange(store, 0, -1, withscores=True)
 
     def populate_store(self, store: str) -> None:
         """go from zero to a store"""
-        pipeline = redis_instance.pipeline()
+        pipeline = r.pipeline()
         queryset = self.get_objects_for_store(store)
 
         for obj in queryset[: self.max_length]:

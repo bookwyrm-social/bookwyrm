@@ -57,22 +57,22 @@ class Author(BookDataModel):
         super().save(*args, **kwargs)
 
     @property
-    def isni_link(self) -> str:
+    def isni_link(self):
         """generate the url from the isni id"""
         clean_isni = re.sub(r"\s", "", self.isni)
         return f"https://isni.org/isni/{clean_isni}"
 
     @property
-    def openlibrary_link(self) -> str:
+    def openlibrary_link(self):
         """generate the url from the openlibrary id"""
         return f"https://openlibrary.org/authors/{self.openlibrary_key}"
 
     @property
-    def isfdb_link(self) -> str:
+    def isfdb_link(self):
         """generate the url from the isni id"""
         return f"https://www.isfdb.org/cgi-bin/ea.cgi?{self.isfdb}"
 
-    def get_remote_id(self) -> str:
+    def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
         return f"{BASE_URL}/author/{self.id}"
 

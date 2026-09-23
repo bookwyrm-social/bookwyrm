@@ -8,7 +8,7 @@ import redis
 
 from bookwyrm import models, settings
 
-redis_instance = redis.from_url(settings.REDIS_ACTIVITY_URL)
+r = redis.from_url(settings.REDIS_ACTIVITY_URL)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -56,7 +56,7 @@ def view_data():
     """Helper function to load basic info for the view"""
     data = {"errors": [], "prefix": settings.CACHE_KEY_PREFIX}
     try:
-        data["info"] = redis_instance.info()
+        data["info"] = r.info()
     except Exception as err:
         data["errors"].append(err)
     return data
@@ -64,9 +64,9 @@ def view_data():
 
 def erase_keys(pattern, count=1000, dry_run=False):
     """Delete all redis activity keys according to a provided regex pattern"""
-    pipeline = redis_instance.pipeline()
+    pipeline = r.pipeline()
     key_count = 0
-    for key in redis_instance.scan_iter(match=pattern, count=count):
+    for key in r.scan_iter(match=pattern, count=count):
         key_count += 1
         if dry_run:
             continue
