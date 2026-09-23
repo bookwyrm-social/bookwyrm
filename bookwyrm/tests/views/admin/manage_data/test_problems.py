@@ -1,4 +1,5 @@
 """test for app action functionality"""
+
 from django.contrib.auth.models import Permission
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -40,7 +41,6 @@ class ProblemsViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-
     def test_problems_get_with_data(self):
         """there are so many views, this just makes sure it LOADS"""
         models.Edition.objects.create(title="Bad", isbn_10="123")
@@ -56,10 +56,12 @@ class ProblemsViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_get_invalid_isbns(self):
-        """ find books with incorrect isbns"""
+        """find books with incorrect isbns"""
         bad_10 = models.Edition.objects.create(title="Bad", isbn_10="123")
         bad_13 = models.Edition.objects.create(title="Bad II", isbn_13="345")
-        bad_both =  models.Edition.objects.create(title="Bad III", isbn_10="a", isbn_13="345")
+        bad_both = models.Edition.objects.create(
+            title="Bad III", isbn_10="a", isbn_13="345"
+        )
         fine = models.Edition.objects.create(title="Fine")
 
         results = get_invalid_isbns()
