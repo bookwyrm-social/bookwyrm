@@ -39,16 +39,16 @@
             {% endblocktrans %}
             <strong>{% trans "These may have been marked in error." %}</strong>
         </p>
+        <form action="{% url 'settings-problems-block-merge' %}" method="POST">
+            {% csrf_token %}
+            <button class="button is-warning" type="submit">{% trans "Block automatic merging" %}</button>
+        </form>
         {% endif %}
         <p>
             {% blocktrans trimmed with display_count=isbn_length_dupes_blocked.count|intcomma %}
             <strong>{{ display_count }}</strong> of these editions have been blocked from automatic merging.
             {% endblocktrans %}
         </p>
-        <form action="{% url 'settings-problems-block-merge' %}" method="POST">
-            {% csrf_token %}
-            <button class="button is-warning" type="submit" {% if not isbn_length_dupes_unblocked.exists %}disabled{% endif %}>{% trans "Block automatic merging" %}</button>
-        </form>
         {% else %}
         <p>
             <em>{% trans "No problems found" %}</em>
