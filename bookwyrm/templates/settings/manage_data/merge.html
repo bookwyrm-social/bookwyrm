@@ -57,19 +57,19 @@
     </div>
 
     {% if merge_type == 'edition' or not merge_type %}
-        {% include 'settings/manage-data/merge_editions.html' %}
+        {% include 'settings/manage_data/merge_editions.html' %}
     {% endif %}
 
     {% if merge_type == 'work' %}
-        {% include 'settings/manage-data/merge_works.html' %}
+        {% include 'settings/manage_data/merge_works.html' %}
     {% endif %}
 
     {% if merge_type == 'author' %}
-        {% include 'settings/manage-data/merge_authors.html' %}
+        {% include 'settings/manage_data/merge_authors.html' %}
     {% endif %}
 
     {% if merge_type == 'series' %}
-        {% include 'settings/manage-data/merge_series.html' %}
+        {% include 'settings/manage_data/merge_series.html' %}
     {% endif %}
 
 {% endwith %}

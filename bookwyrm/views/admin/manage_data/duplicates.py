@@ -26,13 +26,13 @@ from bookwyrm import forms, models
     permission_required("bookwyrm.edit_instance_settings", raise_exception=True),
     name="dispatch",
 )
-class DataQuality(View):
+class Duplicates(View):
     """deduplication task settings"""
 
     def get(self, request):
         """view maintenance task settings"""
         return TemplateResponse(
-            request, "settings/manage-data/data.html", data_quality_data()
+            request, "settings/manage_data/data.html", data_quality_data()
         )
 
 
@@ -41,7 +41,7 @@ class DataQuality(View):
 def run_deduplication_scan_task(request):
     """run now"""
     models.housekeeping.mark_duplicate_data_task.delay()
-    return redirect("settings-data-quality")
+    return redirect("settings-duplicates")
 
 
 @require_POST
@@ -52,7 +52,7 @@ def schedule_deduplication_scan_task(request):
     if not form.is_valid():
         data = data_quality_data()
         data["scan_form"] = form
-        return TemplateResponse(request, "settings/manage-data/data.html", data)
+        return TemplateResponse(request, "settings/manage_data/data.html", data)
 
     with transaction.atomic():
         schedule, _ = IntervalSchedule.objects.get_or_create(**form.cleaned_data)
@@ -61,7 +61,7 @@ def schedule_deduplication_scan_task(request):
             name="dedupe-scan-task",
             task="bookwyrm.models.housekeeping.mark_duplicate_data_task",
         )
-    return redirect("settings-data-quality")
+    return redirect("settings-duplicates")
 
 
 @require_POST
@@ -72,7 +72,7 @@ def schedule_deduplication_task(request):
     if not form.is_valid():
         data = data_quality_data()
         data["merge_form"] = form
-        return TemplateResponse(request, "settings/manage-data/data.html", data)
+        return TemplateResponse(request, "settings/manage_data/data.html", data)
 
     with transaction.atomic():
         schedule, _ = IntervalSchedule.objects.get_or_create(**form.cleaned_data)
@@ -81,7 +81,7 @@ def schedule_deduplication_task(request):
             name="dedupe-merge-task",
             task="bookwyrm.models.housekeeping.merge_duplicate_data_task",
         )
-    return redirect("settings-data-quality")
+    return redirect("settings-duplicates")
 
 
 @require_POST
@@ -89,7 +89,7 @@ def schedule_deduplication_task(request):
 def unschedule_deduplication_scan_task(request, task_id):
     """unscheduler"""
     get_object_or_404(PeriodicTask, id=task_id).delete()
-    return redirect("settings-data-quality")
+    return redirect("settings-duplicates")
 
 
 def data_quality_data():
@@ -209,7 +209,7 @@ class MergeData(View):
                 )
                 paginated = Paginator(items, PAGE_LENGTH)
                 data["editions"] = paginated.get_page(request.GET.get("page"))
-        return TemplateResponse(request, "settings/manage-data/merge.html", data)
+        return TemplateResponse(request, "settings/manage_data/merge.html", data)
 
 
 def get_diff_string(canonical: str, candidate: str, array=False) -> str:
@@ -326,7 +326,7 @@ class ManualMerge(View):
             "source": request.GET.get("source"),
             "merge_type": request.GET.get("merge_type"),
         }
-        return TemplateResponse(request, "settings/manage-data/manual-merge.html", data)
+        return TemplateResponse(request, "settings/manage_data/manual-merge.html", data)
 
     def post(self, request, model_name, canonical_id):
         """receiving a form submission"""
@@ -381,7 +381,7 @@ class ManualMerge(View):
             "merge_type": request.GET.get("merge_type"),
         }
         return TemplateResponse(
-            request, "settings/manage-data/confirm-merge.html", data
+            request, "settings/manage_data/confirm-merge.html", data
         )
 
 
