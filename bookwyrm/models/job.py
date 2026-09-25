@@ -186,7 +186,7 @@ class ParentTask(app.Task):
     Usage e.g. @app.task(base=ParentTask)
     """
 
-    def before_start(self, task_id, args, kwargs):
+    def before_start(self, task_id: str, args, kwargs) -> None:
         """Handler called before the task starts. Override.
 
         Prepare ParentJob before the task starts.
