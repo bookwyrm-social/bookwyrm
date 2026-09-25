@@ -28,7 +28,6 @@ class MergeableMixin(models.Model):
         related_name="%(class)s_prevented_merges",
     )
 
-
     class Meta:
         """can't initialize this model, that wouldn't make sense"""
 
@@ -98,7 +97,9 @@ class MergeableMixin(models.Model):
         ]
 
     @classmethod
-    def find_duplicate_fields(cls, include_pending: bool = False, instance=None) -> Dict[str, Any]:
+    def find_duplicate_fields(
+        cls, include_pending: bool = False, instance=None
+    ) -> Dict[str, Any]:
         """scan the model for all dedupe fields with multiple objs with the same value"""
         dedupe_fields = cls.deduplication_fields()
         duplicates = {}
@@ -254,9 +255,10 @@ class MergeableMixin(models.Model):
         ):
             parent.merge_into(canonical.parent_work)
 
+
 @receiver(models.signals.post_save)
 def check_for_dupes(sender: type, instance: models.Model, *args, **kwargs):
-    """ see if the newly-changed object is a dupe"""
+    """see if the newly-changed object is a dupe"""
     if not hasattr(sender, "mark_merge_candidates"):
         return
     sender.mark_merge_candidates(instance=instance)
