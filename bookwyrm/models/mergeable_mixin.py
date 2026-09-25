@@ -245,8 +245,11 @@ class MergeableMixin(models.Model):
         ):
             parent.merge_into(canonical.parent_work)
             # make sure we don't create a situation where the work is trying to merge into itself
-            if canonical.parent_work == canonical:
-                canonical.parent_work.pending_merge_target = None
-                canonical.parent_work.save(
-                    update_fields=["pending_merge_target"], broadcast=False
-                )
+        try:
+            work_model = apps.get_model("bookwyrm.Work")
+            canonical.parent_work.pending_merge_target.refresh_from_db()
+        except work_model.DoesNotExist:
+            canonical.parent_work.pending_merge_target = None
+            canonical.parent_work.save(
+                update_fields=["pending_merge_target"], broadcast=False
+            )
