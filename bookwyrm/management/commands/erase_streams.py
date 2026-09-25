@@ -5,12 +5,12 @@ import redis
 
 from bookwyrm import settings
 
-r = redis.from_url(settings.REDIS_ACTIVITY_URL)
+redis_instance = redis.from_url(settings.REDIS_ACTIVITY_URL)
 
 
 def erase_streams():
     """throw the whole redis away"""
-    r.flushall()
+    redis_instance.flushall()
 
 
 class Command(BaseCommand):
