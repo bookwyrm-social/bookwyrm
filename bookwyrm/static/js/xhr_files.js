@@ -1,5 +1,5 @@
 /* exported XhrFiles */
-
+/* eslint-disable no-unused-vars */
 let XhrFiles = new (class {
     constructor() {
         this.initEventListeners();

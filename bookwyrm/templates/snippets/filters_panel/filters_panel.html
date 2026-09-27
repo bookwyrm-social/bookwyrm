@@ -1,5 +1,5 @@
 {% load i18n %}
-<details class="details-panel box is-size-{{ size|default:'normal' }}">
+<details class="details-panel box is-size-{{ size|default:'normal' }}" id="filters-panel">
     <summary class="is-flex is-align-items-center is-flex-wrap-wrap is-gap-2">
         <span class="mb-0 title {% if size == 'small' %}is-6{% else %}is-5{% endif %} is-flex-shrink-0">
             {% trans "Filters" %}

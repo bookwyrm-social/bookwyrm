@@ -72,14 +72,28 @@
     {% include 'snippets/status/status.html' with status=activity %}
 </div>
 {% endfor %}
-
 {% endblock %}
 
 {% block scripts %}
 <script src="{% static "js/tabs.js" %}"></script>
-
-{% if request.user.show_guided_tour %}
-    {% include 'guided_tour/home.html' %}
-{% endif %}
-
+{% endblock %}
+{% block tour %}
+<script type="module" nonce="{{request.csp_nonce}}">
+    import { tour, getStepComplete, startUpTour, disableGuidedTour } from "{% static 'js/help_tours/tour_defaults.js?v1' %}";
+    import { steps } from "{% static 'js/help_tours/home.js' %}";
+    tour.addSteps(steps)
+    tour.addStep(getStepComplete())
+    document.getElementById('help-button').addEventListener('click', function (event) {
+        tour.start()
+    });
+    if ("{{request.user.show_guided_tour}}" == "True") {
+        startUpTour.start()
+        document.getElementById('button-accept-tour').addEventListener('click', function (event) {
+        disableGuidedTour("{{csrf_token}}")
+        });
+        document.getElementById('button-decline-tour').addEventListener('click', function (event) {
+            disableGuidedTour("{{csrf_token}}")
+        });
+    }
+</script>
 {% endblock %}

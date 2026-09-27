@@ -2,7 +2,7 @@
 {% load utilities %}
 {% load group_tags %}
 
-<form name="search" action="{{ search_url }}" method="GET" class="block">
+<form name="search" action="{{ search_url }}" method="GET" class="block" id="booklist-add-searchbox">
     <div class="field has-addons">
         <div class="control">
             <input aria-label="{% trans 'Search for a book' %}" class="input" type="text" name="{{ query_param }}" placeholder="{% trans 'Search for a book' %}" value="{{ suggestion_query|default:'' }}" spellcheck="false">
@@ -27,7 +27,7 @@
 {% endif %}
 
 {% if suggested_books|length > 0 %}
-<div{% if columns %} class="columns is-multiline"{% endif %}>
+<div{% if columns %} class="columns is-multiline"{% endif %} id="booklist-add-suggestion">
     {% for book in suggested_books %}
     <div class="block {% if columns %}column is-6 m-0{% endif %}">
         <div class="columns is-mobile is-gapless">

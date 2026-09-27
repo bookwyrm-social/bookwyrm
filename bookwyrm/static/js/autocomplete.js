@@ -1,6 +1,4 @@
 (function () {
-    "use strict";
-
     const mimeTypes = [
         "AAC",
         "AZW",

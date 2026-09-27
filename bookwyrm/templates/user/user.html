@@ -35,7 +35,7 @@
 {% block panel %}
 
 {% if is_profile_locked %}
-<div class="notification is-light">
+<div class="notification is-light" id="locked-profile">
     <p>{% trans "This profile is private. Follow this user to see their activity." %}</p>
 </div>
 {% else %}
@@ -89,7 +89,7 @@
     <div class="columns is-mobile">
         <h2 class="title column">{% trans "User Activity" %}</h2>
         {% if user.local %}
-        <div class="column is-narrow">
+        <div class="column is-narrow" id="rss-feed">
             <details class="dropdown">
                 <summary
                     class="is-relative pulldown-menu dropdown-trigger"
@@ -157,7 +157,4 @@
 {% endblock %}
 
 {% block scripts %}
-{% if request.user.show_guided_tour %}
-    {% include 'guided_tour/user_profile.html' %}
-{% endif %}
 {% endblock %}
