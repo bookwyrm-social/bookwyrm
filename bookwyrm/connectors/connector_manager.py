@@ -6,7 +6,7 @@ import importlib
 import ipaddress
 import logging
 from asyncio import Future
-from typing import Iterator, Any, Optional, Union, overload, Literal
+from typing import Iterator, Any, Optional, overload, Literal
 from urllib.parse import urlparse
 
 import aiohttp
@@ -62,7 +62,7 @@ def search(
 
 def search(
     query: str, *, min_confidence: float = 0.1, return_first: bool = False
-) -> Union[list[abstract_connector.ConnectorResults], Optional[SearchResult]]:
+) -> list[abstract_connector.ConnectorResults] | Optional[SearchResult]:
     """find books based on arbitrary keywords"""
     if not query:
         return None if return_first else []
@@ -98,7 +98,7 @@ def search(
 
 def first_search_result(
     query: str, min_confidence: float = 0.1
-) -> Union[models.Edition, SearchResult, None]:
+) -> models.Edition | SearchResult | None:
     """search until you find a result that fits"""
     # try local search first
     result = book_search.search(query, min_confidence=min_confidence, return_first=True)
@@ -144,7 +144,7 @@ def get_or_create_connector(remote_id: str) -> abstract_connector.AbstractConnec
 
 
 @app.task(queue=CONNECTORS)
-def load_more_data(connector_id: str, book_id: str) -> None:
+def load_more_data(connector_id: str, book_id: int) -> None:
     """background the work of getting all 10,000 editions of LoTR"""
     connector_info = models.Connector.objects.get(id=connector_id)
     connector = load_connector(connector_info)
@@ -156,7 +156,7 @@ def load_more_data(connector_id: str, book_id: str) -> None:
 
 @app.task(queue=CONNECTORS)
 def create_edition_task(
-    connector_id: int, work_id: int, data: Union[str, abstract_connector.JsonDict]
+    connector_id: int, work_id: int, data: str | abstract_connector.JsonDict
 ) -> None:
     """separate task for each of the 10,000 editions of LoTR"""
     connector_info = models.Connector.objects.get(id=connector_id)

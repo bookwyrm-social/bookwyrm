@@ -1,0 +1,60 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% load humanize %}
+{% load utilities %}
+
+{% block title %}
+{% trans "Data Problems" %}
+{% endblock %}
+
+{% block header %}
+{% trans "Data Problems" %}
+{% endblock %}
+
+{% block panel %}
+
+<section class="block content">
+    <h2 class="title is-4">{% trans "Wrong length ISBNs" %}</h2>
+    <div class="box">
+        {% if isbn_length.exists %}
+        <p>
+            {% blocktrans trimmed with display_count=isbn_length.count|intcomma %}
+            <strong>{{ display_count }}</strong> invalid ISBN(s) detected.
+            {% endblocktrans %}
+            {% trans "First 10 items:" %}
+        </p>
+
+        <ul>
+            {% for edition in isbn_length|slice:10 %}
+            <li>
+                <a href="{{ edition.local_path }}" target="_blank" rel="nofollow noopener noreferrer">{{ edition.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+
+        {% if isbn_length_dupes_unblocked.exists %}
+        <p>
+            {% blocktrans trimmed with display_count=isbn_length_dupes_unblocked.count|intcomma %}
+            <strong>{{ display_count }}</strong> of these editions have been marked as duplicates.
+            {% endblocktrans %}
+            <strong>{% trans "These may have been marked in error." %}</strong>
+        </p>
+        <form action="{% url 'settings-problems-block-merge' %}" method="POST">
+            {% csrf_token %}
+            <button class="button is-warning" type="submit">{% trans "Block automatic merging" %}</button>
+        </form>
+        {% endif %}
+        <p>
+            {% blocktrans trimmed with display_count=isbn_length_dupes_blocked.count|intcomma %}
+            <strong>{{ display_count }}</strong> of these editions have been blocked from automatic merging.
+            {% endblocktrans %}
+        </p>
+        {% else %}
+        <p>
+            <em>{% trans "No problems found" %}</em>
+        </p>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

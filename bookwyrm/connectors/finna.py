@@ -5,7 +5,7 @@ from typing import Iterator
 
 from bookwyrm import models
 from bookwyrm.book_search import SearchResult
-from bookwyrm.models.book import FormatChoices
+from bookwyrm.models.book import FORMAT_CHOICES
 from .abstract_connector import AbstractConnector, Mapping, JsonDict
 from .abstract_connector import get_data
 from .connector_manager import ConnectorException, create_edition_task
@@ -129,7 +129,7 @@ class Connector(AbstractConnector):
             edition_info_title = describe_physical_format(search_result.get("formats"))
             edition_info = ""
             if edition_info_title and edition_info_title != "Hardcover":
-                for book_format, info_title in FormatChoices:
+                for book_format, info_title in FORMAT_CHOICES:
                     if book_format == edition_info_title:
                         edition_info = f" {info_title}"
                         break
@@ -293,7 +293,7 @@ def parse_series_number(series: list[JsonDict]) -> str | None:
     return None
 
 
-def retrieve_versions(book_id: str | None) -> list[JsonDict]:
+def retrieve_versions(book_id: int | None) -> list[JsonDict]:
     """
     https://api.finna.fi/v1/search?id=anders.1946700&search=versions&view=&
 

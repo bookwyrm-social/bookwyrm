@@ -119,7 +119,7 @@ def init_connectors():
             "base_url": "https://openlibrary.org",
             "books_url": "https://openlibrary.org",
             "covers_url": "https://covers.openlibrary.org",
-            "search_url": "https://openlibrary.org/search?q=",
+            "search_url": "https://openlibrary.org/search.json?q=",
             "isbn_search_url": "https://openlibrary.org/api/books?jscmd=data&format=json&bibkeys=ISBN:",
             "priority": 3,
         },
