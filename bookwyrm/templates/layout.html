@@ -219,7 +219,7 @@
 
 {% block tour %}
 <script type="module" nonce="{{request.csp_nonce}}">
-    import { tour, getStepEmpty, getStepComplete, startUpTour } from "{% static 'js/help_tours/tour_defaults.js' %}";
+    import { tour, getStepEmpty, getStepComplete, startUpTour, disableGuidedTour } from "{% static 'js/help_tours/tour_defaults.js' %}";
     tour.addStep(getStepEmpty())
     tour.addStep(getStepComplete())
     document.getElementById('help-button').addEventListener('click', function (event) {
@@ -227,6 +227,12 @@
     });
     if ("{{request.user.show_guided_tour}}" == "True") {
         startUpTour.start()
+        document.getElementById('button-accept-tour').addEventListener('click', function (event) {
+            disableGuidedTour("{{csrf_token}}")
+        });
+        document.getElementById('button-decline-tour').addEventListener('click', function (event) {
+            disableGuidedTour("{{csrf_token}}")
+        });
     }
 </script>
 {% endblock %}
