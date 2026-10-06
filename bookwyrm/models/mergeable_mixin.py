@@ -12,6 +12,7 @@ from django.db.models.query import QuerySet
 from django.dispatch import receiver
 from django.utils import timezone
 
+from bookwyrm.tasks import app, MISC
 from bookwyrm.utils.db import add_update_fields
 from . import fields
 
@@ -258,7 +259,15 @@ class MergeableMixin(models.Model):
 
 @receiver(models.signals.post_save)
 def check_for_dupes(sender: type, instance: models.Model, *args, **kwargs):
-    """see if the newly-changed object is a dupe"""
+    """deploy task to check if newly created or edited object has dupes"""
     if not hasattr(sender, "mark_merge_candidates"):
         return
-    sender.mark_merge_candidates(instance=instance)
+    check_instance_for_dupes.delay(sender.__name__, instance.id)
+
+
+@app.task(queue=MISC)
+def check_instance_for_dupes(sender, instance_id) -> None:
+    """see if a specific object has duplicates"""
+    model = apps.get_model("bookwyrm", sender)
+    instance = model.objects.get(id=instance_id)
+    model.mark_merge_candidates(instance=instance)
