@@ -258,9 +258,14 @@ class MergeableMixin(models.Model):
 
 
 @receiver(models.signals.post_save)
-def check_for_dupes(sender: type, instance: models.Model, *args, **kwargs):
+def check_for_dupes(
+    sender: type, instance: models.Model, *args, update_fields=[], **kwargs
+):
     """deploy task to check if newly created or edited object has dupes"""
     if not hasattr(sender, "mark_merge_candidates"):
+        return
+    if update_fields and "pending_merge_target" in update_fields:
+        # don't check for dupes if we're setting it as a dupe
         return
     check_instance_for_dupes.delay(sender.__name__, instance.id)
 
