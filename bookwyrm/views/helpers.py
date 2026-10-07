@@ -51,7 +51,7 @@ def get_user_from_username(viewer: models.User, username: str) -> models.User:
         raise Http404()
 
 
-def is_api_request(request: HttpRequest):
+def is_api_request(request: HttpRequest) -> bool:
     """check whether a request is asking for html or data"""
     is_api = "json" in request.headers.get("Accept", "") or re.match(
         r"\S{1,100}\.json/?$", request.path
@@ -63,7 +63,7 @@ def is_api_request(request: HttpRequest):
     return is_api
 
 
-def is_bookwyrm_request(request: HttpRequest):
+def is_bookwyrm_request(request: HttpRequest) -> bool:
     """check if the request is coming from another bookwyrm instance"""
     user_agent = request.headers.get("User-Agent")
     if user_agent is None or re.search(regex.BOOKWYRM_USER_AGENT, user_agent) is None:
@@ -71,7 +71,9 @@ def is_bookwyrm_request(request: HttpRequest):
     return True
 
 
-def handle_remote_webfinger(query: str, unknown_only=False, refresh=False):
+def handle_remote_webfinger(
+    query: str, unknown_only: bool = False, refresh: bool = False
+) -> models.User | None:
     """webfingerin' other servers"""
     # SHOULD we do a remote webfinger? Is it allowed?
     models.SiteSettings.raise_federation_disabled()
@@ -149,7 +151,7 @@ def subscribe_remote_webfinger(query: str):
     return template
 
 
-def get_edition(book_id: str) -> models.Edition:
+def get_edition(book_id: int) -> models.Edition:
     """look up a book in the db and return an edition"""
     book = models.Book.objects.select_subclasses().get(id=book_id)
     if isinstance(book, models.Work):
