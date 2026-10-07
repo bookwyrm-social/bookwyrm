@@ -87,9 +87,9 @@ class SuggestedUsers(RedisStore):
         """update the ranks of the follows suggested to a user"""
         self.populate_store(self.store_id(user_id))
 
-    def remove_suggestion(self, user_id, suggested_user_id) -> None:
+    def remove_suggestion(self, user_id: int, suggested_user: models.User) -> None:
         """take a user out of someone's suggestions"""
-        self.bulk_remove_objects_from_store([suggested_user_id], self.store_id(user_id))
+        self.bulk_remove_objects_from_store([suggested_user], self.store_id(user_id))
 
     def get_suggestions(self, user, local=False):
         """get suggestions"""
@@ -294,7 +294,7 @@ def remove_suggestion_task(user_id: int, suggested_user_id: int) -> None:
 
 
 @app.task(queue=SUGGESTED_USERS)
-def bulk_remove_instance_task(instance_id) -> None:
+def bulk_remove_instance_task(instance_id: int) -> None:
     """remove a bunch of users from recs"""
     for user in models.User.objects.filter(federated_server__id=instance_id):
         suggested_users.remove_object_from_stores(
