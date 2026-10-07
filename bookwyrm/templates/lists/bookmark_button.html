@@ -13,7 +13,7 @@
 >
     {% csrf_token %}
     {% trans "Save" as text %}
-    <button class="button" type="submit">
+    <button class="button" type="submit" id="save-list-button">
         <span class="icon icon-bookmark m-0-mobile" title="{{ text }}"></span>
         <span class="is-sr-only-mobile">{{ text }}</span>
     </button>

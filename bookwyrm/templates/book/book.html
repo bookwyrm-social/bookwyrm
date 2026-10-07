@@ -38,12 +38,12 @@
     <div class="columns">
         <div class="column is-2">
             {% include "book/sections/cover.html" %}
-            <div class="mb-3" id="tour-shelve-button">
+            <div class="mb-3" id="shelve-button">
                 {% include 'snippets/shelve_button/shelve_button.html' %}
             </div>
 
             {% include "book/sections/lists.html" %}
-            <section class="content block" id="tour-book-file-links">
+            <section class="content block" id="book-file-links">
                 {% include "book/file_links/links.html" %}
             </section>
         </div>
@@ -54,8 +54,8 @@
             </div>
             <div class="block">
                 {% with work=book.parent_work editions_count=book.parent_work.editions.count %}
-                <div>
-                    <a href="{{ work.local_path }}/editions" id="tour-other-editions-link">
+                <div id="other-editions-link">
+                    <a href="{{ work.local_path }}/editions">
                         {% blocktrans trimmed count counter=editions_count with count=editions_count|intcomma %}
                             {{ count }} edition
                             {% plural %}
@@ -76,7 +76,7 @@
                     {% endif %}
 
                     <div class="control">
-                        <button class="button is-small" data-modal-open="add-readthrough" id="tour-add-readthrough">
+                        <button class="button is-small" data-modal-open="add-readthrough" id="add-readthrough-button">
                             <span class="icon icon-plus m-mobile-0" aria-hidden="true"></span>
                             <span class="is-sr-only-mobile">
                                 {% trans "Add read dates" %}
@@ -106,7 +106,7 @@
             </section>
         </div>
 
-        <div class="column is-3">
+        <div class="column is-3" id="suggestion-list-block">
             <section class="block">
             {% include "book/suggestion_list/list.html" %}
             </section>
@@ -121,7 +121,16 @@
 {% block scripts %}
 <script src="{% static "js/tabs.js" %}"></script>
 <script src="{% static "js/autocomplete.js" %}"></script>
-{% if request.user.show_guided_tour %}
-    {% include 'guided_tour/book.html' %}
-{% endif %}
+{% endblock %}
+
+{% block tour %}
+<script type="module" nonce="{{request.csp_nonce}}">
+    import { tour, getStepComplete } from "{% static 'js/help_tours/tour_defaults.js' %}";
+    import { steps } from "{% static 'js/help_tours/book.js' %}";
+    tour.addSteps(steps)
+    tour.addStep(getStepComplete())
+    document.getElementById('help-button').addEventListener('click', function (event) {
+        tour.start()
+});
+</script>
 {% endblock %}

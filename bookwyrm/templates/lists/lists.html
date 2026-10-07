@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 {% load utilities %}
 {% load i18n %}
+{% load static %}
 
 {% block title %}{% trans "Lists" %}{% endblock %}
 
@@ -11,12 +12,12 @@
         <h1 class="title">
             {% trans "Lists" %}
             {% if request.user.is_authenticated %}
-            <a class="help has-text-weight-normal" href="{% url 'user-lists' request.user|username %}">{% trans "Your Lists" %}</a>
+            <a class="help has-text-weight-normal" href="{% url 'user-lists' request.user|username %}" id="your-lists">{% trans "Your Lists" %}</a>
             {% endif %}
         </h1>
     </div>
     {% if request.user.is_authenticated %}
-    <div class="column is-narrow" id="tour-create-list">
+    <div class="column is-narrow" id="create-list-button">
         {% trans "Create List" as button_text %}
         {% include 'snippets/toggle/open_button.html' with controls_text="create_list" icon_with_text="plus" text=button_text focus="create_list_header" %}
     </div>
@@ -32,11 +33,11 @@
 <nav class="tabs">
     <ul>
         {% url 'lists' as url %}
-        <li{% if request.path in url %} class="is-active"{% endif %}>
+        <li{% if request.path in url %} class="is-active"{% endif %} id="all-lists-tab">
             <a href="{{ url }}">{% trans "All Lists" %}</a>
         </li>
         {% url 'saved-lists' as url %}
-        <li{% if url in request.path %} class="is-active"{% endif %}>
+        <li{% if url in request.path %} class="is-active"{% endif %} id="saved-lists-tab">
             <a href="{{ url }}">{% trans "Saved Lists" %}</a>
         </li>
     </ul>
@@ -53,8 +54,15 @@
 
 {% endblock %}
 
-{% block scripts %}
-{% if request.user.show_guided_tour %}
-    {% include 'guided_tour/lists.html' %}
-{% endif %}
+{% block scripts %}{% endblock %}
+{% block tour %}
+<script type="module" nonce="{{request.csp_nonce}}">
+    import { tour, getStepComplete } from "{% static 'js/help_tours/tour_defaults.js' %}";
+    import { steps } from "{% static 'js/help_tours/lists.js' %}";
+    tour.addSteps(steps)
+    tour.addStep(getStepComplete())
+    document.getElementById('help-button').addEventListener('click', function (event) {
+        tour.start()
+});
+</script>
 {% endblock %}

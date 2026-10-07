@@ -2,11 +2,12 @@
 {% load i18n %}
 {% load group_tags %}
 {% load markdown %}
+{% load static %}
 
 {% block panel %}
 
 <div class="columns mt-3">
-    <section class="column is-three-quarters">
+    <section class="column is-three-quarters" id="group-members">
         {% block searchresults %}
         {% endblock %}
         <div class="mb-2">
@@ -14,7 +15,7 @@
         </div>
     </section>
 </div>
-<header class="columns content is-mobile">
+<header class="columns content is-mobile" id="group-lists">
     <div class="column">
         <h2 class="title is-5">{% trans "Lists" %}</h2>
         <p class="subtitle is-6">
@@ -22,7 +23,7 @@
         </p>
     </div>
     {% if request.user.is_authenticated and group|is_member:request.user %}
-    <div class="column is-narrow is-flex" id="tour-create-list">
+    <div class="column is-narrow is-flex">
         {% trans "Create List" as button_text %}
         {% include 'snippets/toggle/open_button.html' with controls_text="create_list" icon_with_text="plus" text=button_text focus="create_list_header" %}
     </div>
@@ -81,8 +82,15 @@
 
 {% endblock %}
 
-{% block scripts %}
-{% if request.user.show_guided_tour %}
-    {% include 'guided_tour/group.html' %}
-{% endif %}
+{% block scripts %}{% endblock %}
+{% block tour %}
+<script type="module" nonce="{{request.csp_nonce}}">
+    import { tour, getStepComplete } from "{% static 'js/help_tours/tour_defaults.js' %}";
+    import { steps } from "{% static 'js/help_tours/group.js' %}";
+    tour.addSteps(steps)
+    tour.addStep(getStepComplete())
+    document.getElementById('help-button').addEventListener('click', function (event) {
+        tour.start()
+});
+</script>
 {% endblock %}

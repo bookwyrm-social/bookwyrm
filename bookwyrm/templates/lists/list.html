@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load group_tags %}
 {% load utilities %}
+{% load static %}
 
 {% block breadcrumbs %}
 <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
@@ -48,9 +49,9 @@
         {% endif %}
 
         {% if not items.object_list.exists %}
-        <p class="block">{% trans "This list is currently empty." %}</p>
+        <p class="block" id="list-items-block">{% trans "This list is currently empty." %}</p>
         {% else %}
-        <ol start="{{ items.start_index }}" class="ordered-list">
+        <ol id="list-items-block" start="{{ items.start_index }}" class="ordered-list">
         {% for item in items %}
             <li class="block mb-5">
                 {% include "lists/list_item.html" with list=list item=item %}
@@ -66,7 +67,7 @@
         <h2 class="title is-5">
             {% trans "Sort List" %}
         </h2>
-        <form name="sort" action="{% url 'list' list_id=list.id slug=list.name|slugify %}" method="GET" class="block">
+        <form name="sort" action="{% url 'list' list_id=list.id slug=list.name|slugify %}" method="GET" class="block" id="sort-list-form">
             <div class="field">
                 <label class="label" for="id_sort_by">{% trans "Sort By" %}</label>
                 <div class="select is-fullwidth">
@@ -87,7 +88,7 @@
         </form>
     {% endif %}
     {% if request.user.is_authenticated and not list.curation == 'closed' or request.user == list.user %}
-        <h2 class="title is-5 mt-6">
+        <h2 class="title is-5 mt-6" id="add-books-header">
             {% if list.suggests_for or list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
                 {% trans "Add Books" %}
             {% else %}
@@ -98,7 +99,7 @@
     {% endif %}
 
         {% block emded_link %}
-        <div>
+        <div id="embed-block">
             <h2 class="title is-5 mt-6" id="embed-label">
                 {% trans "Embed this list on a website" %}
             </h2>
@@ -119,4 +120,15 @@
 
     </section>
 </div>
+{% endblock %}
+{% block tour %}
+<script type="module" nonce="{{request.csp_nonce}}">
+    import { tour, getStepComplete } from "{% static 'js/help_tours/tour_defaults.js' %}";
+    import { steps } from "{% static 'js/help_tours/list.js' %}";
+    tour.addSteps(steps)
+    tour.addStep(getStepComplete())
+    document.getElementById('help-button').addEventListener('click', function (event) {
+        tour.start()
+});
+</script>
 {% endblock %}
