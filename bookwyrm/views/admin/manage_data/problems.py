@@ -43,7 +43,7 @@ class DataProblems(View):
 @permission_required("bookwyrm.manage_data", raise_exception=True)
 def block_problem_merges(request):
     """prevent automatic merge of books with invalid ISBNs"""
-    editions = get_invalid_isbns().filter(merge_target__isnull=False)
+    editions = get_invalid_isbns().filter(pending_merge_target__isnull=False)
     editions.update(
         prevent_automatic_merge=True, prevent_automatic_merge_user=request.user
     )
