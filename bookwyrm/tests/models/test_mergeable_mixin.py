@@ -283,6 +283,36 @@ class MergeableMixin(TestCase):
         self.assertEqual(models.Edition.objects.count(), 1)
         self.assertEqual(models.Work.objects.count(), 1)
 
+    def test_related_parent_work_deleted_with_work_target(self):
+        """are parent works deleted once orphaned?"""
+
+        work = models.Work.objects.create(title="Work", openlibrary_key="hello")
+        dupe_work = models.Work.objects.create(
+            title="Duplicate Work", openlibrary_key="hello", pending_merge_target=work
+        )
+        self.assertEqual(dupe_work.pending_merge_target, work)
+
+        book = models.Edition.objects.create(
+            title="Example Edition",
+            isbn_13="9780810160118",
+            parent_work=dupe_work,
+        )
+        dupe = models.Edition.objects.create(
+            title="Duplicate Edition",
+            isbn_13="9780810160118",
+            parent_work=work,
+        )
+
+        self.assertEqual(models.Edition.objects.count(), 2)
+        self.assertEqual(models.Work.objects.count(), 2)
+
+        dupe.merge_into(book)
+
+        self.assertEqual(models.Edition.objects.count(), 1)
+        self.assertEqual(models.Work.objects.count(), 1)
+        dupe_work.refresh_from_db()
+        self.assertIsNone(dupe_work.pending_merge_target)
+
     def test_related_suggestions_merged(self):
         """are related suggestion items merged?"""
 
