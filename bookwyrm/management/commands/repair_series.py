@@ -51,6 +51,8 @@ def fix_books(options: dict) -> None:
     if options["verbosity"] > 0:
         print("\nChecking editions for faulty series...\n")
     for edition in editions:
+        edition_progress += 1
+        progress_bar(edition_progress, editions.count())
         try:
             if not edition.parent_work:
                 raise ValueError(f"Edition {edition.id} has no parent work")
@@ -65,9 +67,6 @@ def fix_books(options: dict) -> None:
                         )
                 else:
                     nameless.append(edition)
-
-            edition_progress += 1
-            progress_bar(edition_progress, editions.count())
         except Exception as err:
             errors.append(err)
 
@@ -77,6 +76,8 @@ def fix_books(options: dict) -> None:
                 f"\n\nFinding missing names for series on {len(nameless)} editions...\n"
             )
         for data in nameless:
+            nameless_progress += 1
+            progress_bar(nameless_progress, len(nameless))
             try:
                 series = Series(**data.parent_work.series[0])
                 if not options["dry_run"]:
@@ -93,9 +94,6 @@ def fix_books(options: dict) -> None:
             except Exception as err:
                 nameless_errors.append(err)
                 continue
-
-            nameless_progress += 1
-            progress_bar(nameless_progress, len(nameless))
 
     if options["verbosity"] > 0:
         print("\n")
