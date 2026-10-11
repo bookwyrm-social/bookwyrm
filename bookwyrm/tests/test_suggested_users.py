@@ -137,7 +137,7 @@ class SuggestedUsers(TestCase):
         with patch(
             "bookwyrm.suggested_users.SuggestedUsers.populate_store"
         ) as store_mock:
-            suggested_users.rerank_user_suggestions(self.local_user)
+            suggested_users.rerank_user_suggestions(self.local_user.id)
         args = store_mock.call_args[0]
         self.assertEqual(args[0], f"{self.local_user.id}-suggestions")
 
@@ -146,7 +146,9 @@ class SuggestedUsers(TestCase):
         suggestion_candidate = models.User.objects.create_user(
             "rat", "rat@local.rat", "password", local=True, localname="rat"
         )
-        with patch("bookwyrm.suggested_users.SuggestedUsers.get_store") as mock:
+        with patch(
+            "bookwyrm.suggested_users.SuggestedUsers.get_store_with_scores"
+        ) as mock:
             mock.return_value = [(suggestion_candidate.id, 7.9)]
             results = suggested_users.get_suggestions(self.local_user)
         self.assertEqual(results[0], suggestion_candidate)
@@ -156,7 +158,9 @@ class SuggestedUsers(TestCase):
         suggestion_candidate = models.User.objects.create_user(
             "rat", "rat@local.rat", "password", local=True, localname="rat"
         )
-        with patch("bookwyrm.suggested_users.SuggestedUsers.get_store") as mock:
+        with patch(
+            "bookwyrm.suggested_users.SuggestedUsers.get_store_with_scores"
+        ) as mock:
             mock.return_value = [
                 (self.local_user.id, 1.0),
                 (suggestion_candidate.id, 1.0),
@@ -173,7 +177,9 @@ class SuggestedUsers(TestCase):
         )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             self.local_user.following.add(followed_user)
-        with patch("bookwyrm.suggested_users.SuggestedUsers.get_store") as mock:
+        with patch(
+            "bookwyrm.suggested_users.SuggestedUsers.get_store_with_scores"
+        ) as mock:
             mock.return_value = [
                 (followed_user.id, 1.0),
                 (suggestion_candidate.id, 1.0),
@@ -197,7 +203,9 @@ class SuggestedUsers(TestCase):
             models.UserFollowRequest.objects.create(
                 user_subject=self.local_user, user_object=requested_user
             )
-        with patch("bookwyrm.suggested_users.SuggestedUsers.get_store") as mock:
+        with patch(
+            "bookwyrm.suggested_users.SuggestedUsers.get_store_with_scores"
+        ) as mock:
             mock.return_value = [
                 (requested_user.id, 1.0),
                 (suggestion_candidate.id, 1.0),
