@@ -9,8 +9,10 @@ from django.apps import apps
 from django.db import transaction, IntegrityError
 from django.db import models
 from django.db.models.query import QuerySet
+from django.dispatch import receiver
 from django.utils import timezone
 
+from bookwyrm.tasks import app, MISC
 from bookwyrm.utils.db import add_update_fields
 from . import fields
 
@@ -96,13 +98,22 @@ class MergeableMixin(models.Model):
         ]
 
     @classmethod
-    def find_duplicate_fields(cls) -> Dict[str, Any]:
+    def find_duplicate_fields(
+        cls, include_pending: bool = False, instance=None
+    ) -> Dict[str, Any]:
         """scan the model for all dedupe fields with multiple objs with the same value"""
         dedupe_fields = cls.deduplication_fields()
         duplicates = {}
+
         for field in dedupe_fields:
+            filters = {}
+            if not include_pending:
+                filters["pending_merge_target__isnull"] = True
+            if instance:
+                filters[field.name] = getattr(instance, field.name)
+
             results = (
-                cls.objects.filter(pending_merge_target__isnull=True)
+                cls.objects.filter(**filters)
                 .values(field.name)
                 .annotate(models.Count(field.name))
                 .filter(**{f"{field.name}__count__gt": 1})
@@ -117,9 +128,9 @@ class MergeableMixin(models.Model):
         return duplicates
 
     @classmethod
-    def mark_merge_candidates(cls) -> None:
+    def mark_merge_candidates(cls, instance=None) -> None:
         """update duplicate entries with pending merge reference"""
-        dedupe_fields = cls.find_duplicate_fields()
+        dedupe_fields = cls.find_duplicate_fields(instance=instance)
         week_from_today = timezone.now() + timedelta(days=7)
         for field_name, values in dedupe_fields.items():
             for value in values:
@@ -244,3 +255,24 @@ class MergeableMixin(models.Model):
             and parent != canonical.parent_work
         ):
             parent.merge_into(canonical.parent_work)
+
+
+@receiver(models.signals.post_save)
+def check_for_dupes(
+    sender: type, instance: models.Model, *args, update_fields=[], **kwargs
+):
+    """deploy task to check if newly created or edited object has dupes"""
+    if not hasattr(sender, "mark_merge_candidates"):
+        return
+    if update_fields and "pending_merge_target" in update_fields:
+        # don't check for dupes if we're setting it as a dupe
+        return
+    check_instance_for_dupes.delay(sender.__name__, instance.id)
+
+
+@app.task(queue=MISC)
+def check_instance_for_dupes(sender, instance_id) -> None:
+    """see if a specific object has duplicates"""
+    model = apps.get_model("bookwyrm", sender)
+    instance = model.objects.get(id=instance_id)
+    model.mark_merge_candidates(instance=instance)
