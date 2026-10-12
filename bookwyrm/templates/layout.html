@@ -97,11 +97,13 @@
             </div>
 
             <div class="navbar-end">
+                {% if has_tour %}
                 <span class="is-size-4 navbar-item mt-3 py-0 has-text-info" id="help-button">
                     <span class="icon icon-question-circle" title="{% trans 'Help' %}">
                         <span class="is-sr-only">{% trans "Help tour (uses JavaScript)" %}</span>
                     </span>
                 </span>
+                {% endif %}
                 {% if request.user.is_authenticated %}
                 <div class="navbar-item mt-3 py-0"  id="user-profile">
                     {% include 'user_menu.html' %}
@@ -215,7 +217,6 @@
 <script src="{% static "js/status_cache.js" %}"></script>
 <script src="{% static "js/xhr_files.js" %}"></script>
 <script src="{% static "js/vendor/quagga.min.js" %}"></script>
-<script src="{% static "js/vendor/shepherd.min.js" %}"></script>
 
 {% block scripts %}{% endblock %}
 {% if has_tour %}
