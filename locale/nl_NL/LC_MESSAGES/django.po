@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-10 20:16+0000\n"
-"PO-Revision-Date: 2026-09-11 21:34\n"
+"PO-Revision-Date: 2026-10-12 01:14\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -210,55 +210,55 @@ msgstr "Domeinblokkade"
 
 #: bookwyrm/models/book.py:53
 msgid "OpenLibrary key"
-msgstr ""
+msgstr "OpenLibrary-identificatiecode"
 
 #: bookwyrm/models/book.py:60
 msgid "Finna key"
-msgstr ""
+msgstr "Finna-identificatiecode"
 
 #: bookwyrm/models/book.py:67
 msgid "Libris key"
-msgstr ""
+msgstr "Libris-identificatiecode"
 
 #: bookwyrm/models/book.py:74
 msgid "Inventaire ID"
-msgstr ""
+msgstr "Inventaire-identificatiecode"
 
 #: bookwyrm/models/book.py:81
 msgid "LibraryThing key"
-msgstr ""
+msgstr "LibraryThing-identificatiecode"
 
 #: bookwyrm/models/book.py:88
 msgid "GoodReads key"
-msgstr ""
+msgstr "GoodReads-identificatiecode"
 
 #: bookwyrm/models/book.py:95
 msgid "BNF ID"
-msgstr ""
+msgstr "BNF-identificatiecode"
 
 #: bookwyrm/models/book.py:102
 msgid "VIAF"
-msgstr ""
+msgstr "VIAF-identificatiecode"
 
 #: bookwyrm/models/book.py:109
 msgid "Wikidata ID"
-msgstr ""
+msgstr "Wikidata-item"
 
 #: bookwyrm/models/book.py:116
 msgid "ASIN"
-msgstr ""
+msgstr "ASIN"
 
 #: bookwyrm/models/book.py:123
 msgid "AASIN"
-msgstr ""
+msgstr "AASIN"
 
 #: bookwyrm/models/book.py:130
 msgid "ISFDB ID"
-msgstr ""
+msgstr "ISFDB-identificatiecode"
 
 #: bookwyrm/models/book.py:478
 msgid "LCCN"
-msgstr ""
+msgstr "LCCN"
 
 #: bookwyrm/models/book.py:521
 msgid "Audiobook"
@@ -295,25 +295,25 @@ msgstr "%(value)s heeft niet het juiste ISBN-controlecijfer, we verwachten %(che
 
 #: bookwyrm/models/book.py:628
 msgid "ISBN 10"
-msgstr ""
+msgstr "ISBN-10"
 
 #: bookwyrm/models/book.py:636
 msgid "ISBN 13"
-msgstr ""
+msgstr "ISBN-13"
 
 #: bookwyrm/models/book.py:643
 msgid "OCLC number"
-msgstr ""
+msgstr "OCLC-nummer"
 
 #: bookwyrm/models/book.py:691
 msgid "Edition"
-msgstr ""
+msgstr "Editie"
 
 #: bookwyrm/models/book.py:692
 #: bookwyrm/templates/settings/manage-data/data.html:33
 #: bookwyrm/templates/settings/manage-data/merge.html:22
 msgid "Editions"
-msgstr ""
+msgstr "Edities"
 
 #: bookwyrm/models/book.py:800
 msgid "Book is already in this series"
@@ -1405,27 +1405,27 @@ msgstr "Is \"%(name)s\" een van deze auteurs?"
 
 #: bookwyrm/templates/book/edit/edit_book.html:80
 msgid "Any external authors will be imported from ISNI"
-msgstr ""
+msgstr "Externe auteurs worden geïmporteerd vanuit ISNI"
 
 #: bookwyrm/templates/book/edit/edit_book.html:87
 msgid "Existing author"
-msgstr ""
+msgstr "Bestaande auteur"
 
 #: bookwyrm/templates/book/edit/edit_book.html:87
 msgid "External author"
-msgstr ""
+msgstr "Externe auteur"
 
 #: bookwyrm/templates/book/edit/edit_book.html:94
 #: bookwyrm/templates/book/edit/edit_book.html:99
 #, python-format
 msgid "Author of <em>%(book_title)s</em>"
 msgid_plural "Author of <em>%(book_title)s</em></a> and more"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Auteur van <em>%(book_title)s</em>"
+msgstr[1] "Auteur van <em>%(book_title)s</em></a> en meer"
 
 #: bookwyrm/templates/book/edit/edit_book.html:110
 msgid "Create new author"
-msgstr ""
+msgstr "Nieuwe auteur aanmaken"
 
 #: bookwyrm/templates/book/edit/edit_book.html:120
 #, python-format
@@ -6672,19 +6672,19 @@ msgstr "Wachtwoord-reset forceren"
 
 #: bookwyrm/templates/settings/layout.html:55
 msgid "Manage Data"
-msgstr ""
+msgstr "Data-beheer"
 
 #: bookwyrm/templates/settings/layout.html:60
 #: bookwyrm/templates/settings/manage-data/data.html:7
 #: bookwyrm/templates/settings/manage-data/data.html:11
 msgid "Data Quality"
-msgstr ""
+msgstr "Datakwaliteit"
 
 #: bookwyrm/templates/settings/layout.html:65
 #: bookwyrm/templates/settings/manage-data/merge.html:6
 #: bookwyrm/templates/settings/manage-data/merge.html:8
 msgid "Merge Data"
-msgstr ""
+msgstr "Data samenvoegen"
 
 #: bookwyrm/templates/settings/layout.html:70
 msgid "Federation"
@@ -6788,7 +6788,7 @@ msgstr "Geen links beschikbaar voor dit domein."
 #: bookwyrm/templates/settings/manage-data/confirm-merge.html:6
 #: bookwyrm/templates/settings/manage-data/confirm-merge.html:10
 msgid "Confirm merge"
-msgstr ""
+msgstr "Samenvoeging bevestigen"
 
 #: bookwyrm/templates/settings/manage-data/confirm-merge.html:17
 #, python-format
@@ -6807,15 +6807,15 @@ msgstr ""
 #: bookwyrm/templates/settings/manage-data/confirm-merge.html:32
 #: bookwyrm/templates/settings/manage-data/manual-merge.html:57
 msgid "Field"
-msgstr ""
+msgstr "Veld"
 
 #: bookwyrm/templates/settings/manage-data/confirm-merge.html:33
 msgid "Merged value"
-msgstr ""
+msgstr "Samengevoegde waarde"
 
 #: bookwyrm/templates/settings/manage-data/data.html:17
 msgid "Duplicates detected"
-msgstr ""
+msgstr "Duplicaten gedetecteerd"
 
 #: bookwyrm/templates/settings/manage-data/data.html:18
 msgid "Duplicates will be detected when a duplicate data scan has run"
@@ -6827,15 +6827,15 @@ msgstr ""
 #: bookwyrm/templates/settings/manage-data/data.html:60
 #: bookwyrm/templates/settings/manage-data/data.html:71
 msgid "View first"
-msgstr ""
+msgstr "Bekijk eerstgevonden"
 
 #: bookwyrm/templates/settings/manage-data/data.html:66
 msgid "Suggestion list"
-msgstr ""
+msgstr "Suggestielijst"
 
 #: bookwyrm/templates/settings/manage-data/data.html:79
 msgid "Run scan task"
-msgstr ""
+msgstr "Scantaak uitvoeren"
 
 #: bookwyrm/templates/settings/manage-data/data.html:85
 msgid "Schedule duplicate data scan"
@@ -6866,7 +6866,7 @@ msgstr ""
 #, python-format
 msgid "\n"
 "Merge %(plural_model)s\n"
-msgstr ""
+msgstr "%(plural_model)s samenvoegen"
 
 #: bookwyrm/templates/settings/manage-data/manual-merge.html:27
 #, python-format
@@ -6884,7 +6884,7 @@ msgstr ""
 #: bookwyrm/templates/settings/manage-data/merge_series.html:21
 #: bookwyrm/templates/settings/manage-data/merge_works.html:30
 msgid "Merge"
-msgstr ""
+msgstr "Samenvoegen"
 
 #: bookwyrm/templates/settings/manage-data/manual-merge.html:49
 msgid "Choose which values to use in the merged object. Only values that differ are shown – other values will automatically merge."
@@ -6900,7 +6900,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/manage-data/manual-merge.html:77
 msgid "no value"
-msgstr ""
+msgstr "geen waarde"
 
 #: bookwyrm/templates/settings/manage-data/merge.html:56
 msgid "Click \"Merge\" on an item to manually select fields to merge."
@@ -6919,7 +6919,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/manage-data/merge_authors.html:29
 msgid "There are no authors to merge."
-msgstr ""
+msgstr "Er zijn geen auteurs om samen te voegen."
 
 #: bookwyrm/templates/settings/manage-data/merge_editions.html:6
 msgid "Editions with merge candidates"
@@ -6927,7 +6927,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/manage-data/merge_editions.html:31
 msgid "There are no editions to merge."
-msgstr ""
+msgstr "Er zijn geen edities om samen te voegen."
 
 #: bookwyrm/templates/settings/manage-data/merge_series.html:6
 msgid "Series with merge candidates"
@@ -6935,7 +6935,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/manage-data/merge_series.html:29
 msgid "There are no series to merge."
-msgstr ""
+msgstr "Er zijn geen reeksen om samen te voegen."
 
 #: bookwyrm/templates/settings/manage-data/merge_works.html:6
 msgid "Works with merge candidates"
@@ -6947,7 +6947,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/manage-data/merge_works.html:39
 msgid "There are no works to merge."
-msgstr ""
+msgstr "Er zijn geen werken om samen te voegen."
 
 #: bookwyrm/templates/settings/redis.html:5
 #: bookwyrm/templates/settings/redis.html:7
@@ -8063,7 +8063,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/merge_banner/layout.html:17
 #, python-format
 msgid "(Blocked by <a href=\"%(user_path)s\">@%(username)s</a>)"
-msgstr ""
+msgstr "(Geblokkeerd door <a href=\"%(user_path)s\">@%(username)s</a>)"
 
 #: bookwyrm/templates/snippets/merge_banner/layout.html:20
 #, python-format
@@ -8076,7 +8076,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/merge_banner/layout.html:36
 msgid "Is this mistaken?"
-msgstr ""
+msgstr "Klopt dit niet?"
 
 #: bookwyrm/templates/snippets/merge_banner/layout.html:39
 msgid "Block automatic merge"
@@ -8085,7 +8085,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/merge_banner/layout.html:46
 #: bookwyrm/templates/snippets/merge_banner/layout.html:93
 msgid "Merge now"
-msgstr ""
+msgstr "Nu samenvoegen"
 
 #: bookwyrm/templates/snippets/merge_banner/layout.html:61
 #, python-format
@@ -8101,7 +8101,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/merge_banner/layout.html:86
 #, python-format
 msgid "And %(count)s other(s)."
-msgstr ""
+msgstr "En %(count)s anderen."
 
 #: bookwyrm/templates/snippets/merge_banner/series.html:7
 #, python-format
@@ -8213,7 +8213,7 @@ msgstr "Registreren"
 
 #: bookwyrm/templates/snippets/remote_follow_button.html:11
 msgid "Follow from Fediverse"
-msgstr ""
+msgstr "Volg vanuit het fediversum"
 
 #: bookwyrm/templates/snippets/report_modal.html:8
 #, python-format
@@ -8295,8 +8295,8 @@ msgstr "Beoordeling weergeven"
 #, python-format
 msgid "%(display_rating)s star"
 msgid_plural "%(display_rating)s stars"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_rating)s ster"
+msgstr[1] "%(display_rating)s sterren"
 
 #: bookwyrm/templates/snippets/stars.html:38
 msgid "No rating"
