@@ -36,6 +36,8 @@ class IsbnHyphenator:
         """hyphenate the given ISBN-13 number using the range message"""
         if isbn_13 is None:
             return None
+        if len(isbn_13) != 13:
+            return isbn_13
 
         if self.__element_tree is None:
             self.__element_tree = ElementTree.parse(self.__range_file_path)

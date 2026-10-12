@@ -26,7 +26,7 @@ class FederatedServer(BookWyrmModel):
     application_version = models.CharField(max_length=255, null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
 
-    def block(self):
+    def block(self) -> None:
         """block a server"""
         self.status = "blocked"
         self.save(update_fields=["status"])
@@ -43,7 +43,7 @@ class FederatedServer(BookWyrmModel):
                 identifier=self.server_name, active=True
             ).update(active=False, deactivation_reason="domain_block")
 
-    def unblock(self):
+    def unblock(self) -> None:
         """unblock a server"""
         self.status = "federated"
         self.save(update_fields=["status"])

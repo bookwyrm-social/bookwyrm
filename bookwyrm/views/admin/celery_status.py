@@ -30,7 +30,7 @@ from bookwyrm.tasks import (
     MISC,
 )
 
-r = redis.from_url(settings.REDIS_BROKER_URL)
+redis_instance = redis.from_url(settings.REDIS_BROKER_URL)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -55,20 +55,20 @@ class CeleryStatus(View):
 
         try:
             queues = {
-                LOW: r.llen(LOW),
-                MEDIUM: r.llen(MEDIUM),
-                HIGH: r.llen(HIGH),
-                STREAMS: r.llen(STREAMS),
-                IMAGES: r.llen(IMAGES),
-                SUGGESTED_USERS: r.llen(SUGGESTED_USERS),
-                EMAIL: r.llen(EMAIL),
-                CONNECTORS: r.llen(CONNECTORS),
-                LISTS: r.llen(LISTS),
-                INBOX: r.llen(INBOX),
-                IMPORTS: r.llen(IMPORTS),
-                IMPORT_TRIGGERED: r.llen(IMPORT_TRIGGERED),
-                BROADCAST: r.llen(BROADCAST),
-                MISC: r.llen(MISC),
+                LOW: redis_instance.llen(LOW),
+                MEDIUM: redis_instance.llen(MEDIUM),
+                HIGH: redis_instance.llen(HIGH),
+                STREAMS: redis_instance.llen(STREAMS),
+                IMAGES: redis_instance.llen(IMAGES),
+                SUGGESTED_USERS: redis_instance.llen(SUGGESTED_USERS),
+                EMAIL: redis_instance.llen(EMAIL),
+                CONNECTORS: redis_instance.llen(CONNECTORS),
+                LISTS: redis_instance.llen(LISTS),
+                INBOX: redis_instance.llen(INBOX),
+                IMPORTS: redis_instance.llen(IMPORTS),
+                IMPORT_TRIGGERED: redis_instance.llen(IMPORT_TRIGGERED),
+                BROADCAST: redis_instance.llen(BROADCAST),
+                MISC: redis_instance.llen(MISC),
             }
 
         except Exception as err:
@@ -95,9 +95,9 @@ class CeleryStatus(View):
                 return HttpResponse(
                     "Refusing to delete tasks while Celery worker is active"
                 )
-            pipeline = r.pipeline()
+            pipeline = redis_instance.pipeline()
             for queue in form.cleaned_data["queues"]:
-                for task in r.lrange(queue, 0, -1):
+                for task in redis_instance.lrange(queue, 0, -1):
                     task_json = json.loads(task)
                     if task_json["headers"]["task"] in form.cleaned_data["tasks"]:
                         pipeline.lrem(queue, 0, task)

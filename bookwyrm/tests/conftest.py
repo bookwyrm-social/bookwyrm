@@ -9,6 +9,6 @@ from unittest import mock
 def fake_redis():
     """use fake redis server to avoid problems testing anything use to_model()"""
     with mock.patch(
-        "bookwyrm.activitypub.base_activity.r", fakeredis.FakeRedis()
+        "bookwyrm.activitypub.base_activity.redis_instance", fakeredis.FakeRedis()
     ) as _fakeredis:
         yield _fakeredis
