@@ -6,6 +6,7 @@ from datetime import timedelta
 from itertools import chain
 from typing import List
 
+from django.apps import apps
 from django.db import transaction
 from django.db.models import (
     CharField,
@@ -268,7 +269,7 @@ def mark_duplicate_data_task() -> None:
 
 @app.task(queue=MISC)
 def merge_duplicate_data_task() -> None:
-    """Combine duplicates"""
+    """Combine duplicates across all models"""
     for model in get_mergeable_models():
         objs = model.objects.filter(
             pending_merge_target__isnull=False,
@@ -277,12 +278,19 @@ def merge_duplicate_data_task() -> None:
         )
 
         for obj in objs:
-            obj.merge_into(obj.pending_merge_target)
+            merge_item_task.delay(model.__name__, obj.id)
+
+
+@app.task(queue=MISC)
+def merge_item_task(model_name, obj_id) -> None:
+    """the task for a specific item"""
+    model = apps.get_model("bookwyrm", model_name)
+    obj = model.objects.get(id=obj_id)
+    obj.merge_into(obj.pending_merge_target)
 
 
 def get_mergeable_models() -> List[Model]:
     """All models with the mergeable mixin"""
-
     mergable_models = inspect.getmembers(
         models, lambda m: hasattr(m, "pending_merge_target")
     )
