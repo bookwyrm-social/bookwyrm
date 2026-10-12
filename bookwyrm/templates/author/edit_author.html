@@ -102,14 +102,14 @@
             </div>
 
             <div class="field">
-                <label class="label" for="id_librarything_key">{% trans "Librarything key:" %}</label>
+                <label class="label" for="id_librarything_key">{% trans "LibraryThing key:" %}</label>
                 {{ form.librarything_key }}
 
                 {% include 'snippets/form_errors.html' with errors_list=form.librarything_key.errors id="id_librarything_key_error" %}
             </div>
 
             <div class="field">
-                <label class="label" for="id_goodreads_key">{% trans "Goodreads key:" %}</label>
+                <label class="label" for="id_goodreads_key">{% trans "GoodReads key:" %}</label>
                 {{ form.goodreads_key }}
 
                 {% include 'snippets/form_errors.html' with errors_list=form.goodreads_key.errors id="id_goodreads_key_error" %}
