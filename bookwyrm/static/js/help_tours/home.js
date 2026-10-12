@@ -13,7 +13,7 @@ export const steps = [
     },
     {
         title: gettext("Barcode reader"),
-        text: gettext("Search book records by scanning an ISBN barcode using your device's camera - great when you're in the bookstore or library!"),
+        text: gettext("Find books by scanning an ISBN barcode using your device's camera - great when you're in the bookstore or library!"),
         attachTo: {
             element: "#barcode-scanner-box",
             on: "bottom",

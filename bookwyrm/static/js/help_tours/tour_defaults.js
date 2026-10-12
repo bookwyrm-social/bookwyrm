@@ -30,17 +30,6 @@ const tour = new Shepherd.Tour({
     }
 });
 
-
-/**
- * Shepherd tour steps for a given page
- * @return {object}
- */
-function getSteps(filepath) {
-    const steps = require(`./${filepath}`)
-    return steps
-}
-
-
 /**
  * Shepherd tour end step object
  * @return {object}
@@ -136,4 +125,4 @@ startUpTour.addSteps([
     }
 ])
 
-export { tour, getSteps, getStepEmpty, getStepComplete, startUpTour, disableGuidedTour }
+export { tour, getStepComplete, startUpTour, disableGuidedTour }

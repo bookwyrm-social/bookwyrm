@@ -15,12 +15,6 @@
                 <p>
                     <a href="https://docs.joinbookwyrm.com/">{% trans "Documentation" %}</a>
                 </p>
-                {% if request.user.is_authenticated %}
-                <p id="tour-begin">
-                    <a href="/guided-tour/True">{% trans "Guided Tour" %}</a>
-                    <noscript>(requires JavaScript)</noscript>
-                </p>
-                {% endif %}
             </div>
             <div class="column is-2">
                 <p>

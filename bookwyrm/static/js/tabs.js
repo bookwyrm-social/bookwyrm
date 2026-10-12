@@ -6,6 +6,7 @@
  * Heavily modified to web component by Zach Leatherman
  * Modified back to vanilla JavaScript with support for Bulma markup and nested tabs by Ned Zimmerman
  */
+/* eslint-disable no-unused-vars */
 class TabGroup {
     constructor(container) {
         this.container = container;
