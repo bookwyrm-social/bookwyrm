@@ -63,6 +63,7 @@ class EditionForm(CustomForm):
             "asin",
             "aasin",
             "isfdb",
+            "librarything_key",
         ]
         widgets = {
             "subjects": ArrayWidget(),
@@ -95,6 +96,8 @@ class WorkForm(CustomForm):
             "asin",
             "aasin",
             "isfdb",
+            "bnf_id",
+            "librarything_key",
         ]
         widgets = {
             "subjects": ArrayWidget(),
