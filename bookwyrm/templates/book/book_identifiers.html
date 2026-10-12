@@ -1,13 +1,13 @@
 {% spaceless %}
 {% load i18n %}
 
-{% if book.isbn_13 or book.oclc_number or book.asin or book.aasin or book.isfdb %}
+{% if book.display_isbn or book.oclc_number or book.asin or book.aasin or book.isfdb %}
 <dl>
     {% if book.isbn_13 %}
     <div class="is-flex is-flex-wrap-wrap">
         <dt class="mr-1">{% trans "ISBN:" %}</dt>
         <dd itemprop="isbn" class="mr-1 is-flex">
-            <span id="isbn_content">{{ book.hyphenated_isbn13 }}</span>
+            <span id="isbn_content">{{ book.display_isbn }}</span>
             <div>
                 <button class="button is-small ml-3" data-copywithtooltip data-content-id="isbn_content" data-tooltip-id="isbn_tooltip">
                     <span class="icon icon-copy" title="{% trans "Copy ISBN" %}">
