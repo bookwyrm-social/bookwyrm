@@ -150,6 +150,7 @@ def search_title_author(
 ) -> QuerySet[models.Edition]:
     """searches for title and author"""
     books = books or models.Edition.objects
+    exact_matches = search_exact_matches(query, books)
     query = SearchQuery(query, config="simple") | SearchQuery(query, config="english")
     results = (
         books.filter(*filters, search_vector=query)
@@ -158,12 +159,21 @@ def search_title_author(
         .order_by("-rank")
     )
 
-    # when there are multiple editions of the same work, pick the closest
-    editions_of_work = results.values_list("parent_work__id", flat=True).distinct()
-
     # filter out multiple editions of the same work
-    list_results = []
+    editions_of_work = list(
+        results.values_list("parent_work__id", flat=True).distinct()
+    )
+
+    list_results = list(exact_matches)
+    if list_results and return_first:
+        return list_results[0]
+    else:
+        # remove works where an exact match has already been found
+        for exact_match in exact_matches:
+            editions_of_work.remove(exact_match.parent_work.id)
+
     for work_id in editions_of_work[:30]:
+        # when there are multiple editions of the same work, pick the closest
         result = (
             results.filter(parent_work=work_id)
             .order_by("-rank", "-edition_rank")
@@ -174,6 +184,12 @@ def search_title_author(
             return result
         list_results.append(result)
     return list_results
+
+
+def search_exact_matches(query, books=None) -> QuerySet[models.Edition]:
+    books = books or models.Edition.objects
+    exactTitleMatches = books.filter(title__iexact=query)
+    return exactTitleMatches
 
 
 @dataclass
