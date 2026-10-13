@@ -62,10 +62,14 @@ class ProblemsViews(TestCase):
         bad_both = models.Edition.objects.create(
             title="Bad III", isbn_10="a", isbn_13="345"
         )
+        both_13 = models.Edition.objects.create(
+            title="Bad IV", isbn_13="9789788433972", isbn_10="9788433978776"
+        )
         fine = models.Edition.objects.create(title="Fine")
 
         results = get_invalid_isbns()
         self.assertTrue(bad_10 in results)
         self.assertTrue(bad_13 in results)
         self.assertTrue(bad_both in results)
+        self.assertTrue(both_13 in results)
         self.assertFalse(fine in results)
