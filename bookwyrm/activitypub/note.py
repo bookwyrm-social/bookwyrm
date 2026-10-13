@@ -95,7 +95,12 @@ class Article(Note):
 class GeneratedNote(Note):
     """just a re-typed note"""
 
-    type: str = "GeneratedNote"
+    type: list[str]
+
+    def __init__(self, *args, **kwargs):
+        """override __init__ so we can set a default type list"""
+        super().__init__(*args, **kwargs)
+        self.type = ["GeneratedNote", "Note"]
 
 
 @dataclass(init=False)
@@ -106,7 +111,12 @@ class Comment(Note):
     readingStatus: str = None
     progress: int = None
     progressMode: str = None
-    type: str = "Comment"
+    type: list[str]
+
+    def __init__(self, *args, **kwargs):
+        """override __init__ so we can set a default type list"""
+        super().__init__(*args, **kwargs)
+        self.type = ["Comment", "Note"]
 
 
 @dataclass(init=False)
@@ -116,7 +126,12 @@ class Quotation(Comment):
     quote: str
     position: int = None
     positionMode: str = None
-    type: str = "Quotation"
+    type: list[str]
+
+    def __init__(self, *args, **kwargs):
+        """override __init__ so we can set a default type list"""
+        super().__init__(*args, **kwargs)
+        self.type = ["Quotation", "Note"]
 
 
 @dataclass(init=False)
@@ -125,7 +140,12 @@ class Review(Comment):
 
     name: str = None
     rating: int = None
-    type: str = "Review"
+    type: list[str]
+
+    def __init__(self, *args, **kwargs):
+        """override __init__ so we can set a default type list"""
+        super().__init__(*args, **kwargs)
+        self.type = ["Review", "Article"]
 
 
 @dataclass(init=False)
@@ -135,4 +155,9 @@ class Rating(Comment):
     rating: int
     content: str = None
     name: str = None  # not used, but the model inherits from Review
-    type: str = "Rating"
+    type: list[str]
+
+    def __init__(self, *args, **kwargs):
+        """override __init__ so we can set a default type list"""
+        super().__init__(*args, **kwargs)
+        self.type = ["Rating", "Note"]

@@ -127,7 +127,7 @@ class OutboxView(TestCase):
 
         data = json.loads(result.content)
         self.assertEqual(len(data["orderedItems"]), 1)
-        self.assertEqual(data["orderedItems"][0]["type"], "Review")
+        self.assertEqual(data["orderedItems"][0]["type"], ["Review", "Article"])
 
     def test_outbox_bookwyrm_request_false(self, _):
         """should differentiate between bookwyrm and outside requests"""
@@ -145,4 +145,4 @@ class OutboxView(TestCase):
 
         data = json.loads(result.content)
         self.assertEqual(len(data["orderedItems"]), 1)
-        self.assertEqual(data["orderedItems"][0]["type"], "Article")
+        self.assertEqual(data["orderedItems"][0]["type"], ["Review", "Article"])
