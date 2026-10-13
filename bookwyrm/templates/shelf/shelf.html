@@ -153,6 +153,9 @@
             <thead>
                 <tr>
                     <th>{% trans "Cover"%}</th>
+                     {% if shelf.identifier == 'reading' or shelf.identifier == 'stopped-reading' %}
+                        <th>{% trans "Progress" %}</th>
+                    {% endif %}
                     <th>{% trans "Title"  as text %}{% include 'snippets/table-sort-header.html' with field="sort_title" sort=sort text=text %}</th>
                     <th>{% trans "Author"  as text %}{% include 'snippets/table-sort-header.html' with field="author" sort=sort text=text %}</th>
                     {% if request.user.is_authenticated %}
@@ -175,6 +178,19 @@
                     <td class="book-preview-top-row">
                         <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book cover_class='is-w-s-tablet is-h-s' size='small' %}</a>
                     </td>
+                    {% if shelf.identifier == 'reading' or shelf.identifier == 'stopped-reading' %}
+                        <td data-title="{% trans "Progress" %}">
+                            {% with reading=book.latest_readthrough %}
+                                {% if reading %}
+                                    {% if reading.progress_mode == "PG" %}
+                                        {{ reading.progress }} pages
+                                        {% else %}
+                                            {{ reading.progress }}%
+                                    {% endif %}
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                    {% endif %}
                     <td data-title="{% trans "Title" %}">
                         <a href="{{ book.local_path }}">{{ book.title }}</a>
                     </td>
