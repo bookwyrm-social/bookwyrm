@@ -2,22 +2,20 @@
 {% load i18n %}
 
 {% if book %}
-    {% with book=book %}
-        <a href="{{ book.local_path }}">
-            {% include 'snippets/book_cover.html' with size='xlarge' %}
-        </a>
+    <a href="{{ book.local_path }}">
+        {% include 'snippets/book_cover.html' with size='xlarge' %}
+    </a>
 
-        {% include 'snippets/stars.html' with rating=book|rating:request.user %}
+    {% include 'snippets/stars.html' with rating=book|rating:request.user %}
 
-        <h3 class="title is-6">
-            <a href="{{ book.local_path }}">{{ book.title }}</a>
-        </h3>
+    <h3 class="title is-6">
+        <a href="{{ book.local_path }}">{{ book.title }}</a>
+    </h3>
 
-        {% if book.authors.exists %}
-            <p class="subtitle is-6">
-                {% trans "by" %}
-                {% include 'snippets/authors.html' with limit=3 %}
-            </p>
-        {% endif %}
-    {% endwith %}
+    {% if book.authors.exists %}
+        <p class="subtitle is-6">
+            {% trans "by" %}
+            {% include 'snippets/authors.html' with limit=3 %}
+        </p>
+    {% endif %}
 {% endif %}
