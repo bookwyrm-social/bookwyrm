@@ -37,6 +37,7 @@ from bookwyrm.models.housekeeping import delete_user_export_file_task
 from bookwyrm.models.housekeeping import (
     mark_duplicate_data_task,
     merge_duplicate_data_task,
+    merge_item_task,
 )
 
 
@@ -97,7 +98,11 @@ class TestDeduplication(TestCase):
             prevent_automatic_merge=True,
         )
 
-        merge_duplicate_data_task()
+        with patch("bookwyrm.models.housekeeping.merge_item_task.delay") as mock:
+            merge_duplicate_data_task()
+        self.assertEqual(mock.call_count, 1)
+        merge_item_task(*mock.call_args[0])
+
         self.assertEqual(Edition.objects.count(), 3)
         self.assertTrue(Edition.objects.filter(id=canonical.id).exists())
         self.assertFalse(Edition.objects.filter(id=mergeable.id).exists())

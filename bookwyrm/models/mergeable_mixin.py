@@ -12,7 +12,7 @@ from django.db.models.query import QuerySet
 from django.dispatch import receiver
 from django.utils import timezone
 
-from bookwyrm.tasks import app, MISC
+from bookwyrm.tasks import app, DEDUPE
 from bookwyrm.utils.db import add_update_fields
 from . import fields
 
@@ -282,7 +282,7 @@ def check_for_dupes(
     check_instance_for_dupes.delay(sender.__name__, instance.id)
 
 
-@app.task(queue=MISC)
+@app.task(queue=DEDUPE)
 def check_instance_for_dupes(sender, instance_id) -> None:
     """see if a specific object has duplicates"""
     model = apps.get_model("bookwyrm", sender)
