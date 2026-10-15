@@ -488,7 +488,7 @@ class Work(OrderedCollectionPageMixin, Book):
 
         # set rank
         for edition in self.editions.all():
-            edition.save()
+            edition.save(update_fields=["edition_rank"], broadcast=False)
 
     @property
     def default_edition(self) -> "Edition":
