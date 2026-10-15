@@ -472,7 +472,7 @@ class ClearableFileInputWithWarning(ClearableFileInput):
 
     template_name = "widgets/clearable_file_input_with_warning.html"
 
-    def get_context(self, name, value, attrs) -> dict:
+    def get_context(self, name: str, value: Self, attrs) -> dict:
         context = super().get_context(name, value, attrs)
         context["widget"]["attrs"].update(
             {
@@ -534,7 +534,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         key = self.get_activitypub_field()
         activity[key] = formatted
 
-    def field_to_activity(self, value: Self, alt=None) -> "activitypub.Image":
+    def field_to_activity(self, value: Self, alt: str = None) -> "activitypub.Image":
         url = get_absolute_url(value)
 
         if not url:
