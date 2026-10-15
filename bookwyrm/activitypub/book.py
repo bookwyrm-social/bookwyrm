@@ -83,7 +83,6 @@ class Author(BookData):
 
     name: str
     isni: Optional[str] = None
-    viafId: Optional[str] = None
     gutenbergId: Optional[str] = None
     born: Optional[str] = None
     died: Optional[str] = None
