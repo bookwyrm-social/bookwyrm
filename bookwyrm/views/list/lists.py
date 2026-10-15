@@ -28,17 +28,16 @@ class Lists(View):
         """display a book list"""
         if request.user.is_authenticated:
             lists = ListsStream().get_list_stream(request.user)
+            if show_only := request.GET.get("show_only"):
+                match show_only:
+                    case "owned":
+                        lists = lists.filter(user=request.user)
+                    case "saved":
+                        lists = request.user.saved_lists
+                    case "followed":
+                        lists = lists.filter(user__in=request.user.following.all())
         else:
             lists = models.List.objects.filter(privacy="public")
-
-        if show_only := request.GET.get("show_only"):
-            match show_only:
-                case "owned":
-                    lists = lists.filter(user=request.user)
-                case "saved":
-                    lists = request.user.saved_lists
-                case "followed":
-                    lists = lists.filter(user__in=request.user.following.all())
 
         if name_query := request.GET.get("name"):
             lists = lists.filter(name__icontains=name_query)

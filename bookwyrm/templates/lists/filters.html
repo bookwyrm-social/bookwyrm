@@ -3,6 +3,8 @@
 {% block filter_fields %}
 {% include 'lists/search_list_name_filter.html' %}
 {% include 'lists/search_edition_filter.html' %}
+{% if request.user.is_authenticated %}
 {% include 'lists/show_only.html' %}
+{% endif %}
 {% include 'lists/sort.html' %}
 {% endblock %}
