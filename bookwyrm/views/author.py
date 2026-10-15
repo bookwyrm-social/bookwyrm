@@ -2,6 +2,8 @@
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
+from django.db.models import Min
+from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -46,7 +48,13 @@ class Author(MergeableViewMixin, View):
         books = (
             models.Work.objects.filter(editions__authors=author)
             .exclude(id__in=blocked_books)
-            .order_by("created_date")
+            .annotate(
+                sort_date=Coalesce(
+                    "first_published_date", "published_date",
+                    Min("editions__first_published_date"),
+                    Min("editions__published_date"),
+               )
+            ).order_by("-sort_date")
             .distinct()
         )
 
