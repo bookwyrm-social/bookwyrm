@@ -63,7 +63,7 @@ export const steps = [
     },
 
     {
-        text: gettext('Some ebooks can be downloaded for free from external sources. They will be shown here.'),
+        text: gettext('Some eBooks can be downloaded for free from external sources. They will be shown here.'),
         title: gettext('Download links'),
         attachTo: {
             element: "#book-file-links",
