@@ -1,4 +1,5 @@
 """testing models"""
+
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -396,7 +397,7 @@ class MergeableMixin(TestCase):
         self.assertEqual(models.SuggestionListItem.objects.filter(work=work).count(), 2)
 
     def test_check_for_dupes_signal(self):
-        """ this should start an appropriate number of tasks"""
+        """this should start an appropriate number of tasks"""
         work = models.Work.objects.create(title="Example Work")
         edition = models.Edition.objects.create(
             title="Example Edition",
@@ -410,16 +411,22 @@ class MergeableMixin(TestCase):
             title="Example Edition",
             parent_work=work,
         )
-        with patch("bookwyrm.models.mergeable_mixin.check_instance_for_dupes.delay") as mock:
+        with patch(
+            "bookwyrm.models.mergeable_mixin.check_instance_for_dupes.delay"
+        ) as mock:
             work.save(broadcast=False)
         self.assertEqual(mock.call_count, 1)
 
-        with patch("bookwyrm.models.mergeable_mixin.check_instance_for_dupes.delay") as mock:
+        with patch(
+            "bookwyrm.models.mergeable_mixin.check_instance_for_dupes.delay"
+        ) as mock:
             # change that effect edition rank
-            edition.isbn_13="9787532786831"
+            edition.isbn_13 = "9787532786831"
             edition.save(broadcast=False)
         self.assertEqual(mock.call_count, 1)
 
-        with patch("bookwyrm.models.mergeable_mixin.check_instance_for_dupes.delay") as mock:
+        with patch(
+            "bookwyrm.models.mergeable_mixin.check_instance_for_dupes.delay"
+        ) as mock:
             edition.save(broadcast=False, update_fields=["pending_merge_target"])
         self.assertEqual(mock.call_count, 0)
