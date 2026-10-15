@@ -23,7 +23,7 @@ from bookwyrm import models
 from bookwyrm.models.job import ParentJob, ParentTask
 from bookwyrm.connectors.abstract_connector import get_data
 from bookwyrm.connectors.connector_manager import search
-from bookwyrm.tasks import app, MISC
+from bookwyrm.tasks import app, DEDUPE, MISC
 from bookwyrm.utils.images import set_cover_from_url
 
 
@@ -260,14 +260,14 @@ def run_missing_covers_job(**kwargs):
     job.start_job()
 
 
-@app.task(queue=MISC)
+@app.task(queue=DEDUPE)
 def mark_duplicate_data_task() -> None:
     """Find likely duplicates and store their canonical candidate"""
     for model in get_mergeable_models():
         model.mark_merge_candidates()
 
 
-@app.task(queue=MISC)
+@app.task(queue=DEDUPE)
 def merge_duplicate_data_task() -> None:
     """Combine duplicates across all models"""
     for model in get_mergeable_models():
@@ -281,7 +281,7 @@ def merge_duplicate_data_task() -> None:
             merge_item_task.delay(model.__name__, obj.id)
 
 
-@app.task(queue=MISC)
+@app.task(queue=DEDUPE)
 def merge_item_task(model_name, obj_id) -> None:
     """the task for a specific item"""
     model = apps.get_model("bookwyrm", model_name)
