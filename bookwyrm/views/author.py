@@ -1,4 +1,5 @@
 """the good people stuff! the authors!"""
+
 from functools import reduce
 import operator
 
@@ -52,11 +53,13 @@ class Author(MergeableViewMixin, View):
             .exclude(id__in=blocked_books)
             .annotate(
                 sort_date=Coalesce(
-                    "first_published_date", "published_date",
+                    "first_published_date",
+                    "published_date",
                     Min("editions__first_published_date"),
                     Min("editions__published_date"),
-               )
-            ).order_by("-sort_date")
+                )
+            )
+            .order_by("-sort_date")
             .distinct()
         )
 
@@ -77,8 +80,8 @@ class Author(MergeableViewMixin, View):
         filter_series = request.GET.get("series")
         if filter_series:
             works = works.filter(
-                Q(seriesbooks__series=filter_series) |
-                Q(editions__seriesbooks__series=filter_series)
+                Q(seriesbooks__series=filter_series)
+                | Q(editions__seriesbooks__series=filter_series)
             )
 
         series = (
