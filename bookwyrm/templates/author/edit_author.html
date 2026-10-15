@@ -120,6 +120,11 @@
                 {{ form.isfdb }}
 
                 {% include 'snippets/form_errors.html' with errors_list=form.isfdb.errors id="id_isfdb_error" %}
+                <p class="help">
+                    <a href="https://www.isfdb.org/" target="_blank" rel="nofollow noopener noreferrer">
+                    {% trans "The Internet Speculative Fiction Database" %}
+                    </a>
+                </p>
             </div>
 
             <div class="field">
@@ -127,6 +132,11 @@
                 {{ form.bnf_id }}
 
                 {% include 'snippets/form_errors.html' with errors_list=form.bnf_id.errors id="id_bnf_id_error" %}
+                <p class="help">
+                    <a href=https://www.bnf.fr/"" target="_blank" rel="nofollow noopener noreferrer">
+                    {% trans "Bibliothèque nationale de France" %}
+                    </a>
+                </p>
             </div>
 
             <div class="field">
@@ -134,6 +144,11 @@
                 {{ form.viaf }}
 
                 {% include 'snippets/form_errors.html' with errors_list=form.viaf.errors id="id_viaf_error" %}
+                <p class="help">
+                    <a href="https://viaf.org/" target="_blank" rel="nofollow noopener noreferrer">
+                    {% trans "The Virtual International Authority File" %}
+                    </a>
+                </p>
             </div>
 
         </div>
