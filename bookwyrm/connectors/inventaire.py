@@ -80,7 +80,15 @@ class Connector(AbstractConnector):
             **data.get("claims", {}),
             **{
                 k: data.get(k)
-                for k in ["uri", "image", "labels", "sitelinks", "type", "originalLang"]
+                for k in [
+                    "uri",
+                    "image",
+                    "labels",
+                    "aliases",
+                    "sitelinks",
+                    "type",
+                    "originalLang",
+                ]
                 if k in data
             },
         }
@@ -256,17 +264,14 @@ class Connector(AbstractConnector):
             alternative_names = set()
             series = {}
             original_lang = series_data.get("originalLang")
-            if original_lang:
-                original_lang = original_lang.split("-")[0]
-            else:
-                original_lang = "en"
+            code = original_lang.split("-")[0] if original_lang else "en"
+            series["name"] = get_language_code(series_data["labels"], code)
 
             for k, v in series_data["labels"].items():
-                if k == original_lang:
-                    series["name"] = v
-                else:
+                if k != code:
                     alternative_names.add(v)
-
+            for k, v in series_data.get("aliases", {}).items():
+                alternative_names.update(v)
             series["alternative_names"] = list(alternative_names)
             series["inventaire_id"] = uri
             series["wikidata"] = uri.split("wd:")[1]
