@@ -63,6 +63,7 @@ class EditionForm(CustomForm):
             "asin",
             "aasin",
             "isfdb",
+            "last_edited_by",
         ]
         widgets = {
             "subjects": ArrayWidget(),
@@ -95,6 +96,7 @@ class WorkForm(CustomForm):
             "asin",
             "aasin",
             "isfdb",
+            "last_edited_by",
         ]
         widgets = {
             "subjects": ArrayWidget(),
@@ -136,4 +138,5 @@ class SeriesForm(CustomForm):
             "inventaire_id",
             "wikidata",
             "isfdb",
+            "last_edited_by",
         ]
