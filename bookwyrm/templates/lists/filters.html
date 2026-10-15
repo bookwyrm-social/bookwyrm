@@ -1,0 +1,8 @@
+{% extends 'snippets/filters_panel/filters_panel.html' %}
+
+{% block filter_fields %}
+{% include 'lists/search_list_name_filter.html' %}
+{% include 'lists/search_edition_filter.html' %}
+{% include 'lists/show_only.html' %}
+{% include 'lists/sort.html' %}
+{% endblock %}

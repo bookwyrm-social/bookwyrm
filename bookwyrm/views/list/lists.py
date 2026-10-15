@@ -1,9 +1,13 @@
 """book list views"""
 
+from functools import reduce
+import operator
+
 import logging
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Count, Q
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -26,6 +30,43 @@ class Lists(View):
             lists = ListsStream().get_list_stream(request.user)
         else:
             lists = models.List.objects.filter(privacy="public")
+
+        if show_only := request.GET.get("show_only"):
+            match show_only:
+                case "owned":
+                    lists = lists.filter(user=request.user)
+                case "saved":
+                    lists = request.user.saved_lists
+                case "followed":
+                    lists = lists.filter(user__in=request.user.following.all())
+
+        if name_query := request.GET.get("name"):
+            lists = lists.filter(name__icontains=name_query)
+        if book_query := request.GET.get("edition"):
+            searchable_fields = [
+                "editions__title",
+                "editions__isbn_10",
+                "editions__isbn_13",
+                "editions__oclc_number",
+                "editions__asin",
+                "editions__aasin",
+                "editions__isfdb",
+            ]
+            search_filter_entries = [
+                {f"{f}__icontains": book_query} for f in searchable_fields
+            ]
+            lists = lists.filter(
+                reduce(operator.or_, (Q(**f) for f in search_filter_entries))
+            )
+        sort = request.GET.get("sort", "created")
+        match sort:
+            case "created":
+                lists = lists.order_by("-created_date")
+            case "saves":
+                lists = lists.annotate(save_count=Count("saved_lists")).order_by(
+                    "-save_count"
+                )
+
         paginated = Paginator(lists, 12)
         data = {
             "lists": paginated.get_page(request.GET.get("page")),
