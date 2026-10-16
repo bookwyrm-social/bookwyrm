@@ -1,5 +1,7 @@
 """book list views"""
 
+from functools import reduce
+import operator
 from typing import Optional
 
 from django.contrib.auth.decorators import login_required
@@ -53,6 +55,23 @@ class List(View):
 
         items = blocked_book_filter(items, "Edition", request.user)
         items = sort_list(request, items)
+        if query := request.GET.get("q"):
+            searchable_fields = [
+                "edition__title",
+                "edition__physical_format",
+                "edition__isbn_10",
+                "edition__isbn_13",
+                "edition__oclc_number",
+                "edition__asin",
+                "edition__aasin",
+                "edition__isfdb",
+            ]
+            search_filter_entries = [
+                {f"{f}__icontains": query} for f in searchable_fields
+            ]
+            items = items.filter(
+                reduce(operator.or_, (Q(**f) for f in search_filter_entries))
+            )
 
         paginated = Paginator(items, PAGE_LENGTH)
 

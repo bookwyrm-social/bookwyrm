@@ -45,8 +45,7 @@ class Editions(MergeableViewMixin, View):
 
         editions = editions.filter(**filters)
 
-        query = request.GET.get("q")
-        if query:
+        if query := request.GET.get("q"):
             searchable_array_fields = ["languages", "publishers"]
             searchable_fields = [
                 "title",
