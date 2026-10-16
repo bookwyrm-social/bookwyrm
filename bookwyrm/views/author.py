@@ -1,7 +1,12 @@
 """the good people stuff! the authors!"""
 
+from functools import reduce
+import operator
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
+from django.db.models import Min, Q
+from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -43,12 +48,41 @@ class Author(MergeableViewMixin, View):
             if request.user.is_authenticated
             else []
         )
-        books = (
+        works = (
             models.Work.objects.filter(editions__authors=author)
             .exclude(id__in=blocked_books)
-            .order_by("created_date")
+            .annotate(
+                sort_date=Coalesce(
+                    "first_published_date",
+                    "published_date",
+                    Min("editions__first_published_date"),
+                    Min("editions__published_date"),
+                )
+            )
+            .order_by("-sort_date")
             .distinct()
         )
+
+        query = request.GET.get("q")
+        if query:
+            searchable_fields = [
+                "title",
+                "isfdb",
+                "lccn",
+            ]
+            search_filter_entries = [
+                {f"{f}__icontains": query} for f in searchable_fields
+            ]
+            works = works.filter(
+                reduce(operator.or_, (Q(**f) for f in search_filter_entries))
+            )
+
+        filter_series = request.GET.get("series")
+        if filter_series:
+            works = works.filter(
+                Q(seriesbooks__series=filter_series)
+                | Q(editions__seriesbooks__series=filter_series)
+            )
 
         series = (
             models.Series.objects.filter(seriesbooks__book__authors=author)
@@ -56,7 +90,7 @@ class Author(MergeableViewMixin, View):
             .distinct()
         )
 
-        paginated = Paginator(books, PAGE_LENGTH)
+        paginated = Paginator(works, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
 
         merge_scheduled = PeriodicTask.objects.filter(name="dedupe-merge-task").exists()
@@ -65,7 +99,7 @@ class Author(MergeableViewMixin, View):
             "author_dupe": author.pending_merge_target,
             "merge_scheduled": merge_scheduled,
             "series": series,
-            "books": page,
+            "works": page,
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),

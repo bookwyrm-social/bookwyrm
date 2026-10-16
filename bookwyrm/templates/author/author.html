@@ -182,21 +182,22 @@
         {% endif %}
 
         <h2 class="title is-4">{% blocktrans with name=author.name %}Books by {{ name }}{% endblocktrans %}</h2>
+        {% include "author/filters.html" %}
         <div class="columns is-multiline is-mobile">
-        {% for book in books %}
-        {% with book=book|author_edition:author %}
+        {% for work in works %}
+        {% with edition=work|author_edition:author %}
             <div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column">
                 <div class="is-flex-grow-1 mb-3">
-                    {% include 'snippets/small-book.html' with book=book %}
+                    {% include 'snippets/small-book.html' with book=edition %}
                 </div>
-                {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
+                {% include 'snippets/shelve_button/shelve_button.html' with book=edition %}
             </div>
         {% endwith %}
         {% endfor %}
         </div>
 
         <div>
-            {% include 'snippets/pagination.html' with page=books %}
+            {% include 'snippets/pagination.html' with page=works %}
         </div>
     </div>
 </div>

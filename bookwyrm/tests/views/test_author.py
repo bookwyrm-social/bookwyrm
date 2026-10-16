@@ -84,7 +84,7 @@ class AuthorViews(TestCase):
         with patch("bookwyrm.views.author.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, author.id)
-        books = result.context_data["books"]
+        books = result.context_data["works"]
         self.assertEqual(books.object_list.count(), 1)
 
         self.assertIsInstance(result, TemplateResponse)
@@ -118,7 +118,7 @@ class AuthorViews(TestCase):
         with patch("bookwyrm.views.author.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, author.id)
-        books = result.context_data["books"]
+        books = result.context_data["works"]
         self.assertEqual(books.object_list.count(), 1)
 
         self.assertIsInstance(result, TemplateResponse)
