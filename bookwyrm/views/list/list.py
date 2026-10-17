@@ -81,6 +81,8 @@ class List(View):
             "add_succeeded": add_succeeded,
             "add_book_url": reverse("list-add-book"),
             "remove_book_url": reverse("list-remove-book", args=[list_id]),
+            "has_tour": True,
+            "tour_path": "list.js",
         }
 
         if request.user.is_authenticated:
