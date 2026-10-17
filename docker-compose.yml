@@ -34,14 +34,14 @@ services:
       - static_volume:/app/static
       - media_volume:/app/images
   anubis:
-    image: ghcr.io/techarohq/anubis:latest
+    image: ghcr.io/techarohq/anubis:v1.28.1
     restart: unless-stopped
     environment:
       BIND: ":8000"
       DIFFICULTY: "4"
       METRICS_BIND: ":9090"
       SERVE_ROBOTS_TXT: "true"
-      TARGET: " "
+      TARGET: "http://web:8000"
       POLICY_FNAME: "/data/cfg/botPolicy.yaml"
       OG_PASSTHROUGH: "true"
       OG_EXPIRY_TIME: "24h"
