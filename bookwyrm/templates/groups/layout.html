@@ -6,7 +6,7 @@
 
 {% block content %}
 <header class="columns content is-mobile">
-    <div class="column">
+    <div class="column" id="group-details">
         <h1 class="title">{{ group.name }} <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=group %}</span></h1>
         <p class="subtitle help">
             {% include 'groups/created_text.html' with group=group %}
