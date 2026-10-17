@@ -31,6 +31,8 @@ class Lists(View):
             "lists": paginated.get_page(request.GET.get("page")),
             "list_form": forms.ListForm(),
             "path": "/list",
+            "has_tour": True,
+            "tour_path": "lists.js",
         }
         return TemplateResponse(request, "lists/lists.html", data)
 
