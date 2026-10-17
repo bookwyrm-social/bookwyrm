@@ -14,9 +14,9 @@
 <form class="block" action="{% url 'search' %}" method="GET">
     <div class="field has-addons">
         <div class="control">
-            <input type="text" class="input" name="q" value="{{ query }}" aria-label="{% trans 'Search query' %}" id="tour-search-page-input" spellcheck="false">
+            <input type="text" class="input" name="q" value="{{ query }}" aria-label="{% trans 'Search query' %}" id="new-search-input" spellcheck="false">
         </div>
-        <div class="control">
+        <div class="control" id="search-type-selector">
             <div class="select">
                 <select name="type" aria-label="{% trans 'Search type' %}">
                     <option value="book" {% if type == "book" %}selected{% endif %}>{% trans "Books" %}</option>
@@ -28,7 +28,7 @@
                 </select>
             </div>
         </div>
-        <div class="control">
+        <div class="control" id="search-button">
             <button type="submit" class="button is-primary">
                 <span>{% trans "Search" %}</span>
                 <span class="icon icon-search" aria-hidden="true"></span>
@@ -38,7 +38,7 @@
 </form>
 
 {% if query %}
-<nav class="tabs">
+<nav class="tabs" id="search-type-tabs">
     <ul>
         <li{% if type == "book" %} class="is-active"{% endif %}>
             <a href="{% url 'search' %}?q={{ query|urlencode }}&type=book">{% trans "Books" %}</a>
@@ -81,5 +81,4 @@
 
 {% endblock %}
 
-{% block scripts %}
-{% endblock %}
+{% block scripts %}{% endblock %}
