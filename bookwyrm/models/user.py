@@ -38,6 +38,7 @@ SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 FeedFilterChoices = [
     ("review", _("Reviews")),
+    ("rating", _("Ratings")),
     ("comment", _("Comments")),
     ("quotation", _("Quotations")),
     ("everything", _("Everything else")),
