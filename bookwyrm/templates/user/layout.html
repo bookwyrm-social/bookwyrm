@@ -6,7 +6,6 @@
 {% load layout %}
 {% load group_tags %}
 {% load user_page_tags %}
-{% load static %}
 
 {% block title %}{{ user.display_name }}{% endblock %}
 
@@ -122,15 +121,4 @@
     {% if not user.moved_to %}
     {% block panel %}{% endblock %}
     {% endif %}
-{% endblock %}
-{% block tour %}
-<script type="module" nonce="{{request.csp_nonce}}">
-    import { tour, getStepComplete } from "{% static 'js/help_tours/tour_defaults.js' %}";
-    import { steps } from "{% static 'js/help_tours/user.js' %}";
-    tour.addSteps(steps)
-    tour.addStep(getStepComplete())
-    document.getElementById('help-button').addEventListener('click', function (event) {
-        tour.start()
-});
-</script>
 {% endblock %}
