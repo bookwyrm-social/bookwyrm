@@ -37,6 +37,7 @@ class EditionForm(CustomForm):
     class Meta:
         model = models.Edition
         fields = [
+            "last_edited_by",
             "title",
             "sort_title",
             "subtitle",
@@ -78,6 +79,7 @@ class WorkForm(CustomForm):
     class Meta:
         model = models.Work
         fields = [
+            "last_edited_by",
             "title",
             "sort_title",
             "subtitle",
@@ -139,4 +141,5 @@ class SeriesForm(CustomForm):
             "inventaire_id",
             "wikidata",
             "isfdb",
+            "last_edited_by",
         ]
