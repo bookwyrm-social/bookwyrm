@@ -276,7 +276,9 @@ def check_for_dupes(
     """deploy task to check if newly created or edited object has dupes"""
     if not hasattr(sender, "mark_merge_candidates"):
         return
-    if update_fields and "pending_merge_target" in update_fields:
+    if update_fields and (
+        "pending_merge_target" in update_fields or "edition_rank" in update_fields
+    ):
         # don't check for dupes if we're setting it as a dupe
         return
     check_instance_for_dupes.delay(sender.__name__, instance.id)
