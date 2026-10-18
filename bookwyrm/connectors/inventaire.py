@@ -49,6 +49,7 @@ class Connector(AbstractConnector):
             ),
             Mapping("subjects", remote_field="wdt:P921", formatter=self.resolve_keys),
             Mapping("asin", remote_field="wdt:P5749", formatter=get_first),
+            Mapping("viaf", remote_field="wdt:P214", formatter=get_first),
         ] + shared_mappings
         # TODO: P136: genre, P674 characters, P950 bne
 
@@ -58,7 +59,7 @@ class Connector(AbstractConnector):
             Mapping("bio", remote_field="sitelinks", formatter=self.get_description),
             Mapping("goodreadsKey", remote_field="wdt:P2963", formatter=get_first),
             Mapping("isni", remote_field="wdt:P213", formatter=get_first),
-            Mapping("viafId", remote_field="wdt:P214", formatter=get_first),
+            Mapping("viaf", remote_field="wdt:P214", formatter=get_first),
             Mapping("gutenberg_id", remote_field="wdt:P1938", formatter=get_first),
             Mapping("born", remote_field="wdt:P569", formatter=get_first),
             Mapping("died", remote_field="wdt:P570", formatter=get_first),
