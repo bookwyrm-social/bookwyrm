@@ -159,7 +159,7 @@ class Inventaire(TestCase):
         result = self.connector.resolve_keys(keys)
         self.assertEqual(result, ["epistolary novel", "crime novel"])
 
-    def test_pase_isbn_search_data(self):
+    def test_parse_isbn_search_data(self):
         """another search type"""
         search_file = pathlib.Path(__file__).parent.joinpath(
             "../data/inventaire_isbn_search.json"
@@ -317,3 +317,21 @@ class Inventaire(TestCase):
         self.assertEqual(data["goodreads_key"], "grk123")
         self.assertEqual(data["isfdb"], "isfdb123")
         self.assertEqual(data["librarything_key"], "ltk123")
+
+    @responses.activate
+    def test_create_edition_from_data(self):
+        """create a simple edition from an inventaire response"""
+        work = models.Work.objects.create(title="example work")
+        edition_file = pathlib.Path(__file__).parent.joinpath(
+            "../data/inventaire_edition.json"
+        )
+        edition_data = json.loads(edition_file.read_bytes())
+        with patch("bookwyrm.connectors.inventaire.get_data") as get_data_mock:
+            get_data_mock.return_value = edition_data
+            formatted = self.connector.get_book_data("hi")
+
+        edition = self.connector.create_edition_from_data(work, formatted, None)
+        self.assertIsInstance(edition, models.Edition)
+        self.assertEqual(edition.isbn_13, "9780375757853")
+        self.assertEqual(edition.title, "The Moonstone")
+        self.assertEqual(edition.viaf, "999")
