@@ -33,7 +33,7 @@ class Isni(TestCase):
             id="https://isni.org/isni/1234",
             name="Sam Smith",
             isni="1234",
-            viafId="999",
+            viaf="999",
             aliases=["Sammy", "Smitters"],
             bio="Fake BookWyrm Author",
             wikipediaLink="https://fake.wikipedia.org/wiki/Sam_Smith",

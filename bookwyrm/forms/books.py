@@ -37,6 +37,7 @@ class EditionForm(CustomForm):
     class Meta:
         model = models.Edition
         fields = [
+            "last_edited_by",
             "title",
             "sort_title",
             "subtitle",
@@ -63,7 +64,7 @@ class EditionForm(CustomForm):
             "asin",
             "aasin",
             "isfdb",
-            "last_edited_by",
+            "librarything_key",
         ]
         widgets = {
             "subjects": ArrayWidget(),
@@ -78,6 +79,7 @@ class WorkForm(CustomForm):
     class Meta:
         model = models.Work
         fields = [
+            "last_edited_by",
             "title",
             "sort_title",
             "subtitle",
@@ -96,7 +98,8 @@ class WorkForm(CustomForm):
             "asin",
             "aasin",
             "isfdb",
-            "last_edited_by",
+            "bnf_id",
+            "librarything_key",
         ]
         widgets = {
             "subjects": ArrayWidget(),
