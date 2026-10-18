@@ -62,6 +62,11 @@ def init_permissions():
             "name": "edit book info",
             "groups": ["admin", "owner", "moderator", "editor"],
         },
+        {
+            "codename": "manage_data",
+            "name": "manage data",
+            "groups": [],
+        },
     ]
 
     content_type = ContentType.objects.get_for_model(models.User)
@@ -114,7 +119,7 @@ def init_connectors():
             "base_url": "https://openlibrary.org",
             "books_url": "https://openlibrary.org",
             "covers_url": "https://covers.openlibrary.org",
-            "search_url": "https://openlibrary.org/search?q=",
+            "search_url": "https://openlibrary.org/search.json?q=",
             "isbn_search_url": "https://openlibrary.org/api/books?jscmd=data&format=json&bibkeys=ISBN:",
             "priority": 3,
         },

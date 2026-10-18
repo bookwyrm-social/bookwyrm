@@ -5,6 +5,7 @@ from typing import Any
 
 from django.db import models
 from django.contrib.postgres.indexes import GinIndex
+from django.utils.translation import gettext_lazy as _
 import pgtrigger
 
 from bookwyrm import activitypub
@@ -19,6 +20,9 @@ class Author(BookDataModel):
     """basic biographic info"""
 
     merged_model = MergedAuthor
+    pending_merge_target = models.ForeignKey(
+        "Author", related_name="merge_target", on_delete=models.PROTECT, null=True
+    )
 
     wikipedia_link = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
@@ -53,22 +57,22 @@ class Author(BookDataModel):
         super().save(*args, **kwargs)
 
     @property
-    def isni_link(self):
+    def isni_link(self) -> str:
         """generate the url from the isni id"""
         clean_isni = re.sub(r"\s", "", self.isni)
         return f"https://isni.org/isni/{clean_isni}"
 
     @property
-    def openlibrary_link(self):
+    def openlibrary_link(self) -> str:
         """generate the url from the openlibrary id"""
         return f"https://openlibrary.org/authors/{self.openlibrary_key}"
 
     @property
-    def isfdb_link(self):
+    def isfdb_link(self) -> str:
         """generate the url from the isni id"""
         return f"https://www.isfdb.org/cgi-bin/ea.cgi?{self.isfdb}"
 
-    def get_remote_id(self):
+    def get_remote_id(self) -> str:
         """editions and works both use "book" instead of model_name"""
         return f"{BASE_URL}/author/{self.id}"
 
@@ -111,5 +115,8 @@ class Author(BookDataModel):
                 ),
             ),
         ]
+
+        verbose_name = _("Author")
+        verbose_name_plural = _("Authors")
 
     activity_serializer = activitypub.Author

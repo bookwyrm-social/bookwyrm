@@ -6,4 +6,4 @@ from django.template.response import TemplateResponse
 def server_error(request):
     """server error page"""
 
-    return TemplateResponse(request, "500.html")
+    return TemplateResponse(request, "500.html", status=500)

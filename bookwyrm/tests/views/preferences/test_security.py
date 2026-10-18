@@ -8,6 +8,7 @@ import pyotp
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
+from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -17,30 +18,23 @@ from bookwyrm import forms, models, views
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 
-@patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
-@patch("bookwyrm.activitystreams.populate_stream_task.delay")
 class TwoFactorViews(TestCase):
     """Two Factor Authentication management"""
 
     @classmethod
     def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with (
-            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
-            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
-            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
-        ):
-            cls.local_user = models.User.objects.create_user(
-                "mouse@your.domain.here",
-                "mouse@mouse.com",
-                "password",
-                local=True,
-                localname="mouse",
-                two_factor_auth=True,
-                otp_secret="UEWMVJHO23G5XLMVSOCL6TNTSSACJH2X",
-                hotp_secret="DRMNMOU7ZRKH5YPW7PADOEYUF7MRIH46",
-                hotp_count=0,
-            )
+        cls.local_user = models.User.objects.create_user(
+            "mouse@your.domain.here",
+            "mouse@mouse.com",
+            "password",
+            local=True,
+            localname="mouse",
+            two_factor_auth=True,
+            otp_secret="UEWMVJHO23G5XLMVSOCL6TNTSSACJH2X",
+            hotp_secret="DRMNMOU7ZRKH5YPW7PADOEYUF7MRIH46",
+            hotp_count=0,
+        )
 
     def setUp(self):
         """individual test setup"""
@@ -236,3 +230,48 @@ class TwoFactorViews(TestCase):
 
         self.assertFalse(cache_session.exists(session_key=session_key))
         self.assertEqual(models.UserSession.objects.count(), 0)
+
+    def test_logout_session_invalid(self, *_):
+        """does logout_session work?"""
+        another_user = models.User.objects.create_user(
+            "rat@your.domain.here",
+            "rat@rat.com",
+            "password",
+            local=True,
+            localname="rat",
+            two_factor_auth=True,
+            otp_secret="UEWMVJHO23G5XLMVSOCL6TNTSSACJH2X",
+            hotp_secret="DRMNMOU7ZRKH5YPW7PADOEYUF7MRIH46",
+            hotp_count=0,
+        )
+        cache_session = SessionStore()
+        cache_session["_auth_user_id"] = another_user.id
+        cache_session.create()
+        session_key = cache_session.session_key
+        models.UserSession.objects.create(
+            user=another_user,
+            session_key=session_key,
+            operating_system="CSIRAC",
+            browser_type="Lynx",
+        )
+
+        cache_session = SessionStore()
+        cache_session["_auth_user_id"] = self.local_user.id
+        cache_session.create()
+        session_key = cache_session.session_key
+        models.UserSession.objects.create(
+            user=self.local_user,
+            session_key=session_key,
+            operating_system="CSIRAC",
+            browser_type="Lynx",
+        )
+
+        view = views.logout_session
+        request = self.factory.post("")
+        request.user = another_user
+
+        with self.assertRaises(Http404):
+            view(request, session_key)
+
+        self.assertEqual(models.UserSession.objects.count(), 2)
+        self.assertTrue(cache_session.exists(session_key=session_key))

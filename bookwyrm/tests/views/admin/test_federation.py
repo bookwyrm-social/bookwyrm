@@ -4,6 +4,7 @@ import json
 from unittest.mock import patch
 
 from django.contrib.auth.models import Group
+from django.core.exceptions import PermissionDenied
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -20,28 +21,22 @@ class FederationViews(TestCase):
     @classmethod
     def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with (
-            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
-            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
-            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
-        ):
-            cls.local_user = models.User.objects.create_user(
-                "mouse@local.com",
-                "mouse@mouse.mouse",
-                "password",
-                local=True,
-                localname="mouse",
-            )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            cls.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@rat.com",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/users/rat",
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
-            )
+        cls.local_user = models.User.objects.create_user(
+            "mouse@local.com",
+            "mouse@mouse.mouse",
+            "password",
+            local=True,
+            localname="mouse",
+        )
+        cls.remote_user = models.User.objects.create_user(
+            "rat",
+            "rat@rat.com",
+            "ratword",
+            local=False,
+            remote_id="https://example.com/users/rat",
+            inbox="https://example.com/users/rat/inbox",
+            outbox="https://example.com/users/rat/outbox",
+        )
         initdb.init_groups()
         initdb.init_permissions()
         group = Group.objects.get(name="moderator")
@@ -176,6 +171,20 @@ class FederationViews(TestCase):
         self.assertEqual(server.server_name, "remote.server")
         self.assertEqual(server.application_type, "coolsoft")
         self.assertEqual(server.status, "blocked")
+
+    def test_add_view_post_create_permission_denied(self):
+        """create a server entry by unathorized user"""
+        form = forms.ServerForm()
+        form.data["server_name"] = "remote.server"
+        form.data["application_type"] = "coolsoft"
+        form.data["status"] = "blocked"
+
+        view = views.AddFederatedServer.as_view()
+        request = self.factory.post("", form.data)
+        request.user = self.remote_user
+
+        with self.assertRaises(PermissionDenied):
+            view(request)
 
     def test_import_blocklist(self):
         """load a json file with a list of servers to block"""

@@ -34,6 +34,6 @@ cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 activity_objects = {c[0]: c[1] for c in cls_members if hasattr(c[1], "to_model")}
 
 
-def parse(activity_json):
+def parse(activity_json: dict):
     """figure out what activity this is and parse it"""
     return naive_parse(activity_objects, activity_json)

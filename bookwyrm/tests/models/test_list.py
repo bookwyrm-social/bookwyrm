@@ -58,7 +58,7 @@ class List(TestCase):
         self.assertEqual(activity_json["totalItems"], 0)
         self.assertEqual(activity_json["type"], "SuggestionList")
         self.assertEqual(activity_json["owner"], self.instance_user.remote_id)
-        self.assertEqual(activity_json["book"]["id"], self.work.remote_id)
+        self.assertEqual(activity_json["book"], self.work.remote_id)
 
     def test_list_item(self, *_):
         """a list entry"""

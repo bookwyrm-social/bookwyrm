@@ -84,14 +84,12 @@ function weed_directory {
     for date_file in $(
         find "$directory" \
             -maxdepth 1 \
-            -name 'backup_[a-z]*_[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\.sql' \
-        | sed 's/\(^.*backup_[a-z]*_\([0-9-]*\)\.sql$\)/\2\1/' \
-        | sort --reverse
+            -name 'backup_[a-z]*_[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\.sql' |
+            sort --reverse --dictionary-order
     ); do
-        date="${date_file:0:10}"
-        file="${date_file:10}"
-        date="${date_file:0:10}"
-        file="${date_file:10}"
+        file="${date_file}"
+        [[ $file =~ backup_[a-z]*_([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])\.sql ]]
+        date=${BASH_REMATCH[1]}
 
         # We can't fall off the end because we set annual backups to unlimited. It seems
         # unlikely that instance maintainers would have enough concern about the space
@@ -168,7 +166,7 @@ function main(){
             echo "$file"
         else
             echo "deleting $file" >&2
-            rm "$file"
+            find "$1" -maxdepth 2 -path "${file}*" -delete
         fi
     done
 
@@ -177,7 +175,7 @@ function main(){
     else
         optional_words=""
     fi
-    echo -e "$count files ${optional_words}deleted" >&2
+    echo -e "$count backups ${optional_words}deleted" >&2
 }
 
 if [ "${BASH_SOURCE[0]}" -ef "$0" ]; then

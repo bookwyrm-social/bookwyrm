@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseBadRequest
 from django.template.response import TemplateResponse
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.debug import sensitive_post_parameters
@@ -21,6 +21,7 @@ from django.views.decorators.http import require_POST
 from bookwyrm import forms, models
 from bookwyrm.settings import DOMAIN, TWO_FACTOR_LOGIN_MAX_SECONDS
 from bookwyrm.views.helpers import set_language
+from bookwyrm.utils.ip_utils import client_ip_address
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
@@ -51,7 +52,10 @@ def logout_session(request, session_key: str = None):
 
     if session_key:
         # logout the user session
-        session = models.UserSession.objects.get(session_key=session_key)
+        session = get_object_or_404(
+            models.UserSession, session_key=session_key, user=request.user
+        )
+
         session.logout()
         # log out the cached session if it still exists
         cache_session = SessionStore()
@@ -183,11 +187,7 @@ class LoginWith2FA(View):
         user.update_active_date()
 
         # record session
-        forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
-        if forwarded_for:
-            ip_address = forwarded_for.split(",")[0]
-        else:
-            ip_address = request.META.get("REMOTE_ADDR", "")
+        ip_address = client_ip_address(request)
         agent_string = request.META.get("HTTP_USER_AGENT", "")
         models.create_user_session(
             user_id=user.id,

@@ -125,13 +125,17 @@ def delete_follow_request(request):
     username = request.POST["user"]
     requester = get_user_from_username(request.user, username)
 
-    follow_request = get_object_or_404(
-        models.UserFollowRequest, user_subject=requester, user_object=request.user
-    )
-    follow_request.raise_not_deletable(request.user)
+    try:
+        follow_request = models.UserFollowRequest.objects.get(
+            user_subject=requester, user_object=request.user
+        )
+    except models.UserFollowRequest.DoesNotExist:
+        # Request already dealt with.
+        return redirect(request.user.local_path)
 
+    follow_request.raise_not_deletable(request.user)
     follow_request.reject()
-    return redirect(f"/user/{request.user.localname}")
+    return redirect(request.user.local_path)
 
 
 @require_federation

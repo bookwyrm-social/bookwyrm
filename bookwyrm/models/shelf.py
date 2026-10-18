@@ -93,7 +93,7 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
     """many to many join table for books and shelves"""
 
     book = fields.ForeignKey(
-        "Edition", on_delete=models.PROTECT, activitypub_field="book"
+        "Edition", on_delete=models.CASCADE, activitypub_field="book"
     )
     shelf = models.ForeignKey("Shelf", on_delete=models.PROTECT)
     shelved_date = models.DateTimeField(default=timezone.now)
@@ -129,6 +129,7 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
 
     def delete(self, *args, **kwargs):
         if self.id and self.user.local:
+            cache.delete(f"active_shelf-{self.user.id}-{self.book.id}")
             cache.delete_many(
                 [
                     f"book-on-shelf-{book}-{self.shelf_id}"

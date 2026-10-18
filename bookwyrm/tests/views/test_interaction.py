@@ -1,43 +1,36 @@
 """test for app action functionality"""
 
 from unittest.mock import patch
+from django.http import Http404
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
-@patch("bookwyrm.activitystreams.remove_status_task.delay")
 class InteractionViews(TestCase):
     """viewing and creating statuses"""
 
     @classmethod
     def setUpTestData(cls):
         """we need basic test data and mocks"""
-        with (
-            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
-            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
-            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
-        ):
-            cls.local_user = models.User.objects.create_user(
-                "mouse@local.com",
-                "mouse@mouse.com",
-                "mouseword",
-                local=True,
-                localname="mouse",
-                remote_id="https://example.com/users/mouse",
-            )
-        with patch("bookwyrm.models.user.set_remote_server"):
-            cls.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@email.com",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/users/rat",
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
-            )
+        cls.local_user = models.User.objects.create_user(
+            "mouse@local.com",
+            "mouse@mouse.com",
+            "mouseword",
+            local=True,
+            localname="mouse",
+            remote_id="https://example.com/users/mouse",
+        )
+        cls.remote_user = models.User.objects.create_user(
+            "rat",
+            "rat@email.com",
+            "ratword",
+            local=False,
+            remote_id="https://example.com/users/rat",
+            inbox="https://example.com/users/rat/inbox",
+            outbox="https://example.com/users/rat/outbox",
+        )
         work = models.Work.objects.create(title="Test Work")
         cls.book = models.Edition.objects.create(
             title="Example Edition",
@@ -49,7 +42,7 @@ class InteractionViews(TestCase):
         """individual test setup"""
         self.factory = RequestFactory()
 
-    def test_favorite(self, *_):
+    def test_favorite(self):
         """create and broadcast faving a status"""
         view = views.Favorite.as_view()
         request = self.factory.post("")
@@ -67,7 +60,19 @@ class InteractionViews(TestCase):
         self.assertEqual(notification.user, self.local_user)
         self.assertEqual(notification.related_users.first(), self.remote_user)
 
-    def test_unfavorite(self, *_):
+    def test_favorite_invalid(self):
+        """create and broadcast faving a status with wrong permissions"""
+        view = views.Favorite.as_view()
+        request = self.factory.post("")
+        request.user = self.remote_user
+        status = models.Status.objects.create(
+            user=self.local_user, content="hi", privacy="direct"
+        )
+
+        with self.assertRaises(Http404):
+            view(request, status.id)
+
+    def test_unfavorite(self):
         """unfav a status"""
         view = views.Unfavorite.as_view()
         request = self.factory.post("")
@@ -84,7 +89,7 @@ class InteractionViews(TestCase):
         self.assertEqual(models.Favorite.objects.count(), 0)
         self.assertEqual(models.Notification.objects.count(), 0)
 
-    def test_boost(self, *_):
+    def test_boost(self):
         """boost a status"""
         view = views.Boost.as_view()
         request = self.factory.post("")
@@ -106,7 +111,19 @@ class InteractionViews(TestCase):
         self.assertEqual(notification.related_users.first(), self.remote_user)
         self.assertEqual(notification.related_status, status)
 
-    def test_self_boost(self, *_):
+    def test_boost_without_permssion(self):
+        """boost a status"""
+        view = views.Boost.as_view()
+        request = self.factory.post("")
+        request.user = self.remote_user
+        status = models.Status.objects.create(
+            user=self.local_user, content="hi", privacy="followers"
+        )
+
+        with self.assertRaises(Http404):
+            view(request, status.id)
+
+    def test_self_boost(self):
         """boost your own status"""
         view = views.Boost.as_view()
         request = self.factory.post("")
@@ -130,7 +147,7 @@ class InteractionViews(TestCase):
 
         self.assertFalse(models.Notification.objects.exists())
 
-    def test_boost_unlisted(self, *_):
+    def test_boost_unlisted(self):
         """boost a status"""
         view = views.Boost.as_view()
         request = self.factory.post("")
@@ -145,7 +162,7 @@ class InteractionViews(TestCase):
         boost = models.Boost.objects.get()
         self.assertEqual(boost.privacy, "unlisted")
 
-    def test_boost_private(self, *_):
+    def test_boost_private(self):
         """boost a status"""
         view = views.Boost.as_view()
         request = self.factory.post("")
@@ -158,7 +175,7 @@ class InteractionViews(TestCase):
             view(request, status.id)
         self.assertFalse(models.Boost.objects.exists())
 
-    def test_boost_twice(self, *_):
+    def test_boost_twice(self):
         """boost a status"""
         view = views.Boost.as_view()
         request = self.factory.post("")
@@ -171,7 +188,7 @@ class InteractionViews(TestCase):
         self.assertEqual(models.Boost.objects.count(), 1)
 
     @patch("bookwyrm.activitystreams.add_status_task.delay")
-    def test_unboost(self, *_):
+    def test_unboost(self, _):
         """undo a boost"""
         view = views.Unboost.as_view()
         request = self.factory.post("")

@@ -71,7 +71,7 @@ class Openlibrary(TestCase):
         data = {"key": "/work/OL1234W"}
         responses.add(
             responses.GET,
-            "https://openlibrary.org/work/OL1234W/editions",
+            "https://openlibrary.org/work/OL1234W/editions.json",
             json={"entries": []},
             status=200,
         )
@@ -88,7 +88,7 @@ class Openlibrary(TestCase):
         data = {"works": [{"key": "/work/OL1234W"}]}
         responses.add(
             responses.GET,
-            "https://openlibrary.org/work/OL1234W",
+            "https://openlibrary.org/work/OL1234W.json",
             json={"hi": "there"},
             status=200,
         )
@@ -100,7 +100,7 @@ class Openlibrary(TestCase):
         """find authors in data"""
         responses.add(
             responses.GET,
-            "https://openlibrary.org/authors/OL382982A",
+            "https://openlibrary.org/authors/OL382982A.json",
             json={
                 "name": "George Elliott",
                 "personal_name": "George Elliott",
@@ -230,7 +230,7 @@ class Openlibrary(TestCase):
         key = "OL1234W"
         responses.add(
             responses.GET,
-            "https://openlibrary.org/works/OL1234W/editions",
+            "https://openlibrary.org/works/OL1234W/editions.json",
             json={"hi": "there"},
         )
         result = self.connector.load_edition_data(key)
@@ -244,7 +244,7 @@ class Openlibrary(TestCase):
 
         responses.add(
             responses.GET,
-            "https://openlibrary.org/works/OL1234W/editions",
+            "https://openlibrary.org/works/OL1234W/editions.json",
             json={"entries": []},
         )
         with patch(
@@ -293,7 +293,7 @@ class Openlibrary(TestCase):
         work = models.Work.objects.create(title="Hello")
         responses.add(
             responses.GET,
-            "https://openlibrary.org/authors/OL382982A",
+            "https://openlibrary.org/authors/OL382982A.json",
             json={"hi": "there"},
             status=200,
         )
@@ -318,7 +318,7 @@ class Openlibrary(TestCase):
         work = models.Work.objects.create(title="Hello")
         responses.add(
             responses.GET,
-            "https://openlibrary.org/authors/OL10183984A",
+            "https://openlibrary.org/authors/OL10183984A.json",
             json={"hi": "there"},
             status=200,
         )

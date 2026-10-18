@@ -1,9 +1,12 @@
 """cleanup tasks"""
 
+import inspect
 import math
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 from itertools import chain
+from typing import List
 
+from django.apps import apps
 from django.db import transaction
 from django.db.models import (
     CharField,
@@ -11,14 +14,16 @@ from django.db.models import (
     IntegerField,
     ManyToManyField,
     TextChoices,
+    Model,
 )
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import models
 from bookwyrm.models.job import ParentJob, ParentTask
 from bookwyrm.connectors.abstract_connector import get_data
 from bookwyrm.connectors.connector_manager import search
-from bookwyrm.tasks import app, MISC
+from bookwyrm.tasks import app, DEDUPE, MISC
 from bookwyrm.utils.images import set_cover_from_url
 
 
@@ -107,7 +112,7 @@ def start_export_deletions(**kwargs):
     site = models.SiteSettings.objects.get()
     hours = site.export_files_lifetime_hours
 
-    expiry_date = datetime.now(timezone.utc) - timedelta(hours=hours)
+    expiry_date = timezone.now() - timedelta(hours=hours)
     job = CleanUpUserExportFilesJob.objects.create(user=user, expiry_date=expiry_date)
 
     job.start_job()
@@ -253,3 +258,40 @@ def run_missing_covers_job(**kwargs):
     job.editions.set(editions)
 
     job.start_job()
+
+
+@app.task(queue=DEDUPE)
+def mark_duplicate_data_task() -> None:
+    """Find likely duplicates and store their canonical candidate"""
+    for model in get_mergeable_models():
+        model.mark_merge_candidates()
+
+
+@app.task(queue=DEDUPE)
+def merge_duplicate_data_task() -> None:
+    """Combine duplicates across all models"""
+    for model in get_mergeable_models():
+        objs = model.objects.filter(
+            pending_merge_target__isnull=False,
+            prevent_automatic_merge=False,
+            pending_merge_date__lte=timezone.now(),
+        )
+
+        for obj in objs:
+            merge_item_task.delay(model.__name__, obj.id)
+
+
+@app.task(queue=DEDUPE)
+def merge_item_task(model_name, obj_id) -> None:
+    """the task for a specific item"""
+    model = apps.get_model("bookwyrm", model_name)
+    obj = model.objects.get(id=obj_id)
+    obj.merge_into(obj.pending_merge_target)
+
+
+def get_mergeable_models() -> List[Model]:
+    """All models with the mergeable mixin"""
+    mergable_models = inspect.getmembers(
+        models, lambda m: hasattr(m, "pending_merge_target")
+    )
+    return [v for n, v in mergable_models]

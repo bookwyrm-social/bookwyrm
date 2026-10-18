@@ -1,7 +1,7 @@
 """testing import"""
 
 from unittest.mock import patch
-from django.test import RequestFactory, TestCase
+from django.test import Client, RequestFactory, TestCase
 
 from bookwyrm import models
 from bookwyrm.views import rss_feed
@@ -15,14 +15,11 @@ class RssFeedView(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        with (
-            patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"),
-            patch("bookwyrm.activitystreams.populate_stream_task.delay"),
-            patch("bookwyrm.lists_stream.populate_lists_task.delay"),
-        ):
-            cls.local_user = models.User.objects.create_user(
-                "rss_user", "rss@test.rss", "password", local=True
-            )
+        """set up test data"""
+
+        cls.local_user = models.User.objects.create_user(
+            "rss_user", "rss@test.rss", "password", local=True, localname="rss_user"
+        )
         work = models.Work.objects.create(title="Test Work")
         cls.book = models.Edition.objects.create(
             title="Example Edition",
@@ -157,3 +154,23 @@ class RssFeedView(TestCase):
         )
         self.assertEqual(result.status_code, 200)
         self.assertIn(b"Example Edition", result.content)
+
+    def test_shelf_renders_rss_link_correctly(self, *_):
+        """test the link is stable"""
+
+        shelf = models.Shelf.objects.create(
+            name="Test Shelf", identifier="test-shelf", user=self.local_user
+        )
+
+        c = Client()
+        response = c.get(shelf.remote_id)
+        self.assertContains(
+            response,
+            f'<link rel="alternate" type="application/rss+xml" href="{shelf.remote_id}/rss" title="{self.local_user.localname} - {shelf.name}" />',
+        )
+
+        param_response = c.get(f"{shelf.remote_id}/?beep=boop")
+        self.assertContains(
+            param_response,
+            f'<link rel="alternate" type="application/rss+xml" href="{shelf.remote_id}/rss" title="{self.local_user.localname} - {shelf.name}" />',
+        )

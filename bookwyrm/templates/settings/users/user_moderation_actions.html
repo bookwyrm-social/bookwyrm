@@ -90,6 +90,16 @@
                     </button>
                 </form>
             </div>
+            <div class="mt-4">
+                <form name="settings-user-manage-data-perms" method="post" action="{% url 'settings-user-manage-data-perms' user.id %}">
+                    {% csrf_token %}
+                    <label class="label" for="enable-manage-data">{% trans "Allow to manage data" %}</label>
+                    <p>
+                        {% trans 'Allow this user to manually merge authors, editions, works, and series. This could result in data loss or corrupted records.' %}
+                    </p>
+                    <button type="submit" class="button {% if user|has_perm:'manage_data' %}is-danger{% endif %}">{% if user|has_perm:'manage_data' %}{% trans 'Remove Permission' %}{% else %}{% trans 'Add Permission' %}{% endif %}</button>
+                </form>
+            </div>
             {% endif %}
         </div>
         {% endif %}

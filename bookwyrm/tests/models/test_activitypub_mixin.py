@@ -1,6 +1,7 @@
 """testing model activitypub utilities"""
 
-from unittest.mock import Mock, patch
+import asyncio
+from unittest.mock import AsyncMock, Mock, patch
 from collections import namedtuple
 from dataclasses import dataclass
 import re
@@ -13,6 +14,7 @@ from bookwyrm.models import base_model
 from bookwyrm.models.activitypub_mixin import (
     ActivitypubMixin,
     ActivityMixin,
+    async_broadcast,
     broadcast_task,
     ObjectMixin,
     OrderedCollectionMixin,
@@ -461,6 +463,30 @@ class ActivitypubMixins(TestCase):
             broadcast_task(self.local_user.id, {}, recipients)
         self.assertTrue(mock.called)
         self.assertEqual(mock.call_count, 1)
+
+    def test_async_broadcast_imports_key_once(self, *_):
+        """A broadcast should reuse its imported signing key."""
+        recipients = [
+            "https://instance.example/user/inbox",
+            "https://instance.example/okay/inbox",
+        ]
+        signing_key = Mock()
+        with (
+            patch(
+                "bookwyrm.models.activitypub_mixin.RSA.import_key",
+                return_value=signing_key,
+            ) as import_key,
+            patch(
+                "bookwyrm.models.activitypub_mixin.sign_and_send",
+                new_callable=AsyncMock,
+            ) as send,
+        ):
+            asyncio.run(async_broadcast(recipients, self.local_user, "{}"))
+
+        import_key.assert_called_once_with(self.local_user.key_pair.private_key)
+        self.assertEqual(send.await_count, len(recipients))
+        for call in send.await_args_list:
+            self.assertIs(call.kwargs["signing_key"], signing_key)
 
     def test_broadcast_no_recipients(self, broadcast_mock, *_):
         """should not queue a task when there is nobody to send to"""

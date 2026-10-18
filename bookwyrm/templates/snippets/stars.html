@@ -17,10 +17,10 @@
 
         <span class="{% if not request.user.show_ratings %}is-hidden{% endif %}" id="rating-{{ uuid }}">
             <span class="is-sr-only">
-                {% blocktranslate trimmed with rating=rating|floatformat:1 count counter=rating|floatformat:0|add:0 %}
-                    {{ rating }} star
+                {% blocktranslate trimmed with display_rating=rating|floatformat:1 count counter=rating|default_if_none:0|floatformat:0|add:0 %}
+                    {{ display_rating }} star
                 {% plural %}
-                    {{ rating }} stars
+                    {{ display_rating }} stars
                 {% endblocktranslate %}
             </span>
             {% for i in '12345'|make_list %}

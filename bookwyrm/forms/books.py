@@ -37,6 +37,7 @@ class EditionForm(CustomForm):
     class Meta:
         model = models.Edition
         fields = [
+            "last_edited_by",
             "title",
             "sort_title",
             "subtitle",
@@ -63,64 +64,46 @@ class EditionForm(CustomForm):
             "asin",
             "aasin",
             "isfdb",
+            "librarything_key",
         ]
         widgets = {
-            "title": forms.TextInput(attrs={"aria-describedby": "desc_title"}),
-            "sort_title": forms.TextInput(
-                attrs={"aria-describedby": "desc_sort_title"}
-            ),
-            "subtitle": forms.TextInput(attrs={"aria-describedby": "desc_subtitle"}),
-            "description": forms.Textarea(
-                attrs={"aria-describedby": "desc_description"}
-            ),
-            "series": forms.TextInput(attrs={"aria-describedby": "desc_series"}),
-            "series_number": forms.TextInput(
-                attrs={"aria-describedby": "desc_series_number"}
-            ),
             "subjects": ArrayWidget(),
-            "languages": forms.TextInput(
-                attrs={"aria-describedby": "desc_languages_help desc_languages"}
-            ),
-            "publishers": forms.TextInput(
-                attrs={"aria-describedby": "desc_publishers_help desc_publishers"}
-            ),
-            "first_published_date": SelectDateWidget(
-                attrs={"aria-describedby": "desc_first_published_date"}
-            ),
-            "published_date": SelectDateWidget(
-                attrs={"aria-describedby": "desc_published_date"}
-            ),
-            "cover": ResubmitImageWidgetWithWarning(
-                attrs={"aria-describedby": "desc_cover"}
-            ),
-            "physical_format": Select(
-                attrs={"aria-describedby": "desc_physical_format"}
-            ),
-            "physical_format_detail": forms.TextInput(
-                attrs={"aria-describedby": "desc_physical_format_detail"}
-            ),
-            "pages": forms.NumberInput(attrs={"aria-describedby": "desc_pages"}),
-            "isbn_13": forms.TextInput(attrs={"aria-describedby": "desc_isbn_13"}),
-            "isbn_10": forms.TextInput(attrs={"aria-describedby": "desc_isbn_10"}),
-            "openlibrary_key": forms.TextInput(
-                attrs={"aria-describedby": "desc_openlibrary_key"}
-            ),
-            "inventaire_id": forms.TextInput(
-                attrs={"aria-describedby": "desc_inventaire_id"}
-            ),
-            "goodreads_key": forms.TextInput(
-                attrs={"aria-describedby": "desc_goodreads_key"}
-            ),
-            "oclc_number": forms.TextInput(
-                attrs={"aria-describedby": "desc_oclc_number"}
-            ),
-            "finna_key": forms.TextInput(attrs={"aria-describedby": "desc_finna_key"}),
-            "libris_key": forms.TextInput(
-                attrs={"aria-describedby": "desc_libris_key"}
-            ),
-            "ASIN": forms.TextInput(attrs={"aria-describedby": "desc_ASIN"}),
-            "AASIN": forms.TextInput(attrs={"aria-describedby": "desc_AASIN"}),
-            "isfdb": forms.TextInput(attrs={"aria-describedby": "desc_isfdb"}),
+            "physical_format": Select(),
+            "first_published_date": SelectDateWidget(),
+            "published_date": SelectDateWidget(),
+            "cover": ResubmitImageWidgetWithWarning(),
+        }
+
+
+class WorkForm(CustomForm):
+    class Meta:
+        model = models.Work
+        fields = [
+            "last_edited_by",
+            "title",
+            "sort_title",
+            "subtitle",
+            "description",
+            "series",
+            "series_number",
+            "languages",
+            "subjects",
+            "cover",
+            "lccn",
+            "openlibrary_key",
+            "inventaire_id",
+            "goodreads_key",
+            "finna_key",
+            "libris_key",
+            "asin",
+            "aasin",
+            "isfdb",
+            "bnf_id",
+            "librarything_key",
+        ]
+        widgets = {
+            "subjects": ArrayWidget(),
+            "cover": ResubmitImageWidgetWithWarning(),
         }
 
 
@@ -158,4 +141,5 @@ class SeriesForm(CustomForm):
             "inventaire_id",
             "wikidata",
             "isfdb",
+            "last_edited_by",
         ]

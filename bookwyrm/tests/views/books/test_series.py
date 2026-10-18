@@ -137,6 +137,7 @@ class SeriesViews(TestCase):
         form.data["user"] = self.user.id
         form.data["name"] = "New Series Name"
         form.data["alternative_names"] = ["beep", "boop"]
+        form.data["last_edited_by"] = self.user.id
         form.data[f"series_number-{self.book.id}"] = "99"
         request = self.factory.post("", form.data)
 
