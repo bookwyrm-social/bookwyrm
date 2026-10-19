@@ -177,3 +177,6 @@ class SeriesForm(CustomForm):
             "isfdb",
             "last_edited_by",
         ]
+        help_texts = {
+            "isfdb": _("The Internet Speculative Fiction Database"),
+        }
