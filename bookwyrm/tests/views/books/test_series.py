@@ -38,7 +38,7 @@ class SeriesViews(TestCase):
 
         cls.book = models.Work.objects.create(title="test book")
         cls.series = models.Series.objects.create(
-            user=cls.user, name="test series", remote_id="https://example.com/series/1"
+            name="test series", remote_id="https://example.com/series/1"
         )
         cls.seriesbook = models.SeriesBook.objects.create(
             book=cls.book,
@@ -67,7 +67,6 @@ class SeriesViews(TestCase):
     def test_series_page_orders_books_by_numeric_semantics(self):
         """series books are ordered by numeric semantics, not lexicographically"""
         series = models.Series.objects.create(
-            user=self.user,
             name="ordering series",
             remote_id="https://example.com/series/1",
         )
