@@ -41,8 +41,10 @@ class Series(MergeableViewMixin, View):
         blocked = (
             request.user.blocked_books.all() if not request.user.is_anonymous else []
         )
-        items = series.seriesbooks.exclude(book__in=blocked).prefetch_related(
-            "book__work", "book__work__editions__authors"
+        items = (
+            series.seriesbooks.exclude(book__in=blocked)
+            .exclude(book__work__editions__isnull=True)
+            .prefetch_related("book__work", "book__work__editions__authors")
         )
         series_books = sorted(items, key=lambda sb: sb.natural_sort_key)
         authors = models.Author.objects.filter(
