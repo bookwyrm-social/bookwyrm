@@ -1,8 +1,4 @@
 """the good people stuff! the authors!"""
-
-from functools import reduce
-import operator
-
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
 from django.db.models import Min, Q
@@ -23,6 +19,7 @@ from bookwyrm.views.helpers import (
     is_api_request,
     get_mergeable_object_or_404,
     maybe_redirect_local_path,
+    search_within_queryset,
 )
 from bookwyrm.views.mixins import MergeableViewMixin
 
@@ -63,22 +60,14 @@ class Author(MergeableViewMixin, View):
             .distinct()
         )
 
-        query = request.GET.get("q")
-        if query:
-            searchable_fields = [
+        if query := request.GET.get("q"):
+            search_within_queryset(works, query, searchable_fields = [
                 "title",
                 "isfdb",
                 "lccn",
-            ]
-            search_filter_entries = [
-                {f"{f}__icontains": query} for f in searchable_fields
-            ]
-            works = works.filter(
-                reduce(operator.or_, (Q(**f) for f in search_filter_entries))
-            )
+            ])
 
-        filter_series = request.GET.get("series")
-        if filter_series:
+        if filter_series := request.GET.get("series"):
             works = works.filter(
                 Q(seriesbooks__series=filter_series)
                 | Q(editions__seriesbooks__series=filter_series)
