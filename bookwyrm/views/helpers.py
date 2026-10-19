@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from functools import reduce
 import operator
 import re
-from typing import Any
+from typing import Any, List
 from urllib.parse import urlsplit, urlunsplit
 
 import dateutil.parser
@@ -294,7 +294,9 @@ def convert_to_markdown(content: str) -> str:
     return sanitizer.clean(content)
 
 
-def search_within_queryset(queryset, value, searchable_fields=None):
+def search_within_queryset(
+    queryset: QuerySet, value: str, searchable_fields: List[str] = None
+) -> QuerySet:
     search_filter_entries = [{f"{f}__icontains": value} for f in searchable_fields]
     return queryset.filter(
         reduce(operator.or_, (Q(**f) for f in search_filter_entries))
