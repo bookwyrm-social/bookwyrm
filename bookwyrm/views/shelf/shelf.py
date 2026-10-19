@@ -16,9 +16,10 @@ from django.views.decorators.vary import vary_on_headers
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request
 from bookwyrm.book_search import search
+from bookwyrm.models.book import FORMAT_CHOICES
+from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.views.helpers import is_api_request, search_within_queryset
 from bookwyrm.views.mixins import PrivateProfileMixin
 
 
@@ -36,8 +37,6 @@ class Shelf(PrivateProfileMixin, View):
             shelves = user.shelf_set.all()
         else:
             shelves = models.Shelf.privacy_filter(request.user).filter(user=user).all()
-
-        shelves_filter_query = request.GET.get("filter")
 
         # get the shelf and make sure the logged in user should be able to see it
         if shelf_identifier:
@@ -101,8 +100,16 @@ class Shelf(PrivateProfileMixin, View):
 
         books = sort_books(books, sort)
 
-        if shelves_filter_query:
+        if shelves_filter_query := request.GET.get("filter"):
             books = search(shelves_filter_query, books=books)
+        if author_query := request.GET.get("authors"):
+            books = search_within_queryset(
+                books, author_query, searchable_fields=["authors__name"]
+            )
+        if format_query := request.GET.get("format"):
+            books = search_within_queryset(
+                books, format_query, searchable_fields=["physical_format"]
+            )
 
         paginated = Paginator(
             books,
@@ -123,6 +130,7 @@ class Shelf(PrivateProfileMixin, View):
             ),
             "shelves_filter_query": shelves_filter_query,
             "size": "small",
+            "formats": FORMAT_CHOICES,
         }
 
         return TemplateResponse(request, "shelf/shelf.html", data)
