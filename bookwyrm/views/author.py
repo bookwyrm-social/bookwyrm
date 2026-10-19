@@ -1,4 +1,5 @@
 """the good people stuff! the authors!"""
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
 from django.db.models import Min, Q
@@ -61,11 +62,15 @@ class Author(MergeableViewMixin, View):
         )
 
         if query := request.GET.get("q"):
-            search_within_queryset(works, query, searchable_fields = [
-                "title",
-                "isfdb",
-                "lccn",
-            ])
+            search_within_queryset(
+                works,
+                query,
+                searchable_fields=[
+                    "title",
+                    "isfdb",
+                    "lccn",
+                ],
+            )
 
         if filter_series := request.GET.get("series"):
             works = works.filter(
