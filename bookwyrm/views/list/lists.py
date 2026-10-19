@@ -55,6 +55,15 @@ class Lists(View):
                     "editions__isfdb",
                 ],
             )
+        if author_query := request.GET.get("authors"):
+            lists = search_within_queryset(
+                lists,
+                author_query,
+                searchable_fields=[
+                    "editions__authors__name",
+                    "editions__authors__aliases",
+                ],
+            )
         sort = request.GET.get("sort", "created")
         match sort:
             case "created":
