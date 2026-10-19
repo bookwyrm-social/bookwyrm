@@ -210,8 +210,17 @@ def filter_stream_by_status_type(
         allowed_types = []
 
     if "review" not in allowed_types:
+        activities = activities.exclude(
+            Q(Q(review__isnull=False) & Q(review__reviewrating__isnull=True))
+            | Q(
+                Q(boost__boosted_status__review__isnull=False)
+                & Q(boost__boosted_status__review__reviewrating__isnull=True)
+            )
+        )
+    if "rating" not in allowed_types:
         activities = activities.filter(
-            Q(review__isnull=True), Q(boost__boosted_status__review__isnull=True)
+            Q(review__reviewrating__isnull=True),
+            Q(boost__boosted_status__review__reviewrating__isnull=True),
         )
     if "comment" not in allowed_types:
         activities = activities.filter(
