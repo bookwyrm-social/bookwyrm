@@ -1,4 +1,5 @@
 """helper functions used in various views"""
+
 from datetime import datetime, timedelta
 from functools import reduce
 import operator
@@ -293,10 +294,8 @@ def convert_to_markdown(content: str) -> str:
     return sanitizer.clean(content)
 
 
-def search_within_queryset(queryset, value, searchable_fields=None, searchable_array_fields=None):
-    search_filter_entries = [
-        {f"{f}__icontains": value} for f in searchable_fields
-    ]
+def search_within_queryset(queryset, value, searchable_fields=None):
+    search_filter_entries = [{f"{f}__icontains": value} for f in searchable_fields]
     return queryset.filter(
         reduce(operator.or_, (Q(**f) for f in search_filter_entries))
     )

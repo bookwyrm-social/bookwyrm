@@ -1,9 +1,10 @@
 """book list views"""
+
 import logging
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Count, Q
+from django.db.models import Count
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -41,15 +42,19 @@ class Lists(View):
                 lists, name_query, searchable_fields=["name", "description"]
             )
         if book_query := request.GET.get("edition"):
-            lists = search_within_queryset(lists, book_query, searchable_fields=[
-                "editions__title",
-                "editions__isbn_10",
-                "editions__isbn_13",
-                "editions__oclc_number",
-                "editions__asin",
-                "editions__aasin",
-                "editions__isfdb",
-            ])
+            lists = search_within_queryset(
+                lists,
+                book_query,
+                searchable_fields=[
+                    "editions__title",
+                    "editions__isbn_10",
+                    "editions__isbn_13",
+                    "editions__oclc_number",
+                    "editions__asin",
+                    "editions__aasin",
+                    "editions__isfdb",
+                ],
+            )
         sort = request.GET.get("sort", "created")
         match sort:
             case "created":
