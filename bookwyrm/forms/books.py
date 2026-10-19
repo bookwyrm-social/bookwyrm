@@ -1,6 +1,7 @@
 """using django model forms"""
 
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from file_resubmit.widgets import ResubmitImageWidget
 
@@ -73,6 +74,24 @@ class EditionForm(CustomForm):
             "published_date": SelectDateWidget(),
             "cover": ResubmitImageWidgetWithWarning(),
         }
+        help_texts = {
+            "sort_title": _(
+                'Remove words like "The" from the beginning of the title for alphabetization'
+            ),
+            "oclc_number": _("A unique number associated with a record in WorldCat"),
+            "isbn_13": _("About ISBNs"),
+            "isbn_10": _(
+                "If an ISBN 13 is provided, the ISBN 10 will be computed automatically on save"
+            ),
+            "openlibrary_key": _('Openlibrary keys for editions should end in "M"'),
+            "publishers": _("Separate multiple values with commas."),
+            "languages": _("Separate multiple values with commas."),
+            "series": _("To edit details of a series itself, click the series name"),
+            "isfdb": _("The Internet Speculative Fiction Database"),
+            "goodreads_key": _(
+                'The GoodReads key for "goodreads.com/book/show/1234567-example-book" would be "1234567"'
+            ),
+        }
 
 
 class WorkForm(CustomForm):
@@ -105,6 +124,20 @@ class WorkForm(CustomForm):
             "subjects": ArrayWidget(),
             "cover": ResubmitImageWidgetWithWarning(),
         }
+        help_texts = {
+            "sort_title": _(
+                'Remove words like "The" from the beginning of the title for alphabetization'
+            ),
+            "lccn": _("https://id.loc.gov/authorities/names.html"),
+            "openlibrary_key": _('Openlibrary keys for works should end in "W"'),
+            "languages": _("Separate multiple values with commas."),
+            "series": _("To edit details of a series itself, click the series name"),
+            "isfdb": _("The Internet Speculative Fiction Database"),
+            "goodreads_key": _(
+                'The GoodReads key for "https://www.goodreads.com/work/editions/1234567" would be "1234567"'
+            ),
+            "bnf_id": _("Bibliothèque nationale de France"),
+        }
 
 
 class EditionFromWorkForm(CustomForm):
@@ -117,6 +150,7 @@ class EditionFromWorkForm(CustomForm):
     class Meta:
         model = models.Work
         fields = [
+            "last_edited_by",
             "title",
             "sort_title",
             "subtitle",
