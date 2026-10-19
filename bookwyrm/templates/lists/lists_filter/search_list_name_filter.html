@@ -3,7 +3,7 @@
 
 {% block filter %}
 <div class="control">
-    <label class="label" for="id_name_search">{% trans "Search list names" %}</label>
+    <label class="label" for="id_name_search">{% trans "Search lists" %}</label>
     <input type="text" class="input" name="name" value="{{ request.GET.name|default:'' }}" id="id_name_search" spellcheck="false">
 </div>
 {% endblock %}

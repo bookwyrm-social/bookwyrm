@@ -1,8 +1,4 @@
 """book list views"""
-
-from functools import reduce
-import operator
-
 import logging
 
 from django.contrib.auth.decorators import login_required
@@ -15,6 +11,7 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.lists_stream import ListsStream
+from bookwyrm.views.helpers import search_within_queryset
 from bookwyrm.views.list.list import add_book
 from bookwyrm.views.mixins import PrivateProfileMixin
 
@@ -40,9 +37,11 @@ class Lists(View):
             lists = models.List.objects.filter(privacy="public")
 
         if name_query := request.GET.get("name"):
-            lists = lists.filter(name__icontains=name_query)
+            lists = search_within_queryset(
+                lists, name_query, searchable_fields=["name", "description"]
+            )
         if book_query := request.GET.get("edition"):
-            searchable_fields = [
+            lists = search_within_queryset(lists, book_query, searchable_fields=[
                 "editions__title",
                 "editions__isbn_10",
                 "editions__isbn_13",
@@ -50,13 +49,7 @@ class Lists(View):
                 "editions__asin",
                 "editions__aasin",
                 "editions__isfdb",
-            ]
-            search_filter_entries = [
-                {f"{f}__icontains": book_query} for f in searchable_fields
-            ]
-            lists = lists.filter(
-                reduce(operator.or_, (Q(**f) for f in search_filter_entries))
-            )
+            ])
         sort = request.GET.get("sort", "created")
         match sort:
             case "created":
