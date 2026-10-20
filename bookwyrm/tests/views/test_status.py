@@ -715,6 +715,36 @@ http://www.fish.com/"""
         status.refresh_from_db()
         self.assertTrue(status.deleted)
 
+    def test_delete_status_redirects_to_book(self, *_):
+        """deleting from the status page redirects to the book page"""
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
+            status = models.Comment.objects.create(
+                content="status", user=self.local_user, book=self.book
+            )
+        referer = "https://example.com" + status.local_path
+        request = self.factory.post("", HTTP_REFERER=referer)
+        request.user = self.local_user
+        view = views.DeleteStatus.as_view()
+        response = view(request, status.id)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.book.local_path)
+        status.refresh_from_db()
+        self.assertTrue(status.deleted)
+
+    def test_delete_status_redirects_to_user(self, *_):
+        """deleting from the status page with no associated book redirects to the user page"""
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
+            status = models.Status.objects.create(user=self.local_user, content="hi")
+        referer = "https://example.com" + status.local_path
+        request = self.factory.post("", HTTP_REFERER=referer)
+        request.user = self.local_user
+        view = views.DeleteStatus.as_view()
+        response = view(request, status.id)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.local_user.local_path)
+        status.refresh_from_db()
+        self.assertTrue(status.deleted)
+
     def test_edit_status_get(self, *_):
         """load the edit status view"""
         view = views.EditStatus.as_view()
