@@ -113,6 +113,8 @@ class User(PrivateProfileMixin, View):
             "activities": paginated.get_page(request.GET.get("page", 1)),
             "goal": goal,
             "is_profile_locked": False,
+            "has_tour": True,
+            "tour_path": "user.js",
         }
 
         return TemplateResponse(request, "user/user.html", data)

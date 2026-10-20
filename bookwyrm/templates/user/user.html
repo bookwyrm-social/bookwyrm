@@ -35,12 +35,12 @@
 {% block panel %}
 
 {% if is_profile_locked %}
-<div class="notification is-light">
+<div class="notification is-light" id="locked-profile">
     <p>{% trans "This profile is private. Follow this user to see their activity." %}</p>
 </div>
 {% else %}
 {% if user.bookwyrm_user %}
-<div class="block">
+<div class="block" id="user-books-block">
     <h2 class="title">
         {% include 'user/books_header.html' %}
     </h2>
@@ -89,7 +89,7 @@
     <div class="columns is-mobile">
         <h2 class="title column">{% trans "User Activity" %}</h2>
         {% if user.local %}
-        <div class="column is-narrow">
+        <div class="column is-narrow" id="rss-feed">
             <details class="dropdown">
                 <summary
                     class="is-relative pulldown-menu dropdown-trigger"
