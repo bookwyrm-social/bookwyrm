@@ -1,0 +1,11 @@
+{% extends 'snippets/filters_panel/filters_panel.html' %}
+
+{% block filter_fields %}
+{% include 'lists/lists_filter/search_list_name_filter.html' %}
+{% include 'lists/lists_filter/search_edition_filter.html' %}
+{% include 'lists/lists_filter/search_author_filter.html' %}
+{% if request.user.is_authenticated %}
+{% include 'lists/lists_filter/show_only.html' %}
+{% endif %}
+{% include 'lists/lists_filter/sort.html' %}
+{% endblock %}

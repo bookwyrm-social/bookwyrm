@@ -122,7 +122,7 @@ class RepairSeries(TestCase):
             status=200,
         )
 
-        series = models.Series(name="blah", user=self.user, inventaire_id="wd:99")
+        series = models.Series(name="blah", inventaire_id="wd:99")
 
         result = refetch_or_fix_individual_series(options={}, series=series)
 
@@ -138,7 +138,7 @@ class RepairSeries(TestCase):
     def test_repair_nameless_series(self):
         """test repairing multiple nameless series"""
 
-        series = models.Series(name="", user=self.user, inventaire_id="wd:99")
+        series = models.Series(name="", inventaire_id="wd:99")
         series.save()
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(series.name, "")
@@ -164,7 +164,6 @@ class RepairSeries(TestCase):
         series = models.Series(
             name="",
             alternative_names=["beep"],
-            user=self.user,
             inventaire_id="wd:Q42490",
         )
         series.save()
@@ -189,7 +188,7 @@ class RepairSeries(TestCase):
     def test_repair_edition_series_is_nameless_no_inventaire_id(self):
         """this probably will never happen but test anyway"""
 
-        series = models.Series(name="", alternative_names=["beep"], user=self.user)
+        series = models.Series(name="", alternative_names=["beep"])
         series.save()
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(series.name, "")
