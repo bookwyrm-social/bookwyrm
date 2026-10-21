@@ -1,0 +1,11 @@
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+<div class="control">
+    <label class="label" for="id_sort_by">{% trans "Sort By" %}</label>
+    <div class="select">
+        {{ sort_form.sort_by }}
+    </div>
+</div>
+{% endblock %}
