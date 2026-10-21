@@ -79,6 +79,7 @@
 
             <label class="label" for="id_add_alt_title">{% trans "ISFDB ID:" %}</label>
             <input type="text" name="isfdb" value="{{ form.isfdb.value|default:'' }}" maxlength="255" class="input" id="id_isfdb" aria-describedby="desc_title">
+            {% include 'snippets/form_help.html' with field=form.isfdb link="https://www.isfdb.org/" %}
         </div>
     </div>
 
