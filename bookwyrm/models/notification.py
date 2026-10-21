@@ -1,5 +1,7 @@
 """alert a user to activity"""
 
+from typing import Any, List, Optional
+
 from django.db import models, transaction
 from django.dispatch import receiver
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
@@ -86,7 +88,7 @@ class Notification(BookWyrmModel):
 
     @classmethod
     @transaction.atomic
-    def notify(cls, user, related_user, **kwargs):
+    def notify(cls, user: User, related_user: User, **kwargs: Any) -> None:
         """Create a notification"""
         if related_user and (not user.local or user == related_user):
             return
@@ -100,7 +102,7 @@ class Notification(BookWyrmModel):
 
     @classmethod
     @transaction.atomic
-    def notify_list_item(cls, user, list_item):
+    def notify_list_item(cls, user: User, list_item: ListItem) -> None:
         """Group the notifications around the list items, not the user"""
         related_user = list_item.user
         notification = cls.objects.filter(
@@ -119,7 +121,7 @@ class Notification(BookWyrmModel):
         notification.save()
 
     @classmethod
-    def unnotify(cls, user, related_user, **kwargs):
+    def unnotify(cls, user: User, related_user: User, **kwargs: Any) -> None:
         """Remove a user from a notification and delete it if that was the only user"""
         try:
             notification = cls.objects.filter(user=user, **kwargs).get()
@@ -131,7 +133,9 @@ class Notification(BookWyrmModel):
 
 
 @receiver(models.signals.post_save, sender=Favorite)
-def notify_on_fav(sender, instance, *args, **kwargs):
+def notify_on_fav(
+    sender: type[Favorite], instance: Favorite, *args: Any, **kwargs: Any
+) -> None:
     """someone liked your content, you ARE loved"""
     Notification.notify(
         instance.status.user,
@@ -142,7 +146,9 @@ def notify_on_fav(sender, instance, *args, **kwargs):
 
 
 @receiver(models.signals.post_delete, sender=Favorite)
-def notify_on_unfav(sender, instance, *args, **kwargs):
+def notify_on_unfav(
+    sender: type[Favorite], instance: Favorite, *args: Any, **kwargs: Any
+) -> None:
     """oops, didn't like that after all"""
     if not instance.status.user.local:
         return
@@ -156,7 +162,9 @@ def notify_on_unfav(sender, instance, *args, **kwargs):
 
 @receiver(models.signals.post_save)
 @transaction.atomic
-def notify_user_on_mention(sender, instance, *args, **kwargs):
+def notify_user_on_mention(
+    sender: Any, instance: Any, *args: Any, **kwargs: Any
+) -> None:
     """creating and deleting statuses with @ mentions and replies"""
     if not issubclass(sender, Status):
         return
@@ -192,7 +200,9 @@ def notify_user_on_mention(sender, instance, *args, **kwargs):
 
 
 @receiver(models.signals.post_save, sender=Boost)
-def notify_user_on_boost(sender, instance, *args, **kwargs):
+def notify_user_on_boost(
+    sender: type[Boost], instance: Boost, *args: Any, **kwargs: Any
+) -> None:
     """boosting a status"""
     if (
         not instance.boosted_status.user.local
@@ -209,7 +219,9 @@ def notify_user_on_boost(sender, instance, *args, **kwargs):
 
 
 @receiver(models.signals.post_delete, sender=Boost)
-def notify_user_on_unboost(sender, instance, *args, **kwargs):
+def notify_user_on_unboost(
+    sender: type[Boost], instance: Boost, *args: Any, **kwargs: Any
+) -> None:
     """unboosting a status"""
     Notification.unnotify(
         instance.boosted_status.user,
@@ -221,8 +233,12 @@ def notify_user_on_unboost(sender, instance, *args, **kwargs):
 
 @receiver(models.signals.post_save, sender=ImportJob)
 def notify_user_on_import_complete(
-    sender, instance, *args, update_fields=None, **kwargs
-):
+    sender: type[ImportJob],
+    instance: ImportJob,
+    *args: Any,
+    update_fields: Optional[List[str]] = None,
+    **kwargs: Any,
+) -> None:
     """we imported your books! aren't you proud of us"""
     update_fields = update_fields or []
     if not instance.complete or "complete" not in update_fields:
@@ -236,8 +252,12 @@ def notify_user_on_import_complete(
 
 @receiver(models.signals.post_save, sender=BookwyrmImportJob)
 def notify_user_on_user_import_complete(
-    sender, instance, *args, update_fields=None, **kwargs
-):
+    sender: type[BookwyrmImportJob],
+    instance: BookwyrmImportJob,
+    *args: Any,
+    update_fields: Optional[List[str]] = None,
+    **kwargs: Any,
+) -> None:
     """we imported your user details! aren't you proud of us"""
     update_fields = update_fields or []
     if not instance.complete or "complete" not in update_fields:
@@ -249,8 +269,12 @@ def notify_user_on_user_import_complete(
 
 @receiver(models.signals.post_save, sender=BookwyrmExportJob)
 def notify_user_on_user_export_complete(
-    sender, instance, *args, update_fields=None, **kwargs
-):
+    sender: type[BookwyrmExportJob],
+    instance: BookwyrmExportJob,
+    *args: Any,
+    update_fields: Optional[List[str]] = None,
+    **kwargs: Any,
+) -> None:
     """we exported your user details! aren't you proud of us"""
     update_fields = update_fields or []
     if not instance.complete or "complete" not in update_fields:
@@ -264,7 +288,9 @@ def notify_user_on_user_export_complete(
 
 @receiver(models.signals.post_save, sender=Report)
 @transaction.atomic
-def notify_admins_on_report(sender, instance, created, *args, **kwargs):
+def notify_admins_on_report(
+    sender: type[Report], instance: Report, created: bool, *args: Any, **kwargs: Any
+) -> None:
     """something is up, make sure the admins know"""
     if not created:
         # otherwise you'll get a notification when you resolve a report
@@ -282,7 +308,13 @@ def notify_admins_on_report(sender, instance, created, *args, **kwargs):
 
 @receiver(models.signals.post_save, sender=LinkDomain)
 @transaction.atomic
-def notify_admins_on_link_domain(sender, instance, created, *args, **kwargs):
+def notify_admins_on_link_domain(
+    sender: type[LinkDomain],
+    instance: LinkDomain,
+    created: bool,
+    *args: Any,
+    **kwargs: Any,
+) -> None:
     """a new link domain needs to be verified"""
     if not created:
         # otherwise you'll get a notification when you approve a domain
@@ -300,7 +332,13 @@ def notify_admins_on_link_domain(sender, instance, created, *args, **kwargs):
 
 @receiver(models.signals.post_save, sender=InviteRequest)
 @transaction.atomic
-def notify_admins_on_invite_request(sender, instance, created, *args, **kwargs):
+def notify_admins_on_invite_request(
+    sender: type[InviteRequest],
+    instance: InviteRequest,
+    created: bool,
+    *args: Any,
+    **kwargs: Any,
+) -> None:
     """need to handle a new invite request"""
     if not created:
         return
@@ -316,7 +354,12 @@ def notify_admins_on_invite_request(sender, instance, created, *args, **kwargs):
 
 
 @receiver(models.signals.post_save, sender=GroupMemberInvitation)
-def notify_user_on_group_invite(sender, instance, *args, **kwargs):
+def notify_user_on_group_invite(
+    sender: type[GroupMemberInvitation],
+    instance: GroupMemberInvitation,
+    *args: Any,
+    **kwargs: Any,
+) -> None:
     """Cool kids club here we come"""
     Notification.notify(
         instance.user,
@@ -328,7 +371,9 @@ def notify_user_on_group_invite(sender, instance, *args, **kwargs):
 
 @receiver(models.signals.post_save, sender=ListItem)
 @transaction.atomic
-def notify_user_on_list_item_add(sender, instance, created, *args, **kwargs):
+def notify_user_on_list_item_add(
+    sender: type[ListItem], instance: ListItem, created: bool, *args: Any, **kwargs: Any
+) -> None:
     """Someone added to your list"""
     if not created:
         return
@@ -347,7 +392,13 @@ def notify_user_on_list_item_add(sender, instance, created, *args, **kwargs):
 
 @receiver(models.signals.post_save, sender=UserFollowRequest)
 @transaction.atomic
-def notify_user_on_follow(sender, instance, created, *args, **kwargs):
+def notify_user_on_follow(
+    sender: type[UserFollowRequest],
+    instance: UserFollowRequest,
+    created: bool,
+    *args: Any,
+    **kwargs: Any,
+) -> None:
     """Someone added to your list"""
     if not created or not instance.user_object.local:
         return
