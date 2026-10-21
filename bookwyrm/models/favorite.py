@@ -1,4 +1,5 @@
 """like/fav/star a status"""
+
 from typing import Any
 
 from django.db import models
