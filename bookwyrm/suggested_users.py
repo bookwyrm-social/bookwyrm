@@ -1,4 +1,5 @@
 """store recommended follows in redis"""
+
 from typing import Any, List, Optional
 
 import math
@@ -92,7 +93,9 @@ class SuggestedUsers(RedisStore):
         """take a user out of someone's suggestions"""
         self.bulk_remove_objects_from_store([suggested_user], self.store_id(user_id))
 
-    def get_suggestions(self, user: models.User, local: bool = False) -> QuerySet[models.User]:
+    def get_suggestions(
+        self, user: models.User, local: bool = False
+    ) -> QuerySet[models.User]:
         """get suggestions"""
         local = local or models.SiteSettings.get().disable_federation
 
@@ -120,7 +123,9 @@ class SuggestedUsers(RedisStore):
         return users.order_by("-mutuals")[:5]
 
 
-def get_annotated_users(viewer: models.User, *args: Any, **kwargs: Any) -> QuerySet[models.User]:
+def get_annotated_users(
+    viewer: models.User, *args: Any, **kwargs: Any
+) -> QuerySet[models.User]:
     """Users, annotated with things they have in common"""
     following = kwargs.pop("following", None)
     query = models.User.objects.filter(
@@ -128,17 +133,17 @@ def get_annotated_users(viewer: models.User, *args: Any, **kwargs: Any) -> Query
     ).exclude(Q(id__in=viewer.blocks.all()) | Q(blocks=viewer) | Q(id=viewer.id))
 
     if following is True:
-        query = query.filter(id__in=viewer.following.all()) # type: ignore
+        query = query.filter(id__in=viewer.following.all())  # type: ignore
     elif following is False:
-        query = query.exclude(id__in=viewer.following.all()) # type: ignore
+        query = query.exclude(id__in=viewer.following.all())  # type: ignore
 
     return query.annotate(
         mutuals=Count(
             "followers",
             filter=Q(
                 ~Q(id=viewer.id),
-                ~Q(id__in=viewer.following.all()), # type: ignore
-                followers__in=viewer.following.all(), # type: ignore
+                ~Q(id__in=viewer.following.all()),  # type: ignore
+                followers__in=viewer.following.all(),  # type: ignore
             ),
             distinct=True,
         ),
@@ -159,7 +164,13 @@ suggested_users = SuggestedUsers()
 
 
 @receiver(signals.post_save, sender=models.UserFollows)
-def update_suggestions_on_follow(sender: type[models.UserFollows], instance: models.UserFollows, created: bool, *args: Any, **kwargs: Any) -> None:
+def update_suggestions_on_follow(
+    sender: type[models.UserFollows],
+    instance: models.UserFollows,
+    created: bool,
+    *args: Any,
+    **kwargs: Any,
+) -> None:
     """remove a follow from the recs and update the ranks"""
     if not created or not instance.user_object.discoverable:
         return
@@ -170,7 +181,13 @@ def update_suggestions_on_follow(sender: type[models.UserFollows], instance: mod
 
 
 @receiver(signals.post_save, sender=models.UserFollowRequest)
-def update_suggestions_on_follow_request(sender: type[models.UserFollowRequest], instance: models.UserFollowRequest, created: bool, *args: Any, **kwargs: Any) -> None:
+def update_suggestions_on_follow_request(
+    sender: type[models.UserFollowRequest],
+    instance: models.UserFollowRequest,
+    created: bool,
+    *args: Any,
+    **kwargs: Any,
+) -> None:
     """remove a follow from the recs and update the ranks"""
     if not created or not instance.user_object.discoverable:
         return
@@ -180,7 +197,12 @@ def update_suggestions_on_follow_request(sender: type[models.UserFollowRequest],
 
 
 @receiver(signals.post_save, sender=models.UserBlocks)
-def update_suggestions_on_block(sender: type[models.UserBlocks], instance: models.UserBlocks, *args: Any, **kwargs: Any) -> None:
+def update_suggestions_on_block(
+    sender: type[models.UserBlocks],
+    instance: models.UserBlocks,
+    *args: Any,
+    **kwargs: Any,
+) -> None:
     """remove blocked users from recs"""
     if instance.user_subject.local and instance.user_object.discoverable:
         remove_suggestion_task.delay(instance.user_subject.id, instance.user_object.id)
@@ -189,7 +211,9 @@ def update_suggestions_on_block(sender: type[models.UserBlocks], instance: model
 
 
 @receiver(signals.post_delete, sender=models.UserFollows)
-def update_suggestions_on_unfollow(sender: type[models.UserFollows], instance: models.UserFollows, **kwargs: Any) -> Any:
+def update_suggestions_on_unfollow(
+    sender: type[models.UserFollows], instance: models.UserFollows, **kwargs: Any
+) -> Any:
     """update rankings, but don't re-suggest because it was probably intentional"""
     if instance.user_object.discoverable:
         rerank_user_task.delay(instance.user_object.id, update_only=False)
@@ -246,7 +270,13 @@ def update_new_user_command(instance_id: int) -> None:
 
 
 @receiver(signals.post_save, sender=models.FederatedServer)
-def domain_level_update(sender: type[models.FederatedServer], instance: models.FederatedServer, created: bool, update_fields: Optional[List[str]] = None, **kwargs: Any) -> None:
+def domain_level_update(
+    sender: type[models.FederatedServer],
+    instance: models.FederatedServer,
+    created: bool,
+    update_fields: Optional[List[str]] = None,
+    **kwargs: Any,
+) -> None:
     """remove users on a domain block"""
     if (
         not update_fields
