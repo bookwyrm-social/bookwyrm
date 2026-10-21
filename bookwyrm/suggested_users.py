@@ -1,10 +1,11 @@
 """store recommended follows in redis"""
+from typing import Any, List, Optional
 
 import math
 import logging
 from django.dispatch import receiver
 from django.db import transaction
-from django.db.models import signals, Count, Q, Case, When, IntegerField
+from django.db.models import signals, Count, Q, QuerySet, Case, When, IntegerField
 from opentelemetry import trace
 
 from bookwyrm import models
@@ -23,9 +24,9 @@ class SuggestedUsers(RedisStore):
 
     max_length = 30
 
-    def get_rank(self, obj):
+    def get_rank(self, obj: Any) -> int:
         """get computed rank"""
-        return obj.mutuals  # + (1.0 - (1.0 / (obj.shared_books + 1)))
+        return obj.mutuals or 0  # + (1.0 - (1.0 / (obj.shared_books + 1)))
 
     def store_id(self, user: models.User | int) -> str:
         """the key used to store this user's recs"""
@@ -40,7 +41,7 @@ class SuggestedUsers(RedisStore):
             # "shared_books": int(1 / (-1 * (rank % 1 - 1))) - 1,
         }
 
-    def get_objects_for_store(self, store):
+    def get_objects_for_store(self, store: str) -> QuerySet[models.User]:
         """a list of potential follows for a user"""
         user = models.User.objects.get(id=store.split("-")[0])
 
@@ -52,18 +53,18 @@ class SuggestedUsers(RedisStore):
             bookwyrm_user=True,
         )
 
-    def get_stores_for_object(self, obj):
+    def get_stores_for_object(self, obj: models.User) -> List[str]:
         """the stores that an object belongs in"""
         return [self.store_id(u) for u in self.get_users_for_object(obj)]
 
-    def get_users_for_object(self, obj):
+    def get_users_for_object(self, obj: models.User) -> QuerySet[models.User]:
         """given a user, who might want to follow them"""
         return models.User.objects.filter(local=True, is_active=True).exclude(
             Q(id=obj.id) | Q(followers=obj) | Q(id__in=obj.blocks.all()) | Q(blocks=obj)
         )
 
     @tracer.start_as_current_span("SuggestedUsers.rerank_obj")
-    def rerank_obj(self, obj, update_only=True):
+    def rerank_obj(self, obj: Any, update_only: bool = True) -> None:
         """update all the instances of this user with new ranks"""
         trace.get_current_span().set_attribute("update_only", update_only)
         pipeline = redis_instance.pipeline()
@@ -91,7 +92,7 @@ class SuggestedUsers(RedisStore):
         """take a user out of someone's suggestions"""
         self.bulk_remove_objects_from_store([suggested_user], self.store_id(user_id))
 
-    def get_suggestions(self, user, local=False):
+    def get_suggestions(self, user: models.User, local: bool = False) -> QuerySet[models.User]:
         """get suggestions"""
         local = local or models.SiteSettings.get().disable_federation
 
@@ -119,7 +120,7 @@ class SuggestedUsers(RedisStore):
         return users.order_by("-mutuals")[:5]
 
 
-def get_annotated_users(viewer, *args, **kwargs):
+def get_annotated_users(viewer: models.User, *args: Any, **kwargs: Any) -> QuerySet[models.User]:
     """Users, annotated with things they have in common"""
     following = kwargs.pop("following", None)
     query = models.User.objects.filter(
@@ -127,17 +128,17 @@ def get_annotated_users(viewer, *args, **kwargs):
     ).exclude(Q(id__in=viewer.blocks.all()) | Q(blocks=viewer) | Q(id=viewer.id))
 
     if following is True:
-        query = query.filter(id__in=viewer.following.all())
+        query = query.filter(id__in=viewer.following.all()) # type: ignore
     elif following is False:
-        query = query.exclude(id__in=viewer.following.all())
+        query = query.exclude(id__in=viewer.following.all()) # type: ignore
 
     return query.annotate(
         mutuals=Count(
             "followers",
             filter=Q(
                 ~Q(id=viewer.id),
-                ~Q(id__in=viewer.following.all()),
-                followers__in=viewer.following.all(),
+                ~Q(id__in=viewer.following.all()), # type: ignore
+                followers__in=viewer.following.all(), # type: ignore
             ),
             distinct=True,
         ),
@@ -158,7 +159,7 @@ suggested_users = SuggestedUsers()
 
 
 @receiver(signals.post_save, sender=models.UserFollows)
-def update_suggestions_on_follow(sender, instance, created, *args, **kwargs):
+def update_suggestions_on_follow(sender: type[models.UserFollows], instance: models.UserFollows, created: bool, *args: Any, **kwargs: Any) -> None:
     """remove a follow from the recs and update the ranks"""
     if not created or not instance.user_object.discoverable:
         return
@@ -169,7 +170,7 @@ def update_suggestions_on_follow(sender, instance, created, *args, **kwargs):
 
 
 @receiver(signals.post_save, sender=models.UserFollowRequest)
-def update_suggestions_on_follow_request(sender, instance, created, *args, **kwargs):
+def update_suggestions_on_follow_request(sender: type[models.UserFollowRequest], instance: models.UserFollowRequest, created: bool, *args: Any, **kwargs: Any) -> None:
     """remove a follow from the recs and update the ranks"""
     if not created or not instance.user_object.discoverable:
         return
@@ -179,7 +180,7 @@ def update_suggestions_on_follow_request(sender, instance, created, *args, **kwa
 
 
 @receiver(signals.post_save, sender=models.UserBlocks)
-def update_suggestions_on_block(sender, instance, *args, **kwargs):
+def update_suggestions_on_block(sender: type[models.UserBlocks], instance: models.UserBlocks, *args: Any, **kwargs: Any) -> None:
     """remove blocked users from recs"""
     if instance.user_subject.local and instance.user_object.discoverable:
         remove_suggestion_task.delay(instance.user_subject.id, instance.user_object.id)
@@ -188,7 +189,7 @@ def update_suggestions_on_block(sender, instance, *args, **kwargs):
 
 
 @receiver(signals.post_delete, sender=models.UserFollows)
-def update_suggestions_on_unfollow(sender, instance, **kwargs):
+def update_suggestions_on_unfollow(sender: type[models.UserFollows], instance: models.UserFollows, **kwargs: Any) -> Any:
     """update rankings, but don't re-suggest because it was probably intentional"""
     if instance.user_object.discoverable:
         rerank_user_task.delay(instance.user_object.id, update_only=False)
@@ -213,9 +214,9 @@ def update_user(
     sender: type[models.User],
     instance: models.User,
     created: bool,
-    update_fields: list[str] = None,
-    **kwargs,
-):
+    update_fields: Optional[list[str]] = None,
+    **kwargs: Any,
+) -> None:
     """an updated user, neat"""
     # a new user is found, create suggestions for them
     if created and instance.local:
@@ -239,13 +240,13 @@ def update_user(
         remove_user_task.delay(instance.id)
 
 
-def update_new_user_command(instance_id: int):
+def update_new_user_command(instance_id: int) -> None:
     """wait for transaction to complete"""
     rerank_suggestions_task.delay(instance_id)
 
 
 @receiver(signals.post_save, sender=models.FederatedServer)
-def domain_level_update(sender, instance, created, update_fields=None, **kwargs):
+def domain_level_update(sender: type[models.FederatedServer], instance: models.FederatedServer, created: bool, update_fields: Optional[List[str]] = None, **kwargs: Any) -> None:
     """remove users on a domain block"""
     if (
         not update_fields
@@ -270,7 +271,7 @@ def rerank_suggestions_task(user_id: int) -> None:
 
 
 @app.task(queue=SUGGESTED_USERS)
-def rerank_user_task(user_id: int, update_only=False) -> None:
+def rerank_user_task(user_id: int, update_only: bool = False) -> None:
     """do the hard work in celery"""
     user = models.User.objects.get(id=user_id)
     if user:

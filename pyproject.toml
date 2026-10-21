@@ -121,6 +121,7 @@ module = [
 [[tool.mypy.overrides]]  # delete once we have full coverage
 ignore_errors = false
 module = [
+    "bookwyrm.suggested_users",
     "bookwyrm.connectors.*",
     "bookwyrm.models.annual_goal",
     "bookwyrm.models.federated_server",
