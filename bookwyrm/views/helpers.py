@@ -1,17 +1,18 @@
 """helper functions used in various views"""
 
-import re
 from datetime import datetime, timedelta
-from typing import Any
+from functools import reduce
+import operator
+import re
+from typing import Any, List
+from urllib.parse import urlsplit, urlunsplit
+
 import dateutil.parser
 import dateutil.tz
 from dateutil.parser import ParserError
-from urllib.parse import urlsplit, urlunsplit
-
-
 import mistune
-
 from requests import HTTPError
+
 from django.db.models import Q, QuerySet
 from django.conf import settings as django_settings
 from django.shortcuts import redirect, _get_queryset
@@ -291,3 +292,12 @@ def convert_to_markdown(content: str) -> str:
     content = mistune.html(content).rstrip()
     # sanitize resulting html
     return sanitizer.clean(content)
+
+
+def search_within_queryset(
+    queryset: QuerySet, value: str, searchable_fields: List[str] = None
+) -> QuerySet:
+    search_filter_entries = [{f"{f}__icontains": value} for f in searchable_fields]
+    return queryset.filter(
+        reduce(operator.or_, (Q(**f) for f in search_filter_entries))
+    )
