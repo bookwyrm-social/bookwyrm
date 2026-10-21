@@ -9,6 +9,7 @@ from s3_tar import S3Tar
 
 from django.db import transaction
 from django.db.models import FileField, JSONField, QuerySet
+from django.db.models.fields.files import ImageFieldFile
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
 from django.core.files.storage import Storage, storages
@@ -29,7 +30,7 @@ logger = logging.getLogger(__name__)
 class BookwyrmAwsSession(BotoSession):
     """a boto session that always uses settings.AWS_S3_ENDPOINT_URL"""
 
-    def client(self, *args, **kwargs):
+    def client(self, *args: Any, **kwargs: Any):
         kwargs["endpoint_url"] = storages["exports"].endpoint_url
         return super().client("s3", *args, **kwargs)
 
@@ -53,7 +54,7 @@ class BookwyrmExportJob(ParentJob):
 
 
 @app.task(queue=IMPORTS, base=ParentTask)
-def create_export_json_task(**kwargs) -> None:
+def create_export_json_task(**kwargs: Any) -> None:
     """create the JSON data for the export"""
 
     job = BookwyrmExportJob.objects.get(id=kwargs["job_id"])
@@ -84,13 +85,13 @@ def create_export_json_task(**kwargs) -> None:
             job.set_status("failed")
 
 
-def archive_file_location(file, directory="") -> str:
+def archive_file_location(file: ImageFieldFile, directory: str = "") -> Any:
     """get the relative location of a file inside the archive"""
     return os.path.join(directory, file.name)
 
 
 @app.task(queue=IMPORTS, base=ParentTask)
-def create_archive_task(**kwargs) -> None:
+def create_archive_task(**kwargs: Any) -> None:
     """create the archive containing the JSON file and additional files"""
 
     job = BookwyrmExportJob.objects.get(id=kwargs["job_id"])
