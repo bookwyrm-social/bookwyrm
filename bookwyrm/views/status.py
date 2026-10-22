@@ -2,6 +2,7 @@
 
 import re
 import logging
+from urllib.parse import urlsplit
 
 from django.contrib.auth.decorators import login_required
 from django.core.validators import URLValidator
@@ -10,7 +11,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.forms import ModelForm
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -208,7 +209,9 @@ class DeleteStatus(View):
 
     def post(self, request: HttpRequest, status_id: int, report_id=None):
         """delete and tombstone a status"""
-        status = get_object_or_404(models.Status, id=status_id)
+        status = get_object_or_404(
+            models.Status.objects.select_subclasses(), id=status_id
+        )
 
         # don't let people delete other people's statuses
         status.raise_not_deletable(request.user)
@@ -219,7 +222,17 @@ class DeleteStatus(View):
         if report_id:
             models.Report.record_action(report_id, DELETE_ITEM, request.user)
 
-        return redirect_to_referer(request, "/")
+        # referer might be the page that was just deleted, sends user somewhere sensible
+        if urlsplit(request.headers.get("referer", "")).path.rstrip(
+            "/"
+        ) == status.local_path.rstrip("/"):
+            book = getattr(status, "book", None)
+            if book:
+                return redirect(book.local_path)
+            else:
+                return redirect(status.user.local_path)
+        else:
+            return redirect_to_referer(request, "/")
 
 
 @login_required

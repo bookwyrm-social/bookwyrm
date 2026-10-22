@@ -306,7 +306,7 @@
 
                 <div class="field">
                     <label class="label" for="id_goodreads_key">
-                        {% trans "Goodreads key:" %}
+                        {% trans "GoodReads key:" %}
                     </label>
                     {{ form.goodreads_key }}
 
@@ -338,6 +338,15 @@
                     {{ form.libris_key }}
 
                     {% include 'snippets/form_errors.html' with errors_list=form.libris_key.errors id="id_libris_key_error" %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_librarything_key">
+                        {% trans "LibraryThing ID:" %}
+                    </label>
+                    {{ form.librarything_key }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.librarything_key.errors id="id_librarything_id_error" %}
                 </div>
             </div>
         </section>

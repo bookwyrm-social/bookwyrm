@@ -22,14 +22,17 @@ def get_book_superlatives():
                 ),
             ),
             rating_count=Count(
-                "editions__review",
+                "editions__review__user",
+                distinct=True,
                 filter=Q(
-                    editions__review__user__local=True, editions__review__deleted=False
+                    editions__review__user__local=True,
+                    editions__review__deleted=False,
+                    editions__review__rating__isnull=False,
                 ),
             ),
         )
         .annotate(weighted=F("rating") * F("rating_count") / total_ratings)
-        .filter(rating__gt=4, weighted__gt=0)
+        .filter(rating__gt=4, rating_count__gt=1, weighted__gt=0)
         .order_by("-weighted")
         .first()
     )
@@ -43,14 +46,17 @@ def get_book_superlatives():
                 ),
             ),
             rating_count=Count(
-                "editions__review",
+                "editions__review__user",
+                distinct=True,
                 filter=Q(
-                    editions__review__user__local=True, editions__review__deleted=False
+                    editions__review__user__local=True,
+                    editions__review__deleted=False,
+                    editions__review__rating__isnull=False,
                 ),
             ),
         )
         .annotate(weighted=F("deviation") * F("rating_count") / total_ratings)
-        .filter(weighted__gt=0)
+        .filter(rating_count__gt=1, weighted__gt=0)
         .order_by("-weighted")
         .first()
     )

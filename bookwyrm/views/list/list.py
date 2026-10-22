@@ -26,6 +26,7 @@ from bookwyrm.views.helpers import (
     is_api_request,
     maybe_redirect_local_path,
     redirect_to_referer,
+    search_within_queryset,
 )
 
 
@@ -53,6 +54,22 @@ class List(View):
 
         items = blocked_book_filter(items, "Edition", request.user)
         items = sort_list(request, items)
+        if query := request.GET.get("q"):
+            items = search_within_queryset(
+                items,
+                query,
+                searchable_fields=[
+                    "edition__authors__name",
+                    "edition__title",
+                    "edition__physical_format",
+                    "edition__isbn_10",
+                    "edition__isbn_13",
+                    "edition__oclc_number",
+                    "edition__asin",
+                    "edition__aasin",
+                    "edition__isfdb",
+                ],
+            )
 
         paginated = Paginator(items, PAGE_LENGTH)
 

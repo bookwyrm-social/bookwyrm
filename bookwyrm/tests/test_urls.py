@@ -19,9 +19,7 @@ class Urls(TestCase):
         self.local_user = models.User.objects.create_user(
             "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
         )
-        self.series = models.Series.objects.create(
-            name="test series", user=self.local_user
-        )
+        self.series = models.Series.objects.create(name="test series")
         self.book = models.Work.objects.create(title="test book")
         self.seriesbook = models.SeriesBook.objects.create(
             book=self.book, series=self.series, user=self.local_user
