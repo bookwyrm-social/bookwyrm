@@ -156,6 +156,62 @@ class BookViews(TestCase):
         self.assertEqual(result.context_data["suggestion_list"], suggestion_list)
 
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+    def test_book_page_suggestions_deprioritizes_read(self, *_):
+        """books with readthroughs sort below unread suggestions"""
+        view = views.Book.as_view()
+        suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
+        unread_work = models.Work.objects.create(title="Unread Work")
+        models.Edition.objects.create(
+            title="Unread Book",
+            remote_id="https://example.com/book/2",
+            parent_work=unread_work,
+        )
+
+        unread_item = models.SuggestionListItem.objects.create(
+            book_list=suggestion_list, user=self.local_user, work=unread_work
+        )
+        read_item = models.SuggestionListItem.objects.create(
+            book_list=suggestion_list,
+            user=self.local_user,
+            work=self.another_book.parent_work,
+        )
+        read_item.endorsement.add(self.local_user)
+        models.ReadThrough.objects.create(
+            user=self.local_user, book=self.another_book, start_date=timezone.now()
+        )
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.book.id)
+        self.assertEqual(result.status_code, 200)
+        items = list(result.context_data["items"])
+        self.assertEqual(items[0], unread_item)
+        self.assertEqual(items[1], read_item)
+
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+    def test_book_page_suggestions_shows_read_when_few_unread(self, *_):
+        """read books still fill the section when no unread suggestions exist"""
+        view = views.Book.as_view()
+        suggestion_list = models.SuggestionList.objects.create(suggests_for=self.work)
+        read_item = models.SuggestionListItem.objects.create(
+            book_list=suggestion_list,
+            user=self.local_user,
+            work=self.another_book.parent_work,
+        )
+        models.ReadThrough.objects.create(
+            user=self.local_user, book=self.another_book, start_date=timezone.now()
+        )
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.book.id)
+        self.assertEqual(result.status_code, 200)
+        items = list(result.context_data["items"])
+        self.assertIn(read_item, items)
+
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_book_page_suggestions_with_items(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Book.as_view()
