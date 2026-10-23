@@ -1,7 +1,5 @@
 """non-interactive pages"""
 
-from typing import List
-
 from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -256,7 +254,7 @@ def feed_page_data(user):
     }
 
 
-def get_suggested_books(user: models.User, max_books: int = 5) -> List[models.Edition]:
+def get_suggested_books(user: models.User, max_books: int = 5) -> list[models.Edition]:
     """helper to get a user's recent books"""
     book_count = 0
     preset_shelves = {"reading": max_books, "read": 2, "to-read": max_books}
