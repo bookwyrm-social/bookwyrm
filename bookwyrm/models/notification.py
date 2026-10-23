@@ -1,6 +1,6 @@
 """alert a user to activity"""
 
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from django.db import models, transaction
 from django.dispatch import receiver
@@ -163,7 +163,7 @@ def notify_on_unfav(
 @receiver(models.signals.post_save)
 @transaction.atomic
 def notify_user_on_mention(
-    sender: Any, instance: Any, *args: Any, **kwargs: Any
+    sender: type[BookWyrmModel], instance: Any, *args: Any, **kwargs: Any
 ) -> None:
     """creating and deleting statuses with @ mentions and replies"""
     if not issubclass(sender, Status):
@@ -236,7 +236,7 @@ def notify_user_on_import_complete(
     sender: type[ImportJob],
     instance: ImportJob,
     *args: Any,
-    update_fields: Optional[List[str]] = None,
+    update_fields: Optional[list[str]] = None,
     **kwargs: Any,
 ) -> None:
     """we imported your books! aren't you proud of us"""
@@ -255,7 +255,7 @@ def notify_user_on_user_import_complete(
     sender: type[BookwyrmImportJob],
     instance: BookwyrmImportJob,
     *args: Any,
-    update_fields: Optional[List[str]] = None,
+    update_fields: Optional[list[str]] = None,
     **kwargs: Any,
 ) -> None:
     """we imported your user details! aren't you proud of us"""
@@ -272,7 +272,7 @@ def notify_user_on_user_export_complete(
     sender: type[BookwyrmExportJob],
     instance: BookwyrmExportJob,
     *args: Any,
-    update_fields: Optional[List[str]] = None,
+    update_fields: Optional[list[str]] = None,
     **kwargs: Any,
 ) -> None:
     """we exported your user details! aren't you proud of us"""

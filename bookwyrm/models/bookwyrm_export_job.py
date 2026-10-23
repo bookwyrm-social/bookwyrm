@@ -85,7 +85,7 @@ def create_export_json_task(**kwargs: Any) -> None:
             job.set_status("failed")
 
 
-def archive_file_location(file: ImageFieldFile, directory: str = "") -> Any:
+def archive_file_location(file: ImageFieldFile, directory: str = "") -> str:
     """get the relative location of a file inside the archive"""
     return os.path.join(directory, file.name)
 
