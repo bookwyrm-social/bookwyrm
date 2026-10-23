@@ -112,16 +112,22 @@ django_settings_module = "bookwyrm.settings"
 [[tool.mypy.overrides]]
 ignore_errors = true
 implicit_reexport = true
+module = [
+    "bookwyrm.*",  # delete once we have full coverage
+    "bookwyrm.tests.*",
+    "bookwyrm.migrations.*",
+]
 
-module = "bookwyrm.*"
-
-[[tool.mypy.overrides]]
+[[tool.mypy.overrides]]  # delete once we have full coverage
 ignore_errors = false
 module = [
     "bookwyrm.connectors.*",
-    "bookwyrm.utils.*",
+    "bookwyrm.models.annual_goal",
+    "bookwyrm.models.federated_server",
     "bookwyrm.importers.*",
     "bookwyrm.isbn.*",
+    "bookwyrm.suggested_users",
+    "bookwyrm.utils.*",
     "celerywyrm.*",
 ]
 
