@@ -1,5 +1,10 @@
 """thumbnail generation strategy for django-imagekit"""
 
+import logging
+from PIL import UnidentifiedImageError
+
+logger = logging.getLogger(__name__)
+
 
 class Strategy:
     """
@@ -9,12 +14,20 @@ class Strategy:
 
     def on_source_saved(self, file):
         """What happens on source saved"""
-        file.generate()
+        self._generate(file)
 
     def on_existence_required(self, file):
         """What happens on existence required"""
-        file.generate()
+        self._generate(file)
 
     def on_content_required(self, file):
         """What happens on content required"""
-        file.generate()
+        self._generate(file)
+
+    @staticmethod
+    def _generate(file):
+        """Safely generate a thumbnail file, ignoring corrupted or unidentifiable images"""
+        try:
+            file.generate()
+        except (OSError, UnidentifiedImageError, ValueError) as err:
+            logger.warning("Failed to generate thumbnail for %s: %s", file, err)
