@@ -8,7 +8,7 @@ register = template.Library()
 
 
 @register.filter(name="to_markdown")
-def get_markdown(content):
+def get_markdown(content: str) -> str | None:
     """convert markdown to html"""
     if content:
         return to_markdown(content)
