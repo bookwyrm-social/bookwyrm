@@ -1,6 +1,6 @@
 """template filters"""
 
-from typing import Any, Dict
+from typing import Any
 
 from django import template
 from django.db.models import Avg, StdDev, Count, F, Q, QuerySet
@@ -11,7 +11,7 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context=False)
-def get_book_superlatives() -> Dict[str, Any]:
+def get_book_superlatives() -> dict[str, Any]:
     """get book stats for the about page"""
     total_ratings = models.Review.objects.filter(local=True, deleted=False).count()
     data = {}

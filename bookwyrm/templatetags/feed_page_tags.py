@@ -1,6 +1,6 @@
 """tags used on the feed pages"""
 
-from typing import Any, Dict, List
+from typing import Any
 
 from django import template
 from bookwyrm.models import Status, Edition
@@ -25,7 +25,7 @@ def load_subclass(status: Status) -> Status:
 
 
 @register.simple_tag(takes_context=True)
-def suggested_books(context: Dict[str, Any]) -> List[Edition]:
+def suggested_books(context: dict[str, Any]) -> list[Edition]:
     """get books for suggested books panel"""
     # this happens here instead of in the view so that the template snippet can
     # be cached in the template

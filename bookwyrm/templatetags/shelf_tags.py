@@ -1,6 +1,6 @@
 """Filters and tags related to shelving books"""
 
-from typing import Any, Dict
+from typing import Any
 
 from django import template
 from django.utils.translation import gettext_lazy as _
@@ -48,7 +48,7 @@ def get_next_shelf(current_shelf: str) -> str:
 
 
 @register.filter(name="translate_shelf_name")
-def get_translated_shelf_name(shelf: models.Shelf | Dict[str, Any]) -> Any:
+def get_translated_shelf_name(shelf: models.Shelf | dict[str, Any]) -> Any:
     """produce translated shelf identifier name"""
     if not shelf:
         return ""
@@ -62,7 +62,7 @@ def get_translated_shelf_name(shelf: models.Shelf | Dict[str, Any]) -> Any:
 
 
 @register.simple_tag(takes_context=True)
-def active_shelf(context: Dict[str, Any], book: models.Edition) -> Any:
+def active_shelf(context: dict[str, Any], book: models.Edition) -> Any:
     """check what shelf a user has a book on, if any"""
     user = context["request"].user
     return cache.get_or_set(

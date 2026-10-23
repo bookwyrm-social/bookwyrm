@@ -1,7 +1,7 @@
 """template filters for really common utilities"""
 
 import os
-from typing import Any, List
+from typing import Any
 
 from uuid import uuid4
 from urllib.parse import urlparse
@@ -199,6 +199,6 @@ def is_instance_admin(localname: str) -> bool:
 
 
 @register.filter(name="dedupe_fields")
-def get_dupe_match_field(original: Any, dupe: Any) -> List[str]:
+def get_dupe_match_field(original: Any, dupe: Any) -> list[str]:
     """Identify which field is matching for a dedupe"""
     return [f.verbose_name for f in original.get_shared_fields(dupe)]

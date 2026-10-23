@@ -1,6 +1,6 @@
 """template filters for status interaction buttons"""
 
-from typing import Any, Dict
+from typing import Any
 
 from django import template
 
@@ -41,7 +41,7 @@ def get_user_saved_lists(user: models.User, book_list: models.List) -> bool:
 
 
 @register.simple_tag(takes_context=True)
-def get_relationship(context: Dict[str, Any], user_object: models.User) -> Any:
+def get_relationship(context: dict[str, Any], user_object: models.User) -> Any:
     """caches the relationship between the logged in user and another user"""
     user = context["request"].user
     return get_or_set(
@@ -55,7 +55,7 @@ def get_relationship(context: Dict[str, Any], user_object: models.User) -> Any:
 
 def get_relationship_name(
     user: models.User, user_object: models.User
-) -> Dict[str, bool]:
+) -> dict[str, bool]:
     """returns the relationship type"""
     types = {
         "is_following": False,
