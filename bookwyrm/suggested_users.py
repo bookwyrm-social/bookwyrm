@@ -65,7 +65,7 @@ class SuggestedUsers(RedisStore):
         )
 
     @tracer.start_as_current_span("SuggestedUsers.rerank_obj")
-    def rerank_obj(self, obj: Any, update_only: bool = True) -> None:
+    def rerank_obj(self, obj: models.User, update_only: bool = True) -> None:
         """update all the instances of this user with new ranks"""
         trace.get_current_span().set_attribute("update_only", update_only)
         pipeline = redis_instance.pipeline()
@@ -213,7 +213,7 @@ def update_suggestions_on_block(
 @receiver(signals.post_delete, sender=models.UserFollows)
 def update_suggestions_on_unfollow(
     sender: type[models.UserFollows], instance: models.UserFollows, **kwargs: Any
-) -> Any:
+) -> None:
     """update rankings, but don't re-suggest because it was probably intentional"""
     if instance.user_object.discoverable:
         rerank_user_task.delay(instance.user_object.id, update_only=False)
