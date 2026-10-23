@@ -1,7 +1,7 @@
 """access the activity stores stored in redis"""
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List
+from typing import Any
 
 import redis
 from django.db.models.query import QuerySet
@@ -16,7 +16,7 @@ class RedisStore(ABC):
 
     max_length = settings.MAX_STREAM_LENGTH
 
-    def get_value(self, obj: Any) -> Dict[str, int]:
+    def get_value(self, obj: Any) -> dict[str, int]:
         """the object and rank"""
         return {obj.id: self.get_rank(obj)}
 
@@ -36,7 +36,7 @@ class RedisStore(ABC):
         # and go!
         return pipeline.execute()
 
-    def remove_object_from_stores(self, obj: Any, stores: List[str]) -> None:
+    def remove_object_from_stores(self, obj: Any, stores: list[str]) -> None:
         """remove an object from all stores"""
         # if the stores are provided, the object can just be an id
         if stores and isinstance(obj, int):
@@ -58,7 +58,7 @@ class RedisStore(ABC):
             pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
         pipeline.execute()
 
-    def bulk_remove_objects_from_store(self, objs: List[Any], store: str) -> None:
+    def bulk_remove_objects_from_store(self, objs: list[Any], store: str) -> None:
         """remove a list of objects from a given store"""
         pipeline = redis_instance.pipeline()
         for obj in objs[: self.max_length]:
