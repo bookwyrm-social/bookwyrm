@@ -1,18 +1,11 @@
-{% extends "components/details.html" %}
-
 {% load i18n %}
 
-{% block always-visible %}
-    <div>
+<div class="notification">
+    <div class="block">
         {% include 'book/publisher_info.html' %}
     </div>
-{% endblock %}
 
-{% block sometimes-visible %}
-
-    <div class="control">
-        {% include 'book/book_identifiers.html' %}
-    </div>
+    {% include 'book/book_identifiers.html' %}
 
     {% trans "Load data" as button_text %}
     {% if book.openlibrary_key %}
@@ -77,4 +70,4 @@
         </a>
     </p>
     {% endif %}
-{% endblock %}
+</div>
