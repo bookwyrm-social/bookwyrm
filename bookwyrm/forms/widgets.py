@@ -37,6 +37,7 @@ class SelectDateWidget(forms.SelectDateWidget):
                 **context["widget"]["attrs"],
                 "id": f"id_{year_name}",
                 "class": "input",
+                "placeholder": "Year",
             },
         )
         month_choices = list(self.months.items())
