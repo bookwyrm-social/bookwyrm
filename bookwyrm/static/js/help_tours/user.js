@@ -19,7 +19,7 @@ export const steps = [
         ]
     },
     {
-        text: gettext("This is a user profile page. Other Bookwyrm users can visit your own profile page - which parts they can see depends on your privacy settings."),
+        text: gettext("This is a user profile page. Which parts you can see depends on the user's privacy settings."),
         title: gettext("User Profile"),
         showOn: () => !profileLocked,
         buttons: [
@@ -33,20 +33,20 @@ export const steps = [
         ]
     },
     {
-        text: gettext("All of the reviews and comments published by a user are shown in this tab."),
+        text: gettext("This user's reflections on their reading."),
         title: gettext("Reviews and Comments"),
 
         attachTo: {
             element: "#reviews-comments-tab",
-            on: "right",
+            on: "bottom",
         }
     },
     {
-        text: gettext("This tab shows everything read towards your annual reading goal, or allows you to set one. You don't have to set a reading goal if that's not your thing, and your goal can be private."),
+        text: gettext("Everything read this calendar year."),
         title: gettext("Reading Goal"),
         attachTo: {
             element: "#reading-goal-tab",
-            on: "right",
+            on: "bottom",
         }
     },
     {
@@ -54,7 +54,7 @@ export const steps = [
         title: gettext("Groups"),
         attachTo: {
             element: "#groups-tab",
-            on: "right",
+            on: "bottom",
         }
     },
     {
@@ -62,27 +62,27 @@ export const steps = [
         title: gettext("Lists"),
         attachTo: {
             element: "#lists-tab",
-            on: "right",
+            on: "bottom",
         }
     },
     {
-        text: gettext("You can suggest books that are similar to other books – our 'algorithm' is other readers! Your suggestions are shown in this tab."),
+        text: gettext("You can suggest books that are similar to other books – our 'algorithm' is other readers!"),
         title: gettext("Suggestions"),
         attachTo: {
             element: "#suggestions-tab",
-            on: "right",
+            on: "bottom",
         }
     },
     {
-        text: gettext("Books can be arranged on shelves and are organized here."),
+        text: gettext("Books can be organized into shelves."),
         title: gettext("Book Shelves"),
         attachTo: {
             element: "#books-tab",
-            on: "right",
+            on: "bottom",
         }
     },
     {
-        text: gettext("Check out the most recent reading activity here."),
+        text: gettext("The most recent reading activity."),
         title: gettext("Reading Activity"),
         attachTo: {
             element: "#user-books-block",
@@ -90,7 +90,7 @@ export const steps = [
         }
     },
     {
-        text: gettext("All the latest user activity is listed in their public feed"),
+        text: gettext("All user activity is listed in their public feed"),
         title: gettext("Activity Feed"),
         attachTo: {
             element: "[id^=feed_]",
@@ -98,7 +98,7 @@ export const steps = [
         }
     },
     {
-        text: gettext("You can subscribe to all of a user's posts, or only certain types (such as reviews) via RSS."),
+        text: gettext("Subscribe to all of a user's posts, or only certain types (such as reviews) via RSS."),
         title: gettext("RSS feeds"),
         attachTo: {
             element: "#rss-feed",
