@@ -49,7 +49,7 @@ export const steps = [
         text: gettext("Updates from people you are following will appear in your <strong>Home</strong> timeline.<br><br>The <strong>Books</strong> tab shows activity from anyone, related to your books."),
         attachTo: {
             element: "#feed",
-            on: "left",
+            on: "left-start",
         }
     },
     {
@@ -57,7 +57,7 @@ export const steps = [
         text: gettext("The bell will light up when you have a new notification. When it does, click on it to find out what exciting thing has happened!"),
         attachTo: {
             element: "#notifications",
-            on: "bottom",
+            on: "bottom-end",
         }
     },
     {
@@ -65,7 +65,7 @@ export const steps = [
         text: gettext("Your profile, user directory, direct messages, and settings can be accessed by clicking on your name in the menu here."),
         attachTo: {
             element: "#user-profile",
-            on: "bottom",
+            on: "bottom-end",
         }
     },
 ]

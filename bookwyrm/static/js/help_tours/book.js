@@ -4,7 +4,7 @@ export const steps = [
         title: gettext('Edit book details'),
         attachTo: {
             element: "#edit-book-button",
-            on: "bottom",
+            on: "left",
         },
         scrollTo: false,
         extraHighlights: [ 'button[data-controls^="add_description"]', '.book-cover'],

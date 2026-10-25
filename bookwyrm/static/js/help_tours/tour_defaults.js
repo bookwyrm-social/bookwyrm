@@ -1,12 +1,16 @@
 /**
  * Import Shepherd
 */
+import {offset} from 'https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.8.0/+esm';
 import Shepherd from '../vendor/shepherd.module.js'
 const tour = new Shepherd.Tour({
     useModalOverlay: true,
     defaultStepOptions: {
+        floatingUIOptions: {
+            middleware: [offset({ mainAxis: 20, crossAxis: 20 })]
+          },
         skipMissingElement: true,
-        scrollTo: true,
+        scrollTo: { behavior: 'smooth', block: 'start' },
         highlightClass: 'tour-element-highlight',
         cancelIcon: {
             enabled: true,
