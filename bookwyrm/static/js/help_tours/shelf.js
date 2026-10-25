@@ -1,7 +1,7 @@
 export const steps = [
     {
         title: gettext("Book shelves"),
-        text: gettext("Book shelves are used to keep track of your reading activity. They are similar to lists, but are also used to create readthroughs."),
+        text: gettext("Book shelves are similar to lists, but more specific to you and your reading activity."),
         buttons: [
             {
                 action() {
