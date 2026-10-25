@@ -185,7 +185,7 @@ def user_search(request):
     data["page_range"] = paginated.get_elided_page_range(
         page.number, on_each_side=2, on_ends=1
     )
-    data.update({"has_tour":True, "tour_path":"search.js"})
+    data.update({"has_tour": True, "tour_path": "search.js"})
     return TemplateResponse(request, "search/user.html", data)
 
 
@@ -215,7 +215,7 @@ def list_search(request):
     data["page_range"] = paginated.get_elided_page_range(
         page.number, on_each_side=2, on_ends=1
     )
-    data.update({"has_tour":True, "tour_path":"search.js"})
+    data.update({"has_tour": True, "tour_path": "search.js"})
     return TemplateResponse(request, "search/list.html", data)
 
 

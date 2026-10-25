@@ -124,7 +124,7 @@ class Book(MergeableViewMixin, View):
             "suggestion_query": request.GET.get("suggestion_query", ""),
             "show_suggestions": request.GET.get("show_suggestions", False),
             "has_tour": True,
-            "tour_path": "book.js"
+            "tour_path": "book.js",
         }
 
         if request.user.is_authenticated:
