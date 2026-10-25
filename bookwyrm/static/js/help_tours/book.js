@@ -1,19 +1,25 @@
 export const steps = [
     {
-        text: gettext("This is home page of a book. Let's see what you can do while you're here!"),
-        title: gettext('Book page'),
-    },
-    {
-        text: gettext('If the cover or description are missing you can updated them straight from this page. To edit more details, use the Edit Edition button.'),
+        text: gettext('If the cover or description are missing you can updated them straight from this page. To edit more details, use this button.'),
         title: gettext('Edit book details'),
         attachTo: {
             element: "#edit-book-button",
-            on: "left",
+            on: "bottom",
         },
-        extraHighlights: [ 'button[data-controls^="add_description"]', '.book-cover']
+        scrollTo: false,
+        extraHighlights: [ 'button[data-controls^="add_description"]', '.book-cover'],
+        buttons: [
+            {
+                action() {
+                    return this.next();
+                },
+                text: gettext("Next"),
+                classes: "is-primary"
+            },
+        ]
     },
     {
-        text: gettext('This is where you can set a reading status for this book. You can press the button to move to the next stage, or use the drop down button to select the reading status you want to set.'),
+        text: gettext('This is where you can set a reading status for this book. You can press the button to progress to the next stage, or use the drop down button to select the reading status you want to set.'),
         title: gettext('Reading status'),
         attachTo: {
             element: "#shelve-button",
@@ -29,7 +35,7 @@ export const steps = [
         },
     },
     {
-        text: gettext('There can be multiple editions of a book, in various formats or languages. Click this link to choose which edition you want to use, or to edit the parent work.'),
+        text: gettext('There can be multiple editions of a book, in various formats or languages. Choose which edition you want to use, or to edit the parent work.'),
         title: gettext('Other editions'),
         attachTo: {
             element: "#other-editions-link",
@@ -37,7 +43,7 @@ export const steps = [
         },
     },
     {
-        text: gettext('Here you will find reviews and comments from other users.'),
+        text: gettext('Check out reviews and comments from other users.'),
         title: gettext('Read what other people think'),
         attachTo: {
             element: "#reviews-header",
@@ -46,7 +52,7 @@ export const steps = [
         extraHighlights: [ "#reviews"]
     },
     {
-        text: gettext('You can post your own review, comment, or quote here.'),
+        text: gettext('Post your own review, comment, or quote here.'),
         title: gettext('Share your thoughts'),
         attachTo: {
             element: "#review-comment-quote",
@@ -54,7 +60,7 @@ export const steps = [
         },
     },
     {
-        text: gettext('Know the perfect book for people who liked this one? Make a recommendation here.'),
+        text: gettext('Know the perfect book for people who liked this one? Make a recommendation!'),
         title: gettext('Suggest something similar'),
         attachTo: {
             element: "#suggestion-list-block",
@@ -63,7 +69,7 @@ export const steps = [
     },
 
     {
-        text: gettext('Some eBooks can be downloaded for free from external sources. They will be shown here.'),
+        text: gettext('Some eBooks can be downloaded from external sources.'),
         title: gettext('Download links'),
         attachTo: {
             element: "#book-file-links",

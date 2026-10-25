@@ -1,7 +1,16 @@
 export const steps = [
     {
         title: gettext("Home feed"),
-        text: gettext("This is your home page, where you will see the latest activity from people you follow.")
+        text: gettext("This is your home page, where you will see the latest activity from people you follow."),
+        buttons: [
+            {
+                action() {
+                    return this.next();
+                },
+                text: gettext("Next"),
+                classes: "is-primary"
+            },
+        ]
     },
     {
         title: gettext("Search box"),
