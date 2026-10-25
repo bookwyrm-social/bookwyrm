@@ -1,7 +1,15 @@
 export const steps = [
     {
-        text: gettext("This is the home page for a group. Users can be added to a group, and then curate book lists together. Currently groups do not federate to other BookWyrm or Fediverse instances, but we have plans for that as well as other features in the future."),
+        text: gettext("Groups are used to collectively curate book lists with friends."),
         title: gettext('Groups'),
+        buttons: [
+            {
+                action() {
+                    return this.next();
+                },
+                text: gettext("Next"),
+            },
+        ]
     },
     {
         text: gettext("Here is the name and manager of this group. Every group has a manager who can add and remove users."),
