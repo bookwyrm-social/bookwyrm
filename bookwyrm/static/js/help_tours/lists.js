@@ -1,7 +1,15 @@
 export const steps = [
     {
-        text: gettext("You can see all the public lists from your instance here. Lists are a great way to find new books to read!"),
+        text: gettext("You can see any lists you have access to here, including from other instances. Lists are a great way to find new books to read!"),
         title: gettext('Lists'),
+        buttons: [
+            {
+                action() {
+                    return this.next();
+                },
+                text: gettext("Next"),
+            },
+        ]
     },
     {
         text: gettext("You can bookmark or 'save' your favorite lists. Find them at this tab."),
