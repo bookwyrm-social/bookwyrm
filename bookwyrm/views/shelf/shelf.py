@@ -123,6 +123,8 @@ class Shelf(PrivateProfileMixin, View):
             ),
             "shelves_filter_query": shelves_filter_query,
             "size": "small",
+            "has_tour": True,
+            "tour_path": "shelf.js"
         }
 
         return TemplateResponse(request, "shelf/shelf.html", data)
