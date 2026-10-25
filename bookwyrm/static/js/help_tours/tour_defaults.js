@@ -25,6 +25,7 @@ const tour = new Shepherd.Tour({
                     return this.next();
                 },
                 text: gettext("Next"),
+                classes: "is-primary"
             },
         ]
     }

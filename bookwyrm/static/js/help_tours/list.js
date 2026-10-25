@@ -1,14 +1,19 @@
 export const steps = [
     {
-        title: gettext("List page"),
-        text: gettext("This is a book list page. Users can create lists of books for any reason.")
-    },
-    {
         title: gettext("List items"),
         text: gettext("Curators can order books in the list, and add notes on each book." ),
         attachTo: {
             element: "#list-items-block",
             on: "top",
+        buttons: [
+            {
+                action() {
+                    return this.next();
+                },
+                text: gettext("Next"),
+                classes: "is-primary"
+            },
+        ]
         }
     },
     {
