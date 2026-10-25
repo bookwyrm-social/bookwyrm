@@ -6,6 +6,10 @@ module.exports = {
         "es6": true
     },
 
+    "parserOptions": {
+        "sourceType": "module"
+    },
+
     "extends": "eslint:recommended",
 
     "rules": {
