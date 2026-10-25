@@ -89,7 +89,9 @@ class SuggestionList(MergeableMixin, AbstractList):
 
     @property
     def editions(self):
-        default_editions = [w.default_edition.id for w in self.works.all()]
+        default_editions = [
+            w.default_edition.id for w in self.works.all() if w.default_edition
+        ]
         edition_model = apps.get_model("bookwyrm", "Edition")
         return edition_model.objects.filter(id__in=default_editions)
 

@@ -155,20 +155,25 @@ def user_search(request):
         except PermissionDenied:
             return TemplateResponse(request, "search/user.html", data)
 
-    results = (
-        models.User.viewer_aware_objects(viewer)
-        .annotate(
-            similarity=Greatest(
-                TrigramSimilarity("username", query),
-                TrigramSimilarity("localname", query),
+    cleaned_query = query[1:] if query[0] == "@" else query
+    exact_match = models.User.objects.filter(username=cleaned_query)
+    if exact_match.exists():
+        results = exact_match
+    else:
+        results = (
+            models.User.viewer_aware_objects(viewer)
+            .annotate(
+                similarity=Greatest(
+                    TrigramSimilarity("username", query),
+                    TrigramSimilarity("localname", query),
+                )
             )
+            .filter(
+                similarity__gt=0.5,
+            )
+            .exclude(localname=INSTANCE_ACTOR_USERNAME)
+            .order_by("-similarity")
         )
-        .filter(
-            similarity__gt=0.5,
-        )
-        .exclude(localname=INSTANCE_ACTOR_USERNAME)
-        .order_by("-similarity")
-    )
 
     # don't expose remote users
     if not viewer.is_authenticated:

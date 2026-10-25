@@ -165,9 +165,8 @@ class Book(MergeableViewMixin, View):
                 ].suggestionlistitem_set.count()
                 items = (
                     data["suggestion_list"]
-                    .suggestionlistitem_set.prefetch_related(
-                        "user", "work", "work__authors", "endorsement"
-                    )
+                    .suggestionlistitem_set.filter(work__editions__isnull=False)
+                    .prefetch_related("user", "work", "work__authors", "endorsement")
                     .annotate(endorsement_count=Count("endorsement"))
                     .order_by("-endorsement_count")
                 )

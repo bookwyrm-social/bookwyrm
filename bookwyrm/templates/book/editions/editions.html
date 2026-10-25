@@ -96,7 +96,7 @@
             <dl>
             {% if work.lccn %}
                 <div class="is-flex is-flex-wrap-wrap">
-                    <dt class="mr-1">{% trans "LCCN" %}</dt>
+                    <dt class="mr-1">{% trans "LCCN:" %}</dt>
                     <dd>{{ work.lccn }}</dd>
                 </div>
             {% endif %}
@@ -131,7 +131,7 @@
 
             {% if work.goodreads_key %}
                 <div class="is-flex is-flex-wrap-wrap">
-                    <dt class="mr-1">{% trans "Goodreads:" %}</dt>
+                    <dt class="mr-1">{% trans "GoodReads:" %}</dt>
                     <dd>{{ work.goodreads_key }}</dd>
                 </div>
             {% endif %}
@@ -205,6 +205,7 @@
 
     <form action="{% url 'create-book-data' %}" method="POST" name="add-edition-form">
         {% csrf_token %}
+        <input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
         {{ work_form.title }}
         {{ work_form.sort_title }}
         {{ work_form.subtitle }}

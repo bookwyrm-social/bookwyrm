@@ -59,13 +59,13 @@
             </div>
         </div>
 
-        <div class="column is-6">
+        <div class="column is-4">
             <div class="notification">
                 <p class="header">{% trans "Images" %}</p>
                 <p class="title is-5">{{ queues.images|intcomma }}</p>
             </div>
         </div>
-        <div class="column is-6">
+        <div class="column is-4">
             <div class="notification">
                 <p class="header">{% trans "Suggested Users" %}</p>
                 <p class="title is-5">{{ queues.suggested_users|intcomma }}</p>
@@ -82,6 +82,12 @@
             <div class="notification">
                 <p class="header">{% trans "Email" %}</p>
                 <p class="title is-5">{{ queues.email|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-4">
+            <div class="notification">
+                <p class="header">{% trans "Deduplication" %}</p>
+                <p class="title is-5">{{ queues.dedupe|intcomma }}</p>
             </div>
         </div>
         <div class="column is-4">

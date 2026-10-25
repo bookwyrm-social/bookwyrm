@@ -10,7 +10,6 @@ from .book import BookData
 class Series(BookData, OrderedCollection):
     """serializes a book series"""
 
-    actor: str
     name: str
     alternativeNames: list[str] = field(default_factory=list)
     type: str = "Series"

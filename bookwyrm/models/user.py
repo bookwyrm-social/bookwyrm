@@ -4,7 +4,7 @@ import datetime
 from importlib import import_module
 import re
 import zoneinfo
-from typing import Optional, Iterable
+from typing import Any, Optional, Iterable
 from urllib.parse import urlparse
 from uuid import uuid4
 
@@ -38,6 +38,7 @@ SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 FeedFilterChoices = [
     ("review", _("Reviews")),
+    ("rating", _("Ratings")),
     ("comment", _("Comments")),
     ("quotation", _("Quotations")),
     ("everything", _("Everything else")),
@@ -337,7 +338,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             **kwargs,
         ).serialize()
 
-    def to_activity(self, **kwargs):
+    def to_activity(self, **kwargs) -> dict[str, Any]:
         """override default AP serializer to add context object
         idk if this is the best way to go about this"""
         if not self.is_active:
