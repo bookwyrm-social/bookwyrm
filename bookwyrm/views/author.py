@@ -62,7 +62,7 @@ class Author(MergeableViewMixin, View):
         )
 
         if query := request.GET.get("q"):
-            search_within_queryset(
+            works = search_within_queryset(
                 works,
                 query,
                 searchable_fields=[
