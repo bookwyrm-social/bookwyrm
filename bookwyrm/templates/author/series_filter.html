@@ -8,7 +8,7 @@
         <select id="id_series" name="series">
             <option value="">{% trans "Any" %}</option>
             {% for serie in series %}
-            <option value="{{ serie.id }}" {% if request.GET.series|stringformat:"i" == serie.id|stringformat:"i" %}selected{% endif %}>
+            <option value="{{ serie.id }}" {% if request.GET.series == serie.id|stringformat:"i" %}selected{% endif %}>
             {{ serie.name }}
             </option>
             {% endfor %}
