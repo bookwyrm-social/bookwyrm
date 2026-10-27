@@ -214,7 +214,7 @@ def get_author_from_isni(isni: str) -> Optional[activitypub.Author]:
         id=get_element_text(element.find(".//isniURI")),
         name=name,
         isni=isni,
-        viafId=viaf,
+        viaf=viaf,
         # aliases needs to be list not set
         aliases=sorted_aliases,
         bio=bio,

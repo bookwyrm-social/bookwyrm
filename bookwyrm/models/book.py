@@ -488,7 +488,7 @@ class Work(OrderedCollectionPageMixin, Book):
 
         # set rank
         for edition in self.editions.all():
-            edition.save()
+            edition.save(update_fields=["edition_rank"], broadcast=False)
 
     @property
     def default_edition(self) -> "Edition":
@@ -708,13 +708,7 @@ class Edition(Book):
         like an isbn for an edition"""
         filters = []
         # grabs all the data from the model to create django queryset filters
-        for field in cls._meta.get_fields():
-            if (
-                not hasattr(field, "deduplication_field")
-                or not field.deduplication_field
-            ):
-                continue
-
+        for field in cls.deduplication_fields():
             value = data.get(field.get_activitypub_field())
             if not value:
                 continue
@@ -975,9 +969,6 @@ class Series(OrderedCollectionMixin, BookDataModel):
         "Series", related_name="merge_target", on_delete=models.PROTECT, null=True
     )
 
-    user = fields.ForeignKey(
-        "User", on_delete=models.PROTECT, activitypub_field="actor", related_name="+"
-    )  # for broadcast, should always be instance user but we can't set that here
     name = fields.TextField(max_length=255)
     alternative_names = fields.ArrayField(
         fields.CharField(max_length=255), blank=True, default=list

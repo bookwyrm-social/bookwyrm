@@ -454,7 +454,7 @@ class ConfirmEditBook(View):
                             )
 
                     # Ok it really is a new series
-                    series = models.Series.objects.create(user=user, name=book.series)
+                    series = models.Series.objects.create(name=book.series)
                     models.SeriesBook.objects.create(
                         user=user,
                         series=series,
@@ -466,7 +466,7 @@ class ConfirmEditBook(View):
 
             elif book.series:
                 # doesn't look like any existing series
-                series = models.Series.objects.create(user=user, name=book.series)
+                series = models.Series.objects.create(name=book.series)
                 models.SeriesBook.objects.create(
                     user=user,
                     series=series,

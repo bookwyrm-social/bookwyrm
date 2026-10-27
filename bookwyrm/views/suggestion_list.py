@@ -133,7 +133,11 @@ class UserSuggestions(PrivateProfileMixin, View):
         suggestions = models.SuggestionListItem.objects.filter(
             user=user
         ).prefetch_related("book_list")
-        suggestions = blocked_book_filter(suggestions, "Work", request.user)
+        suggestions = (
+            blocked_book_filter(suggestions, "Work", request.user)
+            .filter(work__editions__isnull=False)
+            .distinct()
+        )
         paginated = Paginator(suggestions, 12)
         data = {
             "user": user,

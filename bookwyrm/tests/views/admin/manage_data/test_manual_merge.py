@@ -52,10 +52,10 @@ class ManualMergeViews(TestCase):
         )
 
         cls.series_one = models.Series.objects.create(
-            name="Frog and Toad", wikidata="Q5505227", user=cls.local_user
+            name="Frog and Toad", wikidata="Q5505227"
         )
         cls.series_two = models.Series.objects.create(
-            name="Kvak a Žbluňk", wikidata="Q5505227", user=cls.local_user
+            name="Kvak a Žbluňk", wikidata="Q5505227"
         )
 
     def setUp(self):

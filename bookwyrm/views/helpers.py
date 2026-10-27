@@ -1,17 +1,18 @@
 """helper functions used in various views"""
 
-import re
 from datetime import datetime, timedelta
-from typing import Any
+from functools import reduce
+import operator
+import re
+from typing import Any, List
+from urllib.parse import urlsplit, urlunsplit
+
 import dateutil.parser
 import dateutil.tz
 from dateutil.parser import ParserError
-from urllib.parse import urlsplit, urlunsplit
-
-
 import mistune
-
 from requests import HTTPError
+
 from django.db.models import Q, QuerySet
 from django.conf import settings as django_settings
 from django.shortcuts import redirect, _get_queryset
@@ -51,7 +52,7 @@ def get_user_from_username(viewer: models.User, username: str) -> models.User:
         raise Http404()
 
 
-def is_api_request(request: HttpRequest):
+def is_api_request(request: HttpRequest) -> bool:
     """check whether a request is asking for html or data"""
     is_api = "json" in request.headers.get("Accept", "") or re.match(
         r"\S{1,100}\.json/?$", request.path
@@ -63,7 +64,7 @@ def is_api_request(request: HttpRequest):
     return is_api
 
 
-def is_bookwyrm_request(request: HttpRequest):
+def is_bookwyrm_request(request: HttpRequest) -> bool:
     """check if the request is coming from another bookwyrm instance"""
     user_agent = request.headers.get("User-Agent")
     if user_agent is None or re.search(regex.BOOKWYRM_USER_AGENT, user_agent) is None:
@@ -71,7 +72,9 @@ def is_bookwyrm_request(request: HttpRequest):
     return True
 
 
-def handle_remote_webfinger(query: str, unknown_only=False, refresh=False):
+def handle_remote_webfinger(
+    query: str, unknown_only: bool = False, refresh: bool = False
+) -> models.User | None:
     """webfingerin' other servers"""
     # SHOULD we do a remote webfinger? Is it allowed?
     models.SiteSettings.raise_federation_disabled()
@@ -149,7 +152,7 @@ def subscribe_remote_webfinger(query: str):
     return template
 
 
-def get_edition(book_id: str) -> models.Edition:
+def get_edition(book_id: int) -> models.Edition:
     """look up a book in the db and return an edition"""
     book = models.Book.objects.select_subclasses().get(id=book_id)
     if isinstance(book, models.Work):
@@ -208,8 +211,17 @@ def filter_stream_by_status_type(
         allowed_types = []
 
     if "review" not in allowed_types:
+        activities = activities.exclude(
+            Q(Q(review__isnull=False) & Q(review__reviewrating__isnull=True))
+            | Q(
+                Q(boost__boosted_status__review__isnull=False)
+                & Q(boost__boosted_status__review__reviewrating__isnull=True)
+            )
+        )
+    if "rating" not in allowed_types:
         activities = activities.filter(
-            Q(review__isnull=True), Q(boost__boosted_status__review__isnull=True)
+            Q(review__reviewrating__isnull=True),
+            Q(boost__boosted_status__review__reviewrating__isnull=True),
         )
     if "comment" not in allowed_types:
         activities = activities.filter(
@@ -280,3 +292,12 @@ def convert_to_markdown(content: str) -> str:
     content = mistune.html(content).rstrip()
     # sanitize resulting html
     return sanitizer.clean(content)
+
+
+def search_within_queryset(
+    queryset: QuerySet, value: str, searchable_fields: List[str] = None
+) -> QuerySet:
+    search_filter_entries = [{f"{f}__icontains": value} for f in searchable_fields]
+    return queryset.filter(
+        reduce(operator.or_, (Q(**f) for f in search_filter_entries))
+    )

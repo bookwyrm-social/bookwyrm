@@ -1,0 +1,20 @@
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+<div class="control">
+    <label class="label" for="id_search">{% trans "Series" %}</label>
+    <div class="select">
+        <select id="id_series" name="series">
+            <option value="">{% trans "Any" %}</option>
+            {% for serie in series %}
+            <option value="{{ serie.id }}" {% if request.GET.series == serie.id|stringformat:"i" %}selected{% endif %}>
+            {{ serie.name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+{% endblock %}
+
+

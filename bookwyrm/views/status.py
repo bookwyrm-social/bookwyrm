@@ -2,6 +2,7 @@
 
 import re
 import logging
+from urllib.parse import urlsplit
 
 from django.contrib.auth.decorators import login_required
 from django.core.validators import URLValidator
@@ -10,7 +11,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.forms import ModelForm
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -34,7 +35,7 @@ logger = logging.getLogger(__name__)
 class EditStatus(View):
     """the view for *posting*"""
 
-    def get(self, request: HttpRequest, status_id: str):
+    def get(self, request: HttpRequest, status_id: int):
         """load the edit panel"""
         status = get_object_or_404(
             models.Status.objects.select_subclasses(), user=request.user, id=status_id
@@ -54,7 +55,7 @@ class EditStatus(View):
 class CreateStatus(View):
     """the view for *posting*"""
 
-    def get(self, request: HttpRequest, status_type: str):
+    def get(self, request: HttpRequest, status_type: int):
         """compose view (...not used?)"""
         book = get_mergeable_object_or_404(models.Edition, id=request.GET.get("book"))
         data = {"book": book}
@@ -62,7 +63,7 @@ class CreateStatus(View):
 
     @transaction.atomic
     def post(
-        self, request: HttpRequest, status_type: str, existing_status_id: str = None
+        self, request: HttpRequest, status_type: str, existing_status_id: int = None
     ):
         """create status of whatever type"""
         created = not existing_status_id
@@ -206,9 +207,11 @@ def format_hashtags(content: str, hashtags: dict[str, models.Hashtag]) -> str:
 class DeleteStatus(View):
     """tombstone that bad boy"""
 
-    def post(self, request: HttpRequest, status_id: str, report_id=None):
+    def post(self, request: HttpRequest, status_id: int, report_id=None):
         """delete and tombstone a status"""
-        status = get_object_or_404(models.Status, id=status_id)
+        status = get_object_or_404(
+            models.Status.objects.select_subclasses(), id=status_id
+        )
 
         # don't let people delete other people's statuses
         status.raise_not_deletable(request.user)
@@ -219,12 +222,22 @@ class DeleteStatus(View):
         if report_id:
             models.Report.record_action(report_id, DELETE_ITEM, request.user)
 
-        return redirect_to_referer(request, "/")
+        # referer might be the page that was just deleted, sends user somewhere sensible
+        if urlsplit(request.headers.get("referer", "")).path.rstrip(
+            "/"
+        ) == status.local_path.rstrip("/"):
+            book = getattr(status, "book", None)
+            if book:
+                return redirect(book.local_path)
+            else:
+                return redirect(status.user.local_path)
+        else:
+            return redirect_to_referer(request, "/")
 
 
 @login_required
 @require_POST
-def update_progress(request: HttpRequest, book_id: str):
+def update_progress(request: HttpRequest, book_id: int):
     """Either it's just a progress update, or it's a comment with a progress update"""
     if request.POST.get("post-status"):
         return CreateStatus.as_view()(request, "comment")
