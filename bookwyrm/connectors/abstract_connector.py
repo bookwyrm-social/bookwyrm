@@ -8,6 +8,7 @@ from urllib.parse import quote_plus
 import logging
 import re
 import asyncio
+import time
 from PIL import Image, UnidentifiedImageError
 import requests
 import redis.asyncio as redis
@@ -21,7 +22,14 @@ from django.db import transaction
 from django.db.models import Subquery
 
 from bookwyrm import activitypub, models, settings
-from bookwyrm.settings import USER_AGENT, INSTANCE_ACTOR_USERNAME, REDIS_ACTIVITY_URL
+from bookwyrm.settings import (
+    USER_AGENT,
+    INSTANCE_ACTOR_USERNAME,
+    REDIS_ACTIVITY_URL,
+    MAX_BODY_READ_TIME,
+    STREAM_CHUNK_SIZE,
+    MAX_RESPONSE_SIZE,
+)
 from bookwyrm.tasks import app, CONNECTORS
 from .connector_manager import load_more_data, ConnectorException, raise_not_valid_url
 from .format_mappings import format_mappings
@@ -483,6 +491,35 @@ def get_data(
         raise ConnectorException("Unexpected data format")
 
     return data
+
+
+def get_body_safe(response: requests.Response) -> bytes:
+    """safe reading responses from other servers"""
+    if int(response.headers.get("content-length", 0)) > MAX_RESPONSE_SIZE:
+        response.close()
+        raise ConnectorException("header exceeded limit")
+
+    try:
+        part = b""
+        start_time = time.monotonic()
+        for for_part in response.iter_content(chunk_size=STREAM_CHUNK_SIZE):
+            read_time = time.monotonic() - start_time
+            if read_time > MAX_BODY_READ_TIME:
+                response.close()
+                raise ConnectorException("read body time exceeded limit")
+
+            part = part + for_part
+            if len(part) > MAX_RESPONSE_SIZE:
+                response.close()
+                raise ConnectorException("body exceeded limit")
+
+    except ConnectorException:
+        raise
+
+    except requests.RequestException:
+        raise ConnectorException()
+
+    return part
 
 
 def get_image(url: str, timeout: int = 10) -> tuple[Any, str] | tuple[None, None]:
