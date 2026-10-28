@@ -34,7 +34,7 @@ services:
       - static_volume:/app/static
       - media_volume:/app/images
   anubis:
-    image: ghcr.io/techarohq/anubis:latest
+    image: ghcr.io/techarohq/anubis:v1.28.2
     restart: unless-stopped
     environment:
       BIND: ":8000"
