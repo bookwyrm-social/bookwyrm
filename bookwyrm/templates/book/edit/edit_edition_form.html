@@ -8,9 +8,7 @@ This is an <strong>edition</strong>, it should represent a specific publication 
 {% endblock %}
 
 {% block title-field-help %}
-<p class="help">
-    {% trans "Openlibrary keys for editions should end in \"M\"" %}
-</p>
+{% include 'snippets/form_help.html' with field=form.openlibrary_key %}
 {% endblock %}
 
 {% block physical_properties %}
@@ -56,19 +54,21 @@ This is an <strong>edition</strong>, it should represent a specific publication 
 
 {% block identifiers %}
 <div class="field">
-<label class="label" for="id_isbn_13">
-    {% trans "ISBN 13:" %}
-</label>
-{{ form.isbn_13 }}
-{% include 'snippets/form_errors.html' with errors_list=form.isbn_13.errors id="desc_isbn_13" %}
+    <label class="label" for="id_isbn_13">
+        {% trans "ISBN 13:" %}
+    </label>
+    {{ form.isbn_13 }}
+    {% include 'snippets/form_help.html' with field=form.isbn_13 link="https://en.wikipedia.org/wiki/ISBN" %}
+    {% include 'snippets/form_errors.html' with errors_list=form.isbn_13.errors id="desc_isbn_13" %}
 </div>
 
 <div class="field">
-<label class="label" for="id_isbn_10">
-    {% trans "ISBN 10:" %}
-</label>
-{{ form.isbn_10 }}
-{% include 'snippets/form_errors.html' with errors_list=form.isbn_10.errors id="desc_isbn_10" %}
+    <label class="label" for="id_isbn_10">
+        {% trans "ISBN 10:" %}
+    </label>
+    {{ form.isbn_10 }}
+    {% include 'snippets/form_help.html' with field=form.isbn_10 %}
+    {% include 'snippets/form_errors.html' with errors_list=form.isbn_10.errors id="desc_isbn_10" %}
 </div>
 
 <div class="field">
@@ -77,6 +77,7 @@ This is an <strong>edition</strong>, it should represent a specific publication 
     </label>
     {{ form.oclc_number }}
 
+    {% include 'snippets/form_help.html' with field=form.oclc_number %}
     {% include 'snippets/form_errors.html' with errors_list=form.oclc_number.errors id="desc_oclc_number" %}
 </div>
 
@@ -111,10 +112,7 @@ This is an <strong>edition</strong>, it should represent a specific publication 
                 {% trans "Publisher:" %}
             </label>
             {{ form.publishers }}
-            <span class="help" id="desc_publishers_help">
-                {% trans "Separate multiple values with commas." %}
-            </span>
-
+            {% include 'snippets/form_help.html' with field=form.publishers %}
             {% include 'snippets/form_errors.html' with errors_list=form.publishers.errors id="desc_publishers" %}
         </div>
 

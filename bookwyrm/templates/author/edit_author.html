@@ -41,8 +41,7 @@
             <div class="field">
                 <label class="label" for="id_aliases">{% trans "Aliases:" %}</label>
                 {{ form.aliases }}
-                <span class="help">{% trans "Separate multiple values with commas." %}</span>
-
+                {% include 'snippets/form_help.html' with field=form.aliases %}
                 {% include 'snippets/form_errors.html' with errors_list=form.aliases.errors id="id_aliases_error" %}
             </div>
 
@@ -83,14 +82,14 @@
             <div class="field">
                 <label class="label" for="id_isni">{% trans "ISNI:" %}</label>
                 {{ form.isni }}
-
+                {% include 'snippets/form_help.html' with field=form.isni link="https://isni.org/" %}
                 {% include 'snippets/form_errors.html' with errors_list=form.isni.errors id="id_isni_error" %}
             </div>
 
             <div class="field">
                 <label class="label" for="id_openlibrary_key">{% trans "Openlibrary key:" %}</label>
                 {{ form.openlibrary_key }}
-
+                {% include 'snippets/form_help.html' with field=form.openlibrary_key %}
                 {% include 'snippets/form_errors.html' with errors_list=form.openlibrary_key.errors id="id_openlibrary_key_error" %}
             </div>
 
@@ -111,13 +110,14 @@
             <div class="field">
                 <label class="label" for="id_goodreads_key">{% trans "GoodReads key:" %}</label>
                 {{ form.goodreads_key }}
-
+                {% include 'snippets/form_help.html' with field=form.goodreads_key %}
                 {% include 'snippets/form_errors.html' with errors_list=form.goodreads_key.errors id="id_goodreads_key_error" %}
             </div>
 
             <div class="field">
                 <label class="label" for="id_isfdb">{% trans "ISFDB:" %}</label>
                 {{ form.isfdb }}
+                {% include 'snippets/form_help.html' with field=form.isfdb link="https://www.isfdb.org/" %}
 
                 {% include 'snippets/form_errors.html' with errors_list=form.isfdb.errors id="id_isfdb_error" %}
             </div>
@@ -125,14 +125,14 @@
             <div class="field">
                 <label class="label" for="id_bnf_id">{% trans "BNF ID:" %}</label>
                 {{ form.bnf_id }}
-
+                {% include 'snippets/form_help.html' with field=form.bnf_id link="https://www.bnf.fr/" %}
                 {% include 'snippets/form_errors.html' with errors_list=form.bnf_id.errors id="id_bnf_id_error" %}
             </div>
 
             <div class="field">
                 <label class="label" for="id_viaf">{% trans "VIAF:" %}</label>
                 {{ form.viaf }}
-
+                {% include 'snippets/form_help.html' with field=form.viaf link="https://viaf.org/" %}
                 {% include 'snippets/form_errors.html' with errors_list=form.viaf.errors id="id_viaf_error" %}
             </div>
 
