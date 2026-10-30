@@ -407,9 +407,10 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
 
     def delete(self, *args, broadcast: bool = True, **kwargs) -> None:
         """Delete the object"""
-        activity = self.to_delete_activity(self.user)
+        if hasattr(self, "user"):
+            activity = self.to_delete_activity(self.user)
         super().delete(*args, **kwargs)
-        if self.user.local and broadcast:
+        if hasattr(self, "user") and self.user.local and broadcast:
             self.broadcast(activity, self.user)
 
 
