@@ -261,19 +261,12 @@ class MergeableMixin(TestCase):
         self.assertEqual(book.authors.count(), 2)
         self.assertTrue(book.authors.last().name, "Bob Bookwriter")
 
-
     def test_series_merged(self):
         """series do not have users, and should merge cleanly"""
 
-        series = models.Series.objects.create(
-            name="Test series",
-            wikidata="Q123"
-        )
+        series = models.Series.objects.create(name="Test series", wikidata="Q123")
 
-        dupe = models.Series.objects.create(
-            name="Example series",
-            wikidata="Q123"
-        )
+        dupe = models.Series.objects.create(name="Example series", wikidata="Q123")
 
         self.assertEqual(models.Series.objects.count(), 2)
         self.assertFalse(models.MergedSeries.objects.exists())
@@ -282,7 +275,6 @@ class MergeableMixin(TestCase):
         series.refresh_from_db()
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertTrue(models.Series.objects.last().name, "Test series")
-
 
     def test_related_parent_work_deleted(self):
         """are parent works deleted once orphaned?"""
