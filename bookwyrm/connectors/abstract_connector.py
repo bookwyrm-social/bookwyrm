@@ -4,6 +4,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Optional, TypedDict, Any, Callable, Union, Iterator
 from urllib.parse import quote_plus
+from json import loads
 
 import logging
 import re
@@ -29,6 +30,7 @@ from bookwyrm.settings import (
     MAX_BODY_READ_TIME,
     STREAM_CHUNK_SIZE,
     MAX_RESPONSE_SIZE,
+    MAX_RESPONSE_IMAGE_SIZE,
 )
 from bookwyrm.tasks import app, CONNECTORS
 from .connector_manager import load_more_data, ConnectorException, raise_not_valid_url
@@ -462,6 +464,7 @@ def get_data(
     try:
         resp = requests.get(
             url,
+            stream=True,
             params=params,
             headers={
                 "Accept": (
@@ -482,7 +485,7 @@ def get_data(
         else:
             raise ConnectorException()
     try:
-        data = resp.json()
+        data = loads(get_body_safe(resp))
     except ValueError as err:
         logger.info(err)
         raise ConnectorException(err)
@@ -493,9 +496,12 @@ def get_data(
     return data
 
 
-def get_body_safe(response: requests.Response) -> bytes:
+def get_body_safe(response: requests.Response, max_size: int | None = None) -> bytes:
     """safe reading responses from other servers"""
-    if int(response.headers.get("content-length", 0)) > MAX_RESPONSE_SIZE:
+    if max_size is None:
+        max_size = MAX_RESPONSE_SIZE
+
+    if int(response.headers.get("content-length", 0)) > max_size:
         response.close()
         raise ConnectorException("header exceeded limit")
 
@@ -509,7 +515,7 @@ def get_body_safe(response: requests.Response) -> bytes:
                 raise ConnectorException("read body time exceeded limit")
 
             part = part + for_part
-            if len(part) > MAX_RESPONSE_SIZE:
+            if len(part) > max_size:
                 response.close()
                 raise ConnectorException("body exceeded limit")
 
@@ -528,6 +534,7 @@ def get_image(url: str, timeout: int = 10) -> tuple[Any, str] | tuple[None, None
     try:
         resp = requests.get(
             url,
+            stream=True,
             headers={
                 "User-Agent": settings.USER_AGENT,
             },
@@ -538,13 +545,18 @@ def get_image(url: str, timeout: int = 10) -> tuple[Any, str] | tuple[None, None
         return None, None
 
     if not resp.ok:
+        resp.close()
         return None, None
 
-    image_content = ContentFile(resp.content)
     try:
+        image_content = ContentFile(get_body_safe(resp, MAX_RESPONSE_IMAGE_SIZE))
         with Image.open(image_content) as im:
             extension = str(im.format).lower()
             return image_content, extension
+    except ConnectorException as err:
+        logger.info(err)
+        return None, None
+
     except UnidentifiedImageError:
         logger.info("File requested was not an image: %s", url)
         return None, None

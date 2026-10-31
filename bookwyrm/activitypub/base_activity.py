@@ -508,15 +508,12 @@ def get_activitypub_data(url: str | bytes) -> Any:
 
     except requests.RequestException:
         raise ConnectorException()
-
     if not response.ok:
         response.raise_for_status()
     try:
         data = loads(get_body_safe(response))
-
     except ConnectorException:
         raise
-
     except ValueError:
         raise ConnectorException()
 
