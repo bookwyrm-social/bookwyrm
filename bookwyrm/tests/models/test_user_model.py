@@ -140,10 +140,7 @@ class User(TestCase):
                 "type": "Image",
                 "url": f"{BASE_URL}{self.user.avatar.url}",
                 "name": "avatar for mouse",
-                "@context": [
-                    "https://www.w3.org/ns/activitystreams",
-                    {"Hashtag": "as:Hashtag"},
-                ],
+                "@context": ["https://www.w3.org/ns/activitystreams"],
             },
         )
 

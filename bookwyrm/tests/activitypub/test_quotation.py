@@ -38,7 +38,7 @@ class Quotation(TestCase):
         """create a Quotation ap object from json"""
         quotation = activitypub.Quotation(**self.status_data)
 
-        self.assertEqual(quotation.type, "Quotation")
+        self.assertEqual(quotation.type, ["Quotation", "Note"])
         self.assertEqual(quotation.id, "https://example.com/user/mouse/quotation/13")
         self.assertEqual(quotation.content, "commentary")
         self.assertEqual(quotation.quote, "quote body")
@@ -52,3 +52,26 @@ class Quotation(TestCase):
 
         self.assertEqual(quotation.book, self.book)
         self.assertEqual(quotation.user, self.user)
+
+    def test_activity_to_model_array_type(self):
+        """does the json parse with a list of types?"""
+
+        data = self.status_data
+        data["type"] = ["Quotation", "Note"]
+        activity = activitypub.Quotation(**data)
+        quotation = activity.to_model(model=models.Quotation)
+
+        self.assertEqual(quotation.book, self.book)
+        self.assertEqual(quotation.user, self.user)
+
+    def test_activity_type(self):
+        """does the activity serialize to have a list of types?"""
+
+        activity = models.Quotation.objects.create(
+            user=self.user, book=self.book, quote="beep boop"
+        ).to_activity()
+
+        self.assertEqual(type(activity["type"]), list)
+        self.assertEqual(activity["type"], ["Quotation", "Note"])
+        self.assertEqual(activity["bw:quote"], "<p>beep boop</p>")
+        self.assertFalse("quote" in activity)
