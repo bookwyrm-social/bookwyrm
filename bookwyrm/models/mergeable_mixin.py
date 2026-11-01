@@ -9,10 +9,8 @@ from django.apps import apps
 from django.db import transaction, IntegrityError
 from django.db import models
 from django.db.models.query import QuerySet
-from django.dispatch import receiver
 from django.utils import timezone
 
-from bookwyrm.tasks import app, DEDUPE
 from bookwyrm.utils.db import add_update_fields
 from . import fields
 
