@@ -13,6 +13,7 @@ from typing import Generator, Optional, TypeVar, overload, Any
 import requests
 
 from django.apps import apps
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from django.utils.http import http_date
 
@@ -232,6 +233,9 @@ class ActivityObject:
                     )
                     if changed:
                         update_fields.append(field.name)
+                except ValidationError:
+                    # we got a malformed piece of data -- just skip it
+                    continue
                 except AttributeError as e:
                     raise ActivitySerializerError(e)
 

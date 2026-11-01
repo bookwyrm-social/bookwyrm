@@ -100,6 +100,9 @@ class ActivitypubFieldMixin:
         if formatted is None or formatted is MISSING or formatted == {}:
             return False
 
+        for validator in self.validators:
+            validator(formatted)
+
         current_value = (
             getattr(instance, self.name) if hasattr(instance, self.name) else None
         )
@@ -110,7 +113,6 @@ class ActivitypubFieldMixin:
         # the field is unchanged
         if current_value == formatted:
             return False
-
         setattr(instance, self.name, formatted)
         return True
 
