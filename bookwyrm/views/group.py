@@ -44,6 +44,8 @@ class Group(View):
             "group_form": forms.GroupForm(instance=group, auto_id="group_form_id_%s"),
             "list_form": forms.ListForm(),
             "path": "/group",
+            "has_tour": True,
+            "tour_path": "group.js",
         }
         return TemplateResponse(request, "groups/group.html", data)
 

@@ -6,7 +6,7 @@
 {% block panel %}
 
 <div class="columns mt-3">
-    <section class="column is-three-quarters">
+    <section class="column is-three-quarters" id="group-members">
         {% block searchresults %}
         {% endblock %}
         <div class="mb-2">
@@ -14,7 +14,7 @@
         </div>
     </section>
 </div>
-<header class="columns content is-mobile">
+<header class="columns content is-mobile" id="group-lists">
     <div class="column">
         <h2 class="title is-5">{% trans "Lists" %}</h2>
         <p class="subtitle is-6">
@@ -22,7 +22,7 @@
         </p>
     </div>
     {% if request.user.is_authenticated and group|is_member:request.user %}
-    <div class="column is-narrow is-flex" id="tour-create-list">
+    <div class="column is-narrow is-flex">
         {% trans "Create List" as button_text %}
         {% include 'snippets/toggle/open_button.html' with controls_text="create_list" icon_with_text="plus" text=button_text focus="create_list_header" %}
     </div>
