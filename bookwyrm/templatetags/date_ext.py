@@ -10,7 +10,7 @@ register = template.Library()
 
 
 @register.filter(expects_localtime=True)
-def naturalday_partial(date, arg=None):
+def naturalday_partial(date: PartialDate, arg: str | None = None) -> str | None:
     """chooses appropriate precision if date is a PartialDate object
 
     If arg is a Django-defined format such as "DATE_FORMAT", it will be adjusted
