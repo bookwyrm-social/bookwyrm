@@ -504,14 +504,14 @@ def get_activitypub_data(url: str | bytes) -> Any:
             },
             timeout=SEARCH_TIMEOUT,
         )
-    except requests.RequestException:
-        raise ConnectorException()
+    except requests.RequestException as err:
+        raise ConnectorException(err) from err
     if not response.ok:
         response.raise_for_status()
     try:
         data = response.json()
-    except ValueError:
-        raise ConnectorException()
+    except ValueError as err:
+        raise ConnectorException(err) from err
 
     return data
 
