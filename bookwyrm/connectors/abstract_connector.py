@@ -15,6 +15,7 @@ import requests
 import redis.asyncio as redis
 from requests.exceptions import RequestException
 import aiohttp
+from io import BytesIO
 
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.core.files.base import ContentFile
@@ -514,7 +515,7 @@ def get_body_safe(
         raise ConnectorException("header exceeded limit")
 
     try:
-        part = b""
+        body = BytesIO()
         start_time = time.monotonic()
         for for_part in response.iter_content(chunk_size=STREAM_CHUNK_SIZE):
             read_time = time.monotonic() - start_time
@@ -522,8 +523,8 @@ def get_body_safe(
                 response.close()
                 raise ConnectorException("read body time exceeded limit")
 
-            part = part + for_part
-            if len(part) > max_size:
+            body.write(for_part)
+            if body.tell() > max_size:
                 response.close()
                 raise ConnectorException("body exceeded limit")
 
@@ -533,7 +534,7 @@ def get_body_safe(
     except requests.RequestException:
         raise ConnectorException()
 
-    return part
+    return body.getvalue()
 
 
 def get_image(url: str, timeout: int = 10) -> tuple[Any, str] | tuple[None, None]:
