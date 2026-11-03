@@ -2,7 +2,7 @@
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.db.models import Avg, Q, Count, Exists, OuterRef
+from django.db.models import Avg, Q, Count, FilteredRelation
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -161,15 +161,20 @@ class Book(MergeableViewMixin, View):
                 data["item_count"] = data[
                     "suggestion_list"
                 ].suggestionlistitem_set.count()
-                read_works = models.ReadThrough.objects.filter(
-                    user=request.user, book__parent_work=OuterRef("work")
-                )
                 items = (
                     data["suggestion_list"]
                     .suggestionlistitem_set.filter(work__editions__isnull=False)
                     .prefetch_related("user", "work", "work__authors", "endorsement")
-                    .annotate(endorsement_count=Count("endorsement"))
-                    .annotate(has_read=Exists(read_works))
+                    .annotate(
+                        viewer_readthrough=FilteredRelation(
+                            "work__editions__readthrough",
+                            condition=Q(work__editions__readthrough__user=request.user),
+                        )
+                    )
+                    .annotate(
+                        endorsement_count=Count("endorsement", distinct=True),
+                        has_read=Count("viewer_readthrough", distinct=True),
+                    )
                     .order_by("has_read", "-endorsement_count")
                 )
                 data["items"] = blocked_book_filter(items, "Work", request.user)[:3]
