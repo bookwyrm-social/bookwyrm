@@ -31,6 +31,7 @@ from bookwyrm.settings import (
     STREAM_CHUNK_SIZE,
     MAX_RESPONSE_SIZE,
     MAX_RESPONSE_IMAGE_SIZE,
+    MAX_IMAGE_BODY_READ_TIME,
 )
 from bookwyrm.tasks import app, CONNECTORS
 from .connector_manager import load_more_data, ConnectorException, raise_not_valid_url
@@ -496,10 +497,17 @@ def get_data(
     return data
 
 
-def get_body_safe(response: requests.Response, max_size: int | None = None) -> bytes:
+def get_body_safe(
+    response: requests.Response,
+    max_size: int | None = None,
+    max_time: int | None = None,
+) -> bytes:
     """safe reading responses from other servers"""
     if max_size is None:
         max_size = MAX_RESPONSE_SIZE
+
+    if max_time is None:
+        max_time = MAX_BODY_READ_TIME
 
     if int(response.headers.get("content-length", 0)) > max_size:
         response.close()
@@ -510,7 +518,7 @@ def get_body_safe(response: requests.Response, max_size: int | None = None) -> b
         start_time = time.monotonic()
         for for_part in response.iter_content(chunk_size=STREAM_CHUNK_SIZE):
             read_time = time.monotonic() - start_time
-            if read_time > MAX_BODY_READ_TIME:
+            if read_time > max_time:
                 response.close()
                 raise ConnectorException("read body time exceeded limit")
 
@@ -549,7 +557,9 @@ def get_image(url: str, timeout: int = 10) -> tuple[Any, str] | tuple[None, None
         return None, None
 
     try:
-        image_content = ContentFile(get_body_safe(resp, MAX_RESPONSE_IMAGE_SIZE))
+        image_content = ContentFile(
+            get_body_safe(resp, MAX_RESPONSE_IMAGE_SIZE, MAX_IMAGE_BODY_READ_TIME)
+        )
         with Image.open(image_content) as im:
             extension = str(im.format).lower()
             return image_content, extension
