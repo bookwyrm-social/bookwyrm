@@ -2,7 +2,7 @@
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.db.models import Min, Q
+from django.db.models import Min, F, Q
 from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -57,7 +57,7 @@ class Author(MergeableViewMixin, View):
                     Min("editions__published_date"),
                 )
             )
-            .order_by("-sort_date")
+            .order_by(F("sort_date").desc(nulls_last=True))
             .distinct()
         )
 
