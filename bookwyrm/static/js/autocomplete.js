@@ -1,6 +1,4 @@
 (function () {
-    "use strict";
-
     const mimeTypes = [
         "AAC",
         "AZW",
@@ -36,6 +34,7 @@
      * @param  {Event} event
      * @return {undefined}
      */
+
     function autocomplete(event) {
         const input = event.target;
 
