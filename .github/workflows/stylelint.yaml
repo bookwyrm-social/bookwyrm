@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Install modules
-        run: npm install stylelint stylelint-config-recommended stylelint-config-standard stylelint-order stylelint-config-standard-scss
+        run: npm install stylelint@17.1.1 stylelint-config-recommended stylelint-config-standard stylelint-order stylelint-config-standard-scss --legacy-peer-deps
 
       - name: Run Stylelint
         run: >
