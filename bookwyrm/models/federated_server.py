@@ -64,5 +64,7 @@ class FederatedServer(BookWyrmModel):
     @classmethod
     def is_blocked(cls, url: str) -> bool:
         """look up if a domain is blocked"""
-        url = urlparse(url)
-        return cls.objects.filter(server_name=url.hostname, status="blocked").exists()
+        parsed_url = urlparse(url)
+        return cls.objects.filter(
+            server_name=parsed_url.hostname, status="blocked"
+        ).exists()

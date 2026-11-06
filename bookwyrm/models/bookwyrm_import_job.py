@@ -205,7 +205,7 @@ class UserImportRelationship(ChildJob):
 class ImportUserTask(ParentTask):
     """A task for a user import job"""
 
-    def before_start(self, task_id: str, args, kwargs) -> None:
+    def before_start(self, task_id: str, args: Any, kwargs: Any) -> None:
         """Handler called before the task starts."""
         job = BookwyrmImportJob.objects.get(id=kwargs["job_id"])
         job.task_id = task_id
@@ -216,7 +216,7 @@ class UserImportSubTask(SubTask):
     """Makes sure we refer to the correct child job and call
     subclass methods instead of methods on ChildJob & ParentJob"""
 
-    def before_start(self, task_id: str, args, kwargs) -> None:
+    def before_start(self, task_id: str, args: Any, kwargs: Any) -> None:
         """Handler called before the task starts."""
 
         model = apps.get_model(f"bookwyrm.{kwargs['job_type']}", require_ready=True)
@@ -225,7 +225,7 @@ class UserImportSubTask(SubTask):
         child_job.save(update_fields=["task_id"])
         child_job.set_status(ChildJob.Status.ACTIVE)
 
-    def on_success(self, retval, task_id: str, args, kwargs) -> None:
+    def on_success(self, retval, task_id: str, args: Any, kwargs: Any) -> None:
         """Run by the worker if the task executes successfully"""
 
         # we want to complete our own UserImportBook job, not ChildJob
@@ -235,7 +235,7 @@ class UserImportSubTask(SubTask):
 
 
 @app.task(queue=IMPORTS, base=ImportUserTask)
-def start_import_task(**kwargs) -> None:
+def start_import_task(**kwargs: Any) -> None:
     """trigger the child import tasks for each user data
     We always import the books even if not assigning
     them to shelves, lists etc"""
@@ -349,7 +349,7 @@ def create_book_from_json(book_data: dict[str, Any]) -> models.Edition:
 
 
 @app.task(queue=IMPORTS, base=UserImportSubTask)
-def import_book_task(**kwargs) -> None:
+def import_book_task(**kwargs: Any) -> None:
     """Take work and edition data,
     find or create the edition and work in the database"""
 
@@ -660,7 +660,7 @@ def upsert_saved_lists(user: models.User, remote_ids: list[str]) -> None:
 
 
 @app.task(queue=IMPORTS, base=UserImportSubTask)
-def import_user_relationship_task(**kwargs) -> None:
+def import_user_relationship_task(**kwargs: Any) -> None:
     """import a user follow or block from an import file"""
 
     task = UserImportRelationship.objects.get(id=kwargs["child_id"])
