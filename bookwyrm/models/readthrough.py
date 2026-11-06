@@ -40,7 +40,9 @@ class ReadThrough(BookWyrmModel):
         if not self.id and self.book.parent_work:
             # if we're creating a new readthrough
             self.book.parent_work.popularity_count += 1
-            self.book.parent_work.save(update_fields=["popularity_count"], broadcast=False)
+            self.book.parent_work.save(
+                update_fields=["popularity_count"], broadcast=False
+            )
 
         # an active readthrough must have an unset finish date
         if self.finish_date or self.stopped_date:
