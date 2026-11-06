@@ -17,7 +17,26 @@
 </div>
 {% endif %}
 
-<h1 class="title">{% blocktrans with name=series.name %}Edit "{{ name }}"{% endblocktrans %}</h1>
+<header class="block">
+    <h1 class="title">{% blocktrans with name=series.name %}Edit "{{ name }}"{% endblocktrans %}</h1>
+
+    {% if series.created_date %}
+    <dl>
+        <dt class="is-pulled-left mr-5 has-text-weight-semibold">{% trans "Added:" %}</dt>
+        <dd class="ml-2">{{ series.created_date | naturaltime }}</dd>
+
+        <dt class="is-pulled-left mr-5 has-text-weight-semibold">{% trans "Updated:" %}</dt>
+        <dd class="ml-2">{{ series.updated_date | naturaltime }}</dd>
+
+        {% if series.last_edited_by %}
+        <dt class="is-pulled-left mr-5 has-text-weight-semibold">{% trans "Last edited by:" %}</dt>
+        <dd class="ml-2"><a href="{{ series.last_edited_by.remote_id }}">{{ series.last_edited_by.display_name }}</a></dd>
+        {% endif %}
+
+    </dl>
+    {% endif %}
+</header>
+
 
 {% for match in matches.all %}
     {{match.name}}
@@ -25,6 +44,7 @@
 
 <form method="post" action="{% url 'edit-series' series.id %}">
     {% csrf_token %}
+    <input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
     <div class="columns">
         <div class="column is-one-half">
             <label class="label" for="id_name">{% trans "Name" %}</label>
@@ -59,6 +79,7 @@
 
             <label class="label" for="id_add_alt_title">{% trans "ISFDB ID:" %}</label>
             <input type="text" name="isfdb" value="{{ form.isfdb.value|default:'' }}" maxlength="255" class="input" id="id_isfdb" aria-describedby="desc_title">
+            {% include 'snippets/form_help.html' with field=form.isfdb link="https://www.isfdb.org/" %}
         </div>
     </div>
 

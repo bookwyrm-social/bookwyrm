@@ -70,7 +70,7 @@ class FeedViews(TestCase):
         """update display preferences"""
         self.assertEqual(
             self.local_user.feed_status_types,
-            ["review", "comment", "quotation", "everything"],
+            ["review", "rating", "comment", "quotation", "everything"],
         )
         view = views.Feed.as_view()
         form = forms.FeedStatusTypesForm(instance=self.local_user)

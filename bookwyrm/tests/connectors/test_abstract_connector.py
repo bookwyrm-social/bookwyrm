@@ -234,9 +234,7 @@ class AbstractConnector(TestCase):
         """do we get a seriesbook with existing series?"""
 
         author = models.Author.objects.create(name="Sammy")
-        series = models.Series.objects.create(
-            user=self.local_user, name="Test Series 1"
-        )
+        series = models.Series.objects.create(name="Test Series 1")
         work = models.Work.objects.create(title="Test Book")
         work.authors.add(author)
         models.SeriesBook.objects.create(user=self.local_user, book=work, series=series)
@@ -257,9 +255,7 @@ class AbstractConnector(TestCase):
     def test_get_or_create_seriesbook_with_ambiguous_series(self):
         """do we get series info in the book when we can't match author?"""
 
-        series = models.Series.objects.create(
-            user=self.local_user, name="Test Series 1"
-        )
+        series = models.Series.objects.create(name="Test Series 1")
         work = models.Work.objects.create(title="Test Book 1")
         models.SeriesBook.objects.create(user=self.local_user, book=work, series=series)
         work_2 = models.Work.objects.create(title="Test Book 2")
@@ -295,9 +291,7 @@ class AbstractConnector(TestCase):
         """do we get a seriesbook but not a duplicate series?"""
 
         work = models.Work.objects.create(title="Test Book 2")
-        series = models.Series.objects.create(
-            user=self.local_user, name="Test Series A"
-        )
+        series = models.Series.objects.create(name="Test Series A")
 
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.SeriesBook.objects.count(), 0)
@@ -313,9 +307,7 @@ class AbstractConnector(TestCase):
         """do we reuse the existing series and seriesbook?"""
 
         work = models.Work.objects.create(title="Test Book 2")
-        series = models.Series.objects.create(
-            user=self.local_user, name="Test Series A"
-        )
+        series = models.Series.objects.create(name="Test Series A")
         models.SeriesBook.objects.create(user=self.local_user, book=work, series=series)
 
         self.assertEqual(models.Series.objects.count(), 1)

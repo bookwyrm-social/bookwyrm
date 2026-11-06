@@ -27,6 +27,7 @@ from bookwyrm.tasks import (
     IMPORTS,
     IMPORT_TRIGGERED,
     BROADCAST,
+    DEDUPE,
     MISC,
 )
 
@@ -68,6 +69,7 @@ class CeleryStatus(View):
                 IMPORTS: redis_instance.llen(IMPORTS),
                 IMPORT_TRIGGERED: redis_instance.llen(IMPORT_TRIGGERED),
                 BROADCAST: redis_instance.llen(BROADCAST),
+                DEDUPE: redis_instance.llen(DEDUPE),
                 MISC: redis_instance.llen(MISC),
             }
 

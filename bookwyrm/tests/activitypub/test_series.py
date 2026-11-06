@@ -26,7 +26,6 @@ class TestSeries(TestCase):
         cls.user.save(broadcast=False)
 
         cls.series = models.Series.objects.create(
-            user=cls.user,
             name="Example Series",
             alternative_names=["Exemple de série", "Esimerkkisarja"],
             remote_id="https://example.com/series/1",
@@ -144,16 +143,101 @@ class TestSeries(TestCase):
         self.assertFalse(models.Series.objects.filter(name="Example Series 2").exists())
         self.assertEqual(models.Series.objects.count(), 1)
         self.assertEqual(models.Book.objects.count(), 1)
+        self.assertEqual(models.SeriesBook.objects.count(), 1)
 
         book_data = activitypub.Work(**self.book_data)
-        book = book_data.to_model()
         with patch(
             "bookwyrm.activitypub.base_activity.set_related_field.delay",
             new=lambda *args: set_related_field(*args),
         ):
-            book_data.to_model()  # run it again to set the related field
+            book_data.to_model()
 
-        self.assertEqual(book.title, "Example Book 2")
+        self.assertTrue(models.Work.objects.filter(title="Example Book 2").exists())
         self.assertTrue(models.Series.objects.filter(name="Example Series 2").exists())
         self.assertEqual(models.Series.objects.count(), 2)
         self.assertEqual(models.Book.objects.count(), 2)
+        self.assertEqual(models.SeriesBook.objects.count(), 2)
+
+    @responses.activate
+    def test_deserialize_seriesbook(self):
+        """check that seriesbooks deserialize series"""
+
+        responses.add(
+            responses.GET,
+            "https://example.com/book/2",
+            json=self.book_data,
+            status=200,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://example.com/series/2",
+            json=self.series_data,
+            status=200,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://example.com/user/instance",
+            json=self.user.to_activity(),
+            status=200,
+        )
+
+        self.assertFalse(models.Series.objects.filter(name="Example Series 2").exists())
+        self.assertEqual(models.Series.objects.count(), 1)
+        self.assertEqual(models.SeriesBook.objects.count(), 1)
+
+        activitypub.SeriesBook(**self.seriesbook_data).to_model()
+
+        self.assertTrue(models.Series.objects.filter(name="Example Series 2").exists())
+        self.assertEqual(models.Series.objects.count(), 2)
+        self.assertEqual(models.SeriesBook.objects.count(), 2)
+        self.assertEqual(
+            models.Series.objects.filter(name="Example Series 2")
+            .first()
+            .seriesbooks.first(),
+            models.SeriesBook.objects.filter(series_number="99").first(),
+        )
+
+    def test_serialize_series_without_user(self):
+        """do new actorless series deserialize?"""
+
+        series_data = {
+            "id": "https://example.com/series/2",
+            "type": "Series",
+            "totalItems": 1,
+            "first": "https://example.com/series/2?page=1",
+            "last": "https://example.com/series/2?page=1",
+            "name": "Example Series 2",
+            "alternativeNames": ["Exemple de série 2", "Esimerkkisarja 2"],
+            "@context": [
+                "https://www.w3.org/ns/activitystreams",
+                {"Hashtag": "as:Hashtag"},
+            ],
+        }
+
+        responses.add(
+            responses.GET,
+            "https://example.com/book/2",
+            json=self.book_data,
+            status=200,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://example.com/user/instance",
+            json=self.user.to_activity(),
+            status=200,
+        )
+
+        self.assertFalse(models.Series.objects.filter(name="Example Series 2").exists())
+        self.assertEqual(models.Series.objects.count(), 1)
+
+        with patch(
+            "bookwyrm.activitypub.base_activity.set_related_field.delay",
+            new=lambda *args: set_related_field(*args),
+        ):
+            activitypub.Series(**series_data).to_model()
+
+        self.assertTrue(models.Series.objects.filter(name="Example Series 2").exists())
+        self.assertEqual(models.Series.objects.count(), 2)

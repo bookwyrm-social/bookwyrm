@@ -1,5 +1,6 @@
 """testing models"""
 
+from unittest.mock import patch
 import pathlib
 
 import pytest
@@ -246,9 +247,7 @@ class Book(TestCase):
         """Can't duplicate series"""
         user = get_representative()
         series = models.Series.objects.create(
-            name="Series Test Name",
-            alternative_names=["Alternative series name"],
-            user=user,
+            name="Series Test Name", alternative_names=["Alternative series name"]
         )
         models.SeriesBook.objects.create(user=user, book=self.work, series=series)
 
@@ -259,3 +258,41 @@ class Book(TestCase):
         with self.assertRaises(ValidationError):
             self.first_edition.series = "ALTERnative series name"
             self.first_edition.clean()
+
+    def test_set_edition_rank(self):
+        """make sure we aren't creating a bunch of tasks when setting edition rank"""
+        # create an audience
+        local_user = models.User.objects.create_user(
+            "mouse", "mouse@mouse.mouse", "ratword", local=True
+        )
+        models.User.objects.create_user(
+            "rat",
+            "rat@rat.com",
+            "ratword",
+            local=False,
+            remote_id="https://example.com/users/rat",
+            inbox="https://example.com/users/rat/inbox",
+            outbox="https://example.com/users/rat/outbox",
+        )
+        work = models.Work.objects.create(title="Example Work")
+        models.Edition.objects.create(
+            title="Example Edition",
+            parent_work=work,
+            last_edited_by=local_user,
+        )
+        models.Edition.objects.create(
+            title="Example Edition",
+            parent_work=work,
+            last_edited_by=local_user,
+        )
+        models.Edition.objects.create(
+            title="Example Edition",
+            parent_work=work,
+            last_edited_by=local_user,
+        )
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock:
+            work.last_edited_by = local_user
+            work.save()
+        self.assertEqual(mock.call_count, 1)

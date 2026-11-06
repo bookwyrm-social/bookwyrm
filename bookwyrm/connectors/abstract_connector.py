@@ -660,7 +660,6 @@ def activitydata_to_seriesbook(
         series = instance
         series.save()
     else:
-        new.user = user
         series = new
         series.save()
 

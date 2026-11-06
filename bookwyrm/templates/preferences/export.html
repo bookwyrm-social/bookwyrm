@@ -10,7 +10,7 @@
 {% block panel %}
 <div class="block content">
     <p class="notification">
-        {% trans "Your CSV export file will include all the books on your shelves, books you have reviewed, and books with reading activity. <br/>Use this to import into a service like Goodreads." %}
+        {% trans "Your CSV export file will include all the books on your shelves, books you have reviewed, and books with reading activity. <br/>Use this to import into a service like GoodReads." %}
     </p>
     <form name="export" method="POST" href="{% url 'prefs-export' %}">
         {% csrf_token %}

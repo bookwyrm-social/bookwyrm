@@ -40,7 +40,7 @@
                         {% trans "Sort Title:" %}
                     </label>
                     <input type="text" name="sort_title" value="{{ form.sort_title.value|default:'' }}" maxlength="255" class="input" id="id_sort_title" aria-describedby="id_sort_title_error">
-                    <p class="help">{% trans "Sort titles remove words like \"The\" from the beginning of the title for alphabetization" %}</p>
+                    {% include 'snippets/form_help.html' with field=form.sort_title %}
 
                     {% include 'snippets/form_errors.html' with errors_list=form.sort_title.errors id="id_sort_title_error" %}
                 </div>
@@ -69,11 +69,7 @@
                         {% trans "Languages:" %}
                     </label>
                     {{ form.languages }}
-                    {% block language-field-help %}{% endblock %}
-                    <span class="help" id="id_languages_help_error">
-                        {% trans "Separate multiple values with commas." %}
-                    </span>
-
+                    {% include 'snippets/form_help.html' with field=form.languages %}
                     {% include 'snippets/form_errors.html' with errors_list=form.languages.errors id="id_languages_error" %}
                 </div>
 
@@ -143,9 +139,7 @@
                         <h3 class="title is-5">
                             {% trans "Edit Series" %}
                         </h3>
-                        <span class="help my-2" id="id_series_help_error">
-                            {% trans 'To edit details of a series itself, click the series name' %}
-                        </span>
+                        {% include 'snippets/form_help.html' with field=form.series %}
                         {% for sb in seriesbooks %}
                         <div class="box">
                             <label class="label mb-4">
@@ -191,9 +185,6 @@
                     <label class="label" for="id_series_number">
                         {% trans "Series position:" %}
                     </label>
-                    <span class="help my-2" id="id_series_number_help_error">
-                        {% trans 'This field was previously called "Series number"' %}
-                    </span>
                     {{ form.series_number }}
                     {% include 'snippets/form_errors.html' with errors_list=form.series_number.errors id="id_series_number_error" %}
                 </div>
@@ -306,10 +297,10 @@
 
                 <div class="field">
                     <label class="label" for="id_goodreads_key">
-                        {% trans "Goodreads key:" %}
+                        {% trans "GoodReads key:" %}
                     </label>
                     {{ form.goodreads_key }}
-
+                    {% include 'snippets/form_help.html' with field=form.goodreads_key %}
                     {% include 'snippets/form_errors.html' with errors_list=form.goodreads_key.errors id="id_goodreads_key_error" %}
                 </div>
 
@@ -318,7 +309,7 @@
                         {% trans "ISFDB ID:" %}
                     </label>
                     {{ form.isfdb }}
-
+                    {% include 'snippets/form_help.html' with field=form.isfdb link="https://www.isfdb.org/" %}
                     {% include 'snippets/form_errors.html' with errors_list=form.isfdb.errors id="id_isfdb_error" %}
                 </div>
 
@@ -338,6 +329,15 @@
                     {{ form.libris_key }}
 
                     {% include 'snippets/form_errors.html' with errors_list=form.libris_key.errors id="id_libris_key_error" %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_librarything_key">
+                        {% trans "LibraryThing ID:" %}
+                    </label>
+                    {{ form.librarything_key }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.librarything_key.errors id="id_librarything_id_error" %}
                 </div>
             </div>
         </section>
