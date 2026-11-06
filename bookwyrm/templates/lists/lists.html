@@ -43,6 +43,8 @@
 </nav>
 {% endif %}
 
+{% include 'lists/lists_filter/filters.html' %}
+
 <section class="block">
     {% include 'lists/list_items.html' with lists=lists %}
 </section>

@@ -1,0 +1,14 @@
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+<div class="control">
+    <label class="label is-block" for="id_sort">{% trans "Order by" %}</label>
+    <div class="select">
+        <select id="id_sort" name="sort">
+            <option value="created" {% if request.GET.sort == "created" %}selected{% endif %}>{% trans "Newest" %}</option>
+            <option value="saves" {% if request.GET.sort == "saves" %}selected{% endif %}>{% trans "Most frequently saved" %}</option>
+        </select>
+    </div>
+</div>
+{% endblock %}

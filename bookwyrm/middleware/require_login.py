@@ -25,6 +25,7 @@ allowed_views = [
     r"^/login/(?P<confirmed>confirmed)/?$",
     r"^/register/?$",
     r"^/password-reset/?$",
+    r"^/password-reset/(?P<code>[A-Za-z0-9]+)/?$",
     r"/confirm-email/?$",
     r"/confirm-email/(?P<code>[A-Za-z0-9]+)/?$",
     r"^/resend-link/?$",

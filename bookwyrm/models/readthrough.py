@@ -39,8 +39,8 @@ class ReadThrough(BookWyrmModel):
         """update user active time"""
         if not self.id and self.book.parent_work:
             # if we're creating a new readthrough
-            self.book.parent_work.read_count += 1
-            self.book.parent_work.save(update_fields=["read_count"], broadcast=False)
+            self.book.parent_work.popularity_count += 1
+            self.book.parent_work.save(update_fields=["popularity_count"], broadcast=False)
 
         # an active readthrough must have an unset finish date
         if self.finish_date or self.stopped_date:
@@ -54,8 +54,8 @@ class ReadThrough(BookWyrmModel):
 
     def delete(self, *args, **kwargs):
         """also reduce the read count on the work"""
-        self.book.parent_work.read_count -= 1
-        self.book.parent_work.save(update_fields=["read_count"], broadcast=False)
+        self.book.parent_work.popularity_count -= 1
+        self.book.parent_work.save(update_fields=["popularity_count"], broadcast=False)
         super().delete(*args, **kwargs)
 
     def create_update(self):

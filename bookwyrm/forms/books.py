@@ -1,6 +1,7 @@
 """using django model forms"""
 
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from file_resubmit.widgets import ResubmitImageWidget
 
@@ -37,6 +38,7 @@ class EditionForm(CustomForm):
     class Meta:
         model = models.Edition
         fields = [
+            "last_edited_by",
             "title",
             "sort_title",
             "subtitle",
@@ -63,64 +65,78 @@ class EditionForm(CustomForm):
             "asin",
             "aasin",
             "isfdb",
+            "librarything_key",
         ]
         widgets = {
-            "title": forms.TextInput(attrs={"aria-describedby": "desc_title"}),
-            "sort_title": forms.TextInput(
-                attrs={"aria-describedby": "desc_sort_title"}
-            ),
-            "subtitle": forms.TextInput(attrs={"aria-describedby": "desc_subtitle"}),
-            "description": forms.Textarea(
-                attrs={"aria-describedby": "desc_description"}
-            ),
-            "series": forms.TextInput(attrs={"aria-describedby": "desc_series"}),
-            "series_number": forms.TextInput(
-                attrs={"aria-describedby": "desc_series_number"}
-            ),
             "subjects": ArrayWidget(),
-            "languages": forms.TextInput(
-                attrs={"aria-describedby": "desc_languages_help desc_languages"}
+            "physical_format": Select(),
+            "first_published_date": SelectDateWidget(),
+            "published_date": SelectDateWidget(),
+            "cover": ResubmitImageWidgetWithWarning(),
+        }
+        help_texts = {
+            "sort_title": _(
+                'Remove words like "The" from the beginning of the title for alphabetization'
             ),
-            "publishers": forms.TextInput(
-                attrs={"aria-describedby": "desc_publishers_help desc_publishers"}
+            "oclc_number": _("A unique number associated with a record in WorldCat"),
+            "isbn_13": _("About ISBNs"),
+            "isbn_10": _(
+                "If an ISBN 13 is provided, the ISBN 10 will be computed automatically on save"
             ),
-            "first_published_date": SelectDateWidget(
-                attrs={"aria-describedby": "desc_first_published_date"}
+            "openlibrary_key": _('Openlibrary keys for editions should end in "M"'),
+            "publishers": _("Separate multiple values with commas."),
+            "languages": _("Separate multiple values with commas."),
+            "series": _("To edit details of a series itself, click the series name"),
+            "isfdb": _("The Internet Speculative Fiction Database"),
+            "goodreads_key": _(
+                'The GoodReads key for "goodreads.com/book/show/1234567-example-book" would be "1234567"'
             ),
-            "published_date": SelectDateWidget(
-                attrs={"aria-describedby": "desc_published_date"}
+        }
+
+
+class WorkForm(CustomForm):
+    class Meta:
+        model = models.Work
+        fields = [
+            "last_edited_by",
+            "title",
+            "sort_title",
+            "subtitle",
+            "description",
+            "series",
+            "series_number",
+            "languages",
+            "subjects",
+            "cover",
+            "lccn",
+            "openlibrary_key",
+            "inventaire_id",
+            "goodreads_key",
+            "finna_key",
+            "libris_key",
+            "asin",
+            "aasin",
+            "isfdb",
+            "bnf_id",
+            "librarything_key",
+        ]
+        widgets = {
+            "subjects": ArrayWidget(),
+            "cover": ResubmitImageWidgetWithWarning(),
+        }
+        help_texts = {
+            "sort_title": _(
+                'Remove words like "The" from the beginning of the title for alphabetization'
             ),
-            "cover": ResubmitImageWidgetWithWarning(
-                attrs={"aria-describedby": "desc_cover"}
+            "lccn": _("https://id.loc.gov/authorities/names.html"),
+            "openlibrary_key": _('Openlibrary keys for works should end in "W"'),
+            "languages": _("Separate multiple values with commas."),
+            "series": _("To edit details of a series itself, click the series name"),
+            "isfdb": _("The Internet Speculative Fiction Database"),
+            "goodreads_key": _(
+                'The GoodReads key for "https://www.goodreads.com/work/editions/1234567" would be "1234567"'
             ),
-            "physical_format": Select(
-                attrs={"aria-describedby": "desc_physical_format"}
-            ),
-            "physical_format_detail": forms.TextInput(
-                attrs={"aria-describedby": "desc_physical_format_detail"}
-            ),
-            "pages": forms.NumberInput(attrs={"aria-describedby": "desc_pages"}),
-            "isbn_13": forms.TextInput(attrs={"aria-describedby": "desc_isbn_13"}),
-            "isbn_10": forms.TextInput(attrs={"aria-describedby": "desc_isbn_10"}),
-            "openlibrary_key": forms.TextInput(
-                attrs={"aria-describedby": "desc_openlibrary_key"}
-            ),
-            "inventaire_id": forms.TextInput(
-                attrs={"aria-describedby": "desc_inventaire_id"}
-            ),
-            "goodreads_key": forms.TextInput(
-                attrs={"aria-describedby": "desc_goodreads_key"}
-            ),
-            "oclc_number": forms.TextInput(
-                attrs={"aria-describedby": "desc_oclc_number"}
-            ),
-            "finna_key": forms.TextInput(attrs={"aria-describedby": "desc_finna_key"}),
-            "libris_key": forms.TextInput(
-                attrs={"aria-describedby": "desc_libris_key"}
-            ),
-            "ASIN": forms.TextInput(attrs={"aria-describedby": "desc_ASIN"}),
-            "AASIN": forms.TextInput(attrs={"aria-describedby": "desc_AASIN"}),
-            "isfdb": forms.TextInput(attrs={"aria-describedby": "desc_isfdb"}),
+            "bnf_id": _("Bibliothèque nationale de France"),
         }
 
 
@@ -134,6 +150,7 @@ class EditionFromWorkForm(CustomForm):
     class Meta:
         model = models.Work
         fields = [
+            "last_edited_by",
             "title",
             "sort_title",
             "subtitle",
@@ -158,4 +175,8 @@ class SeriesForm(CustomForm):
             "inventaire_id",
             "wikidata",
             "isfdb",
+            "last_edited_by",
         ]
+        help_texts = {
+            "isfdb": _("The Internet Speculative Fiction Database"),
+        }

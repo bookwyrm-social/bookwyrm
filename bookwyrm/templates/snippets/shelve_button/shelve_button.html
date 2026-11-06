@@ -1,7 +1,7 @@
 {% load utilities %}
 {% load shelf_tags %}
 
-{% if request.user.is_authenticated %}
+{% if request.user.is_authenticated and book %}
 
 {% with book.id|uuid as uuid %}
 {% active_shelf book as active_shelf %}

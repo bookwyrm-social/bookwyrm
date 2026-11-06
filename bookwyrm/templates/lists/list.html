@@ -47,6 +47,10 @@
         </div>
         {% endif %}
 
+        {% if list.suggests_for == None %}
+            {% include "lists/list_filter/filters.html" %}
+        {% endif %}
+
         {% if not items.object_list.exists %}
         <p class="block">{% trans "This list is currently empty." %}</p>
         {% else %}
@@ -62,32 +66,8 @@
     </section>
 
     <section class="column is-one-quarter">
-    {% if list.suggests_for == None %}
-        <h2 class="title is-5">
-            {% trans "Sort List" %}
-        </h2>
-        <form name="sort" action="{% url 'list' list_id=list.id slug=list.name|slugify %}" method="GET" class="block">
-            <div class="field">
-                <label class="label" for="id_sort_by">{% trans "Sort By" %}</label>
-                <div class="select is-fullwidth">
-                    {{ sort_form.sort_by }}
-                </div>
-            </div>
-            <div class="field">
-                <label class="label" for="id_direction">{% trans "Direction" %}</label>
-                <div class="select is-fullwidth">
-                    {{ sort_form.direction }}
-                </div>
-            </div>
-            <div class="field">
-                <button class="button is-primary is-fullwidth" type="submit">
-                    {% trans "Sort List" %}
-                </button>
-            </div>
-        </form>
-    {% endif %}
     {% if request.user.is_authenticated and not list.curation == 'closed' or request.user == list.user %}
-        <h2 class="title is-5 mt-6">
+        <h2 class="title is-5">
             {% if list.suggests_for or list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
                 {% trans "Add Books" %}
             {% else %}

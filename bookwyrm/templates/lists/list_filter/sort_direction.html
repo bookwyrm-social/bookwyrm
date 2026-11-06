@@ -1,0 +1,12 @@
+
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+<div class="control">
+    <label class="label" for="id_direction">{% trans "Direction" %}</label>
+    <div class="select">
+        {{ sort_form.direction }}
+    </div>
+</div>
+{% endblock %}

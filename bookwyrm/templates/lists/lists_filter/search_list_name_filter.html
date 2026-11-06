@@ -1,0 +1,9 @@
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+<div class="control">
+    <label class="label" for="id_name_search">{% trans "Search lists" %}</label>
+    <input type="text" class="input" name="name" value="{{ request.GET.name|default:'' }}" id="id_name_search" spellcheck="false">
+</div>
+{% endblock %}

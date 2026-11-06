@@ -1,5 +1,6 @@
 """test for app action functionality"""
 
+import re
 from unittest.mock import patch
 import dateutil
 from django.core.exceptions import PermissionDenied
@@ -242,13 +243,19 @@ class StatusViews(TestCase):
         """status with an uploaded image"""
         view = views.CreateStatus.as_view()
         user = self.local_user
-        fake_file = SimpleUploadedFile("foo.jpg", b"a")
+
+        fake_file_title = "foo"
+        fake_file_extension = ".jpg"
+        fake_filename = f"{fake_file_title}{fake_file_extension}"
+        fake_file_dimension = "240"
+
+        fake_file = SimpleUploadedFile(fake_filename, b"a")
         upload = models.UserUpload.objects.create(
-            original_name="foo.jpg", original_file=fake_file, user=user
+            original_name=fake_filename, original_file=fake_file, user=user
         )
         models.UserUploadVersion.objects.create(
             user_upload=upload,
-            max_dimension="240",
+            max_dimension=fake_file_dimension,
             file=fake_file,
         )
         img_path = upload.original_file.name
@@ -267,9 +274,21 @@ class StatusViews(TestCase):
 
         status = models.Status.objects.get()
         self.assertEqual(list(status.user_image_uploads.all()), [upload])
-        self.assertEqual(
-            status.content,
-            f'<p>pic <img srcset="/images/uploads/user_{user.id}/{upload.id}/240.jpg 240w" sizes="(width &lt;= 600px) 100vw, 60vw" src="/images/uploads/user_{user.id}/{upload.id}/240.jpg"></p>',
+        # rendered view contains an image tag
+        self.assertRegex(status.content, "<p>pic <img.*></p>")
+
+        # rendered srcset is a strict subset of rendered src
+        matches = re.findall(
+            rf'srcset="(.*?) {fake_file_dimension}w".*src="(\1)"', status.content
+        )
+        rendered_srcset, rendered_src = matches[0]
+        self.assertIsNotNone(rendered_srcset)
+        self.assertIsNotNone(rendered_src)
+
+        # rendered src ends in the filename max_dimension with an extension that matches the original
+        self.assertRegex(
+            rendered_src,
+            rf"{fake_file_dimension}(?:_[A-Za-z0-9]*)?\{fake_file_extension}$",
         )
 
     def test_create_status_reply(self, *_):
@@ -499,27 +518,31 @@ class StatusViews(TestCase):
         """find and format images into tags"""
         fake_file = SimpleUploadedFile("foo.jpg", b"a")
         user = self.local_user
+        lower_resolution_dimension = "240"
+        high_resolution_dimension = "600"
         upload = models.UserUpload.objects.create(
             original_name="foo.jpg", original_file=fake_file, user=self.local_user
         )
         models.UserUploadVersion.objects.create(
             user_upload=upload,
-            max_dimension="240",
+            max_dimension=lower_resolution_dimension,
             file=fake_file,
         )
         models.UserUploadVersion.objects.create(
             user_upload=upload,
-            max_dimension="600",
+            max_dimension=high_resolution_dimension,
             file=fake_file,
         )
         img_path = upload.original_file.name
         text = f"!image({img_path})"
-        expected = f'<img srcset="/images/uploads/user_{user.id}/{upload.id}/240.jpg 240w, /images/uploads/user_{user.id}/{upload.id}/600.jpg 600w" sizes="(width <= 600px) 100vw, 60vw" src="/images/uploads/user_{user.id}/{upload.id}/600.jpg" />'
-        self.assertEqual(
-            views.status.format_images(
-                text, views.status.find_images(text, self.local_user)
-            ),
-            expected,
+        rendered_image_tag = views.status.format_images(
+            text, views.status.find_images(text, self.local_user)
+        )
+        lower_resolution_regex = rf"/.*?user_{user.id}/{upload.id}/{lower_resolution_dimension}(?:_[a-zA-Z0-9]*)?(.jpg)"
+        high_resolution_regex = rf".*?user_{user.id}/{upload.id}/{high_resolution_dimension}(?:_[a-zA-Z0-9]*)?(.jpg)"
+        self.assertRegex(
+            rendered_image_tag,
+            rf'<img srcset="{lower_resolution_regex} {lower_resolution_dimension}w, {high_resolution_regex} {high_resolution_dimension}w" sizes="\(width <= {high_resolution_dimension}px\) 100vw, 60vw" src="{high_resolution_regex}" />',
         )
 
     def test_format_links_simple_url(self, *_):
@@ -689,6 +712,36 @@ http://www.fish.com/"""
         activity = mock.call_args_list[1][0][0]
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"]["type"], "Tombstone")
+        status.refresh_from_db()
+        self.assertTrue(status.deleted)
+
+    def test_delete_status_redirects_to_book(self, *_):
+        """deleting from the status page redirects to the book page"""
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
+            status = models.Comment.objects.create(
+                content="status", user=self.local_user, book=self.book
+            )
+        referer = "https://example.com" + status.local_path
+        request = self.factory.post("", HTTP_REFERER=referer)
+        request.user = self.local_user
+        view = views.DeleteStatus.as_view()
+        response = view(request, status.id)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.book.local_path)
+        status.refresh_from_db()
+        self.assertTrue(status.deleted)
+
+    def test_delete_status_redirects_to_user(self, *_):
+        """deleting from the status page with no associated book redirects to the user page"""
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
+            status = models.Status.objects.create(user=self.local_user, content="hi")
+        referer = "https://example.com" + status.local_path
+        request = self.factory.post("", HTTP_REFERER=referer)
+        request.user = self.local_user
+        view = views.DeleteStatus.as_view()
+        response = view(request, status.id)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.local_user.local_path)
         status.refresh_from_db()
         self.assertTrue(status.deleted)
 

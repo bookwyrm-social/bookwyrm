@@ -5,7 +5,7 @@ from Crypto import Random
 
 from django.core.exceptions import PermissionDenied
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.dispatch import receiver
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
@@ -14,8 +14,7 @@ from django.utils.text import slugify
 from bookwyrm.settings import BASE_URL
 from .fields import RemoteIdField
 
-
-DeactivationReason = [
+DEACTIVATION_REASONS = [
     ("pending", _("Pending")),
     ("self_deletion", _("Self deletion")),
     ("self_deactivation", _("Self deactivation")),
@@ -25,7 +24,7 @@ DeactivationReason = [
 ]
 
 
-def new_access_code():
+def new_access_code() -> bytes:
     """the identifier for a user invite"""
     return base64.b32encode(Random.get_random_bytes(5)).decode("ascii")
 
@@ -37,7 +36,7 @@ class BookWyrmModel(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     remote_id = RemoteIdField(null=True, activitypub_field="id")
 
-    def get_remote_id(self):
+    def get_remote_id(self) -> str:
         """generate the url that resolves to the local object, without a slug"""
         base_path = BASE_URL
         if hasattr(self, "user"):
@@ -52,7 +51,7 @@ class BookWyrmModel(models.Model):
         abstract = True
 
     @property
-    def local_path(self):
+    def local_path(self) -> str:
         """how to link to this object in the local app, with a slug"""
         local = self.get_remote_id().replace(BASE_URL, "")
 
@@ -114,7 +113,7 @@ class BookWyrmModel(models.Model):
 
         raise Http404()
 
-    def raise_not_editable(self, viewer):
+    def raise_not_editable(self, viewer: "models.User"):
         """does this user have permission to edit this object? liable to be overwritten
         by models that inherit this base model class"""
         if not hasattr(self, "user"):
@@ -126,7 +125,7 @@ class BookWyrmModel(models.Model):
 
         raise PermissionDenied()
 
-    def raise_not_deletable(self, viewer):
+    def raise_not_deletable(self, viewer: "models.User"):
         """does this user have permission to delete this object? liable to be
         overwritten by models that inherit this base model class"""
         if not hasattr(self, "user"):
@@ -139,7 +138,9 @@ class BookWyrmModel(models.Model):
         raise PermissionDenied()
 
     @classmethod
-    def privacy_filter(cls, viewer, privacy_levels=None):
+    def privacy_filter(
+        cls, viewer: "models.User", privacy_levels: list[str] = None
+    ) -> QuerySet["BookWyrmModel"]:
         """filter objects that have "user" and "privacy" fields"""
         queryset = cls.objects
         if hasattr(queryset, "select_subclasses"):
@@ -170,7 +171,9 @@ class BookWyrmModel(models.Model):
         return queryset
 
     @classmethod
-    def followers_filter(cls, queryset, viewer):
+    def followers_filter(
+        cls, queryset: QuerySet["BookWyrmModel"], viewer: "models.User"
+    ) -> QuerySet["BookWyrmModel"]:
         """Override-able filter for "followers" privacy level"""
         return queryset.exclude(
             ~Q(  # user isn't following and it isn't their own status
@@ -180,13 +183,15 @@ class BookWyrmModel(models.Model):
         )
 
     @classmethod
-    def direct_filter(cls, queryset, viewer):
+    def direct_filter(
+        cls, queryset: QuerySet["BookWyrmModel"], viewer: "models.User"
+    ) -> QuerySet["BookWyrmModel"]:
         """Override-able filter for "direct" privacy level"""
         return queryset.exclude(~Q(user=viewer), privacy="direct")
 
 
 @receiver(models.signals.post_save)
-def set_remote_id(sender, instance, created, *args, **kwargs):
+def set_remote_id(sender: type, instance: models.Model, created: bool, *args, **kwargs):
     """set the remote_id after save (when the id is available)"""
     if not created or not hasattr(instance, "get_remote_id"):
         return

@@ -4,6 +4,7 @@ import logging
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Count
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -11,6 +12,7 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.lists_stream import ListsStream
+from bookwyrm.views.helpers import search_within_queryset
 from bookwyrm.views.list.list import add_book
 from bookwyrm.views.mixins import PrivateProfileMixin
 
@@ -24,8 +26,53 @@ class Lists(View):
         """display a book list"""
         if request.user.is_authenticated:
             lists = ListsStream().get_list_stream(request.user)
+            if show_only := request.GET.get("show_only"):
+                match show_only:
+                    case "owned":
+                        lists = lists.filter(user=request.user)
+                    case "saved":
+                        lists = request.user.saved_lists
+                    case "followed":
+                        lists = lists.filter(user__in=request.user.following.all())
         else:
             lists = models.List.objects.filter(privacy="public")
+
+        if name_query := request.GET.get("name"):
+            lists = search_within_queryset(
+                lists, name_query, searchable_fields=["name", "description"]
+            )
+        if book_query := request.GET.get("edition"):
+            lists = search_within_queryset(
+                lists,
+                book_query,
+                searchable_fields=[
+                    "editions__title",
+                    "editions__isbn_10",
+                    "editions__isbn_13",
+                    "editions__oclc_number",
+                    "editions__asin",
+                    "editions__aasin",
+                    "editions__isfdb",
+                ],
+            )
+        if author_query := request.GET.get("authors"):
+            lists = search_within_queryset(
+                lists,
+                author_query,
+                searchable_fields=[
+                    "editions__authors__name",
+                    "editions__authors__aliases",
+                ],
+            )
+        sort = request.GET.get("sort", "created")
+        match sort:
+            case "created":
+                lists = lists.order_by("-created_date")
+            case "saves":
+                lists = lists.annotate(save_count=Count("saved_lists")).order_by(
+                    "-save_count"
+                )
+
         paginated = Paginator(lists, 12)
         data = {
             "lists": paginated.get_page(request.GET.get("page")),

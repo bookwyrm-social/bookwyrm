@@ -1,0 +1,25 @@
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+<div class="control">
+    <label class="label is-block" for="id_show_only">{% trans "Show only" %}</label>
+    <div class="select">
+        <select id="id_show_only" name="show_only">
+            <option value="">
+                {% trans "All" %}
+            </option>
+            <option value="owned" {% if request.GET.show_only == "owned" %}selected{% endif %}>
+                {% trans "Your lists" %}
+            </option>
+            <option value="saved" {% if request.GET.show_only == "saved" %}selected{% endif %}>
+                {% trans "Your saved lists" %}
+            </option>
+            <option value="followed" {% if request.GET.show_only == "followed" %}selected{% endif %}>
+                {% trans "Lists from users you follow" %}
+            </option>
+        </select>
+    </div>
+</div>
+{% endblock %}
+

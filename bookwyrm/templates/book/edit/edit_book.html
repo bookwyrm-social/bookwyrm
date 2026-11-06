@@ -7,7 +7,7 @@
     {% if book.title %}
         {% blocktrans with book_title=book.title %}Edit "{{ book_title }}"{% endblocktrans %}
     {% else %}
-        {% trans "Add Book" %}
+        {% trans "Add Edition" %}
     {% endif %}
 {% endblock %}
 
@@ -17,7 +17,7 @@
         {% if book.title %}
         {% blocktrans with book_title=book.title %}Edit "{{ book_title }}"{% endblocktrans %}
         {% else %}
-        {% trans "Add Book" %}
+        {% trans "Add Edition" %}
         {% endif %}
     </h1>
     {% if book.created_date %}
@@ -65,6 +65,7 @@
     method="post"
     enctype="multipart/form-data"
 >
+    {% csrf_token %}
     {% if confirm_mode %}
         <div class="box">
             <h2 class="title is-4">{% trans "Confirm Book Info" %}</h2>
@@ -184,7 +185,11 @@
         <hr class="block">
     {% endif %}
 
-    {% include "book/edit/edit_book_form.html" %}
+    {% if model == "edition" %}
+    {% include "book/edit/edit_edition_form.html" %}
+    {% elif model == "work" %}
+    {% include "book/edit/edit_work_form.html" %}
+    {% endif %}
 
     {% if not confirm_mode %}
     <div class="block">

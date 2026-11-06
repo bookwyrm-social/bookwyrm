@@ -29,8 +29,10 @@
 
 {% with user_authenticated=request.user.is_authenticated can_edit_book=perms.bookwyrm.edit_book %}
 <div class="block" itemscope itemtype="https://schema.org/Book">
+    {% if user_authenticated %}
     {% include "snippets/merge_banner/work.html" with original=book.parent_work dupe=work_dupe object_type='work' %}
     {% include "snippets/merge_banner/edition.html" with original=book dupe=edition_dupe object_type='edition' %}
+    {% endif %}
     <div class="columns is-mobile">
         {% include "book/sections/title.html" %}
     </div>

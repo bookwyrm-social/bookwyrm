@@ -37,3 +37,4 @@ class TestISBN(TestCase):
         self.assertEqual(hyphenator.hyphenate("978-0-4633461-1-2"), "978-0-4633461-1-2")
         self.assertEqual(hyphenator.hyphenate("9-0-4633461-1-2"), "9-0-4633461-1-2")
         self.assertEqual(hyphenator.hyphenate("90463346112"), "90463346112")
+        self.assertEqual(hyphenator.hyphenate("9782"), "9782")
