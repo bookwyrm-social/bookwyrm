@@ -325,6 +325,9 @@ case "$CMD" in
     confirm_email)
         runweb python manage.py confirm_email "$@"
         ;;
+    yeet_stale_accounts)
+        runweb python manage.py yeet_stale_accounts "$@"
+        ;;
     *)
         set +x # No need to echo echo
         echo "Unrecognised command. Try:"
@@ -377,6 +380,7 @@ case "$CMD" in
         echo "    runweb [command]"
         echo "    remove_2fa"
         echo "    confirm_email"
+        echo "    yeet_stale_accounts [--yes] [--days=N]"
         echo " "
         echo " Command that only operate production"
         echo "    copy_media_to_s3"
