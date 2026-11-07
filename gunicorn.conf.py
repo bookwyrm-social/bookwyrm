@@ -4,7 +4,7 @@ from environs import Env
 env = Env()
 env.read_env()
 
-bind = "[::]:8000"
+bind = ["127.0.0.1:8000", "[::1]:8000"]
 workers = 2
 threads = min([multiprocessing.cpu_count(), 12])
 max_requests = 1000
