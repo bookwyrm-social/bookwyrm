@@ -1,7 +1,10 @@
 """template filters"""
 
+from typing import Any
+
 from django import template
 from django.core.exceptions import FieldError
+from django.db.models import QuerySet
 from bookwyrm import models
 
 
@@ -9,13 +12,13 @@ register = template.Library()
 
 
 @register.filter(name="review_count")
-def get_review_count(book):
+def get_review_count(book: models.Edition | int) -> int:
     """how many reviews?"""
     return models.Review.objects.filter(deleted=False, book=book).count()
 
 
 @register.filter(name="book_description")
-def get_book_description(book):
+def get_book_description(book: models.Edition) -> Any:
     """use the work's text if the book doesn't have it"""
     if book.description:
         return book.description
@@ -26,19 +29,21 @@ def get_book_description(book):
 
 
 @register.simple_tag(takes_context=False)
-def get_book_file_links(book):
+def get_book_file_links(book: models.Book) -> QuerySet[models.FileLink]:
     """links for a book"""
     return book.file_links.filter(domain__status="approved")
 
 
 @register.filter(name="author_edition")
-def get_author_edition(book, author):
+def get_author_edition(book: models.Work, author: models.Author) -> models.Edition:
     """default edition for a book on the author page"""
     return book.author_edition(author)
 
 
 @register.filter(name="blocked_book_filter")
-def blocked_book_filter(queryset, viewer):
+def blocked_book_filter(
+    queryset: QuerySet[models.Book], viewer: models.User
+) -> QuerySet[models.Book]:
     """filter out blocked books from querysets"""
 
     if not viewer or not viewer.is_authenticated:
