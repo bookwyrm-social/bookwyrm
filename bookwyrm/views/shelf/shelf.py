@@ -100,8 +100,6 @@ class Shelf(PrivateProfileMixin, View):
 
         books = sort_books(books, sort)
 
-        if shelves_filter_query := request.GET.get("filter"):
-            books = search(shelves_filter_query, books=books)
         if author_query := request.GET.get("authors"):
             books = search_within_queryset(
                 books, author_query, searchable_fields=["authors__name"]
@@ -110,6 +108,8 @@ class Shelf(PrivateProfileMixin, View):
             books = search_within_queryset(
                 books, format_query, searchable_fields=["physical_format"]
             )
+        if shelves_filter_query := request.GET.get("filter"):
+            books = search(shelves_filter_query, books=books)
 
         paginated = Paginator(
             books,
