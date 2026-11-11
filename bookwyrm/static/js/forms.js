@@ -1,6 +1,4 @@
 (function () {
-    "use strict";
-
     /**
      * Remove input field
      *

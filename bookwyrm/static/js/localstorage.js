@@ -1,6 +1,6 @@
 /* exported LocalStorageTools */
 /* globals BookWyrm */
-
+/* eslint-disable no-unused-vars */
 let LocalStorageTools = new (class {
     constructor() {
         document.querySelectorAll("[data-hide]").forEach((t) => this.setDisplay(t));
