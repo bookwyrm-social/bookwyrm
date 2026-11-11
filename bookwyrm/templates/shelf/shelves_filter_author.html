@@ -1,0 +1,10 @@
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+<div class="control">
+    <label class="label" for="id_authors">{% trans "Search authors" %}</label>
+    <input type="text" class="input" name="authors" value="{{ request.GET.authors|default:'' }}" id="id_authors" spellcheck="false">
+</div>
+{% endblock %}
+
