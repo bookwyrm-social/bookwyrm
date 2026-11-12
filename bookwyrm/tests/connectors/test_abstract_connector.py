@@ -11,8 +11,14 @@ from bookwyrm.connectors.abstract_connector import (
     get_data,
     activitydata_to_seriesbook,
     update_connector_status,
+    get_image,
 )
-from bookwyrm.settings import BASE_URL, INSTANCE_ACTOR_USERNAME
+from bookwyrm.settings import (
+    BASE_URL,
+    INSTANCE_ACTOR_USERNAME,
+    MAX_RESPONSE_IMAGE_SIZE,
+    MAX_RESPONSE_SIZE,
+)
 
 
 class AbstractConnector(TestCase):
@@ -335,3 +341,36 @@ class AbstractConnector(TestCase):
         self.connector.connector.refresh_from_db()
         self.assertIsNotNone(self.connector.connector.most_recent_error)
         self.assertEqual(self.connector.connector.latest_error, message[:255])
+
+    @responses.activate
+    def test_header_over_limit_in_image(self):
+        """test that if header of an image exceeds limit, returning None,None"""
+        responses.add(
+            responses.GET,
+            "https://example.com/book/abcd",
+            headers={"Content-Length": str(MAX_RESPONSE_IMAGE_SIZE + 1)},
+            body=" ",
+            status=200,
+        )
+
+        with self.assertLogs(level="INFO") as logger:
+            test_image = get_image("https://example.com/book/abcd")
+        self.assertIn(
+            "INFO:bookwyrm.connectors.abstract_connector:header exceeded limit",
+            logger.output,
+        )
+        self.assertEqual(test_image, (None, None))
+
+    @responses.activate
+    def test_get_data_header_over_limit(self):
+        """test get_data header over limit"""
+        responses.add(
+            responses.GET,
+            "https://example.com/book/abcd",
+            headers={"Content-Length": str(MAX_RESPONSE_SIZE + 1)},
+            body=" ",
+            status=200,
+        )
+
+        with self.assertRaisesRegex(ConnectorException, "header exceeded limit"):
+            get_data("https://example.com/book/abcd")

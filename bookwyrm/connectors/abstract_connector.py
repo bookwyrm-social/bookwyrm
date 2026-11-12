@@ -4,15 +4,18 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Optional, TypedDict, Any, Callable, Union, Iterator
 from urllib.parse import quote_plus
+from json import loads
 
 import logging
 import re
 import asyncio
+import time
 from PIL import Image, UnidentifiedImageError
 import requests
 import redis.asyncio as redis
 from requests.exceptions import RequestException
 import aiohttp
+from io import BytesIO
 
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.core.files.base import ContentFile
@@ -21,7 +24,16 @@ from django.db import transaction
 from django.db.models import Subquery
 
 from bookwyrm import activitypub, models, settings
-from bookwyrm.settings import USER_AGENT, INSTANCE_ACTOR_USERNAME, REDIS_ACTIVITY_URL
+from bookwyrm.settings import (
+    USER_AGENT,
+    INSTANCE_ACTOR_USERNAME,
+    REDIS_ACTIVITY_URL,
+    MAX_BODY_READ_TIME,
+    STREAM_CHUNK_SIZE,
+    MAX_RESPONSE_SIZE,
+    MAX_RESPONSE_IMAGE_SIZE,
+    MAX_IMAGE_BODY_READ_TIME,
+)
 from bookwyrm.tasks import app, CONNECTORS
 from .connector_manager import load_more_data, ConnectorException, raise_not_valid_url
 from .format_mappings import format_mappings
@@ -454,6 +466,7 @@ def get_data(
     try:
         resp = requests.get(
             url,
+            stream=True,
             params=params,
             headers={
                 "Accept": (
@@ -474,7 +487,7 @@ def get_data(
         else:
             raise ConnectorException()
     try:
-        data = resp.json()
+        data = loads(get_body_safe(resp))
     except ValueError as err:
         logger.info(err)
         raise ConnectorException(err)
@@ -485,12 +498,52 @@ def get_data(
     return data
 
 
+def get_body_safe(
+    response: requests.Response,
+    max_size: int | None = None,
+    max_time: int | None = None,
+) -> bytes:
+    """safe reading responses from other servers"""
+    if max_size is None:
+        max_size = MAX_RESPONSE_SIZE
+
+    if max_time is None:
+        max_time = MAX_BODY_READ_TIME
+
+    if int(response.headers.get("content-length", 0)) > max_size:
+        response.close()
+        raise ConnectorException("header exceeded limit")
+
+    try:
+        body = BytesIO()
+        start_time = time.monotonic()
+        for for_part in response.iter_content(chunk_size=STREAM_CHUNK_SIZE):
+            read_time = time.monotonic() - start_time
+            if read_time > max_time:
+                response.close()
+                raise ConnectorException("read body time exceeded limit")
+
+            body.write(for_part)
+            if body.tell() > max_size:
+                response.close()
+                raise ConnectorException("body exceeded limit")
+
+    except ConnectorException:
+        raise
+
+    except requests.RequestException:
+        raise ConnectorException()
+
+    return body.getvalue()
+
+
 def get_image(url: str, timeout: int = 10) -> tuple[Any, str] | tuple[None, None]:
     """wrapper for requesting an image"""
     raise_not_valid_url(url)
     try:
         resp = requests.get(
             url,
+            stream=True,
             headers={
                 "User-Agent": settings.USER_AGENT,
             },
@@ -501,13 +554,20 @@ def get_image(url: str, timeout: int = 10) -> tuple[Any, str] | tuple[None, None
         return None, None
 
     if not resp.ok:
+        resp.close()
         return None, None
 
-    image_content = ContentFile(resp.content)
     try:
+        image_content = ContentFile(
+            get_body_safe(resp, MAX_RESPONSE_IMAGE_SIZE, MAX_IMAGE_BODY_READ_TIME)
+        )
         with Image.open(image_content) as im:
             extension = str(im.format).lower()
             return image_content, extension
+    except ConnectorException as err:
+        logger.info(err)
+        return None, None
+
     except UnidentifiedImageError:
         logger.info("File requested was not an image: %s", url)
         return None, None
