@@ -1,0 +1,23 @@
+{% extends 'components/dropdown.html' %}
+{% load i18n %}
+
+{% block dropdown-trigger %}
+<span>{% trans "Add to list" %}</span>
+<span class="icon icon-arrow-down" aria-hidden="true"></span>
+{% endblock %}
+
+{% block dropdown-list %}
+{% for list in list_options %}
+<li role="menuitem" class="dropdown-item p-0">
+    <form name="list-add-{{ book.id }}-{{ list.id }}" method="post" action="{% url 'list-add-book' %}">
+        {% csrf_token %}
+        <input type="hidden" name="edition" value="{{ book.id }}">
+        <input type="hidden" name="user" value="{{ request.user.id }}">
+        <input type="hidden" name="book_list" value="{{ list.id }}">
+        <button class="button is-fullwidth is-small is-radiusless has-background-body" type="submit">
+            <span>{{ list.name }}</span>
+        </button>
+    </form>
+</li>
+{% endfor %}
+{% endblock %}

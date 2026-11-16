@@ -268,7 +268,7 @@ def add_book(request):
 
     item.save()
 
-    return List().get(request, book_list.id, add_succeeded=True)
+    return redirect_to_referer(request, book_list.local_path)
 
 
 @require_POST
