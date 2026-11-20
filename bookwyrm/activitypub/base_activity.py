@@ -4,7 +4,7 @@ from __future__ import annotations
 from contextlib import contextmanager
 from dataclasses import dataclass, fields, MISSING
 from hashlib import md5
-from json import JSONEncoder
+from json import JSONEncoder, loads
 import logging
 import random
 import time
@@ -19,7 +19,7 @@ from django.utils.http import http_date
 from redis.commands.core import ResponseT
 
 from bookwyrm import models
-from bookwyrm.connectors import ConnectorException, get_data
+from bookwyrm.connectors import ConnectorException, get_data, get_body_safe
 from bookwyrm.models import base_model
 from bookwyrm.redis_store import redis_instance
 from bookwyrm.signatures import make_signature
@@ -496,6 +496,7 @@ def get_activitypub_data(url: str | bytes) -> Any:
     try:
         response = requests.get(
             url,
+            stream=True,
             headers={
                 "Accept": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
                 "Date": now,
@@ -504,12 +505,15 @@ def get_activitypub_data(url: str | bytes) -> Any:
             },
             timeout=SEARCH_TIMEOUT,
         )
+
     except requests.RequestException:
         raise ConnectorException()
     if not response.ok:
         response.raise_for_status()
     try:
-        data = response.json()
+        data = loads(get_body_safe(response))
+    except ConnectorException:
+        raise
     except ValueError:
         raise ConnectorException()
 

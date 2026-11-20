@@ -21,6 +21,11 @@ from bookwyrm.activitypub.base_activity import (
 )
 from bookwyrm.activitypub import ActivitySerializerError
 from bookwyrm import models
+from bookwyrm.connectors import ConnectorException
+
+from bookwyrm.settings import (
+    MAX_RESPONSE_SIZE,
+)
 
 
 @patch("bookwyrm.activitystreams.add_status_task.delay")
@@ -353,6 +358,52 @@ class BaseActivity(TestCase):
         # should log nothing if we only want to log errors
         with self.assertNoLogs(logger=None, level="ERROR") as logger:
             resolved = resolve_remote_id("https://example.com/user/mouse")
+
+    @responses.activate
+    def test_header_over_limit(self, *_):
+        """test that if header exceeds limit, ending connection"""
+
+        responses.add(
+            responses.GET,
+            "https://example.com/user/mouse",
+            headers={"Content-Length": str(MAX_RESPONSE_SIZE + 1)},
+            json=self.userdata,
+            status=200,
+        )
+
+        with self.assertRaisesRegex(ConnectorException, "header exceeded limit"):
+            get_activitypub_data("https://example.com/user/mouse")
+
+    @responses.activate
+    def test_body_over_limit(self, *_):
+        """test that if body exceeds limit, ending connection"""
+
+        responses.add(
+            responses.GET,
+            "https://example.com/user/mouse",
+            body="a" * (MAX_RESPONSE_SIZE + 1),
+            status=200,
+        )
+
+        with self.assertRaisesRegex(ConnectorException, "body exceeded limit"):
+            get_activitypub_data("https://example.com/user/mouse")
+
+    @patch("bookwyrm.connectors.abstract_connector.MAX_BODY_READ_TIME", new=-1)
+    @responses.activate
+    def test_timeout_reading_body(self, *_):
+        """test that if downloading time exceeds limit, ending connection"""
+
+        responses.add(
+            responses.GET,
+            "https://example.com/user/mouse",
+            json=self.userdata,
+            status=200,
+        )
+
+        with self.assertRaisesRegex(
+            ConnectorException, "read body time exceeded limit"
+        ):
+            get_activitypub_data("https://example.com/user/mouse")
 
     @patch("bookwyrm.activitypub.base_activity.redis_instance.set")
     @patch("bookwyrm.activitypub.base_activity.time.sleep")

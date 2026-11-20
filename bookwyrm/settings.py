@@ -265,6 +265,17 @@ SEARCH_TIMEOUT = env.int("SEARCH_TIMEOUT", 8)
 # timeout for a query to an individual connector
 QUERY_TIMEOUT = env.int("INTERACTIVE_QUERY_TIMEOUT", env.int("QUERY_TIMEOUT", 5))
 
+# max size of a response from other servers
+MAX_RESPONSE_SIZE = 5 * 1024 * 1024
+# size of one chunk in the stream
+STREAM_CHUNK_SIZE = 100 * 1024
+# total time in seconds for body to download after which the connection will stop
+MAX_BODY_READ_TIME = 10
+# max size of a response from other servers regarding images
+MAX_RESPONSE_IMAGE_SIZE = 20 * 1024 * 1024
+# total time in seconds for body of an image to download after which the connection will stop
+MAX_IMAGE_BODY_READ_TIME = 20
+
 CACHE_KEY_PREFIX = "django_cache"
 # Redis cache backend
 if env.bool("USE_DUMMY_CACHE", False):
