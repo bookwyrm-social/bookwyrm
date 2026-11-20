@@ -157,8 +157,9 @@
                         <label class="label">
                             <input type="radio" name="series_match" value="{{ series.id }}"> {{ series.name }}
                             <p class="help ml-5 mb-0 mt-0">
-
+                            {% if series.seriesbooks.exists %}
                             <em>{{ series.seriesbooks.first|possible_series_hint }}</em>
+                            {% endif %}
                             </p>
                         </label>
                         {% endfor %}
