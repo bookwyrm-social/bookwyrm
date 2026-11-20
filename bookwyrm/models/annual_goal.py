@@ -9,7 +9,7 @@ from .base_model import BookWyrmModel
 from . import fields, ReadThrough
 
 
-def get_current_year():
+def get_current_year() -> int:
     """sets default year for annual goal to this year"""
     return timezone.now().year
 

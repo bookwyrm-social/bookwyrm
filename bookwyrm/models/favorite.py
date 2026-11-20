@@ -1,5 +1,7 @@
 """like/fav/star a status"""
 
+from typing import Any
+
 from django.db import models
 
 from bookwyrm import activitypub
@@ -29,7 +31,7 @@ class Favorite(ActivityMixin, BookWyrmModel):
         """don't bother with incoming favs of unknown statuses"""
         return not Status.objects.filter(remote_id=activity.object).exists()
 
-    def save(self, *args, **kwargs) -> None:
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """update user active time"""
         self.user.update_active_date()
         super().save(*args, **kwargs)
