@@ -1,54 +1,57 @@
 """template filters for really common utilities"""
 
 import os
+from typing import Any
+
 from uuid import uuid4
 from urllib.parse import urlparse
 from django import template
+from django.contrib.auth.models import Group
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
 
-from bookwyrm.models import User
+from bookwyrm.models import User, Book, SeriesBook
 from bookwyrm.settings import INSTANCE_ACTOR_USERNAME, DATA_UPLOAD_MAX_MEMORY_SIZE
 
 register = template.Library()
 
 
 @register.filter(name="uuid")
-def get_uuid(identifier):
+def get_uuid(identifier: str) -> str:
     """for avoiding clashing ids when there are many forms"""
     return f"{identifier}{uuid4()}"
 
 
 @register.simple_tag(takes_context=False)
-def join(*args):
+def join(*args: Any) -> str:
     """concatenate an arbitrary set of values"""
     return "_".join(str(a) for a in args)
 
 
 @register.filter(name="getattr_filter")
-def getattr_filter(object, arg):
+def getattr_filter(obj: Any, arg: str) -> Any:
     """get attribute value from an object"""
 
-    if object.__class__._meta.get_field(arg).get_internal_type() == "ArrayField":
-        return getattr(object, arg, [])
-    if object.__class__._meta.get_field(arg).get_internal_type() == "DateTimeField":
-        if getattr(object, arg) is not None:
-            return getattr(object, arg, "").strftime("%Y-%m-%d")
+    if obj.__class__._meta.get_field(arg).get_internal_type() == "ArrayField":
+        return getattr(obj, arg, [])
+    if obj.__class__._meta.get_field(arg).get_internal_type() == "DateTimeField":
+        if getattr(obj, arg) is not None:
+            return getattr(obj, arg).strftime("%Y-%m-%d")
         return ""
 
     return getattr(object, arg, "") or ""
 
 
 @register.filter(name="username")
-def get_user_identifier(user):
+def get_user_identifier(user: User) -> Any:
     """use localname for local users, username for remote"""
     return user.localname if user.localname else user.username
 
 
 @register.filter(is_safe=True)
 @register.filter(name="user_link")
-def get_link_to_user(user):
+def get_link_to_user(user: User) -> str:
     """get a link to a user profile, or display if the user has been deleted"""
     username = user.display_name
     if user.is_active:
@@ -58,7 +61,7 @@ def get_link_to_user(user):
 
 
 @register.filter(name="user_from_remote_id")
-def get_user_identifier_from_remote_id(remote_id):
+def get_user_identifier_from_remote_id(remote_id: str) -> User | None:
     """get the local user id from their remote id"""
     try:
         return User.objects.get(remote_id=remote_id)
@@ -67,7 +70,7 @@ def get_user_identifier_from_remote_id(remote_id):
 
 
 @register.filter(name="book_title")
-def get_title(book, too_short=5):
+def get_title(book: Book, too_short: int = 5) -> Any:
     """display the subtitle if the title is short"""
     if not book:
         return ""
@@ -81,7 +84,7 @@ def get_title(book, too_short=5):
 
 
 @register.simple_tag(takes_context=False)
-def comparison_bool(str1, str2, reverse=False):
+def comparison_bool(str1: str, str2: str, reverse: bool = False) -> bool:
     """idk why I need to write a tag for this, it returns a bool"""
     if reverse:
         return str1 != str2
@@ -89,7 +92,7 @@ def comparison_bool(str1, str2, reverse=False):
 
 
 @register.filter(is_safe=True)
-def truncatepath(value, arg):
+def truncatepath(value: Any, arg: str) -> Any:
     """Truncate a path by removing all directories except the first and truncating"""
     path = os.path.normpath(value.name)
     path_list = path.split(os.sep)
@@ -101,7 +104,7 @@ def truncatepath(value, arg):
 
 
 @register.simple_tag(takes_context=False)
-def get_book_cover_thumbnail(book, size="medium", ext="jpg"):
+def get_book_cover_thumbnail(book: Book, size: str = "medium", ext: str = "jpg") -> Any:
     """Returns a book thumbnail at the specified size and extension,
     with fallback if needed"""
     if size == "":
@@ -114,7 +117,7 @@ def get_book_cover_thumbnail(book, size="medium", ext="jpg"):
 
 
 @register.filter(name="possible_series_hint")
-def possible_series_hint(seriesbook):
+def possible_series_hint(seriesbook: SeriesBook) -> str:
     """Returns the hint string for a possible matching series"""
     title = seriesbook.book.title
     path = seriesbook.series.local_path
@@ -132,7 +135,7 @@ def possible_series_hint(seriesbook):
 
 
 @register.simple_tag(takes_context=False)
-def id_to_username(user_id, return_empty=False):
+def id_to_username(user_id: str, return_empty: bool = False) -> Any:
     """given an arbitrary remote id, return the username"""
     if user_id:
         url = urlparse(user_id)
@@ -150,9 +153,8 @@ def id_to_username(user_id, return_empty=False):
 
 
 @register.filter(name="get_file_size")
-def get_file_size(nbytes):
+def get_file_size(nbytes: int) -> str:
     """display the size of a file in human readable terms"""
-
     try:
         raw_size = float(nbytes)
     except (ValueError, TypeError):
@@ -168,35 +170,35 @@ def get_file_size(nbytes):
 
 
 @register.simple_tag(takes_context=False)
-def max_upload_size():
+def max_upload_size() -> int:
     return DATA_UPLOAD_MAX_MEMORY_SIZE
 
 
 @register.simple_tag(takes_context=False)
-def max_upload_size_human():
+def max_upload_size_human() -> str:
     return get_file_size(DATA_UPLOAD_MAX_MEMORY_SIZE)
 
 
 @register.filter(name="get_user_permission")
-def get_user_permission_group(user):
+def get_user_permission_group(user: User) -> Group | str:
     """given a user, return their permission group"""
 
     return user.groups.first() or "User"
 
 
 @register.filter(name="has_perm")
-def check_user_has_permission(user, perm_name):
+def check_user_has_permission(user: User, perm_name: str) -> bool:
     """does the given user have a specific permission?"""
     return user.has_perm(f"bookwyrm.{perm_name}")
 
 
 @register.filter(name="is_instance_admin")
-def is_instance_admin(localname):
+def is_instance_admin(localname: str) -> bool:
     """Returns a boolean indicating whether the user is the instance admin account"""
     return localname == INSTANCE_ACTOR_USERNAME
 
 
 @register.filter(name="dedupe_fields")
-def get_dupe_match_field(original, dupe):
+def get_dupe_match_field(original: Any, dupe: Any) -> list[str]:
     """Identify which field is matching for a dedupe"""
     return [f.verbose_name for f in original.get_shared_fields(dupe)]
