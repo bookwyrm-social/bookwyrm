@@ -31,6 +31,14 @@ allowed_views = [
     r"^/resend-link/?$",
     r"^/invite/(?P<code>[A-Za-z0-9]+)/?$",
     r"^/2fa-check/?$",
+    # site stats/api
+    r"^\.well-known/webfinger/?$",
+    r"^\.well-known/nodeinfo/?$",
+    r"^\.well-known/host-meta/?$",
+    r"^nodeinfo/2\.0/?$",
+    r"^api/v1/instance/?$",
+    r"^api/v1/instance/peers/?$",
+    r"^ostatus_subscribe/?$",
 ]
 
 
