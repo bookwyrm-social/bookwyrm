@@ -119,6 +119,7 @@ class Shelf(PrivateProfileMixin, View):
         data = {
             "user": user,
             "is_self": is_self,
+            "list_options": request.user.list_set.all() if is_self else None,
             "shelves": shelves,
             "shelf": shelf,
             "books": page,

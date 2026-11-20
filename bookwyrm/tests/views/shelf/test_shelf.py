@@ -477,3 +477,32 @@ class ShelfViews(TestCase):
         self.assertEqual(len(result.context_data["books"].object_list), 1)
         self.assertFalse(awful_book in result.context_data["books"].object_list)
         self.assertEqual(result.context_data["books"].object_list, [self.book])
+
+    def test_shelf_page_add_to_list_owner_only(self):
+        """add-to-list dropdown renders only for the shelf owner"""
+        models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.shelf,
+            user=self.local_user,
+        )
+        models.List.objects.create(
+            name="Test List",
+            user=self.local_user,
+            privacy="public",
+        )
+        view = views.Shelf.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, username=self.local_user.username)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertIn("Add to list", result.render().content.decode())
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, username=self.local_user.username)
+        self.assertNotIn("Add to list", result.render().content.decode())

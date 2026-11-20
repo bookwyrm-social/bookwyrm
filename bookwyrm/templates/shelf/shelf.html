@@ -206,6 +206,9 @@
                         {% else %}
                         {% include 'snippets/shelf_selector.html' with current=shelf class="is-small" %}
                         {% endif %}
+                        {% if list_options %}
+                        {% include 'snippets/list_selector.html' with class="is-small" %}
+                        {% endif %}
                         {% endwith %}
                     </td>
                     {% endif %}

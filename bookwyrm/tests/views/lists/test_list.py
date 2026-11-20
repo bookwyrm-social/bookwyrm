@@ -11,6 +11,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.tests.validate_html import validate_html
+from bookwyrm.settings import BASE_URL
 
 
 class ListViews(TestCase):
@@ -337,6 +338,61 @@ class ListViews(TestCase):
         self.assertEqual(item.edition, self.edition)
         self.assertEqual(item.user, self.local_user)
         self.assertTrue(item.approved)
+
+    def test_add_book_redirects_to_referer(self):
+        """adding from the shelf page returns to the referer"""
+        referer = f"{BASE_URL}/user/mouse/shelves"
+        request = self.factory.post(
+            "",
+            {
+                "edition": self.edition.id,
+                "book_list": self.list.id,
+                "user": self.local_user.id,
+            },
+            HTTP_REFERER=referer,
+        )
+        request.user = self.local_user
+        with patch("bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"):
+            response = views.add_book(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["Location"], referer)
+        self.assertTrue(self.list.listitem_set.filter(edition=self.edition).exists())
+
+    def test_add_book_without_referer_redirects_to_list(self):
+        """no referer falls back to the list page"""
+        request = self.factory.post(
+            "",
+            {
+                "edition": self.edition.id,
+                "book_list": self.list.id,
+                "user": self.local_user.id,
+            },
+        )
+        request.user = self.local_user
+        with patch("bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"):
+            response = views.add_book(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["Location"], self.list.local_path)
+        self.assertTrue(self.list.listitem_set.filter(edition=self.edition).exists())
+
+    def test_add_book_duplicate_renders_list_with_error(self):
+        """duplicate add keeps the list page + error banner"""
+        request = self.factory.post(
+            "",
+            {
+                "edition": self.edition.id,
+                "book_list": self.list.id,
+                "user": self.local_user.id,
+            },
+        )
+        request.user = self.local_user
+        with patch("bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"):
+            views.add_book(request)
+        with patch("bookwyrm.models.activitypub_mixin.ActivitypubMixin.broadcast"):
+            response = views.add_book(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context_data.get("add_failed"))
+        self.assertTrue(self.list.listitem_set.filter(edition=self.edition).exists())
 
     def test_add_two_books(self):
         """
