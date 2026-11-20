@@ -230,7 +230,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             activity.content = self.pure_content
             if hasattr(activity, "name"):
                 activity.name = self.pure_name
-            activity.type = self.pure_type
             book = getattr(self, "book", None)
             books = [book] if book else []
             books += list(self.mention_books.all())
@@ -332,7 +331,7 @@ class GeneratedNote(Status):
         return f"{self.user.display_name} {message} {books}"
 
     activity_serializer = activitypub.GeneratedNote
-    pure_type = "Note"
+    core_activity_type = "GeneratedNote"
 
 
 ReadingStatusChoices = models.TextChoices(
@@ -346,7 +345,6 @@ class BookStatus(Status):
     book = fields.ForeignKey(
         "Edition", on_delete=models.PROTECT, activitypub_field="inReplyToBook"
     )
-    pure_type = "Note"
 
     reading_status = fields.CharField(
         max_length=255, choices=ReadingStatusChoices.choices, null=True, blank=True
@@ -390,6 +388,7 @@ class Comment(BookStatus):
         return f"{self.content}<p>({citation})</p>"
 
     activity_serializer = activitypub.Comment
+    core_activity_type = "Comment"
 
     @property
     def page_title(self):
@@ -441,6 +440,7 @@ class Quotation(BookStatus):
         return f"{quote} <p>{citation}</p>{self.content}"
 
     activity_serializer = activitypub.Quotation
+    core_activity_type = "Quotation"
 
     @property
     def page_title(self):
@@ -490,7 +490,7 @@ class Review(BookStatus):
         }
 
     activity_serializer = activitypub.Review
-    pure_type = "Article"
+    core_activity_type = "Review"
 
     def save(self, *args, **kwargs):
         """clear rating caches"""
@@ -526,7 +526,7 @@ class ReviewRating(Review):
         }
 
     activity_serializer = activitypub.Rating
-    pure_type = "Note"
+    core_activity_type = "Rating"
 
 
 class Boost(ActivityMixin, Status):
