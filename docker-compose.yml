@@ -28,9 +28,8 @@ services:
       - ./nginx/server_config:/etc/nginx/templates/server_config.template
       - ./nginx/server_name:/etc/nginx/templates/server_name.template
       - ./nginx/locations:/etc/nginx/conf.d/locations
-      - ./nginx/99-autoreload.sh:/docker-entrypoint.d/99-autoreload.sh
-      - ./certbot/conf:/etc/nginx/ssl
-      - ./certbot/data:/var/www/certbot
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/letsencrypt-acme:/var/cache/nginx/acme-letsencrypt
       - static_volume:/app/static
       - media_volume:/app/images
   anubis:
@@ -58,16 +57,6 @@ services:
       - main
     volumes:
       - "./anubis/botPolicy.yaml:/data/cfg/botPolicy.yaml:ro"
-  certbot:
-    image: certbot/certbot:latest
-    restart: unless-stopped
-    entrypoint: /bin/sh -c "trap exit TERM; while [ "${NGINX_SETUP:-https}" = "https" ];do certbot renew --webroot --webroot-path=/var/www/certbot; sleep 1d & wait $${!}; done; while [ "${NGINX_SETUP:-https}" != "https" ];do sleep infinity & wait $${!}; done;"
-    depends_on:
-      - nginx
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/logs:/var/log/letsencrypt
-      - ./certbot/data:/var/www/certbot
   db-backup-job:
     build: postgres-docker
     environment:
