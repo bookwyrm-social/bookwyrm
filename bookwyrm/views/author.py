@@ -57,7 +57,7 @@ class Author(MergeableViewMixin, View):
                     Min("editions__published_date"),
                 )
             )
-            .order_by(F("sort_date").desc(nulls_last=True))
+            .order_by("-popularity_count", F("sort_date").desc(nulls_last=True))
             .distinct()
         )
 
