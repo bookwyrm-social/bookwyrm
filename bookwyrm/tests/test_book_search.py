@@ -52,6 +52,17 @@ class BookSearch(TestCase):
         cls.third_edition.authors.add(cls.first_author)
         cls.third_edition.authors.add(cls.second_author)
 
+        # test data specific for issue #4146
+        cls.OnEvilWork = models.Work.objects.create(title="On Evil")
+        cls.OnEvilEdition = models.Edition.objects.create(
+            title="On Evil", parent_work=cls.OnEvilWork
+        )
+
+        cls.DontBeEvilWork = models.Work.objects.create(title="Don't Be Evil")
+        cls.DontBeEvilEdition = models.Edition.objects.create(
+            title="Don't Be Evil", parent_work=cls.DontBeEvilWork
+        )
+
     def test_search(self):
         """search for a book in the db"""
         # title
@@ -78,6 +89,17 @@ class BookSearch(TestCase):
         results = book_search.search("hello")
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0], self.second_edition)
+
+    def test_full_title_matching(self):
+        results = book_search.search("Don't be Evil")
+        self.assertEqual(
+            len(results), 2, "'Don't be Evil' and 'On Evil' should be found"
+        )
+        self.assertEqual(
+            results[0],
+            self.DontBeEvilEdition,
+            "The highest rated match should be the exact title match",
+        )
 
     def test_isbn_search(self):
         """test isbn search"""
