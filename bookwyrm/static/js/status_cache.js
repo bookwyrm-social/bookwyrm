@@ -1,6 +1,6 @@
 /* exported StatusCache */
 /* globals BookWyrm */
-
+/* eslint-disable no-unused-vars */
 let StatusCache = new (class {
     constructor() {
         document

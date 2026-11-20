@@ -86,6 +86,7 @@ class Feed(View):
                 "path": f"/{tab['key']}",
                 "annual_summary_year": get_annual_summary_year(),
                 "has_tour": True,
+                "tour_path": "home.js",
                 "has_summary_read_throughs": len(readthroughs),
             },
         }

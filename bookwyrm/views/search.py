@@ -100,6 +100,8 @@ def book_search(request):
         "page_range": paginated.get_elided_page_range(
             page.number, on_each_side=2, on_ends=1
         ),
+        "has_tour": True,
+        "tour_path": "search.js",
     }
     # if a logged in user requested remote results or got no local results, try remote
     if request.user.is_authenticated and (not local_results or search_remote):
@@ -133,6 +135,8 @@ def author_search(request):
         "page_range": paginated.get_elided_page_range(
             page.number, on_each_side=2, on_ends=1
         ),
+        "has_tour": True,
+        "tour_path": "search.js",
     }
     return TemplateResponse(request, "search/author.html", data)
 
@@ -181,6 +185,7 @@ def user_search(request):
     data["page_range"] = paginated.get_elided_page_range(
         page.number, on_each_side=2, on_ends=1
     )
+    data.update({"has_tour": True, "tour_path": "search.js"})
     return TemplateResponse(request, "search/user.html", data)
 
 
@@ -210,6 +215,7 @@ def list_search(request):
     data["page_range"] = paginated.get_elided_page_range(
         page.number, on_each_side=2, on_ends=1
     )
+    data.update({"has_tour": True, "tour_path": "search.js"})
     return TemplateResponse(request, "search/list.html", data)
 
 

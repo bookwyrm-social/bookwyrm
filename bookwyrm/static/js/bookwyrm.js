@@ -1,6 +1,6 @@
 /* exported BookWyrm */
 /* globals TabGroup, Quagga */
-
+/* eslint-disable no-unused-vars */
 let BookWyrm = new (class {
     constructor() {
         this.initOnDOMLoaded();
