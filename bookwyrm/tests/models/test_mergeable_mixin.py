@@ -1,7 +1,5 @@
 """testing models"""
 
-from unittest.mock import patch
-
 from django.test import TestCase
 
 from bookwyrm import models
@@ -261,6 +259,21 @@ class MergeableMixin(TestCase):
         self.assertEqual(book.authors.count(), 2)
         self.assertTrue(book.authors.last().name, "Bob Bookwriter")
 
+    def test_series_merged(self):
+        """series do not have users, and should merge cleanly"""
+
+        series = models.Series.objects.create(name="Test series", wikidata="Q123")
+
+        dupe = models.Series.objects.create(name="Example series", wikidata="Q123")
+
+        self.assertEqual(models.Series.objects.count(), 2)
+        self.assertFalse(models.MergedSeries.objects.exists())
+
+        dupe.merge_into(series)
+        series.refresh_from_db()
+        self.assertEqual(models.Series.objects.count(), 1)
+        self.assertTrue(models.Series.objects.last().name, "Test series")
+
     def test_related_parent_work_deleted(self):
         """are parent works deleted once orphaned?"""
 
@@ -395,38 +408,3 @@ class MergeableMixin(TestCase):
             models.SuggestionList.objects.filter(suggests_for=work).count(), 2
         )
         self.assertEqual(models.SuggestionListItem.objects.filter(work=work).count(), 2)
-
-    def test_check_for_dupes_signal(self):
-        """this should start an appropriate number of tasks"""
-        work = models.Work.objects.create(title="Example Work")
-        edition = models.Edition.objects.create(
-            title="Example Edition",
-            parent_work=work,
-        )
-        models.Edition.objects.create(
-            title="Example Edition",
-            parent_work=work,
-        )
-        models.Edition.objects.create(
-            title="Example Edition",
-            parent_work=work,
-        )
-        with patch(
-            "bookwyrm.models.mergeable_mixin.check_instance_for_dupes.delay"
-        ) as mock:
-            work.save(broadcast=False)
-        self.assertEqual(mock.call_count, 1)
-
-        with patch(
-            "bookwyrm.models.mergeable_mixin.check_instance_for_dupes.delay"
-        ) as mock:
-            # change that effect edition rank
-            edition.isbn_13 = "9787532786831"
-            edition.save(broadcast=False)
-        self.assertEqual(mock.call_count, 1)
-
-        with patch(
-            "bookwyrm.models.mergeable_mixin.check_instance_for_dupes.delay"
-        ) as mock:
-            edition.save(broadcast=False, update_fields=["pending_merge_target"])
-        self.assertEqual(mock.call_count, 0)

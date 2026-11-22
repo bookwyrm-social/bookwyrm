@@ -41,5 +41,6 @@ upstream flower{
 
 upstream anubis {
     server anubis:8000;
+    keepalive 4;
 }
 

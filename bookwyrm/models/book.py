@@ -767,9 +767,11 @@ class Edition(Book):
         return match.first()
 
     @property
-    def hyphenated_isbn13(self) -> str:
+    def display_isbn(self) -> str:
         """generate the hyphenated version of the ISBN-13"""
-        return hyphenator.hyphenate(self.isbn_13)
+        if self.isbn_13:
+            return hyphenator.hyphenate(self.isbn_13)
+        return self.isbn_10
 
     def get_rank(self) -> int:
         """calculate how complete the data is on this edition"""
