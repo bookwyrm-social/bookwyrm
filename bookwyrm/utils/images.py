@@ -5,7 +5,7 @@ from io import BytesIO
 from typing import Any
 from uuid import uuid4
 
-from PIL import Image, UnidentifiedImageError
+from PIL import Image, UnidentifiedImageError, ImageOps
 
 from django.core.files.uploadedfile import (
     UploadedFile,
@@ -24,6 +24,7 @@ def remove_uploaded_image_exif(source: UploadedFile) -> UploadedFile:
         with Image.open(source) as image:
             if "exif" not in image.info:
                 return source
+            ImageOps.exif_transpose(image, in_place=True)
             del image.info["exif"]
             if isinstance(source, InMemoryUploadedFile):
                 output_buffer = BytesIO()
