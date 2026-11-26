@@ -179,6 +179,37 @@ class AnnualSummary(TestCase):
         self.assertEqual(result.status_code, 302)
         self.assertFalse("2020" in self.local_user.summary_keys.keys())
 
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
+    def test_summary_share(self, _):
+        """sharing a summary with a key reuses it and creates a note"""
+        self.assertTrue("2020" in self.local_user.summary_keys.keys())
+        year = "2020"
+        key = self.local_user.summary_keys[year]
+
+        request = self.factory.post("", {"year": year})
+        request.user = self.local_user
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            result = views.summary_share(request)
+
+        self.assertEqual(result.status_code, 302)
+        self.assertIn(f"?key={key}", result["Location"])
+
+        note = models.GeneratedNote.objects.get()
+        self.assertEqual(note.user, self.local_user)
+
+    def test_summary_share_no_key(self, *_):
+        """add shareable key"""
+        self.assertFalse("2026" in self.local_user.summary_keys.keys())
+
+        request = self.factory.post("", {"year": "2026"})
+        request.user = self.local_user
+
+        result = views.summary_share(request)
+
+        self.assertEqual(result.status_code, 302)
+        self.assertFalse("2026" in self.local_user.summary_keys.keys())
+
     def test_annual_summary_with_blocked_book(self, *_):
         """don't show blocked books"""
 

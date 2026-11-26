@@ -14,6 +14,7 @@ from django.views import View
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
+from bookwyrm.status import create_generated_note
 from .helpers import get_user_from_username
 
 
@@ -159,6 +160,25 @@ def summary_revoke_key(request: HttpRequest):
     user.save(update_fields=["summary_keys"], broadcast=False)
 
     return redirect("annual-summary", user.localname, year)
+
+
+@login_required
+@require_POST
+def summary_share(request: HttpRequest):
+    """Publicly share the annual review"""
+
+    year = request.POST["year"]
+    user = request.user
+
+    key = user.summary_keys.get(year) if user.summary_keys else None
+    if not key:
+        return redirect("annual-summary", user.localname, year)
+
+    create_generated_note(user, content="TBC", privacy=user.default_post_privacy)
+
+    response = redirect("annual-summary", user.localname, year)
+    response["Location"] += f"?key={key}"
+    return response
 
 
 def get_annual_summary_year():
