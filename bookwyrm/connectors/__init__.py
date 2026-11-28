@@ -1,6 +1,6 @@
 """bring connectors into the namespace"""
 
-from .abstract_connector import ConnectorException, get_data, get_image, maybe_isbn
+from .abstract_connector import ConnectorException, get_data, get_image, maybe_isbn, get_body_safe
 from .connector_manager import (
     create_finna_connector,
     create_libris_connector,
