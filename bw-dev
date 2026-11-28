@@ -150,9 +150,6 @@ case "$CMD" in
     initdb)
         initdb "$@"
         ;;
-    init_ssl)
-        $DOCKER_COMPOSE --file ./docker-compose-init_letsencrypt.yml up --exit-code-from=certbot
-        ;;
     upgrade_db_version)
         $DOCKER_COMPOSE --file docker-compose-upgrade-db.yml run --rm db_update
         ;;
@@ -354,7 +351,6 @@ case "$CMD" in
         echo "    service_ports_web"
         echo "    upgrade_db_version"
         echo "    initdb"
-        echo "    init_ssl"
         echo "    migrate [migration]"
         echo "    create_secrets"
         echo "    bash"
